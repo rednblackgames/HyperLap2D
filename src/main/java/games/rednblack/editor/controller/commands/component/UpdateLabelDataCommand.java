@@ -68,7 +68,7 @@ public class UpdateLabelDataCommand extends EntityModifyRevertableCommand {
         labelComponent.setStyle(getNewStyle(labelComponent.fontName, labelComponent.fontSize));
         labelComponent.setWrap((Boolean) payload[6]);
 
-        facade.sendNotification(MsgAPI.ITEM_PROPERTY_DATA_FINISHED_MODIFYING, entity);
+        facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     private Label.LabelStyle getNewStyle(String fontName, int fontSize) {
@@ -94,5 +94,7 @@ public class UpdateLabelDataCommand extends EntityModifyRevertableCommand {
         labelComponent.setText(prevText);
         labelComponent.setStyle(prevStyle);
         labelComponent.setWrap(prevWrap);
+
+        facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 }

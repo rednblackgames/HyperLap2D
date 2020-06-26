@@ -43,8 +43,8 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
         alignSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
         boldCheckBox = StandardWidgetsFactory.createCheckBox();
         italicCheckBox = StandardWidgetsFactory.createCheckBox();
-        wrapCheckBox = StandardWidgetsFactory.createCheckBox();
-        fontSizeField = StandardWidgetsFactory.createNumberSelector(12, 0, 100);
+        wrapCheckBox = StandardWidgetsFactory.createCheckBox("Wrap");
+        fontSizeField = StandardWidgetsFactory.createNumberSelector(12, 1, 500);
 
         fontFamilySelectBox.setMaxListCount(10);
         alignSelectBox.setMaxListCount(10);
@@ -71,8 +71,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
         mainTable.row().padTop(5);
         mainTable.add(textEditTable).colspan(2).width(200);
         mainTable.row().padTop(5);
-        mainTable.add(StandardWidgetsFactory.createLabel("Wrap", Align.right)).padRight(5).width(90).left();
-        mainTable.add(wrapCheckBox).width(55).padRight(5);
+        mainTable.add(wrapCheckBox).padRight(5);
         mainTable.row().padTop(5);
 
         textEditTable.add(textArea).width(200).height(65);
