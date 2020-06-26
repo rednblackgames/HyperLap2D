@@ -1,0 +1,243 @@
+/*
+ * ******************************************************************************
+ *  * Copyright 2015 See AUTHORS file.
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *   http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
+ *  *****************************************************************************
+ */
+
+package games.rednblack.editor.view.ui.properties.panels;
+
+import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+import games.rednblack.editor.renderer.components.light.LightBodyComponent;
+import games.rednblack.h2d.common.MsgAPI;
+import com.kotcrab.vis.ui.widget.color.ColorPicker;
+import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
+import com.puremvc.patterns.observer.Notification;
+import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
+import games.rednblack.editor.controller.commands.AddToLibraryCommand;
+import games.rednblack.editor.renderer.components.*;
+import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
+import games.rednblack.editor.renderer.factory.EntityFactory;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.ComponentCloner;
+import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+/**
+ * Created by azakhary on 4/15/2015.
+ */
+public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Entity, UIBasicItemProperties> {
+    private static final String TAG = UIBasicItemPropertiesMediator.class.getCanonicalName();
+    public static final String NAME = TAG;
+
+    private TransformComponent transformComponent;
+    private MainItemComponent mainItemComponent;
+    private DimensionsComponent dimensionComponent;
+    private TintComponent tintComponent;
+
+    final private HashMap<String, UIBasicItemProperties.ItemType> itemTypeMap = new HashMap<>();
+
+    public static final String POLYGON_COMPONENT_KEY = "Polygon Component";
+    public static final String PHYSICS_COMPONENT_KEY = "Physics Component";
+    public static final String SHADER_COMPONENT_KEY = "Shader Component";
+    public static final String LIGHT_COMPONENT_KEY = "Light Component";
+
+    final private HashMap<String, Class<? extends Component>> componentClassMap = new HashMap<>();
+
+    public UIBasicItemPropertiesMediator() {
+        super(NAME, new UIBasicItemProperties());
+    }
+
+    @Override
+    public void onRegister() {
+        itemTypeMap.put("ENTITY_"+EntityFactory.COMPOSITE_TYPE, UIBasicItemProperties.ItemType.composite);
+        itemTypeMap.put("ENTITY_"+EntityFactory.IMAGE_TYPE, UIBasicItemProperties.ItemType.texture);
+        itemTypeMap.put("ENTITY_"+EntityFactory.PARTICLE_TYPE, UIBasicItemProperties.ItemType.particle);
+        itemTypeMap.put("ENTITY_"+EntityFactory.LABEL_TYPE, UIBasicItemProperties.ItemType.text);
+        itemTypeMap.put("ENTITY_"+EntityFactory.SPRITE_TYPE, UIBasicItemProperties.ItemType.spriteAnimation);
+        itemTypeMap.put("ENTITY_"+EntityFactory.SPRITER_TYPE, UIBasicItemProperties.ItemType.spriterAnimation);
+        itemTypeMap.put("ENTITY_"+EntityFactory.SPINE_TYPE, UIBasicItemProperties.ItemType.spineAnimation);
+        itemTypeMap.put("ENTITY_"+EntityFactory.LIGHT_TYPE, UIBasicItemProperties.ItemType.light);
+        itemTypeMap.put("ENTITY_"+EntityFactory.NINE_PATCH, UIBasicItemProperties.ItemType.patchImage);
+        itemTypeMap.put("ENTITY_"+EntityFactory.COLOR_PRIMITIVE, UIBasicItemProperties.ItemType.primitive);
+
+        componentClassMap.put(POLYGON_COMPONENT_KEY, PolygonComponent.class);
+        componentClassMap.put(PHYSICS_COMPONENT_KEY, PhysicsBodyComponent.class);
+        componentClassMap.put(SHADER_COMPONENT_KEY, ShaderComponent.class);
+        componentClassMap.put(LIGHT_COMPONENT_KEY, LightBodyComponent.class);
+    }
+
+    @Override
+    public String[] listNotificationInterests() {
+        String[] defaultNotifications = super.listNotificationInterests();
+        String[] notificationInterests = new String[]{
+                UIBasicItemProperties.TINT_COLOR_BUTTON_CLICKED,
+                UIBasicItemProperties.LINKING_CHANGED,
+                UIBasicItemProperties.ADD_COMPONENT_BUTTON_CLICKED
+        };
+
+        return ArrayUtils.addAll(defaultNotifications, notificationInterests);
+    }
+
+    @Override
+    public void handleNotification(Notification notification) {
+        super.handleNotification(notification);
+
+        switch (notification.getName()) {
+            case UIBasicItemProperties.TINT_COLOR_BUTTON_CLICKED:
+                ColorPicker picker = new ColorPicker(new ColorPickerAdapter() {
+                    @Override
+                    public void finished(Color newColor) {
+                        viewComponent.setTintColor(newColor);
+                        facade.sendNotification(viewComponent.getUpdateEventName());
+                    }
+
+                    @Override
+                    public void changed(Color newColor) {
+                        viewComponent.setTintColor(newColor);
+                        facade.sendNotification(viewComponent.getUpdateEventName());
+                    }
+                });
+
+                if (notification.getBody() != null) {
+                    viewComponent.setTintColor(notification.getBody());
+                }
+
+                picker.setColor(viewComponent.getTintColor());
+                Sandbox.getInstance().getUIStage().addActor(picker.fadeIn());
+                break;
+            case UIBasicItemProperties.LINKING_CHANGED:
+                boolean isLinked = notification.getBody();
+                if(!isLinked) {
+                    facade.sendNotification(MsgAPI.ACTION_ADD_TO_LIBRARY, AddToLibraryCommand.payloadUnLink(observableReference));
+                } else {
+                    facade.sendNotification(MsgAPI.SHOW_ADD_LIBRARY_DIALOG, observableReference);
+                }
+                break;
+            case UIBasicItemProperties.ADD_COMPONENT_BUTTON_CLICKED:
+                try {
+                    Class<? extends Component> componentClass = componentClassMap.get(viewComponent.getSelectedComponent());
+                    if(componentClass == null) break;
+                    Component component = ClassReflection.newInstance(componentClass);
+                    facade.sendNotification(MsgAPI.ACTION_ADD_COMPONENT, AddComponentToItemCommand.payload(observableReference, component));
+                } catch (ReflectionException ignored) {}
+                break;
+            default:
+                break;
+        }
+    }
+
+    protected void translateObservableDataToView(Entity entity) {
+    	transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+    	mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+    	dimensionComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
+    	tintComponent = ComponentRetriever.get(entity, TintComponent.class);
+
+    	int entityType = EntityUtils.getType(observableReference);
+        if(entityType == EntityFactory.COMPOSITE_TYPE) {
+            if(mainItemComponent.libraryLink!= null && mainItemComponent.libraryLink.length() > 0) {
+                viewComponent.setLinkage(true, mainItemComponent.libraryLink);
+            } else {
+                viewComponent.setLinkage(false, "not in library");
+            }
+        }
+
+        if (entityType == EntityFactory.COLOR_PRIMITIVE
+                || entityType == EntityFactory.LABEL_TYPE
+                || entityType == EntityFactory.COMPOSITE_TYPE) {
+            viewComponent.setWidthHeightDisabled(false);
+        } else {
+            viewComponent.setWidthHeightDisabled(true);
+        }
+        if (entityType == EntityFactory.LIGHT_TYPE) {
+            componentClassMap.remove(LIGHT_COMPONENT_KEY);
+            componentClassMap.remove(SHADER_COMPONENT_KEY);
+        }
+
+        viewComponent.setItemType(itemTypeMap.get("ENTITY_" + EntityUtils.getType(entity)), mainItemComponent.uniqueId);
+        viewComponent.setIdBoxValue(mainItemComponent.itemIdentifier);
+        viewComponent.setXValue(String.format(Locale.ENGLISH, "%.2f", transformComponent.x));
+        viewComponent.setYValue(String.format(Locale.ENGLISH, "%.2f", transformComponent.y));
+
+        viewComponent.setWidthValue(String.format(Locale.ENGLISH, "%.2f", dimensionComponent.width));
+        viewComponent.setHeightValue(String.format(Locale.ENGLISH, "%.2f", dimensionComponent.height));
+        viewComponent.setRotationValue(transformComponent.rotation + "");
+        viewComponent.setScaleXValue(transformComponent.scaleX + "");
+        viewComponent.setScaleYValue(transformComponent.scaleY + "");
+        viewComponent.setTintColor(tintComponent.color);
+
+        // non existent components
+        Array<String> componentsToAddList = new Array<>();
+        for (Map.Entry<String, Class<? extends Component>> entry : componentClassMap.entrySet()) {
+            String componentName = entry.getKey();
+            Class<? extends Component> componentClass = entry.getValue();
+            Component component = entity.getComponent(componentClass);
+            if(component == null) {
+                componentsToAddList.add(componentName);
+            }
+        }
+        viewComponent.setNonExistentComponents(componentsToAddList);
+    }
+
+    @Override
+    protected void translateViewToItemData() {
+    	Entity entity  = observableReference;
+
+        transformComponent = ComponentCloner.get(ComponentRetriever.get(entity, TransformComponent.class));
+        mainItemComponent = ComponentCloner.get(ComponentRetriever.get(entity, MainItemComponent.class));
+        dimensionComponent = ComponentCloner.get(ComponentRetriever.get(entity, DimensionsComponent.class));
+        tintComponent = ComponentCloner.get(ComponentRetriever.get(entity, TintComponent.class));
+
+    	mainItemComponent.itemIdentifier = viewComponent.getIdBoxValue();
+    	transformComponent.x = NumberUtils.toFloat(viewComponent.getXValue(), transformComponent.x);
+    	transformComponent.y = NumberUtils.toFloat(viewComponent.getYValue(), transformComponent.y);
+
+        dimensionComponent.width = NumberUtils.toFloat(viewComponent.getWidthValue());
+        dimensionComponent.height = NumberUtils.toFloat(viewComponent.getHeightValue());
+
+        if (dimensionComponent.boundBox != null) {
+            dimensionComponent.boundBox.width = dimensionComponent.width;
+            dimensionComponent.boundBox.height = dimensionComponent.height;
+        }
+
+        transformComponent.rotation = NumberUtils.toFloat(viewComponent.getRotationValue(), transformComponent.rotation);
+    	transformComponent.scaleX = (viewComponent.getFlipH() ? -1 : 1) * NumberUtils.toFloat(viewComponent.getScaleXValue(), transformComponent.scaleX);
+    	transformComponent.scaleY = (viewComponent.getFlipV() ? -1 : 1) * NumberUtils.toFloat(viewComponent.getScaleYValue(), transformComponent.scaleY);
+        Color color = viewComponent.getTintColor();
+        tintComponent.color.set(color);
+
+        Array<Component> componentsToUpdate = new Array<>();
+        componentsToUpdate.add(transformComponent);
+        componentsToUpdate.add(mainItemComponent);
+        componentsToUpdate.add(dimensionComponent);
+        componentsToUpdate.add(tintComponent);
+        Object[] payload = new Object[2];
+        payload[0] = entity;
+        payload[1] = componentsToUpdate;
+        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_ITEM_DATA, payload);
+    }
+}

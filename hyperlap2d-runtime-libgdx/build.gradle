@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+}
+
+group 'games.rednblack'
+version '0.0.1'
+
+ext {
+    gdxVersion = '1.9.10'
+    box2dlightsVersion = '1.5'
+    ashleyVersion = '1.7.3'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+    implementation "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion"
+    implementation "com.badlogicgames.ashley:ashley:$ashleyVersion"
+
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+}
+
+task dist(type: Jar) {
+    from files(sourceSets.main.output.classesDirs)
+    from files(sourceSets.main.output.resourcesDir)
+}

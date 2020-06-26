@@ -1,0 +1,8 @@
+rootProject.name = 'HyperLap2D'
+include 'hyperlap2d-runtime-libgdx'
+include 'h2d-libgdx-spine-extension'
+include 'hyperlap2d-common-api'
+include 'plugin-performance'
+include 'plugin-9patch'
+include 'plugin-tiled'
+

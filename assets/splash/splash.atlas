@@ -1,0 +1,34 @@
+
+splash.png
+size: 512,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+bg_color
+  rotate: false
+  xy: 471, 480
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+splash_bg
+  rotate: false
+  xy: 2, 122
+  size: 467, 366
+  orig: 467, 366
+  offset: 0, 0
+  index: -1
+splash_logo
+  rotate: false
+  xy: 2, 2
+  size: 76, 72
+  orig: 76, 72
+  offset: 0, 0
+  index: -1
+splash_logo_text
+  rotate: false
+  xy: 2, 76
+  size: 191, 44
+  orig: 191, 44
+  offset: 0, 0
+  index: -1

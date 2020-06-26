@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+}
+
+group 'games.rednblack'
+version '0.0.1'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    gdxVersion = '1.9.10'
+    box2DLightsVersion = '1.5'
+    ashleyVersion = '1.7.3'
+    visUIVersion = '1.4.4'
+}
+
+dependencies {
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    implementation "com.badlogicgames.ashley:ashley:$ashleyVersion"
+    implementation "com.kotcrab.vis:vis-ui:$visUIVersion"
+
+    implementation 'net.mountainblade:modular:1.0'
+
+    implementation project(":hyperlap2d-common-api")
+    implementation project(":hyperlap2d-runtime-libgdx")
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+task dist(type: Jar) {
+    from files(sourceSets.main.output.classesDirs)
+    from files(sourceSets.main.output.resourcesDir)
+}
