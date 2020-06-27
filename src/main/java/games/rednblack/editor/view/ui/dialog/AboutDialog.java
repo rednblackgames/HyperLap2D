@@ -37,6 +37,7 @@ public class AboutDialog extends H2DDialog {
         contentTable.add("HyperLap2D is based on following libraries and open source tools:").left().row();
         contentTable.add(new LinkLabel("- LibGDX & extensions [https://github.com/libgdx]", "https://github.com/libgdx")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Overlap2D [https://github.com/UnderwaterApps/overlap2d]", "https://github.com/UnderwaterApps/overlap2d")).padLeft(6).left().row();
+        contentTable.add(new LinkLabel("- PureMVC Framework [https://puremvc.org]", "https://puremvc.org/")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Vis UI [https://github.com/kotcrab/vis-ui]", "https://github.com/kotcrab/vis-ui")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Modular [https://github.com/mountainblade/modular]", "https://github.com/mountainblade/modular")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Spine Runtime [https://github.com/EsotericSoftware/spine-runtimes]", "https://github.com/EsotericSoftware/spine-runtimes")).padLeft(6).left().row();

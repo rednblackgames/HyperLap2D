@@ -18,8 +18,6 @@
 
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
@@ -81,6 +79,9 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
         mainTable.add(softnessLengthField).width(70).left();
         mainTable.row().padTop(5);
 
+        mainTable.add(secondaryTable).colspan(2);
+        mainTable.row().padTop(5);
+
         VisTable bottomTable = new VisTable();
         bottomTable.add(isStaticCheckBox).left().padRight(5);
         bottomTable.add(isXRayCheckBox).padRight(5);
@@ -90,16 +91,13 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
         mainTable.add(bottomTable).padBottom(5).colspan(4);
         mainTable.row().padTop(5);
 
-        mainTable.add(secondaryTable).colspan(2);
-        mainTable.row().padTop(5);
-
         setListeners();
     }
 
     public void initPointFields() {
         secondaryTable.clear();
 
-        secondaryTable.add(new VisLabel("Radius: ", Align.right)).padRight(5).width(55).right();
+        secondaryTable.add(new VisLabel("Radius: ", Align.right)).padRight(5).width(100).right();
         secondaryTable.add(pointLightRadiusField).width(70).left();
         secondaryTable.row().padTop(5);
     }
@@ -107,13 +105,13 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
     public void initConeFields() {
         secondaryTable.clear();
 
-        secondaryTable.add(StandardWidgetsFactory.createLabel("Distance: ", Align.right)).padRight(5).fillX().right();
+        secondaryTable.add(new VisLabel("Distance: ", Align.right)).padRight(5).width(100).right();
         secondaryTable.add(coneDistanceField).width(70).left();
         secondaryTable.row().padTop(5);
-        secondaryTable.add(StandardWidgetsFactory.createLabel("Angle: ", Align.right)).padRight(5).fillX().right();
+        secondaryTable.add(new VisLabel("Angle: ", Align.right)).padRight(5).width(100).right();
         secondaryTable.add(coneInnerAngleField).width(70).left();
         secondaryTable.row().padTop(5);
-        secondaryTable.add(StandardWidgetsFactory.createLabel("Direction: ", Align.right)).padRight(5).fillX().right();
+        secondaryTable.add(new VisLabel("Direction: ", Align.right)).padRight(5).width(100).right();
         secondaryTable.add(coneDirectionField).width(70).left();
         secondaryTable.row().padTop(5);
     }
