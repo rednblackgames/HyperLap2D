@@ -22,14 +22,11 @@ import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.proxy.ProjectManager;
 
-/**
- * Created by azakhary on 11/3/2015.
- */
-public class ExportProjectCommand extends SandboxCommand { @Override
-                                                           public void execute(Notification notification) {
-    ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-    projectManager.exportProject();
-}
+public class ExportProjectCommand extends SandboxCommand {
 
-
+    @Override
+    public void execute(Notification notification) {
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        projectManager.exportProject();
+    }
 }

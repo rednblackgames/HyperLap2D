@@ -25,7 +25,7 @@ public class EditMenu extends H2DMenu {
         copy = new MenuItem("Copy", new MenuItemListener(COPY, null, EDIT_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.C);
         paste = new MenuItem("Paste", new MenuItemListener(PASTE, null, EDIT_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.V);
         undo = new MenuItem("Undo", new MenuItemListener(UNDO, null, EDIT_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.Z);
-        redo = new MenuItem("Redo", new MenuItemListener(REDO, null, EDIT_MENU)).setShortcut(Input.Keys.CONTROL_LEFT,Input.Keys.SHIFT_LEFT, Input.Keys.S);
+        redo = new MenuItem("Redo", new MenuItemListener(REDO, null, EDIT_MENU)).setShortcut(Input.Keys.CONTROL_LEFT,Input.Keys.SHIFT_LEFT, Input.Keys.Z);
         addItem(cut);
         addItem(copy);
         addItem(paste);

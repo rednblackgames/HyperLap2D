@@ -9,3 +9,5 @@ plugin-9patch/build/
 plugin-performance/build/
 plugin-tiled/build/
 assets/configs/config.pit
+assets/tiled.atlas
+assets/tiled.png

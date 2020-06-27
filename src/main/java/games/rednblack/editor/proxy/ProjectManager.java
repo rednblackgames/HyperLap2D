@@ -920,7 +920,6 @@ public class ProjectManager extends BaseProxy {
     }
 
     public void exportProject() {
-
         String defaultBuildPath = currentProjectPath + "/export";
         exportPacks(defaultBuildPath);
         if (!currentProjectVO.projectMainExportPath.isEmpty()) {
@@ -949,7 +948,6 @@ public class ProjectManager extends BaseProxy {
             sceneDataManager.buildScenes(currentProjectVO.projectMainExportPath);
         }
     }
-
 
     private void exportStyles(String targetPath) {
         String srcPath = currentProjectPath + "/assets/orig";
@@ -1254,22 +1252,6 @@ public class ProjectManager extends BaseProxy {
             return new FileHandle(editorConfigVO.lastImportedSystemPath);
         }
         return null;
-    }
-
-    public boolean deleteImage(String imageName) {
-        Path path = Paths.get(currentProjectPath, "/assets/orig/images/", imageName);
-
-        ArrayList<Path> possibleFiles = Lists.newArrayList(
-                path.resolveSibling(path.getFileName() + ".png"),
-                path.resolveSibling(path.getFileName() + ".9.png"));
-
-        for(Path p : possibleFiles) {
-            if (p.toFile().exists())
-                return p.toFile().delete();
-        }
-
-        throw new IllegalStateException(String.format("The file %s is not found",path.toString()));
-
     }
 
     public boolean deleteSingleImage(String imageName) {
