@@ -109,17 +109,21 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
 
         switch (notification.getName()) {
             case UIBasicItemProperties.TINT_COLOR_BUTTON_CLICKED:
+                Color prevColor = viewComponent.getTintColor().cpy();
                 ColorPicker picker = new ColorPicker(new ColorPickerAdapter() {
                     @Override
                     public void finished(Color newColor) {
+                        TintComponent tintComponent = observableReference.getComponent(TintComponent.class);
+                        tintComponent.color.set(prevColor);
+
                         viewComponent.setTintColor(newColor);
                         facade.sendNotification(viewComponent.getUpdateEventName());
                     }
 
                     @Override
                     public void changed(Color newColor) {
-                        viewComponent.setTintColor(newColor);
-                        facade.sendNotification(viewComponent.getUpdateEventName());
+                        TintComponent tintComponent = observableReference.getComponent(TintComponent.class);
+                        tintComponent.color.set(newColor);
                     }
                 });
 
@@ -151,6 +155,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
         }
     }
 
+    @Override
     protected void translateObservableDataToView(Entity entity) {
     	transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
     	mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);

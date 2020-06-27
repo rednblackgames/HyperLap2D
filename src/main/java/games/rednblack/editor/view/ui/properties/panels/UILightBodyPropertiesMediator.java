@@ -47,16 +47,26 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<Enti
                 HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, LightBodyComponent.class));
                 break;
             case UILightBodyProperties.LIGHT_COLOR_BUTTON_CLICKED:
+                Color prevColor = viewComponent.getLightColor().cpy();
                 ColorPicker picker = new ColorPicker(new ColorPickerAdapter() {
                     @Override
                     public void finished(Color newColor) {
+                        lightComponent = observableReference.getComponent(LightBodyComponent.class);
+                        lightComponent.color[0] = prevColor.r;
+                        lightComponent.color[1] = prevColor.g;
+                        lightComponent.color[2] = prevColor.b;
+                        lightComponent.color[3] = prevColor.a;
+
                         viewComponent.setLightColor(newColor);
                         facade.sendNotification(viewComponent.getUpdateEventName());
                     }
                     @Override
                     public void changed(Color newColor) {
-                        viewComponent.setLightColor(newColor);
-                        facade.sendNotification(viewComponent.getUpdateEventName());
+                        lightComponent = observableReference.getComponent(LightBodyComponent.class);
+                        lightComponent.color[0] = newColor.r;
+                        lightComponent.color[1] = newColor.g;
+                        lightComponent.color[2] = newColor.b;
+                        lightComponent.color[3] = newColor.a;
                     }
                 });
 

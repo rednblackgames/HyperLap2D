@@ -25,7 +25,6 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertableCommand;
 import games.rednblack.editor.controller.commands.RevertableCommand;
 import games.rednblack.editor.controller.commands.TransactiveCommand;
-import games.rednblack.editor.view.stage.Sandbox;
 
 /**
  * Created by azakhary on 5/14/2015.
@@ -65,9 +64,10 @@ public class CommandManager extends BaseProxy {
     }
 
     public void undoCommand() {
-        updateWindowTitle();
-
-        if(cursor < 0) return;
+        if(cursor < 0){
+            updateWindowTitle();
+            return;
+        }
         RevertableCommand command = commands.get(cursor);
         if(command.isStateDone()) {
             command.callUndoAction();
@@ -79,6 +79,7 @@ public class CommandManager extends BaseProxy {
                 || command instanceof TransactiveCommand) {
             modifiedCursor--;
         }
+        updateWindowTitle();
     }
 
     public void saveEvent() {
