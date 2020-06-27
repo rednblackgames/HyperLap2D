@@ -1,0 +1,51 @@
+package games.rednblack.editor.controller.commands.component;
+
+import com.badlogic.ashley.core.Entity;
+import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.controller.commands.EntityModifyRevertableCommand;
+import games.rednblack.editor.renderer.components.CompositeTransformComponent;
+import games.rednblack.editor.renderer.data.CompositeItemVO;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.h2d.common.MsgAPI;
+
+public class UpdateCompositeDataCommand extends EntityModifyRevertableCommand {
+    private Integer entityId;
+    private CompositeItemVO backup;
+
+    @Override
+    public void doAction() {
+        Object[] payload = getNotification().getBody();
+        Entity entity = (Entity) payload[0];
+        CompositeItemVO vo = (CompositeItemVO) payload[1];
+        entityId = EntityUtils.getEntityId(entity);
+
+        backup = new CompositeItemVO();
+        backup.loadFromEntity(entity);
+
+        CompositeTransformComponent transformComponent = ComponentRetriever.get(entity, CompositeTransformComponent.class);
+        transformComponent.automaticResize = vo.automaticResize;
+        transformComponent.scissorsEnabled = vo.scissorsEnabled;
+
+        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+    }
+
+    @Override
+    public void undoAction() {
+        Entity entity = EntityUtils.getByUniqueId(entityId);
+
+        CompositeTransformComponent transformComponent = ComponentRetriever.get(entity, CompositeTransformComponent.class);
+        transformComponent.automaticResize = backup.automaticResize;
+        transformComponent.scissorsEnabled = backup.scissorsEnabled;
+
+        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+    }
+
+    public static Object payload(Entity entity, CompositeItemVO vo) {
+        Object[] payload = new Object[2];
+        payload[0] = entity;
+        payload[1] = vo;
+
+        return payload;
+    }
+}

@@ -20,6 +20,8 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import games.rednblack.editor.controller.commands.component.UpdateCompositeDataCommand;
+import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.CompositeTransformComponent;
@@ -50,9 +52,14 @@ public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<
 
     @Override
     protected void translateViewToItemData() {
-        CompositeTransformComponent component = observableReference.getComponent(CompositeTransformComponent.class);
-        component.automaticResize = viewComponent.isAutomaticResizeIsEnabled();
-        component.scissorsEnabled = viewComponent.isScissorsEnabled();
+        CompositeItemVO payloadVo = new CompositeItemVO();
+        payloadVo.loadFromEntity(observableReference);
+
+        payloadVo.automaticResize = viewComponent.isAutomaticResizeIsEnabled();
+        payloadVo.scissorsEnabled = viewComponent.isScissorsEnabled();
+
+        Object payload = UpdateCompositeDataCommand.payload(observableReference, payloadVo);
+        facade.sendNotification(MsgAPI.ACTION_UPDATE_COMPOSITE_DATA, payload);
 
         CompositeSystem compositeSystem = Sandbox.getInstance().getEngine().getSystem(CompositeSystem.class);
         if (compositeSystem != null) {
