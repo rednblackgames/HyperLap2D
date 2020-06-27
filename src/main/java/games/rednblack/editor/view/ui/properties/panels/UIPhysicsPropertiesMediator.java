@@ -12,9 +12,6 @@ import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-/**
- * Created by CyberJoe on 7/5/2015.
- */
 public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<Entity, UIPhysicsProperties> {
 
     private static final String TAG = UIPhysicsPropertiesMediator.class.getCanonicalName();
@@ -70,8 +67,10 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<Entity
     protected void translateViewToItemData() {
         physicsComponent = observableReference.getComponent(PhysicsBodyComponent.class);
 
+        PhysicsBodyDataVO oldPayloadVo = new PhysicsBodyDataVO();
+        oldPayloadVo.loadFromComponent(physicsComponent);
+
         PhysicsBodyDataVO payloadVo = new PhysicsBodyDataVO();
-        payloadVo.loadFromComponent(physicsComponent);
 
         payloadVo.bodyType = viewComponent.getBodyType();
         payloadVo.mass = NumberUtils.toFloat(viewComponent.getMassField().getText());
@@ -90,7 +89,9 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<Entity
         payloadVo.bullet = viewComponent.getBulletBox().isChecked();
         payloadVo.sensor = viewComponent.getSensorBox().isChecked();
 
-        Object payload = UpdatePhysicsDataCommand.payload(observableReference, payloadVo);
-        facade.sendNotification(MsgAPI.ACTION_UPDATE_PHYSICS_BODY_DATA, payload);
+        if (!oldPayloadVo.equals(payloadVo)) {
+            Object payload = UpdatePhysicsDataCommand.payload(observableReference, payloadVo);
+            facade.sendNotification(MsgAPI.ACTION_UPDATE_PHYSICS_BODY_DATA, payload);
+        }
     }
 }
