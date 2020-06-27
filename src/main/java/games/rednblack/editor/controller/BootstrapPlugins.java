@@ -32,7 +32,6 @@ import net.mountainblade.modular.impl.DefaultModuleManager;
 import java.io.File;
 import java.util.Collection;
 
-
 /**
  * Created by azakhary on 7/24/2015.
  */
@@ -54,8 +53,8 @@ public class BootstrapPlugins extends SimpleCommand {
         Collection<Module> loadedPlugins = manager.loadModules(pluginDir);
 
         pluginManager.setPluginDir(pluginDir.getAbsolutePath());
-        System.out.println(pluginDir.getAbsolutePath());
-        System.out.println(loadedPlugins.size());
+        System.out.println("Plugins directory: " + pluginDir.getAbsolutePath());
+        System.out.println("Plugins loaded: " + loadedPlugins.size());
 
         for(Module module: loadedPlugins) {
             try {
