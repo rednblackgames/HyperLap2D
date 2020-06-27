@@ -100,7 +100,7 @@ public class UIBasicItemProperties extends UIItemProperties {
 
         Validators.FloatValidator floatValidator = new Validators.FloatValidator();
 
-        itemType = StandardWidgetsFactory.createLabel("");
+        itemType = new VisLabel("");
         itemType.setAlignment(Align.left);
         itemTypeIcon = new Image();
 
@@ -142,10 +142,10 @@ public class UIBasicItemProperties extends UIItemProperties {
         componentsTable.add(addComponentButton).right().height(21);
         componentsTable.row();
 
-        add(iconContainer).padRight(3).right().fillX();
-        add(itemType).width(143).height(21).colspan(2).left();
+        add(iconContainer).padTop(9).padRight(3).right().fillX();
+        add(itemType).width(143).height(21).colspan(2).padTop(9).left();
         row();
-        addSeparator().padTop(9).padBottom(6).colspan(3);
+        addSeparator().padTop(5).padBottom(6).colspan(3);
         add(StandardWidgetsFactory.createLabel("Identifier:", Align.left)).fillX();
         add(idBox).width(151).right().height(21).colspan(2);
         row();
