@@ -1,7 +1,8 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.math.Vector2;
+import games.rednblack.editor.controller.commands.component.UpdatePhysicsDataCommand;
+import games.rednblack.editor.renderer.data.PhysicsBodyDataVO;
 import games.rednblack.h2d.common.MsgAPI;
 import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -68,22 +69,28 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<Entity
     @Override
     protected void translateViewToItemData() {
         physicsComponent = observableReference.getComponent(PhysicsBodyComponent.class);
-        physicsComponent.bodyType = viewComponent.getBodyType();
-        physicsComponent.mass = NumberUtils.toFloat(viewComponent.getMassField().getText());
 
-        physicsComponent.centerOfMass = new Vector2(NumberUtils.toFloat(viewComponent.getCenterOfMassXField().getText()), NumberUtils.toFloat(viewComponent.getCenterOfMassYField().getText()));
+        PhysicsBodyDataVO payloadVo = new PhysicsBodyDataVO();
+        payloadVo.loadFromComponent(physicsComponent);
 
-        physicsComponent.rotationalInertia = NumberUtils.toFloat(viewComponent.getRotationalIntertiaField().getText());
-        physicsComponent.damping = NumberUtils.toFloat(viewComponent.getDumpingField().getText());
-        physicsComponent.gravityScale = NumberUtils.toFloat(viewComponent.getGravityScaleField().getText());
-        physicsComponent.density = NumberUtils.toFloat(viewComponent.getDensityField().getText());
-        physicsComponent.friction = NumberUtils.toFloat(viewComponent.getFrictionField().getText());
-        physicsComponent.restitution = NumberUtils.toFloat(viewComponent.getRestitutionField().getText());
+        payloadVo.bodyType = viewComponent.getBodyType();
+        payloadVo.mass = NumberUtils.toFloat(viewComponent.getMassField().getText());
 
-        physicsComponent.allowSleep = viewComponent.getAllowSleepBox().isChecked();
-        physicsComponent.awake = viewComponent.getAwakeBox().isChecked();
-        physicsComponent.bullet = viewComponent.getBulletBox().isChecked();
-        physicsComponent.sensor = viewComponent.getSensorBox().isChecked();
+        payloadVo.centerOfMass.set(NumberUtils.toFloat(viewComponent.getCenterOfMassXField().getText()), NumberUtils.toFloat(viewComponent.getCenterOfMassYField().getText()));
 
+        payloadVo.rotationalInertia = NumberUtils.toFloat(viewComponent.getRotationalIntertiaField().getText());
+        payloadVo.damping = NumberUtils.toFloat(viewComponent.getDumpingField().getText());
+        payloadVo.gravityScale = NumberUtils.toFloat(viewComponent.getGravityScaleField().getText());
+        payloadVo.density = NumberUtils.toFloat(viewComponent.getDensityField().getText());
+        payloadVo.friction = NumberUtils.toFloat(viewComponent.getFrictionField().getText());
+        payloadVo.restitution = NumberUtils.toFloat(viewComponent.getRestitutionField().getText());
+
+        payloadVo.allowSleep = viewComponent.getAllowSleepBox().isChecked();
+        payloadVo.awake = viewComponent.getAwakeBox().isChecked();
+        payloadVo.bullet = viewComponent.getBulletBox().isChecked();
+        payloadVo.sensor = viewComponent.getSensorBox().isChecked();
+
+        Object payload = UpdatePhysicsDataCommand.payload(observableReference, payloadVo);
+        facade.sendNotification(MsgAPI.ACTION_UPDATE_PHYSICS_BODY_DATA, payload);
     }
 }
