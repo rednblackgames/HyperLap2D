@@ -9,7 +9,7 @@ import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.HyperLap2DFacade;
-import com.vo.SceneConfigVO;
+import games.rednblack.h2d.common.vo.SceneConfigVO;
 
 /**
  * Created by CyberJoe on 5/1/2015.

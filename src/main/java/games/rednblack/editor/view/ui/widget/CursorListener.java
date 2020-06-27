@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.CursorManager;
-import com.vo.CursorData;
+import games.rednblack.h2d.common.vo.CursorData;
 
 /**
  * Created by NateS

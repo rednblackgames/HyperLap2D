@@ -29,7 +29,7 @@ import games.rednblack.h2d.common.view.tools.Tool;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.puremvc.patterns.facade.Facade;
 import games.rednblack.editor.renderer.SceneLoader;
-import com.vo.CursorData;
+import games.rednblack.h2d.common.vo.CursorData;
 
 import java.util.HashMap;
 import java.util.HashSet;

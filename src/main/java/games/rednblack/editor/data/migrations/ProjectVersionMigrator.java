@@ -21,7 +21,7 @@ package games.rednblack.editor.data.migrations;
 import java.io.IOException;
 
 import games.rednblack.editor.data.migrations.migrators.VersionMigTo009;
-import com.vo.ProjectVO;
+import games.rednblack.h2d.common.vo.ProjectVO;
 import org.apache.commons.io.FileUtils;
 
 import com.badlogic.gdx.utils.Json;

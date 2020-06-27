@@ -49,7 +49,7 @@ import games.rednblack.editor.view.ui.UIDropDownMenu;
 import games.rednblack.editor.view.ui.UIDropDownMenuMediator;
 import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
 import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
-import com.vo.CursorData;
+import games.rednblack.h2d.common.vo.CursorData;
 
 import java.util.*;
 

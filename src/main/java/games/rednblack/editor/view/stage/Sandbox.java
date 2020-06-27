@@ -52,8 +52,8 @@ import games.rednblack.editor.view.ItemControlMediator;
 import games.rednblack.editor.view.SceneControlMediator;
 import games.rednblack.editor.view.stage.input.InputListener;
 import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
-import com.vo.ProjectVO;
-import com.vo.SceneConfigVO;
+import games.rednblack.h2d.common.vo.ProjectVO;
+import games.rednblack.h2d.common.vo.SceneConfigVO;
 
 import java.util.HashMap;
 

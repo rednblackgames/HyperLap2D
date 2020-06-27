@@ -16,24 +16,17 @@
  *  *****************************************************************************
  */
 
-package com.vo;
-
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonWriter;
+package games.rednblack.h2d.common.vo;
 
 /**
- * Created by sargis on 8/1/14.
+ * Created by azakhary on 7/18/2015.
+ *
+ * Here we keep all editor specific but not runtime specific data per scene. (like for example last camera position)
  */
-public class EditorConfigVO {
-    public static final String EDITOR_CONFIG_FILE = "config.pit";
-    public String lastOpenedSystemPath = "";
-    public String lastImportedSystemPath = "";
+public class SceneConfigVO {
 
-    public String constructJsonString() {
-        String str = "";
-        Json json = new Json();
-        json.setOutputType(JsonWriter.OutputType.json);
-        str = json.toJson(this);
-        return str;
-    }
+    public String sceneName = "";
+
+    // 0 = x, 1 = y
+    public float[] cameraPosition = new float[2];
 }

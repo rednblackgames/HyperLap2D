@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.puremvc.patterns.proxy.BaseProxy;
-import com.vo.CursorData;
+import games.rednblack.h2d.common.vo.CursorData;
 
 /**
  * Created by azakhary on 5/15/2015.

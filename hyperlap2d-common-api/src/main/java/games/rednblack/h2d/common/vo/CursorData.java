@@ -16,35 +16,35 @@
  *  *****************************************************************************
  */
 
-package com.vo;
+package games.rednblack.h2d.common.vo;
 
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonWriter.OutputType;
+import com.badlogic.gdx.graphics.Cursor;
 
-import java.util.ArrayList;
+/**
+ * Created by azakhary on 5/15/2015.
+ */
+public class CursorData {
 
-public class ProjectVO {
+    public String region;
+    public int hotspotX;
+    public int hotspotY;
+    public Cursor.SystemCursor systemCursor;
 
-    public String projectName = "";
+    public CursorData(String region, int x, int y) {
+        this.region = region;
+        hotspotX = x;
+        hotspotY = y;
+    }
 
-    public String projectVersion = null;
+    public CursorData(Cursor.SystemCursor cursor) {
+        systemCursor = cursor;
+    }
 
-    public String projectMainExportPath = "";
+    public int getHotspotX() {
+        return hotspotX;
+    }
 
-    public String lastOpenScene = "";
-    public String lastOpenResolution = "";
-    public String texturepackerWidth	=	"2048";
-    public String texturepackerHeight  =	"2048";
-    public boolean texturepackerDuplicate;
-
-    public ArrayList<SceneConfigVO> sceneConfigs = new ArrayList<>();
-
-
-    public String constructJsonString() {
-        String str = "";
-        Json json = new Json();
-        json.setOutputType(OutputType.json);
-        str = json.toJson(this);
-        return str;
+    public int getHotspotY() {
+        return hotspotY;
     }
 }
