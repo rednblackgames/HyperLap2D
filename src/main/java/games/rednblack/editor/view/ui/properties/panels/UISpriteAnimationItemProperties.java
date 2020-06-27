@@ -27,7 +27,6 @@ import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.spinner.IntSpinnerModel;
 import com.kotcrab.vis.ui.widget.spinner.Spinner;
-import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.NumberSelectorOverlapListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.utils.StandardWidgetsFactory;
@@ -43,11 +42,11 @@ public class UISpriteAnimationItemProperties extends UIItemCollapsibleProperties
 
     public static final String EDIT_ANIMATIONS_CLICKED = "games.rednblack.editor.view.ui.properties.panels.UISpriteAnimationItemProperties" + ".EDIT_ANIMATIONS_CLICKED";
 
-
     private Spinner fpsSelector;
     private VisSelectBox<String> animationsSelectBox;
     private VisSelectBox<String> playModesSelectBox;
     private VisTextButton editAnimationsButton;
+    private Array<String> playModeNames = new Array<>();
 
     public HashMap<Animation.PlayMode, String> playModes = new HashMap<>();
 
@@ -63,11 +62,11 @@ public class UISpriteAnimationItemProperties extends UIItemCollapsibleProperties
         mainTable.add(fpsSelector).width(50).left();
         mainTable.row().padTop(5);
 
-        mainTable.add(StandardWidgetsFactory.createLabel("Play modes:", Align.right)).padRight(5).fillX();
+        mainTable.add(StandardWidgetsFactory.createLabel("Play mode:", Align.right)).padRight(5).fillX();
         mainTable.add(playModesSelectBox).width(120);
         mainTable.row().padTop(5);
 
-        mainTable.add(StandardWidgetsFactory.createLabel("Animations:", Align.right)).padRight(5).fillX();
+        mainTable.add(StandardWidgetsFactory.createLabel("Animation:", Align.right)).padRight(5).fillX();
         mainTable.add(animationsSelectBox).width(120);
         mainTable.row().padTop(5);
         mainTable.add(editAnimationsButton).right().colspan(2);
@@ -86,19 +85,23 @@ public class UISpriteAnimationItemProperties extends UIItemCollapsibleProperties
     }
 
     public void setPlayModes() {
-        playModes.put(Animation.PlayMode.LOOP, "Loop");
-        playModes.put(Animation.PlayMode.NORMAL, "Normal");
-        playModes.put(Animation.PlayMode.REVERSED, "Reversed");
-        playModes.put(Animation.PlayMode.LOOP_REVERSED, "Loop reversed");
-        playModes.put(Animation.PlayMode.LOOP_PINGPONG, "Loop ping-pong");
-        playModes.put(Animation.PlayMode.LOOP_RANDOM, "Loop random");
+        playModes.clear();
+        playModeNames.clear();
 
-        String[] arr = new String[playModes.size()];
-        int i = 0;
-        for (Map.Entry<Animation.PlayMode, String> entry : playModes.entrySet()) {
-            arr[i++] = entry.getValue();
-        }
-        playModesSelectBox.setItems(arr);
+        playModes.put(Animation.PlayMode.LOOP, "Loop");
+        playModeNames.add("Loop");
+        playModes.put(Animation.PlayMode.NORMAL, "Normal");
+        playModeNames.add("Normal");
+        playModes.put(Animation.PlayMode.REVERSED, "Reversed");
+        playModeNames.add("Reversed");
+        playModes.put(Animation.PlayMode.LOOP_REVERSED, "Loop reversed");
+        playModeNames.add("Loop reversed");
+        playModes.put(Animation.PlayMode.LOOP_PINGPONG, "Loop ping-pong");
+        playModeNames.add("Loop ping-pong");
+        playModes.put(Animation.PlayMode.LOOP_RANDOM, "Loop random");
+        playModeNames.add("Loop random");
+
+        playModesSelectBox.setItems(playModeNames);
     }
 
     public Animation.PlayMode getPlayMode() {
