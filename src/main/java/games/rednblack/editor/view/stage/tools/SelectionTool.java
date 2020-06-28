@@ -213,7 +213,7 @@ public class SelectionTool extends SimpleTool {
     public void itemMouseDragged(Entity entity, float x, float y) {
         sandbox = Sandbox.getInstance();
 
-        if (isDragging == false && (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT))) { // first drag iteration and is copy mode
+        if (!isDragging && (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT))) { // first drag iteration and is copy mode
             // we need to copy/paste the item in place, the set it as selection and draggable, then perform the drag.
             HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_COPY);
             HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_PASTE);
@@ -485,14 +485,18 @@ public class SelectionTool extends SimpleTool {
                 Vector2 newPosition = new Vector2(transformComponent.x, transformComponent.y);
                 Vector2 oldPosition = dragStartPositions.get(itemInstance);
 
-                Object payload[] = new Object[3];
+                if (newPosition.equals(oldPosition))
+                    continue;
+
+                Object[] payload = new Object[3];
                 payload[0] = itemInstance;
                 payload[1] = newPosition;
                 payload[2] = oldPosition;
                 payloads.add(payload);
             }
 
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_ITEMS_MOVE_TO, payloads);
+            if (payloads.size > 0)
+                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_ITEMS_MOVE_TO, payloads);
         }
 
         // Delete

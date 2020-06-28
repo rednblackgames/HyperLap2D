@@ -39,7 +39,6 @@ public class ItemsMoveCommand extends EntityModifyRevertableCommand {
 
     @Override
     public void doAction() {
-
         Array<Object[]> payload = getNotification().getBody();
 
         for(int i = 0; i < payload.size; i++) {

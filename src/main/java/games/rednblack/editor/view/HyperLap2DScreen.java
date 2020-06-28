@@ -18,8 +18,6 @@
 
 package games.rednblack.editor.view;
 
-import java.io.File;
-
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
