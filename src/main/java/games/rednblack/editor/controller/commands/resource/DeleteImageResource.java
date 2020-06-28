@@ -17,13 +17,18 @@ import java.util.stream.Collectors;
 /**
  * Created by azakhary on 11/29/2015.
  */
-public class DeleteImageResource extends NonRevertibleCommand {
+public class DeleteImageResource extends DeleteResourceCommand {
 
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.resource.DeleteImageResource";
     public static final String DONE = CLASS_NAME + "DONE";
 
     private final ArrayList<Entity> tmpEntityList = new ArrayList<>();
     private final ArrayList<SimpleImageVO> tmpImageList = new ArrayList<>();
+
+    @Override
+    protected String confirmDialogTitle() {
+        return "Delete Image Resource";
+    }
 
     @Override
     public void doAction() {

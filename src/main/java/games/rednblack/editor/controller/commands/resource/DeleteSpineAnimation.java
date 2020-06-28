@@ -16,13 +16,18 @@ import java.util.stream.Collectors;
 /**
  * Created by Sasun Poghosyan on 5/10/2016.
  */
-public class DeleteSpineAnimation extends NonRevertibleCommand {
+public class DeleteSpineAnimation extends DeleteResourceCommand {
 
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.resource.DeleteSpineAnimation";
     public static final String DONE = CLASS_NAME + "DONE";
 
     private final ArrayList<Entity> entityList = new ArrayList<>();
     private final ArrayList<SpineVO> tmpSpineAnimList = new ArrayList<>();
+
+    @Override
+    protected String confirmDialogTitle() {
+        return "Delete Spine Animation";
+    }
 
     @Override
     public void doAction() {

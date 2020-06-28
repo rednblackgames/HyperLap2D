@@ -1,10 +1,12 @@
 package games.rednblack.editor.controller.commands;
 
+import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
+import games.rednblack.h2d.common.MsgAPI;
 
 import java.util.HashMap;
 
@@ -29,8 +31,14 @@ public abstract class NonRevertibleCommand extends SandboxCommand {
     public void execute(Notification notification) {
         commandManager = facade.retrieveProxy(CommandManager.NAME);
         this.notification = notification;
-        callDoAction();
-        if (!isCancelled) commandManager.clearHistory();
+        Dialogs.showConfirmDialog(sandbox.getUIStage(),
+                confirmDialogTitle(), confirmDialogMessage(),
+                new String[]{"Cancel", confirmAction()}, new Integer[]{0, 1}, r -> {
+                    if (r == 1) {
+                        callDoAction();
+                        if (!isCancelled) commandManager.clearHistory();
+                    }
+                });
     }
 
     public abstract void doAction();
@@ -41,5 +49,17 @@ public abstract class NonRevertibleCommand extends SandboxCommand {
 
     public void cancel() {
         isCancelled = true;
+    }
+
+    protected String confirmDialogTitle() {
+        return "Non Revertible Action";
+    }
+
+    protected String confirmDialogMessage() {
+        return "Do you want to proceed?\nThis action cannot be undone.";
+    }
+
+    protected String confirmAction() {
+        return "Yes";
     }
 }

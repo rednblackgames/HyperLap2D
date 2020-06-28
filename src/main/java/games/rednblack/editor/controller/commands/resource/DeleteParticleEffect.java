@@ -15,13 +15,18 @@ import java.util.function.Consumer;
 /**
  * Created by Sasun Poghosyan on 5/10/2016.
  */
-public class DeleteParticleEffect extends NonRevertibleCommand {
+public class DeleteParticleEffect extends DeleteResourceCommand {
 
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.resource.DeleteParticleEffect";
     public static final String DONE = CLASS_NAME + "DONE";
 
     private final ArrayList<Entity> entityList = new ArrayList<>();
     private final ArrayList<ParticleEffectVO> tmpParticleEffectList = new ArrayList<>();
+
+    @Override
+    protected String confirmDialogTitle() {
+        return "Delete Particle Effect";
+    }
 
     @Override
     public void doAction() {

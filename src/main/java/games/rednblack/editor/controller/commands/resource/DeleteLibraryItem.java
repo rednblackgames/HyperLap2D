@@ -15,10 +15,15 @@ import java.util.HashMap;
 /**
  * Created by azakhary on 11/29/2015.
  */
-public class DeleteLibraryItem extends NonRevertibleCommand {
+public class DeleteLibraryItem extends DeleteResourceCommand {
 
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.resource.DeleteLibraryItem";
     public static final String DONE = CLASS_NAME + "DONE";
+
+    @Override
+    protected String confirmDialogTitle() {
+        return "Delete Library Item";
+    }
 
     @Override
     public void doAction() {

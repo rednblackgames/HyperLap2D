@@ -16,12 +16,17 @@ import java.util.stream.Collectors;
 /**
  * Created by Sasun Poghosyan on 5/12/2016.
  */
-public class DeleteSpriterAnimation extends NonRevertibleCommand {
+public class DeleteSpriterAnimation extends DeleteResourceCommand {
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.resource.DeleteSpriterAnimation";
     public static final String DONE = CLASS_NAME + "DONE";
 
     private final ArrayList<Entity> entityList = new ArrayList<>();
     private final ArrayList<SpriterVO> tmpSpriterAnimList = new ArrayList<>();
+
+    @Override
+    protected String confirmDialogTitle() {
+        return "Delete Spriter Animation";
+    }
 
     @Override
     public void doAction() {
