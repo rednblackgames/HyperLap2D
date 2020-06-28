@@ -78,12 +78,4 @@ public class UIGridBox extends UIBaseBox {
             Gdx.app.log(TAG, "Lines unlocked");
         }
     }
-
-    public void hide() {
-        setVisible(false);
-    }
-
-    public void show() {
-        setVisible(true);
-    }
 }

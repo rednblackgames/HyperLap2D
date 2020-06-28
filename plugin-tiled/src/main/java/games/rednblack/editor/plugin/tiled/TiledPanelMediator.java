@@ -166,14 +166,11 @@ public class TiledPanelMediator extends SimpleMediator<TiledPanel> {
                     case DrawTileTool.NAME:
                         cursorName = "tile";
                         tiledPlugin.facade.sendNotification(TiledPlugin.PANEL_OPEN);
-                        tiledPlugin.facade.sendNotification(MsgAPI.HIDE_GRID);
                         break;
                     case DeleteTileTool.NAME:
                         cursorName = "tile-eraser";
-                        tiledPlugin.facade.sendNotification(MsgAPI.HIDE_GRID);
                         break;
                     default:
-                        tiledPlugin.facade.sendNotification(MsgAPI.SHOW_GRID);
                         viewComponent.hide();
                         break;
                 }

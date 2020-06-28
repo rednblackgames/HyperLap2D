@@ -113,6 +113,4 @@ public class UIZoomBox extends UIBaseBox {
             facade.sendNotification(ZOOM_SHIFT_REQUESTED, zoomDevider);
         }
     }
-
-
 }

@@ -34,13 +34,12 @@ import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.utils.StandardWidgetsFactory;
 
-public class UIResolutionBox extends VisTable {
+public class UIResolutionBox extends UIBaseBox {
     public static final String CREATE_NEW_RESOLUTION_BTN_CLICKED = "games.rednblack.editor.view.ui.box.UIResolutionBox" + ".CREATE_NEW_RESOLUTION_BTN_CLICKED";
     public static final String CHANGE_RESOLUTION_BTN_CLICKED = "games.rednblack.editor.view.ui.box.UIResolutionBox" + ".CHANGE_RESOLUTION_BTN_CLICKED";
     public static final String DELETE_RESOLUTION_BTN_CLICKED = "games.rednblack.editor.view.ui.box.UIResolutionBox" + ".DELETE_RESOLUTION_BTN_CLICKED";
     public static final String REPACK_BTN_CLICKED = "games.rednblack.editor.view.ui.box.UIResolutionBox" + ".REPACK_BTN_CLICKED";
     //    private final String currentResolutionName;
-    private final HyperLap2DFacade facade;
     private final ResolutionManager resolutionManager;
     private final Skin skin;
     private VisSelectBox<ResolutionEntryVO> visSelectBox;
@@ -49,7 +48,6 @@ public class UIResolutionBox extends VisTable {
     private VisImageButton deleteBtn;
 
     public UIResolutionBox() {
-        facade = HyperLap2DFacade.getInstance();
         resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
         skin = VisUI.getSkin();
         init();
@@ -59,6 +57,7 @@ public class UIResolutionBox extends VisTable {
 
     }
 
+    @Override
     public void update() {
         clear();
         addSeparator(true).padRight(6);
