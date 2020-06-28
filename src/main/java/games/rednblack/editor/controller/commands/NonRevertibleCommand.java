@@ -16,6 +16,7 @@ public abstract class NonRevertibleCommand extends SandboxCommand {
 
     protected CommandManager commandManager;
     protected Notification notification;
+    protected boolean showConfirmDialog = true;
 
     protected boolean isCancelled = false;
     protected final HashMap<String, CompositeItemVO> libraryItems;
@@ -30,24 +31,32 @@ public abstract class NonRevertibleCommand extends SandboxCommand {
     public void execute(Notification notification) {
         commandManager = facade.retrieveProxy(CommandManager.NAME);
         this.notification = notification;
-        Dialogs.showConfirmDialog(sandbox.getUIStage(),
-                confirmDialogTitle(), confirmDialogMessage(),
-                new String[]{"Cancel", confirmAction()}, new Integer[]{0, 1}, r -> {
-                    if (r == 1) {
-                        callDoAction();
-                        if (!isCancelled) commandManager.clearHistory();
-                    }
-                });
+        if (showConfirmDialog) {
+            Dialogs.showConfirmDialog(sandbox.getUIStage(),
+                    confirmDialogTitle(), confirmDialogMessage(),
+                    new String[]{"Cancel", confirmAction()}, new Integer[]{0, 1}, r -> {
+                        if (r == 1) {
+                            callDoAction();
+                        }
+                    });
+        } else {
+            callDoAction();
+        }
     }
 
     public abstract void doAction();
 
-    public void callDoAction() {
+    private void callDoAction() {
         doAction();
+        if (!isCancelled) commandManager.clearHistory();
     }
 
     public void cancel() {
         isCancelled = true;
+    }
+
+    public void setShowConfirmDialog(boolean show) {
+        showConfirmDialog = show;
     }
 
     protected String confirmDialogTitle() {

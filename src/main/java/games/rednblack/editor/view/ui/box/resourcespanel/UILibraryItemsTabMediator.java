@@ -19,6 +19,7 @@
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.controller.commands.resource.ExportLibraryItemCommand;
 import games.rednblack.h2d.common.MsgAPI;
 import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -51,6 +52,7 @@ public class UILibraryItemsTabMediator extends UIResourcesTabMediator<UILibraryI
 
         listNotification = ArrayUtils.add(listNotification, MsgAPI.LIBRARY_LIST_UPDATED);
         listNotification = ArrayUtils.add(listNotification, DeleteLibraryItem.DONE);
+        listNotification = ArrayUtils.add(listNotification, ExportLibraryItemCommand.DONE);
 
         return listNotification;
     }
@@ -60,8 +62,6 @@ public class UILibraryItemsTabMediator extends UIResourcesTabMediator<UILibraryI
         super.handleNotification(notification);
         switch (notification.getName()) {
             case MsgAPI.LIBRARY_LIST_UPDATED:
-                initList(viewComponent.searchString);
-                break;
             case DeleteLibraryItem.DONE:
                 initList(viewComponent.searchString);
                 break;

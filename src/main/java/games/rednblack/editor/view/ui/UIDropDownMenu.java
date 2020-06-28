@@ -53,6 +53,7 @@ public class UIDropDownMenu extends PopupMenu {
         actionNames.put(MsgAPI.SHOW_ADD_LIBRARY_DIALOG, "Add to library");
         actionNames.put(MsgAPI.ACTION_CREATE_PRIMITIVE, "Create Primitive");
 
+        actionNames.put(MsgAPI.ACTION_EXPORT_LIBRARY_ITEM, "Export");
         actionNames.put(MsgAPI.ACTION_DELETE_IMAGE_RESOURCE, "Delete");
         actionNames.put(MsgAPI.ACTION_DELETE_LIBRARY_ITEM, "Delete");
         actionNames.put(MsgAPI.ACTION_DELETE_PARTICLE_EFFECT, "Delete");

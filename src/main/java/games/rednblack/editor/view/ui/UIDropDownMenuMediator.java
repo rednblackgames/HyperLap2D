@@ -74,6 +74,7 @@ public class UIDropDownMenuMediator extends SimpleMediator<UIDropDownMenu> {
         actionSets.get(IMAGE_RESOURCE_ACTION_SET).add(MsgAPI.ACTION_DELETE_IMAGE_RESOURCE);
         actionSets.put(LIBRARY_ITEM_ACTION_SET, new Array<>());
         actionSets.get(LIBRARY_ITEM_ACTION_SET).add(MsgAPI.ACTION_DELETE_LIBRARY_ITEM);
+        actionSets.get(LIBRARY_ITEM_ACTION_SET).add(MsgAPI.ACTION_EXPORT_LIBRARY_ITEM);
 
         actionSets.put(SPINE_ANIMATION_ACTION_SET, new Array<>());
         actionSets.get(SPINE_ANIMATION_ACTION_SET).add(MsgAPI.ACTION_DELETE_SPINE_ANIMATION_RESOURCE);
