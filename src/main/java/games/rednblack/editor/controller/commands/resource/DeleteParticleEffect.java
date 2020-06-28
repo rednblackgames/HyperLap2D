@@ -1,7 +1,6 @@
 package games.rednblack.editor.controller.commands.resource;
 
 import com.badlogic.ashley.core.Entity;
-import games.rednblack.editor.controller.commands.NonRevertibleCommand;
 import games.rednblack.editor.renderer.components.particle.ParticleComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.ParticleEffectVO;

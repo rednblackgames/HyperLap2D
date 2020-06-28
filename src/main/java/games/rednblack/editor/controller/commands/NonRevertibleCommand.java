@@ -6,7 +6,6 @@ import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
-import games.rednblack.h2d.common.MsgAPI;
 
 import java.util.HashMap;
 
