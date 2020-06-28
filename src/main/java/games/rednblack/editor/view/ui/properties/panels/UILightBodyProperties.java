@@ -7,9 +7,11 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
+import com.kotcrab.vis.ui.widget.spinner.Spinner;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
+import games.rednblack.editor.event.NumberSelectorOverlapListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.utils.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
@@ -25,7 +27,7 @@ public class UILightBodyProperties extends UIRemovableProperties {
 
     private HashMap<Integer, String> directionTypes = new HashMap<>();
 
-    private VisTextField raysTextField;
+    private Spinner raysTextSelector;
     private VisTextField distanceTextField;
     private TintButton lightColor;
     private VisValidatableTextField softnessLengthField;
@@ -55,7 +57,7 @@ public class UILightBodyProperties extends UIRemovableProperties {
         Validators.IntegerValidator integerValidator = new Validators.IntegerValidator();
 
         lightColor = StandardWidgetsFactory.createTintButton();
-        raysTextField = StandardWidgetsFactory.createValidableTextField(integerValidator);
+        raysTextSelector = StandardWidgetsFactory.createNumberSelector(4, 4, 5000);
         distanceTextField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         softnessLengthField = new VisValidatableTextField(floatValidator);
         isStaticCheckBox = StandardWidgetsFactory.createCheckBox("Static");
@@ -71,7 +73,7 @@ public class UILightBodyProperties extends UIRemovableProperties {
         mainTable.add(lightColor).left();
         mainTable.row().padTop(5);
         mainTable.add(new VisLabel("Ray Count:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(raysTextField).width(100).colspan(2);
+        mainTable.add(raysTextSelector).left().colspan(2);
         mainTable.row().padTop(5);
         mainTable.add(new VisLabel("Distance:", Align.right)).padRight(5).colspan(2).fillX();
         mainTable.add(distanceTextField).width(100).colspan(2);
@@ -91,11 +93,11 @@ public class UILightBodyProperties extends UIRemovableProperties {
     }
 
     public void setRays(String rays) {
-        raysTextField.setText(rays);
+        raysTextSelector.getTextField().setText(rays);
     }
 
     public String getRays() {
-        return raysTextField.getText();
+        return raysTextSelector.getTextField().getText();
     }
 
     public void setDistance(String rays) {
@@ -169,7 +171,7 @@ public class UILightBodyProperties extends UIRemovableProperties {
         isSoftCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         isActiveCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
 
-        raysTextField.addListener(new KeyboardListener(getUpdateEventName()));
+        raysTextSelector.addListener(new NumberSelectorOverlapListener(getUpdateEventName()));
         distanceTextField.addListener(new KeyboardListener(getUpdateEventName()));
         softnessLengthField.addListener(new KeyboardListener(getUpdateEventName()));
 

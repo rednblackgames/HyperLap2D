@@ -26,6 +26,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
+import com.kotcrab.vis.ui.widget.spinner.Spinner;
+import games.rednblack.editor.event.NumberSelectorOverlapListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.utils.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.widget.components.TintButton;
@@ -49,7 +51,7 @@ public class UISceneProperties extends UIAbstractProperties {
     final private VisCheckBox enableLightsCheckBox;
     final private TintButton ambientColorComponent;
     final private VisSelectBox<String> lightTypeBox;
-    final private VisTextField directionalRaysTextField;
+    final private Spinner directionalRays;
     final private VisTextField directionalDegreeTextField;
     final private TintButton directionalLightColor;
 
@@ -69,7 +71,7 @@ public class UISceneProperties extends UIAbstractProperties {
         enableLightsCheckBox = StandardWidgetsFactory.createCheckBox();
         ambientColorComponent = StandardWidgetsFactory.createTintButton();
         lightTypeBox = StandardWidgetsFactory.createSelectBox(String.class);
-        directionalRaysTextField = StandardWidgetsFactory.createValidableTextField(integerValidator);
+        directionalRays = StandardWidgetsFactory.createNumberSelector(4, 4, 5000);
         directionalDegreeTextField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         directionalLightColor = StandardWidgetsFactory.createTintButton();
 
@@ -115,7 +117,7 @@ public class UISceneProperties extends UIAbstractProperties {
         directionalTable.add(directionalLightColor).left();
         directionalTable.row().padTop(5);
         directionalTable.add(new VisLabel("Rays:", Align.right)).padRight(5).width(115);
-        directionalTable.add(directionalRaysTextField).width(115);
+        directionalTable.add(directionalRays).left();
         directionalTable.row().padTop(5);
         directionalTable.add(new VisLabel("Degree:", Align.right)).padRight(5).width(115);
         directionalTable.add(directionalDegreeTextField).width(115);
@@ -132,11 +134,11 @@ public class UISceneProperties extends UIAbstractProperties {
         return directionalDegreeTextField.getText();
     }
     public String getDirectionalRays() {
-        return directionalRaysTextField.getText();
+        return directionalRays.getTextField().getText();
     }
 
     public void setDirectionalRays(String rays) {
-        this.directionalRaysTextField.setText(rays);
+        this.directionalRays.getTextField().setText(rays);
     }
 
     public void setLightType(String type) {
@@ -145,7 +147,7 @@ public class UISceneProperties extends UIAbstractProperties {
     }
 
     public void updateDisabled() {
-        directionalRaysTextField.setDisabled(!lightTypeBox.getSelected().equals("DIRECTIONAL"));
+        directionalRays.setDisabled(!lightTypeBox.getSelected().equals("DIRECTIONAL"));
         directionalDegreeTextField.setDisabled(!lightTypeBox.getSelected().equals("DIRECTIONAL"));
         if (lightTypeBox.getSelected().equals("DIRECTIONAL")) {
             if (!directionalTable.hasParent()) {
@@ -246,7 +248,7 @@ public class UISceneProperties extends UIAbstractProperties {
         sleepVelocityTextField.addListener(new KeyboardListener(getUpdateEventName()));
         enableLightsCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         blurNumTextField.addListener(new KeyboardListener(getUpdateEventName()));
-        directionalRaysTextField.addListener(new KeyboardListener(getUpdateEventName()));
+        directionalRays.addListener(new NumberSelectorOverlapListener(getUpdateEventName()));
         directionalDegreeTextField.addListener(new KeyboardListener(getUpdateEventName()));
         lightTypeBox.addListener(new SelectBoxChangeListener(getUpdateEventName()));
         lightTypeBox.addListener(new ChangeListener() {

@@ -58,6 +58,9 @@ public class UILightItemPropertiesMediator extends UIItemPropertiesMediator<Enti
 
     @Override
     protected void translateViewToItemData() {
+        LightVO oldPayloadVo = new LightVO();
+        oldPayloadVo.loadFromEntity(observableReference);
+
         LightVO payloadVo = new LightVO();
         payloadVo.loadFromEntity(observableReference);
 
@@ -76,7 +79,9 @@ public class UILightItemPropertiesMediator extends UIItemPropertiesMediator<Enti
             payloadVo.directionDegree = NumberUtils.toFloat(viewComponent.getDirection());
         }
 
-        Object payload = UpdateLightDataCommand.payload(observableReference, payloadVo);
-        facade.sendNotification(MsgAPI.ACTION_UPDATE_LIGHT_DATA, payload);
+        if (!oldPayloadVo.equals(payloadVo)) {
+            Object payload = UpdateLightDataCommand.payload(observableReference, payloadVo);
+            facade.sendNotification(MsgAPI.ACTION_UPDATE_LIGHT_DATA, payload);
+        }
     }
 }

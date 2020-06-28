@@ -4,6 +4,8 @@ import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.components.light.LightObjectComponent;
 import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
 
+import java.util.Objects;
+
 public class LightVO extends MainItemVO {
 	//public int itemId = -1;
 	public static enum LightType {POINT, CONE}
@@ -55,5 +57,27 @@ public class LightVO extends MainItemVO {
 		softnessLength = lightObjectComponent.softnessLength;
 		isSoft = lightObjectComponent.isSoft;
 		isActive = lightObjectComponent.isActive;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		LightVO lightVO = (LightVO) o;
+		return rays == lightVO.rays &&
+				Float.compare(lightVO.distance, distance) == 0 &&
+				Float.compare(lightVO.directionDegree, directionDegree) == 0 &&
+				Float.compare(lightVO.coneDegree, coneDegree) == 0 &&
+				Float.compare(lightVO.softnessLength, softnessLength) == 0 &&
+				isStatic == lightVO.isStatic &&
+				isXRay == lightVO.isXRay &&
+				isSoft == lightVO.isSoft &&
+				isActive == lightVO.isActive &&
+				type == lightVO.type;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(type, rays, distance, directionDegree, coneDegree, softnessLength, isStatic, isXRay, isSoft, isActive);
 	}
 }
