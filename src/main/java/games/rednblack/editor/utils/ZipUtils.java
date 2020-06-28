@@ -1,10 +1,13 @@
 package games.rednblack.editor.utils;
 
-import java.io.IOException;
+import com.badlogic.gdx.utils.Array;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class ZipUtils {
@@ -26,5 +29,78 @@ public class ZipUtils {
                         }
                     });
         }
+    }
+
+    public static Array<String> getZipContent(File fileZip) {
+        Array<String> files = new Array<>();
+        try {
+            ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+            ZipEntry zipEntry = zis.getNextEntry();
+            while (zipEntry != null) {
+                files.add(zipEntry.getName());
+                zipEntry = zis.getNextEntry();
+            }
+            zis.closeEntry();
+            zis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return files;
+    }
+
+    public static Array<String> getZipContent(File fileZip, String format) {
+        Array<String> files = new Array<>();
+        try {
+            ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+            ZipEntry zipEntry = zis.getNextEntry();
+            while (zipEntry != null) {
+                if (zipEntry.getName().contains("." + format))
+                    files.add(zipEntry.getName());
+                zipEntry = zis.getNextEntry();
+            }
+            zis.closeEntry();
+            zis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return files;
+    }
+
+    public static Array<String> saveZipContent(File fileZip, File destDir) {
+        Array<String> paths = new Array<>();
+        try {
+            ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+            ZipEntry zipEntry = zis.getNextEntry();
+            byte[] buffer = new byte[1024];
+            while (zipEntry != null) {
+                File newFile = newFile(destDir, zipEntry);
+                FileOutputStream fos = new FileOutputStream(newFile);
+                int len;
+                while ((len = zis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, len);
+                }
+                fos.close();
+                paths.add(newFile.getPath());
+                zipEntry = zis.getNextEntry();
+            }
+            zis.closeEntry();
+            zis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return paths;
+    }
+
+    private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+        File destFile = new File(destinationDir, zipEntry.getName());
+
+        String destDirPath = destinationDir.getCanonicalPath();
+        String destFilePath = destFile.getCanonicalPath();
+
+        if (!destFilePath.startsWith(destDirPath + File.separator)) {
+            throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+        }
+
+        return destFile;
     }
 }

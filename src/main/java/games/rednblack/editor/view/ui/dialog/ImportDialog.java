@@ -240,10 +240,6 @@ public class ImportDialog extends UIDraggablePanel {
                 break;
         }
 
-        errorLabel.setX(getWidth() / 2 - errorLabel.getWidth() / 2);
-        errorLabel.setY(getHeight() - errorLabel.getHeight() - 87);
-        errorLabel.setAlignment(Align.center);
-
         errorLabel.setText(text);
 
         errorLabel.addAction(Actions.fadeIn(0.3f));

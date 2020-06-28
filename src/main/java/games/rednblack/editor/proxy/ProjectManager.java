@@ -1236,6 +1236,40 @@ public class ProjectManager extends BaseProxy {
         executor.shutdown();
     }
 
+    public void importItemLibraryIntoProject(Array<FileHandle> files, ProgressHandler progressHandler) {
+        if (files == null) {
+            return;
+        }
+        handler = progressHandler;
+        currentPercent = 0;
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            for (FileHandle handle : files) {
+                Json json = new Json();
+                String projectInfoContents = null;
+                try {
+                    projectInfoContents = FileUtils.readFileToString(handle.file());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                CompositeItemVO voInfo = json.fromJson(CompositeItemVO.class, projectInfoContents);
+                String fileNameAndExtension = handle.name();
+                String fileName = FilenameUtils.removeExtension(fileNameAndExtension);
+                this.currentProjectInfoVO.libraryItems.put(fileName, voInfo);
+            }
+        });
+        executor.execute(() -> {
+            changePercentBy(100 - currentPercent);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            handler.progressComplete();
+        });
+        executor.shutdown();
+    }
+
     public String getCurrentProjectPath() {
         return currentProjectPath;
     }

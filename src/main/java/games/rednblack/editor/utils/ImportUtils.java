@@ -32,10 +32,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/**
- * Created by azakhary on 7/22/2015.
- */
-public class ImportUtils  {
+public class ImportUtils {
 
     private static ImportUtils instance;
 
@@ -53,6 +50,8 @@ public class ImportUtils  {
     public static final int TYPE_PARTICLE_EFFECT = 8;
     public static final int TYPE_TEXTURE_ATLAS = 9;
     public static final int TYPE_SHADER = 10;
+    public static final int TYPE_HYPERLAP2D_LIBRARY = 11;
+    public static final int TYPE_HYPERLAP2D_INTERNAL_LIBRARY = 12;
 
     private final ArrayList<Integer> supportedTypes = new ArrayList<>();
     private final FileTypeFilter fileTypeFilter;
@@ -65,24 +64,26 @@ public class ImportUtils  {
         supportedTypes.add(TYPE_SPRITER_ANIMATION);
         supportedTypes.add(TYPE_PARTICLE_EFFECT);
         supportedTypes.add(TYPE_SHADER);
-        // TODO: not yet supported
+        supportedTypes.add(TYPE_HYPERLAP2D_LIBRARY);
+        // TODO: not yet supported, and probably never because they are useless IMO
         //supportedTypes.add(TYPE_TEXTURE_ATLAS);
         //supportedTypes.add(TYPE_TTF_FONT);
         //supportedTypes.add(TYPE_BITMAP_FONT);
 
         fileTypeFilter = new FileTypeFilter(false);
 
-        fileTypeFilter.addRule("All Supported (*.png, *.atlas, *.p, *.json, *.scml, *.vert, *.frag)", "png", "atlas", "p", "json", "vert", "frag");
+        fileTypeFilter.addRule("All Supported (*.png, *.atlas, *.p, *.json, *.scml, *.vert, *.frag, *.h2dlib)", "png", "atlas", "p", "json", "vert", "frag", "h2dlib");
         fileTypeFilter.addRule("PNG File (*.png)", "png");
         fileTypeFilter.addRule("Sprite Animation Atlas File (*.atlas)", "atlas");
         fileTypeFilter.addRule("Particle Effect (*.p)", "p");
         fileTypeFilter.addRule("Spine Animation (*.json)", "json");
         fileTypeFilter.addRule("Spriter Animation (*.scml)", "scml");
         fileTypeFilter.addRule("Shader (*.vert, *.frag)", "vert", "frag");
+        fileTypeFilter.addRule("HyperLap2D Library (*.h2dlib)", "h2dlib");
     }
 
     public static ImportUtils getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new ImportUtils();
         }
 
@@ -96,25 +97,25 @@ public class ImportUtils  {
     public static int getImportType(String[] paths) {
         int mainType = TYPE_MIXED;
         String[] names = new String[paths.length];
-        for(int i = 0; i < paths.length; i++) {
+        for (int i = 0; i < paths.length; i++) {
             String path = paths[i];
             int type = getFileType(path);
-            if(i == 0) mainType = type;
-            if(mainType != type) {
+            if (i == 0) mainType = type;
+            if (mainType != type) {
                 return TYPE_MIXED;
             }
             names[i] = FilenameUtils.getBaseName(path);
         }
 
-        if(mainType == TYPE_IMAGE) {
+        if (mainType == TYPE_IMAGE) {
             // check they are a PNG sequence;
             boolean isSequence = isAnimationSequence(names);
-            if(isSequence) {
+            if (isSequence) {
                 mainType = TYPE_ANIMATION_PNG_SEQUENCE;
             }
         }
 
-        if(mainType > 0 && !ImportUtils.getInstance().supportedTypes.contains(mainType)) {
+        if (mainType > 0 && !ImportUtils.getInstance().supportedTypes.contains(mainType)) {
             mainType = TYPE_UNSUPPORTED;
         }
 
@@ -123,7 +124,7 @@ public class ImportUtils  {
 
     public static int getFileType(String path) {
         int type = checkFileTypeByExtension(path);
-        if(type == TYPE_UNKNOWN) {
+        if (type == TYPE_UNKNOWN) {
             // we have to check by getting into the file
             type = checkFileTypeByContent(path);
         }
@@ -133,17 +134,27 @@ public class ImportUtils  {
 
     public static int checkFileTypeByExtension(String path) {
         String ext = FilenameUtils.getExtension(path).toLowerCase();
-        if(ext.equals("png")) {
+        if (ext.equals("png")) {
             return TYPE_IMAGE;
         }
-        if(ext.equals("ttf")) {
+
+        if (ext.equals("ttf")) {
             return TYPE_TTF_FONT;
         }
-        if(ext.equals("scml")) {
+        if (ext.equals("scml")) {
             return TYPE_SPRITER_ANIMATION;
         }
-        if(ext.equals("vert") || ext.equals("frag")) {
+
+        if (ext.equals("vert") || ext.equals("frag")) {
             return TYPE_SHADER;
+        }
+
+        if (ext.equals("h2dlib")) {
+            return TYPE_HYPERLAP2D_LIBRARY;
+        }
+
+        if (ext.equals("lib")) {
+            return TYPE_HYPERLAP2D_INTERNAL_LIBRARY;
         }
 
         return TYPE_UNKNOWN;
@@ -155,7 +166,7 @@ public class ImportUtils  {
         // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
         long fileSizeInKB = fileSizeInBytes / 1024;
 
-        if(fileSizeInKB > 1000) {
+        if (fileSizeInKB > 1000) {
             return TYPE_UNKNOWN;
         }
 
@@ -165,13 +176,13 @@ public class ImportUtils  {
             String contents = FileUtils.readFileToString(file);
 
             // checking for atlas file
-            if(contents.contains("format: ") && contents.contains("filter: ") && contents.contains("xy: ")) {
+            if (contents.contains("format: ") && contents.contains("filter: ") && contents.contains("xy: ")) {
                 type = TYPE_TEXTURE_ATLAS;
                 // need to figure out if atlas is animation or just files.
                 TextureAtlas atlas = new TextureAtlas(new FileHandle(file));
 
                 boolean isSequence = isAtlasAnimationSequence(atlas.getRegions());
-                if(isSequence) {
+                if (isSequence) {
                     type = TYPE_SPRITE_ANIMATION_ATLAS;
                 }
 
@@ -180,31 +191,31 @@ public class ImportUtils  {
             System.out.println("is spine?");
 
             // checking for spine animation
-            if(contents.contains("\"skeleton\":{") || contents.contains("\"skeleton\": {") || contents.contains("{\"bones\":[")) {
+            if (contents.contains("\"skeleton\":{") || contents.contains("\"skeleton\": {") || contents.contains("{\"bones\":[")) {
                 type = TYPE_SPINE_ANIMATION;
                 System.out.println("is spine");
                 return type;
             }
 
             // checking for particle effect
-            if(contents.contains("- Options - ") && contents.contains("- Image Paths -") && contents.contains("- Duration -")) {
+            if (contents.contains("- Options - ") && contents.contains("- Image Paths -") && contents.contains("- Duration -")) {
                 type = TYPE_PARTICLE_EFFECT;
                 return type;
             }
 
-        } catch (IOException e) {
+        } catch (IOException ignore) {
         }
 
         return type;
     }
 
     public static boolean isAnimationSequence(String[] names) {
-        if(names.length < 2) return false;
+        if (names.length < 2) return false;
         int[] sequenceArray = new int[names.length];
-        for(int i  = 0; i < names.length; i++) {
+        for (int i = 0; i < names.length; i++) {
             String name = names[i];
             // try to remove extension if any
-            if(name.indexOf(".") > 0) name = name.substring(0, name.indexOf("."));
+            if (name.indexOf(".") > 0) name = name.substring(0, name.indexOf("."));
             try {
                 int intValue = Integer.parseInt(name.replaceAll("(.+)_", ""));
                 sequenceArray[i] = intValue;
@@ -213,7 +224,7 @@ public class ImportUtils  {
             }
         }
         Arrays.sort(sequenceArray);
-        if(sequenceArray[0] == 0 && sequenceArray[sequenceArray.length-1] == sequenceArray.length-1) {
+        if (sequenceArray[0] == 0 && sequenceArray[sequenceArray.length - 1] == sequenceArray.length - 1) {
             return true;
         }
 
@@ -221,11 +232,11 @@ public class ImportUtils  {
     }
 
     public static boolean isAtlasAnimationSequence(Array<TextureAtlas.AtlasRegion> regions) {
-        if(regions.size < 2) return false;
+        if (regions.size < 2) return false;
 
         //Check old .atlas format
         String[] regionNames = new String[regions.size];
-        for(int i = 0; i < regions.size; i++) {
+        for (int i = 0; i < regions.size; i++) {
             regionNames[i] = regions.get(i).name;
         }
 
@@ -244,6 +255,10 @@ public class ImportUtils  {
     }
 
     public boolean checkAssetExistence(int type, Array<FileHandle> fileHandles) {
+        if (type == ImportUtils.TYPE_HYPERLAP2D_LIBRARY) {
+            return checkLibraryItemExistence(fileHandles);
+        }
+
         boolean exists = false;
         ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
 
@@ -277,12 +292,24 @@ public class ImportUtils  {
 
         for (FileHandle file : fileHandles) {
             File f = new File(projectManager.getCurrentProjectPath() + File.separator + dir + File.separator + file.nameWithoutExtension() + "." + ext);
-            System.out.println(f.getAbsolutePath());
             exists = f.exists();
             if (exists)
                 break;
         }
 
+        return exists;
+    }
+
+    //TODO too weak, all assets inside the package should be checked for possible duplicate
+    private boolean checkLibraryItemExistence(Array<FileHandle> fileHandles) {
+        boolean exists = false;
+        for (FileHandle file : fileHandles) {
+            String itemName = ZipUtils.getZipContent(file.file(), "lib").get(0).replace(".lib", "");
+            ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+            if (projectManager.getCurrentProjectInfoVO().libraryItems.get(itemName) != null) {
+                exists = true;
+            }
+        }
         return exists;
     }
 }

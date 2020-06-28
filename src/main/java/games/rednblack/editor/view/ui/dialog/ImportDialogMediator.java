@@ -29,6 +29,7 @@ import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import com.puremvc.patterns.mediator.SimpleMediator;
 import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.proxy.SceneDataManager;
+import games.rednblack.editor.utils.AssetImporter;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.view.frame.FileDropListener;
 import games.rednblack.editor.view.menu.FileMenu;
@@ -55,10 +56,7 @@ import java.util.List;
 public class ImportDialogMediator extends SimpleMediator<ImportDialog> {
     private static final String TAG = ImportDialogMediator.class.getCanonicalName();
     private static final String NAME = TAG;
-    private AssetsImportProgressHandler progressHandler;
 
-    private int importType;
-    private String[] paths;
 
     public ImportDialogMediator() {
         super(NAME, new ImportDialog());
@@ -68,7 +66,8 @@ public class ImportDialogMediator extends SimpleMediator<ImportDialog> {
     public void onRegister() {
         super.onRegister();
         facade = HyperLap2DFacade.getInstance();
-        progressHandler = new AssetsImportProgressHandler();
+        AssetImporter.getInstance().setProgressHandler(new AssetsImportProgressHandler());
+        AssetImporter.getInstance().setViewComponent(viewComponent);
     }
 
     @Override
@@ -134,52 +133,19 @@ public class ImportDialogMediator extends SimpleMediator<ImportDialog> {
             case FileDropListener.ACTION_DROP:
                 ImportDialog.DropBundle bundle = notification.getBody();
                 if(viewComponent.checkDropRegionHit(bundle.pos)) {
-                    postPathObtainAction(bundle.paths);
+                    AssetImporter.getInstance().postPathObtainAction(bundle.paths);
                 }
                 break;
             case ImportDialog.CANCEL_BTN_CLICKED:
                 viewComponent.setDroppingView();
                 break;
             case ImportDialog.IMPORT_BTN_CLICKED:
-                startImport();
+                //startImport();
                 break;
             case ImportDialog.IMPORT_FAILED:
                 viewComponent.showError(ImportUtils.TYPE_FAILED);
                 break;
         }
-    }
-
-    private void postPathObtainAction(String[] paths) {
-        int type = ImportUtils.getImportType(paths);
-
-        if (type <= 0) {
-            // error
-            viewComponent.showError(type);
-        } else {
-            Array<FileHandle> files = getFilesFromPaths(paths);
-            if (ImportUtils.getInstance().checkAssetExistence(type, files)) {
-                Dialogs.showConfirmDialog(Sandbox.getInstance().getUIStage(),
-                        "Duplicate file", "You have already an asset with this name, would you like to overwrite?",
-                        new String[]{"Overwrite", "Cancel"}, new Integer[]{0, 1}, result -> {
-                            if (result == 0) {
-                                initImport(type, paths);
-                            }
-                        });
-            } else {
-                initImport(type, paths);
-            }
-        }
-    }
-
-    private void initImport(int type, String[] paths) {
-        boolean isMultiple = paths.length > 1 && type != ImportUtils.TYPE_ANIMATION_PNG_SEQUENCE;
-
-        viewComponent.setImportingView(type, isMultiple);
-
-        this.paths = paths;
-        this.importType = type;
-
-        startImport();
     }
 
     private void showFileChoose() {
@@ -197,86 +163,19 @@ public class ImportDialogMediator extends SimpleMediator<ImportDialog> {
         fileChooser.setListener(new FileChooserAdapter() {
             @Override
             public void selected(Array<FileHandle> files) {
-                String paths[] = new String[files.size];
+                String[] paths = new String[files.size];
                 for(int i = 0; i < files.size; i++) {
                     paths[i] = files.get(i).path();
                 }
                 if(paths.length > 0) {
-                    postPathObtainAction(paths);
+                    AssetImporter.getInstance().postPathObtainAction(paths);
                 }
             }
         });
         sandbox.getUIStage().addActor(fileChooser.fadeIn());
     }
 
-    private void startImport() {
-        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-
-        Array<FileHandle> files = getFilesFromPaths(this.paths);
-
-        switch (importType) {
-            case ImportUtils.TYPE_IMAGE:
-                projectManager.importImagesIntoProject(files, progressHandler);
-                break;
-            case ImportUtils.TYPE_TEXTURE_ATLAS:
-                projectManager.importAtlasesIntoProject(files, progressHandler);
-                break;
-            case ImportUtils.TYPE_PARTICLE_EFFECT:
-                projectManager.importParticlesIntoProject(files, progressHandler);
-                break;
-            case ImportUtils.TYPE_SPRITER_ANIMATION:
-                projectManager.importSpineAnimationsIntoProject(files, progressHandler);
-                break;
-            case ImportUtils.TYPE_SPINE_ANIMATION:
-                projectManager.importSpineAnimationsIntoProject(files, progressHandler);
-                break;
-            case ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS:
-                projectManager.importSpriteAnimationsIntoProject(files, progressHandler);
-                break;
-            case ImportUtils.TYPE_ANIMATION_PNG_SEQUENCE:
-                projectManager.importSpriteAnimationsIntoProject(files, progressHandler);
-                break;
-            case ImportUtils.TYPE_SHADER:
-                projectManager.importShaderIntoProject(files, progressHandler);
-                break;
-        }
-
-        // save before importing
-        SceneVO vo = Sandbox.getInstance().sceneVoFromItems();
-        projectManager.saveCurrentProject(vo);
-        projectManager.setLastImportedPath(files.get(0).parent().path());
-    }
-
-    private  Array<FileHandle> getFilesFromPaths(String[] paths) {
-        Array<FileHandle> files = new Array<>();
-        for(int i = 0; i < paths.length;i++) {
-            files.add(new FileHandle(new File(paths[i])));
-        }
-
-        return files;
-    }
-
-    public String[] catchFiles(DropTargetDropEvent dtde) {
-        dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
-
-        Transferable t= dtde.getTransferable();
-        if (t.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-            try {
-                List<File> list = (List<File>)dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                String[] paths = new String[list.size()];
-                for(int i = 0; i < list.size(); i++) {
-                    paths[i] = list.get(i).getAbsolutePath();
-                }
-                return paths;
-            }
-            catch (Exception ufe) {
-            }
-        }
-
-        return null;
-    }
-
-    private class AssetsImportProgressHandler implements ProgressHandler {
+    public class AssetsImportProgressHandler implements ProgressHandler {
 
         @Override
         public void progressStarted() {

@@ -50,6 +50,7 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
         FileHandle workspacePath = (projectManager.getWorkspacePath() == null || !projectManager.getWorkspacePath().exists()) ?
                 Gdx.files.absolute(System.getProperty("user.home")) : projectManager.getWorkspacePath();
         fileChooser.setDirectory(workspacePath);
+        fileChooser.setDefaultFileName(libraryItemName);
 
         fileChooser.setListener(new FileChooserAdapter() {
             @Override
@@ -80,7 +81,7 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
 
         CompositeItemVO compositeItemVO = libraryItems.get(libraryItemName);
 
-        FileUtils.writeStringToFile(new File(tempDir.getPath() + "/main.lib"), json.toJson(compositeItemVO), "utf-8");
+        FileUtils.writeStringToFile(new File(tempDir.getPath() + File.separator + libraryItemName + ".lib"), json.toJson(compositeItemVO), "utf-8");
 
         exportAllAssets(compositeItemVO.composite, tempDir);
 
