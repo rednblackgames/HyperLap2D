@@ -32,7 +32,7 @@ import games.rednblack.editor.view.stage.Sandbox;
 /**
  * Created by azakhary on 4/28/2015.
  */
-public class CopyItemsCommand extends RevertableCommand {
+public class CopyItemsCommand extends RevertibleCommand {
 
     @Override
     public void doAction() {

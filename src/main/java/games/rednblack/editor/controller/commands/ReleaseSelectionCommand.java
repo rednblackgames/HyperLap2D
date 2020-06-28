@@ -30,7 +30,7 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 /**
  * Created by azakhary on 5/14/2015.
  */
-public class ReleaseSelectionCommand extends RevertableCommand {
+public class ReleaseSelectionCommand extends RevertibleCommand {
 
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.ReleaseSelectionCommand";
     public static final String DONE = CLASS_NAME + "DONE";

@@ -28,7 +28,7 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 /**
  * Created by azakhary on 5/14/2015.
  */
-public class AddSelectionCommand extends RevertableCommand {
+public class AddSelectionCommand extends RevertibleCommand {
 
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.AddSelectionCommand";
     public static final String DONE = CLASS_NAME + "DONE";

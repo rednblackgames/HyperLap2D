@@ -23,7 +23,7 @@ import games.rednblack.h2d.common.IItemCommand;
 /**
  * Created by azakhary on 10/23/2015.
  */
-public class PluginItemCommand extends EntityModifyRevertableCommand {
+public class PluginItemCommand extends EntityModifyRevertibleCommand {
 
     private IItemCommand command;
     private Object body;

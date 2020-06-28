@@ -42,7 +42,7 @@ import java.util.Set;
 /**
  * Created by azakhary on 4/28/2015.
  */
-public class PasteItemsCommand extends EntityModifyRevertableCommand {
+public class PasteItemsCommand extends EntityModifyRevertibleCommand {
 
     private Array<Integer> pastedEntityIds = new Array<>();
 

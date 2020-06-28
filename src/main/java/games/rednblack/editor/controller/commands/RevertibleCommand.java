@@ -22,10 +22,7 @@ import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.proxy.CommandManager;
 
-/**
- * Created by azakhary on 5/14/2015.
- */
-public abstract class RevertableCommand extends SandboxCommand {
+public abstract class RevertibleCommand extends SandboxCommand {
 
     protected CommandManager commandManager;
     protected Notification notification;

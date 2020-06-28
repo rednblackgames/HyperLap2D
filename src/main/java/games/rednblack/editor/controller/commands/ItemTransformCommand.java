@@ -13,7 +13,7 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 /**
  * Created by Osman on 01.08.2015.
  */
-public class ItemTransformCommand extends EntityModifyRevertableCommand {
+public class ItemTransformCommand extends EntityModifyRevertibleCommand {
 
     private Array<Object> payload;
 

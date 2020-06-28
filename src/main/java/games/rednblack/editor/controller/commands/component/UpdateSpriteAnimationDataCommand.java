@@ -3,7 +3,7 @@ package games.rednblack.editor.controller.commands.component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.controller.commands.EntityModifyRevertableCommand;
+import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationStateComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
@@ -13,7 +13,7 @@ import games.rednblack.h2d.common.MsgAPI;
 /**
  * Created by CyberJoe on 6/18/2015.
  */
-public class UpdateSpriteAnimationDataCommand extends EntityModifyRevertableCommand {
+public class UpdateSpriteAnimationDataCommand extends EntityModifyRevertibleCommand {
 
     private Integer entityId;
 

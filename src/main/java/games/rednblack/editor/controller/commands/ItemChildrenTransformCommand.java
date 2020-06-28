@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Created by Sasun Poghosyan on 4/29/2016.
  */
-public class ItemChildrenTransformCommand extends EntityModifyRevertableCommand {
+public class ItemChildrenTransformCommand extends EntityModifyRevertibleCommand {
 
     private HashMap<Integer, Vector2> prevPosMap = new HashMap<>();
     private HashMap<Integer, PositionSize> parentPositionAndSizeMap = new HashMap<>();

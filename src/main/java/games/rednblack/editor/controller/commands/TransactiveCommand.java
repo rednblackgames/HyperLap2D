@@ -6,9 +6,9 @@ import com.puremvc.patterns.observer.Notification;
 /**
  * Created by CyberJoe on 7/25/2015.
  */
-public abstract class TransactiveCommand extends RevertableCommand {
+public abstract class TransactiveCommand extends RevertibleCommand {
 
-    protected Array<RevertableCommand> commands = new Array();
+    protected Array<RevertibleCommand> commands = new Array();
 
     @Override
     public void execute(Notification notification) {
@@ -47,7 +47,7 @@ public abstract class TransactiveCommand extends RevertableCommand {
     public abstract void onFinish();
     public abstract void onFinishUndo();
 
-    protected void addInnerCommand(RevertableCommand command) {
+    protected void addInnerCommand(RevertibleCommand command) {
         commands.add(command);
     }
 }

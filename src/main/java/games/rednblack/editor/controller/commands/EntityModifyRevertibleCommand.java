@@ -35,7 +35,7 @@ import java.util.HashMap;
 /**
  * Created by azakhary on 6/15/2015.
  */
-public abstract class EntityModifyRevertableCommand extends RevertableCommand {
+public abstract class EntityModifyRevertibleCommand extends RevertibleCommand {
 
     @Override
     public void callDoAction() {

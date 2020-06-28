@@ -28,7 +28,7 @@ import games.rednblack.editor.view.stage.Sandbox;
 /**
  * Created by azakhary on 9/7/2015.
  */
-public class RenameLayerCommand extends EntityModifyRevertableCommand {
+public class RenameLayerCommand extends EntityModifyRevertibleCommand {
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.RenameLayerCommand";
     public static final String DONE = CLASS_NAME + "DONE";
 

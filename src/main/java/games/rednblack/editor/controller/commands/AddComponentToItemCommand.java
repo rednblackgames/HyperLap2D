@@ -8,7 +8,7 @@ import games.rednblack.editor.HyperLap2DFacade;
 /**
  * Created by CyberJoe on 7/2/2015.
  */
-public class AddComponentToItemCommand extends EntityModifyRevertableCommand {
+public class AddComponentToItemCommand extends EntityModifyRevertibleCommand {
 
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.AddComponentToItemCommand";
     public static final String DONE = CLASS_NAME + "DONE";

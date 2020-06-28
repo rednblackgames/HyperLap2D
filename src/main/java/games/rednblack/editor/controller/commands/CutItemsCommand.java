@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * Created by azakhary on 4/28/2015.
  */
-public class CutItemsCommand extends EntityModifyRevertableCommand {
+public class CutItemsCommand extends EntityModifyRevertibleCommand {
 
     private String backup;
 

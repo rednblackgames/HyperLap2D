@@ -3,13 +3,12 @@ package games.rednblack.editor.controller.commands;
 import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
-import games.rednblack.editor.renderer.utils.CustomVariables;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 
 /**
  * Created by CyberJoe on 11/6/2015.
  */
-public class CustomVariableModifyCommand extends EntityModifyRevertableCommand {
+public class CustomVariableModifyCommand extends EntityModifyRevertibleCommand {
 
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.CustomVariableModifyCommand";
     public static final String DONE = CLASS_NAME + "DONE";

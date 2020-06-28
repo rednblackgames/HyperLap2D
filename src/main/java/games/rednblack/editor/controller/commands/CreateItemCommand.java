@@ -34,7 +34,7 @@ import java.util.HashSet;
 /**
  * Created by azakhary on 6/9/2015.
  */
-public class CreateItemCommand extends EntityModifyRevertableCommand {
+public class CreateItemCommand extends EntityModifyRevertibleCommand {
 
     private Integer entityId;
     private Array<Integer> previousSelectionIds;

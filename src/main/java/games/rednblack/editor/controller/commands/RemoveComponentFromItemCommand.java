@@ -9,7 +9,7 @@ import games.rednblack.editor.HyperLap2DFacade;
 /**
  * Created by CyberJoe on 7/2/2015.
  */
-public class RemoveComponentFromItemCommand extends EntityModifyRevertableCommand {
+public class RemoveComponentFromItemCommand extends EntityModifyRevertibleCommand {
 
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand";
     public static final String DONE = CLASS_NAME + "DONE";

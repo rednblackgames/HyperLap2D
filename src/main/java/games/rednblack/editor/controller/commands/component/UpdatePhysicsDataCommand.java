@@ -2,14 +2,14 @@ package games.rednblack.editor.controller.commands.component;
 
 import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.controller.commands.EntityModifyRevertableCommand;
+import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.data.PhysicsBodyDataVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.h2d.common.MsgAPI;
 
-public class UpdatePhysicsDataCommand extends EntityModifyRevertableCommand {
+public class UpdatePhysicsDataCommand extends EntityModifyRevertibleCommand {
 
     private Integer entityId;
     private PhysicsBodyDataVO backup;

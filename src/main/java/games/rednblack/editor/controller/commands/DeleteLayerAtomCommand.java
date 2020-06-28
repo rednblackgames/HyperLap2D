@@ -11,7 +11,7 @@ import games.rednblack.editor.view.stage.Sandbox;
  * This command marked as "atom" meaning it cannot be called outside the transaction
  * TODO: make this an annotation
  */
-public class DeleteLayerAtomCommand extends EntityModifyRevertableCommand {
+public class DeleteLayerAtomCommand extends EntityModifyRevertibleCommand {
 
     private String layerName;
 

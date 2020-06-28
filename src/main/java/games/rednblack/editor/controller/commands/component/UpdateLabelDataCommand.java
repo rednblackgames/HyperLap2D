@@ -21,7 +21,7 @@ package games.rednblack.editor.controller.commands.component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.editor.controller.commands.EntityModifyRevertableCommand;
+import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.label.LabelComponent;
 import games.rednblack.editor.renderer.factory.component.LabelComponentFactory;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
@@ -33,7 +33,7 @@ import games.rednblack.editor.view.stage.Sandbox;
  * Created by azakhary on 6/11/2015.
  *
  */
-public class UpdateLabelDataCommand extends EntityModifyRevertableCommand {
+public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
 
     Integer entityId;
 

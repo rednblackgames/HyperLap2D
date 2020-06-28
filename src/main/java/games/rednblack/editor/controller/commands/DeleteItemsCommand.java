@@ -33,7 +33,7 @@ import java.util.Set;
 /**
  * Created by azakhary on 4/28/2015.
  */
-public class DeleteItemsCommand extends EntityModifyRevertableCommand {
+public class DeleteItemsCommand extends EntityModifyRevertibleCommand {
 
     private String backup;
     private Array<Integer> entityIdsToDelete;

@@ -24,7 +24,7 @@ import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.controller.commands.EntityModifyRevertableCommand;
+import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
@@ -34,7 +34,7 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 /**
  * Created by azakhary on 7/3/2015.
  */
-public class UpdatePolygonComponentCommand extends EntityModifyRevertableCommand {
+public class UpdatePolygonComponentCommand extends EntityModifyRevertibleCommand {
 
     private Integer entityId;
     private Vector2[][] dataFrom;

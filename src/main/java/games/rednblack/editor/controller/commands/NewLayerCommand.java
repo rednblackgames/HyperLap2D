@@ -9,7 +9,7 @@ import games.rednblack.editor.view.stage.Sandbox;
 /**
  * Created by CyberJoe on 7/25/2015.
  */
-public class NewLayerCommand extends EntityModifyRevertableCommand {
+public class NewLayerCommand extends EntityModifyRevertibleCommand {
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.NewLayerCommand";
     public static final String DONE = CLASS_NAME + "DONE";
 

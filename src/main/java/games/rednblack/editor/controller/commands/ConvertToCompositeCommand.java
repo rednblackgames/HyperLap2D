@@ -37,7 +37,7 @@ import java.util.HashSet;
 /**
  * Created by azakhary on 4/28/2015.
  */
-public class ConvertToCompositeCommand extends EntityModifyRevertableCommand {
+public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
 
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.ConvertToCompositeCommand";
     public static final String DONE = CLASS_NAME + "DONE";

@@ -3,13 +3,12 @@ package games.rednblack.editor.controller.commands;
 import com.kotcrab.vis.ui.util.InputValidator;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
-import games.rednblack.editor.utils.Guide;
 import games.rednblack.editor.view.ui.RulersUI;
 
 /**
  * Created by billzo on 12/22/2015.
  */
-public class ChangeRulerPositionCommand extends RevertableCommand {
+public class ChangeRulerPositionCommand extends RevertibleCommand {
 
 	private float previousPosition;
 	private String direction;

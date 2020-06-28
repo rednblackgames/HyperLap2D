@@ -27,7 +27,7 @@ import games.rednblack.editor.view.stage.Sandbox;
 /**
  * Created by azakhary on 8/18/2015.
  */
-public class LayerSwapCommand extends EntityModifyRevertableCommand {
+public class LayerSwapCommand extends EntityModifyRevertibleCommand {
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.LayerSwapCommand";
     public static final String DONE = CLASS_NAME + "DONE";
 

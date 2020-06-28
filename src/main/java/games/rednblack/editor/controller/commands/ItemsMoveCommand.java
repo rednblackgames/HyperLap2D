@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * Created by azakhary on 6/4/2015.
  */
-public class ItemsMoveCommand extends EntityModifyRevertableCommand {
+public class ItemsMoveCommand extends EntityModifyRevertibleCommand {
 
     private HashMap<Integer, Vector2> prevLocations = new HashMap<>();
 

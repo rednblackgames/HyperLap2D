@@ -22,13 +22,10 @@ import java.util.ArrayList;
 
 import com.puremvc.patterns.proxy.BaseProxy;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.controller.commands.EntityModifyRevertableCommand;
-import games.rednblack.editor.controller.commands.RevertableCommand;
+import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
+import games.rednblack.editor.controller.commands.RevertibleCommand;
 import games.rednblack.editor.controller.commands.TransactiveCommand;
 
-/**
- * Created by azakhary on 5/14/2015.
- */
 public class CommandManager extends BaseProxy {
     private static final String TAG = CommandManager.class.getCanonicalName();
     public static final String NAME = TAG;
@@ -36,7 +33,7 @@ public class CommandManager extends BaseProxy {
     private int cursor = -1;
     private int modifiedCursor = 0;
 
-    private ArrayList<RevertableCommand> commands = new ArrayList<>();
+    final private ArrayList<RevertibleCommand> commands = new ArrayList<>();
 
     public CommandManager() {
         super(NAME);
@@ -48,15 +45,15 @@ public class CommandManager extends BaseProxy {
         facade = HyperLap2DFacade.getInstance();
     }
 
-    public void addCommand(RevertableCommand revertableCommand) {
+    public void addCommand(RevertibleCommand revertibleCommand) {
         //remove all commands after the cursor
         for(int i = commands.size()-1; i > cursor; i--) {
             commands.remove(i);
         }
-        commands.add(revertableCommand);
-        cursor = commands.indexOf(revertableCommand);
-        if (revertableCommand instanceof EntityModifyRevertableCommand
-                || revertableCommand instanceof TransactiveCommand) {
+        commands.add(revertibleCommand);
+        cursor = commands.indexOf(revertibleCommand);
+        if (revertibleCommand instanceof EntityModifyRevertibleCommand
+                || revertibleCommand instanceof TransactiveCommand) {
             modifiedCursor++;
         }
 
@@ -68,14 +65,14 @@ public class CommandManager extends BaseProxy {
             updateWindowTitle();
             return;
         }
-        RevertableCommand command = commands.get(cursor);
+        RevertibleCommand command = commands.get(cursor);
         if(command.isStateDone()) {
             command.callUndoAction();
             command.setStateDone(false);
         }
         cursor--;
 
-        if (command instanceof EntityModifyRevertableCommand
+        if (command instanceof EntityModifyRevertibleCommand
                 || command instanceof TransactiveCommand) {
             modifiedCursor--;
         }
@@ -98,16 +95,25 @@ public class CommandManager extends BaseProxy {
 
     public void redoCommand() {
         if(cursor + 1 >= commands.size()) return;
-        RevertableCommand command = commands.get(cursor+1);
+        RevertibleCommand command = commands.get(cursor+1);
         if(!command.isStateDone()) {
             cursor++;
             command.callDoAction();
             command.setStateDone(true);
+
+            if (command instanceof EntityModifyRevertibleCommand
+                    || command instanceof TransactiveCommand) {
+                modifiedCursor++;
+            }
+            updateWindowTitle();
         }
     }
 
     public void clearHistory() {
         cursor = -1;
         commands.clear();
+
+        modifiedCursor = 1;
+        updateWindowTitle();
     }
 }

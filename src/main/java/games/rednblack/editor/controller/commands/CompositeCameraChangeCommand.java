@@ -28,7 +28,7 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 /**
  * Created by azakhary on 4/28/2015.
  */
-public class CompositeCameraChangeCommand extends RevertableCommand {
+public class CompositeCameraChangeCommand extends RevertibleCommand {
 
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.CompositeCameraChangeCommand";
     public static final String DONE = CLASS_NAME + "DONE";

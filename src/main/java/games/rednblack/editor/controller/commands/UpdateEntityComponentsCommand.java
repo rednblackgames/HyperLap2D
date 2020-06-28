@@ -30,7 +30,7 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 /**
  * Created by azakhary on 6/3/2015.
  */
-public class UpdateEntityComponentsCommand extends EntityModifyRevertableCommand {
+public class UpdateEntityComponentsCommand extends EntityModifyRevertibleCommand {
 
     private Array<Component> backupComponents = new Array<>();
     private Integer entityId;
