@@ -59,7 +59,6 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 public class ProjectManager extends BaseProxy {
     private static final String TAG = ProjectManager.class.getCanonicalName();
     public static final String NAME = TAG;
@@ -1219,6 +1218,7 @@ public class ProjectManager extends BaseProxy {
         if (files == null) {
             return;
         }
+
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             for (FileHandle handle : files) {
@@ -1233,6 +1233,7 @@ public class ProjectManager extends BaseProxy {
                 String fileNameAndExtension = handle.name();
                 String fileName = FilenameUtils.removeExtension(fileNameAndExtension);
                 this.currentProjectInfoVO.libraryItems.put(fileName, voInfo);
+                saveCurrentProject();
             }
         });
         executor.execute(() -> {

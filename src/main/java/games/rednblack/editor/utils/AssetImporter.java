@@ -61,6 +61,9 @@ public class AssetImporter {
     }
 
     private void initImport(int type, String[] paths, boolean skipRepack) {
+        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+        projectManager.setLastImportedPath(new FileHandle(paths[0]).parent().path());
+
         boolean isMultiple = paths.length > 1 && type != ImportUtils.TYPE_ANIMATION_PNG_SEQUENCE;
 
         viewComponent.setImportingView(type, isMultiple);
@@ -69,9 +72,13 @@ public class AssetImporter {
     }
 
     public void startImport(int importType, boolean skipRepack, ProgressHandler progressHandler, String... paths) {
+        Array<FileHandle> files = getFilesFromPaths(paths);
         ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
 
-        Array<FileHandle> files = getFilesFromPaths(paths);
+        // save before importing
+        SceneVO vo = Sandbox.getInstance().sceneVoFromItems();
+        projectManager.saveCurrentProject(vo);
+
         switch (importType) {
             case ImportUtils.TYPE_IMAGE:
                 projectManager.importImagesIntoProject(files, progressHandler, skipRepack);
@@ -104,11 +111,6 @@ public class AssetImporter {
                 projectManager.importHyperLapLibraryIntoProject(files, progressHandler);
                 break;
         }
-
-        // save before importing
-        SceneVO vo = Sandbox.getInstance().sceneVoFromItems();
-        projectManager.saveCurrentProject(vo);
-        projectManager.setLastImportedPath(files.get(0).parent().path());
     }
 
     private  Array<FileHandle> getFilesFromPaths(String[] paths) {
