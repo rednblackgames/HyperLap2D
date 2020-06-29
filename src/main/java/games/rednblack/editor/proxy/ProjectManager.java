@@ -82,8 +82,6 @@ public class ProjectManager extends BaseProxy {
     private String defaultWorkspacePath;
 
     private String DEFAULT_FOLDER = "HyperLap2D";
-    private float currentPercent = 0.0f;
-    private ProgressHandler handler;
     private EditorConfigVO editorConfigVO;
 
     private String currentWindowTitle = "";
@@ -122,11 +120,6 @@ public class ProjectManager extends BaseProxy {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void changePercentBy(float value) {
-        currentPercent += value;
-        handler.progressChanged(currentPercent);
     }
 
     public void createEmptyProject(String projectPath, int width, int height, int pixelPerWorldUnit) throws IOException {
@@ -332,8 +325,6 @@ public class ProjectManager extends BaseProxy {
         if (fileHandles == null) {
             return;
         }
-        handler = progressHandler;
-        currentPercent = 0;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             for (FileHandle handle : fileHandles) {
@@ -348,13 +339,13 @@ public class ProjectManager extends BaseProxy {
 
         });
         executor.execute(() -> {
-            changePercentBy(100 - currentPercent);
+            progressHandler.progressChanged(100);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            handler.progressComplete();
+            progressHandler.progressComplete();
         });
         executor.shutdown();
 
@@ -425,10 +416,8 @@ public class ProjectManager extends BaseProxy {
         if (fileHandles == null) {
             return;
         }
-        handler = progressHandler;
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
-
         executor.execute(() -> {
 
             String newAnimName = null;
@@ -470,7 +459,7 @@ public class ProjectManager extends BaseProxy {
                         FileUtils.copyFile(src, dest);
                     } catch (IOException e) {
                         e.printStackTrace();
-                        handler.progressFailed();
+                        progressHandler.progressFailed();
                         return;
                     }
                 }
@@ -486,7 +475,7 @@ public class ProjectManager extends BaseProxy {
                         FileUtils.deleteDirectory(targetDir);
                     } catch (IOException e) {
                         e.printStackTrace();
-                        handler.progressFailed();
+                        progressHandler.progressFailed();
                         return;
                     }
                 }
@@ -494,7 +483,7 @@ public class ProjectManager extends BaseProxy {
                 try {
                     texturePacker.pack(targetDir, fileNameWithoutFrame);
                 } catch (Exception e) {
-                    handler.progressFailed();
+                    progressHandler.progressFailed();
                     return;
                 }
 
@@ -503,7 +492,7 @@ public class ProjectManager extends BaseProxy {
                     FileUtils.deleteDirectory(pngsDir.file());
                 } catch (IOException e) {
                     e.printStackTrace();
-                    handler.progressFailed();
+                    progressHandler.progressFailed();
                     return;
                 }
 
@@ -528,7 +517,7 @@ public class ProjectManager extends BaseProxy {
                         newAnimName = fileNameWithoutExt;
                     } catch (IOException e) {
                         e.printStackTrace();
-                        handler.progressFailed();
+                        progressHandler.progressFailed();
                         return;
                     }
                 }
@@ -540,14 +529,13 @@ public class ProjectManager extends BaseProxy {
             }
         });
         executor.execute(() -> {
-            changePercentBy(100 - currentPercent);
+            progressHandler.progressChanged(100);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
-            handler.progressComplete();
+            progressHandler.progressComplete();
         });
         executor.shutdown();
     }
@@ -648,8 +636,6 @@ public class ProjectManager extends BaseProxy {
             return;
         }
         final String targetPath = currentProjectPath + "/assets/orig/particles";
-        handler = progressHandler;
-        currentPercent = 0;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             Array<FileHandle> images = new Array<>();
@@ -675,7 +661,7 @@ public class ProjectManager extends BaseProxy {
                 }
             }
             if (images.size > 0) {
-                copyImageFilesForAllResolutionsIntoProject(images, false);
+                copyImageFilesForAllResolutionsIntoProject(images, false, progressHandler);
             }
             if (!skipRepack) {
                 ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
@@ -683,20 +669,18 @@ public class ProjectManager extends BaseProxy {
             }
         });
         executor.execute(() -> {
-            changePercentBy(100 - currentPercent);
+            progressHandler.progressChanged(100);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            handler.progressComplete();
+            progressHandler.progressComplete();
         });
         executor.shutdown();
     }
 
     public void importAtlasesIntoProject(final Array<FileHandle> files, ProgressHandler progressHandler) {
-        handler = progressHandler;
-        currentPercent = 0;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             for (FileHandle fileHandle : files) {
@@ -704,14 +688,13 @@ public class ProjectManager extends BaseProxy {
             }
         });
         executor.execute(() -> {
-            changePercentBy(100 - currentPercent);
+            progressHandler.progressChanged(100);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
-            handler.progressComplete();
+            progressHandler.progressComplete();
         });
         executor.shutdown();
     }
@@ -721,35 +704,32 @@ public class ProjectManager extends BaseProxy {
         if (files == null) {
             return;
         }
-        handler = progressHandler;
-        currentPercent = 0;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
-            copyImageFilesForAllResolutionsIntoProject(files, true);
+            copyImageFilesForAllResolutionsIntoProject(files, true, progressHandler);
             if (!skipRepack) {
                 ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
                 resolutionManager.rePackProjectImagesForAllResolutions();
             }
         });
         executor.execute(() -> {
-            changePercentBy(100 - currentPercent);
+            progressHandler.progressChanged(100);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
-            handler.progressComplete();
+            progressHandler.progressComplete();
         });
         executor.shutdown();
     }
 
-    private void copyImageFilesForAllResolutionsIntoProject(Array<FileHandle> files, Boolean performResize) {
-        copyImageFilesIntoProject(files, currentProjectInfoVO.originalResolution, performResize);
+    private void copyImageFilesForAllResolutionsIntoProject(Array<FileHandle> files, Boolean performResize, ProgressHandler handler) {
+        copyImageFilesIntoProject(files, currentProjectInfoVO.originalResolution, performResize, handler);
         int totalWarnings = 0;
         for (int i = 0; i < currentProjectInfoVO.resolutions.size; i++) {
             ResolutionEntryVO resolutionEntryVO = currentProjectInfoVO.resolutions.get(i);
-            totalWarnings += copyImageFilesIntoProject(files, resolutionEntryVO, performResize);
+            totalWarnings += copyImageFilesIntoProject(files, resolutionEntryVO, performResize, handler);
         }
         if (totalWarnings > 0) {
             Dialogs.showOKDialog(Sandbox.getInstance().getUIStage(), "Warning", totalWarnings + " images were not resized for smaller resolutions due to already small size ( < 3px )");
@@ -762,7 +742,7 @@ public class ProjectManager extends BaseProxy {
      * @param performResize
      * @return number of images that did needed to be resized but failed
      */
-    private int copyImageFilesIntoProject(Array<FileHandle> files, ResolutionEntryVO resolution, Boolean performResize) {
+    private int copyImageFilesIntoProject(Array<FileHandle> files, ResolutionEntryVO resolution, Boolean performResize, ProgressHandler handler) {
         float ratio = ResolutionManager.getResolutionRatio(resolution, currentProjectInfoVO.originalResolution);
         String targetPath = currentProjectPath + "/assets/" + resolution.name + "/images";
         float perCopyPercent = 95.0f / files.size;
@@ -801,7 +781,7 @@ public class ProjectManager extends BaseProxy {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            changePercentBy(perCopyPercent);
+            handler.progressChanged(perCopyPercent);
         }
 
         return resizeWarningsCount;
@@ -812,7 +792,6 @@ public class ProjectManager extends BaseProxy {
             return;
         }
         String targetPath = currentProjectPath + "/assets/orig/freetypefonts";
-        handler = progressHandler;
         float perCopyPercent = 95.0f / fileHandles.size;
         for (FileHandle fileHandle : fileHandles) {
             if (!HyperLap2DUtils.TTF_FILTER.accept(null, fileHandle.name())) {
@@ -830,16 +809,16 @@ public class ProjectManager extends BaseProxy {
                 e.printStackTrace();
             }
             System.out.println(perCopyPercent);
-            changePercentBy(perCopyPercent);
+            progressHandler.progressChanged(perCopyPercent);
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(() -> {
-                changePercentBy(100 - currentPercent);
+                progressHandler.progressChanged(100);
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                handler.progressComplete();
+                progressHandler.progressComplete();
             });
             executor.shutdown();
         }
@@ -852,8 +831,6 @@ public class ProjectManager extends BaseProxy {
         final String targetPath = currentProjectPath + "/assets/orig/styles";
         FileHandle fileHandle = Gdx.files.absolute(handle.path());
         final MySkin skin = new MySkin(fileHandle);
-        handler = progressHandler;
-        currentPercent = 0;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             for (int i = 0; i < skin.fontFiles.size(); i++) {
@@ -880,13 +857,13 @@ public class ProjectManager extends BaseProxy {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                changePercentBy(100 - currentPercent);
+                progressHandler.progressChanged(100);
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                handler.progressComplete();
+                progressHandler.progressComplete();
             }
         });
         executor.shutdown();
@@ -1213,8 +1190,6 @@ public class ProjectManager extends BaseProxy {
         if (files == null) {
             return;
         }
-        handler = progressHandler;
-        currentPercent = 0;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             for (FileHandle handle : files) {
@@ -1231,13 +1206,13 @@ public class ProjectManager extends BaseProxy {
 
         });
         executor.execute(() -> {
-            changePercentBy(100 - currentPercent);
+            progressHandler.progressChanged(100);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            handler.progressComplete();
+            progressHandler.progressComplete();
         });
         executor.shutdown();
     }
@@ -1246,8 +1221,6 @@ public class ProjectManager extends BaseProxy {
         if (files == null) {
             return;
         }
-        handler = progressHandler;
-        currentPercent = 0;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             for (FileHandle handle : files) {
@@ -1265,13 +1238,13 @@ public class ProjectManager extends BaseProxy {
             }
         });
         executor.execute(() -> {
-            changePercentBy(100 - currentPercent);
+            progressHandler.progressChanged(100);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            handler.progressComplete();
+            progressHandler.progressComplete();
         });
         executor.shutdown();
     }
@@ -1279,7 +1252,6 @@ public class ProjectManager extends BaseProxy {
     private ProgressHandler recursiveProgressHandler = null;
     private int recursiveProgressIndex = 0;
     public void importHyperLapLibraryIntoProject(final Array<FileHandle> files, ProgressHandler progressHandler) {
-        currentPercent = 0;
         recursiveProgressIndex = 0;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
