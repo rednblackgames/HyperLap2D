@@ -23,6 +23,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
+import games.rednblack.editor.renderer.components.BoundingBoxComponent;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.particle.ParticleComponent;
 import games.rednblack.editor.renderer.data.MainItemVO;
@@ -44,6 +45,7 @@ public class ParticleEffectComponentFactory extends ComponentFactory {
     @Override
     public void createComponents(Entity root, Entity entity, MainItemVO vo) {
         createCommonComponents(entity, vo, EntityFactory.PARTICLE_TYPE);
+        entity.remove(BoundingBoxComponent.class);
         createParentNodeComponent(root, entity);
         createNodeComponent(root, entity);
         createParticleComponent(entity, (ParticleEffectVO) vo);
