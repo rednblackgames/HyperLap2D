@@ -2,20 +2,16 @@ package games.rednblack.editor.utils;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
-import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.ImportDialog;
 import games.rednblack.editor.view.ui.dialog.ImportDialogMediator;
-import games.rednblack.h2d.common.vo.ExportMapperVO;
-import org.apache.commons.io.FileUtils;
+import games.rednblack.editor.view.ui.widget.ProgressHandler;
 
 import java.io.File;
-import java.io.IOException;
 
 public class AssetImporter {
 
@@ -69,14 +65,13 @@ public class AssetImporter {
 
         viewComponent.setImportingView(type, isMultiple);
 
-        startImport(type, skipRepack, paths);
+        startImport(type, skipRepack, progressHandler, paths);
     }
 
-    private void startImport(int importType, boolean skipRepack, String... paths) {
+    public void startImport(int importType, boolean skipRepack, ProgressHandler progressHandler, String... paths) {
         ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
 
         Array<FileHandle> files = getFilesFromPaths(paths);
-
         switch (importType) {
             case ImportUtils.TYPE_IMAGE:
                 projectManager.importImagesIntoProject(files, progressHandler, skipRepack);
@@ -106,25 +101,7 @@ public class AssetImporter {
                 projectManager.importItemLibraryIntoProject(files, progressHandler);
                 break;
             case ImportUtils.TYPE_HYPERLAP2D_LIBRARY:
-                File tmpDir = new File(projectManager.getCurrentProjectPath() + "/assets/tmp/");
-                try {
-                    for (FileHandle fileHandle : files) {
-                        FileUtils.deleteDirectory(tmpDir);
-                        FileUtils.forceMkdir(tmpDir);
-                        FileHandle mapper = ZipUtils.saveZipContent(fileHandle.file(), tmpDir);
-                        Json json = new Json();
-                        json.setIgnoreUnknownFields(true);
-                        ExportMapperVO exportMapperVO = json.fromJson(ExportMapperVO.class, mapper);
-                        for (ExportMapperVO.ExportedAsset asset : exportMapperVO.mapper) {
-                            startImport(asset.type, true, tmpDir.getPath() + File.separator + asset.fileName);
-                        }
-                    }
-                    //FileUtils.deleteDirectory(tmpDir);
-                    ResolutionManager resolutionManager = HyperLap2DFacade.getInstance().retrieveProxy(ResolutionManager.NAME);
-                    resolutionManager.rePackProjectImagesForAllResolutions();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                projectManager.importHyperLapLibraryIntoProject(files, progressHandler);
                 break;
         }
 

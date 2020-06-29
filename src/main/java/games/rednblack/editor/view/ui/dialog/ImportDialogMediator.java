@@ -133,6 +133,7 @@ public class ImportDialogMediator extends SimpleMediator<ImportDialog> {
             case FileDropListener.ACTION_DROP:
                 ImportDialog.DropBundle bundle = notification.getBody();
                 if(viewComponent.checkDropRegionHit(bundle.pos)) {
+                    AssetImporter.getInstance().setProgressHandler(new AssetsImportProgressHandler());
                     AssetImporter.getInstance().postPathObtainAction(bundle.paths);
                 }
                 break;
@@ -168,6 +169,7 @@ public class ImportDialogMediator extends SimpleMediator<ImportDialog> {
                     paths[i] = files.get(i).path();
                 }
                 if(paths.length > 0) {
+                    AssetImporter.getInstance().setProgressHandler(new AssetsImportProgressHandler());
                     AssetImporter.getInstance().postPathObtainAction(paths);
                 }
             }
@@ -179,12 +181,12 @@ public class ImportDialogMediator extends SimpleMediator<ImportDialog> {
 
         @Override
         public void progressStarted() {
-
+            viewComponent.getProgressBar().setValue(0);
         }
 
         @Override
         public void progressChanged(float value) {
-
+            viewComponent.getProgressBar().setValue(value);
         }
 
         @Override

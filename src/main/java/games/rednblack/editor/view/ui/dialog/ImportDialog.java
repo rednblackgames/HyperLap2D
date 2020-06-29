@@ -102,6 +102,8 @@ public class ImportDialog extends UIDraggablePanel {
         typeNames.put(ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS, "Animation Atlas Pack");
         typeNames.put(ImportUtils.TYPE_SPRITER_ANIMATION, "Spriter Animation");
         typeNames.put(ImportUtils.TYPE_TTF_FONT, "TTF Font");
+        typeNames.put(ImportUtils.TYPE_HYPERLAP2D_LIBRARY, "HyperLap2D Library");
+        typeNames.put(ImportUtils.TYPE_SHADER, "Shader");
     }
 
     @Override
@@ -244,5 +246,9 @@ public class ImportDialog extends UIDraggablePanel {
 
         errorLabel.addAction(Actions.fadeIn(0.3f));
         dragExit();
+    }
+
+    public VisProgressBar getProgressBar() {
+        return progressBar;
     }
 }

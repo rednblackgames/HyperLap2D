@@ -24,7 +24,6 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import com.google.common.collect.Lists;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.puremvc.patterns.proxy.BaseProxy;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -32,11 +31,14 @@ import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.data.migrations.ProjectVersionMigrator;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.utils.MySkin;
+import games.rednblack.editor.utils.AssetImporter;
 import games.rednblack.editor.utils.HyperLap2DUtils;
+import games.rednblack.editor.utils.ZipUtils;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.widget.ProgressHandler;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
+import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import games.rednblack.h2d.common.vo.SceneConfigVO;
 import org.apache.commons.io.FileUtils;
@@ -53,10 +55,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -1275,6 +1274,70 @@ public class ProjectManager extends BaseProxy {
             handler.progressComplete();
         });
         executor.shutdown();
+    }
+
+    private ProgressHandler recursiveProgressHandler = null;
+    private int recursiveProgressIndex = 0;
+    public void importHyperLapLibraryIntoProject(final Array<FileHandle> files, ProgressHandler progressHandler) {
+        currentPercent = 0;
+        recursiveProgressIndex = 0;
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            File tmpDir = new File(getCurrentProjectPath() + "/assets/tmp/");
+            try {
+                for (FileHandle fileHandle : files) {
+                    FileUtils.deleteDirectory(tmpDir);
+                    FileUtils.forceMkdir(tmpDir);
+                    FileHandle mapper = ZipUtils.saveZipContent(fileHandle.file(), tmpDir);
+                    Json json = new Json();
+                    json.setIgnoreUnknownFields(true);
+                    ExportMapperVO exportMapperVO = json.fromJson(ExportMapperVO.class, mapper);
+
+                    recursiveProgressHandler = new ProgressHandler() {
+                        @Override
+                        public void progressStarted() { }
+                        @Override
+                        public void progressChanged(float value) { }
+                        @Override
+                        public void progressComplete() {
+                            recursiveProgressIndex++;
+                            if (recursiveProgressIndex < exportMapperVO.mapper.size) {
+                                progressHandler.progressChanged(80f * recursiveProgressIndex / (exportMapperVO.mapper.size - 1));
+                                ExportMapperVO.ExportedAsset asset = exportMapperVO.mapper.get(recursiveProgressIndex);
+                                AssetImporter.getInstance().startImport(asset.type, true, recursiveProgressHandler, tmpDir.getPath() + File.separator + asset.fileName);
+                            } else {
+                                try {
+                                    FileUtils.deleteDirectory(tmpDir);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                ResolutionManager resolutionManager = HyperLap2DFacade.getInstance().retrieveProxy(ResolutionManager.NAME);
+                                resolutionManager.rePackProjectImagesForAllResolutions();
+
+                                progressHandler.progressChanged(100);
+                                try {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+
+                                progressHandler.progressComplete();
+                                executor.shutdown();
+                            }
+                        }
+                        @Override
+                        public void progressFailed() { }
+                    };
+                    if (recursiveProgressIndex < exportMapperVO.mapper.size) {
+                        ExportMapperVO.ExportedAsset asset = exportMapperVO.mapper.get(recursiveProgressIndex);
+                        AssetImporter.getInstance().startImport(asset.type, true, recursiveProgressHandler, tmpDir.getPath() + File.separator + asset.fileName);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public String getCurrentProjectPath() {
