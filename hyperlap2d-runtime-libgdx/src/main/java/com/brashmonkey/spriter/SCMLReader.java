@@ -43,14 +43,7 @@ public class SCMLReader {
 	 */
 	protected Data load(String xml){
 		XmlReader reader = new XmlReader();
-		Element root = reader.parse(xml);
-		ArrayList<Element> folders = root.getChildrenByName("folder");
-		ArrayList<Element> entities = root.getChildrenByName("entity");
-		data = new Data(root.get("scml_version"), root.get("generator"),root.get("generator_version"),
-				folders.size(),	entities.size());
-		loadFolders(folders);
-		loadEntities(entities);
-		return data;
+		return load(reader.parse(xml));
 	}
 	
 	/**
@@ -59,21 +52,31 @@ public class SCMLReader {
 	 * @return the built data
 	 */
 	protected Data load(InputStream stream){
-		XmlReader reader = new XmlReader();
 		try {
-			Element root = reader.parse(stream);
-			ArrayList<Element> folders = root.getChildrenByName("folder");
-			ArrayList<Element> entities = root.getChildrenByName("entity");
-			data = new Data(root.get("scml_version"), root.get("generator"),root.get("generator_version"),
-					folders.size(),	entities.size());
-			loadFolders(folders);
-			loadEntities(entities);
+			XmlReader reader = new XmlReader();
+			return load(reader.parse(stream));
 		} catch (IOException e) {
 			e.printStackTrace();
+			return null;
 		}
+	}
+
+	/**
+	 * Reads the data from the given root element, i.e. the spriter_data node.
+	 * @param root
+	 * @return
+	 */
+	protected Data load(Element root) {
+		ArrayList<Element> folders = root.getChildrenByName("folder");
+		ArrayList<Element> entities = root.getChildrenByName("entity");
+		data = new Data(root.get("scml_version"), root.get("generator"), root.get("generator_version"),
+						Data.PixelMode.get(root.getInt("pixel_mode", 0)),
+						folders.size(),	entities.size());
+		loadFolders(folders);
+		loadEntities(entities);
 		return data;
 	}
-	
+
 	/**
 	 * Iterates through the given folders and adds them to the current {@link Data} object.
 	 * @param folders a list of folders to load
@@ -131,16 +134,17 @@ public class SCMLReader {
 	protected void loadObjectInfos(ArrayList<Element> infos, Entity entity){
 		for(int i = 0; i< infos.size(); i++){
 			Element info = infos.get(i);
-			Entity.ObjectInfo objInfo = new Entity.ObjectInfo(info.get("name","info"+i),
-									Entity.ObjectType.getObjectInfoFor(info.get("type","")),
+			ObjectInfo objInfo = new ObjectInfo(info.get("name","info"+i),
+									ObjectType.getObjectInfoFor(info.get("type","")),
 									new Dimension(info.getFloat("w", 0), info.getFloat("h", 0)));
 			entity.addInfo(objInfo);
 			Element frames = info.getChildByName("frames");
 			if(frames == null) continue;
 			ArrayList<Element> frameIndices = frames.getChildrenByName("i");
-			for(Element index: frameIndices){
+			for (int i1 = 0; i1 < frameIndices.size(); i1++) {
+				Element index = frameIndices.get(i1);
 				int folder = index.getInt("folder", 0);
-				int file =  index.getInt("file", 0);
+				int file = index.getInt("file", 0);
 				objInfo.frames.add(new FileReference(folder, file));
 			}
 		}
@@ -154,12 +158,13 @@ public class SCMLReader {
 	protected void loadCharacterMaps(ArrayList<Element> maps, Entity entity){
 		for(int i = 0; i< maps.size(); i++){
 			Element map = maps.get(i);
-			Entity.CharacterMap charMap = new Entity.CharacterMap(map.getInt("id"), map.getAttribute("name", "charMap"+i));
+			CharacterMap charMap = new CharacterMap(map.getInt("id"), map.getAttribute("name", "charMap"+i));
 			entity.addCharacterMap(charMap);
 			ArrayList<Element> mappings = map.getChildrenByName("map");
-			for(Element mapping: mappings){
+			for (int i1 = 0; i1 < mappings.size(); i1++) {
+				Element mapping = mappings.get(i1);
 				int folder = mapping.getInt("folder");
-				int file =  mapping.getInt("file");
+				int file = mapping.getInt("file");
 				charMap.put(new FileReference(folder, file),
 						new FileReference(mapping.getInt("target_folder", folder), mapping.getInt("target_file", file)));
 			}
@@ -214,15 +219,17 @@ public class SCMLReader {
 	 * @param key the mainline key
 	 */
 	protected void loadRefs(ArrayList<Element> objectRefs, ArrayList<Element> boneRefs, Mainline.Key key){
-		for(Element e: boneRefs){
-			BoneRef boneRef = new BoneRef(e.getInt("id"),e.getInt("timeline"),
-							e.getInt("key"), key.getBoneRef(e.getInt("parent", -1)));
+		for (int i = 0; i < boneRefs.size(); i++) {
+			Element e = boneRefs.get(i);
+			BoneRef boneRef = new BoneRef(e.getInt("id"), e.getInt("timeline"),
+					e.getInt("key"), key.getBoneRef(e.getInt("parent", -1)));
 			key.addBoneRef(boneRef);
 		}
 
-		for(Element o: objectRefs){
-			ObjectRef objectRef = new ObjectRef(o.getInt("id"),o.getInt("timeline"),
-							o.getInt("key"), key.getBoneRef(o.getInt("parent", -1)), o.getInt("z_index",0));
+		for (int i = 0; i < objectRefs.size(); i++) {
+			Element o = objectRefs.get(i);
+			ObjectRef objectRef = new ObjectRef(o.getInt("id"), o.getInt("timeline"),
+					o.getInt("key"), key.getBoneRef(o.getInt("parent", -1)), o.getInt("z_index", 0));
 			key.addObjectRef(objectRef);
 		}
 		Arrays.sort(key.objectRefs);
@@ -238,7 +245,7 @@ public class SCMLReader {
 		for(int i = 0; i< timelines.size(); i++){
 			Element t = timelines.get(i);
 			ArrayList<Element> keys = timelines.get(i).getChildrenByName("key");
-			String name = t.get("name");
+			String name = t.get("name", "no_name_"+i);
 			ObjectType type = ObjectType.getObjectInfoFor(t.get("object_type", "sprite"));
 			ObjectInfo info = entity.getInfo(name);
 			if(info == null) info = new ObjectInfo(name, type, new Dimension(0,0));

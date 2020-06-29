@@ -206,7 +206,6 @@ public class Mainline {
     			return super.toString()+", z_index: "+zIndex;
     		}
 
-			@Override
 			public int compareTo(ObjectRef o) {
 				return (int)Math.signum(zIndex-o.zIndex);
 			}

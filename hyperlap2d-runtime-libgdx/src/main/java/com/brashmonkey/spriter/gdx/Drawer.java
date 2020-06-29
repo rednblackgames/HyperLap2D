@@ -1,22 +1,28 @@
-package games.rednblack.editor.renderer.utils;
+package com.brashmonkey.spriter.gdx;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.brashmonkey.spriter.Drawer;
 import com.brashmonkey.spriter.Loader;
 import com.brashmonkey.spriter.Player;
 import com.brashmonkey.spriter.Timeline.Key.Object;
 
-public class LibGdxDrawer extends Drawer<Sprite>{
+public class Drawer extends com.brashmonkey.spriter.Drawer<Sprite> {
 	
-	private Batch batch;
-	private ShapeRenderer renderer;
+	Batch batch;
+	ShapeRenderer renderer;
 	
-	public LibGdxDrawer(Loader<Sprite> loader, ShapeRenderer renderer){
+	public Drawer(Loader<Sprite> loader, Batch batch, ShapeRenderer renderer){
 		super(loader);
+		this.batch = batch;
 		this.renderer = renderer;
+	}
+
+	public void beforeDraw(Player player, Batch batch, ShapeRenderer renderer) {
+		this.batch = batch;
+		this.renderer = renderer;
+		draw(player);
 	}
 	
 	@Override
@@ -39,14 +45,9 @@ public class LibGdxDrawer extends Drawer<Sprite>{
 		renderer.circle(x, y, radius);
 	}
 
-	public void beforeDraw(Player player, Batch batch) {
-		this.batch	=	batch;
-		draw(player);
-	}
 	@Override
 	public void draw(Object object) {
 		Sprite sprite = loader.get(object.ref);
-
 		float newPivotX = (sprite.getWidth() * object.pivot.x);
 		float newX = object.position.x - newPivotX;
 		float newPivotY = (sprite.getHeight() * object.pivot.y);
@@ -54,7 +55,8 @@ public class LibGdxDrawer extends Drawer<Sprite>{
 		
 		sprite.setX(newX);
 		sprite.setY(newY);
-        sprite.setOrigin(newPivotX, newPivotY);
+		
+		sprite.setOrigin(newPivotX, newPivotY);
 		sprite.setRotation(object.angle);
 		
 		sprite.setColor(1f, 1f, 1f, object.alpha);

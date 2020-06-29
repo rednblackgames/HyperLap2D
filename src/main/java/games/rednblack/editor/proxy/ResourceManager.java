@@ -50,6 +50,7 @@ public class ResourceManager extends BaseProxy implements IResourceRetriever {
 
     private HashMap<String, SpineAnimData> spineAnimAtlases = new HashMap<String, SpineAnimData>();
     private HashMap<String, TextureAtlas> spriteAnimAtlases = new HashMap<String, TextureAtlas>();
+    private HashMap<String, FileHandle> spriterAnimAtlases = new HashMap<String, FileHandle>();
     private HashMap<String, FileHandle> spriterAnimFiles = new HashMap<String, FileHandle>();
     private HashMap<FontSizePair, BitmapFont> bitmapFonts = new HashMap<>();
     private HashMap<String, ShaderProgram> shaderPrograms = new HashMap<String, ShaderProgram>(1);
@@ -100,6 +101,11 @@ public class ResourceManager extends BaseProxy implements IResourceRetriever {
     public TextureAtlas getSkeletonAtlas(String animationName) {
         SpineAnimData animData = spineAnimAtlases.get(animationName);
         return animData.atlas;
+    }
+
+    @Override
+    public FileHandle getSCMLAtlas(String name) {
+        return spriterAnimAtlases.get(name);
     }
 
     /**
@@ -227,12 +233,14 @@ public class ResourceManager extends BaseProxy implements IResourceRetriever {
 
     private void loadCurrentProjectSpriterAnimations(String path, String curResolution) {
         spriterAnimFiles.clear();
+        spriterAnimAtlases.clear();
         FileHandle sourceDir = new FileHandle(path + "orig" + "/spriter-animations");
         for (FileHandle entry : sourceDir.list()) {
             if (entry.file().isDirectory()) {
                 String animName = entry.file().getName();
                 FileHandle scmlFile = new FileHandle(path + "orig" + "/spriter-animations/" + animName + "/" + animName + ".scml");
                 spriterAnimFiles.put(animName, scmlFile);
+                spriterAnimAtlases.put(animName, Gdx.files.internal(path + "orig" + "/spriter-animations" + File.separator + animName + File.separator + animName + ".atlas"));
             }
         }
     }

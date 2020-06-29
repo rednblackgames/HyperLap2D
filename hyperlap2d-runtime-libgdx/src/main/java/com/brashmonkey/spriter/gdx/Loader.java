@@ -1,9 +1,4 @@
-package games.rednblack.editor.renderer.utils;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.Map.Entry;
+package com.brashmonkey.spriter.gdx;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -18,9 +13,13 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.brashmonkey.spriter.Data;
 import com.brashmonkey.spriter.FileReference;
-import com.brashmonkey.spriter.Loader;
 
-public class LibGdxLoader extends Loader<Sprite> implements Disposable{
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
+
+public class Loader extends com.brashmonkey.spriter.Loader<Sprite> implements Disposable{
 	
 	public static int standardAtlasWidth = 2048, standardAtlasHeight = 2048;
 	
@@ -29,32 +28,41 @@ public class LibGdxLoader extends Loader<Sprite> implements Disposable{
 	private HashMap<Pixmap, Boolean> pixmapsToDispose;
 	private boolean pack;
 	private int atlasWidth, atlasHeight;
+	private TextureFilter textureFilter;
 	
-	public LibGdxLoader(Data data){
+	public Loader(Data data){
 		this(data, true);
 	}
 	
-	public LibGdxLoader(Data data, boolean pack){
+	public Loader(Data data, boolean pack){
 		this(data, standardAtlasWidth, standardAtlasHeight);
 		this.pack = pack;
 	}
 
-	public LibGdxLoader(Data data, int atlasWidth, int atlasHeight) {
+	public Loader(Data data, int atlasWidth, int atlasHeight) {
 		super(data);
 		this.pack = true;
 		this.atlasWidth = atlasWidth;
 		this.atlasHeight = atlasHeight;
 		this.pixmaps = new HashMap<FileReference, Pixmap>();
 		this.pixmapsToDispose = new HashMap<Pixmap, Boolean>();
+		this.textureFilter = TextureFilter.Linear;
+	}
+
+	public void setTextureFilter(TextureFilter textureFilter) {
+		this.textureFilter = textureFilter;
 	}
 
 	@Override
 	protected Sprite loadResource(FileReference ref) {
 		FileHandle f;
-		
-		String filename = new File(data.getFile(ref).name).getName();
-		//String path = super.root+"/"+data.getFile(ref).name;
-		String path = super.root+"/"+filename;
+		String pathPrefix;
+		if(super.root == null || super.root.equals("")) {
+			pathPrefix = "";
+		} else {
+			pathPrefix = super.root + File.separator;
+		}
+		String path = pathPrefix + data.getFile(ref).name;
 		switch(Gdx.app.getType()){
 		case iOS: f = Gdx.files.absolute(path); break;
 		default: f = Gdx.files.internal(path); break;
@@ -73,7 +81,7 @@ public class LibGdxLoader extends Loader<Sprite> implements Disposable{
 	 */
 	protected void generatePackedSprites(){
 		if(this.packer == null) return;
-		TextureAtlas tex = this.packer.generateTextureAtlas(TextureFilter.Linear, TextureFilter.Linear, false);
+		TextureAtlas tex = this.packer.generateTextureAtlas(textureFilter, textureFilter, false);
 		Set<FileReference> keys = this.resources.keySet();
 		this.disposeNonPackedTextures();
 		for(FileReference ref: keys){
@@ -110,8 +118,8 @@ public class LibGdxLoader extends Loader<Sprite> implements Disposable{
 	}
 	
 	protected void createSprite(FileReference ref, Pixmap image){
-        Texture tex = new Texture(image);
-		tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		Texture tex = new Texture(image);
+		tex.setFilter(textureFilter, textureFilter);
 		int width = (int) data.getFile(ref.folder, ref.file).size.width;
 		int height = (int) data.getFile(ref.folder, ref.file).size.height;
 		TextureRegion texRegion = new TextureRegion(tex, width, height);

@@ -181,10 +181,10 @@ public class Spriter {
 	@SuppressWarnings("unchecked")
 	public static void updateAndDraw(){
 		if(!initialized) throw new SpriterException("Call init() before updating!");
-		for(Player player: players){
-			player.update();
-			drawer.loader = entityToLoader.get(player.getEntity());
-			drawer.draw(player);
+		for (int i = 0; i < players.size(); i++) {
+			players.get(i).update();
+			drawer.loader = entityToLoader.get(players.get(i).getEntity());
+			drawer.draw(players.get(i));
 		}
 	}
 	
@@ -194,8 +194,9 @@ public class Spriter {
 	 */
 	public static void update(){
 		if(!initialized) throw new SpriterException("Call init() before updating!");
-		for(Player player: players)
-			player.update();
+		for (int i = 0; i < players.size(); i++) {
+			players.get(i).update();
+		}
 	}
 	
 	/**
@@ -205,9 +206,9 @@ public class Spriter {
 	@SuppressWarnings("unchecked")
 	public static void draw(){
 		if(!initialized) throw new SpriterException("Call init() before drawing!");
-		for(Player player: players){
-			drawer.loader = entityToLoader.get(player.getEntity());
-			drawer.draw(player);
+		for (int i = 0; i < players.size(); i++) {
+			drawer.loader = entityToLoader.get(players.get(i).getEntity());
+			drawer.draw(players.get(i));
 		}
 	}
 	
@@ -247,8 +248,10 @@ public class Spriter {
 		drawerTypes[0] = Loader.class;
 		
 		entityToLoader.clear();
-		
-		for(Loader loader: loaders) loader.dispose();
+
+		for (int i = 0; i < loaders.size(); i++) {
+			loaders.get(i).dispose();
+		}
 	    loaders.clear();
 		loadedData.clear();
 		loaderClass = null;

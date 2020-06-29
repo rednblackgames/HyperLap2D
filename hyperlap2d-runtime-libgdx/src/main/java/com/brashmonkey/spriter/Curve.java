@@ -109,8 +109,8 @@ public class Curve {
 		case Cubic: return cubic(a, linear(a, b, constraints.c1), linear(a, b, constraints.c2), b, t);
 		case Quartic: return quartic(a, linear(a, b, constraints.c1), linear(a, b, constraints.c2),	linear(a, b, constraints.c3), b, t);
 		case Quintic: return quintic(a, linear(a, b, constraints.c1), linear(a, b, constraints.c2),	linear(a, b, constraints.c3), linear(a, b, constraints.c4), b, t);
-		case Bezier: Float cubicSolution = solveCubic(3f*(constraints.c1-constraints.c3) + 1f, 3f*(constraints.c3-2f*constraints.c1), 3f*constraints.c1, -t);
-					 if(cubicSolution == null) cubicSolution = lastCubicSolution;
+		case Bezier: float cubicSolution = solveCubic(3f*(constraints.c1-constraints.c3) + 1f, 3f*(constraints.c3-2f*constraints.c1), 3f*constraints.c1, -t);
+					 if(cubicSolution == NO_SOLUTION) cubicSolution = lastCubicSolution;
 					 else lastCubicSolution = cubicSolution;
 					 return linear(a, b, bezier(cubicSolution, 0f, constraints.c2, constraints.c4, 1f));
 		default: return linear(a, b, t);
@@ -156,7 +156,7 @@ public class Curve {
 	}
 	
 	/**
-	 *
+	 * @see {@link #tween(float, float, float)}
 	 */
 	public float tweenAngle(float a, float b, float t){
 		t = tweenSub(0f,1f,t);
@@ -167,8 +167,8 @@ public class Curve {
 		case Cubic: return cubicAngle(a, linearAngle(a, b, constraints.c1), linearAngle(a, b, constraints.c2), b, t);
 		case Quartic: return quarticAngle(a, linearAngle(a, b, constraints.c1), linearAngle(a, b, constraints.c2),	linearAngle(a, b, constraints.c3), b, t);
 		case Quintic: return quinticAngle(a, linearAngle(a, b, constraints.c1), linearAngle(a, b, constraints.c2),	linearAngle(a, b, constraints.c3), linearAngle(a, b, constraints.c4), b, t);
-		case Bezier: Float cubicSolution = solveCubic(3f*(constraints.c1-constraints.c3) + 1f, 3f*(constraints.c3-2f*constraints.c1), 3f*constraints.c1, -t);
-					 if(cubicSolution == null) cubicSolution = lastCubicSolution;
+		case Bezier: float cubicSolution = solveCubic(3f*(constraints.c1-constraints.c3) + 1f, 3f*(constraints.c3-2f*constraints.c1), 3f*constraints.c1, -t);
+					 if(cubicSolution == NO_SOLUTION) cubicSolution = lastCubicSolution;
 					 else lastCubicSolution = cubicSolution;
 					 return linearAngle(a, b, bezier(cubicSolution, 0f, constraints.c2, constraints.c4, 1f));
 		default: return linearAngle(a, b, t);

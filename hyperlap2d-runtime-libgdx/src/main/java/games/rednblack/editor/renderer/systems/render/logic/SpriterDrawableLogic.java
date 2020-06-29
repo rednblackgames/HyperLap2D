@@ -33,7 +33,7 @@ public class SpriterDrawableLogic implements Drawable {
 		player.setScale(spriter.scale );
 		player.rotate(entityTransformComponent.rotation - player.getAngle());
 		player.update();
-		spriterDrawerComponent.drawer.beforeDraw(player, batch);
+		spriterDrawerComponent.drawer.beforeDraw(player, batch, null);
 	}
 
 }

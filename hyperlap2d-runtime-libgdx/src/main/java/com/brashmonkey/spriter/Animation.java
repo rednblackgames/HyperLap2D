@@ -91,7 +91,7 @@ public class Animation {
     	if(!this.prepared) throw new SpriterException("This animation is not ready yet to animate itself. Please call prepare()!");
     	if(root == null) throw new SpriterException("The root can not be null! Set a root bone to apply this animation relative to the root bone.");
     	this.currentKey = mainline.getKeyBeforeTime(time);
-    	
+
     	for(Timeline.Key timelineKey: this.unmappedTweenedKeys)
 			timelineKey.active = false;
 		for(BoneRef ref: currentKey.boneRefs)

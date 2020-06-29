@@ -62,7 +62,10 @@ public class ResourceManager implements IResourceLoader, IResourceRetriever {
     protected HashMap<String, FileHandle> skeletonJSON = new HashMap<String, FileHandle>();
 
     protected HashMap<String, TextureAtlas> spriteAnimations = new HashMap<String, TextureAtlas>();
+
+    protected HashMap<String, FileHandle> spriterAtlases = new HashMap<String, FileHandle>();
     protected HashMap<String, FileHandle> spriterAnimations = new HashMap<String, FileHandle>();
+
     protected HashMap<FontSizePair, BitmapFont> bitmapFonts = new HashMap<FontSizePair, BitmapFont>();
     protected HashMap<String, ShaderProgram> shaderPrograms = new HashMap<String, ShaderProgram>();
     
@@ -256,11 +259,14 @@ public class ResourceManager implements IResourceLoader, IResourceRetriever {
     		}
     	}
     	for (String name : spriterAnimNamesToLoad) {
-    		FileHandle animFile = Gdx.files.internal("orig" + File.separator + spriterAnimationsPath + File.separator + name + File.separator + name + ".scml");
-    		spriterAnimations.put(name, animFile);
+            loadSpriterAnimation(name);
     	}
     }
-    
+
+    public void loadSpriterAnimation(String name) {
+        spriterAtlases.put(name, Gdx.files.internal(packResolutionName + File.separator + spriterAnimationsPath + File.separator + name + File.separator + name + ".atlas"));
+        spriterAnimations.put(name, Gdx.files.internal("orig"+ File.separator + spriterAnimationsPath + File.separator + name + File.separator + name + ".scml"));
+    }
 
     public void loadSpineAnimation(String name) {
         TextureAtlas animAtlas = new TextureAtlas(Gdx.files.internal(packResolutionName + File.separator + spineAnimationsPath + File.separator + name + File.separator + name + ".atlas"));
@@ -388,6 +394,11 @@ public class ResourceManager implements IResourceLoader, IResourceRetriever {
     @Override
     public TextureAtlas getSkeletonAtlas(String name) {
         return skeletonAtlases.get(name);
+    }
+
+    @Override
+    public FileHandle getSCMLAtlas(String name) {
+        return spriterAtlases.get(name);
     }
 
     @Override

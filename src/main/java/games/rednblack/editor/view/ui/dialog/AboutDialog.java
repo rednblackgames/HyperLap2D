@@ -41,6 +41,8 @@ public class AboutDialog extends H2DDialog {
         contentTable.add(new LinkLabel("- Vis UI [https://github.com/kotcrab/vis-ui]", "https://github.com/kotcrab/vis-ui")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Modular [https://github.com/mountainblade/modular]", "https://github.com/mountainblade/modular")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Spine Runtime [https://github.com/EsotericSoftware/spine-runtimes]", "https://github.com/EsotericSoftware/spine-runtimes")).padLeft(6).left().row();
+        contentTable.add(new LinkLabel("- Spriter [https://github.com/Trixt0r/spriter]", "https://github.com/Trixt0r/spriter")).padLeft(6).left().row();
+        contentTable.add(new LinkLabel("- LibGDX Spriter [https://github.com/Trixt0r/gdx-spriter]", "https://github.com/Trixt0r/gdx-spriter")).padLeft(6).left().row();
         contentTable.add("\n").row();
         contentTable.add("Contributors").row();
         contentTable.add("").row();

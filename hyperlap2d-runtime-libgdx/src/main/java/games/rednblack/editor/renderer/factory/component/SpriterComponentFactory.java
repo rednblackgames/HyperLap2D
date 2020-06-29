@@ -22,10 +22,14 @@ import box2dLight.RayHandler;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.brashmonkey.spriter.Player;
 import com.brashmonkey.spriter.Rectangle;
 import com.brashmonkey.spriter.SCMLReader;
+import com.brashmonkey.spriter.gdx.AtlasLoader;
+import com.brashmonkey.spriter.gdx.Drawer;
+import com.brashmonkey.spriter.gdx.Loader;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.spriter.SpriterComponent;
 import games.rednblack.editor.renderer.components.spriter.SpriterDrawerComponent;
@@ -34,8 +38,6 @@ import games.rednblack.editor.renderer.data.SpriterVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
-import games.rednblack.editor.renderer.utils.LibGdxDrawer;
-import games.rednblack.editor.renderer.utils.LibGdxLoader;
 
 /**
  * Created by azakhary on 5/22/2015.
@@ -77,7 +79,7 @@ public class SpriterComponentFactory extends ComponentFactory {
 
         FileHandle handle 	=	rm.getSCMLFile(vo.animationName);
         component.data = new SCMLReader(handle.read()).getData();
-        LibGdxLoader loader = 	new LibGdxLoader(component.data);
+        AtlasLoader loader = 	new AtlasLoader(component.data, rm.getSCMLAtlas(vo.animationName));
         loader.load(handle.file());
 
         component.currentAnimationIndex	=	vo.animation;
@@ -90,7 +92,7 @@ public class SpriterComponentFactory extends ComponentFactory {
 
         SpriterDrawerComponent spriterDrawer = new SpriterDrawerComponent();
 
-        spriterDrawer.drawer = new LibGdxDrawer(loader, null);
+        spriterDrawer.drawer = new Drawer(loader, null, new ShapeRenderer());
 
         entity.add(component);
         entity.add(spriterDrawer);

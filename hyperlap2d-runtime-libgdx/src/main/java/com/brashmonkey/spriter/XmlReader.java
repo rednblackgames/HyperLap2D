@@ -1,7 +1,5 @@
 package com.brashmonkey.spriter;
 
-import com.badlogic.gdx.utils.Array;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -287,7 +285,7 @@ public class XmlReader {
 				if (data[i] == '\n') lineNumber++;
 			throw new SpriterException("Error parsing XML on line " + lineNumber + " near: "
 				+ new String(data, p, Math.min(32, pe - p)));
-		} else if (!elements.isEmpty()) {
+		} else if (elements.size() != 0) {
 			Element element = elements.get(elements.size()-1);
 			elements.clear();
 			throw new SpriterException("Error parsing XML, unclosed element: " + element.getName());
@@ -404,7 +402,7 @@ public class XmlReader {
 	protected void close () {
 		root = elements.get(elements.size()-1);
 		elements.remove(elements.size()-1);
-		current = !elements.isEmpty() ? elements.get(elements.size()-1) : null;
+		current = elements.size() > 0 ? elements.get(elements.size()-1) : null;
 	}
 
 	static public class Element {
@@ -516,8 +514,8 @@ public class XmlReader {
 					buffer.append('\n');
 				}
 				if (children != null) {
-					for (Element child : children) {
-						buffer.append(child.toString(childIndent));
+					for (int i = 0; i < children.size(); i++) {
+						buffer.append(children.get(i).toString(childIndent));
 						buffer.append('\n');
 					}
 				}
@@ -554,7 +552,7 @@ public class XmlReader {
 		}
 
 		/** @param name the name of the children
-		 * @return the children with the given name or an empty {@link Array} */
+		 * @return the children with the given name or an empty {@link ArrayList} */
 		public ArrayList<Element> getChildrenByName (String name) {
 			ArrayList<Element> result = new ArrayList<Element>();
 			if (children == null) return result;
@@ -566,7 +564,7 @@ public class XmlReader {
 		}
 
 		/** @param name the name of the children
-		 * @return the children with the given name or an empty {@link Array} */
+		 * @return the children with the given name or an empty {@link ArrayList} */
 		public ArrayList<Element> getChildrenByNameRecursively (String name) {
 			ArrayList<Element> result = new ArrayList<Element>();
 			getChildrenByNameRecursively(name, result);

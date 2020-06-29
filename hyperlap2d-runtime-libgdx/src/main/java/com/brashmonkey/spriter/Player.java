@@ -18,7 +18,7 @@ import com.brashmonkey.spriter.Timeline.Key.Object;
  * and update the current set animation ({@link #setAnimation(Animation)}).
  * A Player can be positioned with {@link #setPivot(float, float)}, scaled with {@link #setScale(float)},
  * flipped with {@link #flip(boolean, boolean)} and rotated {@link #setAngle(float)}.
- * A Player has various methods for runtime object manipulation such as {@link #setBone(String, Bone)} or .
+ * A Player has various methods for runtime object manipulation such as {@link #setBone(String, Bone)} or {@link #setObject(String, Bone)}.
  * Events like the ending of an animation can be observed with the {@link PlayerListener} interface.
  * Character maps can be changed on the fly, just by assigning a character maps to {@link #characterMaps}, setting it to <code>null</code> will remove the current character map.
  * 
@@ -67,14 +67,16 @@ public class Player {
 	 * This means the current time gets increased by {@link #speed} and is applied to the current animation.
 	 */
 	public void update(){
-		for(PlayerListener listener: listeners)
-			listener.preProcess(this);
+		for (int i = 0; i < listeners.size(); i++) {
+			listeners.get(i).preProcess(this);
+		}
 		if(dirty) this.updateRoot();
 		this.animation.update(time, root);
 		this.currentKey = this.animation.currentKey;
 		if(prevKey != currentKey){
-			for(PlayerListener listener: listeners)
-				listener.mainlineKeyChanged(prevKey, currentKey);
+			for (int i = 0; i < listeners.size(); i++) {
+				listeners.get(i).mainlineKeyChanged(prevKey, currentKey);
+			}
 			prevKey = currentKey;
 		}
 		if(copyObjects){
@@ -86,12 +88,14 @@ public class Player {
 			tweenedKeys = animation.tweenedKeys;
 			unmappedTweenedKeys = animation.unmappedTweenedKeys;
 		}
-		
-		for(Attachment attach: attachments)
-			attach.update();
-		
-		for(PlayerListener listener: listeners)
-			listener.postProcess(this);
+
+		for (int i = 0; i < attachments.size(); i++) {
+			attachments.get(i).update();
+		}
+
+		for (int i = 0; i < listeners.size(); i++) {
+			listeners.get(i).postProcess(this);
+		}
 		this.increaseTime();
 	}
 	
@@ -108,12 +112,14 @@ public class Player {
 		time += speed;
 		if(time > animation.length){
 			time = time-animation.length;
-			for(PlayerListener listener: listeners)
-				listener.animationFinished(animation);
+			for (int i = 0; i < listeners.size(); i++) {
+				listeners.get(i).animationFinished(animation);
+			}
 		}
 		if(time < 0){
-			for(PlayerListener listener: listeners)
-				listener.animationFinished(animation);
+			for (int i = 0; i < listeners.size(); i++) {
+				listeners.get(i).animationFinished(animation);
+			}
 			time += animation.length;
 		}
 	}
@@ -267,7 +273,7 @@ public class Player {
 	
 	/**
 	 * Returns whether the given point lies inside the box of the given bone or object.
-	 * @param boneOrObject the bone or object
+	 * @param bone the bone or object
 	 * @param point the point
 	 * @return <code>true</code> if the point lies inside the box of the given bone or object
 	 * @throws NullPointerException if no object info for the given bone or object exists
@@ -594,8 +600,9 @@ public class Player {
 		this.time = 0;
 		this.update();
 		this.time = tempTime;
-		for(PlayerListener listener: listeners)
-			listener.animationChanged(prevAnim, animation);
+		for (int i = 0; i < listeners.size(); i++) {
+			listeners.get(i).animationChanged(prevAnim, animation);
+		}
 	}
 	
 	/**
@@ -972,17 +979,17 @@ public class Player {
 	 */
 	class ObjectIterator implements Iterator<Object>{
 		int index = 0;
-		@Override
+		
 		public boolean hasNext() {
 			return index < getCurrentKey().objectRefs.length;
 		}
 
-		@Override
+		
 		public Object next() {
 			return unmappedTweenedKeys[getCurrentKey().objectRefs[index++].timeline].object();
 		}
 
-		@Override
+		
 		public void remove() {
 			throw new SpriterException("remove() is not supported by this iterator!");
 		}
@@ -996,17 +1003,15 @@ public class Player {
 	 */
 	class BoneIterator implements Iterator<Bone>{
 		int index = 0;
-		@Override
+		
 		public boolean hasNext() {
 			return index < getCurrentKey().boneRefs.length;
 		}
 
-		@Override
 		public Bone next() {
 			return unmappedTweenedKeys[getCurrentKey().boneRefs[index++].timeline].object();
 		}
 
-		@Override
 		public void remove() {
 			throw new SpriterException("remove() is not supported by this iterator!");
 		}

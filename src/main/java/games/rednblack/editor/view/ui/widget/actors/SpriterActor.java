@@ -26,9 +26,9 @@ import com.brashmonkey.spriter.Data;
 import com.brashmonkey.spriter.Player;
 import com.brashmonkey.spriter.Rectangle;
 import com.brashmonkey.spriter.SCMLReader;
+import com.brashmonkey.spriter.gdx.AtlasLoader;
+import com.brashmonkey.spriter.gdx.Drawer;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
-import games.rednblack.editor.renderer.utils.LibGdxDrawer;
-import games.rednblack.editor.renderer.utils.LibGdxLoader;
 
 import java.util.ArrayList;
 
@@ -46,7 +46,7 @@ public class SpriterActor extends Actor {
     private String animationName = "";
      private String currentAnimationName = "";
 
-    private LibGdxDrawer drawer;
+    private Drawer drawer;
     private Player player;
     private Data data;
     private ArrayList<String> animations = new ArrayList<String>();
@@ -67,10 +67,10 @@ public class SpriterActor extends Actor {
     private void initSpriterAnimation() {
         FileHandle handle 	=	irr.getSCMLFile(animationName);
         data 			= 	new SCMLReader(handle.read()).getData();
-        LibGdxLoader loader = 	new LibGdxLoader(data);
+        AtlasLoader loader = 	new AtlasLoader(data, irr.getSCMLAtlas(animationName));
         loader.load(handle.file());
         ShapeRenderer renderer	=	new ShapeRenderer();
-        drawer = new LibGdxDrawer(loader, renderer);
+        drawer = new Drawer(loader, null, renderer);
         currentAnimationIndex	=	0;
         currentEntityIndex		=	0;
         initPlayer();
@@ -112,9 +112,8 @@ public class SpriterActor extends Actor {
         player.setPosition(getX(), getY());
         player.setPivot(getWidth()/2, getHeight()/2);
         player.rotate(getRotation()-player.getAngle());
-        drawer.beforeDraw(player,batch);
+        drawer.beforeDraw(player, batch, null);
     }
-
 
     public ArrayList<String> getAnimations() {
         animations	=	new ArrayList<String>();
