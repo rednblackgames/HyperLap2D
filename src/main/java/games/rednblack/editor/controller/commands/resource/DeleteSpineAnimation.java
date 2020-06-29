@@ -31,7 +31,7 @@ public class DeleteSpineAnimation extends DeleteResourceCommand {
     @Override
     public void doAction() {
         String spineItemName = notification.getBody();
-        if (projectManager.deleteSpineAnimation(spineItemName)) {
+        if (projectManager.deleteSpineForAllResolutions(spineItemName)) {
             deleteEntitiesWithParticleEffects(sandbox.getRootEntity(), spineItemName);
             deleteAllItemsSpineAnimations(spineItemName);
             projectManager.loadProjectData(projectManager.getCurrentProjectPath());

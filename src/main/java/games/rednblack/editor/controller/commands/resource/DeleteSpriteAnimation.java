@@ -31,7 +31,7 @@ public class DeleteSpriteAnimation extends DeleteResourceCommand {
     @Override
     public void doAction() {
         String spriteAnimationName = notification.getBody();
-        if (projectManager.deleteSpriteAnimation(spriteAnimationName)) {
+        if (projectManager.deleteSpriteAnimationForAllResolutions(spriteAnimationName)) {
             deleteEntitiesWithSpriteAnimation(sandbox.getRootEntity(), spriteAnimationName);
             deleteAllItemsSpriteAnimations(spriteAnimationName);
             projectManager.loadProjectData(projectManager.getCurrentProjectPath());

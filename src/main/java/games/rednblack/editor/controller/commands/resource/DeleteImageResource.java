@@ -32,7 +32,7 @@ public class DeleteImageResource extends DeleteResourceCommand {
     @Override
     public void doAction() {
         String imageName = notification.getBody();
-        if (projectManager.deleteSingleImage(imageName)) {
+        if (projectManager.deleteSingleImageForAllResolutions(imageName)) {
             deleteEntitiesWithImages(sandbox.getRootEntity(), imageName);
             deleteAllItemsImages(imageName);
             ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);

@@ -498,7 +498,6 @@ public class ProjectManager extends BaseProxy {
 
                 newAnimName = fileNameWithoutFrame;
             } else {
-                System.out.println("it's an atlas");
                 for (FileHandle fileHandle : fileHandles) {
                     try {
                         Array<File> imgs = getAtlasPages(fileHandle);
@@ -597,7 +596,6 @@ public class ProjectManager extends BaseProxy {
                 if (line.trim().equals("- Image Paths -")) {
                     line = reader.readLine();
                     while (line != null && !line.equals("")) {
-                        System.out.println(line);
                         if (line.contains("\\") || line.contains("/")) {
                             // then it's a path let's see if exists.
                             File tmp = new File(line);
@@ -808,7 +806,7 @@ public class ProjectManager extends BaseProxy {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println(perCopyPercent);
+
             progressHandler.progressChanged(perCopyPercent);
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(() -> {
@@ -1330,8 +1328,8 @@ public class ProjectManager extends BaseProxy {
         return null;
     }
 
-    public boolean deleteSingleImage(String imageName) {
-        String imagesPath = currentProjectPath + File.separator + IMAGE_DIR_PATH + File.separator;
+    private boolean deleteSingleImage(String resolutionName, String imageName) {
+        String imagesPath = currentProjectPath + "/assets/" + resolutionName + "/images" + File.separator;
         String filePath = imagesPath + imageName + ".png";
         if (!(new File(filePath)).delete()) {
             filePath = imagesPath + imageName + ".9.png";
@@ -1340,28 +1338,60 @@ public class ProjectManager extends BaseProxy {
         return true;
     }
 
+    public boolean deleteSingleImageForAllResolutions(String imageName) {
+        for (ResolutionEntryVO resolutionEntryVO : currentProjectInfoVO.resolutions) {
+            if(!deleteSingleImage(resolutionEntryVO.name, imageName))
+                return false;
+        }
+        return deleteSingleImage("orig", imageName);
+    }
+
     public boolean deleteParticle(String particleName) {
         String particlePath = currentProjectPath + File.separator + PARTICLE_DIR_PATH + File.separator;
         String filePath = particlePath + particleName;
         return (new File(filePath)).delete();
     }
 
-    public boolean deleteSpineAnimation(String spineName) {
-        String spinePath = currentProjectPath + File.separator + SPINE_DIR_PATH + File.separator;
+    private boolean deleteSpineAnimation(String resolutionName, String spineName) {
+        String spinePath = currentProjectPath + "/assets/" + resolutionName + "/spine-animations" + File.separator;
         String filePath = spinePath + spineName;
         return deleteDirectory(filePath);
     }
 
-    public boolean deleteSpriteAnimation(String spineName) {
-        String spritePath = currentProjectPath + File.separator + SPRITE_DIR_PATH + File.separator;
+    public boolean deleteSpineForAllResolutions(String spineName) {
+        for (ResolutionEntryVO resolutionEntryVO : currentProjectInfoVO.resolutions) {
+            if(!deleteSpineAnimation(resolutionEntryVO.name, spineName))
+                return false;
+        }
+        return deleteSpineAnimation("orig", spineName);
+    }
+
+    private boolean deleteSpriteAnimation(String resolutionName, String spineName) {
+        String spritePath = currentProjectPath + "/assets/" + resolutionName + "/sprite-animations" + File.separator;
         String filePath = spritePath + spineName;
         return deleteDirectory(filePath);
     }
 
-    public boolean deleteSpriterAnimation(String spineName) {
-        String spriterPath = currentProjectPath + File.separator + SPRITER_DIR_PATH + File.separator;
+    public boolean deleteSpriteAnimationForAllResolutions(String spineName) {
+        for (ResolutionEntryVO resolutionEntryVO : currentProjectInfoVO.resolutions) {
+            if(!deleteSpriteAnimation(resolutionEntryVO.name, spineName))
+                return false;
+        }
+        return deleteSpriteAnimation("orig", spineName);
+    }
+
+    private boolean deleteSpriterAnimation(String resolutionName, String spineName) {
+        String spriterPath = currentProjectPath + "/assets/" + resolutionName + "/animations" + File.separator;
         String filePath = spriterPath + spineName;
         return deleteDirectory(filePath);
+    }
+
+    public boolean deleteSpriterAnimationForAllResolutions(String spineName) {
+        for (ResolutionEntryVO resolutionEntryVO : currentProjectInfoVO.resolutions) {
+            if(!deleteSpriterAnimation(resolutionEntryVO.name, spineName))
+                return false;
+        }
+        return deleteSpriterAnimation("orig", spineName);
     }
 
     private boolean deleteDirectory(String path) {
