@@ -1,5 +1,6 @@
 package games.rednblack.editor.utils;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
 import java.io.*;
@@ -66,8 +67,8 @@ public class ZipUtils {
         return files;
     }
 
-    public static Array<String> saveZipContent(File fileZip, File destDir) {
-        Array<String> paths = new Array<>();
+    public static FileHandle saveZipContent(File fileZip, File destDir) {
+        FileHandle mapper = null;
         try {
             ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
             ZipEntry zipEntry = zis.getNextEntry();
@@ -80,7 +81,8 @@ public class ZipUtils {
                     fos.write(buffer, 0, len);
                 }
                 fos.close();
-                paths.add(newFile.getPath());
+                if (zipEntry.getName().equals("mapper"))
+                    mapper = new FileHandle(newFile);
                 zipEntry = zis.getNextEntry();
             }
             zis.closeEntry();
@@ -88,7 +90,7 @@ public class ZipUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return paths;
+        return mapper;
     }
 
     private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {

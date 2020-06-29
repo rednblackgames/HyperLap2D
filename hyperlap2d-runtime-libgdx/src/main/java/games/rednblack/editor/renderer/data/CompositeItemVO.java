@@ -1,10 +1,8 @@
 package games.rednblack.editor.renderer.data;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.math.Rectangle;
 import games.rednblack.editor.renderer.components.CompositeTransformComponent;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
-import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 
 import java.util.ArrayList;

@@ -2,13 +2,16 @@ package games.rednblack.editor.utils;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.ImportDialog;
 import games.rednblack.editor.view.ui.dialog.ImportDialogMediator;
+import games.rednblack.h2d.common.vo.ExportMapperVO;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -52,37 +55,37 @@ public class AssetImporter {
                         "Duplicate file", "You have already an asset with this name, would you like to overwrite?",
                         new String[]{"Overwrite", "Cancel"}, new Integer[]{0, 1}, result -> {
                             if (result == 0) {
-                                initImport(type, paths);
+                                initImport(type, paths, false);
                             }
                         });
             } else {
-                initImport(type, paths);
+                initImport(type, paths, false);
             }
         }
     }
 
-    private void initImport(int type, String[] paths) {
+    private void initImport(int type, String[] paths, boolean skipRepack) {
         boolean isMultiple = paths.length > 1 && type != ImportUtils.TYPE_ANIMATION_PNG_SEQUENCE;
 
         viewComponent.setImportingView(type, isMultiple);
 
-        startImport(type, paths);
+        startImport(type, skipRepack, paths);
     }
 
-    private void startImport(int importType, String[] paths) {
+    private void startImport(int importType, boolean skipRepack, String... paths) {
         ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
 
         Array<FileHandle> files = getFilesFromPaths(paths);
 
         switch (importType) {
             case ImportUtils.TYPE_IMAGE:
-                projectManager.importImagesIntoProject(files, progressHandler);
+                projectManager.importImagesIntoProject(files, progressHandler, skipRepack);
                 break;
             case ImportUtils.TYPE_TEXTURE_ATLAS:
                 projectManager.importAtlasesIntoProject(files, progressHandler);
                 break;
             case ImportUtils.TYPE_PARTICLE_EFFECT:
-                projectManager.importParticlesIntoProject(files, progressHandler);
+                projectManager.importParticlesIntoProject(files, progressHandler, skipRepack);
                 break;
             case ImportUtils.TYPE_SPRITER_ANIMATION:
                 projectManager.importSpineAnimationsIntoProject(files, progressHandler);
@@ -108,13 +111,17 @@ public class AssetImporter {
                     for (FileHandle fileHandle : files) {
                         FileUtils.deleteDirectory(tmpDir);
                         FileUtils.forceMkdir(tmpDir);
-                        Array<String> libraryContent = ZipUtils.saveZipContent(fileHandle.file(), tmpDir);
-                        String[] phts = new String[1];
-                        for (String s : libraryContent) {
-                            phts[0] = s;
-                            postPathObtainAction(phts);
+                        FileHandle mapper = ZipUtils.saveZipContent(fileHandle.file(), tmpDir);
+                        Json json = new Json();
+                        json.setIgnoreUnknownFields(true);
+                        ExportMapperVO exportMapperVO = json.fromJson(ExportMapperVO.class, mapper);
+                        for (ExportMapperVO.ExportedAsset asset : exportMapperVO.mapper) {
+                            startImport(asset.type, true, tmpDir.getPath() + File.separator + asset.fileName);
                         }
                     }
+                    //FileUtils.deleteDirectory(tmpDir);
+                    ResolutionManager resolutionManager = HyperLap2DFacade.getInstance().retrieveProxy(ResolutionManager.NAME);
+                    resolutionManager.rePackProjectImagesForAllResolutions();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

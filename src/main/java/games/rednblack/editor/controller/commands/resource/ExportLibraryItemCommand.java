@@ -14,7 +14,10 @@ import games.rednblack.editor.controller.commands.NonRevertibleCommand;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.data.*;
+import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.ZipUtils;
+import games.rednblack.h2d.common.vo.ExportMapperVO;
+import games.rednblack.h2d.common.vo.ExportMapperVO.ExportedAsset;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -28,16 +31,19 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
 
     private final String currentProjectPath;
     private final ResourceManager resourceManager;
+    private final ExportMapperVO exportMapperVO;
 
     public ExportLibraryItemCommand() {
         cancel();
         setShowConfirmDialog(false);
         currentProjectPath = projectManager.getCurrentProjectPath() + File.separator;
         resourceManager = facade.retrieveProxy(ResourceManager.NAME);
+        exportMapperVO = new ExportMapperVO();
     }
 
     @Override
     public void doAction() {
+        exportMapperVO.mapper.clear();
         String libraryItemName = notification.getBody();
 
         FileChooser fileChooser = new FileChooser(FileChooser.Mode.SAVE);
@@ -85,6 +91,10 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
 
         exportAllAssets(compositeItemVO.composite, tempDir);
 
+        exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_HYPERLAP2D_INTERNAL_LIBRARY, libraryItemName + ".lib"));
+
+        FileUtils.writeStringToFile(new File(tempDir.getPath() + File.separator + "mapper"), json.toJson(exportMapperVO), "utf-8");
+
         ZipUtils.pack(tempDir.getPath(), destFile + ".h2dlib");
         FileUtils.deleteDirectory(tempDir);
     }
@@ -93,31 +103,37 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
         for (SimpleImageVO imageVO : compositeVO.sImages) {
             File fileSrc = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + imageVO.imageName + ".png");
             FileUtils.copyFileToDirectory(fileSrc, tmpDir);
+            exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_IMAGE, fileSrc.getName()));
         }
 
         for (Image9patchVO imageVO : compositeVO.sImage9patchs) {
             File fileSrc = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + imageVO.imageName + ".9.png");
             FileUtils.copyFileToDirectory(fileSrc, tmpDir);
+            exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_IMAGE, fileSrc.getName()));
         }
 
         for (SpineVO imageVO : compositeVO.sSpineAnimations) {
             File fileSrc = new File(currentProjectPath + ProjectManager.SPINE_DIR_PATH + File.separator + imageVO.animationName);
             FileUtils.copyDirectory(fileSrc, tmpDir);
+            exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_SPINE_ANIMATION, fileSrc.getName() + ".json"));
         }
 
         for (SpriteAnimationVO imageVO : compositeVO.sSpriteAnimations) {
             File fileSrc = new File(currentProjectPath + ProjectManager.SPRITE_DIR_PATH + File.separator + imageVO.animationName);
             FileUtils.copyDirectory(fileSrc, tmpDir);
+            exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS, fileSrc.getName() + ".atlas"));
         }
 
         for (SpriterVO imageVO : compositeVO.sSpriterAnimations) {
             File fileSrc = new File(currentProjectPath + ProjectManager.SPRITER_DIR_PATH + File.separator + imageVO.animationName);
             FileUtils.copyDirectory(fileSrc, tmpDir);
+            exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_SPRITER_ANIMATION, fileSrc.getName() + ".scml"));
         }
 
         for (ParticleEffectVO imageVO : compositeVO.sParticleEffects) {
             File fileSrc = new File(currentProjectPath + ProjectManager.PARTICLE_DIR_PATH + File.separator + imageVO.particleName);
             FileUtils.copyFileToDirectory(fileSrc, tmpDir);
+            exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_PARTICLE_EFFECT, fileSrc.getName()));
             ParticleEffect particleEffect = new ParticleEffect(resourceManager.getParticleEffect(imageVO.particleName));
             for (ParticleEmitter emitter : particleEffect.getEmitters()) {
                 for (String path : emitter.getImagePaths()) {

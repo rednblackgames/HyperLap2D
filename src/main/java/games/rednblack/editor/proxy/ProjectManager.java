@@ -510,6 +510,7 @@ public class ProjectManager extends BaseProxy {
 
                 newAnimName = fileNameWithoutFrame;
             } else {
+                System.out.println("it's an atlas");
                 for (FileHandle fileHandle : fileHandles) {
                     try {
                         Array<File> imgs = getAtlasPages(fileHandle);
@@ -643,7 +644,7 @@ public class ProjectManager extends BaseProxy {
         return true;
     }
 
-    public void importParticlesIntoProject(final Array<FileHandle> fileHandles, ProgressHandler progressHandler) {
+    public void importParticlesIntoProject(final Array<FileHandle> fileHandles, ProgressHandler progressHandler, boolean skipRepack) {
         if (fileHandles == null) {
             return;
         }
@@ -677,8 +678,10 @@ public class ProjectManager extends BaseProxy {
             if (images.size > 0) {
                 copyImageFilesForAllResolutionsIntoProject(images, false);
             }
-            ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-            resolutionManager.rePackProjectImagesForAllResolutions();
+            if (!skipRepack) {
+                ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
+                resolutionManager.rePackProjectImagesForAllResolutions();
+            }
         });
         executor.execute(() -> {
             changePercentBy(100 - currentPercent);
@@ -715,7 +718,7 @@ public class ProjectManager extends BaseProxy {
     }
 
 
-    public void importImagesIntoProject(final Array<FileHandle> files, ProgressHandler progressHandler) {
+    public void importImagesIntoProject(final Array<FileHandle> files, ProgressHandler progressHandler, boolean skipRepack) {
         if (files == null) {
             return;
         }
@@ -724,8 +727,10 @@ public class ProjectManager extends BaseProxy {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             copyImageFilesForAllResolutionsIntoProject(files, true);
-            ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-            resolutionManager.rePackProjectImagesForAllResolutions();
+            if (!skipRepack) {
+                ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
+                resolutionManager.rePackProjectImagesForAllResolutions();
+            }
         });
         executor.execute(() -> {
             changePercentBy(100 - currentPercent);
@@ -743,7 +748,8 @@ public class ProjectManager extends BaseProxy {
     private void copyImageFilesForAllResolutionsIntoProject(Array<FileHandle> files, Boolean performResize) {
         copyImageFilesIntoProject(files, currentProjectInfoVO.originalResolution, performResize);
         int totalWarnings = 0;
-        for (ResolutionEntryVO resolutionEntryVO : currentProjectInfoVO.resolutions) {
+        for (int i = 0; i < currentProjectInfoVO.resolutions.size; i++) {
+            ResolutionEntryVO resolutionEntryVO = currentProjectInfoVO.resolutions.get(i);
             totalWarnings += copyImageFilesIntoProject(files, resolutionEntryVO, performResize);
         }
         if (totalWarnings > 0) {
@@ -773,6 +779,7 @@ public class ProjectManager extends BaseProxy {
                 if (performResize) {
                     bufferedImage = ResolutionManager.imageResize(handle.file(), ratio);
                     if (bufferedImage == null) {
+                        System.out.println(handle.file());
                         bufferedImage = ImageIO.read(handle.file());
                         resizeWarningsCount++;
                     }
