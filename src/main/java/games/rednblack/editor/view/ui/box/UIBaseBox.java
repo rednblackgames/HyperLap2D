@@ -1,7 +1,5 @@
 package games.rednblack.editor.view.ui.box;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.kotcrab.vis.ui.widget.Separator;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
 
