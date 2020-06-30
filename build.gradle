@@ -27,7 +27,7 @@ ext {
     box2dlightsVersion = '1.5'
     ashleyVersion = '1.7.3'
     spineVersion = '3.8.55.1'
-    visuiVersion = '1.4.4'
+    visuiVersion = '1.4.5-SNAPSHOT'
 
     packMain = ["art/textures", "assets/style/", "uiskin"]
     packSplash = ["art/splash_textures", "assets/splash/", "splash"]

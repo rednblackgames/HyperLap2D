@@ -67,7 +67,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         sandbox = Sandbox.getInstance();
 
         treeTable.clear();
-        tree = new VisTree();
+        tree = new VisTree<>();
         VisScrollPane scroller = StandardWidgetsFactory.createScrollPane(tree);
         scroller.setFlickScroll(false);
         treeTable.add(scroller).width(166).maxHeight(570);

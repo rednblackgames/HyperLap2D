@@ -7,13 +7,14 @@ version '0.0.1'
 
 repositories {
     mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 ext {
     gdxVersion = '1.9.10'
     box2DLightsVersion = '1.5'
     ashleyVersion = '1.7.3'
-    visUIVersion = '1.4.4'
+    visUIVersion = '1.4.5-SNAPSHOT'
 }
 
 dependencies {
