@@ -15,18 +15,4 @@ public abstract class UIBaseBox extends VisTable {
     }
 
     public abstract void update();
-
-    @Override
-    public Cell<Separator> addSeparator(boolean vertical) {
-        Cell<Separator> cell = add(new Separator(vertical ? "vertical" : "default")).padTop(2).padBottom(2);
-
-        if (vertical)
-            cell.fillY().expandY();
-        else {
-            cell.fillX().expandX();
-            row();
-        }
-
-        return cell;
-    }
 }
