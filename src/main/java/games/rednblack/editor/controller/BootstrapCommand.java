@@ -92,5 +92,7 @@ public class BootstrapCommand extends SimpleCommand {
         facade.registerCommand(MsgAPI.ACTION_DELETE_SPINE_ANIMATION_RESOURCE, DeleteSpineAnimation.class);
         facade.registerCommand(MsgAPI.ACTION_DELETE_SPRITE_ANIMATION_RESOURCE, DeleteSpriteAnimation.class);
         facade.registerCommand(MsgAPI.ACTION_DELETE_SPRITER_ANIMATION_RESOURCE, DeleteSpriterAnimation.class);
+
+        facade.registerCommand(MsgAPI.SHOW_NOTIFICATION, ShowNotificationCommand.class);
     }
 }

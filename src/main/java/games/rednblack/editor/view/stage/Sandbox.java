@@ -28,9 +28,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kotcrab.vis.ui.util.ToastManager;
 import games.rednblack.editor.renderer.systems.LightSystem;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extention.spine.SpineItemType;
@@ -97,7 +99,7 @@ public class Sandbox {
 
     private SceneLoader sceneLoader;
 	private Array<InputListener> listeners = new Array<>(1);
-    /** End of shitty part. */
+    private ToastManager toastManager;
 
 
     private Sandbox() {
@@ -140,6 +142,9 @@ public class Sandbox {
         itemControl = new ItemControlMediator(sceneControl);
 
         selector = new ItemSelector(this);
+
+        toastManager = new ToastManager(getUIStage());
+        toastManager.setAlignment(Align.bottomRight);
     }
     
     public void initView() {
@@ -161,6 +166,10 @@ public class Sandbox {
 
     public UIStage getUIStage() {
         return uiStage;
+    }
+
+    public ToastManager getToastManager() {
+        return toastManager;
     }
 
     public SceneControlMediator getSceneControl() {

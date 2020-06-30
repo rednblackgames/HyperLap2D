@@ -50,7 +50,9 @@ public class PhysicsBodyComponent implements RemovableComponent {
 
     @Override
     public void onRemove() {
-        body.getWorld().destroyBody(body);
-        body = null;
+        if (body != null && body.getWorld() != null) {
+            body.getWorld().destroyBody(body);
+            body = null;
+        }
     }
 }

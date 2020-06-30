@@ -87,7 +87,6 @@ public class MsgAPI {
 
     public static final String SHOW_ADD_LIBRARY_DIALOG = SANDBOX_PREFIX + "SHOW_ADD_LIBRARY_DIALOG";
     public static final String ACTION_ADD_TO_LIBRARY = SANDBOX_PREFIX + "ACTION_ADD_TO_LIBRARY";
-    public static final String ACTION_EDIT_PHYSICS = SANDBOX_PREFIX + "ACTION_EDIT_PHYSICS";
     public static final String ACTION_ITEMS_MOVE_TO = SANDBOX_PREFIX + "ACTION_ITEMS_MOVE_TO";
     public static final String ACTION_ITEM_AND_CHILDREN_TO = GLOBAL_PREFIX + "ACTION_ITEM_AND_CHILDREN_TO";
     public static final String ACTION_ITEM_TRANSFORM_TO = SANDBOX_PREFIX + "ACTION_ITEM_TRANSFORM_TO";
@@ -135,5 +134,5 @@ public class MsgAPI {
     private static final String DELETE_ITEMS_COMMAND_CLASS_NAME = "games.rednblack.editor.controller.commands.DeleteItemsCommand";
     public static final String DELETE_ITEMS_COMMAND_DONE = DELETE_ITEMS_COMMAND_CLASS_NAME + "DONE";
 
-
+    public static final String SHOW_NOTIFICATION = GLOBAL_PREFIX + ".SHOW_NOTIFICATION";
 }

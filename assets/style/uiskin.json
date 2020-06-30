@@ -716,6 +716,10 @@
   com.kotcrab.vis.ui.widget.color.ColorPickerStyle: {
   default: {pickerStyle: {barSelector: color-picker-bar-selector, cross: color-picker-cross, iconArrowRight: icon-arrow-right, verticalSelector: color-picker-selector-vertical, horizontalSelector: color-picker-selector-horizontal}, titleFont: default-font, background: window, titleFontColor: white }
 },
+com.kotcrab.vis.ui.widget.toast.Toast$ToastStyle: {
+	default: {background: tooltip-bg, closeButtonStyle: close },
+	dark: {background: window-bg, closeButtonStyle: close-window }
+},
 com.kotcrab.vis.ui.widget.LinkLabel$LinkLabelStyle: {
 	default: {fontColor: link-label, underline: white, font: default-font }
 },

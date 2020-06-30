@@ -32,7 +32,9 @@ public class LightBodyComponent implements RemovableComponent {
 
     @Override
     public void onRemove() {
-        lightObject.remove();
-        lightObject = null;
+        if (lightObject != null) {
+            lightObject.remove();
+            lightObject = null;
+        }
     }
 }

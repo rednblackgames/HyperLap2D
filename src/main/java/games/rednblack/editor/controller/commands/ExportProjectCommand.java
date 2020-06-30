@@ -21,6 +21,7 @@ package games.rednblack.editor.controller.commands;
 import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.h2d.common.MsgAPI;
 
 public class ExportProjectCommand extends SandboxCommand {
 
@@ -28,5 +29,7 @@ public class ExportProjectCommand extends SandboxCommand {
     public void execute(Notification notification) {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         projectManager.exportProject();
+
+        facade.sendNotification(MsgAPI.SHOW_NOTIFICATION, "Project successfully exported");
     }
 }

@@ -126,9 +126,7 @@ public class StandardWidgetsFactory {
     }
 
     public static Spinner createNumberSelector(String style, int initialValue, int min, int max, int step) {
-        Spinner selector = new Spinner(style, "", new IntSpinnerModel(initialValue, min, max, step));
-        selector.addListener(new CursorListener(CursorManager.TEXT));
-        return selector;
+        return new Spinner(style, "", new IntSpinnerModel(initialValue, min, max, step));
     }
 
     public static VisTextArea createTextArea() {
