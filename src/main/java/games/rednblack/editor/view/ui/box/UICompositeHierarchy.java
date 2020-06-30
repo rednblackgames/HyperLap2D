@@ -6,6 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisImageTextButton;
+import com.kotcrab.vis.ui.widget.VisScrollPane;
+import games.rednblack.editor.utils.StandardWidgetsFactory;
 
 /**
  * Created by CyberJoe on 4/22/2015.
@@ -24,9 +26,10 @@ public class UICompositeHierarchy extends UIBaseBox {
         super();
 
         mainGroup = new HorizontalGroup();
+		VisScrollPane scrollPane = StandardWidgetsFactory.createScrollPane(mainGroup);
         clearItems();
 
-        add(mainGroup).left().fill();
+        add(scrollPane).left().fill();
 
         add().fill().expand();
         row();

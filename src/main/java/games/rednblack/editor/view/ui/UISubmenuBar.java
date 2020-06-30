@@ -24,44 +24,19 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.box.UICompositeHierarchy;
 import games.rednblack.editor.view.ui.box.UICompositeHierarchyMediator;
-import games.rednblack.editor.view.ui.box.UIGridBox;
-import games.rednblack.editor.view.ui.box.UIGridBoxMediator;
-import games.rednblack.editor.view.ui.box.UIResolutionBox;
-import games.rednblack.editor.view.ui.box.UIResolutionBoxMediator;
-import games.rednblack.editor.view.ui.box.UIZoomBox;
-import games.rednblack.editor.view.ui.box.UIZoomBoxMediator;
 
-/**
- * Created by sargis on 4/8/15.
- */
 public class UISubmenuBar extends VisTable {
     private final HyperLap2DFacade facade;
 
     public UISubmenuBar() {
         Skin skin = VisUI.getSkin();
         facade = HyperLap2DFacade.getInstance();
-        //debug();
+
         setBackground(skin.getDrawable("sub-menu-bg"));
 
-        //hierarchy
+        //Hierarchy
         UICompositeHierarchyMediator uiCompositeHierarchyMediator = facade.retrieveMediator(UICompositeHierarchyMediator.NAME);
         UICompositeHierarchy uiCompositeHierarchy = uiCompositeHierarchyMediator.getViewComponent();
         add(uiCompositeHierarchy).left().expand().fill().padRight(6);
-
-        //grid
-        UIGridBoxMediator uiGridBoxMediator = facade.retrieveMediator(UIGridBoxMediator.NAME);
-        UIGridBox uiGridBox = uiGridBoxMediator.getViewComponent();
-        add(uiGridBox).padRight(8);
-        //
-
-        //grid
-        UIZoomBoxMediator uiZoomBoxMediator = facade.retrieveMediator(UIZoomBoxMediator.NAME);
-        UIZoomBox uiZoomBox = uiZoomBoxMediator.getViewComponent();
-        add(uiZoomBox).padRight(8);
-
-        //resolution box
-        UIResolutionBoxMediator uiResolutionBoxMediator = facade.retrieveMediator(UIResolutionBoxMediator.NAME);
-        UIResolutionBox uiResolutionBox = uiResolutionBoxMediator.getViewComponent();
-        add(uiResolutionBox);
     }
 }

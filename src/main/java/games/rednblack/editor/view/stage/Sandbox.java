@@ -319,10 +319,6 @@ public class Sandbox {
         return true;
     }
 
-    public LayerItemVO getSelectedLayer() {
-        return uiStage.getCurrentSelectedLayer();
-    }
-
     public void setCurrentlyTransforming(Entity item, int transformType) {
         if (item == null || item.getClass().getSimpleName().equals("LabelItem")) return;
         currTransformType = transformType;

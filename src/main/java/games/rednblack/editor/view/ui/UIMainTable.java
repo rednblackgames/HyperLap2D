@@ -18,8 +18,6 @@
 
 package games.rednblack.editor.view.ui;
 
-import com.badlogic.gdx.Gdx;
-import com.kotcrab.vis.ui.widget.VisDialog;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
@@ -38,55 +36,55 @@ import games.rednblack.editor.view.ui.box.UIToolBox;
 import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
 import games.rednblack.editor.view.ui.widget.H2DLogo;
 
-/**
- * Created by sargis on 9/10/14.
- */
 public class UIMainTable extends VisTable {
-    private final VisTable topTable;
-    private final VisTable middleTable;
+    private final VisTable topTable, middleTable;
     private final HyperLap2DFacade facade;
 
-    //TODO: fuck! make this private!!!!
-    public UISubmenuBar compositePanel;
-    public UIItemsTreeBox itemsBox;
-
-    public UIMainTable() {
+	public UIMainTable() {
         facade = HyperLap2DFacade.getInstance();
-        //debug();
+
         setFillParent(true);
         top();
         topTable = new VisTable();
-//        topTable.debug();
         middleTable = new VisTable();
-//        middleTable.debug();
         add(topTable).fillX().expandX();
         row();
-        add(middleTable).fillX().padTop(1);
-        //
+        add(middleTable).fillX().growY().padTop(1);
+
         initMenuBar();
         topTable.row();
-        initCompisitePanel();
+		initSupportMenus();
         initToolsPanel();
         initLeftBoxesPanel();
         initRightBoxesPanel();
     }
 
-    private void initLeftBoxesPanel() {
-        VisTable leftBoxesPanel = new VisTable();
-        UIAlignBoxMediator uiAlignBoxMediator = facade.retrieveMediator(UIAlignBoxMediator.NAME);
-        UIAlignBox uiAlignBox = uiAlignBoxMediator.getViewComponent();
-        leftBoxesPanel.add(uiAlignBox).expandX().fillX();
-        leftBoxesPanel.row();
-        UIItemsTreeBoxMediator uiItemsTreeBoxMediator = facade.retrieveMediator(UIItemsTreeBoxMediator.NAME);
-        itemsBox = uiItemsTreeBoxMediator.getViewComponent();
-        leftBoxesPanel.add(itemsBox).expandX().fillX().maxHeight(600).top();
-        middleTable.add(leftBoxesPanel).top().left().expand().padTop(15).padLeft(16);
-    }
+	private void initMenuBar() {
+		HyperLap2DMenuBarMediator hyperlap2DMenuBarMediator = facade.retrieveMediator(HyperLap2DMenuBarMediator.NAME);
+		HyperLap2DMenuBar menuBar = hyperlap2DMenuBarMediator.getViewComponent();
+		topTable.add(new H2DLogo()).left().fillY();
+		topTable.add(menuBar.getTable().padLeft(0)).fillX().height(32).expandX();
+	}
 
-    private void initCompisitePanel() {
-        compositePanel = new UISubmenuBar();
+    private void initSupportMenus() {
+		UISubmenuBar compositePanel = new UISubmenuBar();
         topTable.add(compositePanel).fillX().expandX().colspan(2).height(32);
     }
+
+	private void initLeftBoxesPanel() {
+		//Align
+		VisTable leftBoxesPanel = new VisTable();
+		UIAlignBoxMediator uiAlignBoxMediator = facade.retrieveMediator(UIAlignBoxMediator.NAME);
+		UIAlignBox uiAlignBox = uiAlignBoxMediator.getViewComponent();
+		leftBoxesPanel.add(uiAlignBox).expandX().fillX();
+		leftBoxesPanel.row();
+
+		//TreeView
+		UIItemsTreeBoxMediator uiItemsTreeBoxMediator = facade.retrieveMediator(UIItemsTreeBoxMediator.NAME);
+		UIItemsTreeBox itemsBox = uiItemsTreeBoxMediator.getViewComponent();
+		leftBoxesPanel.add(itemsBox).expandX().fillX().maxHeight(600).top();
+		middleTable.add(leftBoxesPanel).top().left().expand().padTop(15).padLeft(16);
+	}
 
     private void initRightBoxesPanel() {
         VisTable rightPanel = new VisTable();
@@ -108,12 +106,10 @@ public class UIMainTable extends VisTable {
         UILayerBox layerBox = layerBoxMediator.getViewComponent();
         rightPanel.add(layerBox).top();
 
-        //
         middleTable.add(rightPanel).top().right().expand().padTop(15);
     }
 
     private void initToolsPanel() {
-        //
         VisTable toolsPanel = new VisTable();
         toolsPanel.background("toolbar-bg");
         //
@@ -121,14 +117,6 @@ public class UIMainTable extends VisTable {
         UIToolBox uiToolBox = uiToolBoxMediator.getViewComponent();
         toolsPanel.add(uiToolBox).top().expandY().padTop(4);
         //
-        middleTable.add(toolsPanel).top().left().width(40).height(Gdx.graphics.getHeight()).expandY();
-    }
-
-
-    private void initMenuBar() {
-        HyperLap2DMenuBarMediator hyperlap2DMenuBarMediator = facade.retrieveMediator(HyperLap2DMenuBarMediator.NAME);
-        HyperLap2DMenuBar menuBar = hyperlap2DMenuBarMediator.getViewComponent();
-        topTable.add(new H2DLogo()).left().fillY();
-        topTable.add(menuBar.getTable().padLeft(0)).fillX().height(32).expandX();
+        middleTable.add(toolsPanel).top().left().width(40).fillY().expandY();
     }
 }

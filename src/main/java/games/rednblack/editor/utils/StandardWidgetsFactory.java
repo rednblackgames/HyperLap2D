@@ -204,4 +204,14 @@ public class StandardWidgetsFactory {
         tooltip.getContainer().pad(5);
         actor.addListener(tooltip);
     }
+
+    public static VisTextButton createTextButton(String text) {
+    	return createTextButton(text, "default");
+	}
+
+	public static VisTextButton createTextButton(String text, String style) {
+		VisTextButton button = new VisTextButton(text, style);
+		button.addListener(new CursorListener(CursorManager.FINGER));
+		return button;
+	}
 }

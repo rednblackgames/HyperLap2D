@@ -29,16 +29,7 @@ import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.stage.UIStageMediator;
 import games.rednblack.editor.view.ui.RulersUIMediator;
 import games.rednblack.editor.view.ui.UIDropDownMenuMediator;
-import games.rednblack.editor.view.ui.box.UIAlignBoxMediator;
-import games.rednblack.editor.view.ui.box.UICompositeHierarchyMediator;
-import games.rednblack.editor.view.ui.box.UIGridBoxMediator;
-import games.rednblack.editor.view.ui.box.UIItemsTreeBoxMediator;
-import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
-import games.rednblack.editor.view.ui.box.UIMultiPropertyBoxMediator;
-import games.rednblack.editor.view.ui.box.UIResolutionBoxMediator;
-import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
-import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
-import games.rednblack.editor.view.ui.box.UIZoomBoxMediator;
+import games.rednblack.editor.view.ui.box.*;
 import games.rednblack.editor.view.ui.dialog.*;
 import games.rednblack.editor.view.ui.panel.CustomVariablesPanelMediator;
 import games.rednblack.editor.view.ui.panel.EditSpriteAnimationPanelMediator;
@@ -61,6 +52,7 @@ public class BootstrapViewCommand extends SimpleCommand {
         facade.registerMediator(new UIResolutionBoxMediator());
         facade.registerMediator(new UIZoomBoxMediator());
         facade.registerMediator(new UIToolBoxMediator());
+		facade.registerMediator(new UILivePreviewBoxMediator());
 
         // Dialogs
         facade.registerMediator(new NewProjectDialogMediator());

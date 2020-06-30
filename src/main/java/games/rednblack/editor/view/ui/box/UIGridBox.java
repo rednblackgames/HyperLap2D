@@ -43,7 +43,6 @@ public class UIGridBox extends UIBaseBox {
     private VisCheckBox lockLinesCheckBox;
 
     public UIGridBox() {
-        super();
         init();
         setVisible(false);
     }
@@ -56,7 +55,8 @@ public class UIGridBox extends UIBaseBox {
     private void init() {
         lockLinesCheckBox = StandardWidgetsFactory.createCheckBox("Lock lines");
         lockLinesCheckBox.addListener(new CheckBoxChangeListener(LOCK_LINES_CHECKBOX_FIELD_UPDATED));
-        add(lockLinesCheckBox).width(100).padRight(4);
+        add(lockLinesCheckBox);
+		addSeparator(true).padRight(13).padLeft(13);
 
         VisLabel lbl = new VisLabel("Grid Size:");
         add(lbl).padRight(4);

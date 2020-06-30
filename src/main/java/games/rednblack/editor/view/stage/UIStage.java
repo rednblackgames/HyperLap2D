@@ -23,9 +23,11 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.util.ToastManager;
+import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.RulersUIMediator;
+import games.rednblack.editor.view.ui.UIBottomMenuBar;
 import games.rednblack.editor.view.ui.UIMainTable;
 import games.rednblack.editor.view.ui.box.UIItemsTreeBox;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
@@ -75,6 +77,13 @@ public class UIStage extends Stage {
         addActor(uiMainTable);
         addActor(contextMenuContainer);
 
+		VisTable mainBottomTable = new VisTable();
+		mainBottomTable.setFillParent(true);
+		mainBottomTable.bottom();
+		UIBottomMenuBar bottomMenuBar = new UIBottomMenuBar();
+		mainBottomTable.add(bottomMenuBar).fillX().expandX().height(38);
+		addActor(mainBottomTable);
+
         setListeners();
     }
 
@@ -111,20 +120,6 @@ public class UIStage extends Stage {
                 return event.getTarget() != getRoot() && event.getTarget() != dummyTarget;
             }
         });
-    }
-
-    public LayerItemVO getCurrentSelectedLayer() {
-    	return null;
-    	//TODO fix and uncomment
-//        UILayerBoxMediator mediator = facade.retrieveMediator(UILayerBoxMediator.NAME);
-//        int selectedLayerIndex = mediator.getCurrentSelectedLayerIndex();
-//        LayerItemVO layerVO = Sandbox.getInstance().sceneControl.getCurrentScene().dataVO.composite.layers.get(selectedLayerIndex);
-//        return layerVO;
-    }
-
-
-    public UIItemsTreeBox getItemsBox() {
-        return uiMainTable.itemsBox;
     }
 
     @Override

@@ -23,18 +23,15 @@ import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.utils.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.properties.UIAbstractProperties;
-import games.rednblack.editor.view.ui.widget.ScrollFocusListener;
 
 /**
  * Created by azakhary on 4/15/2015.
  */
 public class UIMultiPropertyBox extends UICollapsibleBox {
 
-
     private final VisTable propertiesTable;
     private VisScrollPane scrollPane;
     private VisTable scrollPaneInner;
-
 
     public UIMultiPropertyBox() {
         super("Properties", 230);
@@ -43,11 +40,9 @@ public class UIMultiPropertyBox extends UICollapsibleBox {
         scrollPaneInner = new VisTable();
         scrollPane = StandardWidgetsFactory.createScrollPane(scrollPaneInner);
 
-        scrollPane.setSmoothScrolling(true);
-        //scrollPane.setScrollbarsOnTop(true);
         scrollPane.setFadeScrollBars(true);
 
-        propertiesTable.add(scrollPane).maxHeight(Gdx.graphics.getHeight() * 0.43f);
+        propertiesTable.add(scrollPane).maxHeight(Gdx.graphics.getHeight() * 0.38f);
         createCollapsibleWidget(propertiesTable);
     }
 

@@ -60,7 +60,8 @@ public class UIResolutionBox extends UIBaseBox {
     @Override
     public void update() {
         clear();
-        addSeparator(true).padRight(6);
+        addSeparator(true).padRight(13).padLeft(13);
+
         visSelectBox = StandardWidgetsFactory.createSelectBox(ResolutionEntryVO.class);
         Array<ResolutionEntryVO> resolutionEntryVOs = new Array<>();
         ResolutionEntryVO newResolutionEntryVO = new ResolutionEntryVO();
@@ -79,9 +80,9 @@ public class UIResolutionBox extends UIBaseBox {
         deleteBtn.setStyle(visImageButtonStyle);
         deleteBtn.addListener(new UIResolutionBoxButtonClickListener(DELETE_RESOLUTION_BTN_CLICKED));
         add(deleteBtn).padRight(11).height(25);
-        VisTextButton repackBtn = new VisTextButton("Repack", "orange");
+        VisTextButton repackBtn = StandardWidgetsFactory.createTextButton("Repack", "orange");
         repackBtn.addListener(new UIResolutionBoxButtonClickListener(REPACK_BTN_CLICKED));
-        add(repackBtn).padRight(5).width(93).height(25);
+        add(repackBtn).width(93);
         setCurrentResolution(resolutionManager.currentResolutionName);
         visSelectBox.addListener(new ResolutionChangeListener());
     }

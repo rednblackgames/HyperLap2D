@@ -56,9 +56,8 @@ public class UIZoomBox extends UIBaseBox {
     }
 
     private void init() {
-        //
-        addSeparator(true).padRight(6);
-        add("Zoom:").padRight(5);
+        addSeparator(true).padRight(13).padLeft(13);
+        add("Zoom:").padRight(4);
         //
         VisImageButton.VisImageButtonStyle zoominButtonStyle = new VisImageButton.VisImageButtonStyle(skin.get("dark", VisImageButton.VisImageButtonStyle.class));
         zoominButtonStyle.imageUp = skin.getDrawable("icon-zoomin");
@@ -68,22 +67,21 @@ public class UIZoomBox extends UIBaseBox {
         zoomInBtn = new VisImageButton("dark");
         zoomInBtn.setStyle(zoominButtonStyle);
         zoomInBtn.addListener(new UIZoomBoxButtonClickListener(0.5f));
-        add(zoomInBtn).padRight(11).height(25);
+        add(zoomInBtn).padRight(6).height(25);
         //
         VisImageButton.VisImageButtonStyle zoomoutButtonStyle = new VisImageButton.VisImageButtonStyle(skin.get("dark", VisImageButton.VisImageButtonStyle.class));
         zoomoutButtonStyle.imageUp = skin.getDrawable("icon-zoomout");
         zoomoutButtonStyle.imageOver = skin.getDrawable("icon-zoomout-over");
         zoomoutButtonStyle.imageDisabled = skin.getDrawable("icon-zoomout-disabled");
         //
-        zoomOutBtn = new VisImageButton("dark");
-        zoomOutBtn.setStyle(zoomoutButtonStyle);
-        zoomOutBtn.addListener(new UIZoomBoxButtonClickListener(2f));
-        add(zoomOutBtn).padRight(11).height(25);
-        //
         percentValueField = StandardWidgetsFactory.createTextField("light");
-        //percentValueField.setItems("200%", "100%", "50%", "25%");
         percentValueField.addListener(new KeyboardListener(ZOOM_VALUE_CHANGED));
         add(percentValueField).width(114);
+		//
+		zoomOutBtn = new VisImageButton("dark");
+		zoomOutBtn.setStyle(zoomoutButtonStyle);
+		zoomOutBtn.addListener(new UIZoomBoxButtonClickListener(2f));
+		add(zoomOutBtn).padLeft(6).height(25);
     }
 
     public String getCurrentZoom() {
@@ -99,7 +97,7 @@ public class UIZoomBox extends UIBaseBox {
         percentValueField.setText(currentZoom + '%');
     }
 
-    private class UIZoomBoxButtonClickListener extends ClickListener {
+    private static class UIZoomBoxButtonClickListener extends ClickListener {
         private final float zoomDevider;
 
         public UIZoomBoxButtonClickListener(float zoomDevider) {
