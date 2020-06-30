@@ -72,12 +72,12 @@ public class ImportUtils {
 
         fileTypeFilter = new FileTypeFilter(false);
 
-        fileTypeFilter.addRule("All Supported (*.png, *.atlas, *.p, *.json, *.scml, *.vert, *.frag, *.h2dlib)", "png", "atlas", "p", "json", "vert", "frag", "h2dlib");
+        fileTypeFilter.addRule("All Supported (*.png, *.atlas, *.p, *.json, *.vert, *.frag, *.h2dlib)", "png", "atlas", "p", "json", "vert", "frag", "h2dlib");
         fileTypeFilter.addRule("PNG File (*.png)", "png");
         fileTypeFilter.addRule("Sprite Animation Atlas File (*.atlas)", "atlas");
         fileTypeFilter.addRule("Particle Effect (*.p)", "p");
         fileTypeFilter.addRule("Spine Animation (*.json)", "json");
-        fileTypeFilter.addRule("Spriter Animation (*.scml)", "scml");
+        //fileTypeFilter.addRule("Spriter Animation (*.scml)", "scml");
         fileTypeFilter.addRule("Shader (*.vert, *.frag)", "vert", "frag");
         fileTypeFilter.addRule("HyperLap2D Library (*.h2dlib)", "h2dlib");
     }

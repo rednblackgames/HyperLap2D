@@ -1382,15 +1382,14 @@ public class ProjectManager extends BaseProxy {
     }
 
     private boolean deleteSpriterAnimation(String resolutionName, String spineName) {
-        String spriterPath = currentProjectPath + "/assets/" + resolutionName + "/animations" + File.separator;
+        String spriterPath = currentProjectPath + "/assets/" + resolutionName + "/spriter-animations" + File.separator;
         String filePath = spriterPath + spineName;
         return deleteDirectory(filePath);
     }
 
     public boolean deleteSpriterAnimationForAllResolutions(String spineName) {
         for (ResolutionEntryVO resolutionEntryVO : currentProjectInfoVO.resolutions) {
-            if(!deleteSpriterAnimation(resolutionEntryVO.name, spineName))
-                return false;
+            deleteSpriterAnimation(resolutionEntryVO.name, spineName);
         }
         return deleteSpriterAnimation("orig", spineName);
     }
