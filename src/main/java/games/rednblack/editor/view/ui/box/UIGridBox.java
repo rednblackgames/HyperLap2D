@@ -19,6 +19,7 @@
 package games.rednblack.editor.view.ui.box;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -58,6 +59,7 @@ public class UIGridBox extends UIBaseBox {
         add(lbl).padRight(4);
         gridSizeTextField = StandardWidgetsFactory.createValidableTextField("light", new Validators.IntegerValidator());
         gridSizeTextField.addListener(new KeyboardListener(GRID_SIZE_TEXT_FIELD_UPDATED));
+		gridSizeTextField.setAlignment(Align.center);
         add(gridSizeTextField).width(30);
     }
 

@@ -21,6 +21,7 @@ package games.rednblack.editor.view.ui.box;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
@@ -76,6 +77,7 @@ public class UIZoomBox extends UIBaseBox {
         //
         percentValueField = StandardWidgetsFactory.createTextField("light");
         percentValueField.addListener(new KeyboardListener(ZOOM_VALUE_CHANGED));
+		percentValueField.setAlignment(Align.center);
         add(percentValueField).width(50);
 		//
 		zoomOutBtn = new VisImageButton("dark");
