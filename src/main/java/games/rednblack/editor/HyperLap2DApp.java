@@ -10,7 +10,6 @@ import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.utils.AppConfig;
 import games.rednblack.h2d.common.MsgAPI;
 import org.apache.commons.lang3.SystemUtils;
-import org.lwjgl.glfw.GLFW;
 
 public class HyperLap2DApp extends ApplicationAdapter {
     private static HyperLap2DApp sInstance = null;

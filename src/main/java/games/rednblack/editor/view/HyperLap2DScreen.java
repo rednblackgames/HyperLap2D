@@ -45,19 +45,16 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
     public UIStage uiStage;
     
 	private Engine engine;
-    
-    private InputMultiplexer multiplexer;
-    private HyperLap2DFacade facade;
-    private ProjectManager projectManager;
-    private boolean paused = false;
 
-    private Sandbox sandbox;
+	private final HyperLap2DFacade facade;
+    private ProjectManager projectManager;
+
+	private Sandbox sandbox;
     private SandboxBackUI sandboxBackUI;
 
     private Color bgColor;
     private final Image bgLogo;
 	private final Vector2 screenSize;
-
 
     private boolean isDrawingBgLogo;
 
@@ -98,13 +95,11 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
     @Override
     public void pause() {
-        paused = true;
-    }
+	}
 
     @Override
     public void resume() {
-        paused = false;
-    }
+	}
 
     @Override
     public void dispose() {
@@ -123,7 +118,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
         projectManager = facade.retrieveProxy(ProjectManager.NAME);
 
-        multiplexer = new InputMultiplexer();
+		InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(this);
         multiplexer.addProcessor(uiStage);
         multiplexer.addProcessor(new SandboxInputAdapter());
@@ -132,7 +127,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
     @Override
     public void hide() {
-
+		uiStage.dispose();
     }
 
     @Override
