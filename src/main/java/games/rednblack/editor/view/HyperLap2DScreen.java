@@ -27,9 +27,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.view.ui.widget.actors.basic.SandboxBackUI;
@@ -42,7 +41,6 @@ import games.rednblack.editor.renderer.data.SceneVO;
 
 public class HyperLap2DScreen implements Screen, InputProcessor {
     private static final String TAG = HyperLap2DScreen.class.getCanonicalName();
-    //public SandboxStage sandboxStage;
     
     public UIStage uiStage;
     
@@ -56,10 +54,9 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
     private Sandbox sandbox;
     private SandboxBackUI sandboxBackUI;
 
-    private Batch batch;
     private Color bgColor;
-    private Texture bgLogo;
-    private Vector2 screenSize;
+    private final Image bgLogo;
+	private final Vector2 screenSize;
 
 
     private boolean isDrawingBgLogo;
@@ -68,8 +65,8 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         facade = HyperLap2DFacade.getInstance();
         bgColor = new Color(0.15f, 0.15f, 0.15f, 1.0f);
         isDrawingBgLogo = true;
-        batch = new SpriteBatch();
-        bgLogo = new Texture(Gdx.files.internal("style/bglogo.png"));
+        bgLogo = new Image(new Texture(Gdx.files.internal("style/bglogo.png")));
+        bgLogo.getColor().a = 0.3f;
         screenSize = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
@@ -78,17 +75,12 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         Gdx.gl.glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if(isDrawingBgLogo) {
-            batch.begin();
-            batch.setColor(1, 1, 1, 0.3f);
-            batch.draw(bgLogo, screenSize.x/2 - bgLogo.getWidth()/2f, screenSize.y/2 - bgLogo.getHeight()/2f);
-            batch.end();
-        } else {
-            if (sandboxBackUI != null) sandboxBackUI.render(deltaTime);
-            engine.update(deltaTime);
-        }
+		if (!isDrawingBgLogo) {
+			if (sandboxBackUI != null) sandboxBackUI.render(deltaTime);
+			engine.update(deltaTime);
+		}
 
-        uiStage.getViewport().apply();
+		uiStage.getViewport().apply();
         uiStage.act(deltaTime);
         uiStage.draw();
     }
@@ -97,10 +89,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         if(!isDrawingBgLogo) return;
 
         this.isDrawingBgLogo = false;
-        bgLogo.dispose();
-        batch.dispose();
-        batch = null;
-        bgLogo = null;
+        bgLogo.remove();
     }
 
     public void setBgColor(Color color) {
@@ -127,6 +116,11 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         sandbox = Sandbox.getInstance();
         uiStage = sandbox.getUIStage();
 
+        if (isDrawingBgLogo) {
+        	uiStage.addActor(bgLogo);
+        	bgLogo.setPosition(screenSize.x/2 - bgLogo.getWidth()/2f, screenSize.y/2 - bgLogo.getHeight()/2f);
+		}
+
         projectManager = facade.retrieveProxy(ProjectManager.NAME);
 
         multiplexer = new InputMultiplexer();
@@ -147,6 +141,8 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         if (width == 0 && height == 0) return;
 
         uiStage.resize(width, height);
+        screenSize.set(width, height);
+		bgLogo.setPosition(screenSize.x/2 - bgLogo.getWidth()/2f, screenSize.y/2 - bgLogo.getHeight()/2f);
 
         if(Sandbox.getInstance().getViewport() != null) {
             Sandbox.getInstance().getViewport().update(width, height, true);
