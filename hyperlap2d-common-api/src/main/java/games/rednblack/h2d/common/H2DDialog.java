@@ -18,13 +18,11 @@
 
 package games.rednblack.h2d.common;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.InputValidator;
 import com.kotcrab.vis.ui.widget.VisDialog;
-import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.VisValidatableTextField;
 
@@ -39,7 +37,29 @@ public class H2DDialog extends VisDialog {
         skin = VisUI.getSkin();
     }
 
-    protected VisTextField createTextField() {
+	@Override
+	public void hide () {
+		super.hide();
+		onDismiss();
+	}
+
+	@Override
+	public void hide (Action action) {
+		super.hide(action);
+		onDismiss();
+	}
+
+	@Override
+	protected void close () {
+		super.close();
+		onDismiss();
+	}
+
+	protected void onDismiss() {
+
+	}
+
+	protected VisTextField createTextField() {
         return new VisTextField("", "light");
     }
 

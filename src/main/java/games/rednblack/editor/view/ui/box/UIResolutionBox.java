@@ -27,7 +27,6 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
-import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResolutionManager;
@@ -35,15 +34,16 @@ import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.utils.StandardWidgetsFactory;
 
 public class UIResolutionBox extends UIBaseBox {
-    public static final String CREATE_NEW_RESOLUTION_BTN_CLICKED = "games.rednblack.editor.view.ui.box.UIResolutionBox" + ".CREATE_NEW_RESOLUTION_BTN_CLICKED";
-    public static final String CHANGE_RESOLUTION_BTN_CLICKED = "games.rednblack.editor.view.ui.box.UIResolutionBox" + ".CHANGE_RESOLUTION_BTN_CLICKED";
-    public static final String DELETE_RESOLUTION_BTN_CLICKED = "games.rednblack.editor.view.ui.box.UIResolutionBox" + ".DELETE_RESOLUTION_BTN_CLICKED";
-    public static final String REPACK_BTN_CLICKED = "games.rednblack.editor.view.ui.box.UIResolutionBox" + ".REPACK_BTN_CLICKED";
-    //    private final String currentResolutionName;
+	private static final String prefix = "games.rednblack.editor.view.ui.box.UIResolutionBox";
+
+    public static final String CREATE_NEW_RESOLUTION_BTN_CLICKED = prefix + ".CREATE_NEW_RESOLUTION_BTN_CLICKED";
+    public static final String CHANGE_RESOLUTION_BTN_CLICKED = prefix + ".CHANGE_RESOLUTION_BTN_CLICKED";
+    public static final String DELETE_RESOLUTION_BTN_CLICKED = prefix + ".DELETE_RESOLUTION_BTN_CLICKED";
+    public static final String REPACK_BTN_CLICKED = prefix + ".REPACK_BTN_CLICKED";
+
     private final ResolutionManager resolutionManager;
     private final Skin skin;
     private VisSelectBox<ResolutionEntryVO> visSelectBox;
-//    private final ProjectManager projectManager;
 
     private VisImageButton deleteBtn;
 
@@ -62,6 +62,14 @@ public class UIResolutionBox extends UIBaseBox {
         clear();
         addSeparator(true).padRight(13).padLeft(13);
 
+		VisImageButton.VisImageButtonStyle visImageButtonStyle = new VisImageButton.VisImageButtonStyle(skin.get("dark", VisImageButton.VisImageButtonStyle.class));
+		visImageButtonStyle.imageUp = skin.getDrawable("icon-trash");
+		visImageButtonStyle.imageOver = skin.getDrawable("icon-trash-over");
+		visImageButtonStyle.imageDisabled = skin.getDrawable("icon-trash-disabled");
+		deleteBtn = new VisImageButton("dark");
+		deleteBtn.setStyle(visImageButtonStyle);
+		deleteBtn.addListener(new UIResolutionBoxButtonClickListener(DELETE_RESOLUTION_BTN_CLICKED));
+
         visSelectBox = StandardWidgetsFactory.createSelectBox(ResolutionEntryVO.class);
         Array<ResolutionEntryVO> resolutionEntryVOs = new Array<>();
         ResolutionEntryVO newResolutionEntryVO = new ResolutionEntryVO();
@@ -72,19 +80,14 @@ public class UIResolutionBox extends UIBaseBox {
         visSelectBox.setItems(resolutionEntryVOs);
         add("Resolution:").padRight(4);
         add(visSelectBox).padRight(11).width(156);
-        VisImageButton.VisImageButtonStyle visImageButtonStyle = new VisImageButton.VisImageButtonStyle(skin.get("dark", VisImageButton.VisImageButtonStyle.class));
-        visImageButtonStyle.imageUp = skin.getDrawable("icon-trash");
-        visImageButtonStyle.imageOver = skin.getDrawable("icon-trash-over");
-        visImageButtonStyle.imageDisabled = skin.getDrawable("icon-trash-disabled");
-        deleteBtn = new VisImageButton("dark");
-        deleteBtn.setStyle(visImageButtonStyle);
-        deleteBtn.addListener(new UIResolutionBoxButtonClickListener(DELETE_RESOLUTION_BTN_CLICKED));
+		setCurrentResolution();
+		visSelectBox.addListener(new ResolutionChangeListener());
+
         add(deleteBtn).padRight(11).height(25);
+
         VisTextButton repackBtn = StandardWidgetsFactory.createTextButton("Repack", "orange");
         repackBtn.addListener(new UIResolutionBoxButtonClickListener(REPACK_BTN_CLICKED));
         add(repackBtn).width(93);
-        setCurrentResolution(resolutionManager.currentResolutionName);
-        visSelectBox.addListener(new ResolutionChangeListener());
     }
 
     private void setCurrentResolution(String currentResolutionName) {
@@ -98,8 +101,11 @@ public class UIResolutionBox extends UIBaseBox {
         }
     }
 
-    private void loadCurrentResolution() {
+    public void setCurrentResolution() {
+		setCurrentResolution(resolutionManager.currentResolutionName);
 
+		int selectedIndex = visSelectBox.getSelectedIndex();
+		deleteBtn.setDisabled(selectedIndex <= 1);
     }
 
     private class UIResolutionBoxButtonClickListener extends ClickListener {
@@ -112,10 +118,12 @@ public class UIResolutionBox extends UIBaseBox {
         @Override
         public void clicked(InputEvent event, float x, float y) {
             super.clicked(event, x, y);
+
             HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
             switch (btnClicked) {
                 case DELETE_RESOLUTION_BTN_CLICKED:
-                    facade.sendNotification(btnClicked, visSelectBox.getSelected());
+                	if (!deleteBtn.isDisabled())
+                    	facade.sendNotification(btnClicked, visSelectBox.getSelected());
                     break;
                 case REPACK_BTN_CLICKED:
                     facade.sendNotification(btnClicked);
@@ -128,15 +136,13 @@ public class UIResolutionBox extends UIBaseBox {
 
         @Override
         public void changed(ChangeEvent changeEvent, Actor actor) {
-            deleteBtn.setDisabled(false);
-            int selectedIndex = visSelectBox.getSelectedIndex();
+			int selectedIndex = visSelectBox.getSelectedIndex();
+			deleteBtn.setDisabled(selectedIndex <= 1);
+
             HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
             if (selectedIndex == 0) {
                 facade.sendNotification(CREATE_NEW_RESOLUTION_BTN_CLICKED);
                 return;
-            }
-            if (selectedIndex == 1) {
-                deleteBtn.setDisabled(true);
             }
             facade.sendNotification(CHANGE_RESOLUTION_BTN_CLICKED, visSelectBox.getSelected());
         }

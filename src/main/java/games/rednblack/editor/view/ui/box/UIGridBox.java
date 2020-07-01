@@ -18,13 +18,10 @@
 
 package games.rednblack.editor.view.ui.box;
 
-
 import com.badlogic.gdx.Gdx;
-import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
-import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.VisValidatableTextField;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
@@ -40,9 +37,8 @@ public class UIGridBox extends UIBaseBox {
     public static final String GRID_SIZE_TEXT_FIELD_UPDATED = GRID_BOX_PREFIX + ".GRID_SIZE_TEXT_FIELD_UPDATED";
     public static final String LOCK_LINES_CHECKBOX_FIELD_UPDATED = GRID_BOX_PREFIX + ".LOCK_LINES_CHECKBOX_FIELD_UPDATED";
     private VisValidatableTextField gridSizeTextField;
-    private VisCheckBox lockLinesCheckBox;
 
-    public UIGridBox() {
+	public UIGridBox() {
         init();
         setVisible(false);
     }
@@ -53,18 +49,16 @@ public class UIGridBox extends UIBaseBox {
     }
 
     private void init() {
-        lockLinesCheckBox = StandardWidgetsFactory.createCheckBox("Lock lines");
+		VisCheckBox lockLinesCheckBox = StandardWidgetsFactory.createCheckBox("Lock lines");
         lockLinesCheckBox.addListener(new CheckBoxChangeListener(LOCK_LINES_CHECKBOX_FIELD_UPDATED));
         add(lockLinesCheckBox);
 		addSeparator(true).padRight(13).padLeft(13);
 
         VisLabel lbl = new VisLabel("Grid Size:");
         add(lbl).padRight(4);
-        gridSizeTextField = StandardWidgetsFactory.createValidableTextField(new Validators.IntegerValidator());
-        gridSizeTextField.setStyle(VisUI.getSkin().get("light", VisTextField.VisTextFieldStyle.class));
-        //gridSizeTextField.setRightAligned(true);
+        gridSizeTextField = StandardWidgetsFactory.createValidableTextField("light", new Validators.IntegerValidator());
         gridSizeTextField.addListener(new KeyboardListener(GRID_SIZE_TEXT_FIELD_UPDATED));
-        add(gridSizeTextField).width(60);
+        add(gridSizeTextField).width(30);
     }
 
     public void setGridSize(int gridSize) {

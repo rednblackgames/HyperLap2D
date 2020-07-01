@@ -27,6 +27,7 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
+import games.rednblack.editor.view.ui.dialog.CreateNewResolutionDialog;
 
 /**
  * Created by sargis on 4/8/15.
@@ -54,7 +55,8 @@ public class UIResolutionBoxMediator extends SimpleMediator<UIResolutionBox> {
                 UIResolutionBox.CHANGE_RESOLUTION_BTN_CLICKED,
                 UIResolutionBox.DELETE_RESOLUTION_BTN_CLICKED,
                 UIResolutionBox.REPACK_BTN_CLICKED,
-                ResolutionManager.RESOLUTION_LIST_CHANGED
+                ResolutionManager.RESOLUTION_LIST_CHANGED,
+				CreateNewResolutionDialog.CLOSE_DIALOG
         };
     }
 
@@ -65,12 +67,13 @@ public class UIResolutionBoxMediator extends SimpleMediator<UIResolutionBox> {
         ResolutionEntryVO resolutionEntryVO;
         switch (notification.getName()) {
             case ResolutionManager.RESOLUTION_LIST_CHANGED:
-                viewComponent.update();
+			case ProjectManager.PROJECT_OPENED:
+				viewComponent.update();
                 break;
-            case ProjectManager.PROJECT_OPENED:
-                viewComponent.update();
-                break;
-            case UIResolutionBox.CHANGE_RESOLUTION_BTN_CLICKED:
+			case CreateNewResolutionDialog.CLOSE_DIALOG:
+				viewComponent.setCurrentResolution();
+				break;
+			case UIResolutionBox.CHANGE_RESOLUTION_BTN_CLICKED:
                 resolutionEntryVO = notification.getBody();
                 float zoom = sandbox.getZoomPercent();
                 Vector3 cameraPos = new Vector3(sandbox.getCamera().position);
@@ -84,10 +87,10 @@ public class UIResolutionBoxMediator extends SimpleMediator<UIResolutionBox> {
                 resolutionEntryVO = notification.getBody();
                 Dialogs.showConfirmDialog(sandbox.getUIStage(),
                         "Delete Resolution",
-                        "Are you sure you want to delete resolution: " + resolutionEntryVO.name + "?",
-                        new String[]{"Delete", "Cancel"}, new Integer[]{0, 1},
+                        "Are you sure you want to delete '" + resolutionEntryVO.name + "' resolution?",
+                        new String[]{"Cancel", "Delete"}, new Integer[]{0, 1},
                         result -> {
-                            if (result == 0) {
+                            if (result == 1) {
                                 ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
                                 resolutionManager.deleteResolution(resolutionEntryVO);
                                 String sceneName = sandbox.sceneControl.getCurrentSceneVO().sceneName;

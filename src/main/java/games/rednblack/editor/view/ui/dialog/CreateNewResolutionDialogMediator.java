@@ -48,7 +48,7 @@ public class CreateNewResolutionDialogMediator extends SimpleMediator<CreateNewR
     public String[] listNotificationInterests() {
         return new String[]{
                 UIResolutionBox.CREATE_NEW_RESOLUTION_BTN_CLICKED,
-                CreateNewResolutionDialog.CREATE_BTN_CLICKED,
+                CreateNewResolutionDialog.CREATE_BTN_CLICKED
         };
     }
 

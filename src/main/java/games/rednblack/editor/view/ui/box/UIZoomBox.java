@@ -76,7 +76,7 @@ public class UIZoomBox extends UIBaseBox {
         //
         percentValueField = StandardWidgetsFactory.createTextField("light");
         percentValueField.addListener(new KeyboardListener(ZOOM_VALUE_CHANGED));
-        add(percentValueField).width(114);
+        add(percentValueField).width(50);
 		//
 		zoomOutBtn = new VisImageButton("dark");
 		zoomOutBtn.setStyle(zoomoutButtonStyle);

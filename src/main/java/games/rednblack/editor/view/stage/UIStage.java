@@ -18,20 +18,16 @@
 
 package games.rednblack.editor.view.stage;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.kotcrab.vis.ui.util.ToastManager;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.RulersUIMediator;
 import games.rednblack.editor.view.ui.UIBottomMenuBar;
 import games.rednblack.editor.view.ui.UIMainTable;
-import games.rednblack.editor.view.ui.box.UIItemsTreeBox;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
-import games.rednblack.editor.renderer.data.LayerItemVO;
 
 public class UIStage extends Stage {
 
@@ -41,7 +37,6 @@ public class UIStage extends Stage {
     public Group contextMenuContainer;
 
 	public Group midUI;
-
 
     public UIStage() {
         super(new ScreenViewport(), new PolygonSpriteBatch());
@@ -91,19 +86,6 @@ public class UIStage extends Stage {
         getViewport().update(width, height, true);
     }
 
-
-    public void editPhysics(String assetName) {
-        //ItemPhysicsDialog dlg = new ItemPhysicsDialog(this);
-        //addActor(dlg);
-        //dlg.editAsset(name);
-    }
-
-    public void editPhysics(Entity item) {
-        //ItemPhysicsDialog dlg = new ItemPhysicsDialog(this);
-        //addActor(dlg);
-        //dlg.editItem(item);
-    }
-
     public void setKeyboardFocus() {
         setKeyboardFocus(dummyTarget);
     }
@@ -111,7 +93,6 @@ public class UIStage extends Stage {
     public void loadScene(CompositeItemVO scene) {
         Sandbox.getInstance().initSceneView(scene);
     }
-
 
     public void setListeners() {
         addListener(new InputListener() {

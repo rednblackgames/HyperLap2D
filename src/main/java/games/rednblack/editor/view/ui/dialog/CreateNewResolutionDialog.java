@@ -32,14 +32,16 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 
 public class CreateNewResolutionDialog extends H2DDialog {
-    public static final String CREATE_BTN_CLICKED = "games.rednblack.editor.view.ui.dialog.CreateNewResolutionDialog" + ".CREATE_BTN_CLICKED";
+	private static final String prefix = "games.rednblack.editor.view.ui.dialog.CreateNewResolutionDialog";
+	public static final String CREATE_BTN_CLICKED = prefix + ".CREATE_BTN_CLICKED";
+	public static final String CLOSE_DIALOG = prefix + ".CLOSE_DIALOG";
+
     private final VisTextField nameVisTextField;
     private VisTextField widthVisTextField;
     private VisTextField heightVisTextField;
     private ButtonGroup<VisRadioButton> buttonGroup;
     private VisRadioButton basedOnWidthRadioButton;
     private VisRadioButton basedOnHeightRadioButton;
-
 
     public CreateNewResolutionDialog() {
         super("Create New Resolution");
@@ -55,7 +57,7 @@ public class CreateNewResolutionDialog extends H2DDialog {
         mainTable.add(getDimensionsTable()).left();
         mainTable.row().padTop(20);
         VisTextButton createBtn = new VisTextButton("Create", "orange");
-        createBtn.addListener(new CrateButtonCliclListener());
+        createBtn.addListener(new CrateButtonClickListener());
         getButtonsTable().add(createBtn).width(93).height(24).colspan(2);
         getContentTable().add(mainTable);
     }
@@ -82,7 +84,14 @@ public class CreateNewResolutionDialog extends H2DDialog {
         return dimensionsTable;
     }
 
-    private class CrateButtonCliclListener extends ClickListener {
+	@Override
+	protected void close() {
+    	super.close();
+		HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+		facade.sendNotification(CLOSE_DIALOG);
+	}
+
+	private class CrateButtonClickListener extends ClickListener {
         @Override
         public void clicked(InputEvent event, float x, float y) {
             super.clicked(event, x, y);
@@ -98,5 +107,4 @@ public class CreateNewResolutionDialog extends H2DDialog {
             facade.sendNotification(CREATE_BTN_CLICKED, resolutionEntryVO);
         }
     }
-
 }
