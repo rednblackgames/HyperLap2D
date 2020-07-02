@@ -1230,6 +1230,8 @@ public class ProjectManager extends BaseProxy {
                     e.printStackTrace();
                 }
                 CompositeItemVO voInfo = json.fromJson(CompositeItemVO.class, projectInfoContents);
+				adjustPPWCoordinates(voInfo);
+
                 String fileNameAndExtension = handle.name();
                 String fileName = FilenameUtils.removeExtension(fileNameAndExtension);
                 this.currentProjectInfoVO.libraryItems.put(fileName, voInfo);
@@ -1247,6 +1249,30 @@ public class ProjectManager extends BaseProxy {
         });
         executor.shutdown();
     }
+
+	private void adjustPPWCoordinates(CompositeItemVO compositeItemVO) {
+		for (MainItemVO item : compositeItemVO.composite.getAllItems()) {
+			item.originX = item.originX / getCurrentProjectInfoVO().pixelToWorld;
+			item.originY = item.originY / getCurrentProjectInfoVO().pixelToWorld;
+			item.x = item.x / getCurrentProjectInfoVO().pixelToWorld;
+			item.y = item.y / getCurrentProjectInfoVO().pixelToWorld;
+
+			if (item instanceof CompositeItemVO) {
+				((CompositeItemVO) item).width = ((CompositeItemVO) item).width / getCurrentProjectInfoVO().pixelToWorld;
+				((CompositeItemVO) item).height = ((CompositeItemVO) item).height / getCurrentProjectInfoVO().pixelToWorld;
+			}
+
+			if (item instanceof Image9patchVO) {
+				((Image9patchVO) item).width = ((Image9patchVO) item).width / getCurrentProjectInfoVO().pixelToWorld;
+				((Image9patchVO) item).height = ((Image9patchVO) item).height / getCurrentProjectInfoVO().pixelToWorld;
+			}
+
+			if (item instanceof LabelVO) {
+				((LabelVO) item).width = ((LabelVO) item).width / getCurrentProjectInfoVO().pixelToWorld;
+				((LabelVO) item).height = ((LabelVO) item).height / getCurrentProjectInfoVO().pixelToWorld;
+			}
+		}
+	}
 
     private ProgressHandler recursiveProgressHandler = null;
     private int recursiveProgressIndex = 0;

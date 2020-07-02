@@ -1,6 +1,8 @@
 package games.rednblack.editor.renderer.data;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import games.rednblack.editor.renderer.components.CompositeTransformComponent;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
@@ -34,7 +36,7 @@ public class CompositeItemVO extends MainItemVO {
 	}
 	
 	public CompositeItemVO clone() {
-		CompositeItemVO tmp = new CompositeItemVO();
+		/*CompositeItemVO tmp = new CompositeItemVO();
 		tmp.composite = composite;
         tmp.itemName = itemName;
         tmp.layerName = layerName;
@@ -45,9 +47,10 @@ public class CompositeItemVO extends MainItemVO {
         tmp.zIndex = zIndex;
 
 		tmp.width = width;
-		tmp.height = height;
-		
-		return tmp;
+		tmp.height = height;*/
+		Json json = new Json(JsonWriter.OutputType.json);
+
+		return json.fromJson(CompositeItemVO.class, json.toJson(this));
 	}
 
 	@Override

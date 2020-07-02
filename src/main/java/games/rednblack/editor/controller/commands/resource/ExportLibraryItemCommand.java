@@ -87,7 +87,8 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
         File tempDir = new File(destFile + "TMP");
         FileUtils.forceMkdir(tempDir);
 
-        CompositeItemVO compositeItemVO = libraryItems.get(libraryItemName);
+        CompositeItemVO compositeItemVO = libraryItems.get(libraryItemName).clone();
+		adjustPPWCoordinates(compositeItemVO);
 
         FileUtils.writeStringToFile(new File(tempDir.getPath() + File.separator + libraryItemName + ".lib"), json.toJson(compositeItemVO), "utf-8");
 
@@ -149,4 +150,28 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
             exportAllAssets(compositeItemVO.composite, tmpDir);
         }
     }
+
+	private void adjustPPWCoordinates(CompositeItemVO compositeItemVO) {
+		for (MainItemVO item : compositeItemVO.composite.getAllItems()) {
+			item.originX = item.originX * projectManager.getCurrentProjectInfoVO().pixelToWorld;
+			item.originY = item.originY * projectManager.getCurrentProjectInfoVO().pixelToWorld;
+			item.x = item.x * projectManager.getCurrentProjectInfoVO().pixelToWorld;
+			item.y = item.y * projectManager.getCurrentProjectInfoVO().pixelToWorld;
+
+			if (item instanceof CompositeItemVO) {
+				((CompositeItemVO) item).width = ((CompositeItemVO) item).width * projectManager.getCurrentProjectInfoVO().pixelToWorld;
+				((CompositeItemVO) item).height = ((CompositeItemVO) item).height * projectManager.getCurrentProjectInfoVO().pixelToWorld;
+			}
+
+			if (item instanceof Image9patchVO) {
+				((Image9patchVO) item).width = ((Image9patchVO) item).width * projectManager.getCurrentProjectInfoVO().pixelToWorld;
+				((Image9patchVO) item).height = ((Image9patchVO) item).height * projectManager.getCurrentProjectInfoVO().pixelToWorld;
+			}
+
+			if (item instanceof LabelVO) {
+				((LabelVO) item).width = ((LabelVO) item).width * projectManager.getCurrentProjectInfoVO().pixelToWorld;
+				((LabelVO) item).height = ((LabelVO) item).height * projectManager.getCurrentProjectInfoVO().pixelToWorld;
+			}
+		}
+	}
 }
