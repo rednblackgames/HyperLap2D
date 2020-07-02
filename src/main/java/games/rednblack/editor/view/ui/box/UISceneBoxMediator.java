@@ -48,6 +48,7 @@ public class UISceneBoxMediator extends SimpleMediator<UISceneBox> {
                     @Override
                     public void finished(String input) {
                         if (input == null || input.equals("")) {
+                            viewComponent.setCurrentScene();
                             return;
                         }
                         SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
@@ -57,7 +58,7 @@ public class UISceneBoxMediator extends SimpleMediator<UISceneBox> {
 
                     @Override
                     public void canceled() {
-
+                        viewComponent.setCurrentScene();
                     }
                 });
                 break;
@@ -76,5 +77,4 @@ public class UISceneBoxMediator extends SimpleMediator<UISceneBox> {
                 break;
         }
     }
-
 }
