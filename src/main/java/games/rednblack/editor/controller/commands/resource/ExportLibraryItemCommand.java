@@ -45,6 +45,8 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
     @Override
     public void doAction() {
         exportMapperVO.mapper.clear();
+		exportMapperVO.projectVersion = projectManager.currentProjectVO.projectVersion;
+
         String libraryItemName = notification.getBody();
 
         FileChooser fileChooser = new FileChooser(FileChooser.Mode.SAVE);

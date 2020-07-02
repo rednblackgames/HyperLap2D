@@ -23,7 +23,7 @@ package games.rednblack.editor.data.migrations;
  */
 public interface IVersionMigrator {
 
-    public void setProject(String path);
+    void setProject(String path);
 
-    public boolean doMigration();
+    boolean doMigration();
 }

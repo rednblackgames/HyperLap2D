@@ -34,77 +34,76 @@ import games.rednblack.editor.data.migrations.migrators.VersionMigTo005;
  */
 public class ProjectVersionMigrator {
 
-    private String projectPath;
-    private ProjectVO projectVo;
+	private String projectPath;
+	private ProjectVO projectVo;
 
-    private int safetyIterator = 0;
+	private int safetyIterator = 0;
 
-    /**
-     * this is the current supported version, change when data format is changed, and add migration script
-     */
-    public static String dataFormatVersion = "0.0.9";
+	/**
+	 * this is the current supported version, change when data format is changed, and add migration script
+	 */
+	public static String dataFormatVersion = "0.1";
 
-    private Json json = new Json();
+	private Json json = new Json();
 
-    public ProjectVersionMigrator(String projectPath, ProjectVO projectVo) {
-        this.projectPath = projectPath;
-        this.projectVo = projectVo;
+	public ProjectVersionMigrator (String projectPath, ProjectVO projectVo) {
+		this.projectPath = projectPath;
+		this.projectVo = projectVo;
 
-        json.setOutputType(JsonWriter.OutputType.json);
-    }
+		json.setOutputType(JsonWriter.OutputType.json);
+	}
 
-    public void start() {
+	public void start () {
+		if (projectVo.projectVersion == null || projectVo.projectVersion.equals("")) {
+			projectVo.projectVersion = "0.0.4";
+		}
 
-        if (projectVo.projectVersion == null || projectVo.projectVersion.equals("")) {
-            projectVo.projectVersion = "0.0.4";
-        }
+		migrationIterator();
+	}
 
-        migrationIterator();
-    }
+	private void migrationIterator () {
+		if (projectVo.projectVersion.equals(dataFormatVersion)) return;
 
-    private void migrationIterator() {
-        if (projectVo.projectVersion.equals(dataFormatVersion)) return;
+		if (safetyIterator > 100) {
+			System.out.println("Emergency exit from version migration process due to safety lock");
+			return;
+		}
+		safetyIterator++;
 
-        if (safetyIterator > 100) {
-            System.out.println("Emergency exit from version migration process due to safety lock");
-            return;
-        }
-        safetyIterator++;
+		if (projectVo.projectVersion.equals("0.0.4")) {
+			VersionMigTo005 vmt = new VersionMigTo005();
+			doMigration(vmt, "0.0.5");
+		}
+		if (projectVo.projectVersion.equals("0.0.5") || projectVo.projectVersion.equals("0.0.6") || projectVo.projectVersion.equals("0.0.7")) {
+			DummyMig vmt = new DummyMig();
+			doMigration(vmt, "0.0.8");
+		}
+		if (projectVo.projectVersion.equals("0.0.8")) {
+			VersionMigTo009 vmt = new VersionMigTo009();
+			doMigration(vmt, "0.0.9");
+		}
+		if (projectVo.projectVersion.equals("0.0.9")) {
+			IVersionMigrator vmt = new DummyMig();
+			doMigration(vmt, "0.1");
+		}
+	}
 
-        if (projectVo.projectVersion.equals("0.0.4")) {
-            VersionMigTo005 vmt = new VersionMigTo005();
-            doMigartion(vmt, "0.0.5");
-        }
-        if (projectVo.projectVersion.equals("0.0.5") || projectVo.projectVersion.equals("0.0.6") || projectVo.projectVersion.equals("0.0.7")) {
-            DummyMig vmt = new DummyMig();
-            doMigartion(vmt, "0.0.8");
-        }
-        if (projectVo.projectVersion.equals("0.0.8")) {
-            VersionMigTo009 vmt = new VersionMigTo009();
-            doMigartion(vmt, "0.0.9");
-        }
-    }
+	private void doMigration (IVersionMigrator vmt, String nextVersion) {
+		vmt.setProject(projectPath);
 
-    private void doMigartion(IVersionMigrator vmt, String nextVersion) {
-        vmt.setProject(projectPath);
+		if (vmt.doMigration()) {
+			setVersion(nextVersion);
+			migrationIterator();
+		}
+	}
 
-        boolean successs = vmt.doMigration();
-
-        if (successs) {
-            setVersion(nextVersion);
-            migrationIterator();
-        } else {
-            return;
-        }
-    }
-
-    private void setVersion(String version) {
-        projectVo.projectVersion = version;
-        String projectVoJson = json.toJson(projectVo, ProjectVO.class);
-        try {
-            FileUtils.writeStringToFile(new java.io.File(projectPath + "/project.pit"), projectVoJson, "utf-8");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	private void setVersion (String version) {
+		projectVo.projectVersion = version;
+		String projectVoJson = json.toJson(projectVo, ProjectVO.class);
+		try {
+			FileUtils.writeStringToFile(new java.io.File(projectPath + "/project.pit"), projectVoJson, "utf-8");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

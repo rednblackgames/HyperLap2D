@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class ExportMapperVO {
     public Array<ExportedAsset> mapper = new Array<>();
+    public String projectVersion = "";
 
     public static class ExportedAsset {
         public int type;
