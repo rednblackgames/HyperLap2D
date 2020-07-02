@@ -79,11 +79,7 @@ public class Sandbox {
     private Entity currentViewingEntity;
 
     /** This part contains legacy params that need to be removed one by one. */
-    public int currTransformType = -1;
-    public Entity currTransformHost;
-    public boolean isResizing = false;
     public boolean dirty = false;
-    public Vector3 copedItemCameraOffset;
 
     public String currentLoadedSceneFileName;
     private int gridSize = 1; // pixels
@@ -317,12 +313,6 @@ public class Sandbox {
      */
     public boolean isComponentSkinAvailable() {
         return true;
-    }
-
-    public void setCurrentlyTransforming(Entity item, int transformType) {
-        if (item == null || item.getClass().getSimpleName().equals("LabelItem")) return;
-        currTransformType = transformType;
-        currTransformHost = item;
     }
 
     public Entity getCurrentScene() {
