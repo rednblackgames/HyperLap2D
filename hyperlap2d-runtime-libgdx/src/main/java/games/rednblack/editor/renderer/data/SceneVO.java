@@ -24,7 +24,12 @@ public class SceneVO {
 
     }
 
-    public SceneVO(SceneVO vo) {
+	@Override
+	public String toString () {
+		return sceneName;
+	}
+
+	public SceneVO(SceneVO vo) {
         sceneName = new String(vo.sceneName);
         composite = new CompositeVO(vo.composite);
         physicsPropertiesVO = new PhysicsPropertiesVO(vo.physicsPropertiesVO);

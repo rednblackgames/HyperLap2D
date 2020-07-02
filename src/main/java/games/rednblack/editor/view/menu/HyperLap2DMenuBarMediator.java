@@ -70,9 +70,6 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
                 FileMenu.RECENT_PROJECTS,
                 FileMenu.CLEAR_RECENTS,
                 FileMenu.EXIT,
-                FileMenu.NEW_SCENE,
-                FileMenu.SELECT_SCENE,
-                FileMenu.DELETE_CURRENT_SCENE,
                 //EDIT
                 EditMenu.CUT,
                 EditMenu.COPY,
@@ -173,49 +170,10 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
             case FileMenu.EXIT:
                 facade.sendNotification(MsgAPI.APP_EXIT);
                 break;
-            case FileMenu.NEW_SCENE:
-                Dialogs.showInputDialog(sandbox.getUIStage(), "Create New Scene", "Scene Name : ", new InputDialogListener() {
-                    @Override
-                    public void finished(String input) {
-                        if (input == null || input.equals("")) {
-                            return;
-                        }
-                        SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
-                        sceneDataManager.createNewScene(input);
-                        sandbox.loadScene(input);
-                        onScenesChanged();
-                    }
-
-                    @Override
-                    public void canceled() {
-
-                    }
-                });
-                break;
-            case FileMenu.SELECT_SCENE:
-                sceneMenuItemClicked(notification.getBody());
-                break;
-            case FileMenu.DELETE_CURRENT_SCENE:
-                Dialogs.showConfirmDialog(sandbox.getUIStage(),
-                        "Delete Scene", "Do you realy want to delete '" + projectManager.currentProjectVO.lastOpenScene + "' scene?",
-                        new String[]{"Delete", "Cancel"}, new Integer[]{0, 1}, result -> {
-                            if (result == 0) {
-                                SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
-                                sceneDataManager.deleteCurrentScene();
-                                sandbox.loadScene("MainScene");
-                                onScenesChanged();
-                            }
-                        });
-                break;
         }
     }
 
-    private void onScenesChanged() {
-        viewComponent.reInitScenes(projectManager.currentProjectInfoVO.scenes);
-    }
-
     private void onProjectOpened() {
-        viewComponent.reInitScenes(projectManager.currentProjectInfoVO.scenes);
         viewComponent.setProjectOpen(true);
     }
 
@@ -258,11 +216,6 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
         PreferencesManager prefs = PreferencesManager.getInstance();
         prefs.clearHistory();
         viewComponent.reInitRecent(prefs.getRecentHistory());
-    }
-
-    public void sceneMenuItemClicked(String sceneName) {
-        Sandbox sandbox = Sandbox.getInstance();
-        sandbox.loadScene(sceneName);
     }
 
     public void addMenuItem(String menu, String subMenuName, String notificationName) {

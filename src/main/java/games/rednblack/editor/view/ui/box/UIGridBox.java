@@ -50,6 +50,8 @@ public class UIGridBox extends UIBaseBox {
     }
 
     private void init() {
+		addSeparator(true).padRight(13).padLeft(13);
+
 		VisCheckBox lockLinesCheckBox = StandardWidgetsFactory.createCheckBox("Lock lines");
         lockLinesCheckBox.addListener(new CheckBoxChangeListener(LOCK_LINES_CHECKBOX_FIELD_UPDATED));
         add(lockLinesCheckBox);

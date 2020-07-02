@@ -22,6 +22,11 @@ public class UIBottomMenuBar extends VisTable {
 		add(scrollPane).fill().padLeft(5).padRight(5);
 
 		//grid
+		UISceneBoxMediator uiSceneBoxMediator = facade.retrieveMediator(UISceneBoxMediator.NAME);
+		UISceneBox uiSceneBox = uiSceneBoxMediator.getViewComponent();
+		mainGroup.add(uiSceneBox);
+
+		//grid
 		UIGridBoxMediator uiGridBoxMediator = facade.retrieveMediator(UIGridBoxMediator.NAME);
 		UIGridBox uiGridBox = uiGridBoxMediator.getViewComponent();
 		mainGroup.add(uiGridBox);

@@ -20,8 +20,6 @@ package games.rednblack.editor.view.menu;
 
 import java.util.ArrayList;
 
-import org.apache.commons.lang3.SystemUtils;
-
 import com.kotcrab.vis.ui.widget.MenuItem;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.MenuItemListener;
@@ -47,21 +45,12 @@ public class HyperLap2DMenuBar extends CustomMenuBar {
         editMenu = new EditMenu();
         windowMenu = new WindowMenu();
         helpMenu = new HelpMenu();
-//        getTable().debug();
+
         addMenu(fileMenu);
         addMenu(editMenu);
         addMenu(windowMenu);
         addMenu(helpMenu);
         setProjectOpen(false);
-    }
-
-
-    public void addScenes(ArrayList<SceneVO> scenes) {
-        fileMenu.addScenes(scenes);
-    }
-
-    public void reInitScenes(ArrayList<SceneVO> scenes) {
-        fileMenu.reInitScenes(scenes);
     }
 
     public void reInitRecent(ArrayList<String> paths) {
