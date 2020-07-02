@@ -173,7 +173,8 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
 
         if (entityType == EntityFactory.COLOR_PRIMITIVE
                 || entityType == EntityFactory.LABEL_TYPE
-                || entityType == EntityFactory.COMPOSITE_TYPE) {
+                || entityType == EntityFactory.COMPOSITE_TYPE
+				|| entityType == EntityFactory.NINE_PATCH) {
             viewComponent.setWidthHeightDisabled(false);
         } else {
             viewComponent.setWidthHeightDisabled(true);
