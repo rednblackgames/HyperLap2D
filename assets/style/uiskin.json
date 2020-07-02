@@ -86,7 +86,12 @@
       g: 0.631,
       r: 0.105
     },
-    link-label: {a: 1, b: 0.886, g: 0.631, r: 0.105 }
+    link-label: {
+      a: 1,
+      b: 0.886,
+      g: 0.631,
+      r: 0.105
+    }
   },
   com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
     dialogDim: {
@@ -604,31 +609,31 @@
     }
   },
   com.kotcrab.vis.ui.widget.VisCheckBox$VisCheckBoxStyle: {
-  default: {
-    checkBackground: vis-check,
-    checkBackgroundOver: vis-check-over,
-    checkBackgroundDown: vis-check-down,
-    tick: vis-check-tick,
-    tickDisabled: vis-check-tick-disabled,
-    focusBorder: border,
-    errorBorder: border-error,
-    font: default-font,
-    fontColor: white,
-    disabledFontColor: grey
+    default: {
+      checkBackground: vis-check,
+      checkBackgroundOver: vis-check-over,
+      checkBackgroundDown: vis-check-down,
+      tick: vis-check-tick,
+      tickDisabled: vis-check-tick-disabled,
+      focusBorder: border,
+      errorBorder: border-error,
+      font: default-font,
+      fontColor: white,
+      disabledFontColor: grey
+    },
+    radio: {
+      checkBackground: vis-radio,
+      checkBackgroundOver: vis-radio-over,
+      checkBackgroundDown: vis-radio-down,
+      tick: vis-radio-tick,
+      tickDisabled: vis-radio-tick-disabled,
+      focusBorder: border-circle,
+      errorBorder: border-circle-error,
+      font: default-font,
+      fontColor: white,
+      disabledFontColor: grey
+    }
   },
-  radio: {
-    checkBackground: vis-radio,
-    checkBackgroundOver: vis-radio-over,
-    checkBackgroundDown: vis-radio-down,
-    tick: vis-radio-tick,
-    tickDisabled: vis-radio-tick-disabled,
-    focusBorder: border-circle,
-    errorBorder: border-circle-error,
-    font: default-font,
-    fontColor: white,
-    disabledFontColor: grey
-  }
-},
   com.kotcrab.vis.ui.widget.PopupMenu$PopupMenuStyle: {
     default: {
       background: popup-menu,
@@ -645,7 +650,7 @@
     },
     vertical: {
       background: separator-vertical,
-      thickness: 2,
+      thickness: 2
     },
     menu: {
       background: separator-menu,
@@ -675,76 +680,165 @@
     }
   },
   com.kotcrab.vis.ui.Sizes: {
-  default: {scaleFactor: 1, spacingBottom: 8, spacingRight: 6, buttonBarSpacing: 10, menuItemIconSize: 22, borderSize: 1, spinnerButtonHeight: 12, spinnerFieldSize: 40, fileChooserViewModeBigIconsSize: 200, fileChooserViewModeMediumIconsSize: 128, fileChooserViewModeSmallIconsSize: 64, fileChooserViewModeListWidthSize: 155 },
-  x2: {scaleFactor: 2, menuItemIconSize: 44, spinnerButtonHeight: 24, spinnerFieldSize: 80, spacingBottom: 8, spacingRight: 6, buttonBarSpacing: 10, borderSize: 1, fileChooserViewModeBigIconsSize: 200, fileChooserViewModeMediumIconsSize: 128, fileChooserViewModeSmallIconsSize: 64, fileChooserViewModeListWidthSize: 155 }
-},
+    default: {
+      scaleFactor: 1,
+      spacingBottom: 8,
+      spacingRight: 6,
+      buttonBarSpacing: 10,
+      menuItemIconSize: 22,
+      borderSize: 1,
+      spinnerButtonHeight: 12,
+      spinnerFieldSize: 40,
+      fileChooserViewModeBigIconsSize: 200,
+      fileChooserViewModeMediumIconsSize: 128,
+      fileChooserViewModeSmallIconsSize: 64,
+      fileChooserViewModeListWidthSize: 155
+    },
+    x2: {
+      scaleFactor: 2,
+      menuItemIconSize: 44,
+      spinnerButtonHeight: 24,
+      spinnerFieldSize: 80,
+      spacingBottom: 8,
+      spacingRight: 6,
+      buttonBarSpacing: 10,
+      borderSize: 1,
+      fileChooserViewModeBigIconsSize: 200,
+      fileChooserViewModeMediumIconsSize: 128,
+      fileChooserViewModeSmallIconsSize: 64,
+      fileChooserViewModeListWidthSize: 155
+    }
+  },
   com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
-    default:
-    {
-      label: {font: default-font},
+    default: {
+      label: {
+        font: default-font
+      },
       background: tooltip-bg
     }
   },
   com.kotcrab.vis.ui.widget.Tooltip$TooltipStyle: {
-    default:
-    {
+    default: {
       background: tooltip-bg
     }
   },
   com.kotcrab.vis.ui.widget.file.FileChooserStyle: {
-  default: {highlight: list-selection, popupMenuStyle: "default", iconArrowLeft: icon-arrow-left, iconArrowRight: icon-arrow-right, iconFolder: icon-folder, iconFolderParent: icon-folder-parent, iconFolderNew: icon-folder-new, iconDrive: icon-drive, iconFolderStar: icon-folder-star, iconTrash: icon-trash, iconStar: icon-star, iconStarOutline: icon-star-outline, iconRefresh: icon-refresh, iconFileText: icon-file-text, iconFileImage: icon-file-image, iconFilePdf: icon-file-pdf, iconFileAudio: icon-file-audio, iconListSettings: icon-list-settings, contextMenuSelectedItem: vis-radio-tick, expandDropdown: select-down }
-},
+    default: {
+      highlight: list-selection,
+      popupMenuStyle: "default",
+      iconArrowLeft: icon-arrow-left,
+      iconArrowRight: icon-arrow-right,
+      iconFolder: icon-folder,
+      iconFolderParent: icon-folder-parent,
+      iconFolderNew: icon-folder-new,
+      iconDrive: icon-drive,
+      iconFolderStar: icon-folder-star,
+      iconTrash: icon-trash,
+      iconStar: icon-star,
+      iconStarOutline: icon-star-outline,
+      iconRefresh: icon-refresh,
+      iconFileText: icon-file-text,
+      iconFileImage: icon-file-image,
+      iconFilePdf: icon-file-pdf,
+      iconFileAudio: icon-file-audio,
+      iconListSettings: icon-list-settings,
+      contextMenuSelectedItem: vis-radio-tick,
+      expandDropdown: select-down
+    }
+  },
   com.kotcrab.vis.ui.widget.color.ColorPickerStyle: {
-  default: {pickerStyle: {barSelector: color-picker-bar-selector, cross: color-picker-cross, iconArrowRight: icon-arrow-right, verticalSelector: color-picker-selector-vertical, horizontalSelector: color-picker-selector-horizontal}, titleFont: default-font, background: window, titleFontColor: white }
-},
-com.kotcrab.vis.ui.widget.toast.Toast$ToastStyle: {
-	default: {background: tooltip-bg, closeButtonStyle: close },
-	dark: {background: window-bg, closeButtonStyle: close-window }
-},
-com.kotcrab.vis.ui.widget.LinkLabel$LinkLabelStyle: {
-	default: {fontColor: link-label, underline: white, font: default-font }
-},
+    default: {
+      pickerStyle: {
+        barSelector: color-picker-bar-selector,
+        cross: color-picker-cross,
+        iconArrowRight: icon-arrow-right,
+        verticalSelector: color-picker-selector-vertical,
+        horizontalSelector: color-picker-selector-horizontal
+      },
+      titleFont: default-font,
+      background: window,
+      titleFontColor: white
+    }
+  },
+  com.kotcrab.vis.ui.widget.toast.Toast$ToastStyle: {
+    default: {
+      background: tooltip-bg,
+      closeButtonStyle: close-window
+    },
+    dark: {
+      background: window-bg,
+      closeButtonStyle: close-window
+    }
+  },
+  com.kotcrab.vis.ui.widget.LinkLabel$LinkLabelStyle: {
+    default: {
+      fontColor: link-label,
+      underline: white,
+      font: default-font
+    }
+  },
   com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane$TabbedPaneStyle: {
-  default: {
-    draggable: false,
-    background: menu-bg,
-    separatorBar: list-selection,
-    vertical: false,
-    buttonStyle: {
-      down:  tab-active,
-      up: tab-inactive,
-      checked:  tab-active,
-      over: tab-inactive,
-      disabled: tab-inactive,
-      font: default-font,
-      fontColor: white,
-      disabledFontColor: grey} },
-  vertical: {
-    vertical: true,
-    background: menu-bg,
-    separatorBar: list-selection,
-    buttonStyle: {
-      down: button-down,
-      up: button,
-      checked: button-down,
-      over: button-over,
-      disabled: button,
-      font: default-font,
-      fontColor: white,
-      disabledFontColor: grey
+    default: {
+      draggable: false,
+      background: menu-bg,
+      separatorBar: list-selection,
+      vertical: false,
+      buttonStyle: {
+        down: tab-active,
+        up: tab-inactive,
+        checked: tab-active,
+        over: tab-inactive,
+        disabled: tab-inactive,
+        font: default-font,
+        fontColor: white,
+        disabledFontColor: grey
+      }
+    },
+    vertical: {
+      vertical: true,
+      background: menu-bg,
+      separatorBar: list-selection,
+      buttonStyle: {
+        down: button-down,
+        up: button,
+        checked: button-down,
+        over: button-over,
+        disabled: button,
+        font: default-font,
+        fontColor: white,
+        disabledFontColor: grey
+      }
+    }
+  },
+  com.kotcrab.vis.ui.widget.ListViewStyle: {
+    default: {
+      scrollPaneStyle: list
+    }
+  },
+  com.kotcrab.vis.ui.widget.BusyBar$BusyBarStyle: {
+    default: {
+      height: 2,
+      segment: vis-blue,
+      segmentWidth: 100,
+      segmentOverflow: 50
+    },
+    slim: {
+      height: 1,
+      segment: vis-blue,
+      segmentWidth: 100,
+      segmentOverflow: 50
+    },
+    thick: {
+      height: 6,
+      segment: vis-blue,
+      segmentWidth: 100,
+      segmentOverflow: 50
+    }
+  },
+  com.kotcrab.vis.ui.widget.spinner.Spinner$SpinnerStyle: {
+    default: {
+      down: select-down,
+      up: select-up
     }
   }
-},
-
-  com.kotcrab.vis.ui.widget.ListViewStyle: {
-  default: {scrollPaneStyle: list }
-},
-  com.kotcrab.vis.ui.widget.BusyBar$BusyBarStyle: {
-  default: {height: 2, segment: vis-blue, segmentWidth: 100, segmentOverflow: 50 },
-  slim: {height: 1, segment: vis-blue, segmentWidth: 100, segmentOverflow: 50 },
-  thick: {height: 6, segment: vis-blue, segmentWidth: 100, segmentOverflow: 50 }
-},
-  com.kotcrab.vis.ui.widget.spinner.Spinner$SpinnerStyle: {
-  default: {down: select-down, up: select-up }
-}
 }
