@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -24,7 +23,7 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener {
 	protected ComponentMapper<TransformComponent> transformComponentMapper = ComponentMapper.getFor(TransformComponent.class);
 
 	private final float TIME_STEP = 1f/60;
-	private World world;
+	private final World world;
 	private boolean isPhysicsOn = true;
 	private float accumulator = 0;
 

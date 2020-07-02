@@ -12,7 +12,7 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 
 public class PhysicsAdjustSystem extends PhysicsSystem {
 
-	private Vector2 transformVec = new Vector2();
+	private final Vector2 transformVec = new Vector2();
 	
 	public PhysicsAdjustSystem(World world) {
 		super(world);
@@ -21,7 +21,6 @@ public class PhysicsAdjustSystem extends PhysicsSystem {
 
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
-		
 		TransformComponent transformComponent = transformComponentMapper.get(entity);
 		processBody(entity);
 
@@ -32,7 +31,5 @@ public class PhysicsAdjustSystem extends PhysicsSystem {
 		transformVec.x = (transformComponent.x + transformComponent.originX) * PhysicsBodyLoader.getScale();
 		transformVec.y = (transformComponent.y + transformComponent.originY) * PhysicsBodyLoader.getScale();
 		physicsBodyComponent.body.setTransform(transformVec, transformComponent.rotation * MathUtils.degreesToRadians);
-		
 	}
-
 }

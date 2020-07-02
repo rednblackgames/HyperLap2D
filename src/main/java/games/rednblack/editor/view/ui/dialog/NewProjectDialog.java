@@ -24,12 +24,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import games.rednblack.editor.utils.StandardWidgetsFactory;
 import games.rednblack.h2d.common.H2DDialog;
 import com.kotcrab.vis.ui.util.form.SimpleFormValidator;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.view.ui.validator.NewProjectDialogValidator;
+import games.rednblack.editor.view.ui.validator.StringNameValidator;
 import games.rednblack.editor.view.ui.widget.InputFileWidget;
 
 import java.io.File;
@@ -46,7 +47,6 @@ public class NewProjectDialog extends H2DDialog {
     private VisTextField originHeightTextField;
     private String defaultWorkspacePath;
     private VisTextField pixelsPerWorldUnitField;
-    private NewProjectDialogValidator newProjectDialogValidator;
 
     NewProjectDialog() {
         super("Create New Project");
@@ -58,7 +58,7 @@ public class NewProjectDialog extends H2DDialog {
         //
         VisLabel projectNameLavel = new VisLabel("Project Name:");
         mainTable.add(projectNameLavel).right().padRight(5);
-        projectName = createValidableTextField("", new SimpleFormValidator.EmptyInputValidator("Cannot be empty"));
+        projectName = StandardWidgetsFactory.createValidableTextField(new StringNameValidator());
         mainTable.add(projectName).height(21).expandX().fillX();
         //
         mainTable.row().padTop(10);
@@ -80,8 +80,6 @@ public class NewProjectDialog extends H2DDialog {
         VisTextButton createBtn = new VisTextButton("Create", "orange");
         createBtn.addListener(new BtnClickListener(CREATE_BTN_CLICKED));
         getButtonsTable().add(createBtn).width(93).height(25).colspan(2);
-
-        newProjectDialogValidator = new NewProjectDialogValidator();
     }
 
     private Table getDimensionsTable() {
@@ -141,7 +139,7 @@ public class NewProjectDialog extends H2DDialog {
         public void clicked(InputEvent event, float x, float y) {
             super.clicked(event, x, y);
             HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
-            if (newProjectDialogValidator.validate(getStage(), projectName)) {
+            if (projectName.isInputValid()) {
                 facade.sendNotification(command, workspacePathField.getValue().path() + File.separator + projectName.getText());
             }
         }

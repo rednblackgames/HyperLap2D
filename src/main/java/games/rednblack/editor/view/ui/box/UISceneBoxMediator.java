@@ -8,6 +8,7 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.view.ui.validator.StringNameValidator;
 import games.rednblack.h2d.common.MsgAPI;
 
 public class UISceneBoxMediator extends SimpleMediator<UISceneBox> {
@@ -44,7 +45,7 @@ public class UISceneBoxMediator extends SimpleMediator<UISceneBox> {
                 sandbox.loadScene(notification.getBody());
                 break;
             case UISceneBox.CREATE_NEW_SCENE_BTN_CLICKED:
-                Dialogs.showInputDialog(sandbox.getUIStage(), "Create New Scene", "Scene Name : ", new InputDialogListener() {
+                Dialogs.showInputDialog(sandbox.getUIStage(), "Create New Scene", "Scene Name : ", new StringNameValidator(), new InputDialogListener() {
                     @Override
                     public void finished(String input) {
                         if (input == null || input.equals("")) {
