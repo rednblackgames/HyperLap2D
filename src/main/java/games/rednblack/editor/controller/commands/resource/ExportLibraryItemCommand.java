@@ -16,6 +16,7 @@ import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.ZipUtils;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.h2d.common.vo.ExportMapperVO.ExportedAsset;
 import org.apache.commons.io.FileUtils;
@@ -68,6 +69,7 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
                     doExport(libraryItemName, files.get(0).pathWithoutExtension());
 
                     facade.sendNotification(DONE, libraryItemName);
+					facade.sendNotification(MsgAPI.SHOW_NOTIFICATION, "'" + libraryItemName +"' successfully exported");
                 } catch (IOException e) {
                     e.printStackTrace();
                     try {
