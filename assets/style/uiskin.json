@@ -433,15 +433,12 @@
       focusBorder: border
     },
     close-window: {
-      down: button-down,
-      up: button,
-      over: button-over,
-      imageUp: icon-close
+      down: button-red,
+      up: button-window-bg,
+      imageUp: icon-close-white
     },
     close-panel: {
-      imageDown: icon-close-orange-down,
-      imageOver: icon-close-orange-over,
-      imageUp: icon-close-orange
+      imageUp: icon-close-white
     },
     trash-button: {
       imageDown: icon-trash-disabled,

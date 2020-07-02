@@ -45,7 +45,6 @@ public class FileMenu extends H2DMenu {
         addItem(new MenuItem("New Project", new MenuItemListener(NEW_PROJECT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.N));
         addItem(new MenuItem("Open Project", new MenuItemListener(OPEN_PROJECT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.O));
         addItem(saveProject);
-        //saveProject.debug();
         //
         scenesMenuItem = new MenuItem("Scenes");
         scenesPopupMenu = new PopupMenu();
