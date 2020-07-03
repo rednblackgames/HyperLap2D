@@ -36,7 +36,7 @@ public class SpineObjectComponent implements Component {
         return state;
     }
 
-    public void computeBoundBox(DimensionsComponent dimensionsComponent, float worldMultiplier) {
+    public void computeBoundBox(DimensionsComponent dimensionsComponent) {
         skeleton.updateWorldTransform();
         Array<Slot> drawOrder = skeleton.getDrawOrder();
         minX = Float.MAX_VALUE;
@@ -69,10 +69,7 @@ public class SpineObjectComponent implements Component {
             }
         }
 
-        dimensionsComponent.width = (maxX - minX);// * worldMultiplier;
-        dimensionsComponent.height = (maxY - minY);// * worldMultiplier;
-
-        //minX *= worldMultiplier;
-        //minY *= worldMultiplier;
+        dimensionsComponent.width = (maxX - minX);
+        dimensionsComponent.height = (maxY - minY);
     }
 }

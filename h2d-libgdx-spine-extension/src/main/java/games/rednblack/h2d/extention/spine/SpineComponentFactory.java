@@ -34,9 +34,6 @@ import games.rednblack.editor.renderer.factory.component.ComponentFactory;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 
-/**
- * Created by azakhary on 5/22/2015.
- */
 public class SpineComponentFactory extends ComponentFactory {
 
     private SpineObjectComponent spineObjectComponent;
@@ -75,16 +72,16 @@ public class SpineComponentFactory extends ComponentFactory {
         component.skeletonJson = new SkeletonJson(rm.getSkeletonAtlas(vo.animationName));
         component.skeletonData = component.skeletonJson.readSkeletonData((rm.getSkeletonJSON(vo.animationName)));
 
-        BoneData rootBone = component.skeletonData.getBones().get(0); // this has to be the root bone.
-        //TODO this does not work
-        //rootBone.setScale(vo.scaleX / projectInfoVO.pixelToWorld, vo.scaleY / projectInfoVO.pixelToWorld); // TODO: resolution part and multipliers
-        component.skeleton = new Skeleton(component.skeletonData); // Skeleton holds skeleton state (bone positions, slot attachments, etc).
+        BoneData rootBone = component.skeletonData.getBones().get(0);
+        rootBone.setScale(vo.scaleX / projectInfoVO.pixelToWorld, vo.scaleX / projectInfoVO.pixelToWorld);
+
+        component.skeleton = new Skeleton(component.skeletonData);
         component.worldMultiplier = 1f/projectInfoVO.pixelToWorld;
-        AnimationStateData stateData = new AnimationStateData(component.skeletonData); // Defines mixing (crossfading) between animations.
-        component.state = new AnimationState(stateData); // Holds the animation state for a skeleton (current animation, time, etc).
+        AnimationStateData stateData = new AnimationStateData(component.skeletonData);
+        component.state = new AnimationState(stateData);
 
         DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
-        component.computeBoundBox(dimensionsComponent, component.worldMultiplier);
+        component.computeBoundBox(dimensionsComponent);
 
         component.setAnimation(vo.currentAnimationName.isEmpty() ? component.skeletonData.getAnimations().get(0).getName() : vo.currentAnimationName);
 

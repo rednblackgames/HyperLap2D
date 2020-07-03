@@ -39,7 +39,7 @@ public class SpineItemType implements IExternalItemType {
     public SpineItemType() {
         factory = new SpineComponentFactory();
         system = new SpineSystem();
-        drawable = new SpineDrawableLogic2();
+        drawable = new SpineDrawableLogic();
     }
 
     @Override
