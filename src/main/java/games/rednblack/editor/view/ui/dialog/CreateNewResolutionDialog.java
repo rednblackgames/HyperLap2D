@@ -27,6 +27,7 @@ import com.kotcrab.vis.ui.widget.VisRadioButton;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
+import games.rednblack.editor.utils.StandardWidgetsFactory;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
@@ -56,7 +57,7 @@ public class CreateNewResolutionDialog extends H2DDialog {
         mainTable.add("Resolution:").padRight(5).right().top();
         mainTable.add(getDimensionsTable()).left();
         mainTable.row().padTop(20);
-        VisTextButton createBtn = new VisTextButton("Create", "orange");
+        VisTextButton createBtn = StandardWidgetsFactory.createTextButton("Create", "red");
         createBtn.addListener(new CrateButtonClickListener());
         getButtonsTable().add(createBtn).width(93).height(24).colspan(2);
         getContentTable().add(mainTable);

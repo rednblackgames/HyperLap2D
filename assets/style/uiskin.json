@@ -358,13 +358,13 @@
       fontColor: hyperlap2d-button-text-black,
       disabledFontColor: grey
     },
-    orange: {
-      down: button-orange-down,
-      up: button-orange,
-      over: button-orange-over,
-      disabled: button-orange,
+    red: {
+      down: button-flat-red-down,
+      up: button-flat-red,
+      over: button-flat-red-over,
+      disabled: button-flat-red-over,
       font: big-font-normal,
-      fontColor: hyperlap2d-button-text-black,
+      fontColor: white,
       disabledFontColor: grey
     },
     tagBtn: {

@@ -85,7 +85,7 @@ public class UIResolutionBox extends UIBaseBox {
 
         add(deleteBtn).padRight(11).height(25);
 
-        VisTextButton repackBtn = StandardWidgetsFactory.createTextButton("Repack", "orange");
+        VisTextButton repackBtn = StandardWidgetsFactory.createTextButton("Repack", "red");
         repackBtn.addListener(new UIResolutionBoxButtonClickListener(REPACK_BTN_CLICKED));
         add(repackBtn).width(93);
     }

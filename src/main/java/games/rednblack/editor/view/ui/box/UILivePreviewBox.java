@@ -18,7 +18,7 @@ public class UILivePreviewBox extends UIBaseBox {
 	private void init() {
 		addSeparator(true).padRight(13).padLeft(13);
 
-		VisTextButton liveButton = StandardWidgetsFactory.createTextButton("Live Preview", "orange");
+		VisTextButton liveButton = StandardWidgetsFactory.createTextButton("Live Preview", "red");
 		add(liveButton).width(110);
 	}
 }

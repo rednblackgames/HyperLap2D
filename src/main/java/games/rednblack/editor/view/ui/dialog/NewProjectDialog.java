@@ -77,7 +77,7 @@ public class NewProjectDialog extends H2DDialog {
 
         getContentTable().add(mainTable);
 
-        VisTextButton createBtn = new VisTextButton("Create", "orange");
+        VisTextButton createBtn = StandardWidgetsFactory.createTextButton("Create", "red");
         createBtn.addListener(new BtnClickListener(CREATE_BTN_CLICKED));
         getButtonsTable().add(createBtn).width(93).height(25).colspan(2);
     }
