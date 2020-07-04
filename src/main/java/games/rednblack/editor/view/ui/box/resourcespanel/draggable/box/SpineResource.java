@@ -18,6 +18,7 @@
 
 package games.rednblack.editor.view.ui.box.resourcespanel.draggable.box;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -32,14 +33,11 @@ import games.rednblack.editor.view.ui.widget.actors.SpineActor;
  */
 public class SpineResource extends BoxItemResource {
 
-
     private final SpineActor payloadActor;
     private final ResourcePayloadObject payload;
     private HyperLap2DFacade facade;
 
-
     private boolean isMouseInside = false;
-
 
     public SpineResource(String animationName) {
         super();
@@ -95,6 +93,7 @@ public class SpineResource extends BoxItemResource {
         setHeight(thumbnailSize);
 
         super.act(1f);
+        super.act(Gdx.graphics.getDeltaTime());
 
         setRightClickEvent(UIResourcesBoxMediator.SPINE_ANIMATION_RIGHT_CLICK, payload.name);
     }

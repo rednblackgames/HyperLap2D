@@ -19,6 +19,7 @@
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -51,6 +52,8 @@ public class UIAnimationsTab extends UIResourcesTab {
     @Override
     protected VisScrollPane crateScrollPane() {
         animationsTable = new VisTable();
-        return StandardWidgetsFactory.createScrollPane(animationsTable);
+        VisScrollPane scrollPane = StandardWidgetsFactory.createScrollPane(animationsTable);
+        scrollPane.setScrollingDisabled(true, false);
+        return scrollPane;
     }
 }
