@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
+import games.rednblack.h2d.extention.spine.SpineItemType;
 
 public class LivePreviewScreen extends ScreenAdapter {
     private Viewport viewport;
@@ -15,6 +16,7 @@ public class LivePreviewScreen extends ScreenAdapter {
     public LivePreviewScreen(WorldSizeVO worldSizeVO, IResourceRetriever resourceManager, String sceneName) {
         viewport = new StretchViewport(worldSizeVO.getWorldWidth(), worldSizeVO.getWorldHeight());
         sceneLoader = new SceneLoader(resourceManager);
+        sceneLoader.injectExternalItemType(new SpineItemType());
         sceneLoader.loadScene(sceneName, viewport);
     }
 

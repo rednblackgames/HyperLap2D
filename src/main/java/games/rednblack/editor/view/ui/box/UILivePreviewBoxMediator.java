@@ -79,7 +79,7 @@ public class UILivePreviewBoxMediator extends SimpleMediator<UILivePreviewBox> {
 
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setWindowedMode(previewWidth, previewHeight);
-		config.setTitle("HyperLap2D");
+		config.setTitle("HyperLap2D - Live Preview");
 		config.setResizable(false);
 		config.setIdleFPS(60);
 		config.setWindowIcon("hyperlap_icon_96.png");
