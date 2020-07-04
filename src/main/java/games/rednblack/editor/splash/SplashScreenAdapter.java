@@ -52,6 +52,12 @@ public class SplashScreenAdapter extends Game {
         setScreen(screen);
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+        screen.dispose();
+    }
+
     public void loadedData() {
         screen.loadedData();
     }
