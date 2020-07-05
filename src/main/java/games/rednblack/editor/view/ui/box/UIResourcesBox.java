@@ -63,7 +63,7 @@ public class UIResourcesBox extends UICollapsibleBox {
             }
         });
 
-        contentTable.add(tabbedPane.getTable()).width(230);
+        contentTable.add(tabbedPane.getTable()).width(230).padTop(8);
         contentTable.row();
         contentTable.add(tabContent).expandX().width(222);
         contentTable.row();

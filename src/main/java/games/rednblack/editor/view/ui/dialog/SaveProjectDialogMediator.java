@@ -10,12 +10,12 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.MsgAPI;
 
-public class SaveDocumentDialogMediator extends SimpleMediator<SaveDocumentDialog> {
-    private static final String TAG = SaveDocumentDialogMediator.class.getCanonicalName();
+public class SaveProjectDialogMediator extends SimpleMediator<SaveProjectDialog> {
+    private static final String TAG = SaveProjectDialogMediator.class.getCanonicalName();
     private static final String NAME = TAG;
 
-    public SaveDocumentDialogMediator() {
-        super(NAME, new SaveDocumentDialog());
+    public SaveProjectDialogMediator() {
+        super(NAME, new SaveProjectDialog());
     }
 
     @Override

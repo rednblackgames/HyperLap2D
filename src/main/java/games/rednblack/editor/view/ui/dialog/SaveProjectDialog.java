@@ -11,12 +11,12 @@ import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
 
-public class SaveDocumentDialog extends H2DDialog {
+public class SaveProjectDialog extends H2DDialog {
 
     private VisLabel messageLabel;
 
-    public SaveDocumentDialog() {
-        super("Save Document");
+    public SaveProjectDialog() {
+        super("Save Project");
 
         messageLabel = new VisLabel();
         getContentTable().pad(10);
@@ -52,7 +52,7 @@ public class SaveDocumentDialog extends H2DDialog {
         cancelButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                SaveDocumentDialog.this.close();
+                SaveProjectDialog.this.close();
             }
         });
     }
