@@ -92,6 +92,13 @@ public class StandardWidgetsFactory {
         visTextField.setTextFieldFilter(textFieldFilter);
         return visTextField;
     }
+
+    public static VisTextField createTextField(String text, String style, VisTextField.TextFieldFilter textFieldFilter) {
+        VisTextField visTextField = createTextField(style);
+        visTextField.setText(text);
+        visTextField.setTextFieldFilter(textFieldFilter);
+        return visTextField;
+    }
     
     public static VisValidatableTextField createValidableTextField (InputValidator inputValidator) {
         VisValidatableTextField visTextField = createValidableTextField("default", inputValidator);

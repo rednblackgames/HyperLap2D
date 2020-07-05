@@ -85,15 +85,15 @@ public class NewProjectDialog extends H2DDialog {
     private Table getDimensionsTable() {
         VisTextField.TextFieldFilter.DigitsOnlyFilter digitsOnlyFilter = new VisTextField.TextFieldFilter.DigitsOnlyFilter();
         VisTable dimensionsTable = new VisTable();
-        originWidthTextField = createTextField(DEFAULT_ORIGIN_WIDTH, digitsOnlyFilter);
+        originWidthTextField = StandardWidgetsFactory.createTextField(DEFAULT_ORIGIN_WIDTH, "light", digitsOnlyFilter);
         dimensionsTable.add(new VisLabel("Width:")).left().padRight(3);
         dimensionsTable.add(originWidthTextField).width(45).height(21).padRight(3);
         dimensionsTable.row().padTop(10);
-        originHeightTextField = createTextField(DEFAULT_ORIGIN_HEIGHT, digitsOnlyFilter);
+        originHeightTextField = StandardWidgetsFactory.createTextField(DEFAULT_ORIGIN_HEIGHT, "light", digitsOnlyFilter);
         dimensionsTable.add(new VisLabel("Height:")).left().padRight(3);
         dimensionsTable.add(originHeightTextField).width(45).height(21).left();
         dimensionsTable.row().padTop(10);
-        pixelsPerWorldUnitField = createTextField(DEFAULT_PPWU, digitsOnlyFilter);
+        pixelsPerWorldUnitField = StandardWidgetsFactory.createTextField(DEFAULT_PPWU, "light", digitsOnlyFilter);
         dimensionsTable.add(new VisLabel("Pixels per WUnit:")).left().padRight(3);
         dimensionsTable.add(pixelsPerWorldUnitField).width(45).height(21).left();
         return dimensionsTable;

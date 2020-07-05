@@ -28,6 +28,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.editor.view.ui.validator.StringNameValidator;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
@@ -51,7 +52,7 @@ public class CreateNewResolutionDialog extends H2DDialog {
 
         mainTable.padTop(6).padRight(6).padBottom(22);
         mainTable.add("Name:").padRight(5).right();
-        nameVisTextField = createTextField("");
+        nameVisTextField = StandardWidgetsFactory.createValidableTextField("light", new StringNameValidator());
         mainTable.add(nameVisTextField).colspan(3).width(177).height(21);
         mainTable.row().padTop(10);
         mainTable.add("Resolution:").padRight(5).right().top();
@@ -67,14 +68,14 @@ public class CreateNewResolutionDialog extends H2DDialog {
         buttonGroup = new ButtonGroup<>();
         VisTextField.TextFieldFilter.DigitsOnlyFilter digitsOnlyFilter = new VisTextField.TextFieldFilter.DigitsOnlyFilter();
         VisTable dimensionsTable = new VisTable();
-        widthVisTextField = createTextField("", digitsOnlyFilter);
+        widthVisTextField = StandardWidgetsFactory.createTextField("light", digitsOnlyFilter);
         dimensionsTable.add(new VisLabel("Width:")).left().padRight(3);
         dimensionsTable.add(widthVisTextField).width(45).height(21).padRight(7);
         basedOnWidthRadioButton = new VisRadioButton(null);
         dimensionsTable.add(basedOnWidthRadioButton);
         dimensionsTable.add("Based on");
         dimensionsTable.row().padTop(10);
-        heightVisTextField = createTextField("", digitsOnlyFilter);
+        heightVisTextField = StandardWidgetsFactory.createTextField("light", digitsOnlyFilter);
         dimensionsTable.add(new VisLabel("Height:")).left().padRight(7);
         dimensionsTable.add(heightVisTextField).width(45).height(21).left();
         basedOnHeightRadioButton = new VisRadioButton(null);

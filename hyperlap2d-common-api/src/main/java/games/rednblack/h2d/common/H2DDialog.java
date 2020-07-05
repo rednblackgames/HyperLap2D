@@ -21,14 +21,8 @@ package games.rednblack.h2d.common;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.util.InputValidator;
 import com.kotcrab.vis.ui.widget.VisDialog;
-import com.kotcrab.vis.ui.widget.VisTextField;
-import com.kotcrab.vis.ui.widget.VisValidatableTextField;
 
-/**
- * Created by sargis on 4/27/15.
- */
 public class H2DDialog extends VisDialog {
     protected final Skin skin;
 
@@ -59,35 +53,4 @@ public class H2DDialog extends VisDialog {
 
 	}
 
-	protected VisTextField createTextField() {
-        return new VisTextField("", "light");
-    }
-
-    protected VisTextField createTextField(String text) {
-        return new VisTextField(text, "light");
-    }
-
-    protected VisTextField createTextField(String text, VisTextField.TextFieldFilter textFieldFilter) {
-        VisTextField visTextField = createTextField(text);
-        visTextField.setTextFieldFilter(textFieldFilter);
-        return visTextField;
-    }
-
-    protected VisValidatableTextField createValidableTextField(String text, InputValidator inputValidator) {
-        VisValidatableTextField visTextField = new VisValidatableTextField(inputValidator);
-        visTextField.setText(text);
-        visTextField.setStyle(skin.get("light", VisTextField.VisTextFieldStyle.class));
-        return visTextField;
-    }
-
-    protected VisValidatableTextField createValidableTextField(InputValidator inputValidator) {
-        VisValidatableTextField visTextField = createValidableTextField("", inputValidator);
-        return visTextField;
-    }
-
-    protected VisValidatableTextField createValidableTextField(String text, InputValidator inputValidator, VisTextField.TextFieldFilter textFieldFilter) {
-        VisValidatableTextField visTextField = createValidableTextField(text, inputValidator);
-        visTextField.setTextFieldFilter(textFieldFilter);
-        return visTextField;
-    }
 }
