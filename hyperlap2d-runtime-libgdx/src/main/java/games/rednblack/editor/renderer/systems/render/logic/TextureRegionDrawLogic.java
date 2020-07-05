@@ -27,7 +27,7 @@ public class TextureRegionDrawLogic implements Drawable {
         TextureRegionComponent entityTextureRegionComponent = textureRegionMapper.get(entity);
 
         if(entityTextureRegionComponent.polygonSprite != null) {
-            drawPolygonSprite(batch, entity);
+            drawTiledPolygonSprite(batch, entity);
         } else {
             drawSprite(batch, entity, parentAlpha);
         }
@@ -71,23 +71,23 @@ public class TextureRegionDrawLogic implements Drawable {
         
         DimensionsComponent dimensionsComponent = dimensionsComponentComponentMapper.get(entity);
         float ppwu = dimensionsComponent.width/entityTextureRegionComponent.region.getRegionWidth();
-
         Vector2 atlasCoordsVector = new Vector2(entityTextureRegionComponent.region.getU(), entityTextureRegionComponent.region.getV());
         Vector2 atlasSizeVector = new Vector2(entityTextureRegionComponent.region.getU2()-entityTextureRegionComponent.region.getU(), entityTextureRegionComponent.region.getV2()-entityTextureRegionComponent.region.getV());
 
-        batch.getShader().setUniformi("isRepeat", 1);
+        batch.getShader().setUniformi("isRepeat", entityTextureRegionComponent.isRepeat ? 1 : 0);
         batch.getShader().setUniformf("atlasCoord", atlasCoordsVector);
     	batch.getShader().setUniformf("atlasSize", atlasSizeVector);
         //System.out.println(entityTransformComponent.originX);
         //batch.setColor(tintComponent.color);
         entityTextureRegionComponent.polygonSprite.setColor(tintComponent.color);
-        entityTextureRegionComponent.polygonSprite.setOrigin(entityTransformComponent.originX * ppwu, entityTransformComponent.originY * ppwu);
-        entityTextureRegionComponent.polygonSprite.setPosition(entityTransformComponent.x, entityTransformComponent.y);
+        float originX = entityTransformComponent.originX * entityTransformComponent.scaleX / ppwu;
+        float originY = entityTransformComponent.originY * entityTransformComponent.scaleY / ppwu;
+        entityTextureRegionComponent.polygonSprite.setOrigin(originX, originY);
+        entityTextureRegionComponent.polygonSprite.setPosition(entityTransformComponent.x - originX + dimensionsComponent.width / 2, entityTransformComponent.y - originY + dimensionsComponent.height / 2);
         entityTextureRegionComponent.polygonSprite.setRotation(entityTransformComponent.rotation);
         entityTextureRegionComponent.polygonSprite.setScale(ppwu);
         entityTextureRegionComponent.polygonSprite.draw((PolygonSpriteBatch) batch);
         batch.flush();
         batch.getShader().setUniformi("isRepeat", 0);
-       
     }
 }

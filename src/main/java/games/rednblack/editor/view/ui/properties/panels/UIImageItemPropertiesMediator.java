@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
+import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 
@@ -27,7 +28,7 @@ public class UIImageItemPropertiesMediator extends UIItemPropertiesMediator<Enti
         if(textureRegionComponent.isRepeat) {
             viewComponent.setRenderMode("REPEAT");
         } else {
-            viewComponent.setRenderMode("STRETCH");
+            viewComponent.setRenderMode("SINGLE");
         }
 
         if(textureRegionComponent.isPolygon) {
@@ -49,10 +50,11 @@ public class UIImageItemPropertiesMediator extends UIItemPropertiesMediator<Enti
         if(viewComponent.getSpriteType().equals("POLYGON")) {
             textureRegionComponent.isPolygon = true;
             PolygonComponent polygonComponent = ComponentRetriever.get(observableReference, PolygonComponent.class);
+            TransformComponent transformComponent = ComponentRetriever.get(observableReference, TransformComponent.class);
 
             if (polygonComponent != null && polygonComponent.vertices != null) {
             	float ppwu = dimensionsComponent.width/textureRegionComponent.region.getRegionWidth();
-                textureRegionComponent.setPolygonSprite(polygonComponent,1f/ppwu);
+                textureRegionComponent.setPolygonSprite(polygonComponent,1f/ppwu, transformComponent.scaleX, transformComponent.scaleY);
                 dimensionsComponent.setPolygon(polygonComponent);
             }
         } else {

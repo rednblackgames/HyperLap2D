@@ -20,7 +20,7 @@ public class UIImageItemProperties extends UIItemCollapsibleProperties {
         renderModeBox = StandardWidgetsFactory.createSelectBox(String.class);
         spriteTypeBox = StandardWidgetsFactory.createSelectBox(String.class);
 
-        renderModeBox.setItems("REPEAT", "STRETCH");
+        renderModeBox.setItems("REPEAT", "SINGLE");
         spriteTypeBox.setItems("SQUARE", "POLYGON");
 
         mainTable.add(StandardWidgetsFactory.createLabel("Render Mode:", Align.right)).padRight(5).width(90).left();

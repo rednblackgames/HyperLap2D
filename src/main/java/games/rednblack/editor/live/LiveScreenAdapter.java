@@ -13,8 +13,6 @@ public class LiveScreenAdapter extends Game {
     private final IResourceRetriever resourceManager;
 
     public LiveScreenAdapter(WorldSizeVO worldSizeVO, IResourceRetriever resourceManager, String sceneName) {
-        FileHandle file = Gdx.files.internal("project.dt");
-        System.out.println(file.path());
         this.sceneName = sceneName;
         this.worldSizeVO = worldSizeVO;
         this.resourceManager = resourceManager;

@@ -28,6 +28,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
+import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.data.MainItemVO;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.data.SimpleImageVO;
@@ -52,12 +53,13 @@ public class ColorPrimitiveComponentFactory extends ComponentFactory {
 
         createTextureRegionComponent(entity, vo);
 
+        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
         TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
         DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
         PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
         dimensionsComponent.setPolygon(polygonComponent);
         float ppwu = dimensionsComponent.width/textureRegionComponent.region.getRegionWidth();
-        textureRegionComponent.setPolygonSprite(polygonComponent, 1f/ppwu);
+        textureRegionComponent.setPolygonSprite(polygonComponent, 1f/ppwu, transformComponent.scaleX, transformComponent.scaleY);
     }
 
     @Override

@@ -25,6 +25,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
+import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.data.MainItemVO;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
@@ -57,10 +58,10 @@ public class SimpleImageComponentFactory extends ComponentFactory {
     	DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
     	
         ProjectInfoVO projectInfoVO = rm.getProjectVO();
-    	
+        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
     	PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
     	if(textureRegionComponent.isPolygon && polygonComponent != null && polygonComponent.vertices != null) {
-    		textureRegionComponent.setPolygonSprite(polygonComponent, projectInfoVO.pixelToWorld);
+    		textureRegionComponent.setPolygonSprite(polygonComponent, projectInfoVO.pixelToWorld, transformComponent.scaleX, transformComponent.scaleY);
     		dimensionsComponent.setPolygon(polygonComponent);
     	}
 	}

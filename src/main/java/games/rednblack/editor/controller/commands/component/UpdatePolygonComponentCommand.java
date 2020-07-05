@@ -20,6 +20,7 @@ package games.rednblack.editor.controller.commands.component;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
+import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.h2d.common.MsgAPI;
@@ -62,9 +63,10 @@ public class UpdatePolygonComponentCommand extends EntityModifyRevertibleCommand
         TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
         if(textureRegionComponent != null && textureRegionComponent.isPolygon) {
             DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
+            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
             float ppwu = dimensionsComponent.width/textureRegionComponent.region.getRegionWidth();
             dimensionsComponent.setPolygon(polygonComponent);
-            textureRegionComponent.setPolygonSprite(polygonComponent,1f/ppwu);
+            textureRegionComponent.setPolygonSprite(polygonComponent,1f/ppwu, transformComponent.scaleX, transformComponent.scaleY);
         }
 
         PhysicsBodyComponent physicsBodyComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
@@ -92,9 +94,10 @@ public class UpdatePolygonComponentCommand extends EntityModifyRevertibleCommand
         TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
         if(textureRegionComponent != null && textureRegionComponent.isPolygon) {
             DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
+            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
             float ppwu = dimensionsComponent.width/textureRegionComponent.region.getRegionWidth();
             dimensionsComponent.setPolygon(polygonComponent);
-            textureRegionComponent.setPolygonSprite(polygonComponent, 1f/ppwu);
+            textureRegionComponent.setPolygonSprite(polygonComponent, 1f/ppwu, transformComponent.scaleX, transformComponent.scaleY);
         }
 
         PhysicsBodyComponent physicsBodyComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
