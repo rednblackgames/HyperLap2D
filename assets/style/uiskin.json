@@ -443,7 +443,9 @@
       imageUp: icon-close-white
     },
     close-panel: {
-      imageUp: icon-close-panel
+      down: button-red,
+      up: button-panel-bg,
+      imageUp: icon-close-white
     },
     trash-button: {
       imageDown: icon-trash-disabled,
@@ -763,7 +765,7 @@
   com.kotcrab.vis.ui.widget.toast.Toast$ToastStyle: {
     default: {
       background: tooltip-bg,
-      closeButtonStyle: close-window
+      closeButtonStyle: close-panel
     },
     dark: {
       background: window-bg,

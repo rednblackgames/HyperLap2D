@@ -18,8 +18,10 @@
 package games.rednblack.h2d.common;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisDialog;
@@ -45,15 +47,13 @@ public class UIDraggablePanel extends H2DDialog {
     @Override
     public void addCloseButton() {
         VisImageButton closeButton = new VisImageButton("close-panel");
-        this.getTitleTable().add(closeButton).padBottom(2);
-        closeButton.addListener(new ChangeListener() {
-            public void changed(ChangeEvent event, Actor actor) {
+        this.getTitleTable().add(closeButton).padTop(1).padRight(-2);
+        closeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
                 UIDraggablePanel.this.close();
             }
         });
-        if (this.getTitleTable().getChildren().size == 2) {
-            this.getTitleTable().getCell(this.getTitleLabel()).padLeft(closeButton.getWidth() * 2.0F);
-        }
     }
 
     public void invalidateHeight() {
