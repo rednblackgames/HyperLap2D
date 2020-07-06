@@ -77,8 +77,7 @@ public class UILayerBox extends UICollapsibleBox {
 
         layersTable = new VisTable();
         scrollPane = StandardWidgetsFactory.createScrollPane(layersTable);
-        scrollPane.setFadeScrollBars(false);
-        contentTable.add(scrollPane).padTop(2).width(222).height(150);
+        contentTable.add(scrollPane).padTop(8).width(222).height(150);
         layersTable.top();
 
         scrollPane.layout();

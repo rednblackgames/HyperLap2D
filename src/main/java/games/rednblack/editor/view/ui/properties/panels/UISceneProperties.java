@@ -86,29 +86,29 @@ public class UISceneProperties extends UIAbstractProperties {
         row().padTop(5);
         addSeparator().colspan(2).padTop(5).padBottom(5);
         add(new VisLabel("Physics enabled:", Align.right)).padRight(5).width(115);
-        add(physicsEnabledCheckBox).left();
+        add(physicsEnabledCheckBox).padLeft(1).left();
         row().padTop(5);
         add(new VisLabel("Gravity X:", Align.right)).padRight(5).width(115);
-        add(gravityXTextField).width(115);
+        add(gravityXTextField).width(100);
         row().padTop(5);
         add(new VisLabel("Gravity Y:", Align.right)).padRight(5).width(115);
-        add(gravityYTextField).width(115);
+        add(gravityYTextField).width(100);
         row().padTop(5);
         add(new VisLabel("Sleep velocity:", Align.right)).padRight(5).width(115);
-        add(sleepVelocityTextField).width(115);
+        add(sleepVelocityTextField).width(100);
         row().padTop(5);
         addSeparator().colspan(2).padTop(5).padBottom(5);
         add(new VisLabel("Enable Lights:", Align.right)).padRight(5).width(115);
-        add(enableLightsCheckBox).left();
+        add(enableLightsCheckBox).padLeft(1).left();
         row().padTop(5);
         add(new VisLabel("Lights Blur:", Align.right)).padRight(5).width(115);
-        add(blurNumTextField).width(115);
+        add(blurNumTextField).width(100);
         row().padTop(5);
         add(new VisLabel("Ambient Color:", Align.right)).padRight(5).width(115);
-        add(ambientColorComponent).left();
+        add(ambientColorComponent).padLeft(1).left();
         row().padTop(5);
         add(new VisLabel("Light Type:", Align.right)).padRight(5).width(115);
-        add(lightTypeBox).fillX().padRight(9).left();
+        add(lightTypeBox).fillX().padLeft(1).left();
         row().padTop(5);
 
         directionalTable.add(StandardWidgetsFactory.createLabel("Directional Light Settings:", Align.left)).fillX().expandX().colspan(2).padLeft(8);
@@ -120,7 +120,7 @@ public class UISceneProperties extends UIAbstractProperties {
         directionalTable.add(directionalRays).left();
         directionalTable.row().padTop(5);
         directionalTable.add(new VisLabel("Degree:", Align.right)).padRight(5).width(115);
-        directionalTable.add(directionalDegreeTextField).width(115);
+        directionalTable.add(directionalDegreeTextField).width(100);
         directionalTable.row().padTop(5);
 
         setListeners();

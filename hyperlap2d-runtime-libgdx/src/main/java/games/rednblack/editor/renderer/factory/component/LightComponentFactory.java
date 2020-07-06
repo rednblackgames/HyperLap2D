@@ -66,7 +66,7 @@ public class LightComponentFactory extends ComponentFactory {
 
     protected LightObjectComponent createLightObjectComponent(Entity entity, LightVO vo) {
         if(vo.softnessLength == -1f) {
-            vo.softnessLength = vo.distance * 0.1f * PhysicsBodyLoader.getScale();
+            vo.softnessLength = vo.distance * 0.1f;
         }
         LightObjectComponent component = new LightObjectComponent(vo.type);
         component.coneDegree = vo.coneDegree;

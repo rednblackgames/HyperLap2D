@@ -20,7 +20,7 @@ public class LightBodyComponent implements RemovableComponent {
 
     public LightBodyComponent() {
         color = new float[]{1f, 1f, 1f, 1f};
-        rays = 3;
+        rays = 4;
         distance = 30;
         rayDirection = 1;
         softnessLength = 1f;

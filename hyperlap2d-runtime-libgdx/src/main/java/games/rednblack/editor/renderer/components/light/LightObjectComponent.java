@@ -15,7 +15,7 @@ public class LightObjectComponent implements Component {
 	private LightType type;
 
 	public int rays = 12;
-	public float distance = 300;
+	public float distance = 10;
 	public float directionDegree = 0;
 	public float coneDegree = 30;
 	public float softnessLength = 1f;

@@ -69,6 +69,7 @@ public class UIAlignBox extends UICollapsibleBox {
         textureManager = faced.retrieveProxy(EditorTextureManager.NAME);
         VisTable alignButtonsTable = new VisTable();
         //
+        alignButtonsTable.row().padTop(6);
         alignButtonsTable.add("Simple:").padRight(8).right();
         alignButtonsTable.add(createAlignButton("align-simple-up", ALIGN_TOP)).padRight(4).left();
         alignButtonsTable.add(createAlignButton("align-simple-left", ALIGN_LEFT)).padRight(4).left();

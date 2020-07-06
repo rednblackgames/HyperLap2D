@@ -50,7 +50,7 @@ public class PointLightTool extends ItemDropTool {
     public Entity putItem(float x, float y) {
         LightVO vo = new LightVO();
         vo.type = LightVO.LightType.POINT;
-        vo.distance = 300f / sandbox.getPixelPerWU();
+        vo.distance = vo.distance / sandbox.getPixelPerWU();
 
         return ItemFactory.get().createLightItem(vo, new Vector2(x, y));
     }

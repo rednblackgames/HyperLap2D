@@ -51,7 +51,7 @@ public class ConeLightTool extends ItemDropTool {
         //LayerItemVO layer = Sandbox.getInstance().getItemFactory().getSelectedLayer();
         LightVO vo = new LightVO();
         vo.type = LightVO.LightType.CONE;
-        vo.distance = 300/sandbox.getPixelPerWU();
+        vo.distance = vo.distance / sandbox.getPixelPerWU();
         vo.coneDegree = 45;
 
         return ItemFactory.get().createLightItem(vo, new Vector2(x, y));
