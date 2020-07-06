@@ -38,7 +38,7 @@ public abstract class NonRevertibleCommand extends SandboxCommand {
                         if (r == 1) {
                             callDoAction();
                         }
-                    });
+                    }).padBottom(20).pack();
         } else {
             callDoAction();
         }

@@ -48,10 +48,17 @@ public class UIDraggablePanel extends H2DDialog {
     public void addCloseButton() {
         VisImageButton closeButton = new VisImageButton("close-panel");
         this.getTitleTable().add(closeButton).padTop(1).padRight(-2);
+        closeButton.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                close();
+            }
+        });
         closeButton.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                UIDraggablePanel.this.close();
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                event.cancel();
+                return true;
             }
         });
     }
@@ -65,16 +72,13 @@ public class UIDraggablePanel extends H2DDialog {
 
     @Override
     public VisDialog show(Stage stage) {
-
         isOpen = true;
-
         return super.show(stage);
     }
 
     @Override
     public void hide() {
         super.hide();
-
         isOpen = false;
     }
 }

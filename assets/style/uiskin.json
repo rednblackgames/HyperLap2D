@@ -440,7 +440,7 @@
     close-window: {
       down: button-red,
       up: button-window-bg,
-      imageUp: icon-close-white
+      imageUp: icon-close-white,
     },
     close-panel: {
       down: button-red,

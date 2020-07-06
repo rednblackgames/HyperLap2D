@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
+import games.rednblack.editor.view.ui.widget.ui.HyperLapColorPicker;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
@@ -110,7 +111,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
         switch (notification.getName()) {
             case UIBasicItemProperties.TINT_COLOR_BUTTON_CLICKED:
                 Color prevColor = viewComponent.getTintColor().cpy();
-                ColorPicker picker = new ColorPicker(new ColorPickerAdapter() {
+                ColorPicker picker = new HyperLapColorPicker(new ColorPickerAdapter() {
                     @Override
                     public void finished(Color newColor) {
                         TintComponent tintComponent = observableReference.getComponent(TintComponent.class);

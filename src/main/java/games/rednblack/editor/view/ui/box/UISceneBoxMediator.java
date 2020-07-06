@@ -45,7 +45,7 @@ public class UISceneBoxMediator extends SimpleMediator<UISceneBox> {
                 sandbox.loadScene(notification.getBody());
                 break;
             case UISceneBox.CREATE_NEW_SCENE_BTN_CLICKED:
-                Dialogs.showInputDialog(sandbox.getUIStage(), "Create New Scene", "Scene Name : ", new StringNameValidator(), new InputDialogListener() {
+                Dialogs.showInputDialog(sandbox.getUIStage(), "Create New Scene", "Scene Name : ", false, new StringNameValidator(), new InputDialogListener() {
                     @Override
                     public void finished(String input) {
                         if (input == null || input.equals("")) {
@@ -72,7 +72,7 @@ public class UISceneBoxMediator extends SimpleMediator<UISceneBox> {
                                 sceneDataManager.deleteCurrentScene();
                                 sandbox.loadScene("MainScene");
                             }
-                        });
+                        }).padBottom(20).pack();
                 break;
             default:
                 break;

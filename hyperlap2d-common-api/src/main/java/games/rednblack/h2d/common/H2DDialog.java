@@ -19,9 +19,14 @@
 package games.rednblack.h2d.common;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisDialog;
+import com.kotcrab.vis.ui.widget.VisImageButton;
 
 public class H2DDialog extends VisDialog {
     protected final Skin skin;
@@ -29,6 +34,7 @@ public class H2DDialog extends VisDialog {
     public H2DDialog(String title) {
         super(title);
         skin = VisUI.getSkin();
+        padTop(32);
     }
 
 	@Override
@@ -41,6 +47,25 @@ public class H2DDialog extends VisDialog {
 	public void hide (Action action) {
 		super.hide(action);
 		onDismiss();
+	}
+
+	@Override
+	public void addCloseButton() {
+		VisImageButton closeButton = new VisImageButton("close-window");
+		this.getTitleTable().add(closeButton).padRight(0);
+		closeButton.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				close();
+			}
+		});
+		closeButton.addListener(new ClickListener() {
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				event.cancel();
+				return true;
+			}
+		});
 	}
 
 	@Override

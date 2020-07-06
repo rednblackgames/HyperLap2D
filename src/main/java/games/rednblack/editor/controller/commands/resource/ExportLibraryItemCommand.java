@@ -16,6 +16,7 @@ import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.ZipUtils;
+import games.rednblack.editor.view.ui.widget.ui.HyperLapFileChooser;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.h2d.common.vo.ExportMapperVO.ExportedAsset;
@@ -49,7 +50,7 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
 
         String libraryItemName = notification.getBody();
 
-        FileChooser fileChooser = new FileChooser(FileChooser.Mode.SAVE);
+        FileChooser fileChooser = new HyperLapFileChooser(FileChooser.Mode.SAVE);
         FileTypeFilter typeFilter = new FileTypeFilter(false);
         typeFilter.addRule("HyperLap2D Library (*.h2dlib)", "h2dlib");
         fileChooser.setFileTypeFilter(typeFilter);

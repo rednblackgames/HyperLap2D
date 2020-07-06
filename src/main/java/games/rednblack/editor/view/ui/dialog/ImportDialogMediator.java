@@ -40,6 +40,7 @@ import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.renderer.data.SceneVO;
+import games.rednblack.editor.view.ui.widget.ui.HyperLapFileChooser;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.awt.datatransfer.DataFlavor;
@@ -151,7 +152,7 @@ public class ImportDialogMediator extends SimpleMediator<ImportDialog> {
 
     private void showFileChoose() {
          Sandbox sandbox = Sandbox.getInstance();
-        FileChooser fileChooser = new FileChooser(FileChooser.Mode.OPEN);
+        FileChooser fileChooser = new HyperLapFileChooser(FileChooser.Mode.OPEN);
 
         fileChooser.setFileTypeFilter(ImportUtils.getInstance().getFileTypeFilter());
 

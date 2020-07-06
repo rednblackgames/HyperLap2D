@@ -144,7 +144,8 @@ public class FollowersUIMediator extends SimpleMediator<FollowersUI> {
     private void setNewSelectionConfiguration(Set<Entity> items) {
         followers.values().forEach(games.rednblack.editor.view.ui.followers.BasicFollower::hide);
         for (Entity item : items) {
-            followers.get(item).show();
+            if (followers.get(item) != null)
+                followers.get(item).show();
         }
     }
 

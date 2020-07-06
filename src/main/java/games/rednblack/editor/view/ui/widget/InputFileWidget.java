@@ -30,6 +30,7 @@ import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.FileChooserListener;
 import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.editor.view.ui.widget.ui.HyperLapFileChooser;
 
 /**
  * Created by sargis on 4/3/15.
@@ -56,7 +57,7 @@ public class InputFileWidget extends VisTable {
     }
 
     private void initFileChooser(FileChooser.Mode mode, FileChooser.SelectionMode selectionMode, boolean multiselectionEnabled) {
-        fileChooser = new FileChooser(mode);
+        fileChooser = new HyperLapFileChooser(mode);
         fileChooser.setSelectionMode(selectionMode);
         fileChooser.setMultiSelectionEnabled(multiselectionEnabled);
         fileChooser.setListener(new InputFileWidgetFileChooserListener());

@@ -53,7 +53,7 @@ public class AssetImporter {
                             if (result == 0) {
                                 initImport(type, paths, false);
                             }
-                        });
+                        }).padBottom(20).pack();
             } else {
                 initImport(type, paths, false);
             }

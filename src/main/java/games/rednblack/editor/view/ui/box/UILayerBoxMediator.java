@@ -120,7 +120,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                 selectEntitiesByLayerName(layerItem);
                 break;
             case UILayerBox.CREATE_NEW_LAYER:
-                Dialogs.showInputDialog(Sandbox.getInstance().getUIStage(), "Please set unique name for your Layer", "Please set unique name for your Layer", new InputDialogListener() {
+                Dialogs.showInputDialog(Sandbox.getInstance().getUIStage(), "New Layer", "Please set unique name for your Layer", false, new InputDialogListener() {
                     @Override
                     public void finished(String input) {
                         if (checkIfNameIsUnique(input)) {
@@ -151,11 +151,11 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                     String layerName = layers.get(deletingLayerIndex).layerName;
                     Dialogs.showConfirmDialog(sandbox.getUIStage(),
                             "Delete Layer", "Do you realy want to delete '" + layerName + "' layer?",
-                            new String[]{"Delete", "Cancel"}, new Integer[]{0, 1}, r -> {
-                                if (r == 0) {
+                            new String[]{"Cancel", "Delete"}, new Integer[]{0, 1}, r -> {
+                                if (r == 1) {
                                     facade.sendNotification(MsgAPI.ACTION_DELETE_LAYER, layerName);
                                 }
-                            });
+                            }).padBottom(20).pack();
                 }
                 break;
             case UILayerBox.LOCK_LAYER:

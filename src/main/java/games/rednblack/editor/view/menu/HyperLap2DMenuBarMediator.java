@@ -22,6 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
+import games.rednblack.editor.view.ui.widget.ui.HyperLapFileChooser;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
@@ -180,7 +181,7 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
     public void showOpenProject() {
         Sandbox sandbox = Sandbox.getInstance();
         //chooser creation
-        FileChooser fileChooser = new FileChooser(FileChooser.Mode.OPEN);
+        FileChooser fileChooser = new HyperLapFileChooser(FileChooser.Mode.OPEN);
 
         FileTypeFilter typeFilter = new FileTypeFilter(false);
         typeFilter.addRule("HyperLap2D Project (*.pit)", "pit");

@@ -23,6 +23,7 @@ import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.LightsPropertiesVO;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
+import games.rednblack.editor.view.ui.widget.ui.HyperLapColorPicker;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -61,7 +62,7 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
 
         switch (notification.getName()) {
             case UISceneProperties.AMBIENT_COLOR_BUTTON_CLICKED:
-                ColorPicker picker = new ColorPicker(new ColorPickerAdapter() {
+                ColorPicker picker = new HyperLapColorPicker(new ColorPickerAdapter() {
                     @Override
                     public void finished(Color newColor) {
                         viewComponent.setAmbientColor(newColor);
@@ -82,7 +83,7 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
 
                 break;
             case UISceneProperties.DIRECTIONAL_COLOR_BUTTON_CLICKED:
-                picker = new ColorPicker(new ColorPickerAdapter() {
+                picker = new HyperLapColorPicker(new ColorPickerAdapter() {
                     @Override
                     public void finished(Color newColor) {
                         viewComponent.setDirectionalColor(newColor);

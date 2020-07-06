@@ -96,7 +96,7 @@ public class UIResolutionBoxMediator extends SimpleMediator<UIResolutionBox> {
                                 String sceneName = sandbox.sceneControl.getCurrentSceneVO().sceneName;
                                 sandbox.loadCurrentProject(sceneName);
                             }
-                        });
+                        }).padBottom(20).pack();
                 break;
 
             case UIResolutionBox.REPACK_BTN_CLICKED:

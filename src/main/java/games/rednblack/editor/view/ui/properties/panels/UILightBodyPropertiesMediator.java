@@ -12,6 +12,7 @@ import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.data.LightBodyDataVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
+import games.rednblack.editor.view.ui.widget.ui.HyperLapColorPicker;
 import games.rednblack.h2d.common.MsgAPI;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -48,7 +49,7 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<Enti
                 break;
             case UILightBodyProperties.LIGHT_COLOR_BUTTON_CLICKED:
                 Color prevColor = viewComponent.getLightColor().cpy();
-                ColorPicker picker = new ColorPicker(new ColorPickerAdapter() {
+                ColorPicker picker = new HyperLapColorPicker(new ColorPickerAdapter() {
                     @Override
                     public void finished(Color newColor) {
                         lightComponent = observableReference.getComponent(LightBodyComponent.class);
