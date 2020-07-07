@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
 
-import com.badlogic.gdx.Gdx;
 import com.puremvc.patterns.mediator.SimpleMediator;
 import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DApp;
@@ -27,7 +26,7 @@ public class SaveProjectDialogMediator extends SimpleMediator<SaveProjectDialog>
     @Override
     public String[] listNotificationInterests() {
         return new String[]{
-                MsgAPI.APP_EXIT
+                MsgAPI.CHECK_EDITS_ACTION
         };
     }
 
@@ -41,12 +40,13 @@ public class SaveProjectDialogMediator extends SimpleMediator<SaveProjectDialog>
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
 
         switch (notification.getName()) {
-            case MsgAPI.APP_EXIT:
+            case MsgAPI.CHECK_EDITS_ACTION:
                 if (HyperLap2DApp.getInstance().hyperlap2D.hasUnsavedStuff() && projectManager.currentProjectVO != null) {
-                    viewComponent.updateMessage(projectManager.currentProjectVO.projectName);
+                    viewComponent.updateDialog(projectManager.currentProjectVO.projectName, notification.getBody());
                     viewComponent.show(uiStage);
                 } else {
-                    Gdx.app.exit();
+                    Runnable action = notification.getBody();
+                    action.run();
                 }
                 break;
         }

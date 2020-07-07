@@ -28,7 +28,7 @@ public class MsgAPI {
      */
     public static final String GLOBAL_PREFIX = "games.rednblack.editor.HyperLap2D";
 
-    public static final String APP_EXIT = GLOBAL_PREFIX + ".APP_EXIT";
+    public static final String CHECK_EDITS_ACTION = GLOBAL_PREFIX + ".APP_EXIT";
 
     public static final String PAUSE = GLOBAL_PREFIX + ".PAUSE";
     public static final String RESUME = GLOBAL_PREFIX + ".RESUME";

@@ -14,6 +14,7 @@ import games.rednblack.h2d.common.H2DDialog;
 public class SaveProjectDialog extends H2DDialog {
 
     private VisLabel messageLabel;
+    private Runnable action;
 
     public SaveProjectDialog() {
         super("Save Project");
@@ -38,14 +39,16 @@ public class SaveProjectDialog extends H2DDialog {
                 SceneVO vo = sandbox.sceneVoFromItems();
                 projectManager.saveCurrentProject(vo);
 
-                Gdx.app.exit();
+                SaveProjectDialog.this.close();
+                action.run();
             }
         });
 
         noButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
+                SaveProjectDialog.this.close();
+                action.run();
             }
         });
 
@@ -57,7 +60,9 @@ public class SaveProjectDialog extends H2DDialog {
         });
     }
 
-    public void updateMessage(String projectTitle) {
+    public void updateDialog(String projectTitle, Runnable runnable) {
+        if (runnable == null) throw new IllegalArgumentException("Runnable action cannot be null");
+        action = runnable;
         messageLabel.setText("Save changes to '" + projectTitle + "' before exit?");
     }
 }

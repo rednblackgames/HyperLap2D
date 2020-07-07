@@ -174,7 +174,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.SYM) && keycode == Input.Keys.Q) {
-            facade.sendNotification(MsgAPI.APP_EXIT);
+            facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> Gdx.app.exit());
         }
         return false;
     }

@@ -97,7 +97,7 @@ public class HyperLap2DApp extends ApplicationAdapter {
 
                     @Override
                     public boolean closeRequested() {
-                        hyperlap2D.sendNotification(MsgAPI.APP_EXIT);
+                        hyperlap2D.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> Gdx.app.exit());
                         return false;
                     }
 

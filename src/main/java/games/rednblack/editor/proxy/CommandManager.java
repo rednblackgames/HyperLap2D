@@ -116,4 +116,10 @@ public class CommandManager extends BaseProxy {
         modifiedCursor = 1;
         updateWindowTitle();
     }
+
+    public void initHistory() {
+        clearHistory();
+        modifiedCursor = 0;
+        updateWindowTitle();
+    }
 }

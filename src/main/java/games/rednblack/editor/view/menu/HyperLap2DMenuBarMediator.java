@@ -24,8 +24,6 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import games.rednblack.editor.view.ui.widget.ui.HyperLapFileChooser;
 import games.rednblack.h2d.common.MsgAPI;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
-import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
 import com.puremvc.patterns.mediator.SimpleMediator;
@@ -34,10 +32,8 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.ProjectManager;
-import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.view.stage.Sandbox;
-import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 /**
  * Created by sargis on 3/25/15.
@@ -169,7 +165,7 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
                 //showDialog("showExportDialog");
                 break;
             case FileMenu.EXIT:
-                facade.sendNotification(MsgAPI.APP_EXIT);
+                facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> Gdx.app.exit());
                 break;
         }
     }
@@ -198,7 +194,7 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
             public void selected(Array<FileHandle> files) {
                 String path = files.first().file().getAbsolutePath();
                 if (path.length() > 0) {
-                    projectManager.openProjectFromPath(path);
+                    facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> projectManager.openProjectFromPath(path));
                 }
             }
         });
@@ -209,8 +205,8 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
         PreferencesManager prefs = PreferencesManager.getInstance();
         prefs.buildRecentHistory();
         prefs.pushHistory(path);
-        Sandbox sandbox = Sandbox.getInstance();
-        projectManager.openProjectFromPath(path);
+
+        facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> projectManager.openProjectFromPath(path));
     }
 
     public void clearRecents() {

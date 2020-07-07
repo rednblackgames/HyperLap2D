@@ -33,6 +33,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.util.ToastManager;
+import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.renderer.systems.LightSystem;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extention.spine.SpineItemType;
@@ -226,6 +227,9 @@ public class Sandbox {
         // add additional components
         // TODO: maybe move this somewhere else
         sceneControl.sceneLoader.addComponentsByTagName("button", ButtonComponent.class);
+
+        CommandManager commandManager = facade.retrieveProxy(CommandManager.NAME);
+        commandManager.initHistory();
     }
 
     public void initSceneView(CompositeItemVO compositeItemVO) {

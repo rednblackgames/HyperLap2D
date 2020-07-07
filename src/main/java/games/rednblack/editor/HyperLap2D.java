@@ -26,7 +26,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import games.rednblack.editor.proxy.CommandManager;
-import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.view.frame.FileDropListener;
 import games.rednblack.editor.view.ui.dialog.ImportDialog;
@@ -136,7 +135,7 @@ public class HyperLap2D implements Proxy, ApplicationListener {
     public void dispose() {
         sendNotification(MsgAPI.DISPOSE);
         VisUI.dispose();
-        facade.sendNotification(MsgAPI.APP_EXIT);
+        facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> Gdx.app.exit());
     }
 
     @Override
