@@ -54,7 +54,7 @@ public class UISceneBoxMediator extends SimpleMediator<UISceneBox> {
                         }
                         SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
                         sceneDataManager.createNewScene(input);
-                        sandbox.loadScene(input);
+                        facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> sandbox.loadScene(input));
                     }
 
                     @Override
