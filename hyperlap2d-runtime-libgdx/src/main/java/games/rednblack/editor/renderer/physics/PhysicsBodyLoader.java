@@ -65,9 +65,14 @@ public class PhysicsBodyLoader {
         bodyDef.position.set((sceneCoords.x + transformComponent.originX) * PhysicsBodyLoader.getScale() , (sceneCoords.y + transformComponent.originY)* PhysicsBodyLoader.getScale() );
         bodyDef.angle = transformComponent.rotation * MathUtils.degreesToRadians;
 
+        bodyDef.gravityScale = physicsComponent.gravityScale;
+        bodyDef.linearDamping = physicsComponent.damping < 0 ? 0 : physicsComponent.damping;
+        bodyDef.angularDamping = physicsComponent.angularDamping < 0 ? 0 : physicsComponent.angularDamping;
+
         bodyDef.awake = physicsComponent.awake;
         bodyDef.allowSleep = physicsComponent.allowSleep;
         bodyDef.bullet = physicsComponent.bullet;
+        bodyDef.fixedRotation = physicsComponent.fixedRotation;
 
         if(physicsComponent.bodyType == 0) {
             bodyDef.type = BodyDef.BodyType.StaticBody;
@@ -104,6 +109,13 @@ public class PhysicsBodyLoader {
             fixtureDef.shape = polygonShape;
             body.createFixture(fixtureDef);
         }
+
+        MassData massData = new MassData();
+        massData.center.set(physicsComponent.centerOfMass);
+        massData.I = physicsComponent.rotationalInertia;
+        massData.mass = physicsComponent.mass;
+
+        body.setMassData(massData);
 
         return body;
     }

@@ -12,12 +12,14 @@ public class PhysicsBodyComponent implements RemovableComponent {
 	public Vector2 centerOfMass;
 	public float rotationalInertia;
 	public float damping;
+    public float angularDamping;
 	public float gravityScale;
 
 	public boolean allowSleep;
 	public boolean awake;
 	public boolean bullet;
     public boolean sensor;
+    public boolean fixedRotation;
 
 	public float density;
 	public float friction;
@@ -35,9 +37,9 @@ public class PhysicsBodyComponent implements RemovableComponent {
         bodyType = 0;
         mass = 1;
         centerOfMass = new Vector2(0, 0);
-        rotationalInertia = 0;
+        rotationalInertia = 1;
         damping = 0;
-        gravityScale = 0;
+        gravityScale = 1;
         allowSleep = true;
         sensor = false;
         awake = true;
@@ -45,6 +47,8 @@ public class PhysicsBodyComponent implements RemovableComponent {
         density = 1;
         friction = 1;
         restitution = 0;
+        fixedRotation = false;
+        angularDamping = 0;
         filter = new Filter();
     }
 

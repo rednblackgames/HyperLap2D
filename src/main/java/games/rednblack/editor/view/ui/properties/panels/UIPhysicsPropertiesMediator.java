@@ -51,8 +51,9 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<Entity
         viewComponent.getMassField().setText(physicsComponent.mass + "");
         viewComponent.getCenterOfMassXField().setText(physicsComponent.centerOfMass.x + "");
         viewComponent.getCenterOfMassYField().setText(physicsComponent.centerOfMass.y + "");
-        viewComponent.getRotationalIntertiaField().setText(physicsComponent.rotationalInertia + "");
+        viewComponent.getRotationalInertiaField().setText(physicsComponent.rotationalInertia + "");
         viewComponent.getDumpingField().setText(physicsComponent.damping + "");
+        viewComponent.getAngularDampingField().setText(physicsComponent.angularDamping + "");
         viewComponent.getGravityScaleField().setText(physicsComponent.gravityScale + "");
         viewComponent.getDensityField().setText(physicsComponent.density + "");
         viewComponent.getFrictionField().setText(physicsComponent.friction + "");
@@ -61,6 +62,7 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<Entity
         viewComponent.getAwakeBox().setChecked(physicsComponent.awake);
         viewComponent.getBulletBox().setChecked(physicsComponent.bullet);
         viewComponent.getSensorBox().setChecked(physicsComponent.sensor);
+        viewComponent.getFixedRotationBox().setChecked(physicsComponent.fixedRotation);
     }
 
     @Override
@@ -77,8 +79,9 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<Entity
 
         payloadVo.centerOfMass.set(NumberUtils.toFloat(viewComponent.getCenterOfMassXField().getText()), NumberUtils.toFloat(viewComponent.getCenterOfMassYField().getText()));
 
-        payloadVo.rotationalInertia = NumberUtils.toFloat(viewComponent.getRotationalIntertiaField().getText());
+        payloadVo.rotationalInertia = NumberUtils.toFloat(viewComponent.getRotationalInertiaField().getText());
         payloadVo.damping = NumberUtils.toFloat(viewComponent.getDumpingField().getText());
+        payloadVo.angularDamping = NumberUtils.toFloat(viewComponent.getAngularDampingField().getText());
         payloadVo.gravityScale = NumberUtils.toFloat(viewComponent.getGravityScaleField().getText());
         payloadVo.density = NumberUtils.toFloat(viewComponent.getDensityField().getText());
         payloadVo.friction = NumberUtils.toFloat(viewComponent.getFrictionField().getText());
@@ -88,6 +91,7 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<Entity
         payloadVo.awake = viewComponent.getAwakeBox().isChecked();
         payloadVo.bullet = viewComponent.getBulletBox().isChecked();
         payloadVo.sensor = viewComponent.getSensorBox().isChecked();
+        payloadVo.fixedRotation = viewComponent.getFixedRotationBox().isChecked();
 
         if (!oldPayloadVo.equals(payloadVo)) {
             Object payload = UpdatePhysicsDataCommand.payload(observableReference, payloadVo);

@@ -199,6 +199,8 @@ public abstract class ComponentFactory {
         component.mass = vo.physics.mass;
         component.restitution = vo.physics.restitution;
         component.rotationalInertia = vo.physics.rotationalInertia;
+        component.angularDamping = vo.physics.angularDamping;
+        component.fixedRotation = vo.physics.fixedRotation;
 
         entity.add(component);
 

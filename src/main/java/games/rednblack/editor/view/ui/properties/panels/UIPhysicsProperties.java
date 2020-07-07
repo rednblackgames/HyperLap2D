@@ -27,8 +27,9 @@ public class UIPhysicsProperties extends UIRemovableProperties {
     private VisValidatableTextField massField;
     private VisValidatableTextField centerOfMassXField;
     private VisValidatableTextField centerOfMassYField;
-    private VisValidatableTextField rotationalIntertiaField;
+    private VisValidatableTextField rotationalInertiaField;
     private VisValidatableTextField dumpingField;
+    private VisValidatableTextField angularDumpingField;
     private VisValidatableTextField gravityScaleField;
     private VisValidatableTextField densityField;
     private VisValidatableTextField frictionField;
@@ -37,6 +38,7 @@ public class UIPhysicsProperties extends UIRemovableProperties {
     private VisCheckBox awakeBox;
     private VisCheckBox bulletBox;
     private VisCheckBox sensor;
+    private VisCheckBox fixedRotation;
 
     public UIPhysicsProperties() {
         super("Physics Component");
@@ -60,8 +62,9 @@ public class UIPhysicsProperties extends UIRemovableProperties {
         massField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         centerOfMassXField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         centerOfMassYField = StandardWidgetsFactory.createValidableTextField(floatValidator);
-        rotationalIntertiaField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        rotationalInertiaField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         dumpingField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        angularDumpingField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         gravityScaleField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         densityField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         frictionField = StandardWidgetsFactory.createValidableTextField(floatValidator);
@@ -70,6 +73,7 @@ public class UIPhysicsProperties extends UIRemovableProperties {
         awakeBox = StandardWidgetsFactory.createCheckBox("Awake");
         bulletBox = StandardWidgetsFactory.createCheckBox("Bullet");
         sensor = StandardWidgetsFactory.createCheckBox("Sensor");
+        fixedRotation = StandardWidgetsFactory.createCheckBox("Fixed Rotation");
 
         mainTable.add(new VisLabel("Body Type:", Align.right)).padRight(5).colspan(2).fillX();
         mainTable.add(bodyTypeBox).width(100).colspan(2);
@@ -85,11 +89,15 @@ public class UIPhysicsProperties extends UIRemovableProperties {
         mainTable.row().padTop(5);
 
         mainTable.add(new VisLabel("Rotational Inertia:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(rotationalIntertiaField).width(100).colspan(2);
+        mainTable.add(rotationalInertiaField).width(100).colspan(2);
         mainTable.row().padTop(5);
 
         mainTable.add(new VisLabel("Dumping:", Align.right)).padRight(5).colspan(2).fillX();
         mainTable.add(dumpingField).width(100).colspan(2);
+        mainTable.row().padTop(5);
+
+        mainTable.add(new VisLabel("Angular Dumping:", Align.right)).padRight(5).colspan(2).fillX();
+        mainTable.add(angularDumpingField).width(100).colspan(2);
         mainTable.row().padTop(5);
 
         mainTable.add(new VisLabel("Gravity Scale:", Align.right)).padRight(5).colspan(2).fillX();
@@ -115,7 +123,8 @@ public class UIPhysicsProperties extends UIRemovableProperties {
 
         bottomTable.row();
 
-        bottomTable.add(sensor).colspan(3).left();
+        bottomTable.add(sensor).padRight(5);
+        bottomTable.add(fixedRotation).colspan(2).left();
 
         mainTable.add(bottomTable).padBottom(5).colspan(4);
         mainTable.row().padTop(5);
@@ -127,8 +136,9 @@ public class UIPhysicsProperties extends UIRemovableProperties {
         massField.addListener(new KeyboardListener(getUpdateEventName()));
         centerOfMassXField.addListener(new KeyboardListener(getUpdateEventName()));
         centerOfMassYField.addListener(new KeyboardListener(getUpdateEventName()));
-        rotationalIntertiaField.addListener(new KeyboardListener(getUpdateEventName()));
+        rotationalInertiaField.addListener(new KeyboardListener(getUpdateEventName()));
         dumpingField.addListener(new KeyboardListener(getUpdateEventName()));
+        angularDumpingField.addListener(new KeyboardListener(getUpdateEventName()));
         gravityScaleField.addListener(new KeyboardListener(getUpdateEventName()));
         densityField.addListener(new KeyboardListener(getUpdateEventName()));
         frictionField.addListener(new KeyboardListener(getUpdateEventName()));
@@ -138,6 +148,7 @@ public class UIPhysicsProperties extends UIRemovableProperties {
         awakeBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         bulletBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         sensor.addListener(new CheckBoxChangeListener(getUpdateEventName()));
+        fixedRotation.addListener(new CheckBoxChangeListener(getUpdateEventName()));
     }
 
     public int getBodyType() {
@@ -166,8 +177,8 @@ public class UIPhysicsProperties extends UIRemovableProperties {
         return centerOfMassYField;
     }
 
-    public VisValidatableTextField getRotationalIntertiaField() {
-        return rotationalIntertiaField;
+    public VisValidatableTextField getRotationalInertiaField() {
+        return rotationalInertiaField;
     }
 
     public VisValidatableTextField getDumpingField() {
@@ -190,6 +201,8 @@ public class UIPhysicsProperties extends UIRemovableProperties {
         return restitutionField;
     }
 
+    public VisValidatableTextField getAngularDampingField() { return angularDumpingField; }
+
     public VisCheckBox getAllowSleepBox() {
         return allowSleepBox;
     }
@@ -203,6 +216,8 @@ public class UIPhysicsProperties extends UIRemovableProperties {
     }
 
     public VisCheckBox getSensorBox() { return sensor; }
+
+    public VisCheckBox getFixedRotationBox() { return fixedRotation; }
 
     @Override
     public void onRemove() {

@@ -33,6 +33,7 @@ public class UpdatePhysicsDataCommand extends EntityModifyRevertibleCommand {
 
         physicsComponent.rotationalInertia = vo.rotationalInertia;
         physicsComponent.damping = vo.damping;
+        physicsComponent.angularDamping = vo.angularDamping;
         physicsComponent.gravityScale = vo.gravityScale;
         physicsComponent.density = vo.density;
         physicsComponent.friction = vo.friction;
@@ -42,6 +43,7 @@ public class UpdatePhysicsDataCommand extends EntityModifyRevertibleCommand {
         physicsComponent.awake = vo.awake;
         physicsComponent.bullet = vo.bullet;
         physicsComponent.sensor = vo.sensor;
+        physicsComponent.fixedRotation = vo.fixedRotation;
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
@@ -58,6 +60,7 @@ public class UpdatePhysicsDataCommand extends EntityModifyRevertibleCommand {
 
         physicsComponent.rotationalInertia = backup.rotationalInertia;
         physicsComponent.damping = backup.damping;
+        physicsComponent.angularDamping = backup.angularDamping;
         physicsComponent.gravityScale = backup.gravityScale;
         physicsComponent.density = backup.density;
         physicsComponent.friction = backup.friction;
@@ -67,6 +70,7 @@ public class UpdatePhysicsDataCommand extends EntityModifyRevertibleCommand {
         physicsComponent.awake = backup.awake;
         physicsComponent.bullet = backup.bullet;
         physicsComponent.sensor = backup.sensor;
+        physicsComponent.fixedRotation = backup.fixedRotation;
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

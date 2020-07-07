@@ -13,11 +13,13 @@ public class PhysicsBodyDataVO {
 	public Vector2 centerOfMass;
 	public float rotationalInertia;
 	public float damping;
+    public float angularDamping;
 	public float gravityScale;
 	public boolean allowSleep;
 	public boolean awake;
 	public boolean bullet;
     public boolean sensor;
+    public boolean fixedRotation;
 
     public float density;
     public float friction;
@@ -33,6 +35,7 @@ public class PhysicsBodyDataVO {
     	centerOfMass = vo.centerOfMass.cpy();
     	rotationalInertia = vo.rotationalInertia;
     	damping = vo.damping;
+        angularDamping = vo.angularDamping;
     	gravityScale = vo.gravityScale;
     	allowSleep = vo.allowSleep;
         sensor = vo.sensor;
@@ -41,6 +44,7 @@ public class PhysicsBodyDataVO {
         density = vo.density;
         friction = vo.friction;
         restitution = vo.restitution;
+        fixedRotation = vo.fixedRotation;
     }
 
     public void loadFromComponent(PhysicsBodyComponent physicsComponent) {
@@ -57,6 +61,8 @@ public class PhysicsBodyDataVO {
         density = physicsComponent.density;
         friction = physicsComponent.friction;
         restitution = physicsComponent.restitution;
+        angularDamping = physicsComponent.angularDamping;
+        fixedRotation = physicsComponent.fixedRotation;
     }
 
     @Override
@@ -68,11 +74,13 @@ public class PhysicsBodyDataVO {
                 Float.compare(that.mass, mass) == 0 &&
                 Float.compare(that.rotationalInertia, rotationalInertia) == 0 &&
                 Float.compare(that.damping, damping) == 0 &&
+                Float.compare(that.angularDamping, angularDamping) == 0 &&
                 Float.compare(that.gravityScale, gravityScale) == 0 &&
                 allowSleep == that.allowSleep &&
                 awake == that.awake &&
                 bullet == that.bullet &&
                 sensor == that.sensor &&
+                fixedRotation == that.fixedRotation &&
                 Float.compare(that.density, density) == 0 &&
                 Float.compare(that.friction, friction) == 0 &&
                 Float.compare(that.restitution, restitution) == 0 &&
@@ -81,6 +89,6 @@ public class PhysicsBodyDataVO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(bodyType, mass, centerOfMass, rotationalInertia, damping, gravityScale, allowSleep, awake, bullet, sensor, density, friction, restitution);
+        return Objects.hash(bodyType, mass, centerOfMass, rotationalInertia, damping, angularDamping, gravityScale, allowSleep, awake, bullet, fixedRotation, sensor, density, friction, restitution);
     }
 }
