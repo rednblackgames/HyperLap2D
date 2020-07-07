@@ -49,8 +49,8 @@ public abstract class UIItemCollapsibleProperties extends UIItemProperties {
         header = new VisTable();
         header.setBackground(VisUI.getSkin().getDrawable("expandable-properties-active-bg"));
         header.add(StandardWidgetsFactory.createLabel(title)).right().expandX().padRight(6);
-        VisImageButton button = new VisImageButton("expandable-properties-button");
-        header.add(button).padRight(3);
+        VisImageButton button = StandardWidgetsFactory.createImageButton("expandable-properties-button");
+        header.add(button).padRight(8);
         header.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

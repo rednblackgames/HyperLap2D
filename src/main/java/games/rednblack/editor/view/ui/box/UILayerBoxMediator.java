@@ -150,7 +150,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                 if(deletingLayerIndex != -1) {
                     String layerName = layers.get(deletingLayerIndex).layerName;
                     Dialogs.showConfirmDialog(sandbox.getUIStage(),
-                            "Delete Layer", "Do you realy want to delete '" + layerName + "' layer?",
+                            "Delete Layer", "Do you really want to delete '" + layerName + "' layer?",
                             new String[]{"Cancel", "Delete"}, new Integer[]{0, 1}, r -> {
                                 if (r == 1) {
                                     facade.sendNotification(MsgAPI.ACTION_DELETE_LAYER, layerName);

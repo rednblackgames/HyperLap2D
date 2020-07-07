@@ -447,6 +447,9 @@
       up: button-panel-bg,
       imageUp: icon-close-white
     },
+    close-properties: {
+      imageUp: icon-close-white
+    },
     trash-button: {
       imageDown: icon-trash-disabled,
       imageOver: icon-trash-over,

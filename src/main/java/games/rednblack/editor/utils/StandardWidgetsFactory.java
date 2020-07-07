@@ -221,4 +221,10 @@ public class StandardWidgetsFactory {
 		button.addListener(new CursorListener(CursorManager.FINGER));
 		return button;
 	}
+
+    public static VisImageButton createImageButton(String style) {
+        VisImageButton button = new VisImageButton(style);
+        button.addListener(new CursorListener(CursorManager.FINGER));
+        return button;
+    }
 }

@@ -21,7 +21,7 @@ public class UIPhysicsProperties extends UIRemovableProperties {
     public static final String prefix = "games.rednblack.editor.view.ui.properties.panels.UIPhysicsProperties";
     public static final String CLOSE_CLICKED = prefix + ".CLOSE_CLICKED";
 
-    private HashMap<Integer, String> bodyTypes = new HashMap<>();
+    private final HashMap<Integer, String> bodyTypes = new HashMap<>();
 
     private VisSelectBox<String> bodyTypeBox;
     private VisValidatableTextField massField;
