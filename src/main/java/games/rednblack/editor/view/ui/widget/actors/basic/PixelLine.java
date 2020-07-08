@@ -51,8 +51,7 @@ public class PixelLine extends Image {
 	}
 	
 	private static Texture prepareTexture(EditorTextureManager tm) {
-		Texture tx = tm.getEditorAsset("pixel");
-		return tx;
+		return tm.getEditorAsset("pixel");
 	}
 
 	 @Override

@@ -24,14 +24,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.proxy.EditorTextureManager;
 
 /**
  * Created by sargis on 7/10/14.
  */
 public class ResolutionBounds extends Group {
-    private final EditorTextureManager textureManager;
     private float width;
     private float height;
 
@@ -39,8 +36,6 @@ public class ResolutionBounds extends Group {
 	 private Label label;
 
     public ResolutionBounds(Sandbox sandbox) {
-        textureManager = HyperLap2DFacade.getInstance().retrieveProxy(EditorTextureManager.NAME);
-
         detectDimensions(sandbox);
         crateBoundsRectangle();
         crateResolutionIndicator();

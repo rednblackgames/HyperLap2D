@@ -11,6 +11,9 @@ import games.rednblack.editor.utils.AppConfig;
 import games.rednblack.h2d.common.MsgAPI;
 import org.apache.commons.lang3.SystemUtils;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class HyperLap2DApp extends ApplicationAdapter {
     private static HyperLap2DApp sInstance = null;
 
@@ -69,48 +72,7 @@ public class HyperLap2DApp extends ApplicationAdapter {
                     config.setWindowPosition(0, (int) (windowHeight * .04));
 
                 mainWindow = app.newWindow(hyperlap2D, config);
-                mainWindow.setWindowListener(new Lwjgl3WindowListener() {
-                    @Override
-                    public void created(Lwjgl3Window window) {
-
-                    }
-
-                    @Override
-                    public void iconified(boolean isIconified) {
-
-                    }
-
-                    @Override
-                    public void maximized(boolean isMaximized) {
-
-                    }
-
-                    @Override
-                    public void focusLost() {
-
-                    }
-
-                    @Override
-                    public void focusGained() {
-
-                    }
-
-                    @Override
-                    public boolean closeRequested() {
-                        hyperlap2D.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> Gdx.app.exit());
-                        return false;
-                    }
-
-                    @Override
-                    public void filesDropped(String[] files) {
-
-                    }
-
-                    @Override
-                    public void refreshRequested() {
-
-                    }
-                });
+                mainWindow.setWindowListener(hyperlap2D);
             }
         });
     }

@@ -18,26 +18,8 @@
 
 package games.rednblack.editor.splash;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import games.rednblack.editor.HyperLap2DApp;
-import games.rednblack.editor.Sync;
-import games.rednblack.editor.utils.AppConfig;
-import org.lwjgl.glfw.GLFW;
 
-/**
- * Created by azakhary on 5/15/2015.
- */
 public class SplashScreenAdapter extends Game {
 
     private static final String prefix = "games.rednblack.editor.splash";

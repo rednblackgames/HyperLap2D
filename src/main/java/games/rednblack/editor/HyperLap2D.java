@@ -22,6 +22,8 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
@@ -32,24 +34,18 @@ import games.rednblack.editor.view.ui.dialog.ImportDialog;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.VisUI;
 import com.puremvc.patterns.proxy.Proxy;
-import games.rednblack.editor.proxy.EditorTextureManager;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.glfw.GLFWDropCallback;
 
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.system.MemoryUtil;
 
 import java.nio.IntBuffer;
 
-public class HyperLap2D implements Proxy, ApplicationListener {
+public class HyperLap2D implements Proxy, ApplicationListener, Lwjgl3WindowListener {
     private static final String TAG = HyperLap2D.class.getCanonicalName();
     public static final String NAME = TAG;
 
-    public EditorTextureManager textureManager;
     private HyperLap2DFacade facade;
     private Object data;
-    private boolean isStartup = false;
     private AssetManager assetManager;
 
     public HyperLap2DFacade getFacade() {
@@ -63,15 +59,15 @@ public class HyperLap2D implements Proxy, ApplicationListener {
 
     @Override
     public void create() {
-        isStartup = false;
         assetManager = new AssetManager();
         assetManager.load("style/uiskin.json", Skin.class);
 
         facade = HyperLap2DFacade.getInstance();
+        facade.registerProxy(this);
     }
 
     private void startup() {
-        isStartup = true;
+        assetManager.finishLoading();
         VisUI.load((Skin) assetManager.get("style/uiskin.json"));
         VisUI.setDefaultTitleAlign(Align.center);
 
@@ -79,23 +75,6 @@ public class HyperLap2D implements Proxy, ApplicationListener {
         sendNotification(MsgAPI.CREATE);
         facade.sendNotification(SplashScreenAdapter.CLOSE_SPLASH, "Initializing...");
         Lwjgl3Graphics graphics = (Lwjgl3Graphics)Gdx.graphics;
-        GLFW.glfwSetDropCallback(graphics.getWindow().getWindowHandle(), new GLFWDropCallback() {
-            @Override
-            public void invoke (long window, int count, long names) {
-                PointerBuffer nameBuffer = MemoryUtil.memPointerBuffer(names, count);
-                String[] filesPaths = new String[count];
-                for (int i = 0; i < count; i++) {
-                    String pathToObject = MemoryUtil.memUTF8(MemoryUtil.memByteBufferNT1(nameBuffer.get(i)));
-                    filesPaths[i] = pathToObject;
-                }
-
-                ImportDialog.DropBundle bundle = new ImportDialog.DropBundle();
-                bundle.pos = new Vector2(Gdx.input.getX(),  Gdx.input.getY());
-                bundle.paths = filesPaths;
-
-                facade.sendNotification(FileDropListener.ACTION_DROP, bundle);
-            }
-        });
 
         IntBuffer w = BufferUtils.createIntBuffer(1);
         IntBuffer h = BufferUtils.createIntBuffer(1);
@@ -118,12 +97,8 @@ public class HyperLap2D implements Proxy, ApplicationListener {
 
     @Override
     public void render() {
-        if(!isStartup && assetManager.update()) {
-            startup();
-        } else {
-            sync.sync(60);
-            sendNotification(MsgAPI.RENDER, Gdx.graphics.getDeltaTime());
-        }
+        sendNotification(MsgAPI.RENDER, Gdx.graphics.getDeltaTime());
+        sync.sync(60);
     }
 
     @Override
@@ -171,7 +146,7 @@ public class HyperLap2D implements Proxy, ApplicationListener {
 
     @Override
     public void onRegister() {
-
+        startup();
     }
 
     @Override
@@ -184,4 +159,48 @@ public class HyperLap2D implements Proxy, ApplicationListener {
         return commandManager.isModified();
     }
 
+    @Override
+    public void created(Lwjgl3Window window) {
+
+    }
+
+    @Override
+    public void iconified(boolean isIconified) {
+
+    }
+
+    @Override
+    public void maximized(boolean isMaximized) {
+
+    }
+
+    @Override
+    public void focusLost() {
+
+    }
+
+    @Override
+    public void focusGained() {
+
+    }
+
+    @Override
+    public boolean closeRequested() {
+        sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> Gdx.app.exit());
+        return false;
+    }
+
+    @Override
+    public void filesDropped(String[] files) {
+        ImportDialog.DropBundle bundle = new ImportDialog.DropBundle();
+        bundle.pos = new Vector2(Gdx.input.getX(),  Gdx.input.getY());
+        bundle.paths = files;
+
+        facade.sendNotification(FileDropListener.ACTION_DROP, bundle);
+    }
+
+    @Override
+    public void refreshRequested() {
+
+    }
 }

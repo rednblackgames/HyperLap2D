@@ -5,6 +5,9 @@ import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.HyperLap2DFacade;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class SplashMediator extends SimpleMediator<Object> {
 
     private static final String TAG = SplashMediator.class.getCanonicalName();

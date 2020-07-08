@@ -30,7 +30,6 @@ import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.CursorManager;
-import games.rednblack.editor.proxy.EditorTextureManager;
 import games.rednblack.editor.view.stage.tools.TransformTool;
 import games.rednblack.editor.view.ui.widget.EmptyTarget;
 
@@ -40,7 +39,6 @@ import games.rednblack.editor.view.ui.widget.EmptyTarget;
 public class NormalSelectionFollower extends BasicFollower {
 
     private HyperLap2DFacade facade;
-    private EditorTextureManager tm;
     private CursorManager cursorManager;
 
     protected PixelRect pixelRect;
@@ -76,7 +74,6 @@ public class NormalSelectionFollower extends BasicFollower {
     @Override
     public void create() {
         facade = HyperLap2DFacade.getInstance();
-        tm = facade.retrieveProxy(EditorTextureManager.NAME);
         cursorManager = HyperLap2DFacade.getInstance().retrieveProxy(CursorManager.NAME);
 
         transformGroup = new Group();

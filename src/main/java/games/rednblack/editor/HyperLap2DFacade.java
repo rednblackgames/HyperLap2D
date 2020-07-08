@@ -50,7 +50,6 @@ public class HyperLap2DFacade extends SimpleFacade {
 
     public void startup(HyperLap2D hyperlap2D) {
         this.hyperlap2D = hyperlap2D;
-        registerProxy(this.hyperlap2D);
         notifyObservers(new BaseNotification(STARTUP, null, null));
     }
 
