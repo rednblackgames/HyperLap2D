@@ -69,6 +69,11 @@ public interface PluginAPI {
     public String getPluginDir();
 
     /**
+     * @return Path of cache directory
+     */
+    public String getCacheDir();
+
+    /**
      * @return Path of working project
      */
     public String getProjectPath();

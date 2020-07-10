@@ -41,7 +41,7 @@ import com.badlogic.gdx.utils.Array;
 import com.mortennobel.imagescaling.ResampleOp;
 import com.puremvc.patterns.proxy.BaseProxy;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.editor.view.ui.widget.ProgressHandler;
+import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;

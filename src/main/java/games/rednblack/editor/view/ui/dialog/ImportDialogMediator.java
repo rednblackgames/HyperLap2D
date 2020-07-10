@@ -22,34 +22,23 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
-import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import com.puremvc.patterns.mediator.SimpleMediator;
 import com.puremvc.patterns.observer.Notification;
-import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.utils.AssetImporter;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.view.frame.FileDropListener;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.editor.view.ui.widget.ProgressHandler;
+import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
-import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.stage.UIStage;
-import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.view.ui.widget.ui.HyperLapFileChooser;
-import org.apache.commons.lang3.SystemUtils;
 
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
-import java.io.File;
-import java.util.List;
 
 /**
  * Created by sargis on 4/3/15.

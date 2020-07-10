@@ -9,7 +9,7 @@ import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.ImportDialog;
 import games.rednblack.editor.view.ui.dialog.ImportDialogMediator;
-import games.rednblack.editor.view.ui.widget.ProgressHandler;
+import games.rednblack.h2d.common.ProgressHandler;
 
 import java.io.File;
 

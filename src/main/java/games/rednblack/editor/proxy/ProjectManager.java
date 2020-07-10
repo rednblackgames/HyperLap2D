@@ -36,7 +36,7 @@ import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.utils.ZipUtils;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.editor.view.ui.widget.ProgressHandler;
+import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.h2d.common.vo.ProjectVO;

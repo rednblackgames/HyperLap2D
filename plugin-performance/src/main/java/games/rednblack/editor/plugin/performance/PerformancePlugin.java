@@ -10,7 +10,7 @@ public class PerformancePlugin extends H2DPluginAdapter {
     public static final String PANEL_OPEN = CLASS_NAME + ".PANEL_OPEN";
     public static final String WINDOWS_MENU = "games.rednblack.editor.view.HyperLap2DMenuBar.WINDOW_MENU";
 
-    private PerformancePanelMediator performancePanelMediator;
+    private final PerformancePanelMediator performancePanelMediator;
 
     public PerformancePlugin() {
         performancePanelMediator = new PerformancePanelMediator(this);

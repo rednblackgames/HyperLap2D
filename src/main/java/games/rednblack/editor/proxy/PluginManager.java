@@ -61,7 +61,7 @@ public class PluginManager extends BaseProxy implements PluginAPI {
     public static final String NAME = TAG;
 
     private ArrayList<H2DPlugin> plugins = new ArrayList<>();
-    private String pluginDir;
+    private String pluginDir, cacheDir;
 
     private HashSet<Entity> pluginEntities;
 
@@ -186,6 +186,15 @@ public class PluginManager extends BaseProxy implements PluginAPI {
     @Override
     public String getPluginDir() {
         return pluginDir;
+    }
+
+    public void setCacheDir(String cacheDir) {
+        this.cacheDir = cacheDir;
+    }
+
+    @Override
+    public String getCacheDir() {
+        return cacheDir;
     }
 
     @Override
