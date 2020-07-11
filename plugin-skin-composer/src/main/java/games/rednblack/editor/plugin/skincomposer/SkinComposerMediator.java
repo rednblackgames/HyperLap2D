@@ -116,6 +116,7 @@ public class SkinComposerMediator extends SimpleMediator<DownloadingDialog> {
         try {
             Runtime.getRuntime().exec(" java -jar " + jarPath);
         } catch (IOException e) {
+            viewComponent.progressFailed();
             e.printStackTrace();
         }
     }

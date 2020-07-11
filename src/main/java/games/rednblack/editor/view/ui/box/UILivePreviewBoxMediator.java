@@ -74,8 +74,8 @@ public class UILivePreviewBoxMediator extends SimpleMediator<UILivePreviewBox> {
 	}
 
 	private void createPreviewWindow() {
-		int previewWidth = resolutionManager.getCurrentResolution().width;
-		int previewHeight = resolutionManager.getCurrentResolution().height;
+		int previewWidth = resolutionManager.getOriginalResolution().width;
+		int previewHeight = resolutionManager.getOriginalResolution().height;
 
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setWindowedMode(previewWidth, previewHeight);
