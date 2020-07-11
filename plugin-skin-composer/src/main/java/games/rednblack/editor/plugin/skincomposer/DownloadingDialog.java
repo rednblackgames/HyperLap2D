@@ -7,8 +7,8 @@ import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.UIDraggablePanel;
 
 public class DownloadingDialog extends UIDraggablePanel implements ProgressHandler {
-    private VisLabel downloadingLabel;
-    private VisProgressBar progressBar;
+    private final VisLabel downloadingLabel;
+    private final VisProgressBar progressBar;
 
     public DownloadingDialog () {
         super("Skin Composer Plugin");
@@ -21,7 +21,7 @@ public class DownloadingDialog extends UIDraggablePanel implements ProgressHandl
         VisTable mainTable = new VisTable();
         add(mainTable).fill().expand();
 
-        downloadingLabel = new VisLabel("Downloading info ...");
+        downloadingLabel = new VisLabel("Checking for updates ...");
         mainTable.add(downloadingLabel).left();
         mainTable.row().padBottom(5);
 
@@ -32,8 +32,12 @@ public class DownloadingDialog extends UIDraggablePanel implements ProgressHandl
         pack();
     }
 
-    public void setCurrentVersion(String name) {
-        downloadingLabel.setText("Downloading "+ name + " ...");
+    public void setMessage(String message) {
+        downloadingLabel.setText(message);
+    }
+
+    public void setProgress(float value) {
+        progressBar.setValue(value);
     }
 
     @Override
@@ -48,6 +52,7 @@ public class DownloadingDialog extends UIDraggablePanel implements ProgressHandl
 
     @Override
     public void progressComplete() {
+        progressBar.setValue(100);
         close();
     }
 

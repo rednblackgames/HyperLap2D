@@ -9,10 +9,12 @@ public class SkinComposerPlugin extends H2DPluginAdapter {
 
     public static final String PANEL_OPEN = CLASS_NAME + ".PANEL_OPEN";
     public static final String WINDOWS_MENU = "games.rednblack.editor.view.HyperLap2DMenuBar.WINDOW_MENU";
+    public static final String DOWNLOAD_JAR = CLASS_NAME + ".DOWNLOAD_JAR";
 
     private final SkinComposerMediator skinComposerMediator;
 
     public SkinComposerPlugin() {
+        super(CLASS_NAME);
         skinComposerMediator = new SkinComposerMediator(this);
     }
 

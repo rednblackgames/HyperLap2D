@@ -26,6 +26,7 @@ public class NinePatchPlugin extends H2DPluginAdapter {
     public Entity currEditingEntity;
 
     public NinePatchPlugin() {
+        super(CLASS_NAME);
         performancePanelMediator = new MainPanelMediator(this);
     }
 

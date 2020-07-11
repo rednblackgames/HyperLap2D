@@ -22,6 +22,8 @@ import com.badlogic.gdx.utils.Array;
 import com.puremvc.patterns.facade.Facade;
 import net.mountainblade.modular.Module;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -31,9 +33,14 @@ public abstract class H2DPluginAdapter implements H2DPlugin, Module {
 
     public Facade facade;
     protected PluginAPI pluginAPI;
+    protected String name;
+
+    public H2DPluginAdapter(String name) {
+        this.name = name;
+    }
 
     public String getName() {
-        return "";
+        return name;
     }
 
     @Override
@@ -55,5 +62,9 @@ public abstract class H2DPluginAdapter implements H2DPlugin, Module {
 
     public PluginAPI getAPI() {
         return pluginAPI;
+    }
+
+    public Map<String, Object> getStorage() {
+        return pluginAPI.getEditorConfig().pluginStorage.computeIfAbsent(name, k -> new HashMap<>());
     }
 }

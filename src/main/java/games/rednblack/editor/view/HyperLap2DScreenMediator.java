@@ -19,6 +19,7 @@
 package games.rednblack.editor.view;
 
 import com.badlogic.ashley.core.Engine;
+import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.h2d.common.MsgAPI;
 import com.puremvc.patterns.mediator.SimpleMediator;
 import com.puremvc.patterns.observer.Notification;
@@ -47,7 +48,8 @@ public class HyperLap2DScreenMediator extends SimpleMediator<HyperLap2DScreen> {
                 MsgAPI.RENDER,
                 MsgAPI.RESIZE,
                 MsgAPI.DISPOSE,
-                MsgAPI.SCENE_LOADED
+                MsgAPI.SCENE_LOADED,
+                MsgAPI.SAVE_EDITOR_CONFIG
         };
     }
 
@@ -88,6 +90,10 @@ public class HyperLap2DScreenMediator extends SimpleMediator<HyperLap2DScreen> {
                 viewComponent.resize(data[0], data[1]);
                 break;
             case MsgAPI.DISPOSE:
+                break;
+            case MsgAPI.SAVE_EDITOR_CONFIG:
+                ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+                projectManager.saveEditorConfig();
                 break;
         }
     }

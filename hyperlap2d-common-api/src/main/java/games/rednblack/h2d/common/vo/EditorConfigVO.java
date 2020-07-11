@@ -21,13 +21,16 @@ package games.rednblack.h2d.common.vo;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
 
-/**
- * Created by sargis on 8/1/14.
- */
+import java.util.HashMap;
+import java.util.Map;
+
 public class EditorConfigVO {
     public static final String EDITOR_CONFIG_FILE = "config.pit";
     public String lastOpenedSystemPath = "";
     public String lastImportedSystemPath = "";
+
+    //Map to store plugin storage
+    public Map<String, Map<String, Object>> pluginStorage = new HashMap<>();
 
     public String constructJsonString() {
         String str = "";

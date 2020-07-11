@@ -50,6 +50,7 @@ import games.rednblack.editor.view.ui.UIDropDownMenuMediator;
 import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
 import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
 import games.rednblack.h2d.common.vo.CursorData;
+import games.rednblack.h2d.common.vo.EditorConfigVO;
 
 import java.util.*;
 
@@ -125,7 +126,7 @@ public class PluginManager extends BaseProxy implements PluginAPI {
     }
 
     @Override
-    public void revertableCommand(IItemCommand command, Object body) {
+    public void revertibleCommand(IItemCommand command, Object body) {
         Object payload = PluginItemCommand.build(command, body);
         facade.sendNotification(MsgAPI.ACTION_PLUGIN_PROXY_COMMAND, payload);
     }
@@ -263,5 +264,11 @@ public class PluginManager extends BaseProxy implements PluginAPI {
     public String getCurrentSelectedLayerName() {
         UILayerBoxMediator uiLayerBoxMediator = facade.retrieveMediator(UILayerBoxMediator.NAME);
         return uiLayerBoxMediator.getViewComponent().getCurrentSelectedLayer().getLayerName();
+    }
+
+    @Override
+    public EditorConfigVO getEditorConfig() {
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        return projectManager.editorConfigVO;
     }
 }

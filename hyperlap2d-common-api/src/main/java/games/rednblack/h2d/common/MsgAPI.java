@@ -37,6 +37,8 @@ public class MsgAPI {
     public static final String DISPOSE = GLOBAL_PREFIX + ".DISPOSE";
     public static final String CREATE = GLOBAL_PREFIX + ".CREATE_BTN_CLICKED";
 
+    public static final String SAVE_EDITOR_CONFIG = GLOBAL_PREFIX + ".SAVE_EDITOR_CONFIG";
+
     // tmp events
     public static final String ZOOM_CHANGED = GLOBAL_PREFIX + ".ZOOM_CHANGED";
     public static final String GRID_SIZE_CHANGED = GLOBAL_PREFIX + ".GRID_SIZE_CHANGED";

@@ -13,6 +13,7 @@ public class PerformancePlugin extends H2DPluginAdapter {
     private final PerformancePanelMediator performancePanelMediator;
 
     public PerformancePlugin() {
+        super(CLASS_NAME);
         performancePanelMediator = new PerformancePanelMediator(this);
     }
 

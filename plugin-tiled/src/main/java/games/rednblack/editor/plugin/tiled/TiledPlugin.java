@@ -85,6 +85,7 @@ public class TiledPlugin extends H2DPluginAdapter {
     private TransformComponent currentEntityTransformComponent;
 
     public TiledPlugin() {
+        super(CLASS_NAME);
         selectedTileVO = new TileVO();
         currentEntityCustomVariables = new CustomVariables();
     }

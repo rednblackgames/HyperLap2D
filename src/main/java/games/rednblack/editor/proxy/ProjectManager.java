@@ -81,7 +81,7 @@ public class ProjectManager extends BaseProxy {
     private String defaultWorkspacePath;
 
     private String DEFAULT_FOLDER = "HyperLap2D";
-    private EditorConfigVO editorConfigVO;
+    public EditorConfigVO editorConfigVO;
 
     private String currentWindowTitle = "";
 
@@ -177,7 +177,7 @@ public class ProjectManager extends BaseProxy {
         saveEditorConfig();
     }
 
-    private void saveEditorConfig() {
+    public void saveEditorConfig() {
         try {
             String configFilePath = getRootPath() + File.separator + "configs" + File.separator +  EditorConfigVO.EDITOR_CONFIG_FILE;
             FileUtils.writeStringToFile(new File(configFilePath), editorConfigVO.constructJsonString(), "utf-8");

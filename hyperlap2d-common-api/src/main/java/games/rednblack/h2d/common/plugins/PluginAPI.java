@@ -30,6 +30,7 @@ import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.puremvc.patterns.facade.Facade;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.h2d.common.vo.CursorData;
+import games.rednblack.h2d.common.vo.EditorConfigVO;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,45 +44,45 @@ public interface PluginAPI {
      * Get scene loader of the runtime to work with scene and items
      * @return SceneLoader
      */
-    public SceneLoader getSceneLoader();
+    SceneLoader getSceneLoader();
 
     /**
      * Returns MVC facade, to send notifications or commands, and register mediators
      * @return Facade
      */
-    public Facade getFacade();
+    Facade getFacade();
 
     /**
      * Returns Ashley engine of main scene where all entities are located
      * @return Engine
      */
-    public Engine getEngine();
+    Engine getEngine();
 
     /**
      * Get simple libGDX Stage for UI part of editor, to add dialogs or other UI elements and widgets
      * @return
      */
-    public Stage getUIStage();
+    Stage getUIStage();
 
     /**
      * @return Path of plugin directory
      */
-    public String getPluginDir();
+    String getPluginDir();
 
     /**
      * @return Path of cache directory
      */
-    public String getCacheDir();
+    String getCacheDir();
 
     /**
      * @return Path of working project
      */
-    public String getProjectPath();
+    String getProjectPath();
 
     /**
      * @return TextureAtlas of loaded project
      */
-    public TextureAtlas getProjectTextureAtlas();
+    TextureAtlas getProjectTextureAtlas();
 
 
     /**
@@ -90,7 +91,7 @@ public interface PluginAPI {
      * @param subMenuName pretty string to name new submenu item
      * @param notificationName unique notification id that will be fired when this menu item is clicked
      */
-    public void addMenuItem(String menu, String subMenuName, String notificationName);
+    void addMenuItem(String menu, String subMenuName, String notificationName);
 
     /**
      * Adds new tool to the tool bar
@@ -99,18 +100,18 @@ public interface PluginAPI {
      * @param addSeparator true, if should add menu separator
      * @param tool the tool object that is going to be added
      */
-    public void addTool(String toolName, VisImageButton.VisImageButtonStyle toolBtnStyle, boolean addSeparator, Tool tool);
+    void addTool(String toolName, VisImageButton.VisImageButtonStyle toolBtnStyle, boolean addSeparator, Tool tool);
 
 
     /**
      * hot-swaps a tool
      */
-    public void toolHotSwap(Tool tool);
+    void toolHotSwap(Tool tool);
 
     /**
      * hot-swaps a tool back
      */
-    public void toolHotSwapBack();
+    void toolHotSwapBack();
 
     /**
      * Creates new menu item for Contextual drop down menu, that is created when user right clicks on something in the editor.
@@ -118,30 +119,30 @@ public interface PluginAPI {
      * @param action unique name of notification id that will be fired when this menu item is clicked
      * @param name pretty text to be written on this menu item
      */
-    public void setDropDownItemName(String action, String name);
+    void setDropDownItemName(String action, String name);
 
     /**
      * re-loads current project entirely (used when changes were made that require to whole project to be reloaded)
      */
-    public void reLoadProject();
+    void reLoadProject();
 
     /**
      * Saves current project
      */
-    public void saveProject();
+    void saveProject();
 
     /**
      * Creates a revertable command that later can be undone or re-done by user with Ctrl+Z or similar.
      * @param command Object containing your command logic
      * @param body Additional data that can be send as parameters
      */
-    public void revertableCommand(IItemCommand command, Object body);
+    void revertibleCommand(IItemCommand command, Object body);
 
     /**
      * Removes follower object (selection rectangle) from particular entity (usually makes sense when entity is deleted without proper action)
      * @param entity
      */
-    public void removeFollower(Entity entity);
+    void removeFollower(Entity entity);
 
     /**
      * Draws an image at selected position
@@ -180,4 +181,9 @@ public interface PluginAPI {
      * returns current selected layer name
      */
     String getCurrentSelectedLayerName();
+
+    /**
+     * returns current editor configs
+     */
+    EditorConfigVO getEditorConfig();
 }
