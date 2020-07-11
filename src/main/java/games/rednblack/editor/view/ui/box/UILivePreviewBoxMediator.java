@@ -13,7 +13,6 @@ import games.rednblack.editor.live.WorldSizeVO;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.ResourceManager;
-import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 

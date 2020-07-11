@@ -49,28 +49,38 @@ public class UIResolutionBox extends UIBaseBox {
 
     public UIResolutionBox() {
         resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
+        setVisible(false);
         skin = VisUI.getSkin();
         init();
     }
 
     private void init() {
+        addSeparator(true).padRight(13).padLeft(13);
 
+        VisImageButton.VisImageButtonStyle visImageButtonStyle = new VisImageButton.VisImageButtonStyle(skin.get("dark", VisImageButton.VisImageButtonStyle.class));
+        visImageButtonStyle.imageUp = skin.getDrawable("icon-trash");
+        visImageButtonStyle.imageOver = skin.getDrawable("icon-trash-over");
+        visImageButtonStyle.imageDisabled = skin.getDrawable("icon-trash-disabled");
+        deleteBtn = new VisImageButton("dark");
+        deleteBtn.setStyle(visImageButtonStyle);
+        deleteBtn.addListener(new UIResolutionBoxButtonClickListener(DELETE_RESOLUTION_BTN_CLICKED));
+
+        visSelectBox = StandardWidgetsFactory.createSelectBox(ResolutionEntryVO.class);
+        visSelectBox.addListener(new ResolutionChangeListener());
+        add("Resolution:").padRight(4);
+        add(visSelectBox).padRight(11).width(156);
+
+        add(deleteBtn).padRight(11).height(25);
+
+        VisTextButton repackBtn = StandardWidgetsFactory.createTextButton("Repack", "red");
+        repackBtn.addListener(new UIResolutionBoxButtonClickListener(REPACK_BTN_CLICKED));
+        add(repackBtn).width(93);
     }
 
     @Override
     public void update() {
-        clear();
-        addSeparator(true).padRight(13).padLeft(13);
+        setVisible(true);
 
-		VisImageButton.VisImageButtonStyle visImageButtonStyle = new VisImageButton.VisImageButtonStyle(skin.get("dark", VisImageButton.VisImageButtonStyle.class));
-		visImageButtonStyle.imageUp = skin.getDrawable("icon-trash");
-		visImageButtonStyle.imageOver = skin.getDrawable("icon-trash-over");
-		visImageButtonStyle.imageDisabled = skin.getDrawable("icon-trash-disabled");
-		deleteBtn = new VisImageButton("dark");
-		deleteBtn.setStyle(visImageButtonStyle);
-		deleteBtn.addListener(new UIResolutionBoxButtonClickListener(DELETE_RESOLUTION_BTN_CLICKED));
-
-        visSelectBox = StandardWidgetsFactory.createSelectBox(ResolutionEntryVO.class);
         Array<ResolutionEntryVO> resolutionEntryVOs = new Array<>();
         ResolutionEntryVO newResolutionEntryVO = new ResolutionEntryVO();
         newResolutionEntryVO.name = "Create New ...";
@@ -78,16 +88,8 @@ public class UIResolutionBox extends UIBaseBox {
         resolutionEntryVOs.add(resolutionManager.getOriginalResolution());
         resolutionEntryVOs.addAll(resolutionManager.getResolutions());
         visSelectBox.setItems(resolutionEntryVOs);
-        add("Resolution:").padRight(4);
-        add(visSelectBox).padRight(11).width(156);
+
 		setCurrentResolution();
-		visSelectBox.addListener(new ResolutionChangeListener());
-
-        add(deleteBtn).padRight(11).height(25);
-
-        VisTextButton repackBtn = StandardWidgetsFactory.createTextButton("Repack", "red");
-        repackBtn.addListener(new UIResolutionBoxButtonClickListener(REPACK_BTN_CLICKED));
-        add(repackBtn).width(93);
     }
 
     private void setCurrentResolution(String currentResolutionName) {
@@ -138,6 +140,10 @@ public class UIResolutionBox extends UIBaseBox {
         public void changed(ChangeEvent changeEvent, Actor actor) {
 			int selectedIndex = visSelectBox.getSelectedIndex();
 			deleteBtn.setDisabled(selectedIndex <= 1);
+
+            if (!visSelectBox.getScrollPane().hasParent()) {
+                return;
+            }
 
             HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
             if (selectedIndex == 0) {
