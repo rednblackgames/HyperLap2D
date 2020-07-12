@@ -2,7 +2,6 @@ package games.rednblack.editor.renderer.systems.render.logic;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -14,6 +13,9 @@ public class TextureRegionDrawLogic implements Drawable {
 	final private ComponentMapper<TextureRegionComponent> textureRegionMapper;
 	final private ComponentMapper<TransformComponent> transformMapper;
 	final private ComponentMapper<DimensionsComponent> dimensionsComponentComponentMapper;
+
+	final private Vector2 atlasCoordsVector = new Vector2();
+	final private Vector2 atlasSizeVector = new Vector2();
 
 	public TextureRegionDrawLogic() {
 		tintComponentComponentMapper = ComponentMapper.getFor(TintComponent.class);
@@ -71,8 +73,8 @@ public class TextureRegionDrawLogic implements Drawable {
         
         DimensionsComponent dimensionsComponent = dimensionsComponentComponentMapper.get(entity);
         float ppwu = dimensionsComponent.width/entityTextureRegionComponent.region.getRegionWidth();
-        Vector2 atlasCoordsVector = new Vector2(entityTextureRegionComponent.region.getU(), entityTextureRegionComponent.region.getV());
-        Vector2 atlasSizeVector = new Vector2(entityTextureRegionComponent.region.getU2()-entityTextureRegionComponent.region.getU(), entityTextureRegionComponent.region.getV2()-entityTextureRegionComponent.region.getV());
+        atlasCoordsVector.set(entityTextureRegionComponent.region.getU(), entityTextureRegionComponent.region.getV());
+        atlasSizeVector.set(entityTextureRegionComponent.region.getU2()-entityTextureRegionComponent.region.getU(), entityTextureRegionComponent.region.getV2()-entityTextureRegionComponent.region.getV());
 
         batch.getShader().setUniformi("isRepeat", entityTextureRegionComponent.isRepeat ? 1 : 0);
         batch.getShader().setUniformf("atlasCoord", atlasCoordsVector);
