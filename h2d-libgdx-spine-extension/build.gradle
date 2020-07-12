@@ -5,13 +5,6 @@ plugins {
 group 'games.rednblack'
 version '0.0.1'
 
-ext {
-    gdxVersion = '1.9.10'
-    box2dlightsVersion = '1.5'
-    ashleyVersion = '1.7.3'
-    spineVersion = '3.8.55.1'
-}
-
 repositories {
     mavenCentral()
 }
