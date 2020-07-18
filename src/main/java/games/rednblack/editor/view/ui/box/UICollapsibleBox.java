@@ -56,7 +56,7 @@ public class UICollapsibleBox extends VisWindow {
         // by default all collapsible panels are not visible
         setVisible(false);
         padTop(26);
-        padLeft(10);
+        padLeft(5);
     }
 
     protected void createCollapsibleWidget(Table table) {

@@ -28,8 +28,6 @@ import games.rednblack.editor.HyperLap2DFacade;
  * Created by azakhary on 4/17/2015.
  */
 public class UIResourcesBox extends UICollapsibleBox {
-
-
     private HyperLap2DFacade facade;
 
     private VisTable contentTable;
@@ -62,10 +60,9 @@ public class UIResourcesBox extends UICollapsibleBox {
 
             }
         });
-
-        contentTable.add(tabbedPane.getTable()).width(230).padTop(8);
+        contentTable.add(tabbedPane.getTable()).expandX().fillX().growX().padTop(8);
         contentTable.row();
-        contentTable.add(tabContent).expandX().width(222);
+        contentTable.add(tabContent).expandX().width(230);
         contentTable.row();
         createCollapsibleWidget(contentTable);
     }

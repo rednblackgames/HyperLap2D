@@ -1,22 +1,22 @@
 {
   com.badlogic.gdx.graphics.g2d.BitmapFont: {
     default-font: {
-      file: mplus.fnt
+      file: dejavu-sans.fnt
     },
     small-font: {
-      file: mplus-small.fnt
+      file: dejavu-sans-small.fnt
     },
     big-font: {
-      file: mplus-big.fnt
+      file: dejavu-sans-big.fnt
     },
     default-font-normal: {
-      file: mplus.fnt
+      file: dejavu-sans.fnt
     },
     small-font-normal: {
-      file: mplus-small.fnt
+      file: dejavu-sans-small.fnt
     },
     big-font-normal: {
-      file: mplus-big.fnt
+      file: dejavu-sans-big.fnt
     }
   },
   com.badlogic.gdx.graphics.Color: {

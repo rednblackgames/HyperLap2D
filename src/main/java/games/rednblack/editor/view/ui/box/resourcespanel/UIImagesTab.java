@@ -44,7 +44,7 @@ public class UIImagesTab extends UIResourcesTab {
 
     @Override
     public String getTabTitle() {
-        return " Images ";
+        return " Image ";
     }
 
     public void setThumbnailBoxes(Array<DraggableResource> draggableResources) {

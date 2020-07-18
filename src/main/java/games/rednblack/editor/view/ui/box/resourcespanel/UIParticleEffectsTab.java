@@ -40,7 +40,7 @@ public class UIParticleEffectsTab extends UIResourcesTab {
 
     @Override
     public String getTabTitle() {
-        return " Particles ";
+        return " Particle ";
     }
 
 
