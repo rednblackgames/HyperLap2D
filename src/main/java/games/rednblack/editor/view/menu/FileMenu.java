@@ -33,7 +33,7 @@ public class FileMenu extends H2DMenu {
     private final MenuItem recentProjectsMenuItem;
 
     public FileMenu() {
-        super("File");
+        super("File"); //⌘⇧⌥
         saveProject = new MenuItem("Save Project", new MenuItemListener(SAVE_PROJECT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.S);
         addItem(new MenuItem("New Project", new MenuItemListener(NEW_PROJECT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.N));
         addItem(new MenuItem("Open Project", new MenuItemListener(OPEN_PROJECT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.O));

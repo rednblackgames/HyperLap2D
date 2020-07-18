@@ -1,22 +1,22 @@
 {
   com.badlogic.gdx.graphics.g2d.BitmapFont: {
     default-font: {
-      file: myriad-medium.fnt
+      file: mplus.fnt
     },
     small-font: {
-      file: myriad-medium-small.fnt
+      file: mplus-small.fnt
     },
     big-font: {
-      file: myriad-medium-big.fnt
+      file: mplus-big.fnt
     },
     default-font-normal: {
-      file: myriad-medium.fnt
+      file: mplus.fnt
     },
     small-font-normal: {
-      file: myriad-medium-small.fnt
+      file: mplus-small.fnt
     },
     big-font-normal: {
-      file: myriad-medium-big.fnt
+      file: mplus-big.fnt
     }
   },
   com.badlogic.gdx.graphics.Color: {
