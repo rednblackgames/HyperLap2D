@@ -4,7 +4,6 @@ import box2dLight.RayHandler;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.physics.box2d.World;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
@@ -59,10 +58,6 @@ public class NinePatchComponentFactory extends ComponentFactory {
 		float multiplier = resolutionEntryVO.getMultiplier(rm.getProjectVO().originalResolution);
 
 		ninePatchComponent.ninePatch.scale(multiplier/projectInfoVO.pixelToWorld, multiplier/projectInfoVO.pixelToWorld);
-
-		// This seem to be redundant as "scale" method now takes care of that o_O when did libGDX change that, should look more into this.
-		//ninePatchComponent.ninePatch.setMiddleWidth(ninePatchComponent.ninePatch.getMiddleWidth()*multiplier/projectInfoVO.pixelToWorld);
-		//ninePatchComponent.ninePatch.setMiddleHeight(ninePatchComponent.ninePatch.getMiddleHeight()*multiplier/projectInfoVO.pixelToWorld);
 
 		ninePatchComponent.textureRegionName = vo.imageName;
 		entity.add(ninePatchComponent);

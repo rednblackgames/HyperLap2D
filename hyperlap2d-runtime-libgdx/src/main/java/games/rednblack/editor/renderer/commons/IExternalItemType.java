@@ -29,11 +29,10 @@ import games.rednblack.editor.renderer.systems.render.logic.Drawable;
  * Created by azakhary on 7/20/2015.
  */
 public interface IExternalItemType {
-
-    public int getTypeId();
-    public Drawable getDrawable();
-    public IteratingSystem getSystem();
-    public ComponentFactory getComponentFactory();
-    public void injectMappers();
-    public void injectDependencies(RayHandler rayHandler, World world, IResourceRetriever rm);
+    int getTypeId();
+    Drawable getDrawable();
+    IteratingSystem getSystem();
+    ComponentFactory getComponentFactory();
+    void injectMappers();
+    void injectDependencies(RayHandler rayHandler, World world, IResourceRetriever rm);
 }

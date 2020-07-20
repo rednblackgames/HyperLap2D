@@ -8,5 +8,5 @@ import games.rednblack.editor.renderer.systems.action.data.ActionData;
  * Created by ZeppLondon on 10/13/2015.
  */
 public class ActionComponent implements Component {
-    public Array<ActionData> dataArray = new Array<ActionData>(true, 0);
+    public Array<ActionData> dataArray = new Array<>(true, 0);
 }

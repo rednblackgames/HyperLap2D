@@ -32,7 +32,6 @@ import games.rednblack.editor.renderer.data.LightVO;
 import games.rednblack.editor.renderer.data.MainItemVO;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 
 public class LightComponentFactory extends ComponentFactory {

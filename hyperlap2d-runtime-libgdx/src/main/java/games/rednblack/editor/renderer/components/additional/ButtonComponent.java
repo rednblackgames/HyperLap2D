@@ -13,9 +13,9 @@ public class ButtonComponent implements Component {
     private Array<ButtonListener> listeners = new Array<ButtonListener>();
 
     public interface ButtonListener {
-        public void touchUp();
-        public void touchDown();
-        public void clicked();
+        void touchUp();
+        void touchDown();
+        void clicked();
     }
 
     public void addListener(ButtonListener listener) {

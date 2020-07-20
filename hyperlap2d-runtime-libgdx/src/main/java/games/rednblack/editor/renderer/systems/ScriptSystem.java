@@ -12,7 +12,7 @@ import games.rednblack.editor.renderer.scripts.IScript;
  */
 public class ScriptSystem extends IteratingSystem {
 
-    private ComponentMapper<ScriptComponent> scriptComponentComponentMapper = ComponentMapper.getFor(ScriptComponent.class);
+    private final ComponentMapper<ScriptComponent> scriptComponentComponentMapper = ComponentMapper.getFor(ScriptComponent.class);
 
     public ScriptSystem() {
         super(Family.all(ScriptComponent.class).get());

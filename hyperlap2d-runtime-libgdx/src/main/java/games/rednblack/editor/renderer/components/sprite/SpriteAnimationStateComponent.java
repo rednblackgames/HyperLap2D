@@ -7,10 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.data.FrameRange;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SpriteAnimationStateComponent implements Component {
     public Array<TextureAtlas.AtlasRegion> allRegions;
@@ -32,11 +29,11 @@ public class SpriteAnimationStateComponent implements Component {
     }
 
     public void set(FrameRange range, int fps, Animation.PlayMode playMode) {
-        Array<TextureAtlas.AtlasRegion> textureRegions = new Array<TextureAtlas.AtlasRegion>(range.endFrame - range.startFrame + 1);
+        Array<TextureAtlas.AtlasRegion> textureRegions = new Array<>(range.endFrame - range.startFrame + 1);
         for (int r = range.startFrame; r <= range.endFrame; r++) {
             textureRegions.add(allRegions.get(r));
         }
-        currentAnimation =  new Animation<TextureRegion>(1f/fps, textureRegions, playMode);
+        currentAnimation =  new Animation<>(1f/fps, textureRegions, playMode);
         time = 0.0f;
     }
 
@@ -46,24 +43,10 @@ public class SpriteAnimationStateComponent implements Component {
         return regions;
     }
 
-    private class SortRegionsComparator implements Comparator<TextureAtlas.AtlasRegion> {
+    private static class SortRegionsComparator implements Comparator<TextureAtlas.AtlasRegion> {
         @Override
         public int compare(TextureAtlas.AtlasRegion o1, TextureAtlas.AtlasRegion o2) {
-           // int index1 = regNameToFrame(o1.name);
-          //  int index2 = regNameToFrame(o2.name);
-            return o1.index < o2.index ? -1 : o1.index == o2.index ? 0 : 1;
+            return Integer.compare(o1.index, o2.index);
         }
-    }
-
-    private int regNameToFrame(String name) {
-        final Pattern lastIntPattern = Pattern.compile("[^0-9]+([0-9]+)$");
-        Matcher matcher = lastIntPattern.matcher(name);
-        if (matcher.find()) {
-            String someNumberStr = matcher.group(1);
-            return Integer.parseInt(someNumberStr);
-        }
-        throw new RuntimeException(
-                "Frame name should be something like this '*0001', but not "
-                        + name + ".");
     }
 }

@@ -9,10 +9,9 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.graphics.Color;
 import games.rednblack.editor.renderer.data.LightVO;
 import games.rednblack.editor.renderer.data.LightVO.LightType;
-import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
 
 public class LightObjectComponent implements Component {
-	private LightType type;
+	private final LightType type;
 
 	public int rays = 12;
 	public float distance = 10;
