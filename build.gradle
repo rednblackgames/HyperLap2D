@@ -4,7 +4,7 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
-        classpath 'com.badlogicgames.gdx:gdx-tools:1.9.10'
+        classpath 'com.badlogicgames.gdx:gdx-tools:1.9.11'
     }
 }
 
@@ -22,8 +22,8 @@ repositories {
 
 ext {
     appName = 'HyperLap2D'
-    gdxVersion = '1.9.10'
-    gdxVersionBeta = '1.9.11-SNAPSHOT'
+    gdxVersion = '1.9.11'
+    gdxVersionBeta = '1.9.11'
     box2dlightsVersion = '1.5'
     ashleyVersion = '1.7.3'
     spineVersion = '3.8.55.1'

@@ -24,7 +24,7 @@ dependencies {
     implementation project(":hyperlap2d-common-api")
     implementation project(":hyperlap2d-runtime-libgdx")
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
 import com.badlogic.gdx.tools.texturepacker.TexturePacker
