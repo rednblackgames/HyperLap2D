@@ -30,7 +30,6 @@ public class FileMenu extends H2DMenu {
 
     private final PopupMenu recentProjectsPopupMenu;
     private final Array<MenuItem> recentProjectsMenuItems;
-    private final MenuItem recentProjectsMenuItem;
 
     public FileMenu() {
         super("File"); //⌘⇧⌥
@@ -48,7 +47,7 @@ public class FileMenu extends H2DMenu {
         addItem(exportSettings);
         //
         addSeparator();
-        recentProjectsMenuItem = new MenuItem("Recent Projects...");
+        MenuItem recentProjectsMenuItem = new MenuItem("Recent Projects...");
         recentProjectsPopupMenu = new PopupMenu();
         recentProjectsMenuItem.setSubMenu(recentProjectsPopupMenu);
         recentProjectsMenuItems = new Array<>();
@@ -77,14 +76,18 @@ public class FileMenu extends H2DMenu {
     }
 
     public void reInitRecent(ArrayList<String> paths) {
-        if (recentProjectsMenuItems != null && recentProjectsMenuItems.size != 0) {
+        if (recentProjectsMenuItems == null || recentProjectsPopupMenu == null)
+            return;
+
+        if (recentProjectsMenuItems.size != 0) {
             recentProjectsMenuItems.clear();
         }
 
-        if (recentProjectsPopupMenu != null && recentProjectsPopupMenu.hasChildren()) {
+        if (recentProjectsPopupMenu.hasChildren()) {
             recentProjectsPopupMenu.remove();
             recentProjectsPopupMenu.clearChildren();
         }
+
         addRecent(paths);
         if (paths.size() > 0) {
             recentProjectsPopupMenu.addSeparator();

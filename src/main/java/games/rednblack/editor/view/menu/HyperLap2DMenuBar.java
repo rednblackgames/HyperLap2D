@@ -21,9 +21,7 @@ package games.rednblack.editor.view.menu;
 import java.util.ArrayList;
 
 import com.kotcrab.vis.ui.widget.MenuItem;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.MenuItemListener;
-import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.view.ui.widget.CustomMenuBar;
 
 public class HyperLap2DMenuBar extends CustomMenuBar {
@@ -37,10 +35,8 @@ public class HyperLap2DMenuBar extends CustomMenuBar {
     private final EditMenu editMenu;
     private final WindowMenu windowMenu;
     private final HelpMenu helpMenu;
-    private final HyperLap2DFacade facade;
 
     public HyperLap2DMenuBar() {
-        facade = HyperLap2DFacade.getInstance();
         fileMenu = new FileMenu();
         editMenu = new EditMenu();
         windowMenu = new WindowMenu();
