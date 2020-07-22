@@ -180,7 +180,7 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
         FileChooser fileChooser = new HyperLapFileChooser(FileChooser.Mode.OPEN);
 
         FileTypeFilter typeFilter = new FileTypeFilter(false);
-        typeFilter.addRule("HyperLap2D Project (*.pit)", "pit");
+        typeFilter.addRule("HyperLap2D Project (*.h2d)", "h2d");
         fileChooser.setFileTypeFilter(typeFilter);
 
         fileChooser.setMultiSelectionEnabled(false);

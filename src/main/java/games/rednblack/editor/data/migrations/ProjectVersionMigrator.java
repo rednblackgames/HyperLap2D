@@ -101,7 +101,7 @@ public class ProjectVersionMigrator {
 		projectVo.projectVersion = version;
 		String projectVoJson = json.toJson(projectVo, ProjectVO.class);
 		try {
-			FileUtils.writeStringToFile(new java.io.File(projectPath + "/project.pit"), projectVoJson, "utf-8");
+			FileUtils.writeStringToFile(new java.io.File(projectPath + "/project.h2d"), projectVoJson, "utf-8");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

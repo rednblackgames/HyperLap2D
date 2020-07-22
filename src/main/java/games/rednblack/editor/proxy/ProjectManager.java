@@ -162,7 +162,7 @@ public class ProjectManager extends BaseProxy {
         currentProjectPath = projPath;
         SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
         sceneDataManager.createNewScene("MainScene");
-        FileUtils.writeStringToFile(new File(projPath + "/project.pit"), projVo.constructJsonString(), "utf-8");
+        FileUtils.writeStringToFile(new File(projPath + "/project.h2d"), projVo.constructJsonString(), "utf-8");
         FileUtils.writeStringToFile(new File(projPath + "/project.dt"), projInfoVo.constructJsonString(), "utf-8");
 
     }
@@ -191,7 +191,7 @@ public class ProjectManager extends BaseProxy {
     }
 
     public void openProjectAndLoadAllData(String projectPath, String resolution) {
-        String prjFilePath = projectPath + "/project.pit";
+        String prjFilePath = projectPath + "/project.h2d";
 
         PreferencesManager prefs = PreferencesManager.getInstance();
         prefs.buildRecentHistory();
@@ -285,7 +285,7 @@ public class ProjectManager extends BaseProxy {
 
     public void saveCurrentProject() {
         try {
-            FileUtils.writeStringToFile(new File(currentProjectPath + "/project.pit"), currentProjectVO.constructJsonString(), "utf-8");
+            FileUtils.writeStringToFile(new File(currentProjectPath + "/project.h2d"), currentProjectVO.constructJsonString(), "utf-8");
             FileUtils.writeStringToFile(new File(currentProjectPath + "/project.dt"), currentProjectInfoVO.constructJsonString(), "utf-8");
         } catch (IOException e) {
             e.printStackTrace();
