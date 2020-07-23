@@ -87,7 +87,8 @@ public class EntityUtils {
         Array<Integer> entityIds = new Array<>();
         for(Entity entity: entities) {
             MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
-            entityIds.add(mainItemComponent.uniqueId);
+            if (mainItemComponent != null)
+                entityIds.add(mainItemComponent.uniqueId);
         }
 
         return entityIds;
