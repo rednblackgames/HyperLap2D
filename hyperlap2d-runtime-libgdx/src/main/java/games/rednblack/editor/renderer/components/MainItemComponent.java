@@ -1,17 +1,15 @@
 package games.rednblack.editor.renderer.components;
 
-import com.badlogic.ashley.core.Component;
-import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.utils.CustomVariables;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class MainItemComponent implements Component {
+public class MainItemComponent implements BaseComponent {
     public int uniqueId = 0;
 	public String itemIdentifier = "";
 	public String libraryLink = "";
-    public Set<String> tags = new HashSet<String>();
+    public Set<String> tags = new HashSet<>();
     private String customVars = "";
     public CustomVariables customVariables = new CustomVariables();
 	public int entityType;
@@ -36,5 +34,17 @@ public class MainItemComponent implements Component {
 		if (customVariables.getCount() == 0) {
 			customVariables.loadFromString(customVars);
 		}
+	}
+
+	@Override
+	public void reset() {
+		uniqueId = 0;
+		itemIdentifier = "";
+		libraryLink = "";
+		tags.clear();
+		customVars = "";
+		customVariables.clear();
+		entityType = 0;
+		visible = true;
 	}
 }

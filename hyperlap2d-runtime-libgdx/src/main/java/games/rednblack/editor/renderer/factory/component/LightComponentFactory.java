@@ -22,6 +22,7 @@ import box2dLight.ConeLight;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
@@ -36,8 +37,8 @@ import games.rednblack.editor.renderer.resources.IResourceRetriever;
 
 public class LightComponentFactory extends ComponentFactory {
 
-    public LightComponentFactory(RayHandler rayHandler, World world, IResourceRetriever rm) {
-        super(rayHandler, world, rm);
+    public LightComponentFactory(PooledEngine engine, RayHandler rayHandler, World world, IResourceRetriever rm) {
+        super(engine, rayHandler, world, rm);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class LightComponentFactory extends ComponentFactory {
 
     @Override
     protected DimensionsComponent createDimensionsComponent(Entity entity, MainItemVO vo) {
-        DimensionsComponent component = new DimensionsComponent();
+        DimensionsComponent component = engine.createComponent(DimensionsComponent.class);
 
         ProjectInfoVO projectInfoVO = rm.getProjectVO();
         float boundBoxSize = 50f;
@@ -67,7 +68,9 @@ public class LightComponentFactory extends ComponentFactory {
         if(vo.softnessLength == -1f) {
             vo.softnessLength = vo.distance * 0.1f;
         }
-        LightObjectComponent component = new LightObjectComponent(vo.type);
+
+        LightObjectComponent component = engine.createComponent(LightObjectComponent.class);
+        component.setType(vo.type);
         component.coneDegree = vo.coneDegree;
         component.directionDegree = vo.directionDegree;
         component.distance = vo.distance;

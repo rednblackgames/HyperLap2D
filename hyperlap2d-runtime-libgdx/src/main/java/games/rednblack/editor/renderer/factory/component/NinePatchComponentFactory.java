@@ -3,6 +3,7 @@ package games.rednblack.editor.renderer.factory.component;
 import box2dLight.RayHandler;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.physics.box2d.World;
@@ -19,8 +20,8 @@ public class NinePatchComponentFactory extends ComponentFactory {
 
 	private NinePatchComponent ninePatchComponent;
 
-	public NinePatchComponentFactory(RayHandler rayHandler, World world, IResourceRetriever rm) {
-		super(rayHandler, world, rm);
+	public NinePatchComponentFactory(PooledEngine engine, RayHandler rayHandler, World world, IResourceRetriever rm) {
+		super(engine, rayHandler, world, rm);
 	}
 
 	@Override
@@ -33,7 +34,7 @@ public class NinePatchComponentFactory extends ComponentFactory {
 
 	@Override
 	protected DimensionsComponent createDimensionsComponent(Entity entity, MainItemVO vo) {
-		DimensionsComponent component = new DimensionsComponent();
+		DimensionsComponent component = engine.createComponent(DimensionsComponent.class);
 		component.height = ((Image9patchVO) vo).height;
 		component.width = ((Image9patchVO) vo).width;
 		if(component.width == 0) {
@@ -49,7 +50,7 @@ public class NinePatchComponentFactory extends ComponentFactory {
 	}
 
 	private NinePatchComponent createNinePatchComponent(Entity entity, Image9patchVO vo) {
-		NinePatchComponent ninePatchComponent = new NinePatchComponent();
+		NinePatchComponent ninePatchComponent = engine.createComponent(NinePatchComponent.class);
 		AtlasRegion atlasRegion = (AtlasRegion) rm.getTextureRegion(vo.imageName);
 		ninePatchComponent.ninePatch = new NinePatch(atlasRegion, atlasRegion.splits[0], atlasRegion.splits[1], atlasRegion.splits[2], atlasRegion.splits[3]);
 

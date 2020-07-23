@@ -1,8 +1,6 @@
 package games.rednblack.editor.renderer.components;
 
-import com.badlogic.ashley.core.Component;
-
-public class ZIndexComponent implements Component {
+public class ZIndexComponent implements BaseComponent {
     private int zIndex = 0;
     public boolean needReOrder = false;
     public String layerName = "";
@@ -19,5 +17,13 @@ public class ZIndexComponent implements Component {
 
     public int getGlobalZIndex() {
         return layerIndex + zIndex;
+    }
+
+    @Override
+    public void reset() {
+        zIndex = 0;
+        needReOrder = false;
+        layerName = "";
+        layerIndex = 0;
     }
 }

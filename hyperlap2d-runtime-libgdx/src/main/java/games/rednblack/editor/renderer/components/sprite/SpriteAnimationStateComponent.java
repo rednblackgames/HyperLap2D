@@ -1,25 +1,28 @@
 package games.rednblack.editor.renderer.components.sprite;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.renderer.components.BaseComponent;
 import games.rednblack.editor.renderer.data.FrameRange;
 
 import java.util.Comparator;
 
-public class SpriteAnimationStateComponent implements Component {
+public class SpriteAnimationStateComponent implements BaseComponent {
     public Array<TextureAtlas.AtlasRegion> allRegions;
 	public Animation<TextureRegion> currentAnimation;
 	public float time = 0.0f;
 
     public  boolean paused = false;
 
-    public SpriteAnimationStateComponent(Array<TextureAtlas.AtlasRegion> allRegions) {
+    public SpriteAnimationStateComponent() {
+    }
+
+    public void setAllRegions(Array<TextureAtlas.AtlasRegion> allRegions) {
         this.allRegions = sortAndGetRegions(allRegions);
     }
-	
+
 	public Animation<TextureRegion> get() {
 		return currentAnimation;
 	}
@@ -41,6 +44,14 @@ public class SpriteAnimationStateComponent implements Component {
         regions.sort(new SortRegionsComparator());
 
         return regions;
+    }
+
+    @Override
+    public void reset() {
+        allRegions = null;
+        currentAnimation = null;
+        time = 0.0f;
+        paused = false;
     }
 
     private static class SortRegionsComparator implements Comparator<TextureAtlas.AtlasRegion> {

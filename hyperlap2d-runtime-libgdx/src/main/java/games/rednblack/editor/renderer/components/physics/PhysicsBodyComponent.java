@@ -6,25 +6,25 @@ import com.badlogic.gdx.physics.box2d.Filter;
 import games.rednblack.editor.renderer.components.RemovableComponent;
 
 public class PhysicsBodyComponent implements RemovableComponent {
-	public int bodyType;
+	public int bodyType = 0;
 
-	public float mass;
-	public Vector2 centerOfMass;
-	public float rotationalInertia;
-	public float damping;
-    public float angularDamping;
-	public float gravityScale;
+	public float mass = 1;
+	public Vector2 centerOfMass = new Vector2(0, 0);
+	public float rotationalInertia = 1;
+	public float damping = 0;
+    public float angularDamping = 0;
+	public float gravityScale = 1;
 
-	public boolean allowSleep;
-	public boolean awake;
-	public boolean bullet;
-    public boolean sensor;
-    public boolean fixedRotation;
+	public boolean allowSleep = true;
+	public boolean awake = true;
+	public boolean bullet = false;
+    public boolean sensor = false;
+    public boolean fixedRotation = false;
 
-	public float density;
-	public float friction;
-	public float restitution;
-    public Filter filter;
+	public float density = 1;
+	public float friction = 1;
+	public float restitution = 0;
+    public Filter filter = new Filter();
 
     public float centerX;
     public float centerY;
@@ -33,10 +33,25 @@ public class PhysicsBodyComponent implements RemovableComponent {
     public boolean needToRefreshBody = false;
 
     public PhysicsBodyComponent() {
-        // putting default values
+
+    }
+
+    @Override
+    public void onRemove() {
+        if (body != null && body.getWorld() != null) {
+            body.getWorld().destroyBody(body);
+            body = null;
+        }
+    }
+
+    @Override
+    public void reset() {
+        centerX = 0;
+        centerY = 0;
+
         bodyType = 0;
         mass = 1;
-        centerOfMass = new Vector2(0, 0);
+        centerOfMass.set(0, 0);
         rotationalInertia = 1;
         damping = 0;
         gravityScale = 1;
@@ -49,14 +64,12 @@ public class PhysicsBodyComponent implements RemovableComponent {
         restitution = 0;
         fixedRotation = false;
         angularDamping = 0;
-        filter = new Filter();
-    }
 
-    @Override
-    public void onRemove() {
-        if (body != null && body.getWorld() != null) {
-            body.getWorld().destroyBody(body);
-            body = null;
-        }
+        filter.categoryBits = 0x0001;
+        filter.maskBits = -1;
+        filter.groupIndex = 0;
+
+        needToRefreshBody = false;
+        body = null;
     }
 }

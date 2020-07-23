@@ -5,29 +5,21 @@ import games.rednblack.editor.renderer.components.RemovableComponent;
 
 public class LightBodyComponent implements RemovableComponent {
 
-    public float[] color;
-    public int rays;
-    public float distance;
-    public int rayDirection;
-    public float softnessLength;
-    public boolean isStatic;
-    public boolean isXRay;
-    public boolean isSoft;
-    public boolean isActive;
+    public float[] color = new float[]{1f, 1f, 1f, 1f};
+    public int rays = 4;
+    public float distance = 30;
+    public int rayDirection = 1;
+    public float softnessLength = 1f;
+    public boolean isStatic = false;
+    public boolean isXRay = false;
+    public boolean isSoft = true;
+    public boolean isActive = true;
 
     public ChainLight lightObject;
     public boolean needToRefreshLight = false;
 
     public LightBodyComponent() {
-        color = new float[]{1f, 1f, 1f, 1f};
-        rays = 4;
-        distance = 30;
-        rayDirection = 1;
-        softnessLength = 1f;
-        isStatic = false;
-        isXRay = false;
-        isSoft = true;
-        isActive = true;
+
     }
 
     @Override
@@ -36,5 +28,26 @@ public class LightBodyComponent implements RemovableComponent {
             lightObject.remove();
             lightObject = null;
         }
+    }
+
+    @Override
+    public void reset() {
+        onRemove();
+
+        color[0] = 1f;
+        color[1] = 1f;
+        color[2] = 1f;
+        color[3] = 1f;
+
+        rays = 4;
+        distance = 30;
+        rayDirection = 1;
+        softnessLength = 1f;
+        isStatic = false;
+        isXRay = false;
+        isSoft = true;
+        isActive = true;
+
+        needToRefreshLight = false;
     }
 }

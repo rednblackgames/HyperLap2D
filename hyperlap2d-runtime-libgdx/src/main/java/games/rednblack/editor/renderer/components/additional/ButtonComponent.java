@@ -1,16 +1,16 @@
 package games.rednblack.editor.renderer.components.additional;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.renderer.components.BaseComponent;
 
 /**
  * Created by azakhary on 8/1/2015.
  */
-public class ButtonComponent implements Component {
+public class ButtonComponent implements BaseComponent {
 
     public boolean isTouched = false;
 
-    private Array<ButtonListener> listeners = new Array<ButtonListener>();
+    private final Array<ButtonListener> listeners = new Array<>();
 
     public interface ButtonListener {
         void touchUp();
@@ -43,5 +43,11 @@ public class ButtonComponent implements Component {
             }
         }
         this.isTouched = isTouched;
+    }
+
+    @Override
+    public void reset() {
+        isTouched = false;
+        listeners.clear();
     }
 }

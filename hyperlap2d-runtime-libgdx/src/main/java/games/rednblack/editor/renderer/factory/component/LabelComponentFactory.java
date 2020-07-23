@@ -3,6 +3,7 @@ package games.rednblack.editor.renderer.factory.component;
 import box2dLight.RayHandler;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
@@ -15,9 +16,8 @@ public class LabelComponentFactory extends ComponentFactory{
 	
 	private static int labelDefaultSize = 12;
 
-	public LabelComponentFactory(RayHandler rayHandler, World world, IResourceRetriever rm) {
-		super(rayHandler, world, rm);
-		// TODO Auto-generated constructor stub
+	public LabelComponentFactory(PooledEngine engine, RayHandler rayHandler, World world, IResourceRetriever rm) {
+		super(engine, rayHandler, world, rm);
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class LabelComponentFactory extends ComponentFactory{
 
 	@Override
 	protected DimensionsComponent createDimensionsComponent(Entity entity, MainItemVO vo) {
-        DimensionsComponent component = new DimensionsComponent();
+        DimensionsComponent component = engine.createComponent(DimensionsComponent.class);
         component.height = ((LabelVO) vo).height;
         component.width = ((LabelVO) vo).width;
 
@@ -39,7 +39,9 @@ public class LabelComponentFactory extends ComponentFactory{
     }
 
     protected LabelComponent createLabelComponent(Entity entity, LabelVO vo) {
-    	LabelComponent component = new LabelComponent(vo.text, generateStyle(rm, vo.style, vo.size));
+	    LabelComponent component = engine.createComponent(LabelComponent.class);
+	    component.setText(vo.text);
+	    component.setStyle(generateStyle(rm, vo.style, vo.size));
         component.fontName = vo.style;
         component.fontSize = vo.size;
         component.setAlignment(vo.align);

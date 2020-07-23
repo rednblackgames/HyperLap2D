@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import com.badlogic.ashley.core.Component;
 import games.rednblack.editor.renderer.data.LayerItemVO;
 
-public class LayerMapComponent implements Component {
+public class LayerMapComponent implements BaseComponent {
 	public boolean autoIndexing = true;
-	private ArrayList<LayerItemVO> layers = new ArrayList<LayerItemVO>();
+	private ArrayList<LayerItemVO> layers = new ArrayList<>();
 
-	private HashMap<String, LayerItemVO> layerMap = new HashMap<String, LayerItemVO>();
+	private final HashMap<String, LayerItemVO> layerMap = new HashMap<>();
 
 	public void setLayers(ArrayList<LayerItemVO> layers) {
 		this.layers = layers;
@@ -72,5 +71,12 @@ public class LayerMapComponent implements Component {
 		LayerItemVO sourceVO = getLayer(source);
 		LayerItemVO targetVO = getLayer(target);
 		Collections.swap(layers, layers.indexOf(sourceVO), layers.indexOf(targetVO));
+	}
+
+	@Override
+	public void reset() {
+		autoIndexing = true;
+		layers.clear();
+		layerMap.clear();
 	}
 }

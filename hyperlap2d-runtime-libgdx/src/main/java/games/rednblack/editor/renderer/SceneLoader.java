@@ -1,13 +1,9 @@
 package games.rednblack.editor.renderer;
 
-import box2dLight.BlendFunc;
 import box2dLight.DirectionalLight;
 import box2dLight.RayHandler;
 
-import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntityListener;
+import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -49,7 +45,7 @@ public class SceneLoader {
 	private SceneVO sceneVO;
 	private IResourceRetriever rm = null;
 
-    public Engine engine = null;
+    public PooledEngine engine = null;
 	public RayHandler rayHandler;
 	public World world;
 	public Entity rootEntity;
@@ -62,7 +58,7 @@ public class SceneLoader {
 	private HyperLap2dRenderer renderer;
 	private Entity root;
 
-    public SceneLoader(World world, RayHandler rayHandler, boolean cullingEnabled) {
+    public SceneLoader(World world, RayHandler rayHandler, boolean cullingEnabled, int entityPoolInitialSize, int entityPoolMaxSize, int componentPoolInitialSize, int componentPoolMaxSize) {
         this.world = world;
         this.rayHandler = rayHandler;
 
@@ -70,30 +66,31 @@ public class SceneLoader {
         rm.initAllResources();
 		this.rm = rm;
 
-		this.engine = new Engine();
-		initSceneLoader(cullingEnabled);
+		initSceneLoader(cullingEnabled, entityPoolInitialSize, entityPoolMaxSize, componentPoolInitialSize, componentPoolMaxSize);
     }
 
-    public SceneLoader(IResourceRetriever rm, World world, RayHandler rayHandler, boolean cullingEnabled) {
+    public SceneLoader(IResourceRetriever rm, World world, RayHandler rayHandler, boolean cullingEnabled, int entityPoolInitialSize, int entityPoolMaxSize, int componentPoolInitialSize, int componentPoolMaxSize) {
 		this.world = world;
         this.rayHandler = rayHandler;
-        this.engine = new Engine();
 		this.rm = rm;
-		initSceneLoader(cullingEnabled);
+
+		initSceneLoader(cullingEnabled, entityPoolInitialSize, entityPoolMaxSize, componentPoolInitialSize, componentPoolMaxSize);
     }
 
 	public SceneLoader() {
-		this(null, null, true);
+		this(null, null, true, 10, 100, 10, 100);
 	}
 
 	public SceneLoader(IResourceRetriever rm) {
-		this(rm, null, null, true);
+		this(rm, null, null, true, 10, 100, 10, 100);
 	}
 
 	/**
 	 * this method is called when rm has loaded all data
 	 */
-    private void initSceneLoader(boolean cullingEnabled) {
+    private void initSceneLoader(boolean cullingEnabled, int entityPoolInitialSize, int entityPoolMaxSize, int componentPoolInitialSize, int componentPoolMaxSize) {
+		this.engine = new PooledEngine(entityPoolInitialSize, entityPoolMaxSize, componentPoolInitialSize, componentPoolMaxSize);
+
         if (world == null) {
             world = new World(new Vector2(0,-10), true);
         } else {
@@ -113,7 +110,7 @@ public class SceneLoader {
         }
         
         addSystems(cullingEnabled);
-        entityFactory = new EntityFactory(rayHandler, world, rm);
+        entityFactory = new EntityFactory(engine, rayHandler, world, rm);
     }
 
 	public void setResolution(String resolutionName) {
@@ -173,7 +170,7 @@ public class SceneLoader {
     }
 
 	public void injectExternalItemType(IExternalItemType itemType) {
-		itemType.injectDependencies(rayHandler, world, rm);
+		itemType.injectDependencies(engine, rayHandler, world, rm);
 		itemType.injectMappers();
 		entityFactory.addExternalFactory(itemType);
 		engine.addSystem(itemType.getSystem());
@@ -362,7 +359,7 @@ public class SceneLoader {
 	 	return rm;
 	 }
 
-    public Engine getEngine() {
+    public PooledEngine getEngine() {
         return engine;
     }
 

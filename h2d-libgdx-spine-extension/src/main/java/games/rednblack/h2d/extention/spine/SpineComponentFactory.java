@@ -21,6 +21,7 @@ package games.rednblack.h2d.extention.spine;
 import box2dLight.RayHandler;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.physics.box2d.World;
 import com.esotericsoftware.spine.*;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
@@ -42,8 +43,8 @@ public class SpineComponentFactory extends ComponentFactory {
         super();
     }
 
-    public SpineComponentFactory(RayHandler rayHandler, World world, IResourceRetriever rm) {
-        super(rayHandler, world, rm);
+    public SpineComponentFactory(PooledEngine engine, RayHandler rayHandler, World world, IResourceRetriever rm) {
+        super(engine, rayHandler, world, rm);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class SpineComponentFactory extends ComponentFactory {
 
     @Override
     protected DimensionsComponent createDimensionsComponent(Entity entity, MainItemVO vo) {
-        DimensionsComponent component = new DimensionsComponent();
+        DimensionsComponent component = engine.createComponent(DimensionsComponent.class);
 
         entity.add(component);
         return component;
@@ -68,7 +69,7 @@ public class SpineComponentFactory extends ComponentFactory {
     protected SpineObjectComponent createSpineObjectComponent(Entity entity, SpineVO vo) {
         ProjectInfoVO projectInfoVO = rm.getProjectVO();
 
-        SpineObjectComponent component = new SpineObjectComponent();
+        SpineObjectComponent component = engine.createComponent(SpineObjectComponent.class);
         component.skeletonJson = new SkeletonJson(rm.getSkeletonAtlas(vo.animationName));
         component.skeletonData = component.skeletonJson.readSkeletonData((rm.getSkeletonJSON(vo.animationName)));
 

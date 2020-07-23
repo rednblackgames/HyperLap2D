@@ -20,6 +20,7 @@ package games.rednblack.editor.renderer.utils;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.PooledEngine;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
@@ -36,7 +37,7 @@ public class ItemWrapper {
     private Entity entity;
 
     private NodeComponent nodeComponent;
-    private HashMap<String, Entity> childMap = new HashMap<String, Entity>();
+    private final HashMap<String, Entity> childMap = new HashMap<>();
 
     public ItemWrapper() {
         // empty wrapper is better then null pointer
@@ -85,10 +86,10 @@ public class ItemWrapper {
         return entity;
     }
 
-    public IScript addScript(IScript script) {
+    public IScript addScript(IScript script, PooledEngine engine) {
         ScriptComponent component = ComponentRetriever.get(entity, ScriptComponent.class);
         if(component == null) {
-            component = new ScriptComponent();
+            component = engine.createComponent(ScriptComponent.class);
             entity.add(component);
         }
         component.addScript(script);

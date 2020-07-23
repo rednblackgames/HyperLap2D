@@ -1,8 +1,12 @@
 package games.rednblack.editor.renderer.components;
 
-import com.badlogic.ashley.core.Component;
+public class SpineDataComponent implements BaseComponent {
+    public String animationName = "";
+    public String currentAnimationName = "";
 
-public class SpineDataComponent implements Component {
-	public String animationName = "";
-	public String currentAnimationName = "";
+    @Override
+    public void reset() {
+        animationName = "";
+        currentAnimationName = "";
+    }
 }

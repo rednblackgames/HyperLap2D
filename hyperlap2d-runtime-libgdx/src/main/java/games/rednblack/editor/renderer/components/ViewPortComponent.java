@@ -1,8 +1,12 @@
 package games.rednblack.editor.renderer.components;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class ViewPortComponent implements Component {
+public class ViewPortComponent implements BaseComponent {
 	public Viewport viewPort;
+
+	@Override
+	public void reset() {
+		viewPort = null;
+	}
 }

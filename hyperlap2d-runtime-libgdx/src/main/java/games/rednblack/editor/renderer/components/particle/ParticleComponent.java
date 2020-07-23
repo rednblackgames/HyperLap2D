@@ -1,26 +1,36 @@
 package games.rednblack.editor.renderer.components.particle;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import games.rednblack.editor.renderer.components.BaseComponent;
 
-public class ParticleComponent implements Component {
-	public String particleName = "";
-	public ParticleEffect particleEffect;
-	public float worldMultiplyer = 1f;
-	private float scaleFactor = 1f;
+public class ParticleComponent implements BaseComponent {
+    public String particleName = "";
+    public float worldMultiplier = 1f;
+    private float scaleFactor = 1f;
 
-	public void scaleEffect(float scale){
-		scaleFactor = scale;
-		particleEffect.scaleEffect(scaleFactor*worldMultiplyer);
-	}
+    public ParticleEffect particleEffect;
 
-	public float getScaleFactor(){
-		return scaleFactor;
-	}
+    public void scaleEffect(float scale) {
+        scaleFactor = scale;
+        particleEffect.scaleEffect(scaleFactor * worldMultiplier);
+    }
 
-	//please use this method to start effects for the scale to be applied
-	public void startEffect(){
-		scaleEffect(scaleFactor);
-		particleEffect.start();
-	}
+    public float getScaleFactor() {
+        return scaleFactor;
+    }
+
+    //please use this method to start effects for the scale to be applied
+    public void startEffect() {
+        scaleEffect(scaleFactor);
+        particleEffect.start();
+    }
+
+    @Override
+    public void reset() {
+        particleName = "";
+        worldMultiplier = 1f;
+        scaleFactor = 1f;
+
+        particleEffect = null;
+    }
 }

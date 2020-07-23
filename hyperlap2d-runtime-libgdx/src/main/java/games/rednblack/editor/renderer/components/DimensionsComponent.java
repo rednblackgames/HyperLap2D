@@ -1,16 +1,12 @@
 package games.rednblack.editor.renderer.components;
 
-import com.badlogic.ashley.core.Component;
-import com.badlogic.gdx.graphics.g2d.PolygonRegion;
-import com.badlogic.gdx.graphics.g2d.PolygonSprite;
-import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.data.ShapeVO;
 import games.rednblack.editor.renderer.utils.PolygonUtils;
 
-public class DimensionsComponent implements Component {
+public class DimensionsComponent implements BaseComponent {
 	public float width = 0;
 	public float height = 0;
 
@@ -58,5 +54,13 @@ public class DimensionsComponent implements Component {
             width = maxPoint.x - minPoint.x;
             height = maxPoint.y - minPoint.y;
         }
+    }
+
+    @Override
+    public void reset() {
+        width = 0;
+        height = 0;
+        boundBox = null;
+        polygon = null;
     }
 }

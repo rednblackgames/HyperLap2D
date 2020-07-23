@@ -17,6 +17,7 @@ package games.rednblack.h2d.extention.spine;/*
  */
 
 import box2dLight.RayHandler;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.physics.box2d.World;
 import games.rednblack.editor.renderer.commons.IExternalItemType;
@@ -69,7 +70,7 @@ public class SpineItemType implements IExternalItemType {
     }
 
     @Override
-    public void injectDependencies(RayHandler rayHandler, World world, IResourceRetriever rm) {
-        factory.injectDependencies(rayHandler, world, rm);
+    public void injectDependencies(PooledEngine engine, RayHandler rayHandler, World world, IResourceRetriever rm) {
+        factory.injectDependencies(engine, rayHandler, world, rm);
     }
 }

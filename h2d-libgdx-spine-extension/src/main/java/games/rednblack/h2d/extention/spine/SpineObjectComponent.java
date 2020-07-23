@@ -1,6 +1,5 @@
 package games.rednblack.h2d.extention.spine;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
@@ -9,9 +8,10 @@ import com.esotericsoftware.spine.*;
 import com.esotericsoftware.spine.attachments.Attachment;
 import com.esotericsoftware.spine.attachments.MeshAttachment;
 import com.esotericsoftware.spine.attachments.RegionAttachment;
+import games.rednblack.editor.renderer.components.BaseComponent;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 
-public class SpineObjectComponent implements Component {
+public class SpineObjectComponent implements BaseComponent {
 	public SkeletonData skeletonData;
 	public Skeleton skeleton;
 	public SkeletonJson skeletonJson;
@@ -19,7 +19,7 @@ public class SpineObjectComponent implements Component {
     public float minX;
     public float minY;
     public float worldMultiplier;
-    private FloatArray temp = new FloatArray();
+    private final FloatArray temp = new FloatArray();
     public final Affine2 worldTransform = new Affine2();
     public final Matrix4 computedTransform = new Matrix4();
     public final Matrix4 oldTransform = new Matrix4();
@@ -71,5 +71,23 @@ public class SpineObjectComponent implements Component {
 
         dimensionsComponent.width = (maxX - minX);
         dimensionsComponent.height = (maxY - minY);
+    }
+
+    @Override
+    public void reset() {
+        skeletonData = null;
+        skeleton = null;
+        skeletonJson = null;
+        state = null;
+
+        minX = 0;
+        minY = 0;
+
+        worldMultiplier = 0;
+
+        temp.clear();
+        worldTransform.idt();
+        computedTransform.idt();
+        oldTransform.idt();
     }
 }

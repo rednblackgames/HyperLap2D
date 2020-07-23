@@ -1,6 +1,5 @@
 package games.rednblack.editor.renderer.components.label;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -8,8 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.StringBuilder;
+import games.rednblack.editor.renderer.components.BaseComponent;
 
-public class LabelComponent implements Component {
+public class LabelComponent implements BaseComponent {
 	public  LabelStyle style;
 	public final GlyphLayout layout = new GlyphLayout();
 	public BitmapFontCache cache;
@@ -23,30 +23,8 @@ public class LabelComponent implements Component {
 	public float fontScaleX = 1f;
 	public float fontScaleY = 1f;
 
-	
-	public LabelComponent (CharSequence text, Skin skin) {
-		this(text, skin.get(LabelStyle.class));
-	}
+	private LabelComponent() {
 
-	public LabelComponent (CharSequence text, Skin skin, String styleName) {
-		this(text, skin.get(styleName, LabelStyle.class));
-	}
-
-	/** Creates a label, using a {@link LabelStyle} that has a BitmapFont with the specified name from the skin and the specified
-	 * color. */
-	public LabelComponent (CharSequence text, Skin skin, String fontName, Color color) {
-		this(text, new LabelStyle(skin.getFont(fontName), color));
-	}
-
-	/** Creates a label, using a {@link LabelStyle} that has a BitmapFont with the specified name and the specified color from the
-	 * skin. */
-	public LabelComponent (CharSequence text, Skin skin, String fontName, String colorName) {
-		this(text, new LabelStyle(skin.getFont(fontName), skin.getColor(colorName)));
-	}
-
-	public LabelComponent (CharSequence text, LabelStyle style) {
-		if (text != null) this.text.append(text);
-		setStyle(style);
 	}
 
 	public void setStyle (LabelStyle style) {
@@ -148,5 +126,20 @@ public class LabelComponent implements Component {
 	public void setFontScaleY (float fontScaleY) {
 		this.fontScaleY = fontScaleY;
 	}
-	
+
+	@Override
+	public void reset() {
+		style = null;
+		layout.reset();
+		cache = null;
+
+		text.delete(0,text.length());
+		fontName = null;
+		fontSize = 0;
+		labelAlign = Align.center;
+		lineAlign = Align.center;
+		wrap = false;
+		fontScaleX = 1f;
+		fontScaleY = 1f;
+	}
 }

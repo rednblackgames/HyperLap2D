@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public class CustomVariables {
 
-    private HashMap<String, String> variables = new HashMap<String, String>();
+    private final HashMap<String, String> variables = new HashMap<>();
 
     public CustomVariables() {
 
@@ -17,9 +17,9 @@ public class CustomVariables {
     public void loadFromString(String varString) {
         variables.clear();
         String[] vars = varString.split(";");
-        for(int i = 0; i < vars.length; i++) {
-            String[] tmp = vars[i].split(":");
-            if(tmp.length > 1) {
+        for (String var : vars) {
+            String[] tmp = var.split(":");
+            if (tmp.length > 1) {
                 setVariable(tmp[0], tmp[1]);
             }
         }
@@ -55,7 +55,7 @@ public class CustomVariables {
         Integer result = null;
         try {
             result = Integer.parseInt(variables.get(key));
-        } catch(Exception e) {}
+        } catch(Exception ignored) {}
 
         return result;
     }
@@ -64,7 +64,7 @@ public class CustomVariables {
         Float result = null;
         try {
             result = Float.parseFloat(variables.get(key));
-        } catch(Exception e) {}
+        } catch(Exception ignored) {}
 
         return result;
     }
@@ -77,4 +77,7 @@ public class CustomVariables {
         return variables.size();
     }
 
+    public void clear() {
+        variables.clear();
+    }
 }

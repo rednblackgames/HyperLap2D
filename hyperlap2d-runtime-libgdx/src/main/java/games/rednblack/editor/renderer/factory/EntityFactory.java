@@ -2,15 +2,11 @@ package games.rednblack.editor.renderer.factory;
 
 import box2dLight.RayHandler;
 
-import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import games.rednblack.editor.renderer.commons.IExternalItemType;
-import games.rednblack.editor.renderer.components.CompositeTransformComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ViewPortComponent;
@@ -19,288 +15,287 @@ import games.rednblack.editor.renderer.factory.component.*;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
 public class EntityFactory {
-	
-	public static final int IMAGE_TYPE 		= 1;
-	public static final int LABEL_TYPE 		= 2;
-	public static final int SPRITE_TYPE 	= 3;
-	public static final int SPINE_TYPE 		= 4;
-	public static final int SPRITER_TYPE 	= 5;
-	public static final int COMPOSITE_TYPE 	= 6;
-	public static final int PARTICLE_TYPE 	= 7;
-	public static final int LIGHT_TYPE 		= 8;
-	public static final int NINE_PATCH 		= 9;
-	public static final int COLOR_PRIMITIVE = 10;
-	
-	public RayHandler rayHandler;
-	public World world;
-	public IResourceRetriever rm = null;
 
-	public EntityFactory( RayHandler rayHandler, World world, IResourceRetriever rm ) {
+    protected ComponentFactory compositeComponentFactory, lightComponentFactory, particleEffectComponentFactory,
+            simpleImageComponentFactory, spriteComponentFactory, spriterComponentFactory, labelComponentFactory,
+            ninePatchComponentFactory, colorPrimitiveFactory;
 
-		this.rayHandler = rayHandler;
-		this.world = world;
-		this.rm = rm;
+    private final HashMap<Integer, ComponentFactory> externalFactories = new HashMap<>();
+    private final HashMap<Integer, Entity> entities = new HashMap<>();
 
-		compositeComponentFactory = new CompositeComponentFactory(rayHandler, world, rm);
-		lightComponentFactory = new LightComponentFactory(rayHandler, world, rm);
-		particleEffectComponentFactory = new ParticleEffectComponentFactory(rayHandler, world, rm);
-		simpleImageComponentFactory = new SimpleImageComponentFactory(rayHandler, world, rm);
-		spriteComponentFactory = new SpriteComponentFactory(rayHandler, world, rm);
-		spriterComponentFactory = new SpriterComponentFactory(rayHandler, world, rm);
-		labelComponentFactory = new LabelComponentFactory(rayHandler, world, rm);
-		ninePatchComponentFactory = new NinePatchComponentFactory(rayHandler, world, rm);
-		colorPrimitiveFactory = new ColorPrimitiveComponentFactory(rayHandler, world, rm);
+    public static final int IMAGE_TYPE = 1;
+    public static final int LABEL_TYPE = 2;
+    public static final int SPRITE_TYPE = 3;
+    public static final int SPINE_TYPE = 4;
+    public static final int SPRITER_TYPE = 5;
+    public static final int COMPOSITE_TYPE = 6;
+    public static final int PARTICLE_TYPE = 7;
+    public static final int LIGHT_TYPE = 8;
+    public static final int NINE_PATCH = 9;
+    public static final int COLOR_PRIMITIVE = 10;
 
-	}
+    public RayHandler rayHandler;
+    public World world;
+    public IResourceRetriever rm = null;
+    public PooledEngine engine;
 
-	protected ComponentFactory compositeComponentFactory, lightComponentFactory, particleEffectComponentFactory,
-			simpleImageComponentFactory, spriteComponentFactory, spriterComponentFactory, labelComponentFactory, ninePatchComponentFactory, colorPrimitiveFactory;
+    public EntityFactory(PooledEngine engine, RayHandler rayHandler, World world, IResourceRetriever rm) {
+        this.engine = engine;
+        this.rayHandler = rayHandler;
+        this.world = world;
+        this.rm = rm;
 
-	private HashMap<Integer, ComponentFactory> externalFactories = new HashMap<Integer, ComponentFactory>();
+        compositeComponentFactory = new CompositeComponentFactory(engine, rayHandler, world, rm);
+        lightComponentFactory = new LightComponentFactory(engine, rayHandler, world, rm);
+        particleEffectComponentFactory = new ParticleEffectComponentFactory(engine, rayHandler, world, rm);
+        simpleImageComponentFactory = new SimpleImageComponentFactory(engine, rayHandler, world, rm);
+        spriteComponentFactory = new SpriteComponentFactory(engine, rayHandler, world, rm);
+        spriterComponentFactory = new SpriterComponentFactory(engine, rayHandler, world, rm);
+        labelComponentFactory = new LabelComponentFactory(engine, rayHandler, world, rm);
+        ninePatchComponentFactory = new NinePatchComponentFactory(engine, rayHandler, world, rm);
+        colorPrimitiveFactory = new ColorPrimitiveComponentFactory(engine, rayHandler, world, rm);
+    }
 
-	private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
-
-	public ComponentFactory getCompositeComponentFactory() {
-		return compositeComponentFactory;
-	}
+    public ComponentFactory getCompositeComponentFactory() {
+        return compositeComponentFactory;
+    }
 
     public SpriteComponentFactory getSpriteComponentFactory() {
         return (SpriteComponentFactory) spriteComponentFactory;
     }
 
-	public void addExternalFactory(IExternalItemType itemType) {
-		externalFactories.put(itemType.getTypeId(), itemType.getComponentFactory());
-	}
+    public void addExternalFactory(IExternalItemType itemType) {
+        externalFactories.put(itemType.getTypeId(), itemType.getComponentFactory());
+    }
 
-	public Entity createEntity(Entity root, SimpleImageVO vo){
+    public Entity createEntity(Entity root, SimpleImageVO vo) {
 
-		Entity entity = new Entity();
+        Entity entity = engine.createEntity();
 
-		simpleImageComponentFactory.createComponents(root, entity, vo);
+        simpleImageComponentFactory.createComponents(root, entity, vo);
 
-		postProcessEntity(entity);
-		
-		return entity;
-	}
-	
-	public Entity createEntity(Entity root, Image9patchVO vo){
+        postProcessEntity(entity);
 
-		Entity entity = new Entity();
+        return entity;
+    }
 
-		ninePatchComponentFactory.createComponents(root, entity, vo);
+    public Entity createEntity(Entity root, Image9patchVO vo) {
 
-		postProcessEntity(entity);
-		
-		return entity;
-	}
-	
-	public Entity createEntity(Entity root, LabelVO vo) {
-		
-		Entity entity = new Entity();
-		
-		labelComponentFactory.createComponents(root, entity, vo);
+        Entity entity = engine.createEntity();
 
-		postProcessEntity(entity);
+        ninePatchComponentFactory.createComponents(root, entity, vo);
 
-		return entity;
-	}
-	
-	public Entity createEntity(Entity root, ParticleEffectVO vo){
+        postProcessEntity(entity);
 
-		Entity entity = new Entity();
-		
-		particleEffectComponentFactory.createComponents(root, entity, vo);
+        return entity;
+    }
 
-		postProcessEntity(entity);
-		
-		return entity;
-	}
-	
-	public Entity createEntity(Entity root, LightVO vo){
+    public Entity createEntity(Entity root, LabelVO vo) {
 
-		Entity entity = new Entity();
+        Entity entity = engine.createEntity();
 
-		lightComponentFactory.createComponents(root, entity, vo);
+        labelComponentFactory.createComponents(root, entity, vo);
 
-		postProcessEntity(entity);
-		
-		return entity;
-	}
-	
-	public Entity createEntity(Entity root, SpineVO vo){
+        postProcessEntity(entity);
 
-		Entity entity = new Entity();
+        return entity;
+    }
 
-		ComponentFactory factory = externalFactories.get(SPINE_TYPE);
-		if(factory != null) {
-			factory.createComponents(root, entity, vo);
-			postProcessEntity(entity);
-		}
-		
-		return entity;
-	}
-	
-	public Entity createEntity(Entity root, SpriteAnimationVO vo){
+    public Entity createEntity(Entity root, ParticleEffectVO vo) {
 
-		Entity entity = new Entity();
+        Entity entity = engine.createEntity();
 
-		spriteComponentFactory.createComponents(root, entity, vo);
+        particleEffectComponentFactory.createComponents(root, entity, vo);
 
-		postProcessEntity(entity);
-		
-		return entity;
-	}
-	
-	public Entity createEntity(Entity root, SpriterVO vo){
+        postProcessEntity(entity);
 
-		Entity entity = new Entity();
+        return entity;
+    }
 
-		spriterComponentFactory.createComponents(root, entity, vo);
+    public Entity createEntity(Entity root, LightVO vo) {
 
-		postProcessEntity(entity);
-		
-		return entity;
-	}
-	
-	public Entity createEntity(Entity root, CompositeItemVO vo){
+        Entity entity = engine.createEntity();
 
-		Entity entity = new Entity();
+        lightComponentFactory.createComponents(root, entity, vo);
 
-		compositeComponentFactory.createComponents(root, entity, vo);
+        postProcessEntity(entity);
 
-		postProcessEntity(entity);
-		
-		return entity;
-	}
+        return entity;
+    }
 
-	public Entity createEntity(Entity root, ColorPrimitiveVO vo){
+    public Entity createEntity(Entity root, SpineVO vo) {
 
-		Entity entity = new Entity();
+        Entity entity = engine.createEntity();
 
-		colorPrimitiveFactory.createComponents(root, entity, vo);
+        ComponentFactory factory = externalFactories.get(SPINE_TYPE);
+        if (factory != null) {
+            factory.createComponents(root, entity, vo);
+            postProcessEntity(entity);
+        }
 
-		postProcessEntity(entity);
+        return entity;
+    }
 
-		return entity;
-	}
+    public Entity createEntity(Entity root, SpriteAnimationVO vo) {
 
-	public Entity createRootEntity(CompositeVO compositeVo, Viewport viewport){
+        Entity entity = engine.createEntity();
 
-		CompositeItemVO vo = new CompositeItemVO();
-		vo.composite = compositeVo;
+        spriteComponentFactory.createComponents(root, entity, vo);
 
-		Entity entity = new Entity();
+        postProcessEntity(entity);
 
-		compositeComponentFactory.createComponents(null, entity, vo);
+        return entity;
+    }
+
+    public Entity createEntity(Entity root, SpriterVO vo) {
+
+        Entity entity = engine.createEntity();
+
+        spriterComponentFactory.createComponents(root, entity, vo);
+
+        postProcessEntity(entity);
+
+        return entity;
+    }
+
+    public Entity createEntity(Entity root, CompositeItemVO vo) {
+
+        Entity entity = engine.createEntity();
+
+        compositeComponentFactory.createComponents(root, entity, vo);
+
+        postProcessEntity(entity);
+
+        return entity;
+    }
+
+    public Entity createEntity(Entity root, ColorPrimitiveVO vo) {
+
+        Entity entity = engine.createEntity();
+
+        colorPrimitiveFactory.createComponents(root, entity, vo);
+
+        postProcessEntity(entity);
+
+        return entity;
+    }
+
+    public Entity createRootEntity(CompositeVO compositeVo, Viewport viewport) {
+
+        CompositeItemVO vo = new CompositeItemVO();
+        vo.composite = compositeVo;
+
+        Entity entity = engine.createEntity();
+
+        compositeComponentFactory.createComponents(null, entity, vo);
 //		CompositeTransformComponent compositeTransform = new CompositeTransformComponent();
-		TransformComponent transform = new TransformComponent();
+        TransformComponent transform = engine.createComponent(TransformComponent.class);
 
-		ViewPortComponent viewPortComponent = new ViewPortComponent();
-		viewPortComponent.viewPort = viewport;
+        ViewPortComponent viewPortComponent = engine.createComponent(ViewPortComponent.class);;
+        viewPortComponent.viewPort = viewport;
 
-		viewPortComponent.viewPort.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+        viewPortComponent.viewPort.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 
-		entity.add(transform);
-		entity.add(viewPortComponent);
+        entity.add(transform);
+        entity.add(viewPortComponent);
 
-		postProcessEntity(entity);
+        postProcessEntity(entity);
 
-		return entity;
-	}
+        return entity;
+    }
 
-	public Integer postProcessEntity(Entity entity) {
-		ComponentMapper<MainItemComponent> mainItemComponentComponentMapper = ComponentMapper.getFor(MainItemComponent.class);
-		MainItemComponent mainItemComponent = mainItemComponentComponentMapper.get(entity);
-		if(mainItemComponent.uniqueId == -1) mainItemComponent.uniqueId = getFreeId();
-		entities.put(mainItemComponent.uniqueId, entity);
+    public Integer postProcessEntity(Entity entity) {
+        ComponentMapper<MainItemComponent> mainItemComponentComponentMapper = ComponentMapper.getFor(MainItemComponent.class);
+        MainItemComponent mainItemComponent = mainItemComponentComponentMapper.get(entity);
+        if (mainItemComponent.uniqueId == -1) mainItemComponent.uniqueId = getFreeId();
+        entities.put(mainItemComponent.uniqueId, entity);
 
-		return mainItemComponent.uniqueId;
-	}
+        return mainItemComponent.uniqueId;
+    }
 
-	private int getFreeId() {
-		if(entities == null || entities.size() == 0) return 1;
-		ArrayList<Integer> ids = new ArrayList<Integer>(entities.keySet());
-		Collections.sort(ids);
-		for(int i = 1; i < ids.size(); i++) {
-			if(ids.get(i)-ids.get(i-1) > 1) {
-				return ids.get(i-1)+1;
-			}
-		}
-		return ids.get(ids.size()-1)+1;
-	}
+    private int getFreeId() {
+        if (entities == null || entities.size() == 0) return 1;
+        ArrayList<Integer> ids = new ArrayList<Integer>(entities.keySet());
+        Collections.sort(ids);
+        for (int i = 1; i < ids.size(); i++) {
+            if (ids.get(i) - ids.get(i - 1) > 1) {
+                return ids.get(i - 1) + 1;
+            }
+        }
+        return ids.get(ids.size() - 1) + 1;
+    }
 
-	public Integer updateMap(Entity entity) {
-		ComponentMapper<MainItemComponent> mainItemComponentComponentMapper = ComponentMapper.getFor(MainItemComponent.class);
-		MainItemComponent mainItemComponent = mainItemComponentComponentMapper.get(entity);
-		entities.put(mainItemComponent.uniqueId, entity);
+    public Integer updateMap(Entity entity) {
+        ComponentMapper<MainItemComponent> mainItemComponentComponentMapper = ComponentMapper.getFor(MainItemComponent.class);
+        MainItemComponent mainItemComponent = mainItemComponentComponentMapper.get(entity);
+        entities.put(mainItemComponent.uniqueId, entity);
 
-		return mainItemComponent.uniqueId;
-	}
+        return mainItemComponent.uniqueId;
+    }
 
-	public void initAllChildren(Engine engine, Entity entity, CompositeVO vo) {
-		for (int i = 0; i < vo.sImages.size(); i++) {
-			Entity child = createEntity(entity, vo.sImages.get(i));
-			engine.addEntity(child);
-		}
+    public void initAllChildren(Engine engine, Entity entity, CompositeVO vo) {
+        for (int i = 0; i < vo.sImages.size(); i++) {
+            Entity child = createEntity(entity, vo.sImages.get(i));
+            engine.addEntity(child);
+        }
 
-		for (int i = 0; i < vo.sImage9patchs.size(); i++) {
-			Entity child = createEntity(entity, vo.sImage9patchs.get(i));
-			engine.addEntity(child);
-		}
+        for (int i = 0; i < vo.sImage9patchs.size(); i++) {
+            Entity child = createEntity(entity, vo.sImage9patchs.get(i));
+            engine.addEntity(child);
+        }
 
-		for (int i = 0; i < vo.sLabels.size(); i++) {
-			Entity child = createEntity(entity, vo.sLabels.get(i));
-			engine.addEntity(child);
-		}
+        for (int i = 0; i < vo.sLabels.size(); i++) {
+            Entity child = createEntity(entity, vo.sLabels.get(i));
+            engine.addEntity(child);
+        }
 
-		for (int i = 0; i < vo.sParticleEffects.size(); i++) {
-			Entity child = createEntity(entity, vo.sParticleEffects.get(i));
-			engine.addEntity(child);
-		}
+        for (int i = 0; i < vo.sParticleEffects.size(); i++) {
+            Entity child = createEntity(entity, vo.sParticleEffects.get(i));
+            engine.addEntity(child);
+        }
 
-		for (int i = 0; i < vo.sLights.size(); i++) {
-			Entity child = createEntity(entity, vo.sLights.get(i));
-			engine.addEntity(child);
-		}
+        for (int i = 0; i < vo.sLights.size(); i++) {
+            Entity child = createEntity(entity, vo.sLights.get(i));
+            engine.addEntity(child);
+        }
 
-		for (int i = 0; i < vo.sSpineAnimations.size(); i++) {
-			Entity child = createEntity(entity, vo.sSpineAnimations.get(i));
-			engine.addEntity(child);
-		}
+        for (int i = 0; i < vo.sSpineAnimations.size(); i++) {
+            Entity child = createEntity(entity, vo.sSpineAnimations.get(i));
+            engine.addEntity(child);
+        }
 
-		for (int i = 0; i < vo.sSpriteAnimations.size(); i++) {
-			Entity child = createEntity(entity, vo.sSpriteAnimations.get(i));
-			engine.addEntity(child);
-		}
+        for (int i = 0; i < vo.sSpriteAnimations.size(); i++) {
+            Entity child = createEntity(entity, vo.sSpriteAnimations.get(i));
+            engine.addEntity(child);
+        }
 
-		for (int i = 0; i < vo.sSpriterAnimations.size(); i++) {
-			Entity child = createEntity(entity, vo.sSpriterAnimations.get(i));
-			engine.addEntity(child);
-		}
+        for (int i = 0; i < vo.sSpriterAnimations.size(); i++) {
+            Entity child = createEntity(entity, vo.sSpriterAnimations.get(i));
+            engine.addEntity(child);
+        }
 
-		for (int i = 0; i < vo.sColorPrimitives.size(); i++) {
-			Entity child = createEntity(entity, vo.sColorPrimitives.get(i));
-			engine.addEntity(child);
-		}
+        for (int i = 0; i < vo.sColorPrimitives.size(); i++) {
+            Entity child = createEntity(entity, vo.sColorPrimitives.get(i));
+            engine.addEntity(child);
+        }
 
-		for (int i = 0; i < vo.sComposites.size(); i++) {
-			Entity child = createEntity(entity, vo.sComposites.get(i));
-			engine.addEntity(child);
-			initAllChildren(engine, child, vo.sComposites.get(i).composite);
-		}
-	}
+        for (int i = 0; i < vo.sComposites.size(); i++) {
+            Entity child = createEntity(entity, vo.sComposites.get(i));
+            engine.addEntity(child);
+            initAllChildren(engine, child, vo.sComposites.get(i).composite);
+        }
+    }
 
-	public Entity getEntityByUniqueId(Integer id) {
-		return entities.get(id);
-	}
+    public Entity getEntityByUniqueId(Integer id) {
+        return entities.get(id);
+    }
 
 
-	public void clean() {
-		entities.clear();
-	}
+    public void clean() {
+        entities.clear();
+    }
 }

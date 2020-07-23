@@ -1,9 +1,8 @@
 package games.rednblack.editor.renderer.components;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
-public class ShaderComponent implements Component {
+public class ShaderComponent implements BaseComponent {
 	public String shaderName;
 	private ShaderProgram shaderProgram = null;
 
@@ -19,5 +18,10 @@ public class ShaderComponent implements Component {
 	public void clear() {
 		shaderName = null;
 		shaderProgram = null;
+	}
+
+	@Override
+	public void reset() {
+		clear();
 	}
 }
