@@ -32,8 +32,6 @@ public class LightBodyComponent implements RemovableComponent {
 
     @Override
     public void reset() {
-        onRemove();
-
         color[0] = 1f;
         color[1] = 1f;
         color[2] = 1f;
@@ -49,5 +47,7 @@ public class LightBodyComponent implements RemovableComponent {
         isActive = true;
 
         needToRefreshLight = false;
+
+        lightObject = null;
     }
 }
