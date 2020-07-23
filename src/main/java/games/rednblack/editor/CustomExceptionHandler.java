@@ -19,9 +19,7 @@
 package games.rednblack.editor;
 
 import java.awt.EventQueue;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -30,6 +28,7 @@ import java.util.HashMap;
 
 import javax.swing.JOptionPane;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import com.badlogic.gdx.Gdx;
@@ -44,29 +43,33 @@ import games.rednblack.editor.utils.AppConfig;
 public class CustomExceptionHandler implements UncaughtExceptionHandler {
 
     //private UncaughtExceptionHandler defaultUEH;
-    private final static String sendURL = "https://hyperlap.rednblack.games/error_report";
+    private final static String sendURL = "https://hyperlap2d.rednblack.games/error_report";
 
     /* 
      * if any of the parameters is null, the respective functionality 
      * will not be used 
      */
     public CustomExceptionHandler() {
-        //this.defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
+    }
+
+    @Override
+    public void uncaughtException(Thread t, Throwable e) {
+        final Writer result = new StringWriter();
+        final PrintWriter printWriter = new PrintWriter(result);
+        e.printStackTrace(printWriter);
+        String stacktrace = result.toString();
+        writeToFile(stacktrace);
+        printWriter.close();
+
+        //sendError(stacktrace);
+
+        showErrorDialog();
     }
 
     public static void showErrorDialog() {
-        new Thread(new Runnable() {
-            public void run() {
-                EventQueue.invokeLater(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        JOptionPane.showMessageDialog(null, "HyperLap2D just crashed, see stacktrace in hyperlog.txt file", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-
-                });
-            }
-        }).start();
+        new Thread(() -> EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(null,
+                "HyperLap2D just crashed, see stacktrace in java-hyperlog.txt file", "Oops! Something went wrong",
+                JOptionPane.ERROR_MESSAGE))).start();
     }
 
     public static void sendError(String stacktrace) {
@@ -95,30 +98,11 @@ public class CustomExceptionHandler implements UncaughtExceptionHandler {
 
     }
 
-    public void uncaughtException(Thread t, Throwable e) {
-        final Writer result = new StringWriter();
-        final PrintWriter printWriter = new PrintWriter(result);
-        e.printStackTrace(printWriter);
-        String stacktrace = result.toString();
-        String filename = "hyperlog.txt";
-        writeToFile(stacktrace, filename);
-        printWriter.close();
-
-        sendError(stacktrace);
-
-        showErrorDialog();
-        //defaultUEH.uncaughtException(t, e);
-    }
-
-    private void writeToFile(String stacktrace, String filename) {
+    private void writeToFile(String stacktrace) {
         try {
-            //String localPath = DataManager.getMyDocumentsLocation();
-            String localPath = "";//DataManager.getInstance().getRootPath();
-            System.out.println(localPath + File.separator + filename);
-            BufferedWriter bos = new BufferedWriter(new FileWriter(localPath + File.separator + filename));
-            bos.write(stacktrace);
-            bos.flush();
-            bos.close();
+            File localPath = Gdx.files.internal("crash/java-hyperlog.txt").file();
+            System.out.println(localPath.getAbsolutePath());
+            FileUtils.writeStringToFile(localPath, stacktrace);
         } catch (Exception e) {
             e.printStackTrace();
         }
