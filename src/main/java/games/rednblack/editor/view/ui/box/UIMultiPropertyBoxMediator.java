@@ -71,8 +71,9 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
     private void initMap() {
         classToMediatorMap = new HashMap<>();
 
-        classToMediatorMap.put(Entity.class.getName(), new ArrayList<>());
-        classToMediatorMap.get(Entity.class.getName()).add(UIBasicItemPropertiesMediator.NAME);
+        //TODO this is very bad, but PooledEngine$PooledEntity is private :(
+        classToMediatorMap.put("com.badlogic.ashley.core.PooledEngine$PooledEntity", new ArrayList<>());
+        classToMediatorMap.get("com.badlogic.ashley.core.PooledEngine$PooledEntity").add(UIBasicItemPropertiesMediator.NAME);
 
         classToMediatorMap.put(SceneVO.class.getName(), new ArrayList<>());
         classToMediatorMap.get(SceneVO.class.getName()).add(UIScenePropertiesMediator.NAME);
@@ -81,8 +82,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         classToMediatorMap.get(TextTool.class.getName()).add(UITextToolPropertiesMediator.NAME);
     }
 
-    private void initEntityProperties( ArrayList<String> mediatorNames, Entity entity) {
-
+    private void initEntityProperties(ArrayList<String> mediatorNames, Entity entity) {
         int entityType = EntityUtils.getType(entity);
 
         if(entityType == EntityFactory.IMAGE_TYPE) {
