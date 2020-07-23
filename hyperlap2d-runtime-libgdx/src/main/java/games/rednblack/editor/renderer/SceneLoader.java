@@ -120,55 +120,6 @@ public class SceneLoader {
 		}
 	}
 
-
-	public SceneVO getSceneVO() {
-		return sceneVO;
-	}
-
-	public SceneVO loadScene(String sceneName, Viewport viewport, boolean customLight) {
-
-		// this has to be done differently.
-		engine.removeAllEntities();
-		entityFactory.clean();
-
-		pixelsPerWU = rm.getProjectVO().pixelToWorld;
-
-		sceneVO = rm.getSceneVO(sceneName);
-        world.setGravity(new Vector2(sceneVO.physicsPropertiesVO.gravityX, sceneVO.physicsPropertiesVO.gravityY));
-        PhysicsSystem physicsSystem = engine.getSystem(PhysicsSystem.class);
-        if (physicsSystem != null)
-        	physicsSystem.setPhysicsOn(sceneVO.physicsPropertiesVO.enabled);
-
-		if(sceneVO.composite == null) {
-			sceneVO.composite = new CompositeVO();
-		}
-		rootEntity = entityFactory.createRootEntity(sceneVO.composite, viewport);
-		engine.addEntity(rootEntity);
-
-		if(sceneVO.composite != null) {
-			entityFactory.initAllChildren(engine, rootEntity, sceneVO.composite);
-		}
-        if (!customLight) {
-            setAmbientInfo(sceneVO);
-        }
-
-		return sceneVO;
-	}
-
-    public SceneVO loadScene(String sceneName, Viewport viewport) {
-      return loadScene(sceneName, viewport, false);
-    }
-
-	public SceneVO loadScene(String sceneName) {
-		return loadScene(sceneName, false);
-	}
-
-    public SceneVO loadScene(String sceneName, boolean customLight) {
-        ProjectInfoVO projectVO = rm.getProjectVO();
-        Viewport viewport = new ScalingViewport(Scaling.stretch, (float)projectVO.originalResolution.width/ pixelsPerWU, (float)projectVO.originalResolution.height/ pixelsPerWU, new OrthographicCamera());
-        return loadScene(sceneName, viewport, customLight);
-    }
-
 	public void injectExternalItemType(IExternalItemType itemType) {
 		itemType.injectDependencies(engine, rayHandler, world, rm);
 		itemType.injectMappers();
@@ -284,6 +235,55 @@ public class SceneLoader {
 				}
 			}
 		});
+	}
+
+	public SceneVO loadScene(String sceneName, Viewport viewport) {
+		return loadScene(sceneName, viewport, false);
+	}
+
+	public SceneVO loadScene(String sceneName) {
+		return loadScene(sceneName, false);
+	}
+
+	public SceneVO loadScene(String sceneName, boolean customLight) {
+		ProjectInfoVO projectVO = rm.getProjectVO();
+		Viewport viewport = new ScalingViewport(Scaling.stretch, (float)projectVO.originalResolution.width/ pixelsPerWU, (float)projectVO.originalResolution.height/ pixelsPerWU, new OrthographicCamera());
+		return loadScene(sceneName, viewport, customLight);
+	}
+
+	public SceneVO loadScene(String sceneName, Viewport viewport, boolean customLight) {
+
+		// this has to be done differently.
+		engine.removeAllEntities();
+		entityFactory.clean();
+		engine.clearPools();
+
+		pixelsPerWU = rm.getProjectVO().pixelToWorld;
+
+		sceneVO = rm.getSceneVO(sceneName);
+		world.setGravity(new Vector2(sceneVO.physicsPropertiesVO.gravityX, sceneVO.physicsPropertiesVO.gravityY));
+		PhysicsSystem physicsSystem = engine.getSystem(PhysicsSystem.class);
+		if (physicsSystem != null)
+			physicsSystem.setPhysicsOn(sceneVO.physicsPropertiesVO.enabled);
+
+		if(sceneVO.composite == null) {
+			sceneVO.composite = new CompositeVO();
+		}
+		rootEntity = entityFactory.createRootEntity(sceneVO.composite, viewport);
+		engine.addEntity(rootEntity);
+
+		if(sceneVO.composite != null) {
+			entityFactory.initAllChildren(engine, rootEntity, sceneVO.composite);
+		}
+		if (!customLight) {
+			setAmbientInfo(sceneVO);
+		}
+
+		return sceneVO;
+	}
+
+	public SceneVO getSceneVO() {
+		return sceneVO;
 	}
 
 	public Entity loadFromLibrary(String libraryName) {
