@@ -254,7 +254,8 @@ public class SceneLoader {
 
 				Entity parentEntity = parentComponent.parentEntity;
 				NodeComponent parentNodeComponent = ComponentRetriever.get(parentEntity, NodeComponent.class);
-				parentNodeComponent.removeChild(entity);
+				if (parentNodeComponent != null)
+					parentNodeComponent.removeChild(entity);
 
 				// check if composite and remove all children
 				NodeComponent nodeComponent = ComponentRetriever.get(entity, NodeComponent.class);
