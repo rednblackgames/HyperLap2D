@@ -315,7 +315,11 @@ public class Sandbox {
     public Entity getRootEntity(){
     	return sceneControl.getRootEntity();
     }
-    
+
+    public void overrideAmbientLightInComposite() {
+        SceneVO sceneVO = sceneControl.getCurrentSceneVO();
+        sceneLoader.setAmbientInfo(sceneVO, !currentViewingEntity.equals(getRootEntity()));
+    }
     
     //Global Listeners part
     

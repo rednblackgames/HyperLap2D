@@ -69,6 +69,8 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
 
         facade.sendNotification(DONE, enteringInto);
         facade.sendNotification(MsgAPI.EMPTY_SPACE_CLICKED);
+
+        sandbox.overrideAmbientLightInComposite();
     }
 
     @Override
@@ -77,8 +79,12 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
         Entity currEntity = sandbox.getCurrentViewingEntity();
 
         ViewPortComponent viewPortComponent = ComponentRetriever.get(currEntity, ViewPortComponent.class);
+        Viewport currViewport = viewPortComponent.viewPort;
         currEntity.remove(ViewPortComponent.class);
-        oldEntity.add(viewPortComponent);
+
+        ViewPortComponent newViewPortComponent = sandbox.getEngine().createComponent(ViewPortComponent.class);
+        newViewPortComponent.viewPort = currViewport;
+        oldEntity.add(newViewPortComponent);
         sandbox.setCurrentViewingEntity(oldEntity);
 
         facade.sendNotification(DONE, previousViewEntityId);
@@ -91,5 +97,7 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
         if(wasPrevSelected) {
             sandbox.getSelector().setSelection(EntityUtils.getByUniqueId(enteringInto), true);
         }
+
+        sandbox.overrideAmbientLightInComposite();
     }
 }

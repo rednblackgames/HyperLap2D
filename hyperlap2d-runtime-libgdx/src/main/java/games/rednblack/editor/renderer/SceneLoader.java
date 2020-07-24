@@ -324,12 +324,17 @@ public class SceneLoader {
 	 * @param vo
 	 *            - Scene data file to invalidate
 	 */
+
 	public void setAmbientInfo(SceneVO vo) {
+		setAmbientInfo(vo, false);
+	}
+
+	public void setAmbientInfo(SceneVO vo, boolean override) {
 		if (sceneDirectionalLight != null) {
 			sceneDirectionalLight.remove();
 			sceneDirectionalLight = null;
 		}
-        if(!vo.lightsPropertiesVO.enabled) {
+        if(override || !vo.lightsPropertiesVO.enabled) {
 			RayHandler.useDiffuseLight(true);
             rayHandler.setAmbientLight(1f, 1f, 1f, 1f);
             return;
