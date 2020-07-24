@@ -75,6 +75,4 @@ public class UIStageMediator extends SimpleMediator<UIStage> {
                 break;
         }
     }
-
-
 }

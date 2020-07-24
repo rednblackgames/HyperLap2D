@@ -20,14 +20,15 @@ package games.rednblack.editor.view.stage;
 
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kotcrab.vis.ui.util.ToastManager;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.RulersUIMediator;
 import games.rednblack.editor.view.ui.UIBottomMenuBar;
 import games.rednblack.editor.view.ui.UIMainTable;
-import games.rednblack.editor.renderer.data.CompositeItemVO;
 
 public class UIStage extends Stage {
 
@@ -35,6 +36,7 @@ public class UIStage extends Stage {
     public Group dummyTarget;
     public UIMainTable uiMainTable;
     public Group contextMenuContainer;
+    private ToastManager toastManager;
 
 	public Group midUI;
 
@@ -80,6 +82,13 @@ public class UIStage extends Stage {
 		addActor(mainBottomTable);
 
         setListeners();
+
+        toastManager = new ToastManager(this);
+        toastManager.setAlignment(Align.bottomRight);
+    }
+
+    public ToastManager getToastManager() {
+        return toastManager;
     }
 
     public void resize(int width, int height) {
@@ -88,10 +97,6 @@ public class UIStage extends Stage {
 
     public void setKeyboardFocus() {
         setKeyboardFocus(dummyTarget);
-    }
-
-    public void loadScene(CompositeItemVO scene) {
-        Sandbox.getInstance().initSceneView(scene);
     }
 
     public void setListeners() {

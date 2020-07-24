@@ -79,7 +79,7 @@ public class UIResolutionBoxMediator extends SimpleMediator<UIResolutionBox> {
                 Vector3 cameraPos = new Vector3(sandbox.getCamera().position);
                 String name = sandbox.sceneControl.getCurrentSceneVO().sceneName;
                 projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath(), resolutionEntryVO.name);
-                sandbox.loadCurrentProject(name);
+                sandbox.loadScene(name);
                 sandbox.setZoomPercent(zoom);
                 sandbox.getCamera().position.set(cameraPos);
                 break;
@@ -94,7 +94,7 @@ public class UIResolutionBoxMediator extends SimpleMediator<UIResolutionBox> {
                                 ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
                                 resolutionManager.deleteResolution(resolutionEntryVO);
                                 String sceneName = sandbox.sceneControl.getCurrentSceneVO().sceneName;
-                                sandbox.loadCurrentProject(sceneName);
+                                sandbox.loadScene(sceneName);
                             }
                         }).padBottom(20).pack();
                 break;
@@ -103,7 +103,7 @@ public class UIResolutionBoxMediator extends SimpleMediator<UIResolutionBox> {
                 ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
                 resolutionManager.rePackProjectImagesForAllResolutions();
                 String sceneName = sandbox.sceneControl.getCurrentSceneVO().sceneName;
-                sandbox.loadCurrentProject(sceneName);
+                sandbox.loadScene(sceneName);
                 break;
         }
     }

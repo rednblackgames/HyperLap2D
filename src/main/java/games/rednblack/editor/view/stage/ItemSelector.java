@@ -328,7 +328,6 @@ public class ItemSelector {
     }
 
     public void alignSelectionsByX(Entity relativeTo, boolean toHighestX) {
-    	//TODO fix and uncomment
     	if (relativeTo == null) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);
@@ -346,7 +345,6 @@ public class ItemSelector {
     }
 
     public void alignSelectionsByY(Entity relativeTo, boolean toHighestY) {
-    	//TODO fix and uncomment
     	if (relativeTo == null) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);
@@ -364,7 +362,6 @@ public class ItemSelector {
     }
 
     public void alignSelectionsAtLeftEdge(Entity relativeTo) {
-    	//TODO fix and uncomment
         if (relativeTo == null) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);
@@ -384,7 +381,6 @@ public class ItemSelector {
     }
 
     public void alignSelectionsAtRightEdge(Entity relativeTo) {
-    	//TODO fix and uncomment
         if (relativeTo == null) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);
@@ -403,7 +399,6 @@ public class ItemSelector {
     }
 
     public void alignSelectionsAtTopEdge(Entity relativeTo) {
-    	//TODO fix and uncomment
         if (relativeTo == null) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);
@@ -422,7 +417,6 @@ public class ItemSelector {
     }
 
     public void alignSelectionsAtBottomEdge(Entity relativeTo) {
-    	//TODO fix and uncomment
         if (relativeTo == null) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);
@@ -442,7 +436,6 @@ public class ItemSelector {
     }
 
     public void alignSelectionsVerticallyCentered(Entity relativeTo) {
-    	//TODO fix and uncomment
         if (relativeTo == null) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);
@@ -463,7 +456,6 @@ public class ItemSelector {
     }
 
     public void alignSelectionsHorizontallyCentered(Entity relativeTo) {
-    	//TODO fix and uncomment
         if (relativeTo == null) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);

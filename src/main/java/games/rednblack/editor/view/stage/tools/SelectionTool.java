@@ -256,8 +256,6 @@ public class SelectionTool extends SimpleTool {
         }
 
         if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            sandbox.dirty = true;
-
             float newX;
             float newY;
 
@@ -327,18 +325,6 @@ public class SelectionTool extends SimpleTool {
                 facade.sendNotification(MsgAPI.ACTION_RELEASE_SELECTION, items);
             }
         }
-
-        // re-show all selection rectangles as clicking/dragging is finished
-        // TODO: this has to be done via notification
-        //for (SelectionRectangle value : commands.getSelector().getCurrentSelection().values()) {
-        //   value.show();
-        //}
-
-        if (sandbox.dirty) {
-            sandbox.saveSceneCurrentSceneData();
-        }
-
-        sandbox.dirty = false;
 
         // if we were dragging, need to remember new position
         if (isDragging) {

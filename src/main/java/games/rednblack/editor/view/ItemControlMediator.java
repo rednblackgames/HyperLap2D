@@ -39,7 +39,6 @@ public class ItemControlMediator {
         this.sceneControl = sceneControl;
     }
 
-
     public void itemZIndexChange( Set<Entity> currentSelection, boolean isUp) {
         for (Entity item : currentSelection) {
         	zIndexComponent = ComponentRetriever.get(item, ZIndexComponent.class);
@@ -58,12 +57,4 @@ public class ItemControlMediator {
     	transformComponent.x+=x;
     	transformComponent.y+=y;
     }
-
-    public void removeItem(Entity entity) {
-    	//TODO and uncomment
-//        actor.remove();
-//        sceneControl.getCurrentScene().removeItem(item);
-//        item.dispose();
-    }
-
 }

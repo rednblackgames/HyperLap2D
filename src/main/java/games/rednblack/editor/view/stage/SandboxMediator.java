@@ -133,9 +133,6 @@ public class SandboxMediator extends SimpleMediator<Sandbox> {
     }
 
     private void handleSceneLoaded(Notification notification) {
-		//TODO fix and uncomment
-        //viewComponent.addListener(stageListener);
-
         initItemListeners();
 
         setCurrentTool(SelectionTool.NAME);
@@ -386,9 +383,6 @@ public class SandboxMediator extends SimpleMediator<Sandbox> {
             sandbox.getUIStage().setScrollFocus(sandbox.getUIStage().midUI);
             sandbox.setKeyboardFocus();
 
-            // if there was a drop down remove it
-            // TODO: this is job for front UI to figure out
-            //commands.getUIStage().mainDropDown.hide();
 
             switch (button) {
                 case Input.Buttons.MIDDLE:

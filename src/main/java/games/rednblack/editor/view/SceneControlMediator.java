@@ -43,10 +43,6 @@ public class SceneControlMediator {
 	 */
 	public SceneLoader sceneLoader;
 
-	/**
-	 * runtime essentials
-	 */
-	// private Essentials essentials;
 
 	/**
 	 * current scene tools
@@ -65,7 +61,6 @@ public class SceneControlMediator {
 
 	public SceneControlMediator(SceneLoader sceneLoader) {
 		this.sceneLoader = sceneLoader;
-		// this.essentials = essentials;
 		facade = HyperLap2DFacade.getInstance();
 		projectManager = facade.retrieveProxy(ProjectManager.NAME);
 	}
@@ -83,11 +78,6 @@ public class SceneControlMediator {
 		viewport.setUnitsPerPixel(1f/resourceManager.getProjectVO().pixelToWorld);
 
 		currentSceneVo = sceneLoader.loadScene(sceneName, viewport);
-		// TODO: this is now in sceneLoaader but probably will be changed
-		// essentials.world = new World(new
-		// Vector2(currentSceneVo.physicsPropertiesVO.gravityX,
-		// currentSceneVo.physicsPropertiesVO.gravityY), true);
-		// essentials.rayHandler.setWorld(essentials.world);
 
 		rootSceneVO = new CompositeItemVO(currentSceneVo.composite);
 	}
@@ -111,9 +101,4 @@ public class SceneControlMediator {
 	public Entity getRootEntity() {
 		return sceneLoader.rootEntity;
 	}
-
-//	public CompositeItem getCompositeElement(CompositeItemVO vo) {
-//		return sceneLoader.getCompositeElement(vo);
-//	}
-
 }

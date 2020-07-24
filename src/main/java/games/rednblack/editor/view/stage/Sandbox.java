@@ -71,16 +71,12 @@ public class Sandbox {
 
     private static Sandbox instance = null;
 
-
     public SceneControlMediator sceneControl;
     public ItemControlMediator itemControl;
 
     private final HashMap<String, Object> localClipboard = new HashMap<>();
 
     private Entity currentViewingEntity;
-
-    /** This part contains legacy params that need to be removed one by one. */
-    public boolean dirty = false;
 
     public String currentLoadedSceneFileName;
     private int gridSize = 1; // pixels
@@ -96,8 +92,6 @@ public class Sandbox {
 
     private SceneLoader sceneLoader;
 	private Array<InputListener> listeners = new Array<>(1);
-    private ToastManager toastManager;
-
 
     private Sandbox() {
         init();
@@ -111,7 +105,6 @@ public class Sandbox {
         if (instance == null) {
             instance = new Sandbox();
         }
-
         return instance;
     }
 
@@ -139,9 +132,6 @@ public class Sandbox {
         itemControl = new ItemControlMediator(sceneControl);
 
         selector = new ItemSelector(this);
-
-        toastManager = new ToastManager(getUIStage());
-        toastManager.setAlignment(Align.bottomRight);
     }
     
     public void initView() {
@@ -152,7 +142,6 @@ public class Sandbox {
         uiStage.midUI.addActor(selectionRec);
     }
 
-
     public void setKeyboardFocus() {
         uiStage.setKeyboardFocus(uiStage.midUI);
     }
@@ -160,13 +149,12 @@ public class Sandbox {
     /**
      * Getters *
      */
-
     public UIStage getUIStage() {
         return uiStage;
     }
 
     public ToastManager getToastManager() {
-        return toastManager;
+        return uiStage.getToastManager();
     }
 
     public SceneControlMediator getSceneControl() {
@@ -177,35 +165,17 @@ public class Sandbox {
         return sceneLoader.getEngine();
     }
 
-
-    /**
-     * TODO: loading fonts this way is a bit outdated and needs to change
-     *
-     * @param sceneName
-     */
-    public void initData(String sceneName) {
-        sceneControl.initScene(sceneName);
-    }
-
-    public void loadCurrentProject(String name) {
-    	//TODO fix and uncomment
-        //sceneControl.getEssentials().rm = resourceManager;
-        loadScene(name);
-    }
-
     public void loadCurrentProject() {
         ProjectVO projectVO = projectManager.getCurrentProjectVO();
-        loadCurrentProject(projectVO.lastOpenScene.isEmpty() ? "MainScene" : projectVO.lastOpenScene);
+        loadScene(projectVO.lastOpenScene.isEmpty() ? "MainScene" : projectVO.lastOpenScene);
     }
 
     public void loadScene(String sceneName) {
         currentLoadedSceneFileName = sceneName;
 
-        initData(sceneName);
+        sceneControl.initScene(sceneName);
 
         initView();
-
-        initSceneView(sceneControl.getRootSceneVO());
 
         ProjectVO projectVO = projectManager.getCurrentProjectVO();
         projectVO.lastOpenScene = sceneName;
@@ -230,28 +200,6 @@ public class Sandbox {
 
         CommandManager commandManager = facade.retrieveProxy(CommandManager.NAME);
         commandManager.initHistory();
-    }
-
-    public void initSceneView(CompositeItemVO compositeItemVO) {
-    	//TODO fix and uncomment
-        //initSceneView(sceneControl.initSceneView(compositeItemVO));
-    }
-
-    public void initSceneView(Entity composite) {
-    	//TODO fix and uncomment
-//        selector.clearSelections();
-//        sandboxStage.mainBox.clear();
-//        sceneControl.initSceneView(composite, true/*uiStage.getCompositePanel().isRootScene()*/);
-////        if (uiStage.getCompositePanel().isRootScene()) {
-////            uiStage.getCompositePanel().updateRootScene(sceneControl.getRootSceneVO());
-////        }
-//
-//        sandboxStage.mainBox.addActor(sceneControl.getCurrentScene());
-//        sceneControl.getCurrentScene().setX(0);
-//        sceneControl.getCurrentScene().setY(0);
-//
-//        //uiStage.getLayerPanel().initContent();
-//        forceContinuousParticles(composite);
     }
 
     /**
@@ -290,15 +238,6 @@ public class Sandbox {
     }
 
     /**
-     * Initializes current scene on screen from a tools object.
-     *
-     * @param vo CompositeItemVO tools
-     */
-    public void reconstructFromSceneVo(CompositeItemVO vo) {
-        initSceneView(vo);
-    }
-
-    /**
      * TODO: what does this do? seems to be saving as checkpoint of Flow? it so it should be renamed
      */
     public void saveSceneCurrentSceneData() {
@@ -309,14 +248,6 @@ public class Sandbox {
 
     public ItemSelector getSelector() {
         return selector;
-    }
-
-    /**
-     * @deprecated
-     * @return
-     */
-    public boolean isComponentSkinAvailable() {
-        return true;
     }
 
     public Entity getCurrentScene() {
@@ -392,7 +323,6 @@ public class Sandbox {
 		if (!listeners.contains(listener, true)) {
 			listeners.add(listener);
 		}
-		
 	}
 	
 	public void removeListener(InputListener listener){
