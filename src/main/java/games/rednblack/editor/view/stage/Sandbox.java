@@ -352,8 +352,7 @@ public class Sandbox {
 
     public ViewPortComponent getViewportComponent() {
         if(getCurrentViewingEntity() == null) return null;
-        ViewPortComponent viewPortComponent = ComponentRetriever.get(getCurrentViewingEntity(), ViewPortComponent.class);
-        return viewPortComponent;
+        return ComponentRetriever.get(getCurrentViewingEntity(), ViewPortComponent.class);
     }
 
     public Viewport getViewport() {

@@ -195,7 +195,7 @@ public class EntityFactory {
 //		CompositeTransformComponent compositeTransform = new CompositeTransformComponent();
         TransformComponent transform = engine.createComponent(TransformComponent.class);
 
-        ViewPortComponent viewPortComponent = engine.createComponent(ViewPortComponent.class);;
+        ViewPortComponent viewPortComponent = engine.createComponent(ViewPortComponent.class);
         viewPortComponent.viewPort = viewport;
 
         viewPortComponent.viewPort.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);

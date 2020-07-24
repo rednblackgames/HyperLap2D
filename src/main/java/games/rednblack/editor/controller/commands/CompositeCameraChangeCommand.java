@@ -19,6 +19,7 @@
 package games.rednblack.editor.controller.commands;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ViewPortComponent;
@@ -50,8 +51,13 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
         if(previousViewEntityId == null) previousViewEntityId = EntityUtils.getEntityId(oldEntity);
 
         ViewPortComponent viewPortComponent = ComponentRetriever.get(oldEntity, ViewPortComponent.class);
+        Viewport currViewport = viewPortComponent.viewPort;
         oldEntity.remove(ViewPortComponent.class);
-        entity.add(viewPortComponent);
+
+        ViewPortComponent newViewPortComponent = sandbox.getEngine().createComponent(ViewPortComponent.class);
+        newViewPortComponent.viewPort = currViewport;
+        entity.add(newViewPortComponent);
+
         sandbox.setCurrentViewingEntity(entity);
 
         sandbox.getSelector().clearSelections();
