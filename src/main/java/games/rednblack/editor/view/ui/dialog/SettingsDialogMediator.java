@@ -7,6 +7,7 @@ import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
+import games.rednblack.editor.view.ui.settings.GeneralSettings;
 import games.rednblack.editor.view.ui.settings.SandboxSettings;
 
 public class SettingsDialogMediator extends SimpleMediator<SettingsDialog> {
@@ -30,6 +31,8 @@ public class SettingsDialogMediator extends SimpleMediator<SettingsDialog> {
     public void onRegister() {
         super.onRegister();
         facade = HyperLap2DFacade.getInstance();
+
+        viewComponent.addSettingsNode(new GeneralSettings());
 
         SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
         SandboxSettings sandboxSettings = new SandboxSettings();

@@ -6,15 +6,17 @@ import games.rednblack.editor.view.ui.dialog.SettingsDialog;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
 
-public class SandboxSettings extends SettingsDialog.SettingsNodeValue<EditorConfigVO>{
+public class SandboxSettings extends SettingsDialog.SettingsNodeValue<EditorConfigVO> {
 
     private final VisCheckBox disableAmbientComposite;
 
     public SandboxSettings() {
         super("Sandbox");
 
+        getContentTable().add("Composites").left().row();
+        getContentTable().addSeparator();
         disableAmbientComposite = StandardWidgetsFactory.createCheckBox("Disable Ambient light viewing Composites");
-        getContentTable().add(disableAmbientComposite).row();
+        getContentTable().add(disableAmbientComposite).left().padTop(5).padLeft(8).row();
     }
 
     @Override

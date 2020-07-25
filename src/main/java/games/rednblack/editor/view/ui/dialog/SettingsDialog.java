@@ -143,7 +143,7 @@ public class SettingsDialog extends H2DDialog {
 
         public SettingsNodeValue(String name) {
             this.name = name;
-            contentTable.top();
+            contentTable.top().left();
             facade = HyperLap2DFacade.getInstance();
         }
 

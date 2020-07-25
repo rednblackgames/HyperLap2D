@@ -38,22 +38,10 @@ import games.rednblack.editor.view.ui.widget.components.TintButton;
 
 /**
  * Creates standard widgets like labels or text fields with provided standard HyperLap2D specific visual style.
- * Singleton helper class
  */
 public class StandardWidgetsFactory {
 
-    private static StandardWidgetsFactory instance;
-
     private StandardWidgetsFactory() {
-
-    }
-
-    public static StandardWidgetsFactory getInstance() {
-        if(instance == null) {
-            instance = new StandardWidgetsFactory();
-        }
-
-        return instance;
     }
 
     public static VisLabel createLabel(String text, int alignment) {
@@ -66,7 +54,6 @@ public class StandardWidgetsFactory {
     public static VisLabel createLabel(String text) {
         return createLabel(text, Align.right);
     }
-
 
     public static VisTextField createTextField() {
         return createTextField("default");

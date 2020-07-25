@@ -65,7 +65,7 @@ public class InputFileWidget extends VisTable {
 
     private void initWidget() {
         textField = StandardWidgetsFactory.createTextField("light");
-        textFieldCell = add(textField).fillX().padRight(8).height(21);
+        textFieldCell = add(textField).growX().fillX().padRight(8).height(21);
         browsBtn = new VisTextButton("Browse");
         add(browsBtn);
         addListener(new InputFileWidgetClickListener());
