@@ -20,14 +20,12 @@ public class FileMenu extends H2DMenu {
     public static final String RECENT_PROJECTS = HyperLap2DMenuBar.prefix + ".RECENT_PROJECTS";
     public static final String CLEAR_RECENTS = HyperLap2DMenuBar.prefix + ".CLEAR_RECENTS";
     public static final String EXPORT = HyperLap2DMenuBar.prefix + ".EXPORT";
-    public static final String EXPORT_SETTINGS = HyperLap2DMenuBar.prefix + ".EXPORT_SETTINGS";
     public static final String SETTINGS = HyperLap2DMenuBar.prefix + ".SETTINGS";
     public static final String EXIT = HyperLap2DMenuBar.prefix + ".EXIT";
 
     private final MenuItem saveProject;
     private final MenuItem importToLibrary;
     private final MenuItem export;
-    private final MenuItem exportSettings;
 
     private final PopupMenu recentProjectsPopupMenu;
     private final Array<MenuItem> recentProjectsMenuItems;
@@ -42,10 +40,8 @@ public class FileMenu extends H2DMenu {
         addSeparator();
         importToLibrary = new MenuItem("Import Resources", new MenuItemListener(IMPORT_TO_LIBRARY, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.I);
         export = new MenuItem("Export", new MenuItemListener(EXPORT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.E);
-        exportSettings = new MenuItem("Export Settings", new MenuItemListener(EXPORT_SETTINGS, null, FILE_MENU));
         addItem(importToLibrary);
         addItem(export);
-        addItem(exportSettings);
         addItem(new MenuItem("Settings", new MenuItemListener(SETTINGS, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.ALT_LEFT, Input.Keys.S));
         //
         addSeparator();
@@ -106,6 +102,5 @@ public class FileMenu extends H2DMenu {
         saveProject.setDisabled(!open);
         importToLibrary.setDisabled(!open);
         export.setDisabled(!open);
-        exportSettings.setDisabled(!open);
     }
 }

@@ -64,9 +64,7 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
                 FileMenu.NEW_PROJECT,
                 FileMenu.OPEN_PROJECT,
                 FileMenu.SAVE_PROJECT,
-                FileMenu.IMPORT_TO_LIBRARY,
                 FileMenu.EXPORT,
-                FileMenu.EXPORT_SETTINGS,
                 FileMenu.RECENT_PROJECTS,
                 FileMenu.CLEAR_RECENTS,
                 FileMenu.EXIT,
@@ -151,9 +149,6 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
                 SceneVO vo = sandbox.sceneVoFromItems();
                 projectManager.saveCurrentProject(vo);
                 break;
-            case FileMenu.IMPORT_TO_LIBRARY:
-                //showDialog("showImportDialog");
-                break;
             case FileMenu.RECENT_PROJECTS:
                 recentProjectItemClicked(notification.getBody());
                 //showDialog("showImportDialog");
@@ -163,9 +158,6 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
                 break;
             case FileMenu.EXPORT:
                 facade.sendNotification(MsgAPI.ACTION_EXPORT_PROJECT);
-                break;
-            case FileMenu.EXPORT_SETTINGS:
-                //showDialog("showExportDialog");
                 break;
             case FileMenu.EXIT:
                 facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> Gdx.app.exit());

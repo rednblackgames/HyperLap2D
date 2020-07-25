@@ -19,7 +19,8 @@ public class SettingsDialogMediator extends SimpleMediator<SettingsDialog> {
     @Override
     public String[] listNotificationInterests() {
         return new String[]{
-                FileMenu.SETTINGS
+                FileMenu.SETTINGS,
+                SettingsDialog.ADD_SETTINGS
         };
     }
 
@@ -38,6 +39,10 @@ public class SettingsDialogMediator extends SimpleMediator<SettingsDialog> {
         switch (notification.getName()) {
             case FileMenu.SETTINGS:
                 viewComponent.show(uiStage);
+                break;
+            case SettingsDialog.ADD_SETTINGS:
+                SettingsDialog.SettingsNodeValue<?> settings = notification.getBody();
+                viewComponent.addSettingsNode(settings);
                 break;
         }
     }

@@ -36,6 +36,8 @@ import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.utils.ZipUtils;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.view.ui.dialog.SettingsDialog;
+import games.rednblack.editor.view.ui.settings.ProjectExportSettings;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
@@ -84,11 +86,14 @@ public class ProjectManager extends BaseProxy {
         super(NAME);
     }
 
+    private ProjectExportSettings projectExportSettings;
 
     @Override
     public void onRegister() {
         super.onRegister();
         facade = HyperLap2DFacade.getInstance();
+
+        projectExportSettings = new ProjectExportSettings();
     }
 
     @Override
@@ -188,9 +193,9 @@ public class ProjectManager extends BaseProxy {
                 String prjInfoFilePath = projectPath + "/project.dt";
                 FileHandle projectInfoFile = Gdx.files.internal(prjInfoFilePath);
                 String projectInfoContents = FileUtils.readFileToString(projectInfoFile.file());
-                ProjectInfoVO voInfo = json.fromJson(ProjectInfoVO.class, projectInfoContents);
-                currentProjectInfoVO = voInfo;
-
+                currentProjectInfoVO = json.fromJson(ProjectInfoVO.class, projectInfoContents);
+                projectExportSettings.setSettings(vo);
+                facade.sendNotification(SettingsDialog.ADD_SETTINGS, projectExportSettings);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1019,13 +1024,6 @@ public class ProjectManager extends BaseProxy {
 
     public void setExportPaths(String path) {
         currentProjectVO.projectMainExportPath = path;
-    }
-
-    public String getExportPath() {
-        if (currentProjectVO == null || currentProjectVO.projectMainExportPath == null) {
-            return "";
-        }
-        return currentProjectVO.projectMainExportPath;
     }
 
     public void setTexturePackerSizes(int width, int height) {
