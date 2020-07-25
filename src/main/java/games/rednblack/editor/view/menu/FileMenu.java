@@ -33,19 +33,19 @@ public class FileMenu extends H2DMenu {
     public FileMenu() {
         super("File"); //⌘⇧⌥
         saveProject = new MenuItem("Save Project", new MenuItemListener(SAVE_PROJECT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.S);
-        addItem(new MenuItem("New Project", new MenuItemListener(NEW_PROJECT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.N));
-        addItem(new MenuItem("Open Project", new MenuItemListener(OPEN_PROJECT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.O));
+        addItem(new MenuItem("New Project...", new MenuItemListener(NEW_PROJECT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.N));
+        addItem(new MenuItem("Open Project...", new MenuItemListener(OPEN_PROJECT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.O));
         addItem(saveProject);
         //
         addSeparator();
-        importToLibrary = new MenuItem("Import Resources", new MenuItemListener(IMPORT_TO_LIBRARY, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.I);
+        importToLibrary = new MenuItem("Import Resources...", new MenuItemListener(IMPORT_TO_LIBRARY, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.I);
         export = new MenuItem("Export", new MenuItemListener(EXPORT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.E);
         addItem(importToLibrary);
         addItem(export);
-        addItem(new MenuItem("Settings", new MenuItemListener(SETTINGS, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.ALT_LEFT, Input.Keys.S));
+        addItem(new MenuItem("Settings...", new MenuItemListener(SETTINGS, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.ALT_LEFT, Input.Keys.S));
         //
         addSeparator();
-        MenuItem recentProjectsMenuItem = new MenuItem("Recent Projects...");
+        MenuItem recentProjectsMenuItem = new MenuItem("Recent Projects");
         recentProjectsPopupMenu = new PopupMenu();
         recentProjectsMenuItem.setSubMenu(recentProjectsPopupMenu);
         recentProjectsMenuItems = new Array<>();

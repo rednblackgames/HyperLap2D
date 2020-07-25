@@ -3,6 +3,7 @@ package games.rednblack.editor.controller.commands;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.components.RemovableComponent;
+import games.rednblack.editor.utils.runtime.ComponentCloner;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 
@@ -21,7 +22,7 @@ public class RemoveComponentFromItemCommand extends EntityModifyRevertibleComman
         Object[] payload = getNotification().getBody();
         entity = (Entity) payload[0];
         Class<? extends Component> componentClass = (Class<? extends Component>) payload[1];
-        component = entity.getComponent(componentClass);
+        component = ComponentCloner.get(entity.getComponent(componentClass));
     }
 
     @Override

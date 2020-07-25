@@ -24,12 +24,14 @@ public class SettingsDialog extends H2DDialog {
 
         addCloseButton();
         setModal(true);
-        setResizable(true);
         closeOnEscape();
 
         VisTable containerTable = new VisTable();
+        VisScrollPane containerScrollPane = StandardWidgetsFactory.createScrollPane(containerTable);
         settingsTree = new VisTree<>();
-        VisSplitPane splitPane = new VisSplitPane(settingsTree, containerTable, false);
+        VisScrollPane treeScrollPane = StandardWidgetsFactory.createScrollPane(settingsTree);
+
+        VisSplitPane splitPane = new VisSplitPane(treeScrollPane, containerScrollPane, false);
         splitPane.setMinSplitAmount(0.28f);
         splitPane.setMaxSplitAmount(0.35f);
         splitPane.setSplitAmount(0.3f);
@@ -128,7 +130,7 @@ public class SettingsDialog extends H2DDialog {
 
         @Override
         public boolean equals(Object o) {
-            if (! (o instanceof SettingsNode)) {
+            if (!(o instanceof SettingsNode)) {
                 return false;
             }
             return name.equals(((SettingsNode) o).name);

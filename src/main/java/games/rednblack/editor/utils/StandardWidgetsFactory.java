@@ -88,8 +88,7 @@ public class StandardWidgetsFactory {
     }
     
     public static VisValidatableTextField createValidableTextField (InputValidator inputValidator) {
-        VisValidatableTextField visTextField = createValidableTextField("default", inputValidator);
-        return visTextField;
+        return createValidableTextField("default", inputValidator);
     }
 
     public static VisValidatableTextField createValidableTextField (String style, InputValidator inputValidator) {
@@ -204,9 +203,7 @@ public class StandardWidgetsFactory {
 	}
 
 	public static VisTextButton createTextButton(String text, String style) {
-		VisTextButton button = new VisTextButton(text, style);
-		button.addListener(new CursorListener(CursorManager.FINGER));
-		return button;
+        return new VisTextButton(text, style);
 	}
 
     public static VisImageButton createImageButton(String style) {

@@ -13,7 +13,7 @@ public class HelpMenu extends H2DMenu {
 
     public HelpMenu() {
         super("Help");
-        MenuItem docs = new MenuItem("Documentation", new ChangeListener() {
+        MenuItem docs = new MenuItem("Documentation...", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.net.openURI("https://hyperlap2d.rednblack.games/wiki/");

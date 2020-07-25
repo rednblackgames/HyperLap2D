@@ -27,7 +27,6 @@ import com.badlogic.ashley.core.Component;
 
 /**
  * Created by azakhary on 6/3/2015.
- * TODO: not sure if we are going to keep this with reflection, or implement cloning for each component instead
  */
 public class ComponentCloner {
 

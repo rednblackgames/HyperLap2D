@@ -15,7 +15,7 @@ public class SandboxSettings extends SettingsDialog.SettingsNodeValue<EditorConf
 
         getContentTable().add("Composites").left().row();
         getContentTable().addSeparator();
-        disableAmbientComposite = StandardWidgetsFactory.createCheckBox("Disable Ambient light viewing Composites");
+        disableAmbientComposite = StandardWidgetsFactory.createCheckBox("Disable Ambient light when viewing Composites");
         getContentTable().add(disableAmbientComposite).left().padTop(5).padLeft(8).row();
     }
 

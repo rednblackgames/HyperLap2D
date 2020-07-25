@@ -172,7 +172,8 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
     public void showOpenProject() {
         Sandbox sandbox = Sandbox.getInstance();
         //chooser creation
-        FileChooser fileChooser = new HyperLapFileChooser(FileChooser.Mode.OPEN);
+        FileChooser fileChooser = new HyperLapFileChooser("Open HyperLap2D Project", FileChooser.Mode.OPEN);
+
 
         FileTypeFilter typeFilter = new FileTypeFilter(false);
         typeFilter.addRule("HyperLap2D Project (*.h2d)", "h2d");
