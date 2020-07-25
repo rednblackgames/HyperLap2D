@@ -33,14 +33,11 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.util.ToastManager;
-import games.rednblack.editor.proxy.CommandManager;
+import games.rednblack.editor.proxy.*;
 import games.rednblack.editor.renderer.systems.LightSystem;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extention.spine.SpineItemType;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.proxy.ProjectManager;
-import games.rednblack.editor.proxy.ResourceManager;
-import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.components.ViewPortComponent;
 import games.rednblack.editor.renderer.components.additional.ButtonComponent;
@@ -318,7 +315,10 @@ public class Sandbox {
 
     public void overrideAmbientLightInComposite() {
         SceneVO sceneVO = sceneControl.getCurrentSceneVO();
-        sceneLoader.setAmbientInfo(sceneVO, !currentViewingEntity.equals(getRootEntity()));
+
+        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+        boolean override = !currentViewingEntity.equals(getRootEntity()) && settingsManager.editorConfigVO.disableAmbientComposite;
+        sceneLoader.setAmbientInfo(sceneVO, override);
     }
     
     //Global Listeners part

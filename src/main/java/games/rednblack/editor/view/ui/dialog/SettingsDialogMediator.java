@@ -3,9 +3,11 @@ package games.rednblack.editor.view.ui.dialog;
 import com.puremvc.patterns.mediator.SimpleMediator;
 import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
+import games.rednblack.editor.view.ui.settings.SandboxSettings;
 
 public class SettingsDialogMediator extends SimpleMediator<SettingsDialog> {
 
@@ -28,6 +30,12 @@ public class SettingsDialogMediator extends SimpleMediator<SettingsDialog> {
     public void onRegister() {
         super.onRegister();
         facade = HyperLap2DFacade.getInstance();
+
+        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+        SandboxSettings sandboxSettings = new SandboxSettings();
+        sandboxSettings.setSettings(settingsManager.editorConfigVO);
+
+        viewComponent.addSettingsNode(sandboxSettings);
     }
 
     @Override
