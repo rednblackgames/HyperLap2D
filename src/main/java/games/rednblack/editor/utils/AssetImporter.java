@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.ImportDialog;
@@ -61,8 +62,8 @@ public class AssetImporter {
     }
 
     private void initImport(int type, String[] paths, boolean skipRepack) {
-        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
-        projectManager.setLastImportedPath(new FileHandle(paths[0]).parent().path());
+        SettingsManager settingsManager = HyperLap2DFacade.getInstance().retrieveProxy(SettingsManager.NAME);
+        settingsManager.setLastImportedPath(new FileHandle(paths[0]).parent().path());
 
         boolean isMultiple = paths.length > 1 && type != ImportUtils.TYPE_ANIMATION_PNG_SEQUENCE;
 

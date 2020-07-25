@@ -64,6 +64,7 @@ public class BootstrapViewCommand extends SimpleCommand {
         facade.registerMediator(new TagsPanelMediator());
         facade.registerMediator(new EditSpriteAnimationPanelMediator());
         facade.registerMediator(new AboutDialogMediator());
+        facade.registerMediator(new SettingsDialogMediator());
 
         facade.registerMediator(new RulersUIMediator());
         facade.registerMediator(new FollowersUIMediator());

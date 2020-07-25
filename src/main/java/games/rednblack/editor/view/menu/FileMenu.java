@@ -21,6 +21,7 @@ public class FileMenu extends H2DMenu {
     public static final String CLEAR_RECENTS = HyperLap2DMenuBar.prefix + ".CLEAR_RECENTS";
     public static final String EXPORT = HyperLap2DMenuBar.prefix + ".EXPORT";
     public static final String EXPORT_SETTINGS = HyperLap2DMenuBar.prefix + ".EXPORT_SETTINGS";
+    public static final String SETTINGS = HyperLap2DMenuBar.prefix + ".SETTINGS";
     public static final String EXIT = HyperLap2DMenuBar.prefix + ".EXIT";
 
     private final MenuItem saveProject;
@@ -45,6 +46,7 @@ public class FileMenu extends H2DMenu {
         addItem(importToLibrary);
         addItem(export);
         addItem(exportSettings);
+        addItem(new MenuItem("Settings", new MenuItemListener(SETTINGS, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.ALT_LEFT, Input.Keys.S));
         //
         addSeparator();
         MenuItem recentProjectsMenuItem = new MenuItem("Recent Projects...");

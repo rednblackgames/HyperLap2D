@@ -45,7 +45,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     public static final String ITEMS_SELECTED = "games.rednblack.editor.view.ui.box.UIItemsTreeBox." + ".ITEMS_SELECTED";
     private final HyperLap2DFacade facade;
     private final VisTable treeTable;
-    private Tree<UIItemsTreeNode, Integer> tree;
+    private Tree<UIItemsTreeNode, UIItemsTreeValue> tree;
 
     private UIItemsTreeNode rootNode;
     private Set<Entity> lastSelection;

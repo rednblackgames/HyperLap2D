@@ -26,6 +26,7 @@ import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
 import com.puremvc.patterns.mediator.SimpleMediator;
 import com.puremvc.patterns.observer.Notification;
+import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.AssetImporter;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.view.frame.FileDropListener;
@@ -145,9 +146,9 @@ public class ImportDialogMediator extends SimpleMediator<ImportDialog> {
 
         fileChooser.setFileTypeFilter(ImportUtils.getInstance().getFileTypeFilter());
 
-        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        FileHandle importPath = (projectManager.getImportPath() == null || !projectManager.getImportPath().exists()) ?
-                Gdx.files.absolute(System.getProperty("user.home")) : projectManager.getImportPath();
+        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+        FileHandle importPath = (settingsManager.getImportPath() == null || !settingsManager.getImportPath().exists()) ?
+                Gdx.files.absolute(System.getProperty("user.home")) : settingsManager.getImportPath();
         fileChooser.setDirectory(importPath);
 
         fileChooser.setMultiSelectionEnabled(true);

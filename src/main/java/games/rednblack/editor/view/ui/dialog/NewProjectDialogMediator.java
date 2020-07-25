@@ -20,6 +20,7 @@ package games.rednblack.editor.view.ui.dialog;
 
 import com.puremvc.patterns.mediator.SimpleMediator;
 import com.puremvc.patterns.observer.Notification;
+import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -51,8 +52,8 @@ public class NewProjectDialogMediator extends SimpleMediator<NewProjectDialog> {
         super.onRegister();
         facade = HyperLap2DFacade.getInstance();
 
-        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        viewComponent.setDefaultWorkspacePath(projectManager.getWorkspacePath().path());
+        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+        viewComponent.setDefaultWorkspacePath(settingsManager.getWorkspacePath().path());
     }
 
     @Override

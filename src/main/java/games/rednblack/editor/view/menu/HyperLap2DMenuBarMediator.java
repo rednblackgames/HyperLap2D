@@ -22,6 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
+import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.view.ui.widget.ui.HyperLapFileChooser;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
@@ -42,6 +43,7 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
     private static final String TAG = HyperLap2DMenuBarMediator.class.getCanonicalName();
     public static final String NAME = TAG;
     private ProjectManager projectManager;
+    private SettingsManager settingsManager;
 
     public HyperLap2DMenuBarMediator() {
         super(NAME, new HyperLap2DMenuBar());
@@ -52,6 +54,7 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
         super.onRegister();
         facade = HyperLap2DFacade.getInstance();
         projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        settingsManager = facade.retrieveProxy(SettingsManager.NAME);
     }
 
     @Override
@@ -185,8 +188,8 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
 
         fileChooser.setMultiSelectionEnabled(false);
 
-        FileHandle workspacePath = (projectManager.getWorkspacePath() == null || !projectManager.getWorkspacePath().exists()) ?
-                Gdx.files.absolute(System.getProperty("user.home")) : projectManager.getWorkspacePath();
+        FileHandle workspacePath = (settingsManager.getWorkspacePath() == null || !settingsManager.getWorkspacePath().exists()) ?
+                Gdx.files.absolute(System.getProperty("user.home")) : settingsManager.getWorkspacePath();
         fileChooser.setDirectory(workspacePath);
 
         fileChooser.setListener(new FileChooserAdapter() {

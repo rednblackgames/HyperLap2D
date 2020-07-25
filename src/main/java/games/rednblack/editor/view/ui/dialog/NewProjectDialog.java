@@ -36,7 +36,8 @@ import games.rednblack.editor.view.ui.widget.InputFileWidget;
 import java.io.File;
 
 public class NewProjectDialog extends H2DDialog {
-    public static final String CREATE_BTN_CLICKED = "games.rednblack.editor.view.ui.dialog.NewProjectDialog" + ".CREATE_BTN_CLICKED";
+    private static final String prefix = "games.rednblack.editor.view.ui.dialog.NewProjectDialog";
+    public static final String CREATE_BTN_CLICKED = prefix + ".CREATE_BTN_CLICKED";
     private static final String DEFAULT_ORIGIN_WIDTH = "1920";
     private static final String DEFAULT_ORIGIN_HEIGHT = "1200";
     private static final String DEFAULT_PPWU = "1";

@@ -57,8 +57,8 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
 
         fileChooser.setMultiSelectionEnabled(false);
 
-        FileHandle workspacePath = (projectManager.getWorkspacePath() == null || !projectManager.getWorkspacePath().exists()) ?
-                Gdx.files.absolute(System.getProperty("user.home")) : projectManager.getWorkspacePath();
+        FileHandle workspacePath = (settingsManager.getWorkspacePath() == null || !settingsManager.getWorkspacePath().exists()) ?
+                Gdx.files.absolute(System.getProperty("user.home")) : settingsManager.getWorkspacePath();
         fileChooser.setDirectory(workspacePath);
         fileChooser.setDefaultFileName(libraryItemName);
 

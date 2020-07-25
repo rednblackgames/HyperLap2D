@@ -5,6 +5,7 @@ import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 
 import java.util.HashMap;
@@ -21,9 +22,11 @@ public abstract class NonRevertibleCommand extends SandboxCommand {
     protected boolean isCancelled = false;
     protected final HashMap<String, CompositeItemVO> libraryItems;
     protected final ProjectManager projectManager;
+    protected final SettingsManager settingsManager;
 
     public NonRevertibleCommand() {
         this.projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        this.settingsManager = facade.retrieveProxy(SettingsManager.NAME);
         this.libraryItems = projectManager.getCurrentProjectInfoVO().libraryItems;
     }
 

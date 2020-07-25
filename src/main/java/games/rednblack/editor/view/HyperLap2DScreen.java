@@ -160,7 +160,9 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
                     }
                     break;
                 case Input.Keys.S:
-                    if (sandbox.sceneControl.getCurrentSceneVO() != null) {
+                    if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT)) {
+                        facade.sendNotification(FileMenu.SETTINGS, null, FileMenu.FILE_MENU);
+                    } else if (sandbox.sceneControl.getCurrentSceneVO() != null) {
                         SceneVO vo = sandbox.sceneVoFromItems();
                         projectManager.saveCurrentProject(vo);
                     }

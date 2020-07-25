@@ -268,7 +268,7 @@ public class PluginManager extends BaseProxy implements PluginAPI {
 
     @Override
     public EditorConfigVO getEditorConfig() {
-        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        return projectManager.editorConfigVO;
+        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+        return settingsManager.editorConfigVO;
     }
 }

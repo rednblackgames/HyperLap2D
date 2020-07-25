@@ -78,11 +78,6 @@ public class ProjectManager extends BaseProxy {
     public ProjectInfoVO currentProjectInfoVO;
     private String currentProjectPath;
 
-    private String defaultWorkspacePath;
-
-    private String DEFAULT_FOLDER = "HyperLap2D";
-    public EditorConfigVO editorConfigVO;
-
     private String currentWindowTitle = "";
 
     public ProjectManager() {
@@ -94,7 +89,6 @@ public class ProjectManager extends BaseProxy {
     public void onRegister() {
         super.onRegister();
         facade = HyperLap2DFacade.getInstance();
-        initWorkspace();
     }
 
     @Override
@@ -108,17 +102,6 @@ public class ProjectManager extends BaseProxy {
 
     public ProjectInfoVO getCurrentProjectInfoVO() {
         return currentProjectInfoVO;
-    }
-
-    private void initWorkspace() {
-        try {
-            editorConfigVO = getEditorConfig();
-            String myDocPath = HyperLap2DUtils.MY_DOCUMENTS_PATH;
-            defaultWorkspacePath = myDocPath + File.separator + DEFAULT_FOLDER;
-            FileUtils.forceMkdir(new File(defaultWorkspacePath));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void createEmptyProject(String projectPath, int width, int height, int pixelPerWorldUnit) throws IOException {
@@ -165,25 +148,6 @@ public class ProjectManager extends BaseProxy {
         FileUtils.writeStringToFile(new File(projPath + "/project.h2d"), projVo.constructJsonString(), "utf-8");
         FileUtils.writeStringToFile(new File(projPath + "/project.dt"), projInfoVo.constructJsonString(), "utf-8");
 
-    }
-
-    public void setLastOpenedPath(String path) {
-        editorConfigVO.lastOpenedSystemPath = path;
-        saveEditorConfig();
-    }
-
-    public void setLastImportedPath(String path) {
-        editorConfigVO.lastImportedSystemPath = path;
-        saveEditorConfig();
-    }
-
-    public void saveEditorConfig() {
-        try {
-            String configFilePath = getRootPath() + File.separator + "configs" + File.separator +  EditorConfigVO.EDITOR_CONFIG_FILE;
-            FileUtils.writeStringToFile(new File(configFilePath), editorConfigVO.constructJsonString(), "utf-8");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void openProjectAndLoadAllData(String projectPath) {
@@ -1116,7 +1080,8 @@ public class ProjectManager extends BaseProxy {
             openProjectAndLoadAllData(projectPath);
             String workSpacePath = projectPath.substring(0, projectPath.lastIndexOf(projectName));
             if (workSpacePath.length() > 0) {
-                setLastOpenedPath(workSpacePath);
+                SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+                settingsManager.setLastOpenedPath(workSpacePath);
             }
             Sandbox.getInstance().loadCurrentProject();
             facade.sendNotification(PROJECT_OPENED);
@@ -1133,8 +1098,8 @@ public class ProjectManager extends BaseProxy {
         File projectFile = new File(path);
         File projectFolder = projectFile.getParentFile();
         String projectName = projectFolder.getName();
-        editorConfigVO.lastOpenedSystemPath = projectFolder.getParentFile().getPath();
-        saveEditorConfig();
+        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+        settingsManager.setLastOpenedPath(projectFolder.getParentFile().getPath());
 
         // here we load all data
         openProjectAndLoadAllData(projectFolder.getPath());
@@ -1339,20 +1304,6 @@ public class ProjectManager extends BaseProxy {
 
     public String getCurrentProjectPath() {
         return currentProjectPath;
-    }
-
-    public FileHandle getWorkspacePath() {
-        if (!editorConfigVO.lastOpenedSystemPath.isEmpty()) {
-            return new FileHandle(editorConfigVO.lastOpenedSystemPath);
-        }
-        return new FileHandle(defaultWorkspacePath);
-    }
-
-    public FileHandle getImportPath() {
-        if (!editorConfigVO.lastImportedSystemPath.isEmpty()) {
-            return new FileHandle(editorConfigVO.lastImportedSystemPath);
-        }
-        return null;
     }
 
     private boolean deleteSingleImage(String resolutionName, String imageName) {
