@@ -1,16 +1,13 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.ashley.core.Entity;
-import games.rednblack.editor.renderer.components.DimensionsComponent;
-import games.rednblack.editor.renderer.components.PolygonComponent;
+import games.rednblack.editor.controller.commands.component.UpdateImageItemCommand;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
-import games.rednblack.editor.renderer.components.TransformComponent;
+import games.rednblack.editor.renderer.data.SimpleImageVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
+import games.rednblack.h2d.common.MsgAPI;
 
-/**
- * Created by azakhary on 8/2/2015.
- */
 public class UIImageItemPropertiesMediator extends UIItemPropertiesMediator<Entity, UIImageItemProperties> {
     private static final String TAG = UIImageItemPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
@@ -40,27 +37,16 @@ public class UIImageItemPropertiesMediator extends UIItemPropertiesMediator<Enti
 
     @Override
     protected void translateViewToItemData() {
-        if(viewComponent.getRenderMode().equals("REPEAT")) {
-            textureRegionComponent.isRepeat = true;
-        } else {
-            textureRegionComponent.isRepeat = false;
-        }
-        DimensionsComponent dimensionsComponent = ComponentRetriever.get(observableReference, DimensionsComponent.class);
+        SimpleImageVO oldPayloadVo = new SimpleImageVO();
+        oldPayloadVo.loadFromComponent(textureRegionComponent);
 
-        if(viewComponent.getSpriteType().equals("POLYGON")) {
-            textureRegionComponent.isPolygon = true;
-            PolygonComponent polygonComponent = ComponentRetriever.get(observableReference, PolygonComponent.class);
-            TransformComponent transformComponent = ComponentRetriever.get(observableReference, TransformComponent.class);
+        SimpleImageVO payloadVo = new SimpleImageVO();
+        payloadVo.isRepeat = viewComponent.getRenderMode().equals("REPEAT");
+        payloadVo.isPolygon = viewComponent.getSpriteType().equals("POLYGON");
 
-            if (polygonComponent != null && polygonComponent.vertices != null) {
-            	float ppwu = dimensionsComponent.width/textureRegionComponent.region.getRegionWidth();
-                textureRegionComponent.setPolygonSprite(polygonComponent,1f/ppwu, transformComponent.scaleX, transformComponent.scaleY);
-                dimensionsComponent.setPolygon(polygonComponent);
-            }
-        } else {
-            textureRegionComponent.polygonSprite = null;
-            textureRegionComponent.isPolygon = false;
-            dimensionsComponent.polygon = null;
+        if (!oldPayloadVo.equals(payloadVo)) {
+            Object payload = UpdateImageItemCommand.payload(observableReference, payloadVo);
+            facade.sendNotification(MsgAPI.ACTION_UPDATE_IMAGE_ITEM_DATA, payload);
         }
     }
 }

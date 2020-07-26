@@ -1,7 +1,6 @@
 package games.rednblack.editor.renderer.data;
 
 import com.badlogic.ashley.core.Entity;
-import games.rednblack.editor.renderer.components.NinePatchComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 
 public class SimpleImageVO extends MainItemVO {
@@ -23,8 +22,12 @@ public class SimpleImageVO extends MainItemVO {
 		super.loadFromEntity(entity);
 
 		TextureRegionComponent textureRegionComponent = entity.getComponent(TextureRegionComponent.class);
+		loadFromComponent(textureRegionComponent);
+	}
+
+	public void loadFromComponent(TextureRegionComponent textureRegionComponent) {
 		imageName = textureRegionComponent.regionName;
-        isRepeat = textureRegionComponent.isRepeat;
-        isPolygon = textureRegionComponent.isPolygon;
+		isRepeat = textureRegionComponent.isRepeat;
+		isPolygon = textureRegionComponent.isPolygon;
 	}
 }
