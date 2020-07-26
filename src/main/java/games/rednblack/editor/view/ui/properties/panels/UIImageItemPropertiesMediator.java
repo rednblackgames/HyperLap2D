@@ -44,7 +44,7 @@ public class UIImageItemPropertiesMediator extends UIItemPropertiesMediator<Enti
         payloadVo.isRepeat = viewComponent.getRenderMode().equals("REPEAT");
         payloadVo.isPolygon = viewComponent.getSpriteType().equals("POLYGON");
 
-        if (!oldPayloadVo.equals(payloadVo)) {
+        if (oldPayloadVo.isRepeat != payloadVo.isRepeat && oldPayloadVo.isPolygon != payloadVo.isPolygon) {
             Object payload = UpdateImageItemCommand.payload(observableReference, payloadVo);
             facade.sendNotification(MsgAPI.ACTION_UPDATE_IMAGE_ITEM_DATA, payload);
         }

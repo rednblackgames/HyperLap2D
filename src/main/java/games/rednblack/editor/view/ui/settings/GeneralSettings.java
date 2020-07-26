@@ -11,7 +11,7 @@ public class GeneralSettings extends SettingsDialog.SettingsNodeValue<Object> {
     public GeneralSettings() {
         super("General");
 
-        autoSaving = StandardWidgetsFactory.createCheckBox("Save changes automatically");
+        autoSaving = StandardWidgetsFactory.createCheckBox("Save changes automatically [EXPERIMENTAL]");
         getContentTable().add(autoSaving).row();
     }
 

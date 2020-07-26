@@ -20,6 +20,8 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import games.rednblack.editor.controller.commands.component.UpdatePhysicsDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdateShaderDataCommand;
 import games.rednblack.h2d.common.MsgAPI;
 import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -70,8 +72,6 @@ public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<Entity,
 
     @Override
     protected void translateObservableDataToView(Entity item) {
-        ResourceManager resourceManager = HyperLap2DFacade.getInstance().retrieveProxy(ResourceManager.NAME);
-
         ShaderComponent shaderComponent = ComponentRetriever.get(item, ShaderComponent.class);
         String currShaderName = shaderComponent.shaderName;
         viewComponent.setSelected(currShaderName);
@@ -79,24 +79,11 @@ public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<Entity,
 
     @Override
     protected void translateViewToItemData() {
-        ResourceManager resourceManager = HyperLap2DFacade.getInstance().retrieveProxy(ResourceManager.NAME);
         ShaderComponent shaderComponent = ComponentRetriever.get(observableReference, ShaderComponent.class);
-        String shaderName = viewComponent.getShader();
-        if(shaderName.equals("Default")) {
-            shaderComponent.clear();
-        } else {
-            shaderComponent.setShader(shaderName, resourceManager.getShaderProgram(shaderName));
-        }
-    }
 
-    private String findShaderProgramName(HashMap<String, ShaderProgram> list, ShaderProgram object) {
-        for (Map.Entry<String, ShaderProgram> entry : list.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            if(value == object) {
-                return key;
-            }
+        if (!shaderComponent.shaderName.equals(viewComponent.getShader())) {
+            Object payload = UpdateShaderDataCommand.payload(observableReference, viewComponent.getShader());
+            facade.sendNotification(MsgAPI.ACTION_UPDATE_SHADER_DATA, payload);
         }
-        return null;
     }
 }
