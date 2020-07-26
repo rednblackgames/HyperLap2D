@@ -108,6 +108,7 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
         }
     }
 
+    @Override
     protected void translateObservableDataToView(SceneVO item) {
         PhysicsPropertiesVO physicsVO = item.physicsPropertiesVO;
         LightsPropertiesVO lightsVO = item.lightsPropertiesVO;

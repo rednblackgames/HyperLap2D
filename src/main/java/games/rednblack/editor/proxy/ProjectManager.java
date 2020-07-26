@@ -264,7 +264,6 @@ public class ProjectManager extends BaseProxy {
         sceneDataManager.saveScene(vo);
     }
 
-
     private ArrayList<File> getScmlFileImagesList(FileHandle fileHandle) {
         ArrayList<File> images = new ArrayList<File>();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

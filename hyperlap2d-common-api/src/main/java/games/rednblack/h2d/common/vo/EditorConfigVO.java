@@ -30,6 +30,7 @@ public class EditorConfigVO {
     public String lastImportedSystemPath = "";
 
     public boolean disableAmbientComposite = true;
+    public boolean autoSave = false;
 
     //Map to store plugin storage
     public Map<String, Map<String, Object>> pluginStorage = new HashMap<>();

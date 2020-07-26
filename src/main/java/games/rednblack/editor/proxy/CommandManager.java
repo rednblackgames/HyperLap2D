@@ -25,6 +25,7 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.controller.commands.RevertibleCommand;
 import games.rednblack.editor.controller.commands.TransactiveCommand;
+import games.rednblack.editor.view.menu.FileMenu;
 
 public class CommandManager extends BaseProxy {
     private static final String TAG = CommandManager.class.getCanonicalName();
@@ -55,6 +56,7 @@ public class CommandManager extends BaseProxy {
         if (revertibleCommand instanceof EntityModifyRevertibleCommand
                 || revertibleCommand instanceof TransactiveCommand) {
             modifiedCursor++;
+            autoSave();
         }
 
         updateWindowTitle();
@@ -75,6 +77,7 @@ public class CommandManager extends BaseProxy {
         if (command instanceof EntityModifyRevertibleCommand
                 || command instanceof TransactiveCommand) {
             modifiedCursor--;
+            autoSave();
         }
         updateWindowTitle();
     }
@@ -104,6 +107,7 @@ public class CommandManager extends BaseProxy {
             if (command instanceof EntityModifyRevertibleCommand
                     || command instanceof TransactiveCommand) {
                 modifiedCursor++;
+                autoSave();
             }
             updateWindowTitle();
         }
@@ -121,5 +125,11 @@ public class CommandManager extends BaseProxy {
         clearHistory();
         modifiedCursor = 0;
         updateWindowTitle();
+    }
+
+    private void autoSave() {
+        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+        if (settingsManager.editorConfigVO.autoSave)
+            facade.sendNotification(FileMenu.SAVE_PROJECT, null, FileMenu.FILE_MENU);
     }
 }

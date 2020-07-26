@@ -32,12 +32,14 @@ public class SettingsDialogMediator extends SimpleMediator<SettingsDialog> {
         super.onRegister();
         facade = HyperLap2DFacade.getInstance();
 
-        viewComponent.addSettingsNode(new GeneralSettings());
-
         SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+
+        GeneralSettings generalSettings = new GeneralSettings();
+        generalSettings.setSettings(settingsManager.editorConfigVO);
+        viewComponent.addSettingsNode(generalSettings);
+
         SandboxSettings sandboxSettings = new SandboxSettings();
         sandboxSettings.setSettings(settingsManager.editorConfigVO);
-
         viewComponent.addSettingsNode(sandboxSettings);
     }
 
