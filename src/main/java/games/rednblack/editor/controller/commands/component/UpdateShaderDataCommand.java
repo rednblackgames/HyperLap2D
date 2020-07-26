@@ -24,8 +24,6 @@ public class UpdateShaderDataCommand extends EntityModifyRevertibleCommand {
 
         backup = shaderComponent.shaderName;
 
-        System.out.println("New shader: " + shaderName);
-        System.out.println("Backup shader: " + backup);
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
         if(shaderName.equals("Default")) {
             shaderComponent.clear();

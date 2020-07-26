@@ -19,8 +19,6 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import games.rednblack.editor.controller.commands.component.UpdatePhysicsDataCommand;
 import games.rednblack.editor.controller.commands.component.UpdateShaderDataCommand;
 import games.rednblack.h2d.common.MsgAPI;
 import com.puremvc.patterns.observer.Notification;
@@ -31,9 +29,6 @@ import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by azakhary on 8/12/2015.
