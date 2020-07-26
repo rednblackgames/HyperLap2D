@@ -35,11 +35,11 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener {
 
 	@Override
 	public void update(float deltaTime) {
-		super.update(deltaTime);
-
 		if (world != null && isPhysicsOn) {
 			doPhysicsStep(deltaTime);
 		}
+
+		super.update(deltaTime);
 	}
 
 	@Override

@@ -148,8 +148,8 @@ public class ItemFactory {
     public boolean createPrimitive(Vector2 position, ShapeVO shape) {
         ColorPrimitiveVO vo = new ColorPrimitiveVO();
         vo.shape = shape.clone();
-        vo.originX = 0;
-        vo.originY = 0;
+        vo.originX = vo.shape.polygons[0][2].x / 2;
+        vo.originY = vo.shape.polygons[0][2].y / 2;
 
         if(!setEssentialData(vo, position)) return false;
         Entity entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), vo);
