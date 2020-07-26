@@ -34,6 +34,7 @@ public class ProjectVO {
     public String lastOpenScene = "";
     public String lastOpenResolution = "";
     public boolean lockLines = false;
+    public int gridSize = 1;
 
     public TexturePackerVO texturePackerVO = new TexturePackerVO();
 

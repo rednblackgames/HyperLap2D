@@ -76,7 +76,6 @@ public class Sandbox {
     private Entity currentViewingEntity;
 
     public String currentLoadedSceneFileName;
-    private int gridSize = 1; // pixels
     private float zoomPercent = 100;
     private UIStage uiStage;
     private ItemSelector selector;
@@ -292,15 +291,16 @@ public class Sandbox {
     }
 
     public float getWorldGridSize(){
-        return (float)gridSize/sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
+        return (float)getGridSize()/sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
     }
 
     public int getGridSize() {
-        return gridSize;
+        return projectManager.currentProjectVO.gridSize;
     }
 
     public void setGridSize(int gridSize) {
-        this.gridSize = gridSize;
+        projectManager.currentProjectVO.gridSize = gridSize;
+        projectManager.saveCurrentProject();
         facade.sendNotification(MsgAPI.GRID_SIZE_CHANGED, gridSize);
     }
 
