@@ -304,7 +304,13 @@ public class Sandbox {
         facade.sendNotification(MsgAPI.GRID_SIZE_CHANGED, gridSize);
     }
 
+    public boolean getLockLines() {
+        return projectManager.currentProjectVO.lockLines;
+    }
+
     public void setLockLines(boolean lockLines) {
+        projectManager.currentProjectVO.lockLines = lockLines;
+        projectManager.saveCurrentProject();
         facade.sendNotification(MsgAPI.LOCK_LINES_CHANGED, lockLines);
     }
 

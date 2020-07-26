@@ -33,6 +33,7 @@ public class ProjectVO {
 
     public String lastOpenScene = "";
     public String lastOpenResolution = "";
+    public boolean lockLines = false;
 
     public TexturePackerVO texturePackerVO = new TexturePackerVO();
 

@@ -55,6 +55,7 @@ public class UIGridBoxMediator extends SimpleMediator<UIGridBox> {
             case ProjectManager.PROJECT_OPENED:
                 viewComponent.update();
                 viewComponent.setGridSize(sandbox.getGridSize());
+                viewComponent.setLockLines(sandbox.getLockLines());
                 break;
             case MsgAPI.GRID_SIZE_CHANGED:
                 viewComponent.setGridSize(sandbox.getGridSize());

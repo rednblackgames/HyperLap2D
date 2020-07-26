@@ -37,9 +37,11 @@ public class UIGridBox extends UIBaseBox {
     private static final String GRID_BOX_PREFIX = "games.rednblack.editor.view.ui.box.UIGridBox";
     public static final String GRID_SIZE_TEXT_FIELD_UPDATED = GRID_BOX_PREFIX + ".GRID_SIZE_TEXT_FIELD_UPDATED";
     public static final String LOCK_LINES_CHECKBOX_FIELD_UPDATED = GRID_BOX_PREFIX + ".LOCK_LINES_CHECKBOX_FIELD_UPDATED";
-    private VisValidatableTextField gridSizeTextField;
 
-	public UIGridBox() {
+    private VisValidatableTextField gridSizeTextField;
+    private VisCheckBox lockLinesCheckBox;
+
+    public UIGridBox() {
         init();
         setVisible(false);
     }
@@ -52,7 +54,7 @@ public class UIGridBox extends UIBaseBox {
     private void init() {
 		addSeparator(true).padRight(13).padLeft(13);
 
-		VisCheckBox lockLinesCheckBox = StandardWidgetsFactory.createCheckBox("Lock lines");
+		lockLinesCheckBox = StandardWidgetsFactory.createCheckBox("Lock lines");
         lockLinesCheckBox.addListener(new CheckBoxChangeListener(LOCK_LINES_CHECKBOX_FIELD_UPDATED));
         add(lockLinesCheckBox);
 		addSeparator(true).padRight(13).padLeft(13);
@@ -70,10 +72,6 @@ public class UIGridBox extends UIBaseBox {
     }
 
     public void setLockLines(boolean lockLines) {
-        if (lockLines) {
-            Gdx.app.log(TAG, "Lines locked");
-        } else {
-            Gdx.app.log(TAG, "Lines unlocked");
-        }
+        lockLinesCheckBox.setChecked(lockLines);
     }
 }
