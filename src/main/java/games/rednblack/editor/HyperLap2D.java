@@ -27,6 +27,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
+import com.puremvc.patterns.observer.BaseNotification;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.view.frame.FileDropListener;
@@ -48,6 +49,8 @@ public class HyperLap2D implements Proxy, ApplicationListener, Lwjgl3WindowListe
     private Object data;
     private AssetManager assetManager;
 
+    private final BaseNotification renderNotification;
+
     public HyperLap2DFacade getFacade() {
         return facade;
     }
@@ -55,6 +58,7 @@ public class HyperLap2D implements Proxy, ApplicationListener, Lwjgl3WindowListe
     private final Sync sync = new Sync();
 
     public HyperLap2D() {
+        renderNotification = new BaseNotification(MsgAPI.RENDER, null, null);
     }
 
     @Override
@@ -97,7 +101,8 @@ public class HyperLap2D implements Proxy, ApplicationListener, Lwjgl3WindowListe
 
     @Override
     public void render() {
-        sendNotification(MsgAPI.RENDER, Gdx.graphics.getDeltaTime());
+        renderNotification.setBody(Gdx.graphics.getDeltaTime());
+        facade.notifyObservers(renderNotification);
         sync.sync(60);
     }
 
