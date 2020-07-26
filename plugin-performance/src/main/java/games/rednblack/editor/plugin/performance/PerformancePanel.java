@@ -26,7 +26,7 @@ public class PerformancePanel extends UIDraggablePanel {
 
         mainTable = new VisTable();
 
-        add(mainTable).width(222);
+        getContentTable().add(mainTable).left().width(150).pad(5);
     }
 
     public void initView() {
@@ -49,7 +49,7 @@ public class PerformancePanel extends UIDraggablePanel {
     public void initLockView() {
         mainTable.clear();
 
-        mainTable.add(new VisLabel("no scenes open")).right();
+        mainTable.add(new VisLabel("No project open")).right();
     }
 
     @Override

@@ -44,15 +44,15 @@ public class EditSpriteAnimationPanel extends UIDraggablePanel {
     public static final String ADD_BUTTON_PRESSED = PREFIX + ".ADD_BUTTON_PRESSED";
     public static final String DELETE_BUTTON_PRESSED = PREFIX + ".DELETE_BUTTON_PRESSED";
 
-    private HyperLap2DFacade facade;
+    private final HyperLap2DFacade facade;
 
     private VisTextField nameField;
     private Spinner fromFrameField;
     private Spinner toFrameField;
     private VisTextButton addButton;
 
-    private VisTable animationsList;
-    private VisTable newAnimationTable;
+    private final VisTable animationsList;
+    private final VisTable newAnimationTable;
 
     public EditSpriteAnimationPanel() {
         super("Edit Sprite Animation Ranges");
@@ -69,10 +69,10 @@ public class EditSpriteAnimationPanel extends UIDraggablePanel {
 
         mainTable.add(newAnimationTable);
         mainTable.row();
-        mainTable.add(animationsList).padRight(80);
+        mainTable.add(animationsList);
         mainTable.row();
 
-        add(mainTable);
+        getContentTable().add(mainTable).pad(10);
     }
 
     private void createNewAnimationTable(int maxFrame) {
@@ -92,9 +92,7 @@ public class EditSpriteAnimationPanel extends UIDraggablePanel {
 
     public void setEmpty(String text) {
         animationsList.clear();
-        VisLabel label = StandardWidgetsFactory.createLabel(text);
-        label.setAlignment(Align.center);
-        animationsList.add(label).pad(10).width(269).center();
+        animationsList.add(text).row();
         newAnimationTable.clear();
         invalidateHeight();
     }
