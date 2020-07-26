@@ -162,7 +162,7 @@ public class NormalSelectionFollower extends BasicFollower {
         miniRects[ORIGIN] = originAnchor;
 
         //TODO: till it works bad, let's hide it
-        miniRects[ORIGIN].setVisible(false);
+        //miniRects[ORIGIN].setVisible(false);
     }
 
     public void setAnchorOriginVisible(boolean visible) {

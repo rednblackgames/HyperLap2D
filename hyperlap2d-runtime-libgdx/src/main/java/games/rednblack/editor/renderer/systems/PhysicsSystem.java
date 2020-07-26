@@ -16,7 +16,6 @@ import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
 import games.rednblack.editor.renderer.physics.PhysicsContact;
 import games.rednblack.editor.renderer.scripts.IScript;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
-import games.rednblack.editor.renderer.utils.TransformMathUtils;
 
 public class PhysicsSystem extends IteratingSystem implements ContactListener {
 
@@ -26,17 +25,17 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener {
 	private final World world;
 	private boolean isPhysicsOn = true;
 	private float accumulator = 0;
+	private final Vector2 tmp = new Vector2();
 
 	public PhysicsSystem(World world) {
 		super(Family.all(PhysicsBodyComponent.class).get());
 		this.world = world;
+		world.setContactListener(this);
 	}
 
 	@Override
-	public void update (float deltaTime) {
-		for (int i = 0; i < getEntities().size(); ++i) {
-			processEntity(getEntities().get(i), deltaTime);
-		}
+	public void update(float deltaTime) {
+		super.update(deltaTime);
 
 		if (world != null && isPhysicsOn) {
 			doPhysicsStep(deltaTime);
@@ -51,12 +50,11 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener {
 
 		PhysicsBodyComponent physicsBodyComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
 		Body body = physicsBodyComponent.body;
-		transformComponent.x = 0;
-		transformComponent.y = 0;
-		transformComponent.rotation = 0;
-		Vector2 localCoords = TransformMathUtils.sceneToLocalCoordinates(entity, body.getPosition().cpy().scl(1 / PhysicsBodyLoader.getScale()));
-		transformComponent.x = localCoords.x - transformComponent.originX;
-		transformComponent.y = localCoords.y - transformComponent.originY;
+		tmp.set(body.getPosition());
+		tmp.scl(1f / PhysicsBodyLoader.getScale());
+
+		transformComponent.x = tmp.x - transformComponent.originX;
+		transformComponent.y = tmp.y - transformComponent.originY;
 		transformComponent.rotation = body.getAngle() * MathUtils.radiansToDegrees;
 	}
 
@@ -81,8 +79,8 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener {
 
             DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
 
-            physicsBodyComponent.centerX = dimensionsComponent.width/2;
-            physicsBodyComponent.centerY = dimensionsComponent.height/2;
+            physicsBodyComponent.centerX = transformComponent.originX;
+            physicsBodyComponent.centerY = transformComponent.originY;
 
 			PhysicsBodyComponent bodyPropertiesComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
 			physicsBodyComponent.body = PhysicsBodyLoader.getInstance().createBody(world, entity, bodyPropertiesComponent, polygonComponent.vertices, transformComponent);
