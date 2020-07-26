@@ -322,14 +322,7 @@ public class ResolutionManager extends BaseProxy {
 
     public void rePackProjectImages(ResolutionEntryVO resEntry) {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        TexturePacker.Settings settings = new TexturePacker.Settings();
-
-        settings.flattenPaths = true;
-        settings.maxHeight = Integer.parseInt(projectManager.getCurrentProjectVO().texturepackerHeight);
-        settings.maxWidth = Integer.parseInt(projectManager.getCurrentProjectVO().texturepackerWidth);
-        settings.filterMag = Texture.TextureFilter.Linear;
-        settings.filterMin = Texture.TextureFilter.Linear;
-        settings.duplicatePadding = projectManager.getCurrentProjectVO().texturepackerDuplicate;
+        TexturePacker.Settings settings = projectManager.getTexturePackerSettings();
 
         TexturePacker tp = new TexturePacker(settings);
 
@@ -428,13 +421,7 @@ public class ResolutionManager extends BaseProxy {
             }
         }
         // now pack
-        TexturePacker.Settings settings = new TexturePacker.Settings();
-
-        settings.flattenPaths = true;
-        settings.maxHeight = Integer.parseInt(projectManager.getCurrentProjectVO().texturepackerHeight);
-        settings.maxWidth = Integer.parseInt(projectManager.getCurrentProjectVO().texturepackerWidth);
-        settings.filterMag = Texture.TextureFilter.Linear;
-        settings.filterMin = Texture.TextureFilter.Linear;
+        TexturePacker.Settings settings = projectManager.getTexturePackerSettings();
 
         TexturePacker tp = new TexturePacker(settings);
         for (final File fileEntry : sourceFolder.listFiles()) {

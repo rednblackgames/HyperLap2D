@@ -39,10 +39,7 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.SettingsDialog;
 import games.rednblack.editor.view.ui.settings.ProjectExportSettings;
 import games.rednblack.h2d.common.ProgressHandler;
-import games.rednblack.h2d.common.vo.EditorConfigVO;
-import games.rednblack.h2d.common.vo.ExportMapperVO;
-import games.rednblack.h2d.common.vo.ProjectVO;
-import games.rednblack.h2d.common.vo.SceneConfigVO;
+import games.rednblack.h2d.common.vo.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.NodeList;
@@ -393,13 +390,7 @@ public class ProjectManager extends BaseProxy {
             String rawFileName = fileHandles.get(0).name();
             String fileExtension = FilenameUtils.getExtension(rawFileName);
             if (fileExtension.equals("png")) {
-                Settings settings = new Settings();
-                settings.square = true;
-                settings.flattenPaths = true;
-                settings.maxWidth = Integer.parseInt(getCurrentProjectVO().texturepackerWidth);
-                settings.maxHeight = Integer.parseInt(getCurrentProjectVO().texturepackerHeight);
-                settings.duplicatePadding = getCurrentProjectVO().texturepackerDuplicate;
-                TexturePacker texturePacker = new TexturePacker(settings);
+                TexturePacker texturePacker = new TexturePacker(getTexturePackerSettings());
 
                 String fileNameWithoutExt = FilenameUtils.removeExtension(rawFileName);
                 String fileNameWithoutFrame = fileNameWithoutExt.replaceAll("\\d*$", "").replace("_", "");
@@ -1026,13 +1017,27 @@ public class ProjectManager extends BaseProxy {
         currentProjectVO.projectMainExportPath = path;
     }
 
-    public void setTexturePackerSizes(int width, int height) {
-        currentProjectVO.texturepackerWidth = String.valueOf(width);
-        currentProjectVO.texturepackerHeight = String.valueOf(height);
+    public void setTexturePackerVO(TexturePackerVO texturePackerVO) {
+        TexturePackerVO vo = currentProjectVO.texturePackerVO;
+        vo.duplicate = texturePackerVO.duplicate;
+        vo.filterMag = texturePackerVO.filterMag;
+        vo.filterMin = texturePackerVO.filterMin;
+        vo.maxHeight = texturePackerVO.maxHeight;
+        vo.maxWidth = texturePackerVO.maxWidth;
+        vo.square = texturePackerVO.square;
     }
 
-    public void setTexturePackerDuplicate(boolean duplicate) {
-        currentProjectVO.texturepackerDuplicate = duplicate;
+    public Settings getTexturePackerSettings() {
+        TexturePackerVO vo = currentProjectVO.texturePackerVO;
+        Settings settings = new Settings();
+        settings.maxHeight = Integer.parseInt(vo.maxHeight);
+        settings.maxWidth = Integer.parseInt(vo.maxWidth);
+        settings.duplicatePadding = vo.duplicate;
+        settings.filterMag = TexturePackerVO.filterMap.get(vo.filterMag);
+        settings.filterMin = TexturePackerVO.filterMap.get(vo.filterMin);
+        settings.square = vo.square;
+        settings.flattenPaths = true;
+        return settings;
     }
 
     public String getRootPath() {

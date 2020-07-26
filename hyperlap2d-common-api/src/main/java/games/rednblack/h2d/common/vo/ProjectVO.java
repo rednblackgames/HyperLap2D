@@ -33,12 +33,10 @@ public class ProjectVO {
 
     public String lastOpenScene = "";
     public String lastOpenResolution = "";
-    public String texturepackerWidth	=	"2048";
-    public String texturepackerHeight  =	"2048";
-    public boolean texturepackerDuplicate;
+
+    public TexturePackerVO texturePackerVO = new TexturePackerVO();
 
     public ArrayList<SceneConfigVO> sceneConfigs = new ArrayList<>();
-
 
     public String constructJsonString() {
         String str = "";

@@ -14,20 +14,27 @@ import games.rednblack.editor.view.ui.dialog.SettingsDialog;
 import games.rednblack.editor.view.ui.widget.InputFileWidget;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.vo.ProjectVO;
+import games.rednblack.h2d.common.vo.TexturePackerVO;
 
 public class ProjectExportSettings extends SettingsDialog.SettingsNodeValue<ProjectVO> {
 
     private final InputFileWidget exportSettingsInputFileWidget;
     private final VisCheckBox duplicateCheckBox;
+    private final VisCheckBox forceSquareCheckBox;
     private final VisSelectBox<Integer> widthSelectBox;
     private final VisSelectBox<Integer> heightSelectBox;
+    private final VisSelectBox<String> filterMagSelectBox;
+    private final VisSelectBox<String> filterMinSelectBox;
 
     public ProjectExportSettings() {
         super("Project Export");
         duplicateCheckBox = StandardWidgetsFactory.createCheckBox("Duplicate edge pixels in atlas");
+        forceSquareCheckBox = StandardWidgetsFactory.createCheckBox("Force Square");
         exportSettingsInputFileWidget = new InputFileWidget(FileChooser.Mode.OPEN, FileChooser.SelectionMode.DIRECTORIES, false);
         widthSelectBox = StandardWidgetsFactory.createSelectBox(Integer.class);
         heightSelectBox = StandardWidgetsFactory.createSelectBox(Integer.class);
+        filterMagSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
+        filterMinSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
 
         VisTable assetsTable = new VisTable();
         assetsTable.add("Assets folder:").padRight(15).left();
@@ -41,7 +48,11 @@ public class ProjectExportSettings extends SettingsDialog.SettingsNodeValue<Proj
         texturePackerTable.add("Atlas Max Size:").left().top().padRight(5).padTop(10);
         texturePackerTable.add(getDimensionsTable()).padTop(10).left();
         texturePackerTable.row().padTop(10);
-        texturePackerTable.add(duplicateCheckBox).left().colspan(2);
+        texturePackerTable.add("Atlas Filter:").left().top().padRight(5).padTop(10);
+        texturePackerTable.add(getFilterTable()).padTop(10).left();
+        texturePackerTable.row().padTop(10);
+        texturePackerTable.add(duplicateCheckBox).left().colspan(2).row();
+        texturePackerTable.add(forceSquareCheckBox).left().row();
         texturePackerTable.row().padTop(23);
 
         getContentTable().add(texturePackerTable).padLeft(8).fillX().expandX().growX().row();
@@ -61,6 +72,21 @@ public class ProjectExportSettings extends SettingsDialog.SettingsNodeValue<Proj
         return dimensionsTable;
     }
 
+    private Table getFilterTable() {
+        String[] data = {"Linear", "Nearest", "MipMap", "MipMapNearestNearest", "MipMapLinearNearest",
+                "MipMapNearestLinear", "MipMapLinearLinear"};
+        VisTable filterTable = new VisTable();
+
+        filterMagSelectBox.setItems(data);
+        filterTable.add(new VisLabel("Mag:")).left().padRight(3);
+        filterTable.add(filterMagSelectBox).width(85).height(21).padRight(3);
+        filterTable.row().padTop(10);
+        filterMinSelectBox.setItems(data);
+        filterTable.add(new VisLabel("Min:")).left().padRight(3);
+        filterTable.add(filterMinSelectBox).width(85).height(21).left();
+        return filterTable;
+    }
+
     @Override
     public void translateSettingsToView() {
         ProjectVO projectVO = getSettings();
@@ -70,23 +96,31 @@ public class ProjectExportSettings extends SettingsDialog.SettingsNodeValue<Proj
         }
         exportSettingsInputFileWidget.setValue(new FileHandle(exportPath));
 
-        widthSelectBox.setSelected(Integer.parseInt(projectVO.texturepackerWidth));
-        heightSelectBox.setSelected(Integer.parseInt(projectVO.texturepackerHeight));
+        TexturePackerVO vo = projectVO.texturePackerVO;
 
-        duplicateCheckBox.setChecked(projectVO.texturepackerDuplicate);
+        widthSelectBox.setSelected(Integer.parseInt(vo.maxWidth));
+        heightSelectBox.setSelected(Integer.parseInt(vo.maxHeight));
+
+        duplicateCheckBox.setChecked(vo.duplicate);
+        forceSquareCheckBox.setChecked(vo.square);
+
+        filterMagSelectBox.setSelected(vo.filterMag);
+        filterMinSelectBox.setSelected(vo.filterMin);
     }
 
     @Override
     public void translateViewToSettings() {
-        boolean packerModified = false;
-        if (getSettings().texturepackerDuplicate != duplicateCheckBox.isChecked() ||
-                !getSettings().texturepackerWidth.equals(String.valueOf(widthSelectBox.getSelected())) ||
-                !getSettings().texturepackerHeight.equals(String.valueOf(heightSelectBox.getSelected())))  {
-            packerModified = true;
-        }
+        TexturePackerVO vo = new TexturePackerVO();
+        vo.maxWidth = String.valueOf(widthSelectBox.getSelected());
+        vo.maxHeight = String.valueOf(heightSelectBox.getSelected());
+        vo.duplicate = duplicateCheckBox.isChecked();
+        vo.square = forceSquareCheckBox.isChecked();
+        vo.filterMag = filterMagSelectBox.getSelected();
+        vo.filterMin = filterMinSelectBox.getSelected();
+
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        projectManager.setTexturePackerSizes(widthSelectBox.getSelected(), heightSelectBox.getSelected());
-        projectManager.setTexturePackerDuplicate(duplicateCheckBox.isChecked());
+        boolean packerModified = !vo.equals(projectManager.currentProjectVO.texturePackerVO);
+        projectManager.setTexturePackerVO(vo);
 
         facade.sendNotification(MsgAPI.SAVE_EXPORT_PATH, exportSettingsInputFileWidget.getValue().file().getAbsolutePath());
 
