@@ -30,7 +30,7 @@ public class AboutDialog extends H2DDialog {
         leftTable.add("HyperLap2D").padLeft(5).padRight(5).row();
         leftTable.add("Release " + AppConfig.getInstance().version).row();
 
-        contentTable.add("Copyright © 2020 Red & Black Games").left().row();
+        contentTable.add("Copyright \u00A9 2020 Red & Black Games").left().row();
         contentTable.add("").row();
         contentTable.add("Dedicated to game lovers. Create something awesome!").left().row();
         contentTable.add("").row();

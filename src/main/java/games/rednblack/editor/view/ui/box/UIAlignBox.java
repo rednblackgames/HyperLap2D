@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.utils.StandardWidgetsFactory;
 
 /**
  * Created by sargis on 4/10/15.
@@ -44,8 +45,8 @@ public class UIAlignBox extends UICollapsibleBox {
     //Center Align
     private static final int ALIGN_CENTER_VERTICAL = 4;
     public static final String ALIGN_CENTER_LEFT_BTN_CLICKED = prefix + ALIGN_CENTER_VERTICAL;
-    private static final int ALIGN_CENTER_HORISONTAL = 5;
-    public static final String ALIGN_CENTER_BOTTOM_BTN_CLICKED = prefix + ALIGN_CENTER_HORISONTAL;
+    private static final int ALIGN_CENTER_HORIZONTAL = 5;
+    public static final String ALIGN_CENTER_BOTTOM_BTN_CLICKED = prefix + ALIGN_CENTER_HORIZONTAL;
 
     //At Edge Align
     private static final int ALIGN_AT_EDGE_TOP = 6;
@@ -68,29 +69,30 @@ public class UIAlignBox extends UICollapsibleBox {
         //
         alignButtonsTable.row().padTop(6);
         alignButtonsTable.add("Simple:").padRight(8).right();
-        alignButtonsTable.add(createAlignButton("align-simple-up", ALIGN_TOP)).padRight(4).left();
-        alignButtonsTable.add(createAlignButton("align-simple-left", ALIGN_LEFT)).padRight(4).left();
-        alignButtonsTable.add(createAlignButton("align-simple-down", ALIGN_BOTTOM)).padRight(4).left();
-        alignButtonsTable.add(createAlignButton("align-simple-right", ALIGN_RIGHT)).expandX().left();
+        alignButtonsTable.add(createAlignButton("align-simple-up", ALIGN_TOP, "Top")).padRight(4).left();
+        alignButtonsTable.add(createAlignButton("align-simple-left", ALIGN_LEFT, "Left")).padRight(4).left();
+        alignButtonsTable.add(createAlignButton("align-simple-down", ALIGN_BOTTOM, "Bottom")).padRight(4).left();
+        alignButtonsTable.add(createAlignButton("align-simple-right", ALIGN_RIGHT, "Right")).expandX().left();
         //
         alignButtonsTable.row().padTop(6);
         alignButtonsTable.add("Center:").padRight(8).right();
-        alignButtonsTable.add(createAlignButton("align-center-vertical", ALIGN_CENTER_VERTICAL)).padRight(4).left();
-        alignButtonsTable.add(createAlignButton("align-center-horisontal", ALIGN_CENTER_HORISONTAL)).expandX().left().colspan(3);
+        alignButtonsTable.add(createAlignButton("align-center-vertical", ALIGN_CENTER_VERTICAL, "Vertical")).padRight(4).left();
+        alignButtonsTable.add(createAlignButton("align-center-horisontal", ALIGN_CENTER_HORIZONTAL, "Horizontal")).expandX().left().colspan(3);
         //
         alignButtonsTable.row().padTop(6);
         alignButtonsTable.add("At Edge:").padRight(8).right();
-        alignButtonsTable.add(createAlignButton("align-edge-right", ALIGN_AT_EDGE_LEFT)).padRight(4).left();
-        alignButtonsTable.add(createAlignButton("align-edge-up", ALIGN_AT_EDGE_BOTTOM)).padRight(4).left();
-        alignButtonsTable.add(createAlignButton("align-edge-left", ALIGN_AT_EDGE_RIGHT)).padRight(4).left();
-        alignButtonsTable.add(createAlignButton("align-edge-down", ALIGN_AT_EDGE_TOP)).expandX().left();
+        alignButtonsTable.add(createAlignButton("align-edge-right", ALIGN_AT_EDGE_LEFT, "Left")).padRight(4).left();
+        alignButtonsTable.add(createAlignButton("align-edge-up", ALIGN_AT_EDGE_BOTTOM, "Bottom")).padRight(4).left();
+        alignButtonsTable.add(createAlignButton("align-edge-left", ALIGN_AT_EDGE_RIGHT, "Right")).padRight(4).left();
+        alignButtonsTable.add(createAlignButton("align-edge-down", ALIGN_AT_EDGE_TOP, "Top")).expandX().left();
         //
         createCollapsibleWidget(alignButtonsTable);
     }
 
-    private VisImageButton createAlignButton(String styleName, int alignment) {
+    private VisImageButton createAlignButton(String styleName, int alignment, String title) {
         VisImageButton visImageButton = new VisImageButton(styleName);
         visImageButton.addListener(new AlignmentButtonClickListener(alignment));
+        StandardWidgetsFactory.addTooltip(visImageButton, title);
         return visImageButton;
     }
 
@@ -122,7 +124,7 @@ public class UIAlignBox extends UICollapsibleBox {
                 case ALIGN_CENTER_VERTICAL:
                     notification = ALIGN_CENTER_LEFT_BTN_CLICKED;
                     break;
-                case ALIGN_CENTER_HORISONTAL:
+                case ALIGN_CENTER_HORIZONTAL:
                     notification = ALIGN_CENTER_BOTTOM_BTN_CLICKED;
                     break;
                 case ALIGN_AT_EDGE_TOP:
