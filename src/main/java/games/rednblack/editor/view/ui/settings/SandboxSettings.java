@@ -1,17 +1,18 @@
 package games.rednblack.editor.view.ui.settings;
 
 import com.kotcrab.vis.ui.widget.VisCheckBox;
+import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.utils.StandardWidgetsFactory;
-import games.rednblack.editor.view.ui.dialog.SettingsDialog;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.common.view.SettingsNodeValue;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
 
-public class SandboxSettings extends SettingsDialog.SettingsNodeValue<EditorConfigVO> {
+public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
 
     private final VisCheckBox disableAmbientComposite;
 
     public SandboxSettings() {
-        super("Sandbox");
+        super("Sandbox", HyperLap2DFacade.getInstance());
 
         getContentTable().add("Composites").left().row();
         getContentTable().addSeparator();

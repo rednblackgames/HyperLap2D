@@ -140,4 +140,6 @@ public class MsgAPI {
     public static final String DELETE_ITEMS_COMMAND_DONE = DELETE_ITEMS_COMMAND_CLASS_NAME + "DONE";
 
     public static final String SHOW_NOTIFICATION = GLOBAL_PREFIX + ".SHOW_NOTIFICATION";
+
+    public static final String ADD_PLUGIN_SETTINGS = GLOBAL_PREFIX + ".ADD_PLUGIN_SETTINGS";
 }

@@ -45,9 +45,13 @@ public class StandardWidgetsFactory {
     }
 
     public static VisLabel createLabel(String text, int alignment) {
+        return createLabel(text, "small", alignment);
+    }
+
+    public static VisLabel createLabel(String text, String style, int alignment) {
         Skin skin = VisUI.getSkin();
         VisLabel visLabel = new VisLabel(text, alignment);
-        visLabel.setStyle(skin.get("small", Label.LabelStyle.class));
+        visLabel.setStyle(skin.get(style, Label.LabelStyle.class));
         return visLabel;
     }
 

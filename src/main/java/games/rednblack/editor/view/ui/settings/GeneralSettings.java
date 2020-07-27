@@ -1,18 +1,19 @@
 package games.rednblack.editor.view.ui.settings;
 
 import com.kotcrab.vis.ui.widget.VisCheckBox;
+import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.utils.StandardWidgetsFactory;
-import games.rednblack.editor.view.ui.dialog.SettingsDialog;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.common.view.SettingsNodeValue;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
 
-public class GeneralSettings extends SettingsDialog.SettingsNodeValue<EditorConfigVO> {
+public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
 
     private final VisCheckBox autoSaving;
     private final VisCheckBox enablePlugins;
 
     public GeneralSettings() {
-        super("General");
+        super("General", HyperLap2DFacade.getInstance());
 
         autoSaving = StandardWidgetsFactory.createCheckBox("Save changes automatically [EXPERIMENTAL]");
         getContentTable().add(autoSaving).left().row();

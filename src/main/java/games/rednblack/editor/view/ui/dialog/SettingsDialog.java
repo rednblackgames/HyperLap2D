@@ -11,6 +11,7 @@ import com.puremvc.patterns.facade.Facade;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.utils.StandardWidgetsFactory;
 import games.rednblack.h2d.common.H2DDialog;
+import games.rednblack.h2d.common.view.SettingsNodeValue;
 
 public class SettingsDialog extends H2DDialog {
 
@@ -41,7 +42,7 @@ public class SettingsDialog extends H2DDialog {
             public void changed(ChangeEvent event, Actor actor) {
                 containerTable.clear();
                 settingsTree.getSelectedValue().translateSettingsToView();
-                containerTable.add(settingsTree.getSelectedValue().contentTable).expand().fill().pad(5);
+                containerTable.add(settingsTree.getSelectedValue().getContentTable()).expand().fill().pad(5);
             }
         });
 
@@ -84,6 +85,13 @@ public class SettingsDialog extends H2DDialog {
             if (node.getValue().validateSettings()) {
                 node.getValue().translateViewToSettings();
             }
+            if (node.getChildren().size > 0) {
+                for (SettingsNode child : node.getChildren()) {
+                    if (child.getValue().validateSettings()) {
+                        child.getValue().translateViewToSettings();
+                    }
+                }
+            }
         }
     }
 
@@ -110,8 +118,8 @@ public class SettingsDialog extends H2DDialog {
         return 500;
     }
 
-    public void addSettingsNode(SettingsNodeValue<?> nodeValue) {
-        SettingsNode node = new SettingsNode(nodeValue.name);
+    public SettingsNode addSettingsNode(SettingsNodeValue<?> nodeValue) {
+        SettingsNode node = new SettingsNode(nodeValue.getName());
         int existingIndex = settingsTree.getNodes().indexOf(node, false);
         if (existingIndex == -1) {
             node.setValue(nodeValue);
@@ -119,6 +127,19 @@ public class SettingsDialog extends H2DDialog {
         } else {
             settingsTree.getNodes().get(existingIndex).setValue(nodeValue);
         }
+        return node;
+    }
+
+    public SettingsNode addChildSettingsNode(SettingsNode parent, SettingsNodeValue<?> nodeValue) {
+        SettingsNode node = new SettingsNode(nodeValue.getName());
+        int existingIndex = parent.getChildren().indexOf(node, false);
+        if (existingIndex == -1) {
+            node.setValue(nodeValue);
+            parent.add(node);
+        } else {
+            parent.getChildren().get(existingIndex).setValue(nodeValue);
+        }
+        return node;
     }
 
     public static class SettingsNode extends Tree.Node<SettingsNode, SettingsNodeValue<?>, VisLabel> {
@@ -134,35 +155,6 @@ public class SettingsDialog extends H2DDialog {
                 return false;
             }
             return name.equals(((SettingsNode) o).name);
-        }
-    }
-
-    public abstract static class SettingsNodeValue<T> {
-        private final VisTable contentTable = new VisTable();
-        private T settings;
-        private final String name;
-        protected Facade facade;
-
-        public SettingsNodeValue(String name) {
-            this.name = name;
-            contentTable.top().left();
-            facade = HyperLap2DFacade.getInstance();
-        }
-
-        public abstract void translateSettingsToView();
-        public abstract void translateViewToSettings();
-        public abstract boolean validateSettings();
-
-        protected VisTable getContentTable() {
-            return contentTable;
-        }
-
-        public void setSettings(T settings) {
-            this.settings = settings;
-        }
-
-        public T getSettings() {
-            return settings;
         }
     }
 }

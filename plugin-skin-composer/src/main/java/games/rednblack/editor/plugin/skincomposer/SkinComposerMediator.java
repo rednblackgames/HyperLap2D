@@ -45,6 +45,11 @@ public class SkinComposerMediator extends SimpleMediator<DownloadingDialog> {
                     return;
                 }
 
+                if (!plugin.getSettingsVO().alwaysCheckUpdates) {
+                    runJar(jarPath);
+                    return;
+                }
+
                 ExecutorService executor = Executors.newSingleThreadExecutor();
                 executor.execute(() -> {
 

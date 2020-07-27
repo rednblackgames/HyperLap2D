@@ -7,16 +7,18 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
+import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.utils.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.dialog.SettingsDialog;
 import games.rednblack.editor.view.ui.widget.InputFileWidget;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.common.view.SettingsNodeValue;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import games.rednblack.h2d.common.vo.TexturePackerVO;
 
-public class ProjectExportSettings extends SettingsDialog.SettingsNodeValue<ProjectVO> {
+public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
 
     private final InputFileWidget exportSettingsInputFileWidget;
     private final VisCheckBox duplicateCheckBox;
@@ -27,7 +29,7 @@ public class ProjectExportSettings extends SettingsDialog.SettingsNodeValue<Proj
     private final VisSelectBox<String> filterMinSelectBox;
 
     public ProjectExportSettings() {
-        super("Project Export");
+        super("Project Export", HyperLap2DFacade.getInstance());
         duplicateCheckBox = StandardWidgetsFactory.createCheckBox("Duplicate edge pixels in atlas");
         forceSquareCheckBox = StandardWidgetsFactory.createCheckBox("Force Square");
         exportSettingsInputFileWidget = new InputFileWidget(FileChooser.Mode.OPEN, FileChooser.SelectionMode.DIRECTORIES, false);
