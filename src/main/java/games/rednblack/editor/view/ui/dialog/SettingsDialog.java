@@ -40,6 +40,7 @@ public class SettingsDialog extends H2DDialog {
         settingsTree.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                settingsTree.getSelectedNode().setExpanded(true);
                 containerTable.clear();
                 settingsTree.getSelectedValue().translateSettingsToView();
                 containerTable.add(settingsTree.getSelectedValue().getContentTable()).expand().fill().pad(5);

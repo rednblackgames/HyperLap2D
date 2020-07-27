@@ -71,7 +71,6 @@ public class SettingsDialogMediator extends SimpleMediator<SettingsDialog> {
             case MsgAPI.ADD_PLUGIN_SETTINGS:
                 SettingsNodeValue<?> nodeValue = notification.getBody();
                 viewComponent.addChildSettingsNode(pluginsSettingsNode, nodeValue);
-                pluginsSettingsNode.setExpanded(true);
                 break;
         }
     }
