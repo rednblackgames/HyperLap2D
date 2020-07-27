@@ -93,8 +93,6 @@ public class SceneLoader {
 
         if (world == null) {
             world = new World(new Vector2(0,-10), true);
-        } else {
-            PhysicsBodyLoader.getInstance().mul = 1;
         }
 
         if (rayHandler == null) {

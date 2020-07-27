@@ -96,12 +96,12 @@ public class LightSystem extends IteratingSystem {
 		if (lightObjectComponent.getType() == LightVO.LightType.POINT) {
 			lightObjectComponent.lightObject.setColor(Color.CLEAR);
             // TODO Physics and resolution part
-            lightObjectComponent.lightObject.setDistance(lightObjectComponent.distance * PhysicsBodyLoader.getPPWU());
+            lightObjectComponent.lightObject.setDistance(lightObjectComponent.distance * PhysicsBodyLoader.getScale());
             lightObjectComponent.lightObject.setStaticLight(lightObjectComponent.isStatic);
             lightObjectComponent.lightObject.setXray(lightObjectComponent.isXRay);
         } else {
         	lightObjectComponent.lightObject.setColor(Color.CLEAR);
-            lightObjectComponent.lightObject.setDistance(lightObjectComponent.distance * PhysicsBodyLoader.getPPWU());
+            lightObjectComponent.lightObject.setDistance(lightObjectComponent.distance * PhysicsBodyLoader.getScale());
             lightObjectComponent.lightObject.setStaticLight(lightObjectComponent.isStatic);
             lightObjectComponent.lightObject.setDirection(lightObjectComponent.directionDegree);
             ((ConeLight) lightObjectComponent.lightObject).setConeDegree(lightObjectComponent.coneDegree);
@@ -155,13 +155,13 @@ public class LightSystem extends IteratingSystem {
 
 			Color lightColor = new Color(lightBodyComponent.color[0], lightBodyComponent.color[1], lightBodyComponent.color[2], lightBodyComponent.color[3]);
 			lightBodyComponent.lightObject = new ChainLight(rayHandler, lightBodyComponent.rays,
-					lightColor, lightBodyComponent.distance * PhysicsBodyLoader.getPPWU(), lightBodyComponent.rayDirection, chain);
+					lightColor, lightBodyComponent.distance * PhysicsBodyLoader.getScale(), lightBodyComponent.rayDirection, chain);
 			lightBodyComponent.lightObject.attachToBody(physicsComponent.body);
 		}
 
 		if (lightBodyComponent.lightObject != null) {
 			lightBodyComponent.lightObject.setSoftnessLength(lightBodyComponent.softnessLength);
-			lightBodyComponent.lightObject.setDistance(lightBodyComponent.distance * PhysicsBodyLoader.getPPWU());
+			lightBodyComponent.lightObject.setDistance(lightBodyComponent.distance * PhysicsBodyLoader.getScale());
 			lightBodyComponent.lightObject.setActive(lightBodyComponent.isActive);
 			lightBodyComponent.lightObject.setSoft(lightBodyComponent.isSoft);
 			lightBodyComponent.lightObject.setStaticLight(false);//TODO Figure out why static lights does not change position

@@ -15,34 +15,24 @@ public class PhysicsBodyLoader {
 
     private static PhysicsBodyLoader instance;
 
-    public float scale;
-    public float ppWU;
-
-    public float mul;
-
-    private PhysicsBodyLoader() {
-        mul = 20f;
-    }
-
     public static PhysicsBodyLoader getInstance() {
         if(instance == null) {
             instance = new PhysicsBodyLoader();
         }
-
         return instance;
     }
 
+    public float scale;
+
+    private PhysicsBodyLoader() {
+    }
+
     public void setScaleFromPPWU(float pixelPerWU) {
-        ppWU = 1f/pixelPerWU;
-        scale = 1f/(mul*pixelPerWU);
+        scale = 1f/(pixelPerWU);
     }
 
     public static float getScale() {
         return getInstance().scale;
-    }
-
-    public static float getPPWU() {
-        return getInstance().ppWU;
     }
 
     public Body createBody(World world, Entity entity, PhysicsBodyComponent physicsComponent, Vector2[][] minPolygonData, TransformComponent transformComponent) {
