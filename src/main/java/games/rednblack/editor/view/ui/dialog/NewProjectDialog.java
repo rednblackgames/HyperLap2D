@@ -69,9 +69,9 @@ public class NewProjectDialog extends H2DDialog {
         workspacePathField.setTextFieldWidth(156);
         mainTable.add(workspacePathField);
         //
-        mainTable.row().padTop(10);
-        mainTable.add(new Separator()).padTop(2).padBottom(2).fill().expand();
-        mainTable.row().padTop(10);
+        mainTable.row().colspan(2);
+        mainTable.addSeparator().padTop(10).padBottom(10);
+        mainTable.row();
         //
         mainTable.add(new VisLabel("Original Size")).top().left().padRight(5);
         mainTable.add(getDimensionsTable()).left();

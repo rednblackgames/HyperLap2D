@@ -1128,7 +1128,7 @@ public class ProjectManager extends BaseProxy {
         if (!isModified) {
             Gdx.graphics.setTitle(currentWindowTitle);
         } else {
-            Gdx.graphics.setTitle("● " + currentWindowTitle);
+            Gdx.graphics.setTitle("\u25CF " + currentWindowTitle);
         }
     }
 
