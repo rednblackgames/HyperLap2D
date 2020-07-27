@@ -18,6 +18,7 @@
 
 package games.rednblack.editor.controller;
 
+import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.h2d.common.plugins.H2DPlugin;
 import com.puremvc.patterns.command.SimpleCommand;
@@ -32,14 +33,15 @@ import net.mountainblade.modular.impl.DefaultModuleManager;
 import java.io.File;
 import java.util.Collection;
 
-/**
- * Created by azakhary on 7/24/2015.
- */
 public class BootstrapPlugins extends SimpleCommand {
 
     public void execute(Notification notification) {
         super.execute(notification);
         facade = HyperLap2DFacade.getInstance();
+
+        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+        if (!settingsManager.editorConfigVO.enablePlugins)
+            return;
 
         facade.sendNotification(SplashScreenAdapter.UPDATE_SPLASH, "Loading Plugins...");
 

@@ -31,6 +31,7 @@ public class EditorConfigVO {
 
     public boolean disableAmbientComposite = true;
     public boolean autoSave = false;
+    public boolean enablePlugins = true;
 
     //Map to store plugin storage
     public Map<String, Map<String, Object>> pluginStorage = new HashMap<>();

@@ -9,27 +9,36 @@ import games.rednblack.h2d.common.vo.EditorConfigVO;
 public class GeneralSettings extends SettingsDialog.SettingsNodeValue<EditorConfigVO> {
 
     private final VisCheckBox autoSaving;
+    private final VisCheckBox enablePlugins;
 
     public GeneralSettings() {
         super("General");
 
         autoSaving = StandardWidgetsFactory.createCheckBox("Save changes automatically [EXPERIMENTAL]");
-        getContentTable().add(autoSaving).row();
+        getContentTable().add(autoSaving).left().row();
+
+        getContentTable().add("Plugins").left().padTop(10).row();
+        getContentTable().addSeparator();
+        enablePlugins = StandardWidgetsFactory.createCheckBox("Enable plugins [Require restart]");
+        getContentTable().add(enablePlugins).left().padTop(5).padLeft(8).row();
     }
 
     @Override
     public void translateSettingsToView() {
         autoSaving.setChecked(getSettings().autoSave);
+        enablePlugins.setChecked(getSettings().enablePlugins);
     }
 
     @Override
     public void translateViewToSettings() {
         getSettings().autoSave = autoSaving.isChecked();
+        getSettings().enablePlugins = enablePlugins.isChecked();
         facade.sendNotification(MsgAPI.SAVE_EDITOR_CONFIG);
     }
 
     @Override
     public boolean validateSettings() {
-        return getSettings().autoSave != autoSaving.isChecked();
+        return getSettings().autoSave != autoSaving.isChecked()
+                || getSettings().enablePlugins != enablePlugins.isChecked();
     }
 }
