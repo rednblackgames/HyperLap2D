@@ -82,8 +82,6 @@ public class RulersUIMediator extends SimpleMediator<RulersUI> {
                 Boolean lockLines = notification.getBody();
                 if (lockLines != null) {
                     viewComponent.setLockLines(lockLines);
-                } else {
-                    Gdx.app.log(TAG, "Notification body for MsgAPI.LOCK_LINES_CHANGED is null");
                 }
                 break;
         }

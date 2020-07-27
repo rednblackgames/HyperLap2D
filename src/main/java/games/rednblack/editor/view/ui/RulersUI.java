@@ -449,6 +449,8 @@ public class RulersUI extends Actor {
     //Allows the ChangeRulerXPositionCommand to change the guide's position
     public static void updateGuideManually(float destination) {
         editableDraggingGuide.pos = destination;
+
+        HyperLap2DFacade.getInstance().sendNotification(ACTION_GUIDES_MODIFIED);
     }
 
     public Array<Guide> getGuides() {
