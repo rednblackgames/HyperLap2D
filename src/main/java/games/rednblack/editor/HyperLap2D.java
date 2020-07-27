@@ -31,7 +31,7 @@ import com.puremvc.patterns.observer.BaseNotification;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.view.frame.FileDropListener;
-import games.rednblack.editor.view.ui.dialog.ImportDialog;
+import games.rednblack.editor.view.ui.panel.ImportPanel;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.VisUI;
 import com.puremvc.patterns.proxy.Proxy;
@@ -197,7 +197,7 @@ public class HyperLap2D implements Proxy, ApplicationListener, Lwjgl3WindowListe
 
     @Override
     public void filesDropped(String[] files) {
-        ImportDialog.DropBundle bundle = new ImportDialog.DropBundle();
+        ImportPanel.DropBundle bundle = new ImportPanel.DropBundle();
         bundle.pos = new Vector2(Gdx.input.getX(),  Gdx.input.getY());
         bundle.paths = files;
 

@@ -33,6 +33,7 @@ import games.rednblack.editor.view.ui.box.*;
 import games.rednblack.editor.view.ui.dialog.*;
 import games.rednblack.editor.view.ui.panel.CustomVariablesPanelMediator;
 import games.rednblack.editor.view.ui.panel.EditSpriteAnimationPanelMediator;
+import games.rednblack.editor.view.ui.panel.ImportPanelMediator;
 import games.rednblack.editor.view.ui.panel.TagsPanelMediator;
 
 /**
@@ -57,7 +58,7 @@ public class BootstrapViewCommand extends SimpleCommand {
 
         // Dialogs
         facade.registerMediator(new NewProjectDialogMediator());
-        facade.registerMediator(new ImportDialogMediator());
+        facade.registerMediator(new ImportPanelMediator());
         facade.registerMediator(new CreateNewResolutionDialogMediator());
         facade.registerMediator(new CustomVariablesPanelMediator());
         facade.registerMediator(new TagsPanelMediator());

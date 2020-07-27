@@ -16,7 +16,7 @@
  *  *****************************************************************************
  */
 
-package games.rednblack.editor.view.ui.dialog;
+package games.rednblack.editor.view.ui.panel;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -41,16 +41,12 @@ import games.rednblack.editor.view.ui.widget.ui.HyperLapFileChooser;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 
-/**
- * Created by sargis on 4/3/15.
- */
-public class ImportDialogMediator extends SimpleMediator<ImportDialog> {
-    private static final String TAG = ImportDialogMediator.class.getCanonicalName();
+public class ImportPanelMediator extends SimpleMediator<ImportPanel> {
+    private static final String TAG = ImportPanelMediator.class.getCanonicalName();
     private static final String NAME = TAG;
 
-
-    public ImportDialogMediator() {
-        super(NAME, new ImportDialog());
+    public ImportPanelMediator() {
+        super(NAME, new ImportPanel());
     }
 
     @Override
@@ -65,10 +61,10 @@ public class ImportDialogMediator extends SimpleMediator<ImportDialog> {
     public String[] listNotificationInterests() {
         return new String[]{
                 FileMenu.IMPORT_TO_LIBRARY,
-                ImportDialog.BROWSE_BTN_CLICKED,
-                ImportDialog.CANCEL_BTN_CLICKED,
-                ImportDialog.IMPORT_BTN_CLICKED,
-                ImportDialog.IMPORT_FAILED,
+                ImportPanel.BROWSE_BTN_CLICKED,
+                ImportPanel.CANCEL_BTN_CLICKED,
+                ImportPanel.IMPORT_BTN_CLICKED,
+                ImportPanel.IMPORT_FAILED,
                 FileDropListener.ACTION_DRAG_ENTER,
                 FileDropListener.ACTION_DRAG_OVER,
                 FileDropListener.ACTION_DRAG_EXIT,
@@ -97,7 +93,7 @@ public class ImportDialogMediator extends SimpleMediator<ImportDialog> {
             case FileMenu.IMPORT_TO_LIBRARY:
                 viewComponent.show(uiStage);
                 break;
-            case ImportDialog.BROWSE_BTN_CLICKED:
+            case ImportPanel.BROWSE_BTN_CLICKED:
                 showFileChoose();
                 break;
             case FileDropListener.ACTION_DRAG_ENTER:
@@ -122,19 +118,19 @@ public class ImportDialogMediator extends SimpleMediator<ImportDialog> {
                 }*/
                 break;
             case FileDropListener.ACTION_DROP:
-                ImportDialog.DropBundle bundle = notification.getBody();
+                ImportPanel.DropBundle bundle = notification.getBody();
                 if(viewComponent.checkDropRegionHit(bundle.pos)) {
                     AssetImporter.getInstance().setProgressHandler(new AssetsImportProgressHandler());
                     AssetImporter.getInstance().postPathObtainAction(bundle.paths);
                 }
                 break;
-            case ImportDialog.CANCEL_BTN_CLICKED:
+            case ImportPanel.CANCEL_BTN_CLICKED:
                 viewComponent.setDroppingView();
                 break;
-            case ImportDialog.IMPORT_BTN_CLICKED:
+            case ImportPanel.IMPORT_BTN_CLICKED:
                 //startImport();
                 break;
-            case ImportDialog.IMPORT_FAILED:
+            case ImportPanel.IMPORT_FAILED:
                 viewComponent.showError(ImportUtils.TYPE_FAILED);
                 break;
         }
@@ -187,7 +183,7 @@ public class ImportDialogMediator extends SimpleMediator<ImportDialog> {
                 ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
                 projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath());
                 sandbox.loadCurrentProject();
-                ImportDialogMediator.this.viewComponent.setDroppingView();
+                ImportPanelMediator.this.viewComponent.setDroppingView();
                 facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
             });
         }
@@ -195,7 +191,7 @@ public class ImportDialogMediator extends SimpleMediator<ImportDialog> {
         @Override
         public void progressFailed() {
             Gdx.app.postRunnable(() -> {
-                facade.sendNotification(ImportDialog.IMPORT_FAILED);
+                facade.sendNotification(ImportPanel.IMPORT_FAILED);
             });
         }
     }

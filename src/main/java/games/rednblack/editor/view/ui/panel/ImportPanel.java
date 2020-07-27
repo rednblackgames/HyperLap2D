@@ -16,7 +16,7 @@
  *  *****************************************************************************
  */
 
-package games.rednblack.editor.view.ui.dialog;
+package games.rednblack.editor.view.ui.panel;
 
 import java.util.HashMap;
 
@@ -38,8 +38,8 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.UIDraggablePanel;
 import games.rednblack.editor.utils.ImportUtils;
 
-public class ImportDialog extends UIDraggablePanel {
-    public static final String CLASS_NAME = "games.rednblack.editor.view.ui.dialog.ImportDialog";
+public class ImportPanel extends UIDraggablePanel {
+    public static final String CLASS_NAME = "games.rednblack.editor.view.ui.panel.ImportDialog";
 
     public static final String BROWSE_BTN_CLICKED = CLASS_NAME + ".BROWSE_BTN_CLICKED";
 
@@ -57,7 +57,7 @@ public class ImportDialog extends UIDraggablePanel {
 
     private HashMap<Integer, String> typeNames = new HashMap<>();
 
-    ImportDialog() {
+    ImportPanel() {
         super("Import Resources");
         setMovable(true);
         setModal(false);

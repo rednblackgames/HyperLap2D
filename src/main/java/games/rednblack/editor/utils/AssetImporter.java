@@ -8,8 +8,8 @@ import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.editor.view.ui.dialog.ImportDialog;
-import games.rednblack.editor.view.ui.dialog.ImportDialogMediator;
+import games.rednblack.editor.view.ui.panel.ImportPanel;
+import games.rednblack.editor.view.ui.panel.ImportPanelMediator;
 import games.rednblack.h2d.common.ProgressHandler;
 
 import java.io.File;
@@ -17,8 +17,8 @@ import java.io.File;
 public class AssetImporter {
 
     private static AssetImporter sInstance;
-    private ImportDialogMediator.AssetsImportProgressHandler progressHandler;
-    private ImportDialog viewComponent;
+    private ImportPanelMediator.AssetsImportProgressHandler progressHandler;
+    private ImportPanel viewComponent;
 
     public static AssetImporter getInstance() {
         if (sInstance == null) {
@@ -31,11 +31,11 @@ public class AssetImporter {
 
     }
 
-    public void setProgressHandler(ImportDialogMediator.AssetsImportProgressHandler handler) {
+    public void setProgressHandler(ImportPanelMediator.AssetsImportProgressHandler handler) {
         progressHandler = handler;
     }
 
-    public void setViewComponent(ImportDialog component) {
+    public void setViewComponent(ImportPanel component) {
         viewComponent = component;
     }
 
