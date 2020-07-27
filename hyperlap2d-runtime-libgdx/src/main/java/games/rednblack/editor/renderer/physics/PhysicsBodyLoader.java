@@ -62,7 +62,9 @@ public class PhysicsBodyLoader {
 
         BodyDef bodyDef = new BodyDef();
         Vector2 sceneCoords = TransformMathUtils.localToSceneCoordinates(entity, new Vector2(0, 0));
-        bodyDef.position.set((sceneCoords.x + transformComponent.originX) * PhysicsBodyLoader.getScale() , (sceneCoords.y + transformComponent.originY)* PhysicsBodyLoader.getScale() );
+        float x = (sceneCoords.x + transformComponent.originX) * PhysicsBodyLoader.getScale();
+        float y = (sceneCoords.y + transformComponent.originY) * PhysicsBodyLoader.getScale();
+        bodyDef.position.set(x * transformComponent.scaleX, y * transformComponent.scaleY);
         bodyDef.angle = transformComponent.rotation * MathUtils.degreesToRadians;
 
         bodyDef.gravityScale = physicsComponent.gravityScale;
