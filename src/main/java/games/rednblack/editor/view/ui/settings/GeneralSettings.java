@@ -15,8 +15,10 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
     public GeneralSettings() {
         super("General", HyperLap2DFacade.getInstance());
 
+        getContentTable().add("Editor").left().row();
+        getContentTable().addSeparator();
         autoSaving = StandardWidgetsFactory.createCheckBox("Save changes automatically [EXPERIMENTAL]");
-        getContentTable().add(autoSaving).left().row();
+        getContentTable().add(autoSaving).left().padTop(5).padLeft(8).row();
 
         getContentTable().add("Plugins").left().padTop(10).row();
         getContentTable().addSeparator();
