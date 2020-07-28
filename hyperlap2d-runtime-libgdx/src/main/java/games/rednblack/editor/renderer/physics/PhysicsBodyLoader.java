@@ -102,6 +102,8 @@ public class PhysicsBodyLoader {
             body.createFixture(fixtureDef);
         }
 
+        polygonShape.dispose();
+
         MassData massData = new MassData();
         massData.center.set(physicsComponent.centerOfMass);
         massData.I = physicsComponent.rotationalInertia;
