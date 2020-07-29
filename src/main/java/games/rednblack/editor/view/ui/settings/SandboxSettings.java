@@ -75,7 +75,7 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
         });
         tintTable.add(resetButton);
 
-        getContentTable().add(tintTable).left().row();
+        getContentTable().add(tintTable).padLeft(8).left().row();
     }
 
     @Override

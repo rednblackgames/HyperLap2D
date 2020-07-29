@@ -71,7 +71,7 @@ public class LivePreviewSettings extends SettingsNodeValue<ProjectVO> {
         });
         tintTable.add(resetButton);
 
-        getContentTable().add(tintTable).left().row();
+        getContentTable().add(tintTable).padLeft(8).left().row();
     }
 
     @Override

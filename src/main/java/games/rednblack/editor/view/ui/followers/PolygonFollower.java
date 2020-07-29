@@ -32,11 +32,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.utils.PolygonUtils;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.view.stage.tools.PolygonTool;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -224,6 +226,7 @@ public class PolygonFollower extends SubFollower {
                 y = y / pixelsPerWU;
                 if(button != Input.Buttons.LEFT) return true;
                 int anchorId = anchorHitTest(x, y);
+
                 if (anchorId >= 0) {
                     draggingAnchorId = anchorId;
                     listener.anchorDown(PolygonFollower.this, anchorId, x*runtimeCamera.zoom/transformComponent.scaleX, y*runtimeCamera.zoom/transformComponent.scaleY);
@@ -250,8 +253,17 @@ public class PolygonFollower extends SubFollower {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 x = x / pixelsPerWU;
                 y = y / pixelsPerWU;
-                if(button != Input.Buttons.LEFT) return;
+
                 int anchorId = anchorHitTest(x, y);
+
+                if (button == Input.Buttons.RIGHT && anchorId >= 0) {
+                    Object[] payload = new Object[2];
+                    payload[0] = PolygonFollower.this;
+                    payload[1] = anchorId;
+                    HyperLap2DFacade.getInstance().sendNotification(PolygonTool.MANUAL_VERTEX_POSITION, payload);
+                    return;
+                }
+
                 lineIndex = vertexHitTest(x, y);
                 if (anchorId >= 0) {
                     listener.anchorUp(PolygonFollower.this, anchorId, x*runtimeCamera.zoom/transformComponent.scaleX, y*runtimeCamera.zoom/transformComponent.scaleY);

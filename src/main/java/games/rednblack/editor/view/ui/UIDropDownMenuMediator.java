@@ -21,6 +21,7 @@ package games.rednblack.editor.view.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.view.stage.tools.PolygonTool;
 import games.rednblack.h2d.common.MsgAPI;
 import com.puremvc.patterns.mediator.SimpleMediator;
 import com.puremvc.patterns.observer.Notification;
@@ -47,6 +48,7 @@ public class UIDropDownMenuMediator extends SimpleMediator<UIDropDownMenu> {
     public static final Integer SPRITE_ANIMATION_ACTION_SET = 7;
     public static final Integer SPRITER_ANIMATION_ACTION_SET = 8;
     public static final Integer PARTICLE_ACTION_SET = 9;
+    public static final Integer POLYGON_VERTEX_ACTION_SET = 10;
 
     private Sandbox sandbox;
 
@@ -99,6 +101,9 @@ public class UIDropDownMenuMediator extends SimpleMediator<UIDropDownMenu> {
         actionSets.put(RULER_RESOURCE_ACTION_SET, new Array<>());
         actionSets.get(RULER_RESOURCE_ACTION_SET).add(MsgAPI.ACTION_UPDATE_RULER_POSITION);
 
+        actionSets.put(POLYGON_VERTEX_ACTION_SET, new Array<>());
+        actionSets.get(POLYGON_VERTEX_ACTION_SET).add(MsgAPI.ACTION_UPDATE_POLYGON_VERTEX_POSITION);
+
         facade = HyperLap2DFacade.getInstance();
     }
 
@@ -115,6 +120,7 @@ public class UIDropDownMenuMediator extends SimpleMediator<UIDropDownMenu> {
                 UIResourcesBoxMediator.LIBRARY_ITEM_RIGHT_CLICK,
                 UIResourcesBoxMediator.PARTICLE_EFFECT_RIGHT_CLICK,
                 RulersUI.RIGHT_CLICK_RULER,
+                PolygonTool.MANUAL_VERTEX_POSITION
         };
     }
 
@@ -171,6 +177,9 @@ public class UIDropDownMenuMediator extends SimpleMediator<UIDropDownMenu> {
             case RulersUI.RIGHT_CLICK_RULER:
             	showPopup(RULER_RESOURCE_ACTION_SET, notification.getBody());
             	break;
+            case PolygonTool.MANUAL_VERTEX_POSITION:
+                showPopup(POLYGON_VERTEX_ACTION_SET, notification.getBody());
+                break;
             case UIDropDownMenu.ITEM_CLICKED:
                 facade.sendNotification(notification.getBody(), currentObservable);
                 break;

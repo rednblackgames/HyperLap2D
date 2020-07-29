@@ -68,6 +68,8 @@ public class BootstrapCommand extends SimpleCommand {
         facade.registerCommand(MsgAPI.ACTION_RELEASE_SELECTION, ReleaseSelectionCommand.class);
 
         facade.registerCommand(MsgAPI.ACTION_UPDATE_RULER_POSITION, ChangeRulerPositionCommand.class);
+        facade.registerCommand(MsgAPI.ACTION_UPDATE_POLYGON_VERTEX_POSITION, UpdatePolygonVertexPositionCommand.class);
+
         // DATA MODIFY by components
         facade.registerCommand(MsgAPI.ACTION_UPDATE_SCENE_DATA, UpdateSceneDataCommand.class);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_ITEM_DATA, UpdateEntityComponentsCommand.class);

@@ -112,7 +112,6 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
 
     @Override
     protected void translateObservableDataToView(SceneVO item) {
-        System.out.println("translateObservableDataToView");
         PhysicsPropertiesVO physicsVO = item.physicsPropertiesVO;
         LightsPropertiesVO lightsVO = item.lightsPropertiesVO;
         ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);

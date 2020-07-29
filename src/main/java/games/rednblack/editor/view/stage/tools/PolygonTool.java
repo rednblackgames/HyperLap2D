@@ -49,6 +49,8 @@ import java.util.Set;
 public class PolygonTool extends SelectionTool implements PolygonTransformationListener {
 
     public static final String NAME = "MESH_TOOL";
+    public static final String prefix = "games.rednblack.editor.view.stage.tools";
+    public static final String MANUAL_VERTEX_POSITION = prefix + ".MANUAL_VERTEX_POSITION";
 
     private FollowersUIMediator followersUIMediator;
 
