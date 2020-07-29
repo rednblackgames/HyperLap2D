@@ -102,7 +102,8 @@ public class UIDropDownMenuMediator extends SimpleMediator<UIDropDownMenu> {
         actionSets.get(RULER_RESOURCE_ACTION_SET).add(MsgAPI.ACTION_UPDATE_RULER_POSITION);
 
         actionSets.put(POLYGON_VERTEX_ACTION_SET, new Array<>());
-        actionSets.get(POLYGON_VERTEX_ACTION_SET).add(MsgAPI.ACTION_UPDATE_POLYGON_VERTEX_POSITION);
+        actionSets.get(POLYGON_VERTEX_ACTION_SET).add(MsgAPI.ACTION_CHANGE_POLYGON_VERTEX_POSITION);
+        actionSets.get(POLYGON_VERTEX_ACTION_SET).add(MsgAPI.ACTION_DELETE_POLYGON_VERTEX);
 
         facade = HyperLap2DFacade.getInstance();
     }

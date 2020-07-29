@@ -63,7 +63,8 @@ public class UIDropDownMenu extends PopupMenu {
         
         actionNames.put(MsgAPI.ACTION_UPDATE_RULER_POSITION, "Change Ruler Position");
 
-        actionNames.put(MsgAPI.ACTION_UPDATE_POLYGON_VERTEX_POSITION, "Change Vertex Position");
+        actionNames.put(MsgAPI.ACTION_CHANGE_POLYGON_VERTEX_POSITION, "Change Vertex Position");
+        actionNames.put(MsgAPI.ACTION_DELETE_POLYGON_VERTEX, "Delete Vertex");
     }
 
     public void setActionName(String action, String name) {

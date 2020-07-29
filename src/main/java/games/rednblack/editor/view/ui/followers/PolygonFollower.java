@@ -257,6 +257,7 @@ public class PolygonFollower extends SubFollower {
                 int anchorId = anchorHitTest(x, y);
 
                 if (button == Input.Buttons.RIGHT && anchorId >= 0) {
+                    setSelectedAnchor(anchorId);
                     Object[] payload = new Object[2];
                     payload[0] = PolygonFollower.this;
                     payload[1] = anchorId;
