@@ -18,6 +18,7 @@
 
 package games.rednblack.h2d.common.vo;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
 
@@ -32,6 +33,7 @@ public class EditorConfigVO {
     public boolean disableAmbientComposite = true;
     public boolean autoSave = false;
     public boolean enablePlugins = true;
+    public Color backgroundColor = new Color(0.15f, 0.15f, 0.15f, 1.0f);
 
     //Map to store plugin storage
     public Map<String, Map<String, Object>> pluginStorage = new HashMap<>();
