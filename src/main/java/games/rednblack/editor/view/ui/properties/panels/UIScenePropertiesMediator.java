@@ -20,9 +20,11 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
+import games.rednblack.editor.controller.commands.UpdateSceneDataCommand;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.LightsPropertiesVO;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -110,6 +112,7 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
 
     @Override
     protected void translateObservableDataToView(SceneVO item) {
+        System.out.println("translateObservableDataToView");
         PhysicsPropertiesVO physicsVO = item.physicsPropertiesVO;
         LightsPropertiesVO lightsVO = item.lightsPropertiesVO;
         ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
@@ -132,7 +135,34 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
 
     @Override
     protected void translateViewToItemData() {
-        PhysicsPropertiesVO physicsVO = observableReference.physicsPropertiesVO;
+        PhysicsPropertiesVO physicsVO = new PhysicsPropertiesVO();
+        physicsVO.gravityX = NumberUtils.toFloat(viewComponent.getGravityXValue(), physicsVO.gravityX);
+        physicsVO.gravityY = NumberUtils.toFloat(viewComponent.getGravityYValue(), physicsVO.gravityY);
+        physicsVO.sleepVelocity = NumberUtils.toFloat(viewComponent.getSleepVelocityValue(), physicsVO.sleepVelocity);
+        physicsVO.enabled = viewComponent.isPhysicsEnabled();
+
+        LightsPropertiesVO lightsVO = new LightsPropertiesVO();
+        Color color = viewComponent.getAmbientColor();
+        lightsVO.ambientColor[0] = color.r;
+        lightsVO.ambientColor[1] = color.g;
+        lightsVO.ambientColor[2] = color.b;
+        lightsVO.ambientColor[3] = color.a;
+        lightsVO.blurNum = NumberUtils.toInt(viewComponent.getBlurNumValue(), lightsVO.blurNum);
+        lightsVO.lightType = viewComponent.getLightType();
+        lightsVO.directionalDegree = NumberUtils.toFloat(viewComponent.getDirectionalDegree(), lightsVO.directionalDegree);
+        lightsVO.directionalRays = NumberUtils.toInt(viewComponent.getDirectionalRays(), lightsVO.directionalRays);
+        color = viewComponent.getDirectionalColor();
+        lightsVO.directionalColor[0] = color.r;
+        lightsVO.directionalColor[1] = color.g;
+        lightsVO.directionalColor[2] = color.b;
+        lightsVO.directionalColor[3] = color.a;
+
+        lightsVO.enabled = viewComponent.isLightsEnabled();
+
+        Object payload = UpdateSceneDataCommand.payload(observableReference, physicsVO, lightsVO);
+        facade.sendNotification(MsgAPI.ACTION_UPDATE_SCENE_DATA, payload);
+
+        /*PhysicsPropertiesVO physicsVO = observableReference.physicsPropertiesVO;
         physicsVO.gravityX = NumberUtils.toFloat(viewComponent.getGravityXValue(), physicsVO.gravityX);
         physicsVO.gravityY = NumberUtils.toFloat(viewComponent.getGravityYValue(), physicsVO.gravityY);
         physicsVO.sleepVelocity = NumberUtils.toFloat(viewComponent.getSleepVelocityValue(), physicsVO.sleepVelocity);
@@ -156,6 +186,6 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
 
         lightsVO.enabled = viewComponent.isLightsEnabled();
 
-        Sandbox.getInstance().sceneControl.updateAmbientLights();
+        Sandbox.getInstance().sceneControl.updateAmbientLights();*/
     }
 }

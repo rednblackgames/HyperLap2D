@@ -5,14 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.utils.AppConfig;
-import games.rednblack.h2d.common.MsgAPI;
 import org.apache.commons.lang3.SystemUtils;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class HyperLap2DApp extends ApplicationAdapter {
     private static HyperLap2DApp sInstance = null;
@@ -42,7 +37,7 @@ public class HyperLap2DApp extends ApplicationAdapter {
         Lwjgl3Application app = (Lwjgl3Application) Gdx.app;
 
         Lwjgl3ApplicationConfiguration config2 = new Lwjgl3ApplicationConfiguration();
-        config2.setWindowedMode(467, 415);
+        config2.setWindowedMode(467, 385);
         config2.setTitle("HyperLap2D");
         config2.setResizable(false);
         config2.setDecorated(false);

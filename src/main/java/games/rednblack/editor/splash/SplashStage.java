@@ -19,9 +19,11 @@ public class SplashStage extends Stage {
     public SplashStage() {
         atlas = new TextureAtlas(Gdx.files.internal("splash/splash.atlas"));
         BitmapFont robotFont = new BitmapFont(Gdx.files.internal("splash/myriad.fnt"));
-        Label.LabelStyle labelStyle = new Label.LabelStyle(robotFont, new Color(0, 0, 0, 1f));
+        Label.LabelStyle whiteLabelStyle = new Label.LabelStyle(robotFont, new Color(1, 1, 1, 1f));
+        Label.LabelStyle blackLabelStyle = new Label.LabelStyle(robotFont, new Color(0, 0, 0, 1f));
 
         Image bg = new Image(atlas.findRegion("bg_color"));
+        bg.setColor(0, 0, 0, 1);
         bg.setX(0);
         bg.setY(0);
         bg.setWidth(getWidth());
@@ -43,22 +45,22 @@ public class SplashStage extends Stage {
         logoText.setY(logo.getY() + 30);
         addActor(logoText);
 
-        progress = new Label("Loading fonts", labelStyle);
+        progress = new Label("Loading fonts", blackLabelStyle);
         progress.setX(logoText.getX() + ((logoText.getWidth() - progress.getWidth() )/ 2));
         progress.setY(logo.getY() + 5);
         addActor(progress);
 
-        Label companyName = new Label("Red & Black Games", labelStyle);
+        Label companyName = new Label("Red & Black  Games", whiteLabelStyle);
         companyName.setX(13);
         companyName.setY(55 - companyName.getHeight() - 7);
         addActor(companyName);
 
-        Label copyright = new Label("Copyright (c) 2020. All rights reserved.", labelStyle);
+        Label copyright = new Label("Copyright (c) 2020,  All rights reserved.", whiteLabelStyle);
         copyright.setX(13);
         copyright.setY(companyName.getY() - 20);
         addActor(copyright);
 
-        Label version = new Label(AppConfig.getInstance().version, labelStyle);
+        Label version = new Label("v" + AppConfig.getInstance().version, whiteLabelStyle);
         version.setX(getWidth() - 13 - version.getWidth());
         version.setY(companyName.getY());
         addActor(version);

@@ -65,7 +65,7 @@ public abstract class UIAbstractPropertiesMediator<T, V extends UIAbstractProper
                 translateViewToItemData();
             }
         }
-
+        System.out.println(notification.getName());
         switch (notification.getName()) {
             case MsgAPI.ITEM_DATA_UPDATED:
                 onItemDataUpdate();

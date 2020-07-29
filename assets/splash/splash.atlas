@@ -6,7 +6,7 @@ filter: Nearest,Nearest
 repeat: none
 bg_color
   rotate: false
-  xy: 471, 480
+  xy: 471, 444
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
@@ -14,8 +14,8 @@ bg_color
 splash_bg
   rotate: false
   xy: 2, 122
-  size: 467, 366
-  orig: 467, 366
+  size: 467, 330
+  orig: 467, 330
   offset: 0, 0
   index: -1
 splash_logo
