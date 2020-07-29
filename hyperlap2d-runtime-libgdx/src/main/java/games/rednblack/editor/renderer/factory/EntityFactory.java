@@ -188,11 +188,11 @@ public class EntityFactory {
 
         CompositeItemVO vo = new CompositeItemVO();
         vo.composite = compositeVo;
+        vo.automaticResize = false;
 
         Entity entity = engine.createEntity();
 
         compositeComponentFactory.createComponents(null, entity, vo);
-//		CompositeTransformComponent compositeTransform = new CompositeTransformComponent();
         TransformComponent transform = engine.createComponent(TransformComponent.class);
 
         ViewPortComponent viewPortComponent = engine.createComponent(ViewPortComponent.class);

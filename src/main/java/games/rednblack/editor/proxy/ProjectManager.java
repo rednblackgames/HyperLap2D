@@ -152,7 +152,6 @@ public class ProjectManager extends BaseProxy {
         sceneDataManager.createNewScene("MainScene");
         FileUtils.writeStringToFile(new File(projPath + "/project.h2d"), projVo.constructJsonString(), "utf-8");
         FileUtils.writeStringToFile(new File(projPath + "/project.dt"), projInfoVo.constructJsonString(), "utf-8");
-
     }
 
     public void openProjectAndLoadAllData(String projectPath) {
