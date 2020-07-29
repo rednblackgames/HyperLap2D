@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.util.OsUtils;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.proxy.CursorManager;
+import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
@@ -37,6 +37,7 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.EntityBounds;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.view.ui.Cursors;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -97,7 +98,7 @@ public class SelectionTool extends SimpleTool {
 
         // set cursor
         CursorManager cursorManager = HyperLap2DFacade.getInstance().retrieveProxy(CursorManager.NAME);
-        cursorManager.setCursor(CursorManager.NORMAL);
+        cursorManager.setCursor(Cursors.NORMAL);
     }
 
     @Override

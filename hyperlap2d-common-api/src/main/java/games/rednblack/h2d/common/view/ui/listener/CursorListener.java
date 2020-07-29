@@ -16,34 +16,31 @@
  *  *****************************************************************************
  */
 
-package games.rednblack.editor.view.ui.widget;
+package games.rednblack.h2d.common.view.ui.listener;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.proxy.CursorManager;
+import com.puremvc.patterns.facade.Facade;
+import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.h2d.common.vo.CursorData;
 
-/**
- * Created by NateS
- */
 public class CursorListener extends InputListener {
-    private CursorData cursor;
-    private CursorManager cursorManager;
+    private final CursorData cursor;
+    private final CursorManager cursorManager;
 
-    private CursorData prevCursor;
-
-    public CursorListener (CursorData cursor) {
+    public CursorListener(CursorData cursor, Facade facade) {
         this.cursor = cursor;
-        cursorManager = HyperLap2DFacade.getInstance().retrieveProxy(CursorManager.NAME);
+        cursorManager = facade.retrieveProxy(CursorManager.NAME);
     }
 
-    public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
+    @Override
+    public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
         if (pointer == -1) cursorManager.setOverrideCursor(cursor);
     }
 
-    public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
+    @Override
+    public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
         if (pointer == -1) cursorManager.removeOverrideCursor();
     }
 }

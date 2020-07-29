@@ -16,7 +16,7 @@ import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.ZipUtils;
-import games.rednblack.editor.view.ui.widget.ui.HyperLapFileChooser;
+import games.rednblack.h2d.common.view.ui.widget.HyperLapFileChooser;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.h2d.common.vo.ExportMapperVO.ExportedAsset;

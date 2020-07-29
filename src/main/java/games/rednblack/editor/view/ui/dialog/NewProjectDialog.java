@@ -24,14 +24,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.H2DDialog;
-import com.kotcrab.vis.ui.util.form.SimpleFormValidator;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.validator.StringNameValidator;
-import games.rednblack.editor.view.ui.widget.InputFileWidget;
+import games.rednblack.h2d.common.view.ui.widget.InputFileWidget;
 
 import java.io.File;
 

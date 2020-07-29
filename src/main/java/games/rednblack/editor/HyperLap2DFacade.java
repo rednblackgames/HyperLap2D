@@ -22,6 +22,7 @@ import com.puremvc.patterns.facade.SimpleFacade;
 import com.puremvc.patterns.observer.BaseNotification;
 import games.rednblack.editor.controller.StartupCommand;
 import games.rednblack.editor.splash.SplashMediator;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by sargis on 3/30/15.
@@ -71,6 +72,7 @@ public class HyperLap2DFacade extends SimpleFacade {
 
     @Override
     protected void initializeView() {
+        StandardWidgetsFactory.init(this);
         super.initializeView();
     }
 }

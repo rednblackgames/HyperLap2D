@@ -7,7 +7,7 @@ import com.kotcrab.vis.ui.widget.VisImage;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.utils.AppConfig;
-import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.H2DDialog;
 
 public class AboutDialog extends H2DDialog {

@@ -7,9 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.*;
-import com.puremvc.patterns.facade.Facade;
-import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
 

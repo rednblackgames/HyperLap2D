@@ -1,10 +1,8 @@
-package games.rednblack.editor.view.ui.widget;
+package games.rednblack.h2d.common.view.ui.listener;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 
 public class ScrollFocusListener extends InputListener {
     private Actor listenerActor;

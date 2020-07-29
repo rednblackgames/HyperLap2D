@@ -11,7 +11,7 @@ import com.kotcrab.vis.ui.widget.VisSelectBox;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.SceneVO;
-import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.stage.Sandbox;
 
 public class UISceneBox extends UIBaseBox {

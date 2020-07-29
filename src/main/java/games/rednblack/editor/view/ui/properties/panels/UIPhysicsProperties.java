@@ -8,7 +8,7 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
-import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 
 import java.util.HashMap;

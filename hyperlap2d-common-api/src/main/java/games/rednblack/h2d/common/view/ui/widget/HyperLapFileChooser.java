@@ -1,29 +1,28 @@
-package games.rednblack.editor.view.ui.widget.ui;
+package games.rednblack.h2d.common.view.ui.widget;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisImageButton;
-import com.kotcrab.vis.ui.widget.color.ColorPicker;
-import com.kotcrab.vis.ui.widget.color.ColorPickerListener;
+import com.kotcrab.vis.ui.widget.file.FileChooser;
 
-public class HyperLapColorPicker extends ColorPicker {
-
-    public HyperLapColorPicker (String title) {
-        this("default", title, null);
+public class HyperLapFileChooser extends FileChooser {
+    public HyperLapFileChooser(Mode mode) {
+        super(mode);
     }
 
-    public HyperLapColorPicker (String title, ColorPickerListener listener) {
-        this("default", title, listener);
+    public HyperLapFileChooser(FileHandle directory, Mode mode) {
+        super(directory, mode);
     }
 
-    public HyperLapColorPicker (ColorPickerListener listener) {
-        this("default", null, listener);
+    public HyperLapFileChooser(String title, Mode mode) {
+        super(title, mode);
     }
 
-    public HyperLapColorPicker (String styleName, String title, ColorPickerListener listener) {
-        super(styleName, title, listener);
+    public HyperLapFileChooser(String styleName, String title, Mode mode) {
+        super(styleName, title, mode);
     }
 
     @Override

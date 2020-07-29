@@ -21,7 +21,7 @@ package games.rednblack.editor.view.ui.box;
 import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.properties.UIAbstractProperties;
 
 /**

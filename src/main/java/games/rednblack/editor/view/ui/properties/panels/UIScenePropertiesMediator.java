@@ -23,7 +23,7 @@ import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.LightsPropertiesVO;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
-import games.rednblack.editor.view.ui.widget.ui.HyperLapColorPicker;
+import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 

@@ -25,7 +25,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.SelectBoxChangeListener;
-import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 
 import java.util.HashMap;

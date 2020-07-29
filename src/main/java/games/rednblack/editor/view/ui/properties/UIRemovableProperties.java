@@ -7,9 +7,8 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.h2d.common.MsgAPI;
 
 /**
  * Created by CyberJoe on 7/2/2015.

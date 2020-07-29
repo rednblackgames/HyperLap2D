@@ -30,6 +30,7 @@ import games.rednblack.h2d.common.IItemCommand;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.plugins.H2DPlugin;
 import games.rednblack.h2d.common.plugins.PluginAPI;
+import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.h2d.common.view.tools.Tool;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.puremvc.patterns.facade.Facade;

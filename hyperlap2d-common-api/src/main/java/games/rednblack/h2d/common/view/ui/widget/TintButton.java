@@ -16,15 +16,13 @@
  *  *****************************************************************************
  */
 
-package games.rednblack.editor.view.ui.widget.components;
-
+package games.rednblack.h2d.common.view.ui.widget;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.kotcrab.vis.ui.VisUI;
-
 
 /**
  * Created by azakhary on 7/8/2014.

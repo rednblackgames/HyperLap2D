@@ -13,9 +13,9 @@ import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.NumberSelectorOverlapListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
-import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
-import games.rednblack.editor.view.ui.widget.components.TintButton;
+import games.rednblack.h2d.common.view.ui.widget.TintButton;
 
 import java.util.HashMap;
 

@@ -31,7 +31,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
-import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 public class UIResolutionBox extends UIBaseBox {
 	private static final String prefix = "games.rednblack.editor.view.ui.box.UIResolutionBox";

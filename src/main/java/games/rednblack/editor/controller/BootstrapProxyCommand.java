@@ -23,6 +23,7 @@ import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.*;
 import games.rednblack.editor.splash.SplashScreenAdapter;
+import games.rednblack.h2d.common.proxy.CursorManager;
 
 /**
  * Created by sargis on 4/1/15.

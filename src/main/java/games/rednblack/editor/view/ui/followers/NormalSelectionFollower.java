@@ -29,7 +29,7 @@ import com.kotcrab.vis.ui.VisUI;
 import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.proxy.CursorManager;
+import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.editor.view.stage.tools.TransformTool;
 import games.rednblack.editor.view.ui.widget.EmptyTarget;
 

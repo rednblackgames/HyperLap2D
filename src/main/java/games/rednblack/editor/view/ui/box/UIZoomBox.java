@@ -27,7 +27,7 @@ import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.KeyboardListener;
-import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by sargis on 4/27/15.

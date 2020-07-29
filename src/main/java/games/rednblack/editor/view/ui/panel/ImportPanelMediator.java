@@ -36,7 +36,7 @@ import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.stage.UIStage;
-import games.rednblack.editor.view.ui.widget.ui.HyperLapFileChooser;
+import games.rednblack.h2d.common.view.ui.widget.HyperLapFileChooser;
 
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;

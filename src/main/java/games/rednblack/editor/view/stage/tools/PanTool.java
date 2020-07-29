@@ -4,11 +4,12 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import games.rednblack.editor.proxy.CursorManager;
+import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.h2d.common.view.ui.Cursors;
 import games.rednblack.h2d.common.vo.SceneConfigVO;
 
 /**
@@ -40,7 +41,7 @@ public class PanTool extends SimpleTool {
     @Override
     public void initTool() {
         CursorManager cursorManager = HyperLap2DFacade.getInstance().retrieveProxy(CursorManager.NAME);
-        cursorManager.setCursor(CursorManager.HAND);
+        cursorManager.setCursor(Cursors.HAND);
     }
 
     @Override

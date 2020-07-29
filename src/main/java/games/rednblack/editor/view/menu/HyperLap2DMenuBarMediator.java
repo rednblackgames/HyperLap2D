@@ -23,7 +23,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import games.rednblack.editor.proxy.SettingsManager;
-import games.rednblack.editor.view.ui.widget.ui.HyperLapFileChooser;
+import games.rednblack.h2d.common.view.ui.widget.HyperLapFileChooser;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;

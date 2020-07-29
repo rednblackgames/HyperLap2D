@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Align;
 import games.rednblack.h2d.common.UIDraggablePanel;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 import java.util.HashSet;
 import java.util.Set;

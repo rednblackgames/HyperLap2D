@@ -36,7 +36,7 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.utils.InputFilters;
-import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by azakhary on 4/17/2015.

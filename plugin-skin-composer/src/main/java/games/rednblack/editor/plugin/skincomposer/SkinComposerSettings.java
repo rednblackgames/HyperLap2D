@@ -1,25 +1,26 @@
 package games.rednblack.editor.plugin.skincomposer;
 
-import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.puremvc.patterns.facade.Facade;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.plugins.H2DPluginAdapter;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 public class SkinComposerSettings extends SettingsNodeValue<SkinComposerVO> {
 
     private final VisCheckBox alwaysCheckUpdates;
-    private H2DPluginAdapter plugin;
-    private Json json = new Json();
+    private final H2DPluginAdapter plugin;
 
     public SkinComposerSettings(Facade facade, H2DPluginAdapter plugin) {
         super("Skin Composer", facade);
 
         this.plugin = plugin;
 
-        alwaysCheckUpdates = new VisCheckBox("Always check for updates");
-        getContentTable().add(alwaysCheckUpdates).left().row();
+        getContentTable().add("Updates").left().row();
+        getContentTable().addSeparator();
+        alwaysCheckUpdates = StandardWidgetsFactory.createCheckBox("Always check for updates");
+        getContentTable().add(alwaysCheckUpdates).left().padTop(5).padLeft(8).row();
     }
 
     @Override

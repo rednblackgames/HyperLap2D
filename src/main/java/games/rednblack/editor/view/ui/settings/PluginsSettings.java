@@ -3,7 +3,7 @@ package games.rednblack.editor.view.ui.settings;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
 
 public class PluginsSettings extends SettingsNodeValue<String> {

@@ -32,11 +32,11 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.event.ButtonToNotificationListener;
-import games.rednblack.editor.view.ui.widget.components.TintButton;
+import games.rednblack.h2d.common.view.ui.widget.TintButton;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.view.ui.properties.UIItemProperties;
-import games.rednblack.editor.utils.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by azakhary on 4/15/2015.
