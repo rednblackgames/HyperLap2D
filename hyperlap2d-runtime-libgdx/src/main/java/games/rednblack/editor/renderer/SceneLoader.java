@@ -263,9 +263,7 @@ public class SceneLoader {
 		if (physicsSystem != null)
 			physicsSystem.setPhysicsOn(sceneVO.physicsPropertiesVO.enabled);
 
-		System.out.println("load scene");
 		if(sceneVO.composite == null) {
-			System.out.println("root composite null");
 			sceneVO.composite = new CompositeVO();
 		}
 		rootEntity = entityFactory.createRootEntity(sceneVO.composite, viewport);
