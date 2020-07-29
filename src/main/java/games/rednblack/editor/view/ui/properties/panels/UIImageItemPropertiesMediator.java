@@ -1,7 +1,7 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.ashley.core.Entity;
-import games.rednblack.editor.controller.commands.component.UpdateImageItemCommand;
+import games.rednblack.editor.controller.commands.component.UpdateImageItemDataCommand;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.data.SimpleImageVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
@@ -45,7 +45,7 @@ public class UIImageItemPropertiesMediator extends UIItemPropertiesMediator<Enti
         payloadVo.isPolygon = viewComponent.getSpriteType().equals("POLYGON");
 
         if (oldPayloadVo.isRepeat != payloadVo.isRepeat && oldPayloadVo.isPolygon != payloadVo.isPolygon) {
-            Object payload = UpdateImageItemCommand.payload(observableReference, payloadVo);
+            Object payload = UpdateImageItemDataCommand.payload(observableReference, payloadVo);
             facade.sendNotification(MsgAPI.ACTION_UPDATE_IMAGE_ITEM_DATA, payload);
         }
     }

@@ -12,7 +12,7 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.h2d.common.MsgAPI;
 
-public class UpdateImageItemCommand extends EntityModifyRevertibleCommand {
+public class UpdateImageItemDataCommand extends EntityModifyRevertibleCommand {
 
     private Integer entityId;
     private SimpleImageVO backup;

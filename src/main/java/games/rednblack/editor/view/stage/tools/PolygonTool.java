@@ -27,7 +27,7 @@ import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
-import games.rednblack.editor.controller.commands.component.UpdatePolygonComponentCommand;
+import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.poly.Clipper;
@@ -132,7 +132,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
     @Override
     public void vertexDown(PolygonFollower follower, int vertexIndex, float x, float y) {
         PolygonComponent polygonComponent = ComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
-        currentCommandPayload = UpdatePolygonComponentCommand.payloadInitialState(follower.getEntity());
+        currentCommandPayload = UpdatePolygonDataCommand.payloadInitialState(follower.getEntity());
 
         follower.getOriginalPoints().add(vertexIndex, new Vector2(x, y));
         Vector2[] points = follower.getOriginalPoints().toArray(new Vector2[0]);
@@ -158,7 +158,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
     @Override
     public void anchorDown(PolygonFollower follower, int anchor, float x, float y) {
         dragLastPoint = new Vector2(x, y);
-        currentCommandPayload = UpdatePolygonComponentCommand.payloadInitialState(follower.getEntity());
+        currentCommandPayload = UpdatePolygonDataCommand.payloadInitialState(follower.getEntity());
         follower.setSelectedAnchor(anchor);
         lastSelectedMeshFollower = follower;
 
@@ -211,7 +211,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
 
         follower.setProblems(null);
 
-        currentCommandPayload = UpdatePolygonComponentCommand.payload(currentCommandPayload, polygonComponent.vertices);
+        currentCommandPayload = UpdatePolygonDataCommand.payload(currentCommandPayload, polygonComponent.vertices);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
     }
 
@@ -246,7 +246,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
             if(follower.getOriginalPoints().size() <= 3) return false;
 
             polygonBackup = polygonComponent.vertices.clone();
-            currentCommandPayload = UpdatePolygonComponentCommand.payloadInitialState(follower.getEntity());
+            currentCommandPayload = UpdatePolygonDataCommand.payloadInitialState(follower.getEntity());
 
             follower.getOriginalPoints().remove(follower.getSelectedAnchorId());
             follower.getSelectedAnchorId(follower.getSelectedAnchorId()-1);
@@ -259,7 +259,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
                 follower.update();
             }
 
-            currentCommandPayload = UpdatePolygonComponentCommand.payload(currentCommandPayload, polygonComponent.vertices);
+            currentCommandPayload = UpdatePolygonDataCommand.payload(currentCommandPayload, polygonComponent.vertices);
             HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
 
             follower.updateDraw();

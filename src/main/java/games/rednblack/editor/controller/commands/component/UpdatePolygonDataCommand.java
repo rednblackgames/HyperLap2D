@@ -35,7 +35,7 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 /**
  * Created by azakhary on 7/3/2015.
  */
-public class UpdatePolygonComponentCommand extends EntityModifyRevertibleCommand {
+public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
 
     private Integer entityId;
     private Vector2[][] dataFrom;

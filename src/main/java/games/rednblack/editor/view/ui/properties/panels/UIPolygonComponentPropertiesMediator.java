@@ -24,7 +24,7 @@ import games.rednblack.h2d.common.MsgAPI;
 import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
-import games.rednblack.editor.controller.commands.component.UpdatePolygonComponentCommand;
+import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
@@ -123,8 +123,8 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
     private void pasteMesh() {
         Vector2[][] vertices = (Vector2[][]) Sandbox.getInstance().retrieveFromLocalClipboard("meshData");
         if(vertices == null) return;
-        Object[] payload = UpdatePolygonComponentCommand.payloadInitialState(observableReference);
-        payload = UpdatePolygonComponentCommand.payload(payload, vertices);
+        Object[] payload = UpdatePolygonDataCommand.payloadInitialState(observableReference);
+        payload = UpdatePolygonDataCommand.payload(payload, vertices);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, payload);
     }
 }
