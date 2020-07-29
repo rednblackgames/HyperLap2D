@@ -49,9 +49,6 @@ public class SettingsDialogMediator extends SimpleMediator<SettingsDialog> {
         sandboxSettings.setSettings(settingsManager.editorConfigVO);
         viewComponent.addSettingsNode(sandboxSettings);
 
-        LivePreviewSettings livePreviewSettings = new LivePreviewSettings();
-        viewComponent.addSettingsNode(livePreviewSettings);
-
         if (settingsManager.editorConfigVO.enablePlugins) {
             PluginsSettings pluginsSettings = new PluginsSettings();
             pluginsSettingsNode = viewComponent.addSettingsNode(pluginsSettings);

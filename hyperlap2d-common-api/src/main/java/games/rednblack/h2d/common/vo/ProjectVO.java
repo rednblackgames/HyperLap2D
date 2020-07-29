@@ -18,6 +18,7 @@
 
 package games.rednblack.h2d.common.vo;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
@@ -35,6 +36,7 @@ public class ProjectVO {
     public String lastOpenResolution = "";
     public boolean lockLines = false;
     public int gridSize = 1;
+    public Color backgroundColor = new Color(0,0,0,1);
 
     public TexturePackerVO texturePackerVO = new TexturePackerVO();
 

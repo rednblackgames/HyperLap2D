@@ -37,6 +37,7 @@ import games.rednblack.editor.utils.ZipUtils;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.SettingsDialog;
+import games.rednblack.editor.view.ui.settings.LivePreviewSettings;
 import games.rednblack.editor.view.ui.settings.ProjectExportSettings;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.*;
@@ -84,6 +85,7 @@ public class ProjectManager extends BaseProxy {
     }
 
     private ProjectExportSettings projectExportSettings;
+    private LivePreviewSettings livePreviewSettings;
 
     @Override
     public void onRegister() {
@@ -91,6 +93,7 @@ public class ProjectManager extends BaseProxy {
         facade = HyperLap2DFacade.getInstance();
 
         projectExportSettings = new ProjectExportSettings();
+        livePreviewSettings = new LivePreviewSettings();
     }
 
     @Override
@@ -193,6 +196,8 @@ public class ProjectManager extends BaseProxy {
                 currentProjectInfoVO = json.fromJson(ProjectInfoVO.class, projectInfoContents);
                 projectExportSettings.setSettings(vo);
                 facade.sendNotification(SettingsDialog.ADD_SETTINGS, projectExportSettings);
+                livePreviewSettings.setSettings(vo);
+                facade.sendNotification(SettingsDialog.ADD_SETTINGS, livePreviewSettings);
             } catch (IOException e) {
                 e.printStackTrace();
             }
