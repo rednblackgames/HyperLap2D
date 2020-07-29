@@ -27,11 +27,16 @@ public class SplashScreenAdapter extends Game {
     public static final String CLOSE_SPLASH = prefix + ".CLOSE";
 
     private SplashScreen screen;
+    private boolean isLoading = true;
 
     @Override
     public void create () {
-        screen = new SplashScreen();
+        screen = new SplashScreen(isLoading);
         setScreen(screen);
+    }
+
+    public void setLoading(boolean loading) {
+        isLoading = loading;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package games.rednblack.editor.splash;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 
@@ -8,8 +9,9 @@ public class SplashScreen extends ScreenAdapter {
 
     private SplashStage stage;
 
-    public SplashScreen() {
-        stage = new SplashStage();
+    public SplashScreen(boolean loading) {
+        stage = new SplashStage(loading);
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override

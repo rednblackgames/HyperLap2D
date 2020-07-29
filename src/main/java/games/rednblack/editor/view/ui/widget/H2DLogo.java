@@ -18,19 +18,27 @@
 
 package games.rednblack.editor.view.ui.widget;
 
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImage;
 import com.kotcrab.vis.ui.widget.VisTable;
+import games.rednblack.editor.HyperLap2DApp;
 
-/**
- * Created by sargis on 4/23/15.
- */
 public class H2DLogo extends VisTable {
     public H2DLogo() {
         Skin skin = VisUI.getSkin();
         setBackground(skin.getDrawable("menu-bg"));
         VisImage logo = new VisImage(VisUI.getSkin().getDrawable("logo"));
         add(logo).width(logo.getWidth()).height(logo.getHeight()).padLeft(7);
+        logo.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                if (getTapCount() == 2)
+                    HyperLap2DApp.getInstance().showUISplashWindow();
+            }
+        });
     }
 }

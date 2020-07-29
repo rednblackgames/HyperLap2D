@@ -71,4 +71,22 @@ public class HyperLap2DApp extends ApplicationAdapter {
             }
         });
     }
+
+    public void showUISplashWindow() {
+        Lwjgl3Application app = (Lwjgl3Application) Gdx.app;
+
+        Lwjgl3ApplicationConfiguration config2 = new Lwjgl3ApplicationConfiguration();
+        config2.setWindowedMode(467, 385);
+        config2.setTitle("HyperLap2D");
+        config2.setResizable(false);
+        config2.setDecorated(false);
+        config2.useVsync(false);
+        config2.setIdleFPS(60);
+        config2.setWindowIcon("hyperlap_icon_96.png");
+
+        SplashScreenAdapter adapter = new SplashScreenAdapter();
+        adapter.setLoading(false);
+
+        splashWindow = app.newWindow(adapter, config2);
+    }
 }

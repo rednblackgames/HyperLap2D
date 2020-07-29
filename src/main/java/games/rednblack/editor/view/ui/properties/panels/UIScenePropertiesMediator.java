@@ -161,31 +161,5 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
 
         Object payload = UpdateSceneDataCommand.payload(observableReference, physicsVO, lightsVO);
         facade.sendNotification(MsgAPI.ACTION_UPDATE_SCENE_DATA, payload);
-
-        /*PhysicsPropertiesVO physicsVO = observableReference.physicsPropertiesVO;
-        physicsVO.gravityX = NumberUtils.toFloat(viewComponent.getGravityXValue(), physicsVO.gravityX);
-        physicsVO.gravityY = NumberUtils.toFloat(viewComponent.getGravityYValue(), physicsVO.gravityY);
-        physicsVO.sleepVelocity = NumberUtils.toFloat(viewComponent.getSleepVelocityValue(), physicsVO.sleepVelocity);
-        physicsVO.enabled = viewComponent.isPhysicsEnabled();
-
-        LightsPropertiesVO lightsVO = observableReference.lightsPropertiesVO;
-        Color color = viewComponent.getAmbientColor();
-        lightsVO.ambientColor[0] = color.r;
-        lightsVO.ambientColor[1] = color.g;
-        lightsVO.ambientColor[2] = color.b;
-        lightsVO.ambientColor[3] = color.a;
-        lightsVO.blurNum = NumberUtils.toInt(viewComponent.getBlurNumValue(), lightsVO.blurNum);
-        lightsVO.lightType = viewComponent.getLightType();
-        lightsVO.directionalDegree = NumberUtils.toFloat(viewComponent.getDirectionalDegree(), lightsVO.directionalDegree);
-        lightsVO.directionalRays = NumberUtils.toInt(viewComponent.getDirectionalRays(), lightsVO.directionalRays);
-        color = viewComponent.getDirectionalColor();
-        lightsVO.directionalColor[0] = color.r;
-        lightsVO.directionalColor[1] = color.g;
-        lightsVO.directionalColor[2] = color.b;
-        lightsVO.directionalColor[3] = color.a;
-
-        lightsVO.enabled = viewComponent.isLightsEnabled();
-
-        Sandbox.getInstance().sceneControl.updateAmbientLights();*/
     }
 }

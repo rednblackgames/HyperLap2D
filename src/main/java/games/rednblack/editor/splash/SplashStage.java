@@ -1,6 +1,8 @@
 package games.rednblack.editor.splash;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -15,8 +17,10 @@ public class SplashStage extends Stage {
     private TextureAtlas atlas;
     private Image logoText;
     private Label progress;
+    private boolean isLoading = true;
 
-    public SplashStage() {
+    public SplashStage(boolean isLoading) {
+        this.isLoading = isLoading;
         atlas = new TextureAtlas(Gdx.files.internal("splash/splash.atlas"));
         BitmapFont robotFont = new BitmapFont(Gdx.files.internal("splash/myriad.fnt"));
         Label.LabelStyle whiteLabelStyle = new Label.LabelStyle(robotFont, new Color(1, 1, 1, 1f));
@@ -48,7 +52,8 @@ public class SplashStage extends Stage {
         progress = new Label("Loading fonts", blackLabelStyle);
         progress.setX(logoText.getX() + ((logoText.getWidth() - progress.getWidth() )/ 2));
         progress.setY(logo.getY() + 5);
-        addActor(progress);
+        if (isLoading)
+            addActor(progress);
 
         Label companyName = new Label("Red & Black  Games", whiteLabelStyle);
         companyName.setX(13);
@@ -66,6 +71,15 @@ public class SplashStage extends Stage {
         addActor(version);
 
         setProgressStatus("Initializing");
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        super.touchUp(screenX, screenY, pointer, button);
+        if (!isLoading) {
+            HyperLap2DApp.getInstance().splashWindow.closeWindow();
+        }
+        return true;
     }
 
     public void setProgressStatus(String status) {
