@@ -42,7 +42,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-
 /**
  * Created by azakhary on 7/2/2015.
  */
@@ -139,7 +138,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
         follower.getOriginalPoints().add(vertexIndex, new Vector2(x, y));
         Vector2[] points = follower.getOriginalPoints().toArray(new Vector2[0]);
 
-        polygonComponent.vertices = polygonize(points);
+        polygonComponent.vertices = PolygonUtils.polygonize(points);
         follower.updateDraw();
 
         follower.draggingAnchorId = vertexIndex;
@@ -178,9 +177,9 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
         dragLastPoint = new Vector2(x, y);
 
         // check if any of near lines intersect
-        int[] intersections = checkForIntersection(anchor, points);
+        int[] intersections = PolygonUtils.checkForIntersection(anchor, points);
         if(intersections == null) {
-            polygonComponent.vertices = polygonize(points);
+            polygonComponent.vertices = PolygonUtils.polygonize(points);
             follower.setProblems(null);
         } else {
             follower.setProblems(intersections);
@@ -195,13 +194,13 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
 
         Vector2[] points = follower.getOriginalPoints().toArray(new Vector2[0]);
 
-        int[] intersections = checkForIntersection(anchor, points);
+        int[] intersections = PolygonUtils.checkForIntersection(anchor, points);
         if(intersections == null) {
             if(PolygonUtils.isPolygonCCW(points)){
                 Collections.reverse(follower.getOriginalPoints());
                 points = follower.getOriginalPoints().toArray(new Vector2[0]);
             }
-            polygonComponent.vertices = polygonize(points);
+            polygonComponent.vertices = PolygonUtils.polygonize(points);
         }
 
         if(polygonComponent.vertices == null) {
@@ -215,10 +214,6 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
 
         currentCommandPayload = UpdatePolygonDataCommand.payload(currentCommandPayload, polygonComponent.vertices);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
-    }
-
-    private Vector2[][] polygonize(Vector2[] vertices) {
-        return Clipper.polygonize(Clipper.Polygonizer.EWJORDAN, vertices);
     }
 
     @Override
@@ -253,7 +248,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
             follower.getOriginalPoints().remove(follower.getSelectedAnchorId());
             follower.getSelectedAnchorId(follower.getSelectedAnchorId()-1);
             Vector2[] points = follower.getOriginalPoints().toArray(new Vector2[0]);
-            polygonComponent.vertices = polygonize(points);
+            polygonComponent.vertices = PolygonUtils.polygonize(points);
 
             if(polygonComponent.vertices == null) {
                 // restore from backup
@@ -270,68 +265,5 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
         }
 
         return false;
-    }
-
-    private boolean intersectSegments(Vector2[] points, int index1, int index2, int index3, int index4) {
-        Vector2 intersectionPoint = new Vector2(points[index1]);
-        boolean isIntersecting = Intersector.intersectSegments(points[index1], points[index2], points[index3], points[index4], intersectionPoint);
-        if(isIntersecting && !isSamePoint(intersectionPoint, points[index1]) && !isSamePoint(intersectionPoint, points[index2]) && !isSamePoint(intersectionPoint, points[index3]) && !isSamePoint(intersectionPoint, points[index4])) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean isSamePoint(Vector2 point1, Vector2 point2) {
-        int pixelsPerWU = Sandbox.getInstance().getPixelPerWU();
-        int precision = 10000 * pixelsPerWU;
-        Vector2 pointA = new Vector2(point1);
-        Vector2 pointB = new Vector2(point2);
-        pointA.x = Math.round(point1.x * precision) / (float)precision;
-        pointA.y = Math.round(point1.y * precision) / (float)precision;
-        pointB.x = Math.round(point2.x * precision) / (float)precision;
-        pointB.y = Math.round(point2.y * precision) / (float)precision;
-
-        return pointA.equals(pointB);
-    }
-
-
-    private int[] checkForIntersection(int anchor, Vector2[] points) {
-        int leftPointIndex = points.length-1;
-        int rightPointIndex = 0;
-        if(anchor > 0) {
-            leftPointIndex = anchor-1;
-        }
-        if(anchor < points.length-1) {
-            rightPointIndex =  anchor+1;
-        }
-
-        HashSet<Integer> problems = new HashSet<>();
-
-        for(int i = 0; i < points.length-1; i++) {
-
-           if(i != leftPointIndex && i != anchor) {
-               if(intersectSegments(points, i, i+1, leftPointIndex, anchor)) {
-                   problems.add(leftPointIndex);
-               }
-               if(intersectSegments(points, i, i+1, anchor, rightPointIndex)) {
-                   problems.add(anchor);
-               }
-           }
-        }
-        if(anchor != points.length-1 && leftPointIndex != points.length-1 && intersectSegments(points, points.length-1, 0, leftPointIndex, anchor)) {
-            problems.add(leftPointIndex);
-        }
-        if(anchor != points.length-1 && leftPointIndex != points.length-1 && intersectSegments(points, points.length-1, 0, anchor, rightPointIndex)) {
-            problems.add(anchor);
-        }
-
-        if(problems.size() == 0) {
-            return null;
-        }
-
-        int[] result = problems.stream().mapToInt(i->i).toArray();
-
-        return result;
     }
 }

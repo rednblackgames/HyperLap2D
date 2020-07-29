@@ -1,22 +1,55 @@
 package games.rednblack.editor.controller.commands.component;
 
+import com.badlogic.gdx.math.Vector2;
 import com.kotcrab.vis.ui.util.InputValidator;
+import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
+import games.rednblack.editor.renderer.components.PolygonComponent;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.dialog.MultipleInputDialog;
 import games.rednblack.h2d.common.view.ui.listener.MultipleInputDialogListener;
 
+import java.util.Collections;
+
 public class UpdatePolygonVertexPositionCommand extends EntityModifyRevertibleCommand {
+
+    private Object[] currentCommandPayload;
+
     @Override
     public void doAction() {
         Object[] payload = notification.getBody();
         PolygonFollower follower = (PolygonFollower) payload[0];
-        int anchorId = (int) payload[1];
+        int anchor = (int) payload[1];
+
+        follower.setSelectedAnchor(anchor);
+        Vector2[] points = follower.getOriginalPoints().toArray(new Vector2[0]);
+        Vector2 backup = points[anchor].cpy();
+        currentCommandPayload = UpdatePolygonDataCommand.payloadInitialState(follower.getEntity());
 
         MultipleInputDialog dialog = new MultipleInputDialog("Vertex Position", new String[]{"X : ", "Y : "}, false, new MyInputValidator(), new MultipleInputDialogListener() {
             @Override
             public void finished(String[] input) {
+                Vector2[] points = follower.getOriginalPoints().toArray(new Vector2[0]);
+                PolygonComponent polygonComponent = ComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
+                points[anchor].set(Float.parseFloat(input[0]), Float.parseFloat(input[1]));
 
+                // check if any of near lines intersect
+                int[] intersections = PolygonUtils.checkForIntersection(anchor, points);
+                if(intersections == null) {
+                    if(PolygonUtils.isPolygonCCW(points)){
+                        Collections.reverse(follower.getOriginalPoints());
+                        points = follower.getOriginalPoints().toArray(new Vector2[0]);
+                    }
+                    polygonComponent.vertices = PolygonUtils.polygonize(points);
+
+                    currentCommandPayload = UpdatePolygonDataCommand.payload(currentCommandPayload, polygonComponent.vertices);
+                    HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
+                } else {
+                    points[anchor].set(backup);
+                }
             }
 
             @Override
@@ -24,6 +57,7 @@ public class UpdatePolygonVertexPositionCommand extends EntityModifyRevertibleCo
 
             }
         });
+        dialog.setText(new String[]{points[anchor].x+"", points[anchor].y+""});
         sandbox.getUIStage().addActor(dialog.fadeIn());
     }
 
