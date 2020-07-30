@@ -89,11 +89,11 @@ public class CommandManager extends BaseProxy {
 
     public void updateWindowTitle() {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        projectManager.appendSaveHintTitle(modifiedCursor > 0);
+        projectManager.appendSaveHintTitle(isModified());
     }
 
     public boolean isModified() {
-        return modifiedCursor > 0;
+        return Math.abs(modifiedCursor) > 0;
     }
 
     public void redoCommand() {
