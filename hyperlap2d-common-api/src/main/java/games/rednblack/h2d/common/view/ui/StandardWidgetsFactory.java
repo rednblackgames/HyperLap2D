@@ -108,10 +108,11 @@ public class StandardWidgetsFactory {
         return visTextField;
     }
 
-    public static VisValidatableTextField createValidableTextField (String style, InputValidator inputValidator, VisTextField.TextFieldFilter textFieldFilter) {
+    public static VisValidatableTextField createValidableTextField (String text, String style, InputValidator inputValidator, VisTextField.TextFieldFilter textFieldFilter) {
         VisValidatableTextField visTextField = createValidableTextField(style, inputValidator);
         visTextField.setTextFieldFilter(textFieldFilter);
         visTextField.addListener(new CursorListener(Cursors.TEXT, facade));
+        visTextField.setText(text);
         return visTextField;
     }
 

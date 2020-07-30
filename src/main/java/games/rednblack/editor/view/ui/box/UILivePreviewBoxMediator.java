@@ -76,6 +76,8 @@ public class UILivePreviewBoxMediator extends SimpleMediator<UILivePreviewBox> {
 		int previewWidth = resolutionManager.getOriginalResolution().width;
 		int previewHeight = resolutionManager.getOriginalResolution().height;
 
+		WorldSizeVO worldSizeVO = new WorldSizeVO(Sandbox.getInstance().getPixelPerWU(), previewWidth, previewHeight);
+
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setWindowedMode(previewWidth, previewHeight);
 		config.setTitle("HyperLap2D - Live Preview");
@@ -85,7 +87,6 @@ public class UILivePreviewBoxMediator extends SimpleMediator<UILivePreviewBox> {
 
 		Lwjgl3Application app = (Lwjgl3Application) Gdx.app;
 
-		WorldSizeVO worldSizeVO = new WorldSizeVO(Sandbox.getInstance().getPixelPerWU(), previewWidth, previewHeight);
 		LiveScreenAdapter liveScreenAdapter = new LiveScreenAdapter(worldSizeVO, resourceManager, projectManager.getCurrentSceneConfigVO().sceneName);
 
 		previewWindow = app.newWindow(liveScreenAdapter, config);
