@@ -21,16 +21,12 @@ public class UILivePreviewBoxMediator extends SimpleMediator<UILivePreviewBox> {
 	public static final String NAME = TAG;
 
 	private final ResolutionManager resolutionManager;
-	private final ResourceManager resourceManager;
-	private final ProjectManager projectManager;
 
 	public UILivePreviewBoxMediator() {
 		super(NAME, new UILivePreviewBox());
 		facade = HyperLap2DFacade.getInstance();
 
 		resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-		resourceManager = facade.retrieveProxy(ResourceManager.NAME);
-		projectManager = facade.retrieveProxy(ProjectManager.NAME);
 	}
 
 	@Override
@@ -76,8 +72,6 @@ public class UILivePreviewBoxMediator extends SimpleMediator<UILivePreviewBox> {
 		int previewWidth = resolutionManager.getOriginalResolution().width;
 		int previewHeight = resolutionManager.getOriginalResolution().height;
 
-		WorldSizeVO worldSizeVO = new WorldSizeVO(Sandbox.getInstance().getPixelPerWU(), previewWidth, previewHeight);
-
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setWindowedMode(previewWidth, previewHeight);
 		config.setTitle("HyperLap2D - Live Preview");
@@ -87,7 +81,7 @@ public class UILivePreviewBoxMediator extends SimpleMediator<UILivePreviewBox> {
 
 		Lwjgl3Application app = (Lwjgl3Application) Gdx.app;
 
-		LiveScreenAdapter liveScreenAdapter = new LiveScreenAdapter(worldSizeVO, resourceManager, projectManager.getCurrentSceneConfigVO().sceneName);
+		LiveScreenAdapter liveScreenAdapter = new LiveScreenAdapter();
 
 		previewWindow = app.newWindow(liveScreenAdapter, config);
 		previewWindow.setWindowListener(new Lwjgl3WindowListener() {

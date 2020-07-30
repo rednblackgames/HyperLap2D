@@ -3,6 +3,7 @@ package games.rednblack.editor.view.ui.settings;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
@@ -18,12 +19,18 @@ import games.rednblack.h2d.common.vo.ProjectVO;
 public class LivePreviewSettings extends SettingsNodeValue<ProjectVO> {
 
     private final TintButton tintButton;
+    private final VisCheckBox box2dDebug;
 
     public LivePreviewSettings() {
         super("Live Preview", HyperLap2DFacade.getInstance());
 
         getContentTable().add("Window").left().row();
         getContentTable().addSeparator();
+
+        getContentTable().add("Render").left().row();
+        getContentTable().addSeparator();
+        box2dDebug = StandardWidgetsFactory.createCheckBox("Box2D debug render");
+        getContentTable().add(box2dDebug).left().padTop(5).padLeft(8).row();
 
         getContentTable().add("Background").left().padTop(10).row();
         getContentTable().addSeparator();
@@ -77,10 +84,12 @@ public class LivePreviewSettings extends SettingsNodeValue<ProjectVO> {
     @Override
     public void translateSettingsToView() {
         tintButton.setColorValue(getSettings().backgroundColor);
+        box2dDebug.setChecked(getSettings().box2dDebugRender);
     }
 
     @Override
     public void translateViewToSettings() {
+        getSettings().box2dDebugRender = box2dDebug.isChecked();
         facade.sendNotification(MsgAPI.SAVE_EDITOR_CONFIG);
     }
 

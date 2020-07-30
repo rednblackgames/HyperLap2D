@@ -37,6 +37,7 @@ public class ProjectVO {
     public boolean lockLines = false;
     public int gridSize = 1;
     public Color backgroundColor = new Color(0,0,0,1);
+    public boolean box2dDebugRender = false;
 
     public TexturePackerVO texturePackerVO = new TexturePackerVO();
 
