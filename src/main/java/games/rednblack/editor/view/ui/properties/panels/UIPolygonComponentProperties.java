@@ -24,6 +24,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.ButtonToNotificationListener;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by azakhary on 7/2/2015.
@@ -35,9 +36,11 @@ public class UIPolygonComponentProperties extends UIRemovableProperties {
     public static final String COPY_BUTTON_CLICKED = prefix + ".COPY_BUTTON_CLICKED";
     public static final String PASTE_BUTTON_CLICKED = prefix + ".PASTE_BUTTON_CLICKED";
     public static final String ADD_DEFAULT_MESH_BUTTON_CLICKED = prefix + ".ADD_DEFAULT_MESH_BUTTON_CLICKED";
+    public static final String ADD_AUTO_TRACE_MESH_BUTTON_CLICKED = prefix + ".ADD_AUTO_TRACE_MESH_BUTTON_CLICKED";
     public static final String CLOSE_CLICKED = prefix + ".CLOSE_CLICKED";
 
     private VisTextButton addDefaultMeshButton;
+    private VisTextButton addAutoTraceMeshButton;
 
     private VisLabel verticesCountLbl;
     private VisTextButton copyBtn;
@@ -71,11 +74,13 @@ public class UIPolygonComponentProperties extends UIRemovableProperties {
     public void initEmptyView() {
         mainTable.clear();
 
-        addDefaultMeshButton = new VisTextButton("Make Default");
+        addDefaultMeshButton = StandardWidgetsFactory.createTextButton("Make Default");
+        addAutoTraceMeshButton = StandardWidgetsFactory.createTextButton("Auto Trace");
 
         mainTable.add(new VisLabel("There is no vertices in this shape", Align.center));
         mainTable.row();
-        mainTable.add(addDefaultMeshButton).center();
+        mainTable.add(addDefaultMeshButton).center().row();
+        mainTable.add(addAutoTraceMeshButton).center().padTop(5).row();
 
         initEmptyViewListeners();
     }
@@ -87,6 +92,7 @@ public class UIPolygonComponentProperties extends UIRemovableProperties {
 
     private void initEmptyViewListeners() {
         addDefaultMeshButton.addListener(new ButtonToNotificationListener(ADD_DEFAULT_MESH_BUTTON_CLICKED));
+        addAutoTraceMeshButton.addListener(new ButtonToNotificationListener(ADD_AUTO_TRACE_MESH_BUTTON_CLICKED));
     }
 
     @Override

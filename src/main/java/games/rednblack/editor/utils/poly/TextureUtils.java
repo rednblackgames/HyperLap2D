@@ -22,6 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -84,6 +85,31 @@ public class TextureUtils {
 		return -1;
 	}
 
+	public static Pixmap getPOTPixmap(TextureRegion textureRegion) {
+		TextureData textureData = textureRegion.getTexture().getTextureData();
+		if (!textureData.isPrepared()) {
+			textureData.prepare();
+		}
+		int origW = textureRegion.getRegionWidth();
+		int origH = textureRegion.getRegionHeight();
+		int w = getNearestPOT(origW);
+		int h = getNearestPOT(origH);
+		int len = Math.max(w, h);
+
+		Pixmap pixmap = new Pixmap(len, len, textureData.getFormat());
+
+		pixmap.drawPixmap(
+				textureData.consumePixmap(), // The other Pixmap
+				0, // The target x-coordinate (top left corner)
+				0, // The target y-coordinate (top left corner)
+				textureRegion.getRegionX(), // The source x-coordinate (top left corner)
+				textureRegion.getRegionY(), // The source y-coordinate (top left corner)
+				origW, // The width of the area from the other Pixmap in pixels
+				origH // The height of the area from the other Pixmap in pixels
+		);
+		return pixmap;
+	}
+
 	public static Pixmap getPOTPixmap(Texture texture) {
 		if (texture == null) return null;
 		texture.getTextureData().prepare();
@@ -103,8 +129,6 @@ public class TextureUtils {
 	
 	public static TextureRegion getPOTTexture(Texture texture) {
 		if (texture == null) return null;
-
-		
 
 		texture.getTextureData().prepare();
 		Pixmap pixmap = texture.getTextureData().consumePixmap();

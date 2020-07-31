@@ -52,6 +52,8 @@ public class UpdateEntityComponentsCommand extends EntityModifyRevertibleCommand
             ComponentCloner.set(originalComponent, components.get(i));
         }
 
+        EntityUtils.refreshComponents(entity);
+
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
@@ -62,6 +64,8 @@ public class UpdateEntityComponentsCommand extends EntityModifyRevertibleCommand
             Component entityComponent = ComponentRetriever.get(entity, backupComponents.get(i).getClass());
             ComponentCloner.set(entityComponent, backupComponents.get(i));
         }
+
+        EntityUtils.refreshComponents(entity);
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

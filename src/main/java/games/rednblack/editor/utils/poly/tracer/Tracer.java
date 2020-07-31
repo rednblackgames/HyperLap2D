@@ -30,7 +30,7 @@ import games.rednblack.editor.utils.poly.TextureUtils;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class Tracer {
-	public static Vector2[][] trace(Texture texture, float hullTolerance, int alphaTolerance, boolean multiPartDetection, boolean holeDetection) {
+	public static Vector2[][] trace(TextureRegion texture, float hullTolerance, int alphaTolerance, boolean multiPartDetection, boolean holeDetection) {
 		Pixmap pixmap = TextureUtils.getPOTPixmap(texture);
 
 		Blending blending = pixmap.getBlending();
@@ -53,17 +53,15 @@ public class Tracer {
 		pixmap.setBlending(blending);
 		pixmap.dispose();
 
-
 		Array<Array<Vector2>> outlines;
 		try {
 			outlines = TextureConverter.createPolygon(array, w, h, hullTolerance, alphaTolerance, multiPartDetection, holeDetection);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 
-		TextureRegion region = TextureUtils.getPOTTexture(texture);
-		float tw = region.getRegionWidth();
-		float th = region.getRegionHeight();
+		float th = texture.getRegionHeight();
 
 		Vector2[][] polygons = new Vector2[outlines.size][];
 
@@ -72,9 +70,7 @@ public class Tracer {
 			polygons[i] = new Vector2[outline.size];
 			for (int ii=0; ii<outline.size; ii++) {
 				polygons[i][ii] = outline.get(ii);
-				polygons[i][ii].x /= tw;
-				polygons[i][ii].y /= tw;
-				polygons[i][ii].y = 1*th/tw - polygons[i][ii].y;
+				polygons[i][ii].y = th - polygons[i][ii].y;
 			}
 		}
 

@@ -19,7 +19,11 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import games.rednblack.editor.renderer.components.TextureRegionComponent;
+import games.rednblack.editor.utils.poly.PolygonUtils;
+import games.rednblack.editor.utils.poly.tracer.Tracer;
 import games.rednblack.h2d.common.MsgAPI;
 import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -31,6 +35,8 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.stream.Stream;
 
 /**
  * Created by azakhary on 7/2/2015.
@@ -53,7 +59,8 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
                 UIPolygonComponentProperties.ADD_DEFAULT_MESH_BUTTON_CLICKED,
                 UIPolygonComponentProperties.COPY_BUTTON_CLICKED,
                 UIPolygonComponentProperties.PASTE_BUTTON_CLICKED,
-                UIPolygonComponentProperties.CLOSE_CLICKED
+                UIPolygonComponentProperties.CLOSE_CLICKED,
+                UIPolygonComponentProperties.ADD_AUTO_TRACE_MESH_BUTTON_CLICKED
         };
 
         return ArrayUtils.addAll(defaultNotifications, notificationInterests);
@@ -66,6 +73,9 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
         switch (notification.getName()) {
             case UIPolygonComponentProperties.ADD_DEFAULT_MESH_BUTTON_CLICKED:
                 addDefaultMesh();
+                break;
+            case UIPolygonComponentProperties.ADD_AUTO_TRACE_MESH_BUTTON_CLICKED:
+                addAutoTraceMesh();
                 break;
             case UIPolygonComponentProperties.COPY_BUTTON_CLICKED:
                 copyMesh();
@@ -113,6 +123,23 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
         }
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, observableReference);
+    }
+
+    private void addAutoTraceMesh() {
+        TextureRegionComponent textureRegionComponent = observableReference.getComponent(TextureRegionComponent.class);
+        if (!textureRegionComponent.regionName.equals("") && textureRegionComponent.region != null) {
+            polygonComponent.vertices = Tracer.trace(textureRegionComponent.region, 2.5f, 128, false, false);
+
+            if (polygonComponent.vertices != null) {
+                Vector2[] points = Stream.of(polygonComponent.vertices)
+                        .flatMap(Stream::of)
+                        .toArray(Vector2[]::new);
+
+                polygonComponent.vertices = PolygonUtils.polygonize(points);
+
+                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, observableReference);
+            }
+        }
     }
 
     private void copyMesh() {

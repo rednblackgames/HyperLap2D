@@ -784,10 +784,12 @@ class CrossingEdgeInfo implements Comparable<CrossingEdgeInfo> {
       _edgeVertex2 = edgeVertex2.cpy();
       _alignment = checkLineAlignment;
       _crossingPoint = crossingPoint;
+      CrossingPoint = _crossingPoint;
    }
 
    public int compareTo(CrossingEdgeInfo obj) {
       CrossingEdgeInfo cei = obj;
+
       int result = 0;
       switch (_alignment) {
       case Vertical:
