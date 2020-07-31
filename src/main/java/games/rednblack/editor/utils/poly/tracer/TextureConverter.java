@@ -848,8 +848,8 @@ class PolygonCreationAssistance {
 
    public void setHullTolerance(float value) {
       float hullTolerance = value;
-      if (hullTolerance > 4f)
-         hullTolerance = 4f;
+      /*if (hullTolerance > 4f)
+         hullTolerance = 4f;*/
       if (hullTolerance < 0.9f)
          hullTolerance = 0.9f;
       _hullTolerance = hullTolerance;

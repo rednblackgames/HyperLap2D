@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.utils.poly.TextureUtils;
+import games.rednblack.editor.view.stage.Sandbox;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -71,6 +72,8 @@ public class Tracer {
 			for (int ii=0; ii<outline.size; ii++) {
 				polygons[i][ii] = outline.get(ii);
 				polygons[i][ii].y = th - polygons[i][ii].y;
+				polygons[i][ii].x /= Sandbox.getInstance().getPixelPerWU();
+				polygons[i][ii].y /= Sandbox.getInstance().getPixelPerWU();
 			}
 		}
 
