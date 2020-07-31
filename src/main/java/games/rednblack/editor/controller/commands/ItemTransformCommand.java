@@ -3,6 +3,10 @@ package games.rednblack.editor.controller.commands;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.renderer.components.PolygonComponent;
+import games.rednblack.editor.renderer.components.TextureRegionComponent;
+import games.rednblack.editor.renderer.components.light.LightBodyComponent;
+import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
@@ -43,12 +47,13 @@ public class ItemTransformCommand extends EntityModifyRevertibleCommand {
         if(newScale != null) transformComponent.scaleY = newScale.y;
         if(newRotation != null) transformComponent.rotation = newRotation;
 
+        EntityUtils.refreshComponents(entity);
+
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     @Override
     public void undoAction() {
-
         Entity entity = EntityUtils.getByUniqueId(entityId);
         Object[] prevData = (Object[]) payload.get(1);
 
@@ -71,6 +76,8 @@ public class ItemTransformCommand extends EntityModifyRevertibleCommand {
         transformComponent.scaleX = prevScale.x;
         transformComponent.scaleY = prevScale.y;
         transformComponent.rotation = prevRotation;
+
+        EntityUtils.refreshComponents(entity);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

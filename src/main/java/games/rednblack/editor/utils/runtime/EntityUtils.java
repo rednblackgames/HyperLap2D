@@ -26,6 +26,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.components.*;
+import games.rednblack.editor.renderer.components.light.LightBodyComponent;
+import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.CompositeVO;
 import games.rednblack.editor.renderer.data.LayerItemVO;
@@ -304,4 +306,27 @@ public class EntityUtils {
         }
     }
 
+    public static void refreshComponents(Entity entity) {
+        //TODO Make this more generic with a refreshable interface
+        PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
+        TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
+
+        if(textureRegionComponent != null && textureRegionComponent.isPolygon) {
+            DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
+            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+            float ppwu = dimensionsComponent.width/textureRegionComponent.region.getRegionWidth();
+            dimensionsComponent.setPolygon(polygonComponent);
+            textureRegionComponent.setPolygonSprite(polygonComponent,1f/ppwu, transformComponent.scaleX, transformComponent.scaleY);
+        }
+
+        PhysicsBodyComponent physicsBodyComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
+        if (physicsBodyComponent != null) {
+            physicsBodyComponent.needToRefreshBody = true;
+        }
+
+        LightBodyComponent lightBodyComponent = ComponentRetriever.get(entity, LightBodyComponent.class);
+        if (lightBodyComponent != null) {
+            lightBodyComponent.needToRefreshLight = true;
+        }
+    }
 }
