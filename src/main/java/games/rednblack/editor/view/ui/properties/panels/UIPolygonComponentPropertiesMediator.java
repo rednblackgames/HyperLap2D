@@ -23,6 +23,7 @@ import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.utils.poly.tracer.Tracer;
+import games.rednblack.editor.view.ui.dialog.AutoTraceDialog;
 import games.rednblack.h2d.common.MsgAPI;
 import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -125,19 +126,7 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
     }
 
     private void addAutoTraceMesh() {
-        TextureRegionComponent textureRegionComponent = observableReference.getComponent(TextureRegionComponent.class);
-        if (!textureRegionComponent.regionName.equals("") && textureRegionComponent.region != null) {
-            polygonComponent.vertices = Tracer.trace(textureRegionComponent.region, 2.5f, 128, false, false);
-
-            if (polygonComponent.vertices != null) {
-                Vector2[] points = Stream.of(polygonComponent.vertices)
-                        .flatMap(Stream::of)
-                        .toArray(Vector2[]::new);
-                polygonComponent.vertices = PolygonUtils.polygonize(points);
-
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, observableReference);
-            }
-        }
+        facade.sendNotification(AutoTraceDialog.OPEN_DIALOG, observableReference);
     }
 
     private void copyMesh() {

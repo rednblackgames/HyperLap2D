@@ -221,4 +221,10 @@ public class StandardWidgetsFactory {
         button.addListener(new CursorListener(Cursors.FINGER, facade));
         return button;
     }
+
+    public static VisSlider createSlider(float min, float max, float step) {
+        VisSlider slider = new VisSlider(min, max, step, false);
+        slider.addListener(new CursorListener(Cursors.FINGER, facade));
+        return slider;
+    }
 }
