@@ -36,25 +36,25 @@ public class PhysicsBodyLoader {
     }
 
     public Body createBody(World world, Entity entity, PhysicsBodyComponent physicsComponent, Vector2[][] minPolygonData, TransformComponent transformComponent) {
-        FixtureDef fixtureDef = new FixtureDef();
-
-        if(physicsComponent != null) {
-            fixtureDef.density = physicsComponent.density;
-            fixtureDef.friction = physicsComponent.friction;
-            fixtureDef.restitution = physicsComponent.restitution;
-
-            fixtureDef.isSensor = physicsComponent.sensor;
-
-            fixtureDef.filter.maskBits = physicsComponent.filter.maskBits;
-            fixtureDef.filter.groupIndex = physicsComponent.filter.groupIndex;
-            fixtureDef.filter.categoryBits = physicsComponent.filter.categoryBits;
+        if(physicsComponent == null) {
+            return null;
         }
 
+        FixtureDef fixtureDef = new FixtureDef();
+
+        fixtureDef.density = physicsComponent.density;
+        fixtureDef.friction = physicsComponent.friction;
+        fixtureDef.restitution = physicsComponent.restitution;
+
+        fixtureDef.isSensor = physicsComponent.sensor;
+
+        fixtureDef.filter.maskBits = physicsComponent.filter.maskBits;
+        fixtureDef.filter.groupIndex = physicsComponent.filter.groupIndex;
+        fixtureDef.filter.categoryBits = physicsComponent.filter.categoryBits;
+
         BodyDef bodyDef = new BodyDef();
-        Vector2 sceneCoords = TransformMathUtils.localToSceneCoordinates(entity, new Vector2(0, 0));
-        float x = (sceneCoords.x + transformComponent.originX * transformComponent.scaleX) * PhysicsBodyLoader.getScale();
-        float y = (sceneCoords.y + transformComponent.originY * transformComponent.scaleY) * PhysicsBodyLoader.getScale();
-        bodyDef.position.set(x, y);
+        Vector2 sceneCoords = TransformMathUtils.localToSceneCoordinates(entity, new Vector2(transformComponent.originX, transformComponent.originY));
+        bodyDef.position.set(sceneCoords.x, sceneCoords.y);
         bodyDef.angle = transformComponent.rotation * MathUtils.degreesToRadians;
 
         bodyDef.gravityScale = physicsComponent.gravityScale;
@@ -78,25 +78,25 @@ public class PhysicsBodyLoader {
 
         PolygonShape polygonShape = new PolygonShape();
 
-        for(int i = 0; i < minPolygonData.length; i++) {
-        	float[] verts = new float[minPolygonData[i].length * 2];
-        	for(int j=0;j<verts.length;j+=2){
-                float tempX = minPolygonData[i][j / 2].x;
-                float tempY = minPolygonData[i][j/2].y;
+        for (Vector2[] minPolygonDatum : minPolygonData) {
+            float[] verts = new float[minPolygonDatum.length * 2];
+            for (int j = 0; j < verts.length; j += 2) {
+                float tempX = minPolygonDatum[j / 2].x;
+                float tempY = minPolygonDatum[j / 2].y;
 
-                minPolygonData[i][j/2].x -= transformComponent.originX;
-                minPolygonData[i][j/2].y -= transformComponent.originY;
+                minPolygonDatum[j / 2].x -= transformComponent.originX;
+                minPolygonDatum[j / 2].y -= transformComponent.originY;
 
-                minPolygonData[i][j/2].x *= transformComponent.scaleX;
-                minPolygonData[i][j/2].y *= transformComponent.scaleY;
+                minPolygonDatum[j / 2].x *= transformComponent.scaleX;
+                minPolygonDatum[j / 2].y *= transformComponent.scaleY;
 
-        		verts[j] = minPolygonData[i][j/2].x * scale ;
-        		verts[j+1] = minPolygonData[i][j/2].y * scale;
+                verts[j] = minPolygonDatum[j / 2].x * scale;
+                verts[j + 1] = minPolygonDatum[j / 2].y * scale;
 
-                minPolygonData[i][j / 2].x = tempX;
-                minPolygonData[i][j/2].y = tempY;
+                minPolygonDatum[j / 2].x = tempX;
+                minPolygonDatum[j / 2].y = tempY;
 
-        	}
+            }
             polygonShape.set(verts);
             fixtureDef.shape = polygonShape;
             body.createFixture(fixtureDef);
