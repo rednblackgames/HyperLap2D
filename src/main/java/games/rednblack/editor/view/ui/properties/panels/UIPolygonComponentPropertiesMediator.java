@@ -19,7 +19,6 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.utils.poly.PolygonUtils;
@@ -134,7 +133,6 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
                 Vector2[] points = Stream.of(polygonComponent.vertices)
                         .flatMap(Stream::of)
                         .toArray(Vector2[]::new);
-
                 polygonComponent.vertices = PolygonUtils.polygonize(points);
 
                 HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, observableReference);
