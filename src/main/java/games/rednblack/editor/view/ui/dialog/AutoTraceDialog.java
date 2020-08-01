@@ -29,7 +29,6 @@ public class AutoTraceDialog extends H2DDialog {
     private final VisCheckBox multiPartDetection;
     private final VisCheckBox holeDetection;
 
-    private final VisTextButton cancelButton;
     private final VisTextButton autoTraceButton;
 
     public AutoTraceDialog() {
@@ -44,7 +43,6 @@ public class AutoTraceDialog extends H2DDialog {
         multiPartDetection = StandardWidgetsFactory.createCheckBox("Multi Part Detection");
         holeDetection = StandardWidgetsFactory.createCheckBox("Hole Detection");
 
-        cancelButton = StandardWidgetsFactory.createTextButton("Cancel");
         autoTraceButton = StandardWidgetsFactory.createTextButton("Auto Trace");
 
         getContentTable().add("Hull Tolerance : ").left();
@@ -64,7 +62,6 @@ public class AutoTraceDialog extends H2DDialog {
 
         getContentTable().row().padTop(10);
 
-        getButtonsTable().add(cancelButton).right();
         getButtonsTable().add(autoTraceButton).right();
 
         setListeners();
@@ -101,13 +98,6 @@ public class AutoTraceDialog extends H2DDialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 alphaValue.setText((int)(alphaSlider.getValue())+"");
-            }
-        });
-
-        cancelButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                close();
             }
         });
 
