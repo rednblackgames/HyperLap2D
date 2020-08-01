@@ -8,7 +8,7 @@ import games.rednblack.editor.renderer.components.RemovableComponent;
 public class PhysicsBodyComponent implements RemovableComponent {
 	public int bodyType = 0;
 
-	public float mass = 1;
+	public float mass = 0;
 	public Vector2 centerOfMass = new Vector2(0, 0);
 	public float rotationalInertia = 1;
 	public float damping = 0;
@@ -50,7 +50,7 @@ public class PhysicsBodyComponent implements RemovableComponent {
         centerY = 0;
 
         bodyType = 0;
-        mass = 1;
+        mass = 0;
         centerOfMass.set(0, 0);
         rotationalInertia = 1;
         damping = 0;

@@ -14,7 +14,7 @@ import games.rednblack.editor.renderer.utils.TransformMathUtils;
 public class PhysicsBodyLoader {
 
     private static PhysicsBodyLoader instance;
-    private Vector2 bodyPosition = new Vector2();
+    private final Vector2 bodyPosition = new Vector2();
 
     public static PhysicsBodyLoader getInstance() {
         if(instance == null) {
@@ -106,12 +106,14 @@ public class PhysicsBodyLoader {
 
         polygonShape.dispose();
 
-        MassData massData = new MassData();
-        massData.mass = physicsComponent.mass;
-        massData.center.set(physicsComponent.centerOfMass);
-        massData.I = physicsComponent.rotationalInertia;
+        if (physicsComponent.mass != 0) {
+            MassData massData = new MassData();
+            massData.mass = physicsComponent.mass;
+            massData.center.set(physicsComponent.centerOfMass);
+            massData.I = physicsComponent.rotationalInertia;
 
-        body.setMassData(massData);
+            body.setMassData(massData);
+        }
 
         return body;
     }
