@@ -14,6 +14,7 @@ import games.rednblack.editor.renderer.utils.TransformMathUtils;
 public class PhysicsBodyLoader {
 
     private static PhysicsBodyLoader instance;
+    private Vector2 bodyPosition = new Vector2();
 
     public static PhysicsBodyLoader getInstance() {
         if(instance == null) {
@@ -53,8 +54,9 @@ public class PhysicsBodyLoader {
         fixtureDef.filter.categoryBits = physicsComponent.filter.categoryBits;
 
         BodyDef bodyDef = new BodyDef();
-        Vector2 sceneCoords = TransformMathUtils.localToSceneCoordinates(entity, new Vector2(transformComponent.originX, transformComponent.originY));
-        bodyDef.position.set(sceneCoords.x, sceneCoords.y);
+        bodyPosition.set(transformComponent.originX, transformComponent.originY);
+        TransformMathUtils.localToSceneCoordinates(entity, bodyPosition);
+        bodyDef.position.set(bodyPosition.x * getScale(), bodyPosition.y * getScale());
         bodyDef.angle = transformComponent.rotation * MathUtils.degreesToRadians;
 
         bodyDef.gravityScale = physicsComponent.gravityScale;
@@ -105,9 +107,9 @@ public class PhysicsBodyLoader {
         polygonShape.dispose();
 
         MassData massData = new MassData();
+        massData.mass = physicsComponent.mass;
         massData.center.set(physicsComponent.centerOfMass);
         massData.I = physicsComponent.rotationalInertia;
-        massData.mass = physicsComponent.mass;
 
         body.setMassData(massData);
 
