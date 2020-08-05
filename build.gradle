@@ -121,20 +121,21 @@ runtime {
 
     jpackage {
         mainJar = dist.archiveFileName.get()
+        imageOptions += ['--app-version', getVersion(), '--vendor', 'Red & Black Games', '--description', 'HyperLap2D Editor',
+                         '--copyright', '(c) 2020, Red & Black Games', '--name', 'HyperLap2D']
         if (osName.contains('windows')) {
-            imageOptions = ["--icon", file("icons/icon.ico")]
+            imageOptions += ["--icon", file("icons/icon.ico")]
             installerType = 'msi'
-            installerOptions += [ '--vendor', 'Red & Black Games', '--description', 'HyperLap2D Editor',
-                                  '--win-per-user-install', '--win-dir-chooser', '--win-menu', '--win-shortcut']
+            installerOptions += ['--win-per-user-install', '--win-dir-chooser', '--win-menu', '--win-shortcut']
         } else if (osName.contains('linux')) {
-            imageOptions = ["--icon", file("icons/icon.png")]
+            imageOptions += ["--icon", file("icons/icon.png")]
             installerType = 'deb'
             installerOptions += [
-                    '--linux-menu-group', 'Development',
+                    '--linux-menu-group', 'Development', '--linux-deb-maintainer', 'business@rednblack.games',
                     '--linux-shortcut'
             ]
         } else if (osName.contains('mac')) {
-            imageOptions = ["--icon", file("icons/icon.icns")]
+            imageOptions += ["--icon", file("icons/icon.icns")]
             installerType = 'dmg'
         }
     }
