@@ -11,4 +11,4 @@ implementation '....'
 ```
 
 ### License
-Spine is a commercial software distributed with its own license, in order to include Spine support in your project please be sure to have a valid [Spine License](https://github.com/EsotericSoftware/spine-runtimes)
+Spine is a commercial software distributed with its own license, in order to include Spine support in your project, please, be sure to have a valid [Spine License](https://github.com/EsotericSoftware/spine-runtimes)

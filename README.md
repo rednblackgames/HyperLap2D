@@ -1,5 +1,9 @@
-# HyperLap 2D
+# HyperLap2D
 HyperLap2D is a powerful, platform independent, visual editor for complex 2D worlds and scenes. 
+
+An engine oriented alternative for building games free from any  design constraints.
+
+Open Source ❤️
 
 ### Features
 - Images and Sprite Animations
@@ -19,6 +23,7 @@ HyperLap2D is a powerful, platform independent, visual editor for complex 2D wor
 - [HyperLap2D Website](https://hyperlap2d.rednblack.games)
 - [Official Wiki](https://hyperlap2d.rednblack.games/wiki)
 - [HyperLab](https://hyperlab.rednblack.games)
+
 ### Runtime
 
 Currently, mainly developed for [libGDX](https://github.com/libgdx/libgdx) but can be easily integrated into any software thanks to its open JSON output format.

@@ -10,6 +10,10 @@ You can include through gradle
 implementation '....'
 ```
 
+### Support
+
+You can learn how to use runtime in [Wiki](https://hyperlap2d.rednblack.games/wiki)
+
 ### License
 HyperLap2D's libGDX runtime is licensed under the Apache 2.0 License. You can use it free of charge, without limitations both in commercial and non-commercial projects. We love to get (non-mandatory) credit in case you release a game or app using HyperLap2D!
 
