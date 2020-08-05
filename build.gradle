@@ -114,6 +114,8 @@ runtime {
                '--vm', 'server']
     modules = ['java.base',
                'java.desktop',
+               'java.compiler',
+               'java.logging',
                'jdk.unsupported']
     distDir = file(buildDir)
 
@@ -125,6 +127,10 @@ runtime {
         } else if (osName.contains('linux')) {
             imageOptions = ["--icon", file("icons/icon.png")]
             installerType = 'deb'
+            installerOptions += [
+                    '--linux-menu-group', 'Development',
+                    '--linux-shortcut'
+            ]
         } else if (osName.contains('mac')) {
             imageOptions = ["--icon", file("icons/icon.icns")]
             installerType = 'dmg'
