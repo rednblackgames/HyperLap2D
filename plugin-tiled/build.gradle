@@ -40,5 +40,7 @@ project.ext.assetsDir = new File("assets/pack");
 task dist(type: Jar) {
     from files(sourceSets.main.output.classesDirs)
     from files(sourceSets.main.output.resourcesDir)
-    from files(project.assetsDir);
+    from files(project.assetsDir)
+
+    destinationDirectory = file("../build/lib/plugins")
 }

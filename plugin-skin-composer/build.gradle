@@ -28,4 +28,6 @@ dependencies {
 task dist(type: Jar) {
     from files(sourceSets.main.output.classesDirs)
     from files(sourceSets.main.output.resourcesDir)
+
+    destinationDirectory = file("../build/lib/plugins")
 }
