@@ -116,6 +116,8 @@ runtime {
                'java.desktop',
                'java.compiler',
                'java.logging',
+                'jdk.crypto.cryptoki',
+               'jdk.crypto.ec',
                'jdk.unsupported']
     distDir = file(buildDir)
 
