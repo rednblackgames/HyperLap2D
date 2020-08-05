@@ -22,6 +22,11 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
+import java.io.File;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.security.CodeSource;
+
 public class Main {
 
     public static void main(String[] argv) {
@@ -40,5 +45,22 @@ public class Main {
         Thread.currentThread().setUncaughtExceptionHandler(new CustomExceptionHandler());
 
         new Lwjgl3Application(HyperLap2DApp.initInstance(dm.width, dm.height), config);
+    }
+
+    public static String getJarContainingFolder(Class aclass) throws Exception {
+        CodeSource codeSource = aclass.getProtectionDomain().getCodeSource();
+
+        File jarFile;
+
+        if (codeSource.getLocation() != null) {
+            jarFile = new File(codeSource.getLocation().toURI());
+        }
+        else {
+            String path = aclass.getResource(aclass.getSimpleName() + ".class").getPath();
+            String jarFilePath = path.substring(path.indexOf(":") + 1, path.indexOf("!"));
+            jarFilePath = URLDecoder.decode(jarFilePath, StandardCharsets.UTF_8);
+            jarFile = new File(jarFilePath);
+        }
+        return jarFile.getParentFile().getAbsolutePath();
     }
 }

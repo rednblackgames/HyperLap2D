@@ -18,6 +18,7 @@
 
 package games.rednblack.editor.controller;
 
+import games.rednblack.editor.Main;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.h2d.common.plugins.H2DPlugin;
@@ -49,8 +50,18 @@ public class BootstrapPlugins extends SimpleCommand {
         facade.registerProxy(pluginManager);
 
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        File pluginDir = new File(projectManager.getRootPath() + File.separator + "plugins");
-        File cacheDir = new File(projectManager.getRootPath() + File.separator + "cache");
+        File pluginDir = null;
+        try {
+            pluginDir = new File(Main.getJarContainingFolder(Main.class) + File.separator + "plugins");
+        } catch (Exception e) {
+            pluginDir = new File(projectManager.getRootPath() + File.separator + "plugins");
+        }
+        File cacheDir = null;
+        try {
+            cacheDir = new File(Main.getJarContainingFolder(Main.class) + File.separator + "cache");
+        } catch (Exception e) {
+            cacheDir = new File(projectManager.getRootPath() + File.separator + "cache");
+        }
 
         ModuleManager manager = new DefaultModuleManager();
         Collection<Module> loadedPlugins = manager.loadModules(pluginDir);
