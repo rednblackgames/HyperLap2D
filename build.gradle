@@ -128,7 +128,7 @@ runtime {
         if (osName.contains('windows')) {
             imageOptions += ["--icon", file("icons/icon.ico")]
             installerType = 'msi'
-            installerOptions += ['--win-per-user-install', '--win-dir-chooser', '--win-menu', '--win-shortcut']
+            installerOptions += ['--win-dir-chooser', '--win-menu', '--win-shortcut']
         } else if (osName.contains('linux')) {
             imageOptions += ["--icon", file("icons/HyperLap2D.png")]
             installerType = 'deb'
