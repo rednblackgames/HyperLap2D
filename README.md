@@ -1,3 +1,4 @@
+![Logo](https://raw.githubusercontent.com/rednblackgames/HyperLap2D/master/icons/HyperLap2D.png)
 # HyperLap2D
 HyperLap2D is a powerful, platform independent, visual editor for complex 2D worlds and scenes. 
 
