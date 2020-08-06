@@ -23,6 +23,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.CodeSource;
@@ -47,13 +48,18 @@ public class Main {
         new Lwjgl3Application(HyperLap2DApp.initInstance(dm.width, dm.height), config);
     }
 
-    public static String getJarContainingFolder(Class aclass) throws Exception {
+    public static String getJarContainingFolder(Class aclass){
         CodeSource codeSource = aclass.getProtectionDomain().getCodeSource();
 
         File jarFile;
 
         if (codeSource.getLocation() != null) {
-            jarFile = new File(codeSource.getLocation().toURI());
+            try {
+                jarFile = new File(codeSource.getLocation().toURI());
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+                return "";
+            }
         }
         else {
             String path = aclass.getResource(aclass.getSimpleName() + ".class").getPath();

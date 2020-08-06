@@ -32,6 +32,7 @@ import net.mountainblade.modular.ModuleManager;
 import net.mountainblade.modular.impl.DefaultModuleManager;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 public class BootstrapPlugins extends SimpleCommand {
@@ -50,32 +51,27 @@ public class BootstrapPlugins extends SimpleCommand {
         facade.registerProxy(pluginManager);
 
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        File pluginDir = null;
-        try {
-            pluginDir = new File(Main.getJarContainingFolder(Main.class) + File.separator + "plugins");
-        } catch (Exception e) {
-            pluginDir = new File(projectManager.getRootPath() + File.separator + "plugins");
-        }
-        File cacheDir = null;
-        try {
-            cacheDir = new File(Main.getJarContainingFolder(Main.class) + File.separator + "cache");
-        } catch (Exception e) {
-            cacheDir = new File(projectManager.getRootPath() + File.separator + "cache");
-        }
+        File[] pluginDirs = new File[] {new File(Main.getJarContainingFolder(Main.class) + File.separator + "plugins"),
+                new File(projectManager.getRootPath() + File.separator + "plugins")};
+
+        File cacheDir = new File(Main.getJarContainingFolder(Main.class) + File.separator + "cache");
 
         ModuleManager manager = new DefaultModuleManager();
-        Collection<Module> loadedPlugins = manager.loadModules(pluginDir);
+        for (File pluginDir : pluginDirs) {
+            Collection<Module> loadedPlugins = manager.loadModules(pluginDir);
 
-        pluginManager.setPluginDir(pluginDir.getAbsolutePath());
-        pluginManager.setCacheDir(cacheDir.getAbsolutePath());
-        System.out.println("Plugins directory: " + pluginDir.getAbsolutePath());
-        System.out.println("Plugins loaded: " + loadedPlugins.size());
+            pluginManager.setPluginDir(pluginDir.getAbsolutePath());
+            pluginManager.setCacheDir(cacheDir.getAbsolutePath());
+            System.out.println("Plugins directory: " + pluginDir.getAbsolutePath());
+            System.out.println("Plugins loaded: " + loadedPlugins.size());
+            System.out.println("Cache dir: " + cacheDir.getAbsolutePath());
 
-        for(Module module: loadedPlugins) {
-            try {
-                pluginManager.initPlugin((H2DPlugin) module.getClass().newInstance());
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
+            for(Module module: loadedPlugins) {
+                try {
+                    pluginManager.initPlugin((H2DPlugin) module.getClass().getDeclaredConstructor().newInstance());
+                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
