@@ -48,6 +48,10 @@ HyperLap2D is developed using IntelliJ IDEA.
 2. Clone it
 3. Open main `build.gradle` you find in the root directory
 
+### Project Status
+
+Currently, HyperLap2D is in Alpha stage. Many break changes could happens update after update without back compatibility, please always chack changelog before update.
+
 ### License
 
 HyperLap2D Editor is licensed under the GNU Public License, Version 3. You may wish to read [HyperLap2D libGDX Runtime](https://github.com/rednblackgames/HyperLap2D/tree/master/hyperlap2d-runtime-libgdx) License and [Spine Extension](https://github.com/rednblackgames/HyperLap2D/tree/master/h2d-libgdx-spine-extension) License.
