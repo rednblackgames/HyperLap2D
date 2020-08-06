@@ -10,5 +10,6 @@ plugin-performance/build/
 plugin-tiled/build/
 plugin-skin-composer/build/
 assets/configs/config.pit
+assets/.hyperlap2d/configs/
 assets/tiled.atlas
 assets/tiled.png
