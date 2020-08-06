@@ -39,6 +39,14 @@ Have you found a bug or an unexpected behavior? Don't panic! Search for a [known
 
 We need your help! HyperLap2D it's a very large and complex project, if you have some cool addition or bug fix don't hesitate to create a [Pull Request](https://github.com/rednblackgames/HyperLap2D/pulls), any contribution, big or small, is always well accepted.
 
+#### Build form source
+
+HyperLap2D is developed using IntelliJ IDEA.
+
+1. Fork this repository
+2. Clone it
+3. Open main `build.gradle` you find in the root directory
+
 ### License
 
 HyperLap2D Editor is licensed under the GNU Public License, Version 3. You may wish to read [HyperLap2D libGDX Runtime](https://github.com/rednblackgames/HyperLap2D/tree/master/hyperlap2d-runtime-libgdx) License and [Spine Extension](https://github.com/rednblackgames/HyperLap2D/tree/master/h2d-libgdx-spine-extension) License.
