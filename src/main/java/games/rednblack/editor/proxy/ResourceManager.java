@@ -319,8 +319,10 @@ public class ResourceManager extends BaseProxy implements IResourceRetriever {
 
     /**
      * @param fontPath
+     * TODO currently useless, but could be reworked to include stuff from Skin Composer
      * @deprecated
      */
+    @Deprecated
     private void loadCurrentProjectSkin(String fontPath) {
         /*
         File styleFile = new File(fontPath, "styles.dt");

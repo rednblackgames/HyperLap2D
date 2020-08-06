@@ -82,7 +82,7 @@ public class SettingsManager extends BaseProxy {
 
     public String getRootPath() {
         File root = new File(new File(".").getAbsolutePath()).getParentFile();
-        return root.getAbsolutePath();
+        return root.getAbsolutePath() + File.separator + ".hyperlap2d";
     }
 
     public void setLastOpenedPath(String path) {

@@ -1043,34 +1043,6 @@ public class ProjectManager extends BaseProxy {
         return settings;
     }
 
-    public String getRootPath() {
-        File root = new File(new File(".").getAbsolutePath()).getParentFile();
-        return root.getAbsolutePath();
-    }
-
-    private EditorConfigVO getEditorConfig() {
-        EditorConfigVO editorConfig = new EditorConfigVO();
-        String configFilePath = getRootPath() + File.separator + "configs" + File.separator + EditorConfigVO.EDITOR_CONFIG_FILE;
-        File configFile = new File(configFilePath);
-        if (!configFile.exists()) {
-            try {
-                FileUtils.writeStringToFile(new File(configFilePath), editorConfig.constructJsonString(), "utf-8");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Json gson = new Json();
-            String editorConfigJson = null;
-            try {
-                editorConfigJson = FileUtils.readFileToString(Gdx.files.absolute(configFilePath).file());
-                editorConfig = gson.fromJson(EditorConfigVO.class, editorConfigJson);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return editorConfig;
-    }
-
     public void createNewProject(String projectPath, int originWidth, int originHeight, int pixelPerWorldUnit) {
         if (projectPath == null || projectPath.equals("")) {
             return;
