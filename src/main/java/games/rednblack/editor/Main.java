@@ -23,6 +23,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -48,7 +49,7 @@ public class Main {
         new Lwjgl3Application(HyperLap2DApp.initInstance(dm.width, dm.height), config);
     }
 
-    public static String getJarContainingFolder(Class aclass){
+    public static String getJarContainingFolder(Class aclass) {
         CodeSource codeSource = aclass.getProtectionDomain().getCodeSource();
 
         File jarFile;
@@ -64,7 +65,11 @@ public class Main {
         else {
             String path = aclass.getResource(aclass.getSimpleName() + ".class").getPath();
             String jarFilePath = path.substring(path.indexOf(":") + 1, path.indexOf("!"));
-            jarFilePath = URLDecoder.decode(jarFilePath, StandardCharsets.UTF_8);
+            try {
+                jarFilePath = URLDecoder.decode(jarFilePath, String.valueOf(StandardCharsets.UTF_8));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             jarFile = new File(jarFilePath);
         }
         return jarFile.getParentFile().getAbsolutePath();

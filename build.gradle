@@ -139,6 +139,7 @@ runtime {
             resourceDir = file("resources-linux")
         } else if (osName.contains('mac')) {
             imageOptions += ["--icon", file("icons/icon.icns")]
+            jvmArgs = ['-XstartOnFirstThread', '-Djava.awt.headless=true']
             installerType = 'dmg'
         }
     }
