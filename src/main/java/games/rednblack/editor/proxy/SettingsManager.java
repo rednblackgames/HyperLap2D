@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.puremvc.patterns.proxy.BaseProxy;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.Main;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
 import org.apache.commons.io.FileUtils;
@@ -20,6 +21,9 @@ public class SettingsManager extends BaseProxy {
 
     private String defaultWorkspacePath;
     public EditorConfigVO editorConfigVO;
+
+    public File[] pluginDirs;
+    public File cacheDir;
 
     public SettingsManager() {
         super(NAME);
@@ -38,6 +42,10 @@ public class SettingsManager extends BaseProxy {
             String myDocPath = HyperLap2DUtils.MY_DOCUMENTS_PATH;
             defaultWorkspacePath = myDocPath + File.separator + DEFAULT_FOLDER;
             FileUtils.forceMkdir(new File(defaultWorkspacePath));
+
+            pluginDirs = new File[] {new File(Main.getJarContainingFolder(Main.class) + File.separator + "plugins"),
+                    new File(getRootPath() + File.separator + "plugins")};
+            cacheDir = new File(getRootPath() + File.separator + "cache");
         } catch (IOException e) {
             e.printStackTrace();
         }
