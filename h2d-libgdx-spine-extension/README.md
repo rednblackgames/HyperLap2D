@@ -2,12 +2,25 @@
 
 HyperLap2D extension for libgdx runtime that adds Spine rendering support.
 
-### Import
+### Integration
 
-You can include through gradle
+#### Gradle
+Release artefacts are available through [Bintray][bintray]. 
 
+```groovy
+dependencies {
+    implementation 'games.rednblack.editor:h2d-libgdx-spine-extension:0.0.1'
+}
 ```
-implementation '....'
+
+#### Maven
+```xml
+<dependency>
+  <groupId>games.rednblack.editor</groupId>
+  <artifactId>h2d-libgdx-spine-extension</artifactId>
+  <version>0.0.1</version>
+  <type>pom</type>
+</dependency>
 ```
 
 ### License

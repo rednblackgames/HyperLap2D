@@ -2,11 +2,28 @@ plugins {
     id 'java'
 }
 
+apply plugin: 'com.novoda.bintray-release'
+
 group 'games.rednblack'
 version '0.0.1'
 
 repositories {
+    jcenter()
     mavenCentral()
+}
+
+publish {
+    def groupProjectID = 'games.rednblack.editor'
+    def artifactProjectID = 'hyperlap2d-runtime-libgdx'
+    def publishVersionID = '0.0.1'
+
+    userOrg = 'rednblackgames'
+    repoName = 'HyperLap2D'
+    groupId = groupProjectID
+    artifactId = artifactProjectID
+    publishVersion = publishVersionID
+    desc = 'Runtime for libGDX to render HyperLap2D projects'
+    website = 'https://github.com/rednblackgames/HyperLap2D'
 }
 
 dependencies {

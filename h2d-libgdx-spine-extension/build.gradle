@@ -2,11 +2,32 @@ plugins {
     id 'java'
 }
 
+apply plugin: 'com.novoda.bintray-release'
+
 group 'games.rednblack'
 version '0.0.1'
 
 repositories {
     mavenCentral()
+    mavenCentral()
+}
+
+publish {
+    def groupProjectID = 'games.rednblack.editor'
+    def artifactProjectID = 'h2d-libgdx-spine-extension'
+    def publishVersionID = '0.0.1'
+
+    userOrg = 'rednblackgames'
+    repoName = 'HyperLap2D'
+    groupId = groupProjectID
+    artifactId = artifactProjectID
+    publishVersion = publishVersionID
+    desc = 'HyperLap2D Spine extension for libGDX runtime'
+    website = 'https://github.com/rednblackgames/HyperLap2D'
+}
+
+tasks.withType(Javadoc).all {
+    enabled = false
 }
 
 dependencies {

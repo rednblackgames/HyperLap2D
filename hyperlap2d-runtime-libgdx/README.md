@@ -2,12 +2,25 @@
 
 HyperLap2D runtime for libGDX framework.
 
-### Import
+### Integration
 
-You can include through gradle
+#### Gradle
+Release artefacts are available through [Bintray][bintray]. 
 
+```groovy
+dependencies {
+    implementation 'games.rednblack.editor:hyperlap2d-runtime-libgdx:0.0.1'
+}
 ```
-implementation '....'
+
+#### Maven
+```xml
+<dependency>
+  <groupId>games.rednblack.editor</groupId>
+  <artifactId>hyperlap2d-runtime-libgdx</artifactId>
+  <version>0.0.1</version>
+  <type>pom</type>
+</dependency>
 ```
 
 ### Support
