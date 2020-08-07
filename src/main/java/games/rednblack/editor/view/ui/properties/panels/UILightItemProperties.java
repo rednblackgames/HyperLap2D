@@ -75,7 +75,7 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
         mainTable.add(new VisLabel("Ray Count: ", Align.right)).padRight(5).width(75).right();
         mainTable.add(rayCountSelector).left();
         mainTable.row().padTop(5);
-        mainTable.add(new VisLabel("Softness length: ", Align.right)).padRight(5).width(100).right();
+        mainTable.add(new VisLabel("Softness length: ", Align.right)).padRight(5).width(110).right();
         mainTable.add(softnessLengthField).width(70).left();
         mainTable.row().padTop(5);
 
@@ -97,7 +97,7 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
     public void initPointFields() {
         secondaryTable.clear();
 
-        secondaryTable.add(new VisLabel("Radius: ", Align.right)).padRight(5).width(100).right();
+        secondaryTable.add(new VisLabel("Radius: ", Align.right)).padRight(5).width(110).right();
         secondaryTable.add(pointLightRadiusField).width(70).left();
         secondaryTable.row().padTop(5);
     }
@@ -105,13 +105,13 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
     public void initConeFields() {
         secondaryTable.clear();
 
-        secondaryTable.add(new VisLabel("Distance: ", Align.right)).padRight(5).width(100).right();
+        secondaryTable.add(new VisLabel("Distance: ", Align.right)).padRight(5).width(110).right();
         secondaryTable.add(coneDistanceField).width(70).left();
         secondaryTable.row().padTop(5);
-        secondaryTable.add(new VisLabel("Angle: ", Align.right)).padRight(5).width(100).right();
+        secondaryTable.add(new VisLabel("Angle: ", Align.right)).padRight(5).width(110).right();
         secondaryTable.add(coneInnerAngleField).width(70).left();
         secondaryTable.row().padTop(5);
-        secondaryTable.add(new VisLabel("Direction: ", Align.right)).padRight(5).width(100).right();
+        secondaryTable.add(new VisLabel("Direction: ", Align.right)).padRight(5).width(110).right();
         secondaryTable.add(coneDirectionField).width(70).left();
         secondaryTable.row().padTop(5);
     }
