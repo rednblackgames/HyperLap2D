@@ -1,8 +1,8 @@
 ![Logo](https://raw.githubusercontent.com/rednblackgames/HyperLap2D/master/icons/HyperLap2D.png)
 # HyperLap2D
-HyperLap2D is a powerful, platform independent, visual editor for complex 2D worlds and scenes. 
+HyperLap2D is a powerful, platform-independent, visual editor for complex 2D worlds and scenes. 
 
-An engine oriented alternative for building games free from any  design constraints.
+An engine-oriented alternative for building games free from any design constraints.
 
 Open Source ❤️
 
@@ -27,30 +27,31 @@ Open Source ❤️
 
 ### Runtime
 
-Currently, mainly developed for [libGDX](https://github.com/libgdx/libgdx) but can be easily integrated into any software thanks to its open JSON output format.
+Currently, HyperLap2D is mainly developed for [libGDX](https://github.com/libgdx/libgdx), but it can easily be integrated into any software thanks to its open JSON output format.
 
-Check out libGDX runtime [README](https://github.com/rednblackgames/HyperLap2D/tree/master/hyperlap2d-runtime-libgdx) to start integrate HyperLap2D's project into your game.
+Check out the libGDX runtime [README](https://github.com/rednblackgames/HyperLap2D/tree/master/hyperlap2d-runtime-libgdx) to start integrating HyperLap2D's project into your game.
 
-See [Wiki](https://hyperlap2d.rednblack.games/wiki/hyperlap2d/14-json-export-format/) if you want learn more about output format.
+See our [Wiki](https://hyperlap2d.rednblack.games/wiki/hyperlap2d/14-json-export-format/), if you want to learn more about the output format.
+
 ### Issues
 
-Have you found a bug or an unexpected behavior? Don't panic! Search for a [known issue](https://github.com/rednblackgames/HyperLap2D/issues) or feel free to open a new one. Your feedback is important, please try to be as much detailed as possible :)
+Have you found a bug or unexpected behavior? Don't panic! Search for [known issues](https://github.com/rednblackgames/HyperLap2D/issues) or feel free to open a new one. Your feedback is important, please try to be as detailed as possible :)
 
-### Contribute
+### Contributing
 
-We need your help! HyperLap2D it's a very large and complex project, if you have some cool addition or bug fix don't hesitate to create a [Pull Request](https://github.com/rednblackgames/HyperLap2D/pulls), any contribution, big or small, is always well accepted.
+We need your help! HyperLap2D is a very large and complex project, if you have some cool addition or bug fix don't hesitate to create a [Pull Request](https://github.com/rednblackgames/HyperLap2D/pulls). Any contribution, big or small, is always well received.
 
-#### Build form source
+#### Building from source
 
 HyperLap2D is developed using IntelliJ IDEA.
 
 1. Fork this repository
 2. Clone it
-3. Open main `build.gradle` you find in the root directory
+3. Open the main `build.gradle`, which you can find in the root directory
 
 ### Project Status
 
-Currently, HyperLap2D is in Alpha stage. Many break changes could happens update after update without back compatibility, please always chack changelog before update.
+Currently, HyperLap2D is in Alpha stage. Many breaking changes could happen update after update without backwards compatibility. Therefore, please always check our changelog before updating.
 
 ### License
 
