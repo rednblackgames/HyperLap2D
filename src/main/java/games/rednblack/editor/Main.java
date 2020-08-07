@@ -44,7 +44,7 @@ public class Main {
         config.setTitle("HyperLap2D");
         config.setWindowIcon("hyperlap_icon_96.png");
 
-        Thread.currentThread().setUncaughtExceptionHandler(new CustomExceptionHandler());
+        //Thread.currentThread().setUncaughtExceptionHandler(new CustomExceptionHandler());
 
         new Lwjgl3Application(HyperLap2DApp.initInstance(dm.width, dm.height), config);
     }

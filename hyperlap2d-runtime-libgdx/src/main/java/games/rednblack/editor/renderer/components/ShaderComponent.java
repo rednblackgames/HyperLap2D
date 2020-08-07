@@ -3,7 +3,7 @@ package games.rednblack.editor.renderer.components;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class ShaderComponent implements BaseComponent {
-	public String shaderName;
+	public String shaderName = "";
 	private ShaderProgram shaderProgram = null;
 
 	public void setShader(String name, ShaderProgram program) {
@@ -16,7 +16,7 @@ public class ShaderComponent implements BaseComponent {
 	}
 
 	public void clear() {
-		shaderName = null;
+		shaderName = "";
 		shaderProgram = null;
 	}
 
