@@ -18,8 +18,8 @@
 
 package games.rednblack.h2d.common.plugins;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -56,7 +56,7 @@ public interface PluginAPI {
      * Returns Ashley engine of main scene where all entities are located
      * @return Engine
      */
-    Engine getEngine();
+    PooledEngine getEngine();
 
     /**
      * Get simple libGDX Stage for UI part of editor, to add dialogs or other UI elements and widgets

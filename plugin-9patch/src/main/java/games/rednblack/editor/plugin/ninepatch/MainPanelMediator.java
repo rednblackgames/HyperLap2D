@@ -53,7 +53,6 @@ public class MainPanelMediator extends SimpleMediator<MainPanel> {
                 break;
             case NinePatchPlugin.CONVERT_TO_NINE_PATCH:
                 convertImageToNinePatch();
-                loadNinePatch();
                 break;
             case MainPanel.SAVE_CLICKED:
                 Entity entity = plugin.currEditingEntity;
@@ -70,7 +69,7 @@ public class MainPanelMediator extends SimpleMediator<MainPanel> {
         mainItemComponent.entityType = EntityFactory.NINE_PATCH;
         TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
         String regionName = textureRegionComponent.regionName;
-        NinePatchComponent ninePatchComponent = new NinePatchComponent();
+        NinePatchComponent ninePatchComponent = plugin.getAPI().getEngine().createComponent(NinePatchComponent.class);
         ninePatchComponent.textureRegionName = regionName;
         TextureAtlas.AtlasRegion newRegion = (TextureAtlas.AtlasRegion) textureRegionComponent.region;
         int[] splits = {0, 0, 0, 0};

@@ -18,8 +18,8 @@
 
 package games.rednblack.editor.proxy;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -210,7 +210,7 @@ public class PluginManager extends BaseProxy implements PluginAPI {
     }
 
     @Override
-    public Engine getEngine() {
+    public PooledEngine getEngine() {
         return getSceneLoader().getEngine();
     }
 
