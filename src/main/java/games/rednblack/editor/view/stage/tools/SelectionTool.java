@@ -445,7 +445,8 @@ public class SelectionTool extends SimpleTool {
             dragStartPositions.clear();
             for (Entity itemInstance : sandbox.getSelector().getCurrentSelection()) {
                 transformComponent = ComponentRetriever.get(itemInstance, TransformComponent.class);
-                dragStartPositions.put(itemInstance, new Vector2(transformComponent.x, transformComponent.y));
+                if (transformComponent != null)
+                    dragStartPositions.put(itemInstance, new Vector2(transformComponent.x, transformComponent.y));
             }
 
             if (keycode == Input.Keys.UP) {
