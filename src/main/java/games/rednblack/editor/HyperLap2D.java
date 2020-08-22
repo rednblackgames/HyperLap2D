@@ -21,12 +21,16 @@ package games.rednblack.editor;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.puremvc.patterns.observer.BaseNotification;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
@@ -63,8 +67,31 @@ public class HyperLap2D implements Proxy, ApplicationListener, Lwjgl3WindowListe
 
     @Override
     public void create() {
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.characters += "⌘⇧⌥";
+        parameter.kerning = false;
+        parameter.renderCount = 2;
+        parameter.hinting = FreeTypeFontGenerator.Hinting.Slight;
+
+        parameter.size = 10;
+        BitmapFont smallFont = generator.generateFont(parameter);
+        parameter.size = 12;
+        BitmapFont defaultFont = generator.generateFont(parameter);
+        parameter.size = 14;
+        BitmapFont bigFont = generator.generateFont(parameter);
+        generator.dispose();
+
+        /* Create the ObjectMap and add the fonts to it */
+        ObjectMap<String, Object> fontMap = new ObjectMap<>();
+        fontMap.put("small-font", smallFont);
+        fontMap.put("default-font", defaultFont);
+        fontMap.put("big-font", bigFont);
+
+        SkinLoader.SkinParameter skinParameter = new SkinLoader.SkinParameter(fontMap);
+
         assetManager = new AssetManager();
-        assetManager.load("style/uiskin.json", Skin.class);
+        assetManager.load("style/uiskin.json", Skin.class, skinParameter);
 
         facade = HyperLap2DFacade.getInstance();
         facade.registerProxy(this);

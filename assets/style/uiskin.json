@@ -1,24 +1,4 @@
 {
-  com.badlogic.gdx.graphics.g2d.BitmapFont: {
-    default-font: {
-      file: dejavu-sans.fnt
-    },
-    small-font: {
-      file: dejavu-sans-small.fnt
-    },
-    big-font: {
-      file: dejavu-sans-big.fnt
-    },
-    default-font-normal: {
-      file: dejavu-sans.fnt
-    },
-    small-font-normal: {
-      file: dejavu-sans-small.fnt
-    },
-    big-font-normal: {
-      file: dejavu-sans-big.fnt
-    }
-  },
   com.badlogic.gdx.graphics.Color: {
     hyperlap2d-menuitem-grey: {
       a: 1,
@@ -169,13 +149,13 @@
       }
     },
     white: {
-      font: default-font-normal,
+      font: default-font,
       fontColor: black,
       background: default-select-white,
       backgroundOver: default-select-over,
       scrollStyle: default,
       listStyle: {
-        font: default-font-normal,
+        font: default-font,
         fontColorSelected: black,
         fontColorUnselected: black,
         selection: list-selection-white,
@@ -336,13 +316,13 @@
       imageUp: icon-root,
       imageDown: icon-root,
       imageOver: icon-root,
-      font: big-font-normal
+      font: big-font
     },
     hierarchy-item: {
       imageUp: icon-composite2,
       imageDown: icon-composite2,
       imageOver: icon-composite2,
-      font: big-font-normal
+      font: big-font
     }
   },
   com.kotcrab.vis.ui.widget.VisTextButton$VisTextButtonStyle: {
@@ -351,7 +331,7 @@
       up: button,
       over: button-over,
       disabled: button,
-      font: big-font-normal,
+      font: big-font,
       fontColor: hyperlap2d-button-text-white,
       disabledFontColor: grey
     },
@@ -369,7 +349,7 @@
       up: button-flat-red,
       over: button-flat-red-over,
       disabled: button-flat-red-over,
-      font: big-font-normal,
+      font: big-font,
       fontColor: white,
       disabledFontColor: grey
     },
