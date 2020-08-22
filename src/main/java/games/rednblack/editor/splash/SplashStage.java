@@ -22,7 +22,7 @@ public class SplashStage extends Stage {
     public SplashStage(boolean isLoading) {
         this.isLoading = isLoading;
         atlas = new TextureAtlas(Gdx.files.internal("splash/splash.atlas"));
-        BitmapFont robotFont = new BitmapFont(Gdx.files.internal("splash/myriad.fnt"));
+        BitmapFont robotFont = new BitmapFont(Gdx.files.internal("splash/roboto.fnt"));
         Label.LabelStyle whiteLabelStyle = new Label.LabelStyle(robotFont, new Color(1, 1, 1, 1f));
         Label.LabelStyle blackLabelStyle = new Label.LabelStyle(robotFont, new Color(0, 0, 0, 1f));
 
