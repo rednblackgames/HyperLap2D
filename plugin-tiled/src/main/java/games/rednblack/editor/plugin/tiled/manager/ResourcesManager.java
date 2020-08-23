@@ -1,5 +1,6 @@
 package games.rednblack.editor.plugin.tiled.manager;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -29,19 +30,20 @@ public class ResourcesManager {
     }
 
     private void init() {
-        File atlasTempFile = getResourceFileFromJar(".atlas");
-        File pngTempFile = getResourceFileFromJar(".png");
-        textureAtlas = new TextureAtlas(new FileHandle(atlasTempFile));
-        atlasTempFile.deleteOnExit();
-        pngTempFile.deleteOnExit();
+        FileHandle atlasTempFile = getResourceFileFromJar(".atlas");
+        FileHandle pngTempFile = getResourceFileFromJar(".png");
+        textureAtlas = new TextureAtlas(atlasTempFile);
+        atlasTempFile.file().deleteOnExit();
+        pngTempFile.file().deleteOnExit();
     }
 
-    private File getResourceFileFromJar(String extension) {
-        String fileName = "/"+RESOURCES_FILE_NAME+extension;
-        File tempFile = new File (System.getProperty("user.dir")+fileName);
+    private FileHandle getResourceFileFromJar(String extension) {
+        String fileName = RESOURCES_FILE_NAME+extension;
+        //File tempFile = new File (System.getProperty("user.dir")+fileName);
+        FileHandle tempFile = Gdx.files.internal(fileName);
         try {
-            InputStream in = getClass().getResourceAsStream(fileName);
-            FileOutputStream out = new FileOutputStream(tempFile);
+            InputStream in = getClass().getResourceAsStream("/"+fileName);
+            FileOutputStream out = new FileOutputStream(tempFile.file());
             ByteStreams.copy(in, out);
             in.close();
             out.close();

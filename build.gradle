@@ -117,15 +117,15 @@ runtime {
                'java.desktop',
                'java.compiler',
                'java.logging',
-                'jdk.crypto.cryptoki',
+               'java.management',
+               'jdk.crypto.cryptoki',
                'jdk.crypto.ec',
                'jdk.unsupported']
     distDir = file(buildDir)
 
     jpackage {
         mainJar = dist.archiveFileName.get()
-        imageOptions += ['--app-version', getVersion(), '--vendor', 'Red & Black Games', '--description', 'HyperLap2D Editor',
-                         '--copyright', '(c) 2020, Red & Black Games', '--name', 'HyperLap2D']
+        imageOptions += ['--app-version', getVersion(), '--vendor', 'Red & Black Games', '--description', 'HyperLap2D Editor', '--name', 'HyperLap2D']
         if (osName.contains('windows')) {
             imageOptions += ["--icon", file("icons/icon.ico")]
             installerType = 'msi'
@@ -139,6 +139,7 @@ runtime {
             ]
             resourceDir = file("resources-linux")
         } else if (osName.contains('mac')) {
+            imageOptions += ['--copyright', '(c) 2020, Red &amp; Black Games']
             imageOptions += ["--icon", file("icons/icon.icns")]
             jvmArgs = ['-XstartOnFirstThread', '-Djava.awt.headless=true']
             installerType = 'dmg'
