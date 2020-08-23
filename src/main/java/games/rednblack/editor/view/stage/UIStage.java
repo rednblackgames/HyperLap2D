@@ -33,7 +33,7 @@ import games.rednblack.h2d.common.proxy.CursorManager;
 
 public class UIStage extends Stage {
 
-    public static final int SANDBOX_TOP_MARGIN = 168;
+    public static final int SANDBOX_TOP_MARGIN = 104;
     public static final int SANDBOX_BOTTOM_MARGIN = 38;
     public static final int SANDBOX_LEFT_MARGIN = 40;
 
@@ -41,7 +41,7 @@ public class UIStage extends Stage {
     public Group dummyTarget;
     public UIMainTable uiMainTable;
     public Group contextMenuContainer;
-    private ToastManager toastManager;
+    private final ToastManager toastManager;
 
 	public Group midUI;
 
@@ -54,6 +54,7 @@ public class UIStage extends Stage {
 
         //dummy target is basically the target of drop of items from resoruce panel
         dummyTarget = new Group();
+        dummyTarget.debugAll();
         dummyTarget.setWidth(getWidth());
         dummyTarget.setHeight(getHeight() - SANDBOX_TOP_MARGIN);
         dummyTarget.setY(SANDBOX_BOTTOM_MARGIN);
@@ -120,6 +121,8 @@ public class UIStage extends Stage {
 
     public void resize(int width, int height) {
         getViewport().update(width, height, true);
+        dummyTarget.setWidth(width);
+        dummyTarget.setHeight(height - SANDBOX_TOP_MARGIN);
     }
 
     public void setKeyboardFocus() {
@@ -139,5 +142,4 @@ public class UIStage extends Stage {
     public boolean keyDown(int keyCode) {
         return super.keyDown(keyCode);
     }
-
 }
