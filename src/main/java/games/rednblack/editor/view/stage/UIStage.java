@@ -54,7 +54,6 @@ public class UIStage extends Stage {
 
         //dummy target is basically the target of drop of items from resoruce panel
         dummyTarget = new Group();
-        dummyTarget.debugAll();
         dummyTarget.setWidth(getWidth());
         dummyTarget.setHeight(getHeight() - SANDBOX_TOP_MARGIN);
         dummyTarget.setY(SANDBOX_BOTTOM_MARGIN);
