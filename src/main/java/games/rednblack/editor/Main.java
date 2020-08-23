@@ -21,17 +21,24 @@ package games.rednblack.editor;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import org.apache.commons.lang3.SystemUtils;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.lang.management.ManagementFactory;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.CodeSource;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
     public static void main(String[] argv) {
+        if (restartStartOnFirstThread()) {
+            return;
+        }
+
         Graphics.DisplayMode dm = Lwjgl3ApplicationConfiguration.getDisplayMode();
 
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
@@ -73,5 +80,66 @@ public class Main {
             jarFile = new File(jarFilePath);
         }
         return jarFile.getParentFile().getAbsolutePath();
+    }
+
+    public static boolean restartStartOnFirstThread() {
+        // if not a mac return false
+        if (!SystemUtils.IS_OS_MAC_OSX && !SystemUtils.IS_OS_MAC) {
+            return false;
+        }
+
+        // get current jvm process pid
+        String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+        // get environment variable on whether XstartOnFirstThread is enabled
+        String env = System.getenv("JAVA_STARTED_ON_FIRST_THREAD_" + pid);
+
+        // if environment variable is "1" then XstartOnFirstThread is enabled
+        if (env != null && env.equals("1")) {
+            return false;
+        }
+
+        // restart jvm with -XstartOnFirstThread
+        String separator = System.getProperty("file.separator");
+        String classpath = System.getProperty("java.class.path");
+        String mainClass = System.getenv("JAVA_MAIN_CLASS_" + pid);
+        String jvmPath = System.getProperty("java.home") + separator + "bin" + separator + "java";
+
+        List<String> inputArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
+
+        ArrayList<String> jvmArgs = new ArrayList<>();
+
+        jvmArgs.add(jvmPath);
+        jvmArgs.add("-XstartOnFirstThread");
+        jvmArgs.add("-Djava.awt.headless=true");
+        jvmArgs.addAll(inputArguments);
+        jvmArgs.add("-cp");
+        jvmArgs.add(classpath);
+        jvmArgs.add(mainClass);
+
+        // if you don't need console output, just enable these two lines
+        // and delete bits after it. This JVM will then terminate.
+        //ProcessBuilder processBuilder = new ProcessBuilder(jvmArgs);
+        //processBuilder.start();
+
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(jvmArgs);
+            processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
+
+            InputStream is = process.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            process.waitFor();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return true;
     }
 }
