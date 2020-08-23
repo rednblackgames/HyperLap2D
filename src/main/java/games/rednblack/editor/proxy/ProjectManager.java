@@ -297,6 +297,9 @@ public class ProjectManager extends BaseProxy {
         executor.execute(() -> {
             for (FileHandle handle : fileHandles) {
                 File copiedFile = importExternalAnimationIntoProject(handle);
+                if (copiedFile == null)
+                    continue;
+
                 if (copiedFile.getName().toLowerCase().endsWith(".atlas")) {
                     ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
                     resolutionManager.resizeSpineAnimationForAllResolutions(copiedFile, currentProjectInfoVO);
@@ -339,7 +342,8 @@ public class ProjectManager extends BaseProxy {
                 targetPath = currentProjectPath + "/assets/orig/spine-animations" + File.separator + fileNameWithOutExt;
                 FileHandle atlasFileSource = new FileHandle(animationDataPath + File.separator + fileNameWithOutExt + ".atlas");
                 if (!atlasFileSource.exists()) {
-                    //showError("the atlas file needs to have same name and location as the json file");
+                    Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                            "\nBoth atlas and PNG files needs to have same\nname and location as the json file.").padBottom(20).pack();
                     return null;
                 }
 
