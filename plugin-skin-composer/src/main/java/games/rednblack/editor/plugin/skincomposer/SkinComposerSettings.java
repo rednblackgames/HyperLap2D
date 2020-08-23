@@ -11,6 +11,7 @@ public class SkinComposerSettings extends SettingsNodeValue<SkinComposerVO> {
 
     private final VisCheckBox alwaysCheckUpdates;
     private final H2DPluginAdapter plugin;
+    private boolean loaded = false;
 
     public SkinComposerSettings(Facade facade, H2DPluginAdapter plugin) {
         super("Skin Composer", facade);
@@ -25,6 +26,7 @@ public class SkinComposerSettings extends SettingsNodeValue<SkinComposerVO> {
 
     @Override
     public void translateSettingsToView() {
+        loaded = true;
         alwaysCheckUpdates.setChecked(getSettings().alwaysCheckUpdates);
     }
 
@@ -37,6 +39,6 @@ public class SkinComposerSettings extends SettingsNodeValue<SkinComposerVO> {
 
     @Override
     public boolean validateSettings() {
-        return getSettings().alwaysCheckUpdates != alwaysCheckUpdates.isChecked();
+        return loaded && getSettings().alwaysCheckUpdates != alwaysCheckUpdates.isChecked();
     }
 }
