@@ -29,8 +29,13 @@ import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.RulersUIMediator;
 import games.rednblack.editor.view.ui.UIBottomMenuBar;
 import games.rednblack.editor.view.ui.UIMainTable;
+import games.rednblack.h2d.common.proxy.CursorManager;
 
 public class UIStage extends Stage {
+
+    public static final int SANDBOX_TOP_MARGIN = 168;
+    public static final int SANDBOX_BOTTOM_MARGIN = 38;
+    public static final int SANDBOX_LEFT_MARGIN = 40;
 
     private final HyperLap2DFacade facade;
     public Group dummyTarget;
@@ -50,9 +55,31 @@ public class UIStage extends Stage {
         //dummy target is basically the target of drop of items from resoruce panel
         dummyTarget = new Group();
         dummyTarget.setWidth(getWidth());
-        dummyTarget.setHeight(getHeight());
-        dummyTarget.setY(0);
-        dummyTarget.setX(0);
+        dummyTarget.setHeight(getHeight() - SANDBOX_TOP_MARGIN);
+        dummyTarget.setY(SANDBOX_BOTTOM_MARGIN);
+        dummyTarget.setX(SANDBOX_LEFT_MARGIN);
+        dummyTarget.addListener(new InputListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                CursorManager cursorManager = facade.retrieveProxy(CursorManager.NAME);
+                cursorManager.displayCustomCursor();
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                if (pointer == -1) {
+                    CursorManager cursorManager = facade.retrieveProxy(CursorManager.NAME);
+                    cursorManager.hideCustomCursor();
+                }
+            }
+
+            @Override
+            public boolean mouseMoved(InputEvent event, float x, float y) {
+                CursorManager cursorManager = facade.retrieveProxy(CursorManager.NAME);
+                cursorManager.displayCustomCursor();
+                return false;
+            }
+        });
 
         addActor(dummyTarget);
 

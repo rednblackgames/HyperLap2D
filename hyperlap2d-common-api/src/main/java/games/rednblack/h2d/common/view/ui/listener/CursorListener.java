@@ -36,11 +36,17 @@ public class CursorListener extends InputListener {
 
     @Override
     public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-        if (pointer == -1) cursorManager.setOverrideCursor(cursor);
+        if (pointer == -1) {
+            cursorManager.setOverrideCursor(cursor);
+            cursorManager.displayCustomCursor();
+        }
     }
 
     @Override
     public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-        if (pointer == -1) cursorManager.removeOverrideCursor();
+        if (pointer == -1) {
+            cursorManager.removeOverrideCursor();
+            cursorManager.hideCustomCursor();
+        }
     }
 }
