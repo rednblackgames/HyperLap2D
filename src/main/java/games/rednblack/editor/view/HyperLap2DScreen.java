@@ -40,20 +40,20 @@ import games.rednblack.editor.view.stage.input.SandboxInputAdapter;
 
 public class HyperLap2DScreen implements Screen, InputProcessor {
     private static final String TAG = HyperLap2DScreen.class.getCanonicalName();
-    
+
     public UIStage uiStage;
-    
-	private Engine engine;
 
-	private final HyperLap2DFacade facade;
+    private Engine engine;
 
-	private Sandbox sandbox;
+    private final HyperLap2DFacade facade;
+
+    private Sandbox sandbox;
     private SandboxBackUI sandboxBackUI;
 
     private final Color defaultBackgroundColor;
     private final Color backgroundColor;
     private final Image bgLogo;
-	private final Vector2 screenSize;
+    private final Vector2 screenSize;
 
     private boolean isDrawingBgLogo;
 
@@ -70,10 +70,10 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float deltaTime) {
-		if (isDrawingBgLogo) {
+        if (isDrawingBgLogo) {
             Gdx.gl.glClearColor(defaultBackgroundColor.r, defaultBackgroundColor.g, defaultBackgroundColor.b, defaultBackgroundColor.a);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		} else {
+        } else {
             Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -81,13 +81,13 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
             engine.update(deltaTime);
         }
 
-		uiStage.getViewport().apply();
+        uiStage.getViewport().apply();
         uiStage.act(deltaTime);
         uiStage.draw();
     }
 
     public void disableDrawingBgLogo() {
-        if(!isDrawingBgLogo) return;
+        if (!isDrawingBgLogo) return;
 
         this.isDrawingBgLogo = false;
         bgLogo.remove();
@@ -95,11 +95,11 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
     @Override
     public void pause() {
-	}
+    }
 
     @Override
     public void resume() {
-	}
+    }
 
     @Override
     public void dispose() {
@@ -112,11 +112,11 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         uiStage = sandbox.getUIStage();
 
         if (isDrawingBgLogo) {
-        	uiStage.addActor(bgLogo);
-        	bgLogo.setPosition(screenSize.x/2 - bgLogo.getWidth()/2f, screenSize.y/2 - bgLogo.getHeight()/2f);
-		}
+            uiStage.getRoot().addActorAt(0, bgLogo);
+            bgLogo.setPosition(screenSize.x / 2 - bgLogo.getWidth() / 2f, screenSize.y / 2 - bgLogo.getHeight() / 2f);
+        }
 
-		InputMultiplexer multiplexer = new InputMultiplexer();
+        InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(this);
         multiplexer.addProcessor(uiStage);
         multiplexer.addProcessor(new SandboxInputAdapter());
@@ -125,7 +125,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
     @Override
     public void hide() {
-		uiStage.dispose();
+        uiStage.dispose();
     }
 
     @Override
@@ -135,9 +135,9 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
         uiStage.resize(width, height);
         screenSize.set(width, height);
-		bgLogo.setPosition(screenSize.x/2 - bgLogo.getWidth()/2f, screenSize.y/2 - bgLogo.getHeight()/2f);
+        bgLogo.setPosition(screenSize.x / 2 - bgLogo.getWidth() / 2f, screenSize.y / 2 - bgLogo.getHeight() / 2f);
 
-        if(Sandbox.getInstance().getViewport() != null) {
+        if (Sandbox.getInstance().getViewport() != null) {
             Sandbox.getInstance().getViewport().update(width, height, true);
         }
     }
@@ -213,9 +213,9 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         return false;
     }
 
-	public void setEngine(Engine engine) {
-		this.engine = engine;
-	}
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
 
     public void setBackUI(SandboxBackUI sandboxBackUI) {
         this.sandboxBackUI = sandboxBackUI;

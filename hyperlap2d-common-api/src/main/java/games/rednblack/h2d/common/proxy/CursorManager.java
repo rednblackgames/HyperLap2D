@@ -27,8 +27,6 @@ import com.puremvc.patterns.proxy.BaseProxy;
 import games.rednblack.h2d.common.view.ui.Cursors;
 import games.rednblack.h2d.common.vo.CursorData;
 
-import javax.swing.plaf.synth.Region;
-
 /**
  * Created by azakhary on 5/15/2015.
  */

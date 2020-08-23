@@ -251,10 +251,6 @@ public class SandboxMediator extends SimpleMediator<Sandbox> {
             boolean isControlPressed = isControlPressed();
             Sandbox sandbox = Sandbox.getInstance();
 
-            // if control is pressed then z index is getting modified
-            // TODO: key pressed 0 for unckown, should be removed?
-            // TODO: need to make sure OSX Command button works too.
-
             if(currentSelectedTool != null) {
                 currentSelectedTool.keyDown(entity, keycode);
             }
