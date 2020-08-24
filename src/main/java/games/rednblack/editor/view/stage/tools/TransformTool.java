@@ -61,6 +61,8 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
     private final ColorPrimitiveStrategy colorPrimitiveStrategy = new ColorPrimitiveStrategy();
     private ITransformStrategy transformStrategy;
 
+    private boolean fixCursor = false;
+
     public void execute(Vector2 mouseInitialCoordinates, Vector2 mousePointStage, int anchor, Entity entity) {
         float mouseDx = mousePointStage.x - mouseInitialCoordinates.x;
         float mouseDy = mousePointStage.y - mouseInitialCoordinates.y;
@@ -143,6 +145,8 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
 
     @Override
     public void anchorDown(NormalSelectionFollower follower, int anchor, float x, float y) {
+        fixCursor = true;
+
         Sandbox sandbox = Sandbox.getInstance();
 
         commandBuilder.begin(follower.getEntity());
@@ -188,6 +192,8 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
 
     @Override
     public void anchorUp(NormalSelectionFollower follower, int anchor, float x, float y) {
+        fixCursor = false;
+
         commandBuilder.execute();
         if (transformStrategy == compositeStrategy) {
             compositeStrategy.swapItemFinalAndInitialStates(follower.getEntity());
@@ -207,6 +213,11 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
 
     @Override
     public void anchorMouseEnter(NormalSelectionFollower follower, int anchor, float x, float y) {
+        if (fixCursor){
+            cursorManager.displayCustomCursor();
+            return;
+        }
+
         switch (anchor) {
             case NormalSelectionFollower.ROTATION_LB:
                 cursorManager.setCursor(Cursors.ROTATION_LB);
@@ -248,10 +259,15 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
                 cursorManager.setCursor(Cursors.NORMAL);
                 break;
         }
+        cursorManager.displayCustomCursor();
     }
 
     @Override
     public void anchorMouseExit(NormalSelectionFollower follower, int anchor, float x, float y) {
+        if (fixCursor)
+            return;
+
         cursorManager.setCursor(Cursors.CROSS);
+        cursorManager.displayCustomCursor();
     }
 }
