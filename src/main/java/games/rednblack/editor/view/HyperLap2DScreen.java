@@ -96,7 +96,10 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
     }
 
     private void updateCameraPosition() {
-
+        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+        SceneConfigVO sceneConfigVO = projectManager.getCurrentSceneConfigVO();
+        if (sceneConfigVO != null)
+            sandbox.getCamera().position.set(sceneConfigVO.cameraPosition[0], sceneConfigVO.cameraPosition[1], 0);
     }
 
     @Override
@@ -106,10 +109,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
     @Override
     public void resume() {
-        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
-        SceneConfigVO sceneConfigVO = projectManager.getCurrentSceneConfigVO();
-        if (sceneConfigVO != null)
-            sandbox.getCamera().position.set(sceneConfigVO.cameraPosition[0], sceneConfigVO.cameraPosition[1], 0);
+        updateCameraPosition();
     }
 
     @Override
@@ -150,6 +150,8 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         uiStage.resize(width, height);
         screenSize.set(width, height);
         bgLogo.setPosition(screenSize.x / 2 - bgLogo.getWidth() / 2f, screenSize.y / 2 - bgLogo.getHeight() / 2f);
+
+        updateCameraPosition();
     }
 
     @Override
