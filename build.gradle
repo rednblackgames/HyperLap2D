@@ -129,7 +129,10 @@ runtime {
         if (osName.contains('windows')) {
             imageOptions += ["--icon", file("icons/icon.ico")]
             installerType = 'msi'
-            installerOptions += ['--win-dir-chooser', '--win-menu', '--win-shortcut',  '--vendor', 'Red & Black Games', '--description', 'HyperLap2D Editor']
+            installerOptions += ['--win-dir-chooser', '--win-menu',
+                                 '--win-shortcut',  '--vendor', 'Red & Black Games',
+                                 '--description', 'HyperLap2D Editor',
+                                 '--win-upgrade-uuid', 'e5f64fb6-111f-41f3-8f33-03b90e1a3a32']
             resourceDir = file("resources-windows")
         } else if (osName.contains('linux')) {
             imageOptions += ["--icon", file("icons/HyperLap2D.png")]
