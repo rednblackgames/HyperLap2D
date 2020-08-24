@@ -22,9 +22,11 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.kotcrab.vis.ui.VisUI;
+import games.rednblack.editor.view.stage.Sandbox;
 
 /**
  * Created by azakhary on 5/20/2015.
@@ -41,8 +43,6 @@ public class LightFollower extends BasicFollower {
     public void create() {
         icon = new Image(VisUI.getSkin().getDrawable("tool-sphericlight"));
         icon.setTouchable(Touchable.disabled);
-        icon.setX(-icon.getWidth() / 2);
-        icon.setY(-icon.getHeight() / 2);
         addActor(icon);
     }
 
@@ -54,6 +54,24 @@ public class LightFollower extends BasicFollower {
             setVisible(true);
         }
         super.act(delta);
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        Sandbox sandbox = Sandbox.getInstance();
+        OrthographicCamera camera = Sandbox.getInstance().getCamera();
+
+        int pixelPerWU = sandbox.sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
+
+        setWidth ( pixelPerWU * dimensionsComponent.width * transformComponent.scaleX / camera.zoom );
+        setHeight( pixelPerWU * dimensionsComponent.height * transformComponent.scaleY / camera.zoom );
+
+        setX(getX() - getWidth() / 2f);
+        setY(getY() - getHeight() / 2f);
+
+        icon.setX((getWidth() - icon.getWidth()) / 2);
+        icon.setY((getHeight() - icon.getHeight()) / 2);
     }
 
     @Override

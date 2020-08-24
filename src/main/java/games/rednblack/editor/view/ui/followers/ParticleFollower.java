@@ -19,16 +19,20 @@
 package games.rednblack.editor.view.ui.followers;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.kotcrab.vis.ui.VisUI;
 import games.rednblack.editor.renderer.components.particle.ParticleComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.view.stage.Sandbox;
 
 /**
  * Created by azakhary on 5/20/2015.
  */
 public class ParticleFollower extends BasicFollower {
+
+    private Image icon;
 
     public ParticleFollower(Entity entity) {
         super(entity);
@@ -36,16 +40,32 @@ public class ParticleFollower extends BasicFollower {
 
     @Override
     public void create() {
-        Image icon = new Image(VisUI.getSkin().getDrawable("icon-particle-over"));
+        icon = new Image(VisUI.getSkin().getDrawable("icon-particle-over"));
         icon.setTouchable(Touchable.disabled);
-        icon.setX(-icon.getWidth() / 2);
-        icon.setY(-icon.getHeight() / 2);
-        icon.getColor().a = 0.3f;
         addActor(icon);
     }
 
     @Override
     public void hide() {
         // Particle followers can't be hidden.
+    }
+
+    @Override
+    public void update() {
+        super.update();
+
+        Sandbox sandbox = Sandbox.getInstance();
+        OrthographicCamera camera = Sandbox.getInstance().getCamera();
+
+        int pixelPerWU = sandbox.sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
+
+        setWidth ( pixelPerWU * dimensionsComponent.width * transformComponent.scaleX / camera.zoom );
+        setHeight( pixelPerWU * dimensionsComponent.height * transformComponent.scaleY / camera.zoom );
+
+        setX(getX() - getWidth() / 2f);
+        setY(getY() - getHeight() / 2f);
+
+        icon.setX((getWidth() - icon.getWidth()) / 2);
+        icon.setY((getHeight() - icon.getHeight()) / 2);
     }
 }
