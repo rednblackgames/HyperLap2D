@@ -73,6 +73,8 @@ public class HyperLap2DApp extends ApplicationAdapter {
     }
 
     public void showUISplashWindow() {
+        if (splashWindow != null)
+            splashWindow.closeWindow();
         Lwjgl3Application app = (Lwjgl3Application) Gdx.app;
 
         Lwjgl3ApplicationConfiguration config2 = new Lwjgl3ApplicationConfiguration();
