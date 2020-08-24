@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.h2d.common.MsgAPI;
@@ -37,6 +38,7 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.stage.input.SandboxInputAdapter;
+import games.rednblack.h2d.common.vo.SceneConfigVO;
 
 public class HyperLap2DScreen implements Screen, InputProcessor {
     private static final String TAG = HyperLap2DScreen.class.getCanonicalName();
@@ -93,12 +95,21 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         bgLogo.remove();
     }
 
+    private void updateCameraPosition() {
+
+    }
+
     @Override
     public void pause() {
+
     }
 
     @Override
     public void resume() {
+        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+        SceneConfigVO sceneConfigVO = projectManager.getCurrentSceneConfigVO();
+        if (sceneConfigVO != null)
+            sandbox.getCamera().position.set(sceneConfigVO.cameraPosition[0], sceneConfigVO.cameraPosition[1], 0);
     }
 
     @Override
@@ -130,16 +141,15 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
     @Override
     public void resize(int width, int height) {
-        // See https://github.com/libgdx/libgdx/issues/3673#issuecomment-177606278
+        if (Sandbox.getInstance().getViewport() != null) {
+            Sandbox.getInstance().getViewport().update(width, height, true);
+        }
+
         if (width == 0 && height == 0) return;
 
         uiStage.resize(width, height);
         screenSize.set(width, height);
         bgLogo.setPosition(screenSize.x / 2 - bgLogo.getWidth() / 2f, screenSize.y / 2 - bgLogo.getHeight() / 2f);
-
-        if (Sandbox.getInstance().getViewport() != null) {
-            Sandbox.getInstance().getViewport().update(width, height, true);
-        }
     }
 
     @Override

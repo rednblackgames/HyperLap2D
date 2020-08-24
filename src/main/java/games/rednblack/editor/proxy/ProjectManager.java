@@ -1117,6 +1117,8 @@ public class ProjectManager extends BaseProxy {
     }
 
     public SceneConfigVO getCurrentSceneConfigVO() {
+        if (currentProjectVO == null)
+            return null;
         for (int i = 0; i < currentProjectVO.sceneConfigs.size(); i++) {
             if (currentProjectVO.sceneConfigs.get(i).sceneName.equals(Sandbox.getInstance().getSceneControl().getCurrentSceneVO().sceneName)) {
                 return currentProjectVO.sceneConfigs.get(i);
