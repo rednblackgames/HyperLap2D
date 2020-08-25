@@ -128,7 +128,7 @@ public class HyperLap2D implements Proxy, ApplicationListener, Lwjgl3WindowListe
 
     @Override
     public void render() {
-        renderNotification.setBody(Gdx.graphics.getDeltaTime());
+        renderNotification.setBody(Math.min(Gdx.graphics.getDeltaTime(), 0.1f));
         facade.notifyObservers(renderNotification);
         sync.sync(60);
     }

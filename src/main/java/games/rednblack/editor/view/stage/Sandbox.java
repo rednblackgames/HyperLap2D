@@ -221,7 +221,7 @@ public class Sandbox {
 
             if (moveCameraWithZoom) {
                 getCamera().unproject(temp.set(Gdx.input.getX(), Gdx.input.getY(), 0 ));
-                getCamera().position.add(px - temp.x, py- temp.y, 0);
+                getCamera().position.add(px - temp.x, py - temp.y, 0);
                 getCamera().update();
             }
 

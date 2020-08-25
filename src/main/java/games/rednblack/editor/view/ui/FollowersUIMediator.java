@@ -59,6 +59,7 @@ public class FollowersUIMediator extends SimpleMediator<FollowersUI> {
     @Override
     public String[] listNotificationInterests() {
         return new String[]{
+                MsgAPI.RESIZE,
                 MsgAPI.SCENE_LOADED,
                 MsgAPI.ITEM_DATA_UPDATED,
                 MsgAPI.ITEM_SELECTION_CHANGED,
@@ -100,6 +101,7 @@ public class FollowersUIMediator extends SimpleMediator<FollowersUI> {
                 break;
             case PanTool.SCENE_PANNED:
             case MsgAPI.ZOOM_CHANGED:
+            case MsgAPI.RESIZE:
                 updateAllFollowers();
                 break;
             case MsgAPI.ITEM_SELECTION_CHANGED:
