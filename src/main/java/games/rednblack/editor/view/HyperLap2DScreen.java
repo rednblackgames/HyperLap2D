@@ -80,6 +80,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
             if (sandboxBackUI != null) sandboxBackUI.render(deltaTime);
+            sandbox.render(deltaTime);
             engine.update(deltaTime);
         }
 

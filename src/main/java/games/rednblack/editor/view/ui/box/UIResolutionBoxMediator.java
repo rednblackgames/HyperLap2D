@@ -80,7 +80,7 @@ public class UIResolutionBoxMediator extends SimpleMediator<UIResolutionBox> {
                 String name = sandbox.sceneControl.getCurrentSceneVO().sceneName;
                 projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath(), resolutionEntryVO.name);
                 sandbox.loadScene(name);
-                sandbox.setZoomPercent(zoom);
+                sandbox.setZoomPercent(zoom, false);
                 sandbox.getCamera().position.set(cameraPos);
                 break;
             case UIResolutionBox.DELETE_RESOLUTION_BTN_CLICKED:

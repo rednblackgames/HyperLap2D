@@ -285,9 +285,8 @@ public class SandboxMediator extends SimpleMediator<Sandbox> {
                     sandbox.getSelector().alignSelections(Align.right);
                 }
                 if (keycode == Input.Keys.NUM_0 || keycode == Input.Keys.NUMPAD_0) {
-                    sandbox.setZoomPercent(100);
                     sandbox.getCamera().position.set(0 ,0, 0);
-                    facade.sendNotification(MsgAPI.ZOOM_CHANGED);
+                    sandbox.setZoomPercent(100, false);
                 }
                 if (keycode == Input.Keys.X) {
                     facade.sendNotification(MsgAPI.ACTION_CUT);
@@ -338,11 +337,17 @@ public class SandboxMediator extends SimpleMediator<Sandbox> {
             }
 
             // Zoom
-            if (keycode == Input.Keys.MINUS && isControlPressed) {
-                sandbox.zoomDivideBy(2f);
-            }
-            if (keycode == Input.Keys.PLUS && isControlPressed) {
-                sandbox.zoomDivideBy(0.5f);
+            if (isControlPressed) {
+                switch (keycode) {
+                    case Input.Keys.SLASH:
+                    case Input.Keys.MINUS:
+                        sandbox.zoomDivideBy(2f);
+                        break;
+                    case Input.Keys.PLUS:
+                    case Input.Keys.RIGHT_BRACKET:
+                        sandbox.zoomDivideBy(0.5f);
+                        break;
+                }
             }
 
             return true;
@@ -450,9 +455,8 @@ public class SandboxMediator extends SimpleMediator<Sandbox> {
                 float zoomPercent = sandbox.getZoomPercent();
                 zoomPercent-=amount*4f;
                 if(zoomPercent < 5 ) zoomPercent = 5;
-                sandbox.setZoomPercent(zoomPercent);
 
-                facade.sendNotification(MsgAPI.ZOOM_CHANGED);
+                sandbox.setZoomPercent(zoomPercent, true);
             }
 
             if (currentSelectedTool != null) {

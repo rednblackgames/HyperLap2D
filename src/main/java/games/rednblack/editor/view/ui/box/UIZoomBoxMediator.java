@@ -69,8 +69,7 @@ public class UIZoomBoxMediator extends SimpleMediator<UIZoomBox> {
                 sandbox.zoomDivideBy(zoomDevider);
                 break;
             case  UIZoomBox.ZOOM_VALUE_CHANGED:
-                sandbox.setZoomPercent(NumberUtils.toInt(viewComponent.getCurrentZoom()));
-                facade.sendNotification(MsgAPI.ZOOM_CHANGED);
+                sandbox.setZoomPercent(NumberUtils.toInt(viewComponent.getCurrentZoom()), false);
                 break;
             case  MsgAPI.ZOOM_CHANGED:
                 viewComponent.setCurrentZoom(sandbox.getZoomPercent() + "");

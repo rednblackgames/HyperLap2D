@@ -24,8 +24,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -64,6 +66,8 @@ public class Sandbox {
 
     private static Sandbox instance = null;
 
+    private static final float CAMERA_ZOOM_DURATION = 0.65f;
+
     public SceneControlMediator sceneControl;
     public ItemControlMediator itemControl;
 
@@ -84,6 +88,10 @@ public class Sandbox {
 
     private SceneLoader sceneLoader;
 	private Array<InputListener> listeners = new Array<>(1);
+
+    Vector3 temp = new Vector3();
+    private float timeToCameraZoomTarget, cameraZoomTarget, cameraZoomOrigin;
+    private boolean moveCameraWithZoom = false;
 
     private Sandbox() {
         init();
@@ -195,6 +203,30 @@ public class Sandbox {
     }
 
     /**
+     * Renderer method used to animate zoom and camera position
+     *
+     * @param deltaTime
+     */
+    public void render(float deltaTime) {
+        if (timeToCameraZoomTarget > 0){
+            getCamera().unproject(temp.set(Gdx.input.getX(), Gdx.input.getY(), 0 ));
+            float px = temp.x;
+            float py = temp.y;
+
+            timeToCameraZoomTarget -= deltaTime;
+            float progress = timeToCameraZoomTarget < 0 ? 1 : 1f - timeToCameraZoomTarget / CAMERA_ZOOM_DURATION;
+            getCamera().zoom = Interpolation.pow3Out.apply(cameraZoomOrigin, cameraZoomTarget, progress);
+            getCamera().update();
+
+            if (moveCameraWithZoom) {
+                getCamera().unproject(temp.set(Gdx.input.getX(), Gdx.input.getY(), 0 ));
+                getCamera().position.add(px - temp.x, py- temp.y, 0);
+                getCamera().update();
+            }
+        }
+    }
+
+    /**
      * Some particle panels might not be continuous, so they will stop after first iteration, which is ok
      * This method will make sure they look continuous while in editor, so user will find and see them easily.
      *
@@ -262,18 +294,15 @@ public class Sandbox {
         return (int)zoomPercent;
     }
 
-    public void setZoomPercent(float percent) {
+    public void setZoomPercent(float percent, boolean moveCamera) {
         zoomPercent = percent;
-        getCamera().zoom = 1f / (zoomPercent / 100f);
-    }
 
-    public void zoomBy(float amount) {
-        zoomPercent += -amount * 15f;
+        cameraZoomOrigin = getCamera().zoom;
+        cameraZoomTarget = 1f / (zoomPercent / 100f);
 
-        if (zoomPercent < 20) zoomPercent = 20;
-        if (zoomPercent > 1000) zoomPercent = 1000;
+        timeToCameraZoomTarget = CAMERA_ZOOM_DURATION;
+        moveCameraWithZoom = moveCamera;
 
-        setZoomPercent(zoomPercent);
         facade.sendNotification(MsgAPI.ZOOM_CHANGED);
     }
 
@@ -282,8 +311,7 @@ public class Sandbox {
         if (zoomPercent < 20) zoomPercent = 20;
         if (zoomPercent > 1000) zoomPercent = 1000;
 
-        setZoomPercent(zoomPercent);
-        facade.sendNotification(MsgAPI.ZOOM_CHANGED);
+        setZoomPercent(zoomPercent, false);
     }
 
     public float getWorldGridSize(){
