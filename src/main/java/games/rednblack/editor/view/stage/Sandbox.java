@@ -35,6 +35,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.util.ToastManager;
 import games.rednblack.editor.proxy.*;
 import games.rednblack.editor.renderer.systems.LightSystem;
+import games.rednblack.editor.view.stage.tools.PanTool;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extention.spine.SpineItemType;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -223,6 +224,8 @@ public class Sandbox {
                 getCamera().position.add(px - temp.x, py- temp.y, 0);
                 getCamera().update();
             }
+
+            facade.sendNotification(MsgAPI.ZOOM_CHANGED);
         }
     }
 
@@ -302,8 +305,6 @@ public class Sandbox {
 
         timeToCameraZoomTarget = CAMERA_ZOOM_DURATION;
         moveCameraWithZoom = moveCamera;
-
-        facade.sendNotification(MsgAPI.ZOOM_CHANGED);
     }
 
     public void zoomDivideBy(float amount) {
