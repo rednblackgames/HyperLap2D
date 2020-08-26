@@ -23,6 +23,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.util.OsUtils;
@@ -105,18 +107,11 @@ public class SelectionTool extends SimpleTool {
     public boolean stageMouseDown(float x, float y) {
         sandbox = Sandbox.getInstance();
 
-        boolean setOpacity = false;
-
-        //TODO: Anyone can explain what was the purpose of this?
-        if (!Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            setOpacity = true;
-        }
-
         // transform stage coordinates to screen coordinates
         Vector2 screenCoords = Sandbox.getInstance().worldToScreen(x, y);
 
         // preparing selection tool rectangle to follow mouse
-        sandbox.prepareSelectionRectangle(screenCoords.x, screenCoords.y, setOpacity);
+        sandbox.prepareSelectionRectangle(screenCoords.x, screenCoords.y);
         return true;
     }
 

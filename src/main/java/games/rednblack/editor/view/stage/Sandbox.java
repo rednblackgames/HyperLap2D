@@ -314,11 +314,8 @@ public class Sandbox {
         return sceneControl.getCurrentScene();
     }
 
-    public void prepareSelectionRectangle(float x, float y, boolean setOpacity) {
-        // space is panning, so if we are not, then prepare the selection rectangle
-        if (setOpacity) {
-            selectionRec.setOpacity(0.6f);
-        }
+    public void prepareSelectionRectangle(float x, float y) {
+        selectionRec.setOpacity(0.8f);
         selectionRec.setWidth(0);
         selectionRec.setHeight(0);
         selectionRec.setX(x);

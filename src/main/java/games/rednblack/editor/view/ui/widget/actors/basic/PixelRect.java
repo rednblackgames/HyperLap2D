@@ -19,19 +19,19 @@
 package games.rednblack.editor.view.ui.widget.actors.basic;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.EditorTextureManager;
-import games.rednblack.editor.proxy.ProjectManager;
 
 public class PixelRect extends Group {
 
     private final HyperLap2DFacade facade;
-    private final ProjectManager projectManager;
-    private PixelLine[] lines = new PixelLine[4];
-    private Image fill;
+    private final PixelLine[] lines = new PixelLine[4];
+    private final Image fill;
 
     public PixelRect() {
         this(0, 0);
@@ -39,7 +39,6 @@ public class PixelRect extends Group {
 
     public PixelRect(float width, float height) {
         facade = HyperLap2DFacade.getInstance();
-        projectManager = facade.retrieveProxy(ProjectManager.NAME);
         EditorTextureManager tm = facade.retrieveProxy(EditorTextureManager.NAME);
         lines[0] = new PixelLine(tm, 0, 0, width, 0);
         lines[1] = new PixelLine(tm, 0, 0, 0, height);
@@ -95,9 +94,7 @@ public class PixelRect extends Group {
     }
 
     public void setOpacity(float opacity) {
-        Color clr = getColor();
-        clr.a = opacity;
-        setColor(clr);
+        addAction(Actions.alpha(opacity, 0.3f, Interpolation.exp5Out));
     }
 
     public Rectangle getRect() {
