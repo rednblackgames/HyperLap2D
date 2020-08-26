@@ -238,6 +238,8 @@ public class Sandbox {
             float x = Interpolation.smoother.apply(cameraPosOrigin.x, cameraPosTarget.x, progress);
             float y = Interpolation.smoother.apply(cameraPosOrigin.y, cameraPosTarget.y, progress);
             getCamera().position.set(x, y, 0);
+
+            facade.sendNotification(PanTool.SCENE_PANNED);
         }
     }
 
@@ -254,7 +256,7 @@ public class Sandbox {
     }
 
     public void scenePanned() {
-        if (isViewingRootEntity()) {
+        if (isViewingRootEntity() && timeToCameraPosTarget <= 0) {
             sceneConfigVO.cameraPosition[0] = getCamera().position.x;
             sceneConfigVO.cameraPosition[1] = getCamera().position.y;
         }
