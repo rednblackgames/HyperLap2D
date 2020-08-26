@@ -104,7 +104,8 @@ public class SandboxMediator extends SimpleMediator<Sandbox> {
                 CompositeCameraChangeCommand.DONE,
                 AddComponentToItemCommand.DONE,
                 RemoveComponentFromItemCommand.DONE,
-                MsgAPI.ITEM_SELECTION_CHANGED
+                MsgAPI.ITEM_SELECTION_CHANGED,
+                PanTool.SCENE_PANNED
         };
     }
 
@@ -123,6 +124,9 @@ public class SandboxMediator extends SimpleMediator<Sandbox> {
                 break;
             case CompositeCameraChangeCommand.DONE:
                 initItemListeners();
+                break;
+            case PanTool.SCENE_PANNED:
+                viewComponent.scenePanned();
                 break;
             default:
                 break;

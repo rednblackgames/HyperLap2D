@@ -105,12 +105,5 @@ public class PanTool extends SimpleTool {
         lastCoordinates = new Vector2(Gdx.input.getX(), Gdx.input.getY());
 
         HyperLap2DFacade.getInstance().sendNotification(SCENE_PANNED);
-
-        // Save the current position
-        // TODO: (this has to move to some kind of mediator that listens to scene panned event)
-        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
-        SceneConfigVO sceneConfigVO = projectManager.getCurrentSceneConfigVO();
-        sceneConfigVO.cameraPosition[0] = sandbox.getCamera().position.x;
-        sceneConfigVO.cameraPosition[1] = sandbox.getCamera().position.y;
     }
 }

@@ -71,6 +71,7 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
         facade.sendNotification(MsgAPI.EMPTY_SPACE_CLICKED);
 
         sandbox.overrideAmbientLightInComposite();
+        sandbox.adjustCameraInComposites();
     }
 
     @Override

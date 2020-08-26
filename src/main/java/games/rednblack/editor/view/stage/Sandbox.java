@@ -83,6 +83,8 @@ public class Sandbox {
 
     private ProjectManager projectManager;
     private ResourceManager resourceManager;
+
+    SceneConfigVO sceneConfigVO;
     
     public PixelRect selectionRec;
 
@@ -92,6 +94,9 @@ public class Sandbox {
     Vector3 temp = new Vector3();
     private float timeToCameraZoomTarget, cameraZoomTarget, cameraZoomOrigin;
     private boolean moveCameraWithZoom = false;
+
+    private float timeToCameraPosTarget;
+    private Vector2 cameraPosTarget = new Vector2(), cameraPosOrigin = new Vector2();
 
     private Sandbox() {
         init();
@@ -185,7 +190,7 @@ public class Sandbox {
 
         currentViewingEntity = getRootEntity();
 
-        SceneConfigVO sceneConfigVO = projectManager.getCurrentSceneConfigVO();
+        sceneConfigVO = projectManager.getCurrentSceneConfigVO();
         getCamera().position.set(sceneConfigVO.cameraPosition[0], sceneConfigVO.cameraPosition[1], 0);
         setZoomPercent(sceneConfigVO.cameraZoom, false);
         projectManager.changeSceneWindowTitle();
@@ -225,6 +230,33 @@ public class Sandbox {
             }
 
             facade.sendNotification(MsgAPI.ZOOM_CHANGED);
+        }
+
+        if (timeToCameraPosTarget > 0) {
+            timeToCameraPosTarget -= deltaTime;
+            float progress = timeToCameraPosTarget < 0 ? 1 : 1f - timeToCameraPosTarget / CAMERA_ZOOM_DURATION;
+            float x = Interpolation.smoother.apply(cameraPosOrigin.x, cameraPosTarget.x, progress);
+            float y = Interpolation.smoother.apply(cameraPosOrigin.y, cameraPosTarget.y, progress);
+            getCamera().position.set(x, y, 0);
+        }
+    }
+
+    public void adjustCameraInComposites() {
+        if (!isViewingRootEntity()) {
+            cameraPosOrigin.set(getCamera().position.x, getCamera().position.y);
+            cameraPosTarget.set(0, 0);
+            timeToCameraPosTarget = CAMERA_ZOOM_DURATION;
+        } else {
+            cameraPosOrigin.set(getCamera().position.x, getCamera().position.y);
+            cameraPosTarget.set(sceneConfigVO.cameraPosition[0], sceneConfigVO.cameraPosition[1]);
+            timeToCameraPosTarget = CAMERA_ZOOM_DURATION;
+        }
+    }
+
+    public void scenePanned() {
+        if (isViewingRootEntity()) {
+            sceneConfigVO.cameraPosition[0] = getCamera().position.x;
+            sceneConfigVO.cameraPosition[1] = getCamera().position.y;
         }
     }
 
@@ -293,21 +325,21 @@ public class Sandbox {
 
 
     public int getZoomPercent() {
-        return (int)projectManager.getCurrentSceneConfigVO().cameraZoom;
+        return (int)sceneConfigVO.cameraZoom;
     }
 
     public void setZoomPercent(float percent, boolean moveCamera) {
-        projectManager.getCurrentSceneConfigVO().cameraZoom = percent;
+        sceneConfigVO.cameraZoom = percent;
 
         cameraZoomOrigin = getCamera().zoom;
-        cameraZoomTarget = 1f / (projectManager.getCurrentSceneConfigVO().cameraZoom / 100f);
+        cameraZoomTarget = 1f / (sceneConfigVO.cameraZoom / 100f);
 
         timeToCameraZoomTarget = CAMERA_ZOOM_DURATION;
         moveCameraWithZoom = moveCamera;
     }
 
     public void zoomDivideBy(float amount) {
-        float zoomPercent = projectManager.getCurrentSceneConfigVO().cameraZoom / amount;
+        float zoomPercent = sceneConfigVO.cameraZoom / amount;
         if (zoomPercent < 20) zoomPercent = 20;
         if (zoomPercent > 1000) zoomPercent = 1000;
 
@@ -343,11 +375,15 @@ public class Sandbox {
     	return sceneControl.getRootEntity();
     }
 
+    public boolean isViewingRootEntity() {
+        return currentViewingEntity.equals(getRootEntity());
+    }
+
     public void overrideAmbientLightInComposite() {
         SceneVO sceneVO = sceneControl.getCurrentSceneVO();
 
         SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
-        boolean override = !currentViewingEntity.equals(getRootEntity()) && settingsManager.editorConfigVO.disableAmbientComposite;
+        boolean override = !isViewingRootEntity() && settingsManager.editorConfigVO.disableAmbientComposite;
         sceneLoader.setAmbientInfo(sceneVO, override);
     }
     
