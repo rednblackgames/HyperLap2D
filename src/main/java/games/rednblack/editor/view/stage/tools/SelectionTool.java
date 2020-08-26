@@ -470,6 +470,8 @@ public class SelectionTool extends SimpleTool {
             Array<Object[]> payloads = new Array<>();
             for (Entity itemInstance : sandbox.getSelector().getCurrentSelection()) {
                 transformComponent = ComponentRetriever.get(itemInstance, TransformComponent.class);
+                if (transformComponent == null)
+                    continue;
                 Vector2 newPosition = new Vector2(transformComponent.x, transformComponent.y);
                 Vector2 oldPosition = dragStartPositions.get(itemInstance);
 

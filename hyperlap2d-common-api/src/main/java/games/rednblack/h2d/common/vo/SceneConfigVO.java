@@ -29,4 +29,5 @@ public class SceneConfigVO {
 
     // 0 = x, 1 = y
     public float[] cameraPosition = new float[2];
+    public float cameraZoom = 100;//%
 }

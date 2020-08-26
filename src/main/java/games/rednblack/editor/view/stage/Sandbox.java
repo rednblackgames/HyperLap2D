@@ -77,7 +77,6 @@ public class Sandbox {
     private Entity currentViewingEntity;
 
     public String currentLoadedSceneFileName;
-    private float zoomPercent = 100;
     private UIStage uiStage;
     private ItemSelector selector;
     private HyperLap2DFacade facade;
@@ -186,9 +185,9 @@ public class Sandbox {
 
         currentViewingEntity = getRootEntity();
 
-        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
         SceneConfigVO sceneConfigVO = projectManager.getCurrentSceneConfigVO();
         getCamera().position.set(sceneConfigVO.cameraPosition[0], sceneConfigVO.cameraPosition[1], 0);
+        setZoomPercent(sceneConfigVO.cameraZoom, false);
         projectManager.changeSceneWindowTitle();
 
         //TODO: move this into SceneDataManager!
@@ -294,21 +293,21 @@ public class Sandbox {
 
 
     public int getZoomPercent() {
-        return (int)zoomPercent;
+        return (int)projectManager.getCurrentSceneConfigVO().cameraZoom;
     }
 
     public void setZoomPercent(float percent, boolean moveCamera) {
-        zoomPercent = percent;
+        projectManager.getCurrentSceneConfigVO().cameraZoom = percent;
 
         cameraZoomOrigin = getCamera().zoom;
-        cameraZoomTarget = 1f / (zoomPercent / 100f);
+        cameraZoomTarget = 1f / (projectManager.getCurrentSceneConfigVO().cameraZoom / 100f);
 
         timeToCameraZoomTarget = CAMERA_ZOOM_DURATION;
         moveCameraWithZoom = moveCamera;
     }
 
     public void zoomDivideBy(float amount) {
-        zoomPercent /= amount;
+        float zoomPercent = projectManager.getCurrentSceneConfigVO().cameraZoom / amount;
         if (zoomPercent < 20) zoomPercent = 20;
         if (zoomPercent > 1000) zoomPercent = 1000;
 
