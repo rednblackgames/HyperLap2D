@@ -6,32 +6,24 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.StringBuilder;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.label.LabelComponent;
+import games.rednblack.editor.renderer.components.label.TypingLabelComponent;
 
 public class LabelSystem extends IteratingSystem {
-	private ComponentMapper<LabelComponent> labelComponentMapper = ComponentMapper.getFor(LabelComponent.class);
-	private ComponentMapper<TransformComponent> transformComponentMapper = ComponentMapper.getFor(TransformComponent.class);
-	private ComponentMapper<DimensionsComponent> dimensionComponentMapper = ComponentMapper.getFor(DimensionsComponent.class);
-	private TransformComponent transformComponent;
-	private LabelComponent labelComponent;
-	private DimensionsComponent dimensionsComponent;
-	
+	private final ComponentMapper<LabelComponent> labelComponentMapper = ComponentMapper.getFor(LabelComponent.class);
+	private final ComponentMapper<DimensionsComponent> dimensionComponentMapper = ComponentMapper.getFor(DimensionsComponent.class);
+
 	public LabelSystem() {
-		super(Family.all(LabelComponent.class).get());
+		super(Family.all(LabelComponent.class).exclude(TypingLabelComponent.class).get());
 	}
 
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
-		
-		transformComponent =  transformComponentMapper.get(entity);
-		labelComponent =  labelComponentMapper.get(entity);
-		dimensionsComponent = dimensionComponentMapper.get(entity);
+		LabelComponent labelComponent = labelComponentMapper.get(entity);
+		DimensionsComponent dimensionsComponent = dimensionComponentMapper.get(entity);
 		
 		BitmapFont font = labelComponent.cache.getFont();
 		

@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import games.rednblack.editor.renderer.components.label.TypingLabelComponent;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
 import games.rednblack.h2d.common.MsgAPI;
@@ -66,6 +67,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
     public static final String PHYSICS_COMPONENT_KEY = "Physics Component";
     public static final String SHADER_COMPONENT_KEY = "Shader Component";
     public static final String LIGHT_COMPONENT_KEY = "Light Component";
+    public static final String TYPING_LABEL_COMPONENT_KEY = "Typing Label Component";
 
     final private HashMap<String, Class<? extends Component>> componentClassMap = new HashMap<>();
 
@@ -90,6 +92,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
         componentClassMap.put(PHYSICS_COMPONENT_KEY, PhysicsBodyComponent.class);
         componentClassMap.put(SHADER_COMPONENT_KEY, ShaderComponent.class);
         componentClassMap.put(LIGHT_COMPONENT_KEY, LightBodyComponent.class);
+        componentClassMap.put(TYPING_LABEL_COMPONENT_KEY, TypingLabelComponent.class);
     }
 
     @Override
@@ -183,6 +186,9 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
         if (entityType == EntityFactory.LIGHT_TYPE) {
             componentClassMap.remove(LIGHT_COMPONENT_KEY);
             componentClassMap.remove(SHADER_COMPONENT_KEY);
+        }
+        if (entityType != EntityFactory.LABEL_TYPE) {
+            componentClassMap.remove(TYPING_LABEL_COMPONENT_KEY);
         }
 
         viewComponent.setItemType(itemTypeMap.get("ENTITY_" + EntityUtils.getType(entity)), mainItemComponent.uniqueId);

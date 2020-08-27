@@ -1,0 +1,8 @@
+[0.0.2]
+- Add more animations
+- Support to Typing Labels
+- Better cursor management
+- Fix many bugs and possible NPE across Editor and Plugins
+
+[0.0.1]
+- Initial public alpha release

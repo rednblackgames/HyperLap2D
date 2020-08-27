@@ -28,11 +28,11 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.components.*;
 import games.rednblack.editor.renderer.components.label.LabelComponent;
+import games.rednblack.editor.renderer.components.label.TypingLabelComponent;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.components.light.LightObjectComponent;
 import games.rednblack.editor.renderer.components.particle.ParticleComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
-import games.rednblack.editor.renderer.components.sprite.AnimationComponent;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationStateComponent;
 import games.rednblack.editor.renderer.components.spriter.SpriterComponent;
@@ -74,12 +74,12 @@ public class ComponentRetriever {
     	mappers.put(ParticleComponent.class, ComponentMapper.getFor(ParticleComponent.class));
 
         mappers.put(LabelComponent.class, ComponentMapper.getFor(LabelComponent.class));
+        mappers.put(TypingLabelComponent.class, ComponentMapper.getFor(TypingLabelComponent.class));
 
     	mappers.put(PolygonComponent.class, ComponentMapper.getFor(PolygonComponent.class));
     	mappers.put(PhysicsBodyComponent.class, ComponentMapper.getFor(PhysicsBodyComponent.class));
         mappers.put(LightBodyComponent.class, ComponentMapper.getFor(LightBodyComponent.class));
 
-        mappers.put(AnimationComponent.class, ComponentMapper.getFor(AnimationComponent.class));
         mappers.put(SpriteAnimationComponent.class, ComponentMapper.getFor(SpriteAnimationComponent.class));
         mappers.put(SpriteAnimationStateComponent.class, ComponentMapper.getFor(SpriteAnimationStateComponent.class));
         

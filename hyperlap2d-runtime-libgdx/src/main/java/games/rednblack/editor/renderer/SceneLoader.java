@@ -137,6 +137,7 @@ public class SceneLoader {
 		PhysicsSystem physicsSystem = new PhysicsSystem(world);
 		CompositeSystem compositeSystem = new CompositeSystem();
 		LabelSystem labelSystem = new LabelSystem();
+		TypingLabelSystem typingLabelSystem = new TypingLabelSystem();
         ScriptSystem scriptSystem = new ScriptSystem();
         ActionSystem actionSystem = new ActionSystem();
         BoundingBoxSystem boundingBoxSystem = new BoundingBoxSystem();
@@ -150,6 +151,7 @@ public class SceneLoader {
 		engine.addSystem(layerSystem);
 		engine.addSystem(physicsSystem);
 		engine.addSystem(lightSystem);
+		engine.addSystem(typingLabelSystem);
 		engine.addSystem(compositeSystem);
 		engine.addSystem(labelSystem);
         engine.addSystem(scriptSystem);

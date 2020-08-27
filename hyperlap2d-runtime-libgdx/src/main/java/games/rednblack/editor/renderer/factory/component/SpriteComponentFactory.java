@@ -25,22 +25,15 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
-import games.rednblack.editor.renderer.components.sprite.AnimationComponent;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationStateComponent;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by azakhary on 5/22/2015.
@@ -98,7 +91,6 @@ public class SpriteComponentFactory extends ComponentFactory {
         // filtering regions by name
         Array<TextureAtlas.AtlasRegion> regions = getRegions(spriteAnimationComponent.animationName);
 
-        AnimationComponent animationComponent = engine.createComponent(AnimationComponent.class);
         SpriteAnimationStateComponent stateComponent = engine.createComponent(SpriteAnimationStateComponent.class);
         stateComponent.setAllRegions(regions);
 
@@ -119,7 +111,6 @@ public class SpriteComponentFactory extends ComponentFactory {
         
         entity.add(textureRegionComponent);
         entity.add(stateComponent);
-        entity.add(animationComponent);
         entity.add(spriteAnimationComponent);
 
         return spriteAnimationComponent;
