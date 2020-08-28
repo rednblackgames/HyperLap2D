@@ -111,7 +111,7 @@ public class UIStage extends Stage {
         setListeners();
 
         toastManager = new ToastManager(this);
-        toastManager.setAlignment(Align.bottomRight);
+        toastManager.setAlignment(Align.bottomLeft);
     }
 
     public ToastManager getToastManager() {

@@ -148,6 +148,7 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
             case FileMenu.SAVE_PROJECT:
                 SceneVO vo = sandbox.sceneVoFromItems();
                 projectManager.saveCurrentProject(vo);
+                facade.sendNotification(MsgAPI.SHOW_NOTIFICATION, "Project saved successfully");
                 break;
             case FileMenu.RECENT_PROJECTS:
                 recentProjectItemClicked(notification.getBody());

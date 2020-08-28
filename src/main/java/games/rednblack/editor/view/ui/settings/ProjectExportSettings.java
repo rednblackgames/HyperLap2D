@@ -38,7 +38,7 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
         filterMinSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
 
         VisTable assetsTable = new VisTable();
-        assetsTable.add("Assets folder:").padRight(15).left();
+        assetsTable.add("Export folder:").padRight(15).left();
         assetsTable.add(exportSettingsInputFileWidget).growX().row();
         getContentTable().add(assetsTable).padTop(5).fillX().expandX().growX().row();
 
