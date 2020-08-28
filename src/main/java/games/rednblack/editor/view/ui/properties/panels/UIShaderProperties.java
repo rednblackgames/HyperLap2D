@@ -41,7 +41,7 @@ public class UIShaderProperties extends UIRemovableProperties {
     private VisSelectBox<String> shadersSelector;
 
     public UIShaderProperties() {
-        super("Custom Shader Component");
+        super("Custom Shader");
     }
 
     public void initView(HashMap<String, ShaderProgram> shaders) {

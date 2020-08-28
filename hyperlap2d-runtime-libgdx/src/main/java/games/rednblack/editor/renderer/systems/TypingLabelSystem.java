@@ -27,7 +27,6 @@ public class TypingLabelSystem extends IteratingSystem {
 
         if (typingLabelComponent.typingLabel == null) {
             typingLabelComponent.typingLabel = new TypingLabel(labelComponent.text, labelComponent.style);
-
             BitmapFont font = typingLabelComponent.typingLabel.getBitmapFontCache().getFont();
 
             float fontScaleX = labelComponent.fontScaleX;
@@ -37,8 +36,23 @@ public class TypingLabelSystem extends IteratingSystem {
             typingLabelComponent.typingLabel.setSize(dimensionsComponent.width, dimensionsComponent.height);
             typingLabelComponent.typingLabel.setWrap(labelComponent.wrap);
             typingLabelComponent.typingLabel.setAlignment(labelComponent.labelAlign, labelComponent.lineAlign);
-        } else if (!typingLabelComponent.typingLabel.getOriginalText().equals(labelComponent.text)){
-            typingLabelComponent.typingLabel.setText(labelComponent.text);
+        } else {
+            if (!typingLabelComponent.typingLabel.getOriginalText().equals(labelComponent.text)){
+                typingLabelComponent.typingLabel.setText(labelComponent.text);
+            }
+            if (typingLabelComponent.typingLabel.getWrap() != labelComponent.wrap) {
+                typingLabelComponent.typingLabel.setWrap(labelComponent.wrap);
+            }
+            if (typingLabelComponent.typingLabel.getLabelAlign() != labelComponent.labelAlign
+                    || typingLabelComponent.typingLabel.getLineAlign() != labelComponent.lineAlign) {
+                typingLabelComponent.typingLabel.setAlignment(labelComponent.labelAlign, labelComponent.lineAlign);
+            }
+            if (typingLabelComponent.typingLabel.getWidth() != dimensionsComponent.width) {
+                typingLabelComponent.typingLabel.setWidth(dimensionsComponent.width);
+            }
+            if (typingLabelComponent.typingLabel.getHeight() != dimensionsComponent.height) {
+                typingLabelComponent.typingLabel.setHeight(dimensionsComponent.height);
+            }
         }
 
         typingLabelComponent.typingLabel.act(deltaTime);

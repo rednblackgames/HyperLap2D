@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.label.LabelComponent;
+import games.rednblack.editor.renderer.components.label.TypingLabelComponent;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
@@ -54,6 +55,11 @@ public class LabelComponentFactory extends ComponentFactory{
         component.setFontScale(multiplier/projectInfoVO.pixelToWorld);
 
         entity.add(component);
+
+        if (vo.isTyping) {
+            TypingLabelComponent typingLabelComponent = engine.createComponent(TypingLabelComponent.class);
+            entity.add(typingLabelComponent);
+        }
         return component;
     }
     

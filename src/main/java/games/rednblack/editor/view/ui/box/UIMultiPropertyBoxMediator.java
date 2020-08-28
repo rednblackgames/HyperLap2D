@@ -21,6 +21,7 @@ package games.rednblack.editor.view.ui.box;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import games.rednblack.editor.renderer.components.label.TypingLabelComponent;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.h2d.common.MsgAPI;
 import com.puremvc.patterns.mediator.Mediator;
@@ -110,6 +111,8 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         PhysicsBodyComponent physicsComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
         ShaderComponent shaderComponent = ComponentRetriever.get(entity, ShaderComponent.class);
         LightBodyComponent lightComponent = ComponentRetriever.get(entity, LightBodyComponent.class);
+        TypingLabelComponent typingLabelComponent = ComponentRetriever.get(entity, TypingLabelComponent.class);
+
         if(polygonComponent != null) {
             mediatorNames.add(UIPolygonComponentPropertiesMediator.NAME);
         }
@@ -121,6 +124,9 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         }
         if(lightComponent != null) {
             mediatorNames.add(UILightBodyPropertiesMediator.NAME);
+        }
+        if (typingLabelComponent != null) {
+            mediatorNames.add(UITypingLabelPropertiesMediator.NAME);
         }
     }
 

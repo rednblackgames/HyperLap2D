@@ -96,6 +96,7 @@ dependencies {
     implementation project(":hyperlap2d-runtime-libgdx")
     implementation project(":h2d-libgdx-spine-extension")
 
+    implementation "com.rafaskoberg.gdx:typing-label:$typingLabelVersion"
     implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
     implementation "com.esotericsoftware.spine:spine-libgdx:$spineVersion"
     implementation "com.mortennobel:java-image-scaling:0.8.5"

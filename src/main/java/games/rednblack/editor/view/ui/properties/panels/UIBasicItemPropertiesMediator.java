@@ -63,11 +63,11 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
 
     final private HashMap<String, UIBasicItemProperties.ItemType> itemTypeMap = new HashMap<>();
 
-    public static final String POLYGON_COMPONENT_KEY = "Polygon Component";
-    public static final String PHYSICS_COMPONENT_KEY = "Physics Component";
-    public static final String SHADER_COMPONENT_KEY = "Shader Component";
-    public static final String LIGHT_COMPONENT_KEY = "Light Component";
-    public static final String TYPING_LABEL_COMPONENT_KEY = "Typing Label Component";
+    public static final String POLYGON_COMPONENT_KEY = "Polygon";
+    public static final String PHYSICS_COMPONENT_KEY = "Physics";
+    public static final String SHADER_COMPONENT_KEY = "Shader";
+    public static final String LIGHT_COMPONENT_KEY = "Light";
+    public static final String TYPING_LABEL_COMPONENT_KEY = "Typing Label";
 
     final private HashMap<String, Class<? extends Component>> componentClassMap = new HashMap<>();
 

@@ -53,6 +53,7 @@ public class LabelDrawableLogic implements Drawable {
 		} else {
 			typingLabelComponent.typingLabel.setColor(tmpColor);
 			typingLabelComponent.typingLabel.setPosition(entityTransformComponent.x, entityTransformComponent.y);
+			typingLabelComponent.typingLabel.setOrigin(entityTransformComponent.originX, entityTransformComponent.originY);
 			typingLabelComponent.typingLabel.draw(batch, 1);
 		}
 	}

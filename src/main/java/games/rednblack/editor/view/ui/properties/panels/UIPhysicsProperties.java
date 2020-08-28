@@ -41,7 +41,7 @@ public class UIPhysicsProperties extends UIRemovableProperties {
     private VisCheckBox fixedRotation;
 
     public UIPhysicsProperties() {
-        super("Physics Component");
+        super("Physics");
 
         bodyTypes.put(0, "STATIC");
         bodyTypes.put(1, "KINEMATIC");

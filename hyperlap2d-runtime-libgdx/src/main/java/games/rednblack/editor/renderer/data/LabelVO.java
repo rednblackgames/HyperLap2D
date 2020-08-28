@@ -3,6 +3,7 @@ package games.rednblack.editor.renderer.data;
 import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.label.LabelComponent;
+import games.rednblack.editor.renderer.components.label.TypingLabelComponent;
 
 public class LabelVO extends MainItemVO {
 	
@@ -15,6 +16,7 @@ public class LabelVO extends MainItemVO {
     public float height = 0;
 
     public boolean wrap = false;
+    public boolean isTyping = false;
 	
 	public LabelVO() {
 		super();
@@ -22,13 +24,14 @@ public class LabelVO extends MainItemVO {
 	
 	public LabelVO(LabelVO vo) {
 		super(vo);
-		text 	= new String(vo.text);
-		style 	= new String(vo.style);
-		size 	= vo.size;
-		align 	= vo.align;
-        width 	= vo.width;
-        height 	= vo.height;
-        wrap = vo.wrap;
+		text 	 = new String(vo.text);
+		style 	 = new String(vo.style);
+		size 	 = vo.size;
+		align 	 = vo.align;
+        width 	 = vo.width;
+        height 	 = vo.height;
+        wrap     = vo.wrap;
+		isTyping = vo.isTyping;
 	}
 
 	@Override
@@ -36,11 +39,15 @@ public class LabelVO extends MainItemVO {
 		super.loadFromEntity(entity);
 		LabelComponent labelComponent = entity.getComponent(LabelComponent.class);
 		DimensionsComponent dimensionsComponent = entity.getComponent(DimensionsComponent.class);
+		TypingLabelComponent typingLabelComponent = entity.getComponent(TypingLabelComponent.class);
+
 		text = labelComponent.getText().toString();
 		style = labelComponent.fontName;
 		size = labelComponent.fontSize;
 		align = labelComponent.labelAlign;
 		wrap = labelComponent.wrap;
+
+		isTyping = typingLabelComponent != null;
 
 		width = dimensionsComponent.width;
 		height = dimensionsComponent.height;

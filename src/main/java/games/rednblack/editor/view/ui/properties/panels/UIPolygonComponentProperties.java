@@ -47,7 +47,7 @@ public class UIPolygonComponentProperties extends UIRemovableProperties {
     private VisTextButton pasteBtn;
 
     public UIPolygonComponentProperties() {
-        super("Polygon Component");
+        super("Polygon");
     }
 
     public void initView() {
