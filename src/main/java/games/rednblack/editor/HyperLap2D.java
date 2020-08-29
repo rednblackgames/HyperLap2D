@@ -68,6 +68,8 @@ public class HyperLap2D implements Proxy, ApplicationListener, Lwjgl3WindowListe
     @Override
     public void create() {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf"));
+        FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSansMono.ttf"));
+
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.characters += "⌘⇧⌥";
         parameter.kerning = false;
@@ -80,6 +82,9 @@ public class HyperLap2D implements Proxy, ApplicationListener, Lwjgl3WindowListe
         BitmapFont defaultFont = generator.generateFont(parameter);
         parameter.size = 14;
         BitmapFont bigFont = generator.generateFont(parameter);
+        BitmapFont defaultMono = monoGenerator.generateFont(parameter);
+        defaultMono.setFixedWidthGlyphs(parameter.characters);
+
         generator.dispose();
 
         /* Create the ObjectMap and add the fonts to it */
@@ -87,6 +92,7 @@ public class HyperLap2D implements Proxy, ApplicationListener, Lwjgl3WindowListe
         fontMap.put("small-font", smallFont);
         fontMap.put("default-font", defaultFont);
         fontMap.put("big-font", bigFont);
+        fontMap.put("default-mono-font", defaultMono);
 
         SkinLoader.SkinParameter skinParameter = new SkinLoader.SkinParameter(fontMap);
 

@@ -39,6 +39,8 @@ public class MsgAPI {
 
     public static final String SAVE_EDITOR_CONFIG = GLOBAL_PREFIX + ".SAVE_EDITOR_CONFIG";
 
+    public static final String OPEN_CODE_EDITOR = GLOBAL_PREFIX + ".OPEN_CODE_EDITOR";
+
     // tmp events
     public static final String ZOOM_CHANGED = GLOBAL_PREFIX + ".ZOOM_CHANGED";
     public static final String GRID_SIZE_CHANGED = GLOBAL_PREFIX + ".GRID_SIZE_CHANGED";

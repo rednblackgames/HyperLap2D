@@ -309,6 +309,15 @@
       font: default-font,
       fontColor: white,
       cursor: cursor
+    },
+    code-editor: {
+      errorBorder: border-error,
+      font: default-mono-font,
+      fontColor: white,
+      disabledFontColor: grey,
+      selection: selection,
+      background: textfield,
+      cursor: cursor
     }
   },
   com.kotcrab.vis.ui.widget.VisImageTextButton$VisImageTextButtonStyle: {
@@ -426,7 +435,7 @@
     close-window: {
       down: button-red,
       up: button-window-bg,
-      imageUp: icon-close-white,
+      imageUp: icon-close-white
     },
     close-panel: {
       down: button-red,
@@ -562,6 +571,9 @@
     expandable-properties-button: {
       imageUp: expandable-properties-collapse-on,
       imageChecked: expandable-properties-collapse-off
+    },
+    expand-button : {
+      imageUp: expand-icon
     },
     layer-lock: {
       imageUp: icon-lock-inactive,

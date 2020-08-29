@@ -9,9 +9,11 @@ import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.spinner.IntSpinnerModel;
 import com.kotcrab.vis.ui.widget.spinner.Spinner;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.code.syntax.TypingLabelSyntax;
 import games.rednblack.editor.event.*;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
+import games.rednblack.editor.view.ui.widget.actors.ExpandableTextArea;
 
 /**
  * Created by azakhary on 4/24/15.
@@ -21,6 +23,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
     public static final String prefix = "games.rednblack.editor.view.ui.properties.panels.UILabelItemProperties";
 
     public static final String LABEL_TEXT_CHAR_TYPED = prefix + ".LABEL_TEXT_CHANGED";
+    public static final String LABEL_TEXT_EXPAND_SAVED = prefix + ".LABEL_TEXT_EXPAND_SAVED";
 
     private HashMap<Integer, String> alignMap = new HashMap<>();
     private Array<String> alignNames = new Array<>();
@@ -50,7 +53,9 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
         alignSelectBox.setMaxListCount(10);
 
         VisTable textEditTable = new VisTable();
-        textArea = StandardWidgetsFactory.createTextArea();
+        ExpandableTextArea textAreaTable = new ExpandableTextArea(facade, LABEL_TEXT_EXPAND_SAVED);
+        textAreaTable.setSyntax(new TypingLabelSyntax());
+        textArea = textAreaTable.getTextArea();
 
         mainTable.add(StandardWidgetsFactory.createLabel("Font Family", Align.right)).padRight(5).width(90).left();
         mainTable.add(fontFamilySelectBox).width(90).padRight(5);
@@ -74,7 +79,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
         mainTable.add(wrapCheckBox).padRight(5);
         mainTable.row().padTop(5);
 
-        textEditTable.add(textArea).width(200).height(65);
+        textEditTable.add(textAreaTable).width(200);
 
         setListeners();
         setAlignList();
@@ -97,11 +102,11 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
     }
 
     public String getText() {
-        return textArea.getText().replace("\\n", "\n");
+        return textArea.getText();
     }
 
     public void setText(String text) {
-        textArea.setText(text.replace("\n", "\\n"));
+        textArea.setText(text);
     }
 
     public void setWrap(boolean wrap) {
@@ -185,15 +190,5 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
         wrapCheckBox.addListener(new CheckBoxChangeListener(eventName));
         fontSizeField.addListener(new NumberSelectorOverlapListener(eventName));
         textArea.addListener(new KeyboardListener(eventName));
-//        textArea.addListener(textArea.new TextAreaListener() {
-//            @Override
-//            public boolean keyTyped(InputEvent event, char character) {
-//                facade.sendNotification(LABEL_TEXT_CHAR_TYPED, null);
-//                return true;//super.keyTyped(event, character);
-//            }
-//        });
-
     }
-
-
 }
