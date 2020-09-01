@@ -318,6 +318,15 @@
       selection: selection,
       background: textfield,
       cursor: cursor
+    },
+    textArea: {
+      errorBorder: border-error,
+      font: default-mono-font,
+      fontColor: white,
+      disabledFontColor: grey,
+      selection: selection,
+      background: textfield,
+      cursor: cursor
     }
   },
   com.kotcrab.vis.ui.widget.VisImageTextButton$VisImageTextButtonStyle: {
@@ -572,7 +581,7 @@
       imageUp: expandable-properties-collapse-on,
       imageChecked: expandable-properties-collapse-off
     },
-    expand-button : {
+    expand-button: {
       imageUp: expand-icon
     },
     layer-lock: {

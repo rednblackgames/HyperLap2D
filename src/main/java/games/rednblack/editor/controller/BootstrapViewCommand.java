@@ -48,6 +48,7 @@ public class BootstrapViewCommand extends SimpleCommand {
 
         facade.registerMediator(new HyperLap2DScreenMediator());
         facade.registerMediator(new HyperLap2DMenuBarMediator());
+
         facade.registerMediator(new UICompositeHierarchyMediator());
 		facade.registerMediator(new UISceneBoxMediator());
         facade.registerMediator(new UIGridBoxMediator());
@@ -55,18 +56,6 @@ public class BootstrapViewCommand extends SimpleCommand {
         facade.registerMediator(new UIZoomBoxMediator());
         facade.registerMediator(new UIToolBoxMediator());
 		facade.registerMediator(new UILivePreviewBoxMediator());
-
-        // Dialogs
-        facade.registerMediator(new NewProjectDialogMediator());
-        facade.registerMediator(new ImportPanelMediator());
-        facade.registerMediator(new CreateNewResolutionDialogMediator());
-        facade.registerMediator(new CustomVariablesPanelMediator());
-        facade.registerMediator(new TagsPanelMediator());
-        facade.registerMediator(new EditSpriteAnimationPanelMediator());
-        facade.registerMediator(new AboutDialogMediator());
-        facade.registerMediator(new SettingsDialogMediator());
-        facade.registerMediator(new AutoTraceDialogMediator());
-        facade.registerMediator(new CodeEditorDialogMediator());
 
         facade.registerMediator(new RulersUIMediator());
         facade.registerMediator(new FollowersUIMediator());
@@ -79,6 +68,18 @@ public class BootstrapViewCommand extends SimpleCommand {
         facade.registerMediator(new UIStageMediator());
         facade.registerMediator(new SandboxMediator());
         facade.registerMediator(new UIDropDownMenuMediator());
+
+        // Dialogs
+        facade.registerMediator(new NewProjectDialogMediator());
+        facade.registerMediator(new ImportPanelMediator());
+        facade.registerMediator(new CreateNewResolutionDialogMediator());
+        facade.registerMediator(new CustomVariablesPanelMediator());
+        facade.registerMediator(new TagsPanelMediator());
+        facade.registerMediator(new EditSpriteAnimationPanelMediator());
+        facade.registerMediator(new AboutDialogMediator());
+        facade.registerMediator(new SettingsDialogMediator());
+        facade.registerMediator(new AutoTraceDialogMediator());
+        facade.registerMediator(new CodeEditorDialogMediator());
 
         facade.registerMediator(new SaveProjectDialogMediator());
     }

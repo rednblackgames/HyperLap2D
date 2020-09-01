@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Align;
 import com.google.common.io.ByteStreams;
@@ -83,7 +82,7 @@ public class AboutDialog extends H2DDialog {
             ByteStreams.copy(in, out);
             in.close();
             out.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new FileHandle(tempFile);
