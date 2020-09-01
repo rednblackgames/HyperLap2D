@@ -71,7 +71,7 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
         FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSansMono.ttf"));
 
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.characters += "⌘⇧⌥";
+        parameter.characters += "⌘⇧⌥\u25CF\u2022";
         parameter.kerning = false;
         parameter.renderCount = 2;
         parameter.hinting = FreeTypeFontGenerator.Hinting.Slight;

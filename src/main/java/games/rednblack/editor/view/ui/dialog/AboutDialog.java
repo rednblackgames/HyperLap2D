@@ -1,14 +1,24 @@
 package games.rednblack.editor.view.ui.dialog;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Align;
+import com.google.common.io.ByteStreams;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.LinkLabel;
 import com.kotcrab.vis.ui.widget.VisImage;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
+import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.AppConfig;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.H2DDialog;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class AboutDialog extends H2DDialog {
 
@@ -46,16 +56,36 @@ public class AboutDialog extends H2DDialog {
         contentTable.add(new LinkLabel("- PureMVC Framework [https://github.com/PureMVC/puremvc-java-standard-framework]", "https://github.com/PureMVC/puremvc-java-standard-framework")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- VisUI [https://github.com/kotcrab/vis-ui]", "https://github.com/kotcrab/vis-ui")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Modular [https://github.com/mountainblade/modular]", "https://github.com/mountainblade/modular")).padLeft(6).left().row();
-        contentTable.add(new LinkLabel("- Spine Runtime [https://github.com/EsotericSoftware/spine-runtimes]", "https://github.com/EsotericSoftware/spine-runtimes")).padLeft(6).left().row();
+        contentTable.add(new LinkLabel("- Spine Runtimes [https://github.com/EsotericSoftware/spine-runtimes]", "https://github.com/EsotericSoftware/spine-runtimes")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Spriter [https://github.com/Trixt0r/spriter]", "https://github.com/Trixt0r/spriter")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- LibGDX Spriter [https://github.com/Trixt0r/gdx-spriter]", "https://github.com/Trixt0r/gdx-spriter")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Physics Body Editor [https://www.aurelienribon.com]", "https://www.aurelienribon.com")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Typing Label [https://github.com/rafaskb/typing-label]", "https://github.com/rafaskb/typing-label")).padLeft(6).left().row();
         contentTable.add("\n").row();
-        contentTable.add(new LinkLabel("See Contributors list", "https://github.com/rednblackgames/HyperLap2D/blob/master/AUTHORS")).row();
+        VisTable legalTable = new VisTable();
+        legalTable.add(new LinkLabel("See Contributors list", "https://github.com/rednblackgames/HyperLap2D/blob/master/AUTHORS"));
+        legalTable.add(" \u2022 ");
+        legalTable.add(new LinkLabel("Open Source Licenses", getResourceFileFromJar("licenses.html").file().toURI().toString()));
+        contentTable.add(legalTable).row();
         contentTable.add("\n").row();
         contentTable.add("Icon and Art design: Angelo Navarro").left().row();
 
         getContentTable().add(mainTable).padTop(5);
+    }
+
+    private FileHandle getResourceFileFromJar(String fileName) {
+        SettingsManager settingsManager = HyperLap2DFacade.getInstance().retrieveProxy(SettingsManager.NAME);
+        File tempFile = new File(settingsManager.cacheDir + File.separator + fileName);
+
+        try {
+            InputStream in = getClass().getResourceAsStream("/"+fileName);
+            FileOutputStream out = new FileOutputStream(tempFile);
+            ByteStreams.copy(in, out);
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new FileHandle(tempFile);
     }
 }

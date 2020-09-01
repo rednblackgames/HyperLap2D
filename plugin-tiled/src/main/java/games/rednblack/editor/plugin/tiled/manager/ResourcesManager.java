@@ -39,18 +39,18 @@ public class ResourcesManager {
 
     private FileHandle getResourceFileFromJar(String extension) {
         String fileName = RESOURCES_FILE_NAME+extension;
-        //File tempFile = new File (System.getProperty("user.dir")+fileName);
-        FileHandle tempFile = Gdx.files.internal(fileName);
+        File tempFile = new File(tiledPlugin.getAPI().getCacheDir()+ File.separator + fileName);
+
         try {
             InputStream in = getClass().getResourceAsStream("/"+fileName);
-            FileOutputStream out = new FileOutputStream(tempFile.file());
+            FileOutputStream out = new FileOutputStream(tempFile);
             ByteStreams.copy(in, out);
             in.close();
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return tempFile;
+        return new FileHandle(tempFile);
     }
 
     public TextureRegion getTextureRegion(String name) {
