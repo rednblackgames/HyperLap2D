@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddSelectionCommand;
 import games.rednblack.editor.controller.commands.ReleaseSelectionCommand;
@@ -12,6 +11,7 @@ import games.rednblack.editor.controller.commands.SetSelectionCommand;
 import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
+import org.puremvc.java.interfaces.INotification;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -46,7 +46,7 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         Sandbox sandbox = Sandbox.getInstance();
         switch (notification.getName()) {

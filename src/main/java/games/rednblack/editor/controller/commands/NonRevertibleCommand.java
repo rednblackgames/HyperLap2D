@@ -1,12 +1,12 @@
 package games.rednblack.editor.controller.commands;
 
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
+import org.puremvc.java.interfaces.INotification;
 
 import java.util.HashMap;
 
@@ -16,7 +16,7 @@ import java.util.HashMap;
 public abstract class NonRevertibleCommand extends SandboxCommand {
 
     protected CommandManager commandManager;
-    protected Notification notification;
+    protected INotification notification;
     protected boolean showConfirmDialog = true;
 
     protected boolean isCancelled = false;
@@ -31,7 +31,7 @@ public abstract class NonRevertibleCommand extends SandboxCommand {
     }
 
     @Override
-    public void execute(Notification notification) {
+    public void execute(INotification notification) {
         commandManager = facade.retrieveProxy(CommandManager.NAME);
         this.notification = notification;
         if (showConfirmDialog) {

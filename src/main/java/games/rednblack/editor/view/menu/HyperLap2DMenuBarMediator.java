@@ -27,19 +27,19 @@ import games.rednblack.h2d.common.view.ui.widget.HyperLapFileChooser;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.view.stage.Sandbox;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 /**
  * Created by sargis on 3/25/15.
  */
-public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar> {
+public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
     private static final String TAG = HyperLap2DMenuBarMediator.class.getCanonicalName();
     public static final String NAME = TAG;
     private ProjectManager projectManager;
@@ -81,7 +81,7 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         String type = notification.getType();
 
@@ -106,7 +106,7 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
         }
     }
 
-    private void handleGeneralNotification(Notification notification) {
+    private void handleGeneralNotification(INotification notification) {
         switch (notification.getName()) {
             case ProjectManager.PROJECT_OPENED:
                 onProjectOpened();
@@ -114,7 +114,7 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
         }
     }
 
-    private void handleEditMenuNotification(Notification notification) {
+    private void handleEditMenuNotification(INotification notification) {
         Sandbox sandbox = Sandbox.getInstance();
         switch (notification.getName()) {
             case EditMenu.CUT:
@@ -137,7 +137,7 @@ public class HyperLap2DMenuBarMediator extends SimpleMediator<HyperLap2DMenuBar>
         }
     }
 
-    private void handleFileMenuNotification(Notification notification) {
+    private void handleFileMenuNotification(INotification notification) {
         Sandbox sandbox = Sandbox.getInstance();
         switch (notification.getName()) {
             case FileMenu.NEW_PROJECT:

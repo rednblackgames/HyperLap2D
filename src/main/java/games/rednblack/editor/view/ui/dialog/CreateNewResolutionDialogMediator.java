@@ -18,19 +18,19 @@
 
 package games.rednblack.editor.view.ui.dialog;
 
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.box.UIResolutionBox;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 /**
  * Created by sargis on 4/9/15.
  */
-public class CreateNewResolutionDialogMediator extends SimpleMediator<CreateNewResolutionDialog> {
+public class CreateNewResolutionDialogMediator extends Mediator<CreateNewResolutionDialog> {
     private static final String TAG = CreateNewResolutionDialogMediator.class.getCanonicalName();
     private static final String NAME = TAG;
 
@@ -53,7 +53,7 @@ public class CreateNewResolutionDialogMediator extends SimpleMediator<CreateNewR
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         Sandbox sandbox = Sandbox.getInstance();
         UIStage uiStage = sandbox.getUIStage();

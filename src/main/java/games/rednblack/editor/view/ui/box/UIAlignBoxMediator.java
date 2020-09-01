@@ -23,9 +23,9 @@ import java.lang.reflect.Method;
 import java.util.stream.Stream;
 
 import com.badlogic.gdx.utils.Align;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.view.stage.ItemSelector;
 import games.rednblack.editor.view.stage.Sandbox;
+import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by sargis on 4/10/15.
@@ -56,7 +56,7 @@ public class UIAlignBoxMediator extends PanelMediator<UIAlignBox> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         String alignFunctionName = "";
         int align = -1;

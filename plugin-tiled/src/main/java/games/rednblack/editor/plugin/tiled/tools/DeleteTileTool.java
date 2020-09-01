@@ -2,10 +2,10 @@ package games.rednblack.editor.plugin.tiled.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.tools.Tool;
+import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by mariam on 4/5/16.
@@ -87,7 +87,7 @@ public class DeleteTileTool implements Tool {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
 
     }
 

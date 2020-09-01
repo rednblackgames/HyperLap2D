@@ -25,12 +25,12 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.utils.TransformMathUtils;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by azakhary on 5/20/2015.
@@ -134,7 +134,7 @@ public abstract class BasicFollower extends Group {
         return hitActor;
     }
 
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         for(SubFollower follower: subFollowers) {
             follower.handleNotification(notification);
         }

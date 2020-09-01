@@ -33,13 +33,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TextureUnpacker;
 import com.badlogic.gdx.utils.Array;
 import com.mortennobel.imagescaling.ResampleOp;
-import com.puremvc.patterns.proxy.BaseProxy;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -47,8 +45,9 @@ import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.utils.NinePatchUtils;
 import games.rednblack.editor.utils.HyperLap2DUtils;
+import org.puremvc.java.patterns.proxy.Proxy;
 
-public class ResolutionManager extends BaseProxy {
+public class ResolutionManager extends Proxy {
     private static final String TAG = ResolutionManager.class.getCanonicalName();
     public static final String NAME = TAG;
 

@@ -1,14 +1,14 @@
 package games.rednblack.editor.plugin.tiled.offset;
 
 import com.badlogic.gdx.math.Vector2;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 /**
  * Created by mariam on 5/12/16.
  */
-public class OffsetPanelMediator extends SimpleMediator<OffsetPanel> {
+public class OffsetPanelMediator extends Mediator<OffsetPanel> {
 
     private static final String TAG = OffsetPanelMediator.class.getCanonicalName();
     public static final String NAME = TAG;
@@ -32,7 +32,7 @@ public class OffsetPanelMediator extends SimpleMediator<OffsetPanel> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         switch (notification.getName()) {

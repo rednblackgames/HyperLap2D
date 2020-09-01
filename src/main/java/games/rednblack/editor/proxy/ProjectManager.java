@@ -25,7 +25,6 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
-import com.puremvc.patterns.proxy.BaseProxy;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.data.migrations.ProjectVersionMigrator;
@@ -43,6 +42,7 @@ import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.puremvc.java.patterns.proxy.Proxy;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -59,7 +59,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ProjectManager extends BaseProxy {
+public class ProjectManager extends Proxy {
     private static final String TAG = ProjectManager.class.getCanonicalName();
     public static final String NAME = TAG;
     private static final String EVENT_PREFIX = "games.rednblack.editor.proxy.ProjectManager";

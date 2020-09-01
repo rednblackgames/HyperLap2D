@@ -3,21 +3,20 @@ package games.rednblack.editor.view.ui.box;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
-import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 /**
  * Created by CyberJoe on 4/22/2015.
  */
-public class UICompositeHierarchyMediator extends SimpleMediator<UICompositeHierarchy> {
+public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy> {
     private static final String TAG = UICompositeHierarchyMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -36,7 +35,7 @@ public class UICompositeHierarchyMediator extends SimpleMediator<UICompositeHier
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         sandbox = Sandbox.getInstance();
 
         super.handleNotification(notification);

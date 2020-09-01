@@ -60,7 +60,7 @@ public class SettingsTab extends DefaultTab {
 
                 currentParameters.gridWidth = grid.getAttributeVO("Width: ").value;
                 currentParameters.gridHeight = grid.getAttributeVO("Height: ").value;
-                panel.facade.sendNotification(OK_BTN_CLICKED, currentParameters);
+                panel.getFacade().sendNotification(OK_BTN_CLICKED, currentParameters);
             }
         });
     }

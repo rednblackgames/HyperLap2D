@@ -19,20 +19,19 @@
 package games.rednblack.editor.view;
 
 import com.badlogic.ashley.core.Engine;
-import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.systems.render.HyperLap2dRenderer;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.ui.widget.actors.basic.SandboxBackUI;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 /**
  * Created by sargis on 3/30/15.
  */
-public class HyperLap2DScreenMediator extends SimpleMediator<HyperLap2DScreen> {
+public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
     private static final String TAG = HyperLap2DScreenMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -55,7 +54,7 @@ public class HyperLap2DScreenMediator extends SimpleMediator<HyperLap2DScreen> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
             case MsgAPI.CREATE:

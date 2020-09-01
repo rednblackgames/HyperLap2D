@@ -22,12 +22,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.puremvc.patterns.proxy.BaseProxy;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.utils.MySkin;
+import org.puremvc.java.patterns.proxy.Proxy;
 
 
-public class EditorTextureManager extends BaseProxy {
+public class EditorTextureManager extends Proxy {
     private static final String TAG = EditorTextureManager.class.getCanonicalName();
     public static final String NAME = TAG;
 

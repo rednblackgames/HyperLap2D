@@ -6,17 +6,17 @@ import com.kotcrab.vis.ui.util.highlight.Highlighter;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextArea;
-import com.puremvc.patterns.facade.SimpleFacade;
 import games.rednblack.editor.view.ui.dialog.CodeEditorDialogMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import org.puremvc.java.interfaces.IFacade;
 
 public class ExpandableTextArea extends VisTable {
     public interface OnExpandListener {
         void onExpand(VisTextArea textArea);
     }
 
-    private SimpleFacade facade;
+    private IFacade facade;
 
     private OnExpandListener listener;
     private VisTextArea textArea;
@@ -24,7 +24,7 @@ public class ExpandableTextArea extends VisTable {
 
     private Highlighter syntax;
 
-    public ExpandableTextArea(SimpleFacade facade, String notificationCallback) {
+    public ExpandableTextArea(IFacade facade, String notificationCallback) {
         this.facade = facade;
 
         textArea = StandardWidgetsFactory.createTextArea();

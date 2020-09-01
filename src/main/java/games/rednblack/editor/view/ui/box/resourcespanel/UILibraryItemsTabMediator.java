@@ -21,7 +21,6 @@ package games.rednblack.editor.view.ui.box.resourcespanel;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.controller.commands.resource.ExportLibraryItemCommand;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.resource.DeleteLibraryItem;
 import games.rednblack.editor.factory.ItemFactory;
@@ -30,6 +29,7 @@ import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.LibraryItemResource;
 import org.apache.commons.lang3.ArrayUtils;
+import org.puremvc.java.interfaces.INotification;
 
 import java.util.HashMap;
 
@@ -58,7 +58,7 @@ public class UILibraryItemsTabMediator extends UIResourcesTabMediator<UILibraryI
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
             case MsgAPI.LIBRARY_LIST_UPDATED:

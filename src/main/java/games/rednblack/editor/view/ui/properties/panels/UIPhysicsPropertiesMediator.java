@@ -4,13 +4,13 @@ import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.controller.commands.component.UpdatePhysicsDataCommand;
 import games.rednblack.editor.renderer.data.PhysicsBodyDataVO;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.puremvc.java.interfaces.INotification;
 
 public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<Entity, UIPhysicsProperties> {
 
@@ -34,7 +34,7 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<Entity
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         switch (notification.getName()) {

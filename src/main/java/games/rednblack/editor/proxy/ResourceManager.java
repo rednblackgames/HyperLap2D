@@ -28,17 +28,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Json;
-import com.puremvc.patterns.proxy.BaseProxy;
 import games.rednblack.editor.data.SpineAnimData;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.resources.FontSizePair;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.editor.renderer.utils.MySkin;
+import org.puremvc.java.patterns.proxy.Proxy;
 
 /**
  * Created by azakhary on 4/26/2015.
  */
-public class ResourceManager extends BaseProxy implements IResourceRetriever {
+public class ResourceManager extends Proxy implements IResourceRetriever {
 
     public String packResolutionName = "orig";
 

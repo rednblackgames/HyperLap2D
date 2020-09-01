@@ -2,7 +2,7 @@ package games.rednblack.editor.view.ui.followers;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.puremvc.patterns.observer.Notification;
+import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by CyberJoe on 7/2/2015.
@@ -22,7 +22,7 @@ public abstract class SubFollower extends Actor {
     }
 
 
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
 
     }
 

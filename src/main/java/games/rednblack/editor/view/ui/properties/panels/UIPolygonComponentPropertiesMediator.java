@@ -20,12 +20,8 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
-import games.rednblack.editor.renderer.components.TextureRegionComponent;
-import games.rednblack.editor.utils.poly.PolygonUtils;
-import games.rednblack.editor.utils.poly.tracer.Tracer;
 import games.rednblack.editor.view.ui.dialog.AutoTraceDialog;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
@@ -35,6 +31,7 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import org.apache.commons.lang3.ArrayUtils;
+import org.puremvc.java.interfaces.INotification;
 
 import java.util.stream.Stream;
 
@@ -67,7 +64,7 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         switch (notification.getName()) {

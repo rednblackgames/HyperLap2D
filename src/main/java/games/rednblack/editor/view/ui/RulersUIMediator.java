@@ -1,19 +1,18 @@
 package games.rednblack.editor.view.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.utils.Guide;
 import games.rednblack.editor.view.stage.Sandbox;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 /**
  * Created by azakhary on 7/18/2015.
  */
-public class RulersUIMediator extends SimpleMediator<RulersUI> {
+public class RulersUIMediator extends Mediator<RulersUI> {
     private static final String TAG = RulersUIMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -41,7 +40,7 @@ public class RulersUIMediator extends SimpleMediator<RulersUI> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         SceneVO sceneVO = Sandbox.getInstance().getSceneControl().getCurrentSceneVO();

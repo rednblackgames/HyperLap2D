@@ -19,8 +19,8 @@
 package games.rednblack.h2d.common.plugins;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
-import com.puremvc.patterns.facade.Facade;
 import net.mountainblade.modular.Module;
+import org.puremvc.java.interfaces.IFacade;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +31,7 @@ import java.util.Set;
  */
 public abstract class H2DPluginAdapter implements H2DPlugin, Module {
 
-    public Facade facade;
+    public IFacade facade;
     protected PluginAPI pluginAPI;
     protected String name;
 

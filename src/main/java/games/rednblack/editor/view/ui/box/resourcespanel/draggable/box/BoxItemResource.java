@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.puremvc.patterns.facade.SimpleFacade;
+import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResourceView;
@@ -54,7 +54,7 @@ public abstract class BoxItemResource extends Group implements DraggableResource
             }
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 if(button == Input.Buttons.RIGHT) {
-                    SimpleFacade.getInstance().sendNotification(eventName, payload);
+                    HyperLap2DFacade.getInstance().sendNotification(eventName, payload);
                 }
             }
         });

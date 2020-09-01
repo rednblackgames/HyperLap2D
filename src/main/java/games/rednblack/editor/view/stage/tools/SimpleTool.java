@@ -2,12 +2,12 @@ package games.rednblack.editor.view.stage.tools;
 
 import com.badlogic.ashley.core.Entity;
 import games.rednblack.h2d.common.view.tools.Tool;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.followers.BasicFollower;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
+import org.puremvc.java.interfaces.INotification;
 
 import java.util.Set;
 
@@ -76,7 +76,7 @@ public abstract class SimpleTool implements Tool {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
 
     }
 

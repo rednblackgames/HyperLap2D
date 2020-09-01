@@ -22,8 +22,6 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.h2d.common.vo.CursorData;
 import games.rednblack.editor.plugin.tiled.data.TileVO;
 import games.rednblack.editor.plugin.tiled.tools.DeleteTileTool;
@@ -34,13 +32,15 @@ import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.ResourcePayloadObject;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.util.HashMap;
 
 /**
  * Created by mariam on 2/2/2016.
  */
-public class TiledPanelMediator extends SimpleMediator<TiledPanel> {
+public class TiledPanelMediator extends Mediator<TiledPanel> {
     private static final String TAG = TiledPanelMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -74,7 +74,7 @@ public class TiledPanelMediator extends SimpleMediator<TiledPanel> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         String tileName;

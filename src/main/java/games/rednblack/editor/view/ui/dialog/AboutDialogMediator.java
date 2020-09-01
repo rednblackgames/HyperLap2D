@@ -1,13 +1,13 @@
 package games.rednblack.editor.view.ui.dialog;
 
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.menu.HelpMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
-public class AboutDialogMediator extends SimpleMediator<AboutDialog> {
+public class AboutDialogMediator extends Mediator<AboutDialog> {
     private static final String TAG = AboutDialogMediator.class.getCanonicalName();
     private static final String NAME = TAG;
 
@@ -29,7 +29,7 @@ public class AboutDialogMediator extends SimpleMediator<AboutDialog> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         Sandbox sandbox = Sandbox.getInstance();
         UIStage uiStage = sandbox.getUIStage();

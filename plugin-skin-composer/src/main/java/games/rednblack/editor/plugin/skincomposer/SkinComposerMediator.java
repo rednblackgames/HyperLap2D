@@ -2,17 +2,17 @@ package games.rednblack.editor.plugin.skincomposer;
 
 import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.h2d.common.MsgAPI;
 import org.apache.commons.io.FileUtils;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SkinComposerMediator extends SimpleMediator<DownloadingDialog> {
+public class SkinComposerMediator extends Mediator<DownloadingDialog> {
     private static final String TAG = SkinComposerMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -33,7 +33,7 @@ public class SkinComposerMediator extends SimpleMediator<DownloadingDialog> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         pluginPath = plugin.getAPI().getCacheDir();

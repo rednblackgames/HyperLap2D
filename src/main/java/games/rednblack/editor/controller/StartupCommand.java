@@ -18,7 +18,8 @@
 
 package games.rednblack.editor.controller;
 
-import com.puremvc.patterns.command.MacroCommand;
+
+import org.puremvc.java.patterns.command.MacroCommand;
 
 /**
  * Created by sargis on 3/30/15.
@@ -28,9 +29,9 @@ public class StartupCommand extends MacroCommand {
     protected void initializeMacroCommand() {
         super.initializeMacroCommand();
 
-        addSubCommand(BootstrapProxyCommand.class);
-        addSubCommand(BootstrapViewCommand.class);
-        addSubCommand(BootstrapCommand.class);
-        addSubCommand(BootstrapPlugins.class);
+        addSubCommand(BootstrapProxyCommand::new);
+        addSubCommand(BootstrapViewCommand::new);
+        addSubCommand(BootstrapCommand::new);
+        addSubCommand(BootstrapPlugins::new);
     }
 }

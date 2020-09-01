@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdateLightBodyDataCommand;
@@ -16,6 +15,7 @@ import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
 import games.rednblack.h2d.common.MsgAPI;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.puremvc.java.interfaces.INotification;
 
 public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<Entity, UILightBodyProperties> {
 
@@ -40,7 +40,7 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<Enti
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         switch (notification.getName()) {

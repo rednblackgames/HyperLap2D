@@ -1,20 +1,19 @@
 package games.rednblack.editor.view.ui.dialog;
 
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.settings.GeneralSettings;
-import games.rednblack.editor.view.ui.settings.LivePreviewSettings;
 import games.rednblack.editor.view.ui.settings.PluginsSettings;
 import games.rednblack.editor.view.ui.settings.SandboxSettings;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
-public class SettingsDialogMediator extends SimpleMediator<SettingsDialog> {
+public class SettingsDialogMediator extends Mediator<SettingsDialog> {
 
     private static final String TAG = SettingsDialogMediator.class.getCanonicalName();
     private static final String NAME = TAG;
@@ -56,7 +55,7 @@ public class SettingsDialogMediator extends SimpleMediator<SettingsDialog> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         Sandbox sandbox = Sandbox.getInstance();
         UIStage uiStage = sandbox.getUIStage();

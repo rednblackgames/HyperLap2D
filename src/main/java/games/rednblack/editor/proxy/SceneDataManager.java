@@ -20,10 +20,10 @@ package games.rednblack.editor.proxy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.puremvc.patterns.proxy.BaseProxy;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.SceneVO;
 import org.apache.commons.io.FileUtils;
+import org.puremvc.java.patterns.proxy.Proxy;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import java.util.ArrayList;
 /**
  * Created by sargis on 3/23/15.
  */
-public class SceneDataManager extends BaseProxy {
+public class SceneDataManager extends Proxy {
 
     private static final String TAG = SceneDataManager.class.getCanonicalName();
     public static final String NAME = TAG;

@@ -23,14 +23,14 @@ import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.tools.Tool;
 import com.kotcrab.vis.ui.widget.Separator;
 import com.kotcrab.vis.ui.widget.VisImageButton;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.tools.*;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.util.HashMap;
 
-public class UIToolBoxMediator extends SimpleMediator<UIToolBox> {
+public class UIToolBoxMediator extends Mediator<UIToolBox> {
     private static final String TAG = UIToolBoxMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -87,7 +87,7 @@ public class UIToolBoxMediator extends SimpleMediator<UIToolBox> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         switch (notification.getName()) {

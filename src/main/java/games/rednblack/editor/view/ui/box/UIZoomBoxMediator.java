@@ -19,17 +19,17 @@
 package games.rednblack.editor.view.ui.box;
 
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.stage.Sandbox;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 /**
  * Created by sargis on 4/9/15.
  */
-public class UIZoomBoxMediator extends SimpleMediator<UIZoomBox> {
+public class UIZoomBoxMediator extends Mediator<UIZoomBox> {
     private static final String TAG = UIZoomBoxMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -56,7 +56,7 @@ public class UIZoomBoxMediator extends SimpleMediator<UIZoomBox> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         Sandbox sandbox = Sandbox.getInstance();
         switch (notification.getName()) {

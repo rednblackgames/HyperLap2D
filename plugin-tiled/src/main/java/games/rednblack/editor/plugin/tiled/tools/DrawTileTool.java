@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
@@ -13,6 +12,7 @@ import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.view.tools.Tool;
+import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by mariam on 3/29/16.
@@ -121,7 +121,7 @@ public class DrawTileTool implements Tool {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
 
     }
 

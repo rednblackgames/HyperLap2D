@@ -5,18 +5,15 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.live.LiveScreenAdapter;
-import games.rednblack.editor.live.WorldSizeVO;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
-import games.rednblack.editor.proxy.ResourceManager;
-import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
-public class UILivePreviewBoxMediator extends SimpleMediator<UILivePreviewBox> {
+public class UILivePreviewBoxMediator extends Mediator<UILivePreviewBox> {
 	private static final String TAG = UILivePreviewBoxMediator.class.getCanonicalName();
 	public static final String NAME = TAG;
 
@@ -39,7 +36,7 @@ public class UILivePreviewBoxMediator extends SimpleMediator<UILivePreviewBox> {
 	}
 
 	@Override
-	public void handleNotification(Notification notification) {
+	public void handleNotification(INotification notification) {
 		super.handleNotification(notification);
 
 		switch (notification.getName()) {

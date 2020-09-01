@@ -2,7 +2,6 @@ package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.math.Vector2;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
@@ -11,11 +10,12 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
 import games.rednblack.h2d.common.MsgAPI;
+import org.puremvc.java.interfaces.INotification;
 
 public class DeletePolygonVertexCommand extends SandboxCommand {
 
     @Override
-    public void execute(Notification notification) {
+    public void execute(INotification notification) {
         super.execute(notification);
 
         Dialogs.showConfirmDialog(sandbox.getUIStage(), "Delete Vertex",
@@ -26,7 +26,7 @@ public class DeletePolygonVertexCommand extends SandboxCommand {
         }).padBottom(20).pack();
     }
 
-    private void callDoAction(Notification notification) {
+    private void callDoAction(INotification notification) {
         Object[] payload = notification.getBody();
         PolygonFollower follower = (PolygonFollower) payload[0];
         int anchor = (int) payload[1];

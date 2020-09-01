@@ -19,11 +19,9 @@
 package games.rednblack.editor.view.ui.box;
 
 import com.badlogic.ashley.core.Entity;
-import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.*;
 import games.rednblack.editor.renderer.components.LayerMapComponent;
@@ -33,6 +31,7 @@ import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
+import org.puremvc.java.interfaces.INotification;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -83,7 +82,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         Sandbox sandbox = Sandbox.getInstance();
         UILayerBox.UILayerItem layerItem;

@@ -30,11 +30,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import com.badlogic.gdx.graphics.Color;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
 import games.rednblack.editor.renderer.data.PhysicsPropertiesVO;
 import games.rednblack.editor.renderer.data.SceneVO;
+import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by azakhary on 4/16/2015.
@@ -59,7 +59,7 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         switch (notification.getName()) {

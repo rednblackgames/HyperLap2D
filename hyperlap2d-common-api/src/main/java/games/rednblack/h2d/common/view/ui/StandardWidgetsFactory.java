@@ -31,18 +31,18 @@ import com.kotcrab.vis.ui.util.InputValidator;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.spinner.IntSpinnerModel;
 import com.kotcrab.vis.ui.widget.spinner.Spinner;
-import com.puremvc.patterns.facade.Facade;
 import games.rednblack.h2d.common.view.ui.listener.CursorListener;
 import games.rednblack.h2d.common.view.ui.listener.ScrollFocusListener;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
+import org.puremvc.java.interfaces.IFacade;
 
 /**
  * Creates standard widgets like labels or text fields with provided standard HyperLap2D specific visual style.
  */
 public class StandardWidgetsFactory {
 
-    private static Facade facade;
-    public static void init(Facade f) {
+    private static IFacade facade;
+    public static void init(IFacade f) {
         facade = f;
     }
 

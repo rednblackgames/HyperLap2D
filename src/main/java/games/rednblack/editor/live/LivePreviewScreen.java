@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.puremvc.patterns.facade.Facade;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
@@ -15,6 +14,7 @@ import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.extention.spine.SpineItemType;
+import org.puremvc.java.interfaces.IFacade;
 
 public class LivePreviewScreen extends ScreenAdapter {
     private Viewport viewport;
@@ -23,7 +23,7 @@ public class LivePreviewScreen extends ScreenAdapter {
     private final ProjectManager projectManager;
 
     private final Box2DDebugRenderer mBox2DDebugRenderer;
-    private final Facade facade = HyperLap2DFacade.getInstance();
+    private final IFacade facade = HyperLap2DFacade.getInstance();
     private final Color bgColor;
 
     public LivePreviewScreen() {

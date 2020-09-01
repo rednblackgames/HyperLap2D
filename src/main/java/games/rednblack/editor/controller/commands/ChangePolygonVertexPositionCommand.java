@@ -2,7 +2,6 @@ package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.math.Vector2;
 import com.kotcrab.vis.ui.util.InputValidator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
@@ -13,6 +12,7 @@ import games.rednblack.editor.view.ui.followers.PolygonFollower;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.dialog.MultipleInputDialog;
 import games.rednblack.h2d.common.view.ui.listener.MultipleInputDialogListener;
+import org.puremvc.java.interfaces.INotification;
 
 import java.util.Collections;
 
@@ -21,7 +21,7 @@ public class ChangePolygonVertexPositionCommand extends SandboxCommand {
     private Object[] currentCommandPayload;
 
     @Override
-    public void execute(Notification notification) {
+    public void execute(INotification notification) {
         super.execute(notification);
 
         Object[] payload = notification.getBody();

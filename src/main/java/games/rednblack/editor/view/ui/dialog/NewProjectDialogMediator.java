@@ -18,20 +18,19 @@
 
 package games.rednblack.editor.view.ui.dialog;
 
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
-import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.stage.UIStage;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 /**
  * Created by sargis on 4/1/15.
  */
-public class NewProjectDialogMediator extends SimpleMediator<NewProjectDialog> {
+public class NewProjectDialogMediator extends Mediator<NewProjectDialog> {
     private static final String TAG = NewProjectDialogMediator.class.getCanonicalName();
     private static final String NAME = TAG;
 
@@ -57,7 +56,7 @@ public class NewProjectDialogMediator extends SimpleMediator<NewProjectDialog> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         Sandbox sandbox = Sandbox.getInstance();
         UIStage uiStage = sandbox.getUIStage();

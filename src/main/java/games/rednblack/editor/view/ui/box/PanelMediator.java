@@ -19,14 +19,14 @@
 package games.rednblack.editor.view.ui.box;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.proxy.ProjectManager;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 /**
  * Created by azakhary on 6/17/2015.
  */
-public class PanelMediator<T extends Actor> extends SimpleMediator<T> {
+public class PanelMediator<T extends Actor> extends Mediator<T> {
     /**
      * Constructor.
      *
@@ -46,7 +46,7 @@ public class PanelMediator<T extends Actor> extends SimpleMediator<T> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
             case ProjectManager.PROJECT_OPENED:

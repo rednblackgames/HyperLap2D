@@ -24,7 +24,7 @@ public class AboutDialog extends H2DDialog {
         scrollPane.setFadeScrollBars(false);
 
         mainTable.add(leftTable).top().padLeft(10).left();
-        mainTable.add(scrollPane).maxHeight(300).top().width(450).padLeft(28).expand().left();
+        mainTable.add(scrollPane).maxHeight(300).top().width(550).padLeft(28).expand().left();
 
         leftTable.add(new VisImage(VisUI.getSkin().getDrawable("splash_logo"))).pad(5).row();
         leftTable.add("HyperLap2D").padLeft(5).padRight(5).row();
@@ -38,12 +38,12 @@ public class AboutDialog extends H2DDialog {
         forkTable.add(new LinkLabel("Overlap2D", "https://github.com/UnderwaterApps/overlap2d"));
         contentTable.add(forkTable).left().row();
         contentTable.add("").row();
-        contentTable.add("HyperLap2D is based on following libraries and open source tools:").left().row();
+        contentTable.add("HyperLap2D is based on following libraries and open source tools:").left().padBottom(4).row();
         contentTable.add(new LinkLabel("- libGDX [https://github.com/libgdx/libgdx]", "https://github.com/libgdx/libgdx")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Overlap2D [https://github.com/UnderwaterApps/overlap2d]", "https://github.com/UnderwaterApps/overlap2d")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Ashley [https://github.com/libgdx/ashley]", "https://github.com/libgdx/ashley")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Box2DLights [https://github.com/libgdx/box2dlights]", "https://github.com/libgdx/box2dlights")).padLeft(6).left().row();
-        contentTable.add(new LinkLabel("- PureMVC Framework [https://puremvc.org]", "https://puremvc.org/")).padLeft(6).left().row();
+        contentTable.add(new LinkLabel("- PureMVC Framework [https://github.com/PureMVC/puremvc-java-standard-framework]", "https://github.com/PureMVC/puremvc-java-standard-framework")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- VisUI [https://github.com/kotcrab/vis-ui]", "https://github.com/kotcrab/vis-ui")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Modular [https://github.com/mountainblade/modular]", "https://github.com/mountainblade/modular")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Spine Runtime [https://github.com/EsotericSoftware/spine-runtimes]", "https://github.com/EsotericSoftware/spine-runtimes")).padLeft(6).left().row();

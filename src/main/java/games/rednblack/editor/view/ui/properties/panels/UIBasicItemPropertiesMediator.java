@@ -30,7 +30,6 @@ import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.AddToLibraryCommand;
@@ -44,6 +43,7 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.puremvc.java.interfaces.INotification;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -108,7 +108,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         switch (notification.getName()) {

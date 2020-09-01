@@ -21,12 +21,12 @@ package games.rednblack.editor.view.ui.properties.panels;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.controller.commands.component.UpdateSpriteAnimationDataCommand;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import org.apache.commons.lang3.ArrayUtils;
+import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by azakhary on 4/16/2015.
@@ -52,7 +52,7 @@ public class UISpriteAnimationItemPropertiesMediator extends UIItemPropertiesMed
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         switch (notification.getName()) {

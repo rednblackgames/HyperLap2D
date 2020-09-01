@@ -21,13 +21,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-import com.puremvc.patterns.proxy.BaseProxy;
 import games.rednblack.editor.HyperLap2DFacade;
+import org.puremvc.java.patterns.proxy.Proxy;
 
 /**
  * Created by azakhary on 4/24/2015.
  */
-public class FontManager extends BaseProxy {
+public class FontManager extends Proxy {
 
     private static final String TAG = FontManager.class.getCanonicalName();
     public static final String NAME = TAG;

@@ -20,9 +20,6 @@ package games.rednblack.editor.view.ui;
 
 import com.badlogic.ashley.core.Entity;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.BaseNotification;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
 import games.rednblack.editor.controller.commands.ConvertToCompositeCommand;
@@ -34,6 +31,9 @@ import games.rednblack.editor.view.stage.tools.PanTool;
 import games.rednblack.editor.view.ui.followers.BasicFollower;
 import games.rednblack.editor.view.ui.followers.FollowerFactory;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
+import org.puremvc.java.patterns.observer.Notification;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -41,11 +41,11 @@ import java.util.Set;
 /**
  * Created by azakhary on 5/20/2015.
  */
-public class FollowersUIMediator extends SimpleMediator<FollowersUI> {
+public class FollowersUIMediator extends Mediator<FollowersUI> {
     private static final String TAG = FollowersUIMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
-    private HashMap<Entity, BasicFollower> followers = new HashMap<>();
+    private final HashMap<Entity, BasicFollower> followers = new HashMap<>();
 
     public FollowersUIMediator() {
         super(NAME, new FollowersUI());
@@ -76,7 +76,7 @@ public class FollowersUIMediator extends SimpleMediator<FollowersUI> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
             case CompositeCameraChangeCommand.DONE:
@@ -125,7 +125,7 @@ public class FollowersUIMediator extends SimpleMediator<FollowersUI> {
         }
     }
 
-    public void pushNotificationToFollowers(Notification notification) {
+    public void pushNotificationToFollowers(INotification notification) {
         for (BasicFollower follower : followers.values()) {
             follower.handleNotification(notification);
         }
@@ -191,7 +191,7 @@ public class FollowersUIMediator extends SimpleMediator<FollowersUI> {
         followers.put(entity, follower);
 
         SandboxMediator sandboxMediator = facade.retrieveMediator(SandboxMediator.NAME);
-        follower.handleNotification(new BaseNotification(MsgAPI.TOOL_SELECTED, sandboxMediator.getCurrentSelectedToolName()));
+        follower.handleNotification(new Notification(MsgAPI.TOOL_SELECTED, sandboxMediator.getCurrentSelectedToolName()));
     }
 
     public void removeFollower(Entity entity) {

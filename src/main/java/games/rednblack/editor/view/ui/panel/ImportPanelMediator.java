@@ -24,8 +24,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.AssetImporter;
 import games.rednblack.editor.utils.ImportUtils;
@@ -37,11 +35,13 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapFileChooser;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 
-public class ImportPanelMediator extends SimpleMediator<ImportPanel> {
+public class ImportPanelMediator extends Mediator<ImportPanel> {
     private static final String TAG = ImportPanelMediator.class.getCanonicalName();
     private static final String NAME = TAG;
 
@@ -85,7 +85,7 @@ public class ImportPanelMediator extends SimpleMediator<ImportPanel> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         Sandbox sandbox = Sandbox.getInstance();
         UIStage uiStage = sandbox.getUIStage();

@@ -24,7 +24,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.kotcrab.vis.ui.util.OsUtils;
 import games.rednblack.editor.view.stage.tools.transformStrategy.*;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.editor.renderer.components.TransformComponent;
@@ -37,6 +36,7 @@ import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.followers.FollowerTransformationListener;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 import games.rednblack.h2d.common.view.ui.Cursors;
+import org.puremvc.java.interfaces.INotification;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -101,7 +101,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         switch (notification.getName()) {
             case MsgAPI.NEW_ITEM_ADDED:
                 updateListeners((Entity) notification.getBody());

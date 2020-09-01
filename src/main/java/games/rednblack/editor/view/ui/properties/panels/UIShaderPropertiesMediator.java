@@ -21,7 +21,6 @@ package games.rednblack.editor.view.ui.properties.panels;
 import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.controller.commands.component.UpdateShaderDataCommand;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.proxy.ResourceManager;
@@ -29,6 +28,7 @@ import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import org.apache.commons.lang3.ArrayUtils;
+import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by azakhary on 8/12/2015.
@@ -55,7 +55,7 @@ public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<Entity,
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         switch (notification.getName()) {

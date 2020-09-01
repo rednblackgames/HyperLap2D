@@ -19,15 +19,15 @@
 package games.rednblack.editor.view.ui.properties;
 
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 /**
  * Created by azakhary on 4/15/2015.
  */
-public abstract class UIAbstractPropertiesMediator<T, V extends UIAbstractProperties> extends SimpleMediator<V> {
+public abstract class UIAbstractPropertiesMediator<T, V extends UIAbstractProperties> extends Mediator<V> {
     private Sandbox sandbox;
 
     protected T observableReference;
@@ -56,7 +56,7 @@ public abstract class UIAbstractPropertiesMediator<T, V extends UIAbstractProper
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
 

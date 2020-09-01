@@ -3,18 +3,18 @@ package games.rednblack.editor.proxy;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
-import com.puremvc.patterns.proxy.BaseProxy;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.Main;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.puremvc.java.patterns.proxy.Proxy;
 
 import java.io.File;
 import java.io.IOException;
 
-public class SettingsManager extends BaseProxy {
+public class SettingsManager extends Proxy {
     private static final String TAG = SettingsManager.class.getCanonicalName();
     public static final String NAME = TAG;
 

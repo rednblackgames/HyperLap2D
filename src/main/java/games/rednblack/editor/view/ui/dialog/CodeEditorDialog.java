@@ -22,7 +22,6 @@ public class CodeEditorDialog extends H2DDialog {
         setResizable(true);
 
         textArea = new HighlightTextArea("", "code-editor");
-
         getContentTable().add(textArea.createCompatibleScrollPane()).grow().row();
 
         VisTextButton cancelButton = StandardWidgetsFactory.createTextButton("Cancel");
@@ -46,6 +45,8 @@ public class CodeEditorDialog extends H2DDialog {
         getButtonsTable().add(cancelButton).width(65).pad(2).right();
         getButtonsTable().add(saveButton).width(65).pad(2).right();
         getCell(getButtonsTable()).right();
+
+        pack();
     }
 
     public void setSyntax(Highlighter syntax) {
@@ -54,8 +55,9 @@ public class CodeEditorDialog extends H2DDialog {
     }
 
     public void setText(String text) {
-        if (text != null)
+        if (text != null) {
             textArea.setText(text);
+        }
     }
 
     public void setNotificationCallback(String notificationCallback) {
@@ -64,11 +66,11 @@ public class CodeEditorDialog extends H2DDialog {
 
     @Override
     public float getPrefWidth() {
-        return Sandbox.getInstance().getUIStage().getWidth() * 0.7f;
+        return 900;
     }
 
     @Override
     public float getPrefHeight() {
-        return Sandbox.getInstance().getUIStage().getHeight() * 0.8f;
+        return 700;
     }
 }

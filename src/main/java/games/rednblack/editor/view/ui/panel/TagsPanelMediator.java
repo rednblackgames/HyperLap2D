@@ -2,21 +2,21 @@ package games.rednblack.editor.view.ui.panel;
 
 import com.badlogic.ashley.core.Entity;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.properties.panels.UIBasicItemProperties;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.util.Set;
 
 /**
  * Created by azakhary on 8/1/2015.
  */
-public class TagsPanelMediator extends SimpleMediator<TagsPanel> {
+public class TagsPanelMediator extends Mediator<TagsPanel> {
     private static final String TAG = TagsPanelMediator.class.getCanonicalName();
     private static final String NAME = TAG;
 
@@ -44,7 +44,7 @@ public class TagsPanelMediator extends SimpleMediator<TagsPanel> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         Sandbox sandbox = Sandbox.getInstance();

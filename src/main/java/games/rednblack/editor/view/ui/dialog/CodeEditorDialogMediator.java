@@ -1,14 +1,14 @@
 package games.rednblack.editor.view.ui.dialog;
 
 import com.kotcrab.vis.ui.util.highlight.Highlighter;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.MsgAPI;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
-public class CodeEditorDialogMediator extends SimpleMediator<CodeEditorDialog> {
+public class CodeEditorDialogMediator extends Mediator<CodeEditorDialog> {
 
     private static final String TAG = CodeEditorDialogMediator.class.getCanonicalName();
     private static final String NAME = TAG;
@@ -31,7 +31,7 @@ public class CodeEditorDialogMediator extends SimpleMediator<CodeEditorDialog> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         Sandbox sandbox = Sandbox.getInstance();
         UIStage uiStage = sandbox.getUIStage();
         switch (notification.getName()) {

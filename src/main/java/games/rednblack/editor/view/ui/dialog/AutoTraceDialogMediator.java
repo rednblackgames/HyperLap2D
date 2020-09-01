@@ -2,8 +2,6 @@ package games.rednblack.editor.view.ui.dialog;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
@@ -12,10 +10,12 @@ import games.rednblack.editor.utils.poly.tracer.Tracer;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.MsgAPI;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.util.stream.Stream;
 
-public class AutoTraceDialogMediator extends SimpleMediator<AutoTraceDialog> {
+public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
 
     private static final String TAG = AutoTraceDialogMediator.class.getCanonicalName();
     private static final String NAME = TAG;
@@ -41,7 +41,7 @@ public class AutoTraceDialogMediator extends SimpleMediator<AutoTraceDialog> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         Sandbox sandbox = Sandbox.getInstance();
         UIStage uiStage = sandbox.getUIStage();

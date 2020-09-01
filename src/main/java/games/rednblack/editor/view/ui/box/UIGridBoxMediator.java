@@ -19,15 +19,15 @@
 package games.rednblack.editor.view.ui.box;
 
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.stage.Sandbox;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 /**
  * Created by azakhary on 4/15/2015.
  */
-public class UIGridBoxMediator extends SimpleMediator<UIGridBox> {
+public class UIGridBoxMediator extends Mediator<UIGridBox> {
     private static final String TAG = UIGridBoxMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -47,7 +47,7 @@ public class UIGridBoxMediator extends SimpleMediator<UIGridBox> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         Sandbox sandbox = Sandbox.getInstance();
 

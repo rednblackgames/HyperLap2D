@@ -1,7 +1,7 @@
 package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.utils.Array;
-import com.puremvc.patterns.observer.Notification;
+import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by CyberJoe on 7/25/2015.
@@ -11,7 +11,7 @@ public abstract class TransactiveCommand extends RevertibleCommand {
     protected Array<RevertibleCommand> commands = new Array();
 
     @Override
-    public void execute(Notification notification) {
+    public void execute(INotification notification) {
         this.notification = notification;
         transaction();
         super.execute(notification);

@@ -31,21 +31,21 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.puremvc.patterns.observer.BaseNotification;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.view.frame.FileDropListener;
 import games.rednblack.editor.view.ui.panel.ImportPanel;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.VisUI;
-import com.puremvc.patterns.proxy.Proxy;
 import org.lwjgl.BufferUtils;
 
 import org.lwjgl.glfw.GLFW;
+import org.puremvc.java.interfaces.IProxy;
+import org.puremvc.java.patterns.observer.Notification;
 
 import java.nio.IntBuffer;
 
-public class HyperLap2D implements Proxy, ApplicationListener, Lwjgl3WindowListener {
+public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowListener {
     private static final String TAG = HyperLap2D.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -53,7 +53,7 @@ public class HyperLap2D implements Proxy, ApplicationListener, Lwjgl3WindowListe
     private Object data;
     private AssetManager assetManager;
 
-    private final BaseNotification renderNotification;
+    private final Notification renderNotification;
 
     public HyperLap2DFacade getFacade() {
         return facade;
@@ -62,7 +62,7 @@ public class HyperLap2D implements Proxy, ApplicationListener, Lwjgl3WindowListe
     private final Sync sync = new Sync();
 
     public HyperLap2D() {
-        renderNotification = new BaseNotification(MsgAPI.RENDER, null, null);
+        renderNotification = new Notification(MsgAPI.RENDER, null, null);
     }
 
     @Override

@@ -21,8 +21,6 @@ package games.rednblack.editor.view.ui.panel;
 import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.view.menu.WindowMenu;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
 import games.rednblack.editor.renderer.data.FrameRange;
@@ -32,13 +30,15 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.properties.panels.UISpriteAnimationItemProperties;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.util.Set;
 
 /**
  * Created by azakhary on 5/12/2015.
  */
-public class EditSpriteAnimationPanelMediator extends SimpleMediator<EditSpriteAnimationPanel> {
+public class EditSpriteAnimationPanelMediator extends Mediator<EditSpriteAnimationPanel> {
     private static final String TAG = EditSpriteAnimationPanelMediator.class.getCanonicalName();
     private static final String NAME = TAG;
 
@@ -68,7 +68,7 @@ public class EditSpriteAnimationPanelMediator extends SimpleMediator<EditSpriteA
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         Sandbox sandbox = Sandbox.getInstance();

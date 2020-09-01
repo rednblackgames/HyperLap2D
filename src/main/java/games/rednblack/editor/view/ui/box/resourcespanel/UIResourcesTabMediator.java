@@ -18,15 +18,15 @@
 
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 /**
  * Created by sargis on 5/12/15.
  */
-public abstract class UIResourcesTabMediator<T extends UIResourcesTab> extends SimpleMediator<T> {
+public abstract class UIResourcesTabMediator<T extends UIResourcesTab> extends Mediator<T> {
     /**
      * Constructor.
      *
@@ -54,7 +54,7 @@ public abstract class UIResourcesTabMediator<T extends UIResourcesTab> extends S
 
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         switch (notification.getName()) {
             case ProjectManager.PROJECT_OPENED:
             case ProjectManager.PROJECT_DATA_UPDATED:

@@ -10,8 +10,8 @@ import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import com.puremvc.patterns.facade.SimpleFacade;
 import games.rednblack.h2d.common.H2DDialog;
+import org.puremvc.java.interfaces.IFacade;
 
 /**
  * Created by azakhary on 8/18/2015.
@@ -21,7 +21,7 @@ public class MainPanel extends H2DDialog {
 
     public static final String SAVE_CLICKED = CLASS_NAME + ".SAVE_CLICKED";
 
-    private SimpleFacade facade;
+    private IFacade facade;
 
     private VisTable mainTable;
     private TextureRegion texture;
@@ -32,11 +32,11 @@ public class MainPanel extends H2DDialog {
     private EditingZone editingZone;
     private PreviewWidget previewWidget;
 
-    public MainPanel() {
+    public MainPanel(IFacade facade) {
         super("Nine Patch");
         addCloseButton();
 
-        facade = SimpleFacade.getInstance();
+        this.facade = facade;
 
         mainTable = new VisTable();
         add(mainTable).width(520).height(310).padBottom(7);

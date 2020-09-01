@@ -21,13 +21,13 @@ package games.rednblack.editor.controller;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.h2d.common.plugins.H2DPlugin;
-import com.puremvc.patterns.command.SimpleCommand;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.PluginManager;
 import net.mountainblade.modular.Module;
 import net.mountainblade.modular.ModuleManager;
 import net.mountainblade.modular.impl.DefaultModuleManager;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.command.SimpleCommand;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -35,7 +35,7 @@ import java.util.Collection;
 
 public class BootstrapPlugins extends SimpleCommand {
 
-    public void execute(Notification notification) {
+    public void execute(INotification notification) {
         super.execute(notification);
         facade = HyperLap2DFacade.getInstance();
 

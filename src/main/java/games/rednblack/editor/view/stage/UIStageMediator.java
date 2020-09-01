@@ -22,14 +22,14 @@ import com.badlogic.ashley.core.Entity;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 /**
  * Created by sargis on 4/20/15.
  */
-public class UIStageMediator extends SimpleMediator<UIStage> {
+public class UIStageMediator extends Mediator<UIStage> {
     private static final String TAG = UIStageMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -51,7 +51,7 @@ public class UIStageMediator extends SimpleMediator<UIStage> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         switch (notification.getName()) {
             case MsgAPI.SHOW_ADD_LIBRARY_DIALOG:
                 Sandbox sandbox = Sandbox.getInstance();

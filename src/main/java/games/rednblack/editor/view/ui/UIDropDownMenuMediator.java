@@ -23,19 +23,19 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.view.stage.tools.PolygonTool;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.PluginManager;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.util.HashMap;
 
 /**
  * Created by azakhary on 4/20/2015.
  */
-public class UIDropDownMenuMediator extends SimpleMediator<UIDropDownMenu> {
+public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
     private static final String TAG = UIDropDownMenuMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -140,7 +140,7 @@ public class UIDropDownMenuMediator extends SimpleMediator<UIDropDownMenu> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         Array<String> actionsSet;

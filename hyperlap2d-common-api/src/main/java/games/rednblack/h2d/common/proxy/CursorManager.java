@@ -23,14 +23,14 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.puremvc.patterns.proxy.BaseProxy;
 import games.rednblack.h2d.common.view.ui.Cursors;
 import games.rednblack.h2d.common.vo.CursorData;
+import org.puremvc.java.patterns.proxy.Proxy;
 
 /**
  * Created by azakhary on 5/15/2015.
  */
-public class CursorManager extends BaseProxy {
+public class CursorManager extends Proxy {
     private static final String TAG = CursorManager.class.getCanonicalName();
     public static final String NAME = TAG;
 

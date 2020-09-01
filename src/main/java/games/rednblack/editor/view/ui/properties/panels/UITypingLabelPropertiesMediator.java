@@ -1,7 +1,6 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.ashley.core.Entity;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.renderer.components.label.TypingLabelComponent;
@@ -9,6 +8,7 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import org.apache.commons.lang3.ArrayUtils;
+import org.puremvc.java.interfaces.INotification;
 
 public class UITypingLabelPropertiesMediator extends UIItemPropertiesMediator<Entity, UITypingLabelProperties> {
     private static final String TAG = UITypingLabelPropertiesMediator.class.getCanonicalName();
@@ -30,7 +30,7 @@ public class UITypingLabelPropertiesMediator extends UIItemPropertiesMediator<En
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
         switch (notification.getName()) {

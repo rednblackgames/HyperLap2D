@@ -33,8 +33,6 @@ import games.rednblack.h2d.common.plugins.PluginAPI;
 import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.h2d.common.view.tools.Tool;
 import com.kotcrab.vis.ui.widget.VisImageButton;
-import com.puremvc.patterns.facade.Facade;
-import com.puremvc.patterns.proxy.BaseProxy;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.PluginItemCommand;
 import games.rednblack.editor.factory.ItemFactory;
@@ -52,13 +50,15 @@ import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
 import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
 import games.rednblack.h2d.common.vo.CursorData;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
+import org.puremvc.java.interfaces.IFacade;
+import org.puremvc.java.patterns.proxy.Proxy;
 
 import java.util.*;
 
 /**
  * Created by azakhary on 7/24/2015.
  */
-public class PluginManager extends BaseProxy implements PluginAPI {
+public class PluginManager extends Proxy implements PluginAPI {
     private static final String TAG = PluginManager.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -205,7 +205,7 @@ public class PluginManager extends BaseProxy implements PluginAPI {
     }
 
     @Override
-    public Facade getFacade() {
+    public IFacade getFacade() {
         return facade;
     }
 

@@ -18,16 +18,16 @@
 
 package games.rednblack.editor;
 
-import com.puremvc.patterns.facade.SimpleFacade;
-import com.puremvc.patterns.observer.BaseNotification;
 import games.rednblack.editor.controller.StartupCommand;
 import games.rednblack.editor.splash.SplashMediator;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import org.puremvc.java.patterns.facade.Facade;
+import org.puremvc.java.patterns.observer.Notification;
 
 /**
  * Created by sargis on 3/30/15.
  */
-public class HyperLap2DFacade extends SimpleFacade {
+public class HyperLap2DFacade extends Facade {
     public static final String STARTUP = "startup";
     private static HyperLap2DFacade instance = null;
     private HyperLap2D hyperlap2D;
@@ -51,7 +51,7 @@ public class HyperLap2DFacade extends SimpleFacade {
 
     public void startup(HyperLap2D hyperlap2D) {
         this.hyperlap2D = hyperlap2D;
-        notifyObservers(new BaseNotification(STARTUP, null, null));
+        notifyObservers(new Notification(STARTUP, null, null));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class HyperLap2DFacade extends SimpleFacade {
     @Override
     protected void initializeController() {
         super.initializeController();
-        registerCommand(STARTUP, StartupCommand.class);
+        registerCommand(STARTUP, StartupCommand::new);
     }
 
     @Override

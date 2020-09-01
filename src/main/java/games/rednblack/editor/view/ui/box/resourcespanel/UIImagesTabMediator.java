@@ -20,16 +20,14 @@ package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.controller.commands.resource.DeleteImageResource;
-import games.rednblack.editor.controller.commands.resource.DeleteLibraryItem;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.factory.ItemFactory;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.ImageResource;
 import org.apache.commons.lang3.ArrayUtils;
+import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by azakhary on 4/17/2015.
@@ -54,7 +52,7 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
             case DeleteImageResource.DONE:

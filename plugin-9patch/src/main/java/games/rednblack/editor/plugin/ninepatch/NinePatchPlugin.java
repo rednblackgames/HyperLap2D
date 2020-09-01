@@ -27,11 +27,11 @@ public class NinePatchPlugin extends H2DPluginAdapter {
 
     public NinePatchPlugin() {
         super(CLASS_NAME);
-        performancePanelMediator = new MainPanelMediator(this);
     }
 
     @Override
     public void initPlugin() {
+        performancePanelMediator = new MainPanelMediator(this);
         facade.registerMediator(performancePanelMediator);
         pluginAPI.setDropDownItemName(EDIT_NINE_PATCH, "Edit NinePatch");
         pluginAPI.setDropDownItemName(CONVERT_TO_NINE_PATCH, "Convert to NinePatch");

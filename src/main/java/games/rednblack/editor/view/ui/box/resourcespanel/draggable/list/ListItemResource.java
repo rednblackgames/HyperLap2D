@@ -27,7 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
-import com.puremvc.patterns.facade.SimpleFacade;
+import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResourceView;
 
@@ -55,7 +55,7 @@ public abstract class ListItemResource extends Button implements DraggableResour
             }
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 if(button == Input.Buttons.RIGHT) {
-                    SimpleFacade.getInstance().sendNotification(eventName, payload);
+                    HyperLap2DFacade.getInstance().sendNotification(eventName, payload);
                 }
             }
         });

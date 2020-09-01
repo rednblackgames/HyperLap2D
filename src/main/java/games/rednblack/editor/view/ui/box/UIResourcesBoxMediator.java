@@ -22,13 +22,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.ui.box.resourcespanel.UIAnimationsTabMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.UIImagesTabMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.UILibraryItemsTabMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.UIParticleEffectsTabMediator;
+import org.puremvc.java.interfaces.INotification;
 
 import java.util.stream.Stream;
 
@@ -74,7 +74,7 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
             case ProjectManager.PROJECT_OPENED:

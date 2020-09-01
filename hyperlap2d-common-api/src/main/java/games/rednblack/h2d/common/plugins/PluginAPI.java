@@ -27,10 +27,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import games.rednblack.h2d.common.IItemCommand;
 import games.rednblack.h2d.common.view.tools.Tool;
 import com.kotcrab.vis.ui.widget.VisImageButton;
-import com.puremvc.patterns.facade.Facade;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.h2d.common.vo.CursorData;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
+import org.puremvc.java.interfaces.IFacade;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,7 +50,7 @@ public interface PluginAPI {
      * Returns MVC facade, to send notifications or commands, and register mediators
      * @return Facade
      */
-    Facade getFacade();
+    IFacade getFacade();
 
     /**
      * Returns Ashley engine of main scene where all entities are located

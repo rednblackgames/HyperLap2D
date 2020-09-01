@@ -1,10 +1,10 @@
 package games.rednblack.editor.plugin.performance;
 
 import com.badlogic.ashley.core.Engine;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
-public class PerformancePanelMediator extends SimpleMediator<PerformancePanel> {
+public class PerformancePanelMediator extends Mediator<PerformancePanel> {
     private static final String TAG = PerformancePanelMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -32,7 +32,7 @@ public class PerformancePanelMediator extends SimpleMediator<PerformancePanel> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
             case SCENE_LOADED:

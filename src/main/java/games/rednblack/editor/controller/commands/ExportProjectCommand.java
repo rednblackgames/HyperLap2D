@@ -18,15 +18,15 @@
 
 package games.rednblack.editor.controller.commands;
 
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.h2d.common.MsgAPI;
+import org.puremvc.java.interfaces.INotification;
 
 public class ExportProjectCommand extends SandboxCommand {
 
     @Override
-    public void execute(Notification notification) {
+    public void execute(INotification notification) {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         projectManager.exportProject();
 

@@ -21,7 +21,6 @@ package games.rednblack.editor.view.ui.box.resourcespanel;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.h2d.extention.spine.SpineItemType;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.controller.commands.resource.DeleteSpineAnimation;
 import games.rednblack.editor.controller.commands.resource.DeleteSpriteAnimation;
 import games.rednblack.editor.controller.commands.resource.DeleteSpriterAnimation;
@@ -35,6 +34,7 @@ import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.SpineReso
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.SpriteResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.SpriterResource;
 import org.apache.commons.lang3.ArrayUtils;
+import org.puremvc.java.interfaces.INotification;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -65,7 +65,7 @@ public class UIAnimationsTabMediator extends UIResourcesTabMediator<UIAnimations
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
             case DeleteSpineAnimation.DONE:

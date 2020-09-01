@@ -4,12 +4,9 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
-import com.puremvc.patterns.facade.SimpleFacade;
 import games.rednblack.h2d.common.UIDraggablePanel;
 
 public class PerformancePanel extends UIDraggablePanel {
-
-    private SimpleFacade facade;
 
     private VisTable mainTable;
 
@@ -21,8 +18,6 @@ public class PerformancePanel extends UIDraggablePanel {
     public PerformancePanel() {
         super("Performance");
         addCloseButton();
-
-        facade = SimpleFacade.getInstance();
 
         mainTable = new VisTable();
 

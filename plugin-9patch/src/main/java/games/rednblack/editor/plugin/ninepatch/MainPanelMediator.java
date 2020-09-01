@@ -5,13 +5,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NinePatchComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * Created by azakhary on 8/18/2015.
  */
-public class MainPanelMediator extends SimpleMediator<MainPanel> {
+public class MainPanelMediator extends Mediator<MainPanel> {
     private static final String TAG = MainPanelMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -31,7 +31,7 @@ public class MainPanelMediator extends SimpleMediator<MainPanel> {
     private ImageUtils imageUtils = new ImageUtils();
 
     public MainPanelMediator(NinePatchPlugin plugin) {
-        super(NAME, new MainPanel());
+        super(NAME, new MainPanel(plugin.facade));
         this.plugin = plugin;
     }
 
@@ -45,7 +45,7 @@ public class MainPanelMediator extends SimpleMediator<MainPanel> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
             case NinePatchPlugin.EDIT_NINE_PATCH:

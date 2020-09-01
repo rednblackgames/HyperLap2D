@@ -20,8 +20,8 @@ package games.rednblack.editor.view.ui.properties;
 
 import com.badlogic.ashley.core.Entity;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.view.stage.Sandbox;
+import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by azakhary on 4/15/2015.
@@ -33,7 +33,7 @@ public abstract class UIItemPropertiesMediator<T extends Entity, V extends UIAbs
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
 
         if(notification.getName().equals(viewComponent.getUpdateEventName())) {
             if(!lockUpdates) {

@@ -28,8 +28,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.SnapshotArray;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.tools.Tool;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
@@ -42,6 +40,8 @@ import games.rednblack.editor.view.stage.input.EntityClickListener;
 import games.rednblack.editor.view.stage.input.InputListenerComponent;
 import games.rednblack.editor.view.stage.tools.*;
 import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.util.HashMap;
 
@@ -50,7 +50,7 @@ import static games.rednblack.editor.view.ui.box.UIToolBox.TOOL_CLICKED;
 /**
  * Created by sargis on 4/20/15.
  */
-public class SandboxMediator extends SimpleMediator<Sandbox> {
+public class SandboxMediator extends Mediator<Sandbox> {
     private static final String TAG = SandboxMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -110,7 +110,7 @@ public class SandboxMediator extends SimpleMediator<Sandbox> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
             case MsgAPI.SCENE_LOADED:
@@ -136,7 +136,7 @@ public class SandboxMediator extends SimpleMediator<Sandbox> {
         }
     }
 
-    private void handleSceneLoaded(Notification notification) {
+    private void handleSceneLoaded(INotification notification) {
         initItemListeners();
 
         setCurrentTool(SelectionTool.NAME);

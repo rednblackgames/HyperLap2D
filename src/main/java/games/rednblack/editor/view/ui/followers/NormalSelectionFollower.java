@@ -26,12 +26,12 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.VisUI;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.editor.view.stage.tools.TransformTool;
 import games.rednblack.editor.view.ui.widget.EmptyTarget;
+import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by azakhary on 5/20/2015.
@@ -217,7 +217,7 @@ public class NormalSelectionFollower extends BasicFollower {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
             case MsgAPI.TOOL_SELECTED:

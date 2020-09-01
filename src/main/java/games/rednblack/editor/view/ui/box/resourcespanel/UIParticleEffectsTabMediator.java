@@ -20,7 +20,6 @@ package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.utils.Array;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.controller.commands.resource.DeleteParticleEffect;
 import games.rednblack.editor.factory.ItemFactory;
 import games.rednblack.editor.proxy.ResourceManager;
@@ -28,6 +27,7 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.ParticleEffectResource;
 import org.apache.commons.lang3.ArrayUtils;
+import org.puremvc.java.interfaces.INotification;
 
 import java.util.HashMap;
 
@@ -51,7 +51,7 @@ public class UIParticleEffectsTabMediator extends UIResourcesTabMediator<UIParti
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
             case DeleteParticleEffect.DONE:

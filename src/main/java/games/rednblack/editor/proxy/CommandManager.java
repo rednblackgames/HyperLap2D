@@ -20,14 +20,14 @@ package games.rednblack.editor.proxy;
 
 import java.util.ArrayList;
 
-import com.puremvc.patterns.proxy.BaseProxy;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.controller.commands.RevertibleCommand;
 import games.rednblack.editor.controller.commands.TransactiveCommand;
 import games.rednblack.editor.view.menu.FileMenu;
+import org.puremvc.java.patterns.proxy.Proxy;
 
-public class CommandManager extends BaseProxy {
+public class CommandManager extends Proxy {
     private static final String TAG = CommandManager.class.getCanonicalName();
     public static final String NAME = TAG;
 

@@ -2,16 +2,16 @@ package games.rednblack.editor.view.ui.box;
 
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.validator.StringNameValidator;
 import games.rednblack.h2d.common.MsgAPI;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
-public class UISceneBoxMediator extends SimpleMediator<UISceneBox> {
+public class UISceneBoxMediator extends Mediator<UISceneBox> {
     private static final String TAG = UISceneBoxMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -32,7 +32,7 @@ public class UISceneBoxMediator extends SimpleMediator<UISceneBox> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 		Sandbox sandbox = Sandbox.getInstance();
 

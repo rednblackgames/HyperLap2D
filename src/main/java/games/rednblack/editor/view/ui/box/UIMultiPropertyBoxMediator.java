@@ -24,8 +24,6 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import games.rednblack.editor.renderer.components.label.TypingLabelComponent;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.mediator.Mediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
@@ -42,6 +40,8 @@ import games.rednblack.editor.view.stage.tools.TextTool;
 import games.rednblack.editor.view.ui.properties.UIAbstractProperties;
 import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
 import games.rednblack.editor.view.ui.properties.panels.*;
+import org.puremvc.java.interfaces.IMediator;
+import org.puremvc.java.interfaces.INotification;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,7 +146,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
             case MsgAPI.SCENE_LOADED:
@@ -207,7 +207,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
 
         for (String mediatorName : mediatorNames) {
             try {
-                facade.registerMediator((Mediator) ClassReflection.newInstance(ClassReflection.forName(mediatorName)));
+                facade.registerMediator((IMediator) ClassReflection.newInstance(ClassReflection.forName(mediatorName)));
 
                 UIAbstractPropertiesMediator<Object, UIAbstractProperties> propertyBoxMediator = facade.retrieveMediator(mediatorName);
                 currentRegisteredPropertyBoxes.add(propertyBoxMediator);

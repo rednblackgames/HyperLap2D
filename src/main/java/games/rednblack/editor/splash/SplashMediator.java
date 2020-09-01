@@ -1,14 +1,11 @@
 package games.rednblack.editor.splash;
 
-import com.puremvc.patterns.mediator.SimpleMediator;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.HyperLap2DFacade;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-public class SplashMediator extends SimpleMediator<Object> {
+public class SplashMediator extends Mediator<Object> {
 
     private static final String TAG = SplashMediator.class.getCanonicalName();
     private static final String NAME = TAG;
@@ -32,7 +29,7 @@ public class SplashMediator extends SimpleMediator<Object> {
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         System.out.println(notification.getBody().toString());
 

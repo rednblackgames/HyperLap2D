@@ -29,13 +29,12 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane;
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneListener;
-import com.puremvc.patterns.facade.Facade;
-import com.puremvc.patterns.facade.SimpleFacade;
 import games.rednblack.editor.plugin.tiled.data.TileVO;
 import games.rednblack.editor.plugin.tiled.manager.ResourcesManager;
 import games.rednblack.editor.plugin.tiled.view.tabs.GridTilesTab;
 import games.rednblack.editor.plugin.tiled.view.tabs.SettingsTab;
 import games.rednblack.h2d.common.UIDraggablePanel;
+import org.puremvc.java.interfaces.IFacade;
 
 /**
  * Created by mariam on 2/2/2016.
@@ -52,7 +51,7 @@ public class TiledPanel extends UIDraggablePanel {
     public static final float BOTTOM_BAR_DELTA_Y = 6f;
 
     public TiledPlugin tiledPlugin;
-    public Facade facade;
+    private IFacade facade;
 
     protected TabbedPane tabbedPane;
     protected VisTable tabTable; //table inside of each tab
@@ -69,7 +68,7 @@ public class TiledPanel extends UIDraggablePanel {
         super("Tiles");
         this.tiledPlugin = tiledPlugin;
 
-        facade = SimpleFacade.getInstance();
+        facade = tiledPlugin.facade;
 
         mainTable = new VisTable();
         add(mainTable)
@@ -229,5 +228,9 @@ public class TiledPanel extends UIDraggablePanel {
 
     public void setEngine(Engine engine) {
         this.engine = engine;
+    }
+
+    public IFacade getFacade() {
+        return facade;
     }
 }

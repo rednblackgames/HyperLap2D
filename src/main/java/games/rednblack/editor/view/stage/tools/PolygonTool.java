@@ -23,20 +23,19 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.h2d.common.MsgAPI;
-import com.puremvc.patterns.observer.Notification;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
-import games.rednblack.editor.utils.poly.Clipper;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.followers.BasicFollower;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
 import games.rednblack.editor.view.ui.followers.PolygonTransformationListener;
+import org.puremvc.java.interfaces.INotification;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -85,7 +84,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
     }
 
     @Override
-    public void handleNotification(Notification notification) {
+    public void handleNotification(INotification notification) {
         switch (notification.getName()) {
             case AddComponentToItemCommand.DONE:
                 updateSubFollowerList();

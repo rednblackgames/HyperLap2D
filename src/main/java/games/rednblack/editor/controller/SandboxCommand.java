@@ -18,9 +18,9 @@
 
 package games.rednblack.editor.controller;
 
-import com.puremvc.patterns.command.SimpleCommand;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.HyperLap2DFacade;
+import org.puremvc.java.patterns.command.SimpleCommand;
 
 /**
  * Created by azakhary on 4/28/2015.

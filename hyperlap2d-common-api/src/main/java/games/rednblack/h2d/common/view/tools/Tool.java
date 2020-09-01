@@ -19,7 +19,7 @@
 package games.rednblack.h2d.common.view.tools;
 
 import com.badlogic.ashley.core.Entity;
-import com.puremvc.patterns.observer.Notification;
+import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by azakhary on 4/30/2015.
@@ -38,7 +38,7 @@ public interface Tool {
     String getName();
     String getTitle();
     String getShortcut();
-    void handleNotification(Notification notification);
+    void handleNotification(INotification notification);
     void keyDown(Entity entity, int keycode);
     void keyUp(Entity entity, int keycode);
 }
