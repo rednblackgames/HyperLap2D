@@ -80,7 +80,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 HyperLap2D is a fork of [Overlap2D](https://github.com/UnderwaterApps/overlap2d). A very special thanks to UnderwaterApps's Team and all of their Contributors for creating it, as without, HyperLap2D could never be possible.
 Check out original: [`OVERLAP2D-AUTHORS`](https://github.com/rednblackgames/HyperLap2D/blob/master/OVERLAP2D-AUTHORS) and [`OVERLAP2D-CONTRIBUTORS`](https://github.com/rednblackgames/HyperLap2D/blob/master/OVERLAP2D-CONTRIBUTORS)
 
-_Overlap2D_ was licensed under `Apache 2.0` license
+_Overlap2D_ was licensed under `Apache 2.0`
 ```
 Copyright 2015 Underwater Apps LLC
 
