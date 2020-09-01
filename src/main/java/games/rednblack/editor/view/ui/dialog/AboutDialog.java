@@ -24,21 +24,25 @@ public class AboutDialog extends H2DDialog {
         scrollPane.setFadeScrollBars(false);
 
         mainTable.add(leftTable).top().padLeft(10).left();
-        mainTable.add(scrollPane).maxHeight(280).top().width(450).padLeft(28).expand().left();
+        mainTable.add(scrollPane).maxHeight(300).top().width(450).padLeft(28).expand().left();
 
         leftTable.add(new VisImage(VisUI.getSkin().getDrawable("splash_logo"))).pad(5).row();
         leftTable.add("HyperLap2D").padLeft(5).padRight(5).row();
         leftTable.add("Release " + AppConfig.getInstance().version).row();
-
         contentTable.add("Copyright \u00A9 2020 Red & Black Games").left().row();
         contentTable.add("").row();
         contentTable.add("Dedicated to game lovers. Create something awesome!").left().row();
         contentTable.add("").row();
+        VisTable forkTable = new VisTable();
+        forkTable.add("Original codebase fork from ");
+        forkTable.add(new LinkLabel("Overlap2D", "https://github.com/UnderwaterApps/overlap2d"));
+        contentTable.add(forkTable).left().row();
+        contentTable.add("").row();
         contentTable.add("HyperLap2D is based on following libraries and open source tools:").left().row();
-        contentTable.add(new LinkLabel("- LibGDX [https://github.com/libgdx/libgdx]", "https://github.com/libgdx/libgdx")).padLeft(6).left().row();
+        contentTable.add(new LinkLabel("- libGDX [https://github.com/libgdx/libgdx]", "https://github.com/libgdx/libgdx")).padLeft(6).left().row();
+        contentTable.add(new LinkLabel("- Overlap2D [https://github.com/UnderwaterApps/overlap2d]", "https://github.com/UnderwaterApps/overlap2d")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Ashley [https://github.com/libgdx/ashley]", "https://github.com/libgdx/ashley")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Box2DLights [https://github.com/libgdx/box2dlights]", "https://github.com/libgdx/box2dlights")).padLeft(6).left().row();
-        contentTable.add(new LinkLabel("- Overlap2D [https://github.com/UnderwaterApps/overlap2d]", "https://github.com/UnderwaterApps/overlap2d")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- PureMVC Framework [https://puremvc.org]", "https://puremvc.org/")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- VisUI [https://github.com/kotcrab/vis-ui]", "https://github.com/kotcrab/vis-ui")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Modular [https://github.com/mountainblade/modular]", "https://github.com/mountainblade/modular")).padLeft(6).left().row();
@@ -48,10 +52,8 @@ public class AboutDialog extends H2DDialog {
         contentTable.add(new LinkLabel("- Physics Body Editor [https://www.aurelienribon.com]", "https://www.aurelienribon.com")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Typing Label [https://github.com/rafaskb/typing-label]", "https://github.com/rafaskb/typing-label")).padLeft(6).left().row();
         contentTable.add("\n").row();
-        contentTable.add("Contributors").row();
-        contentTable.add("").row();
-        contentTable.add("Programmer: Francesco Marongiu").left().row();
-        contentTable.add("").row();
+        contentTable.add(new LinkLabel("See Contributors list", "https://github.com/rednblackgames/HyperLap2D/blob/master/AUTHORS")).row();
+        contentTable.add("\n").row();
         contentTable.add("Icon and Art design: Angelo Navarro").left().row();
 
         getContentTable().add(mainTable).padTop(5);
