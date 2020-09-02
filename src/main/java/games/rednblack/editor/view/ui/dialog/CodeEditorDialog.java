@@ -21,7 +21,7 @@ public class CodeEditorDialog extends H2DDialog {
         addCloseButton();
         setResizable(true);
 
-        textArea = new HighlightTextArea("");
+        textArea = new HighlightTextArea("", "code-editor");
         getContentTable().add(textArea.createCompatibleScrollPane()).grow().row();
 
         VisTextButton cancelButton = StandardWidgetsFactory.createTextButton("Cancel");
