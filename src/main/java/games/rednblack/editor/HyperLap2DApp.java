@@ -47,8 +47,6 @@ public class HyperLap2DApp extends ApplicationAdapter {
 
         splashWindow = app.newWindow(new SplashScreenAdapter(), config2);
 
-        hyperlap2D = new HyperLap2D();
-
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {

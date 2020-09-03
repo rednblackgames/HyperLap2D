@@ -19,6 +19,7 @@
 package games.rednblack.editor.view;
 
 import com.badlogic.ashley.core.Engine;
+import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -37,6 +38,12 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
 
     public HyperLap2DScreenMediator() {
         super(NAME, null);
+    }
+
+    @Override
+    public void onRegister() {
+        super.onRegister();
+        facade = HyperLap2DFacade.getInstance();
     }
 
     @Override
@@ -90,6 +97,8 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
                 viewComponent.resize(data[0], data[1]);
                 break;
             case MsgAPI.DISPOSE:
+                ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+                projectManager.stopFileWatcher();
                 break;
             case MsgAPI.SAVE_EDITOR_CONFIG:
                 SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);

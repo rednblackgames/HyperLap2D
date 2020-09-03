@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ObjectMap;
 import games.rednblack.editor.proxy.CommandManager;
+import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.view.frame.FileDropListener;
 import games.rednblack.editor.view.ui.panel.ImportPanel;
@@ -146,9 +147,11 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
 
     @Override
     public void dispose() {
-        sendNotification(MsgAPI.DISPOSE);
-        VisUI.dispose();
-        facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> Gdx.app.exit());
+        facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> {
+            sendNotification(MsgAPI.DISPOSE);
+            VisUI.dispose();
+            Gdx.app.exit();
+        });
     }
 
     @Override

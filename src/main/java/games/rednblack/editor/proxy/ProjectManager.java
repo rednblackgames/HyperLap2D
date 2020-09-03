@@ -227,8 +227,7 @@ public class ProjectManager extends Proxy {
     }
 
     private void addFileWatcher(String projectPath) throws Exception {
-        if (fileWatcherMonitor == null)
-            fileWatcherMonitor.stop();
+        stopFileWatcher();
 
         fileWatcherMonitor = new FileAlterationMonitor(2000);
 
@@ -253,6 +252,17 @@ public class ProjectManager extends Proxy {
 
         fileWatcherMonitor.addObserver(observer);
         fileWatcherMonitor.start();
+    }
+
+    public void stopFileWatcher() {
+        if (fileWatcherMonitor != null) {
+            try {
+                fileWatcherMonitor.stop();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            fileWatcherMonitor = null;
+        }
     }
 
     private void goThroughVersionMigrationProtocol(String projectPath, ProjectVO projectVo) {
