@@ -100,8 +100,8 @@ dependencies {
     implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
     implementation "com.esotericsoftware.spine:spine-libgdx:$spineVersion"
     implementation "com.mortennobel:java-image-scaling:0.8.5"
-    implementation "org.apache.commons:commons-lang3:3.3.2"
-    implementation "org.apache.commons:commons-io:1.3.2"
+    implementation "org.apache.commons:commons-lang3:3.11"
+    implementation "commons-io:commons-io:2.7"
     implementation 'net.mountainblade:modular:1.0'
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
