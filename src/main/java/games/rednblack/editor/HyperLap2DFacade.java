@@ -30,7 +30,6 @@ import org.puremvc.java.patterns.observer.Notification;
 public class HyperLap2DFacade extends Facade {
     public static final String STARTUP = "startup";
     private static HyperLap2DFacade instance = null;
-    private HyperLap2D hyperlap2D;
 
     protected HyperLap2DFacade() {
         super();
@@ -50,7 +49,6 @@ public class HyperLap2DFacade extends Facade {
     }
 
     public void startup(HyperLap2D hyperlap2D) {
-        this.hyperlap2D = hyperlap2D;
         notifyObservers(new Notification(STARTUP, null, null));
     }
 

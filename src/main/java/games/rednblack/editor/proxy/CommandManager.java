@@ -88,8 +88,8 @@ public class CommandManager extends Proxy {
     }
 
     public void updateWindowTitle() {
-        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        projectManager.appendSaveHintTitle(isModified());
+        WindowTitleManager windowTitleManager = facade.retrieveProxy(WindowTitleManager.NAME);
+        windowTitleManager.appendSaveHintTitle(isModified());
     }
 
     public boolean isModified() {

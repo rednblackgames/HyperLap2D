@@ -38,10 +38,15 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.SettingsDialog;
 import games.rednblack.editor.view.ui.settings.LivePreviewSettings;
 import games.rednblack.editor.view.ui.settings.ProjectExportSettings;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.monitor.FileAlterationListener;
+import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
+import org.apache.commons.io.monitor.FileAlterationMonitor;
+import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.puremvc.java.patterns.proxy.Proxy;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -78,14 +83,14 @@ public class ProjectManager extends Proxy {
     public ProjectInfoVO currentProjectInfoVO;
     private String currentProjectPath;
 
-    private String currentWindowTitle = "";
-
     public ProjectManager() {
         super(NAME);
     }
 
     private ProjectExportSettings projectExportSettings;
     private LivePreviewSettings livePreviewSettings;
+
+    private FileAlterationMonitor fileWatcherMonitor;
 
     @Override
     public void onRegister() {
@@ -212,7 +217,42 @@ public class ProjectManager extends Proxy {
             currentProjectPath = projectPath;
             checkForConsistency(projectPath);
             loadProjectData(projectPath);
+
+            try {
+                addFileWatcher(projectPath);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    private void addFileWatcher(String projectPath) throws Exception {
+        if (fileWatcherMonitor == null)
+            fileWatcherMonitor.stop();
+
+        fileWatcherMonitor = new FileAlterationMonitor(2000);
+
+        FileAlterationObserver observer = new FileAlterationObserver(projectPath);
+        FileAlterationListener listener = new FileAlterationListenerAdaptor() {
+            @Override
+            public void onFileCreate(File file) {
+                facade.sendNotification(MsgAPI.PROJECT_FILE_CREATED, file);
+            }
+
+            @Override
+            public void onFileDelete(File file) {
+                facade.sendNotification(MsgAPI.PROJECT_FILE_DELETED, file);
+            }
+
+            @Override
+            public void onFileChange(File file) {
+                facade.sendNotification(MsgAPI.PROJECT_FILE_MODIFIED, file);
+            }
+        };
+        observer.addListener(listener);
+
+        fileWatcherMonitor.addObserver(observer);
+        fileWatcherMonitor.start();
     }
 
     private void goThroughVersionMigrationProtocol(String projectPath, ProjectVO projectVo) {
@@ -1099,21 +1139,13 @@ public class ProjectManager extends Proxy {
         return currentProjectVO.projectName + " [ " + getCurrentSceneConfigVO().sceneName + " ] - " + path;
     }
 
-    private void setWindowTitle(String title) {
-        currentWindowTitle = title;
-        Gdx.graphics.setTitle(currentWindowTitle);
-    }
-
-    public void appendSaveHintTitle(boolean isModified) {
-        if (!isModified) {
-            Gdx.graphics.setTitle(currentWindowTitle);
-        } else {
-            Gdx.graphics.setTitle("\u25CF " + currentWindowTitle);
-        }
-    }
-
     public void changeSceneWindowTitle() {
         setWindowTitle(getFormattedTitle(currentProjectPath));
+    }
+
+    private void setWindowTitle(String title) {
+        WindowTitleManager windowTitleManager = facade.retrieveProxy(WindowTitleManager.NAME);
+        windowTitleManager.setWindowTitle(title);
     }
 
     public SceneConfigVO getCurrentSceneConfigVO() {
