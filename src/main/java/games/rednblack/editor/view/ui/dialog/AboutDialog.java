@@ -16,7 +16,6 @@ import games.rednblack.h2d.common.H2DDialog;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -51,7 +50,6 @@ public class AboutDialog extends H2DDialog {
         leftTable.add("Release " + AppConfig.getInstance().version).row();
         leftTable.add("Total Time").padTop(20).row();
         leftTable.add(totalTimeSpent).row();
-
 
         contentTable.add("Copyright \u00A9 2020 Red & Black Games").left().row();
         contentTable.add("").row();
