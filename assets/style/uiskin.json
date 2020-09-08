@@ -147,20 +147,6 @@
         selection: padded-list-selection,
         background: select-box-list-bg
       }
-    },
-    white: {
-      font: default-font,
-      fontColor: black,
-      background: default-select-white,
-      backgroundOver: default-select-over,
-      scrollStyle: default,
-      listStyle: {
-        font: default-font,
-        fontColorSelected: black,
-        fontColorUnselected: black,
-        selection: list-selection-white,
-        background: select-box-list-bg-white
-      }
     }
   },
   com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
@@ -239,22 +225,6 @@
       font: default-font,
       fontColor: white,
       cursor: cursor
-    }
-  },
-  com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
-    default: {
-      checkboxOn: check-on,
-      checkboxOff: check-off,
-      font: default-font,
-      fontColor: white,
-      disabledFontColor: grey
-    },
-    radio: {
-      checkboxOn: radio-on,
-      checkboxOff: radio-off,
-      font: default-font,
-      fontColor: white,
-      disabledFontColor: grey
     }
   },
   com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
@@ -602,6 +572,26 @@
       imageOver: icon-link-inactive,
       imageChecked: icon-link-active,
       imageCheckedOver: icon-unlink-active
+    },
+    window-action-close: {
+      imageDown: window-action-close-pressed,
+      imageOver: window-action-close-hover,
+      imageUp: window-action-close-normal
+    },
+    window-action-iconify: {
+      imageDown: window-action-iconify-pressed,
+      imageOver: window-action-iconify-hover,
+      imageUp: window-action-iconify-normal
+    },
+    window-action-maximize: {
+      imageDown: window-action-maximize-pressed,
+      imageOver: window-action-maximize-hover,
+      imageUp: window-action-maximize-normal
+    },
+    window-action-restore: {
+      imageDown: window-action-restore-pressed,
+      imageOver: window-action-restore-hover,
+      imageUp: window-action-restore-normal
     }
   },
   com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {

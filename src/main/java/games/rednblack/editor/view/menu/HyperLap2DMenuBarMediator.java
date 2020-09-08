@@ -42,6 +42,7 @@ import org.puremvc.java.patterns.mediator.Mediator;
 public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
     private static final String TAG = HyperLap2DMenuBarMediator.class.getCanonicalName();
     public static final String NAME = TAG;
+
     private ProjectManager projectManager;
     private SettingsManager settingsManager;
 

@@ -20,13 +20,11 @@ package games.rednblack.editor.controller;
 
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.splash.SplashScreenAdapter;
-import games.rednblack.editor.view.ui.FollowersUIMediator;
+import games.rednblack.editor.view.ui.*;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBarMediator;
 import games.rednblack.editor.view.HyperLap2DScreenMediator;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.stage.UIStageMediator;
-import games.rednblack.editor.view.ui.RulersUIMediator;
-import games.rednblack.editor.view.ui.UIDropDownMenuMediator;
 import games.rednblack.editor.view.ui.box.*;
 import games.rednblack.editor.view.ui.dialog.*;
 import games.rednblack.editor.view.ui.panel.CustomVariablesPanelMediator;
@@ -48,6 +46,7 @@ public class BootstrapViewCommand extends SimpleCommand {
 
         facade.registerMediator(new HyperLap2DScreenMediator());
         facade.registerMediator(new HyperLap2DMenuBarMediator());
+        facade.registerMediator(new UIWindowActionMediator());
 
         facade.registerMediator(new UICompositeHierarchyMediator());
 		facade.registerMediator(new UISceneBoxMediator());

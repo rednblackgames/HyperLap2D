@@ -34,6 +34,8 @@ public class MsgAPI {
     public static final String DISPOSE = GLOBAL_PREFIX + ".DISPOSE";
     public static final String CREATE = GLOBAL_PREFIX + ".CREATE_BTN_CLICKED";
 
+    public static final String WINDOW_MAXIMIZED = GLOBAL_PREFIX + ".WINDOW_MAXIMIZED";
+
     public static final String SAVE_EDITOR_CONFIG = GLOBAL_PREFIX + ".SAVE_EDITOR_CONFIG";
 
     public static final String OPEN_CODE_EDITOR = GLOBAL_PREFIX + ".OPEN_CODE_EDITOR";

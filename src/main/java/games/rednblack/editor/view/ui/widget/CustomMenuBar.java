@@ -20,7 +20,7 @@ public class CustomMenuBar {
 
     private CustomMenu currentMenu;
 
-    private Array<CustomMenu> menus = new Array<CustomMenu>();
+    private Array<CustomMenu> menus = new Array<>();
 
     public CustomMenuBar () {
         Skin skin = VisUI.getSkin();

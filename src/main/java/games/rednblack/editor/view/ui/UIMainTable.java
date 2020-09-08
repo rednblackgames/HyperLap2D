@@ -18,6 +18,9 @@
 
 package games.rednblack.editor.view.ui;
 
+import com.badlogic.gdx.utils.Align;
+import com.kotcrab.vis.ui.VisUI;
+import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
@@ -35,6 +38,7 @@ import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.editor.view.ui.box.UIToolBox;
 import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
 import games.rednblack.editor.view.ui.widget.H2DLogo;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 public class UIMainTable extends VisTable {
     private final VisTable topTable, middleTable;
@@ -60,15 +64,26 @@ public class UIMainTable extends VisTable {
     }
 
 	private void initMenuBar() {
-		HyperLap2DMenuBarMediator hyperlap2DMenuBarMediator = facade.retrieveMediator(HyperLap2DMenuBarMediator.NAME);
-		HyperLap2DMenuBar menuBar = hyperlap2DMenuBarMediator.getViewComponent();
 		topTable.add(new H2DLogo()).left().fillY();
-		topTable.add(menuBar.getTable().padLeft(0)).fillX().height(32).expandX();
+
+        HyperLap2DMenuBarMediator hyperlap2DMenuBarMediator = facade.retrieveMediator(HyperLap2DMenuBarMediator.NAME);
+        HyperLap2DMenuBar menuBar = hyperlap2DMenuBarMediator.getViewComponent();
+		topTable.add(menuBar.getTable()).height(32).growX();
+
+		//TODO Undecorated window is cool but should enable window dragging
+		/*VisTable titleTable = new VisTable();
+        titleTable.setBackground(VisUI.getSkin().getDrawable("menu-bg"));
+		titleTable.add("Title");
+        topTable.add(titleTable).growX().fillY();
+
+        UIWindowActionMediator uiWindowActionMediator = facade.retrieveMediator(UIWindowActionMediator.NAME);
+        UIWindowAction uiWindowAction = uiWindowActionMediator.getViewComponent();
+        topTable.add(uiWindowAction).padTop(-1).fillY();*/
 	}
 
     private void initSupportMenus() {
 		UISubmenuBar compositePanel = new UISubmenuBar();
-        topTable.add(compositePanel).fillX().expandX().colspan(2).height(32);
+        topTable.add(compositePanel).fillX().colspan(2).expandX().height(32);
     }
 
 	private void initLeftBoxesPanel() {

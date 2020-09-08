@@ -147,11 +147,7 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
 
     @Override
     public void dispose() {
-        facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> {
-            sendNotification(MsgAPI.DISPOSE);
-            VisUI.dispose();
-            Gdx.app.exit();
-        });
+        closeRequested();
     }
 
     @Override
@@ -212,7 +208,7 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
 
     @Override
     public void maximized(boolean isMaximized) {
-
+        facade.sendNotification(MsgAPI.WINDOW_MAXIMIZED, isMaximized);
     }
 
     @Override
@@ -227,7 +223,11 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
 
     @Override
     public boolean closeRequested() {
-        sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> Gdx.app.exit());
+        facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> {
+            sendNotification(MsgAPI.DISPOSE);
+            VisUI.dispose();
+            Gdx.app.exit();
+        });
         return false;
     }
 
