@@ -79,8 +79,10 @@ public class AboutDialog extends H2DDialog {
         try {
             InputStream in = getClass().getResourceAsStream("/"+fileName);
             FileOutputStream out = new FileOutputStream(tempFile);
-            ByteStreams.copy(in, out);
-            in.close();
+            if (in != null) {
+                ByteStreams.copy(in, out);
+                in.close();
+            }
             out.close();
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,6 +1,7 @@
 package games.rednblack.editor.view.ui.dialog;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.util.highlight.Highlighter;
 import com.kotcrab.vis.ui.widget.HighlightTextArea;
@@ -9,10 +10,11 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.listener.ScrollFocusListener;
 
 public class CodeEditorDialog extends H2DDialog {
 
-    private HighlightTextArea textArea;
+    private final HighlightTextArea textArea;
     private String notificationCallback;
 
     public CodeEditorDialog() {
@@ -22,7 +24,9 @@ public class CodeEditorDialog extends H2DDialog {
         setResizable(true);
 
         textArea = new HighlightTextArea("", "code-editor");
-        getContentTable().add(textArea.createCompatibleScrollPane()).grow().row();
+        ScrollPane scrollPane = textArea.createCompatibleScrollPane();
+        scrollPane.addListener(new ScrollFocusListener());
+        getContentTable().add(scrollPane).grow().row();
 
         VisTextButton cancelButton = StandardWidgetsFactory.createTextButton("Cancel");
         cancelButton.addListener(new ClickListener() {
@@ -56,6 +60,7 @@ public class CodeEditorDialog extends H2DDialog {
 
     public void setText(String text) {
         if (text != null) {
+            text = text.replace("\t", "    ");
             textArea.setText(text);
         }
     }

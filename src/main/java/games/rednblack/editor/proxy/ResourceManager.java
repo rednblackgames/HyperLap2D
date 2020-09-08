@@ -45,15 +45,15 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private static final String TAG = ResourceManager.class.getCanonicalName();
     public static final String NAME = TAG;
 
-    private HashMap<String, ParticleEffect> particleEffects = new HashMap<String, ParticleEffect>(1);
+    private final HashMap<String, ParticleEffect> particleEffects = new HashMap<>(1);
     private TextureAtlas currentProjectAtlas;
 
-    private HashMap<String, SpineAnimData> spineAnimAtlases = new HashMap<String, SpineAnimData>();
-    private HashMap<String, TextureAtlas> spriteAnimAtlases = new HashMap<String, TextureAtlas>();
-    private HashMap<String, FileHandle> spriterAnimAtlases = new HashMap<String, FileHandle>();
-    private HashMap<String, FileHandle> spriterAnimFiles = new HashMap<String, FileHandle>();
-    private HashMap<FontSizePair, BitmapFont> bitmapFonts = new HashMap<>();
-    private HashMap<String, ShaderProgram> shaderPrograms = new HashMap<String, ShaderProgram>(1);
+    private final HashMap<String, SpineAnimData> spineAnimAtlases = new HashMap<>();
+    private final HashMap<String, TextureAtlas> spriteAnimAtlases = new HashMap<>();
+    private final HashMap<String, FileHandle> spriterAnimAtlases = new HashMap<>();
+    private final HashMap<String, FileHandle> spriterAnimFiles = new HashMap<>();
+    private final HashMap<FontSizePair, BitmapFont> bitmapFonts = new HashMap<>();
+    private final HashMap<String, ShaderProgram> shaderPrograms = new HashMap<>(1);
 
     private TextureRegion defaultRegion;
 
@@ -310,11 +310,29 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
             // check if pair exists.
             if(Gdx.files.internal(path + filename + ".vert").exists() && Gdx.files.internal(path + filename + ".frag").exists()) {
                 ShaderProgram shaderProgram = new ShaderProgram(Gdx.files.internal(path + filename + ".vert"), Gdx.files.internal(path + filename + ".frag"));
-                System.out.println(shaderProgram.getLog());
+                if (!shaderProgram.isCompiled()) {
+                    System.out.println("Error compiling shader: " + shaderProgram.getLog());
+                }
                 shaderPrograms.put(filename, shaderProgram);
             }
         }
 
+    }
+
+    public void reloadShader(String shaderName) {
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        String shader = projectManager.getCurrentProjectPath() + File.separator
+                + ProjectManager.SHADER_DIR_PATH + File.separator + shaderName;
+
+        if(Gdx.files.internal(shader + ".vert").exists() && Gdx.files.internal(shader + ".frag").exists()) {
+            ShaderProgram shaderProgram = new ShaderProgram(Gdx.files.internal(shader + ".vert"), Gdx.files.internal(shader + ".frag"));
+            if (shaderProgram.isCompiled()) {
+                shaderPrograms.remove(shaderName);
+                shaderPrograms.put(shaderName, shaderProgram);
+            } else {
+                System.out.println("Error compiling shader: " + shaderProgram.getLog());
+            }
+        }
     }
 
     /**

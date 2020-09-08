@@ -19,9 +19,11 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.ashley.core.Entity;
+import games.rednblack.editor.code.syntax.GLSLSyntax;
 import games.rednblack.editor.controller.commands.component.UpdateShaderDataCommand;
+import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.view.ui.dialog.CodeEditorDialogMediator;
 import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.components.ShaderComponent;
@@ -30,6 +32,10 @@ import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
 /**
  * Created by azakhary on 8/12/2015.
  */
@@ -37,18 +43,27 @@ public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<Entity,
     private static final String TAG = UIShaderPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
+    private final ProjectManager projectManager;
+    private final ResourceManager resourceManager;
+
+    private final GLSLSyntax glslSyntax = new GLSLSyntax();
+
     public UIShaderPropertiesMediator() {
         super(NAME, new UIShaderProperties());
 
-        ResourceManager resourceManager = HyperLap2DFacade.getInstance().retrieveProxy(ResourceManager.NAME);
+        resourceManager = facade.retrieveProxy(ResourceManager.NAME);
         viewComponent.initView(resourceManager.getShaders());
+
+        projectManager = facade.retrieveProxy(ProjectManager.NAME);
     }
 
     @Override
     public String[] listNotificationInterests() {
         String[] defaultNotifications = super.listNotificationInterests();
         String[] notificationInterests = new String[]{
-                UIShaderProperties.CLOSE_CLICKED
+                UIShaderProperties.CLOSE_CLICKED,
+                UIShaderProperties.EDIT_BUTTON_CLICKED,
+                UIShaderProperties.EDIT_SHADER_DONE
         };
 
         return ArrayUtils.addAll(defaultNotifications, notificationInterests);
@@ -60,7 +75,27 @@ public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<Entity,
 
         switch (notification.getName()) {
             case UIShaderProperties.CLOSE_CLICKED:
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, ShaderComponent.class));
+                facade.sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, ShaderComponent.class));
+                break;
+            case UIShaderProperties.EDIT_BUTTON_CLICKED:
+                if (!viewComponent.getShader().equals("Default")) {
+                    File shader = new File(projectManager.getCurrentProjectPath() + File.separator
+                            + ProjectManager.SHADER_DIR_PATH + File.separator + viewComponent.getShader() + ".frag");
+                    Object[] payload = CodeEditorDialogMediator.openCodeEditorPayload(glslSyntax, "", UIShaderProperties.EDIT_SHADER_DONE, shader);
+                    facade.sendNotification(MsgAPI.OPEN_CODE_EDITOR, payload);
+                }
+                break;
+            case UIShaderProperties.EDIT_SHADER_DONE:
+                File shader = new File(projectManager.getCurrentProjectPath() + File.separator
+                        + ProjectManager.SHADER_DIR_PATH + File.separator + viewComponent.getShader() + ".frag");
+                try {
+                    Files.writeString(shader.toPath(), notification.getBody());
+                    resourceManager.reloadShader(viewComponent.getShader());
+                    Object payload = UpdateShaderDataCommand.payload(observableReference, viewComponent.getShader());
+                    facade.sendNotification(MsgAPI.ACTION_UPDATE_SHADER_DATA, payload);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }

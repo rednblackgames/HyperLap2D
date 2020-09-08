@@ -19,11 +19,13 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.event.ButtonToNotificationListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
@@ -37,6 +39,9 @@ public class UIShaderProperties extends UIRemovableProperties {
 
     public static final String prefix = "games.rednblack.editor.view.ui.properties.panels.UIShaderProperties";
     public static final String CLOSE_CLICKED = prefix + ".CLOSE_CLICKED";
+
+    public static final String EDIT_BUTTON_CLICKED = prefix + ".EDIT_BUTTON_CLICKED";
+    public static final String EDIT_SHADER_DONE = prefix + ".EDIT_SHADER_DONE";
 
     private VisSelectBox<String> shadersSelector;
 
@@ -57,7 +62,11 @@ public class UIShaderProperties extends UIRemovableProperties {
         shadersSelector.addListener(new SelectBoxChangeListener(getUpdateEventName()));
 
         mainTable.add(new VisLabel("Shader: ", Align.right)).padRight(5).width(75).right();
-        mainTable.add(shadersSelector).width(100).left();
+        mainTable.add(shadersSelector).width(100).left().row();
+
+        TextButton editButton = StandardWidgetsFactory.createTextButton("Edit");
+        editButton.addListener(new ButtonToNotificationListener(EDIT_BUTTON_CLICKED));
+        mainTable.add(editButton).colspan(2).padTop(5);
     }
 
     @Override

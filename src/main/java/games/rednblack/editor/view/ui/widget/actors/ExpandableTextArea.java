@@ -34,7 +34,7 @@ public class ExpandableTextArea extends VisTable {
         expandButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                facade.sendNotification(MsgAPI.OPEN_CODE_EDITOR, CodeEditorDialogMediator.openCodeEditorPayload(syntax, textArea.getText(), notificationCallback));
+                facade.sendNotification(MsgAPI.OPEN_CODE_EDITOR, CodeEditorDialogMediator.openCodeEditorPayload(syntax, textArea.getText(), notificationCallback, null));
                 if (listener != null)
                     listener.onExpand(textArea);
             }
