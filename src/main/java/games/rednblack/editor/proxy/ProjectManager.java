@@ -663,11 +663,13 @@ public class ProjectManager extends Proxy {
                             String newName = fileHandle.name();
                             File target = new File(targetPath + "/" + newName);
                             FileUtils.copyFile(fileHandle.file(), target);
+                        } else {
+                            Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                                    "\nAll PNG files needs to have same location as the particle file.").padBottom(20).pack();
                         }
                     } catch (IllegalArgumentException e) {
                         System.out.println("Error importing particles.");
                         throw e;
-
                     } catch (IOException e) {
                         System.out.println("Error importing particles.");
                         e.printStackTrace();
