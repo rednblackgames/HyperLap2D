@@ -33,6 +33,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ObjectMap;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.view.frame.FileDropListener;
 import games.rednblack.editor.view.ui.panel.ImportPanel;
@@ -61,6 +62,8 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
     }
 
     private final Sync sync = new Sync();
+
+    private long startTime = 0;
 
     public HyperLap2D() {
         renderNotification = new Notification(MsgAPI.RENDER, null, null);
@@ -121,6 +124,8 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
         int height = h.get(0);
 
         sendNotification(MsgAPI.RESIZE, new int[]{width, height});
+
+        startTime = System.currentTimeMillis();
     }
 
     @Override
@@ -226,6 +231,11 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
         facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> {
             sendNotification(MsgAPI.DISPOSE);
             VisUI.dispose();
+
+            SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+            settingsManager.editorConfigVO.totalSpentTime += System.currentTimeMillis() - startTime;
+            settingsManager.saveEditorConfig();
+
             Gdx.app.exit();
         });
         return false;

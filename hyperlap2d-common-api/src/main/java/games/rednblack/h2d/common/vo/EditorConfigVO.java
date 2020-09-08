@@ -30,6 +30,8 @@ public class EditorConfigVO {
     public String lastOpenedSystemPath = "";
     public String lastImportedSystemPath = "";
 
+    public long totalSpentTime = 0;
+
     public boolean disableAmbientComposite = true;
     public boolean autoSave = false;
     public boolean enablePlugins = true;

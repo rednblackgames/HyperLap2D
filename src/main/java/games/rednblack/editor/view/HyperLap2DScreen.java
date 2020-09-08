@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.view.menu.FileMenu;
@@ -186,7 +187,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.SYM) && keycode == Input.Keys.Q) {
-            facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> Gdx.app.exit());
+            HyperLap2DApp.getInstance().hyperlap2D.closeRequested();
         }
         return false;
     }

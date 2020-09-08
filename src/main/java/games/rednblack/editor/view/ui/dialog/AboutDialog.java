@@ -18,12 +18,23 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class AboutDialog extends H2DDialog {
 
     public AboutDialog() {
         super("About HyperLap2D");
         addCloseButton();
+
+        SettingsManager settingsManager = HyperLap2DFacade.getInstance().retrieveProxy(SettingsManager.NAME);
+
+        Date date = new Date(settingsManager.editorConfigVO.totalSpentTime);
+        DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String totalTimeSpent = formatter.format(date);
 
         VisTable mainTable = new VisTable();
         VisTable leftTable = new VisTable();
@@ -38,6 +49,10 @@ public class AboutDialog extends H2DDialog {
         leftTable.add(new VisImage(VisUI.getSkin().getDrawable("splash_logo"))).pad(5).row();
         leftTable.add("HyperLap2D").padLeft(5).padRight(5).row();
         leftTable.add("Release " + AppConfig.getInstance().version).row();
+        leftTable.add("Total Time").padTop(20).row();
+        leftTable.add(totalTimeSpent).row();
+
+
         contentTable.add("Copyright \u00A9 2020 Red & Black Games").left().row();
         contentTable.add("").row();
         contentTable.add("Dedicated to game lovers. Create something awesome!").left().row();

@@ -22,6 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
+import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapFileChooser;
 import games.rednblack.h2d.common.MsgAPI;
@@ -162,7 +163,7 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
                 facade.sendNotification(MsgAPI.ACTION_EXPORT_PROJECT);
                 break;
             case FileMenu.EXIT:
-                facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> Gdx.app.exit());
+                HyperLap2DApp.getInstance().hyperlap2D.closeRequested();
                 break;
         }
     }
