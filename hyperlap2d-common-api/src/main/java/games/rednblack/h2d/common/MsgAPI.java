@@ -35,6 +35,7 @@ public class MsgAPI {
     public static final String CREATE = GLOBAL_PREFIX + ".CREATE_BTN_CLICKED";
 
     public static final String WINDOW_MAXIMIZED = GLOBAL_PREFIX + ".WINDOW_MAXIMIZED";
+    public static final String ACTION_FILES_DROPPED = GLOBAL_PREFIX + ".ACTION_DROP";
 
     public static final String SAVE_EDITOR_CONFIG = GLOBAL_PREFIX + ".SAVE_EDITOR_CONFIG";
 

@@ -27,9 +27,9 @@ import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.AssetImporter;
 import games.rednblack.editor.utils.ImportUtils;
-import games.rednblack.editor.view.frame.FileDropListener;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -65,10 +65,7 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
                 ImportPanel.CANCEL_BTN_CLICKED,
                 ImportPanel.IMPORT_BTN_CLICKED,
                 ImportPanel.IMPORT_FAILED,
-                FileDropListener.ACTION_DRAG_ENTER,
-                FileDropListener.ACTION_DRAG_OVER,
-                FileDropListener.ACTION_DRAG_EXIT,
-                FileDropListener.ACTION_DROP,
+                MsgAPI.ACTION_FILES_DROPPED,
         };
     }
 
@@ -96,28 +93,7 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
             case ImportPanel.BROWSE_BTN_CLICKED:
                 showFileChoose();
                 break;
-            case FileDropListener.ACTION_DRAG_ENTER:
-                //TODO for new drop system in LWJGL3
-                /*Vector2 dropPos = getLocationFromDtde(notification.getBody());
-                if(viewComponent.checkDropRegionHit(dropPos)) {
-                    viewComponent.dragOver();
-                }*/
-                break;
-            case FileDropListener.ACTION_DRAG_OVER:
-                //TODO for new drop system in LWJGL3
-                /*dropPos = getLocationFromDtde(notification.getBody());
-                if(viewComponent.checkDropRegionHit(dropPos)) {
-                    viewComponent.dragOver();
-                }*/
-                break;
-            case FileDropListener.ACTION_DRAG_EXIT:
-                //TODO for new drop system in LWJGL3
-                /*dropPos = getLocationFromDtde(notification.getBody());
-                if(viewComponent.checkDropRegionHit(dropPos)) {
-                    viewComponent.dragExit();
-                }*/
-                break;
-            case FileDropListener.ACTION_DROP:
+            case MsgAPI.ACTION_FILES_DROPPED:
                 ImportPanel.DropBundle bundle = notification.getBody();
                 if(viewComponent.checkDropRegionHit(bundle.pos)) {
                     AssetImporter.getInstance().setProgressHandler(new AssetsImportProgressHandler());

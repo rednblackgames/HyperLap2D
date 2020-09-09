@@ -32,10 +32,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ObjectMap;
 import games.rednblack.editor.proxy.CommandManager;
-import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
-import games.rednblack.editor.view.frame.FileDropListener;
 import games.rednblack.editor.view.ui.panel.ImportPanel;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.VisUI;
@@ -247,7 +245,7 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
         bundle.pos = new Vector2(Gdx.input.getX(),  Gdx.input.getY());
         bundle.paths = files;
 
-        facade.sendNotification(FileDropListener.ACTION_DROP, bundle);
+        facade.sendNotification(MsgAPI.ACTION_FILES_DROPPED, bundle);
     }
 
     @Override
