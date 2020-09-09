@@ -1,8 +1,14 @@
 [0.0.2]
-- Add more animations
 - Support to Typing Labels
+- Experimental Code Editor for:
+    * Typing Labels
+    * GLSL Fragment shaders
+- Animations and UI/UX enhancements
 - Better cursor management
+- Track total time spent using HyperLap2D
+- Improve editor performance
 - Fix many bugs and possible NPE across Editor and Plugins
+- Update all dependencies to latest version
 
 [0.0.1]
 - Initial public alpha release

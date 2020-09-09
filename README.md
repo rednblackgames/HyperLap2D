@@ -25,6 +25,12 @@ Open Source ❤️
 - [Official Wiki](https://hyperlap2d.rednblack.games/wiki)
 - [HyperLab](https://hyperlab.rednblack.games)
 
+### Download
+
+You can download the latest stable release using [GitHub Release](https://github.com/rednblackgames/HyperLap2D/releases).
+
+Snapshot releases can be download using [GitHub Actions](https://github.com/rednblackgames/HyperLap2D/actions?query=workflow%3A%22Java+CI+with+Gradle%22)
+
 ### Runtime
 
 Currently, HyperLap2D is mainly developed for [libGDX](https://github.com/libgdx/libgdx), but it can easily be integrated into any software thanks to its open JSON output format.
