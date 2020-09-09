@@ -25,6 +25,19 @@ public class TexturePackerVO {
     public String filterMag = "Linear";
     public String filterMin = "Linear";
 
+    public  TexturePackerVO() {
+
+    }
+
+    public TexturePackerVO(TexturePackerVO vo) {
+        maxHeight = vo.maxHeight;
+        maxWidth = vo.maxWidth;
+        duplicate = vo.duplicate;
+        square = vo.square;
+        filterMag = vo.filterMag;
+        filterMin = vo.filterMin;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

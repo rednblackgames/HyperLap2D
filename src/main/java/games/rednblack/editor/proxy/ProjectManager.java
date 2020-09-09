@@ -299,6 +299,10 @@ public class ProjectManager extends Proxy {
     public void loadProjectData(String projectPath) {
         // All legit loading assets
         ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
+        File pack = new File(currentProjectPath + "/assets/" + resolutionManager.currentResolutionName + "/pack/pack.atlas");
+        if (!pack.exists()) {
+            resolutionManager.rePackProjectImagesForAllResolutions();
+        }
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
         resourceManager.loadCurrentProjectData(projectPath, resolutionManager.currentResolutionName);
     }

@@ -111,6 +111,9 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
 
     @Override
     public void translateViewToSettings() {
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        TexturePackerVO backup = new TexturePackerVO(projectManager.currentProjectVO.texturePackerVO);
+
         TexturePackerVO vo = new TexturePackerVO();
         vo.maxWidth = String.valueOf(widthSelectBox.getSelected());
         vo.maxHeight = String.valueOf(heightSelectBox.getSelected());
@@ -119,16 +122,22 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
         vo.filterMag = filterMagSelectBox.getSelected();
         vo.filterMin = filterMinSelectBox.getSelected();
 
-        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        boolean packerModified = !vo.equals(projectManager.currentProjectVO.texturePackerVO);
+        boolean packerModified = !vo.equals(backup);
         projectManager.setTexturePackerVO(vo);
-
-        facade.sendNotification(MsgAPI.SAVE_EXPORT_PATH, exportSettingsInputFileWidget.getValue().file().getAbsolutePath());
 
         if (packerModified) {
             ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-            resolutionManager.rePackProjectImagesForAllResolutions();
+            try {
+                resolutionManager.rePackProjectImagesForAllResolutions();
+            } catch (Exception e) {
+                facade.sendNotification(MsgAPI.SHOW_NOTIFICATION, "Invalid properties selected, revert settings");
+                projectManager.setTexturePackerVO(backup);
+                resolutionManager.rePackProjectImagesForAllResolutions();
+                translateSettingsToView();
+            }
         }
+
+        facade.sendNotification(MsgAPI.SAVE_EXPORT_PATH, exportSettingsInputFileWidget.getValue().file().getAbsolutePath());
     }
 
     @Override
