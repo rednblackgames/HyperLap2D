@@ -3,6 +3,7 @@ package games.rednblack.editor.view.ui.box;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.controller.commands.resource.DeleteResourceCommand;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddSelectionCommand;
@@ -38,6 +39,7 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
                 SetSelectionCommand.DONE,
                 AddSelectionCommand.DONE,
                 ReleaseSelectionCommand.DONE,
+                DeleteResourceCommand.DONE,
                 MsgAPI.DELETE_ITEMS_COMMAND_DONE,
                 MsgAPI.ACTION_Z_INDEX_CHANGED,
                 MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE,
@@ -62,6 +64,7 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
             case MsgAPI.ACTION_Z_INDEX_CHANGED:
             case MsgAPI.NEW_ITEM_ADDED:
             case MsgAPI.DELETE_ITEMS_COMMAND_DONE:
+            case DeleteResourceCommand.DONE:
                 rootEntity = sandbox.getCurrentViewingEntity();
                 viewComponent.init(rootEntity);
                 break;

@@ -49,7 +49,7 @@ public abstract class NonRevertibleCommand extends SandboxCommand {
 
     public abstract void doAction();
 
-    private void callDoAction() {
+    protected void callDoAction() {
         doAction();
         if (!isCancelled) commandManager.clearHistory();
     }
