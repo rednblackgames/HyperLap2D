@@ -200,6 +200,7 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
         viewComponent.setActionList(actionsSet);
         viewComponent.setX(coordinates.x);
         viewComponent.setY(coordinates.y - viewComponent.getHeight());
+        viewComponent.keepWithinStage();
 
         currentCoordinates = new Vector2(coordinates);
 
