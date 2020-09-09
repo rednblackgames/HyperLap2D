@@ -45,7 +45,8 @@ public class UISceneBox extends UIBaseBox {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                facade.sendNotification(DELETE_CURRENT_SCENE_BTN_CLICKED, visSelectBox.getSelected().sceneName);
+                if (!deleteBtn.isDisabled())
+                    facade.sendNotification(DELETE_CURRENT_SCENE_BTN_CLICKED, visSelectBox.getSelected().sceneName);
             }
         });
 
