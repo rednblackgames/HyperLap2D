@@ -198,6 +198,9 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
         if (transformStrategy == compositeStrategy) {
             compositeStrategy.swapItemFinalAndInitialStates(follower.getEntity());
         }
+
+        cursorManager.setCursor(Cursors.CROSS);
+        cursorManager.displayCustomCursor();
     }
 
     @Override
