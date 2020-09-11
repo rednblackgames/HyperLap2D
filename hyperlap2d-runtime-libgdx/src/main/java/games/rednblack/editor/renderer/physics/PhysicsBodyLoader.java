@@ -23,17 +23,7 @@ public class PhysicsBodyLoader {
         return instance;
     }
 
-    public float scale;
-
     private PhysicsBodyLoader() {
-    }
-
-    public void setScaleFromPPWU(float pixelPerWU) {
-        scale = 1f/(pixelPerWU);
-    }
-
-    public static float getScale() {
-        return getInstance().scale;
     }
 
     public Body createBody(World world, Entity entity, PhysicsBodyComponent physicsComponent, Vector2[][] minPolygonData, TransformComponent transformComponent) {
@@ -56,7 +46,7 @@ public class PhysicsBodyLoader {
         BodyDef bodyDef = new BodyDef();
         bodyPosition.set(transformComponent.originX, transformComponent.originY);
         TransformMathUtils.localToSceneCoordinates(entity, bodyPosition);
-        bodyDef.position.set(bodyPosition.x * getScale(), bodyPosition.y * getScale());
+        bodyDef.position.set(bodyPosition.x, bodyPosition.y);
         bodyDef.angle = transformComponent.rotation * MathUtils.degreesToRadians;
 
         bodyDef.gravityScale = physicsComponent.gravityScale;
@@ -92,8 +82,8 @@ public class PhysicsBodyLoader {
                 minPolygonDatum[j / 2].x *= transformComponent.scaleX;
                 minPolygonDatum[j / 2].y *= transformComponent.scaleY;
 
-                verts[j] = minPolygonDatum[j / 2].x * scale;
-                verts[j + 1] = minPolygonDatum[j / 2].y * scale;
+                verts[j] = minPolygonDatum[j / 2].x;
+                verts[j + 1] = minPolygonDatum[j / 2].y;
 
                 minPolygonDatum[j / 2].x = tempX;
                 minPolygonDatum[j / 2].y = tempY;

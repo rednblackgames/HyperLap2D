@@ -20,16 +20,12 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.commons.IExternalItemType;
 import games.rednblack.editor.renderer.components.*;
-import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
 import games.rednblack.editor.renderer.systems.render.logic.DrawableLogicMapper;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 
 import java.util.Map;
 
-
 public class HyperLap2dRenderer extends IteratingSystem {
-	private final float TIME_STEP = 1f/60;
-
 	private ComponentMapper<ViewPortComponent> viewPortMapper = ComponentMapper.getFor(ViewPortComponent.class);
 	private ComponentMapper<CompositeTransformComponent> compositeTransformMapper = ComponentMapper.getFor(CompositeTransformComponent.class);
 	private ComponentMapper<NodeComponent> nodeMapper = ComponentMapper.getFor(NodeComponent.class);
@@ -42,9 +38,6 @@ public class HyperLap2dRenderer extends IteratingSystem {
 	private DrawableLogicMapper drawableLogicMapper;
 	private RayHandler rayHandler;
 	private Camera camera;
-//	private World world;
-
-	//private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
 
 	public static float timeRunning = 0;
 	
@@ -87,11 +80,11 @@ public class HyperLap2dRenderer extends IteratingSystem {
 			rayHandler.setCulling(true);
 			OrthographicCamera orthoCamera = (OrthographicCamera) camera;
 
-			rayHandler.setCombinedMatrix(camera.combined.scl(1f/PhysicsBodyLoader.getScale()),
-					camera.position.x * PhysicsBodyLoader.getScale(),
-					camera.position.y * PhysicsBodyLoader.getScale(),
-					2 * camera.viewportWidth * orthoCamera.zoom * PhysicsBodyLoader.getScale(),
-					2 * camera.viewportHeight * orthoCamera.zoom * PhysicsBodyLoader.getScale());
+			rayHandler.setCombinedMatrix(camera.combined,
+					camera.position.x,
+					camera.position.y,
+					2 * camera.viewportWidth * orthoCamera.zoom,
+					2 * camera.viewportHeight * orthoCamera.zoom);
 			rayHandler.updateAndRender();
 		}
 		//debugRenderer.render(world, camera.combined);
@@ -310,10 +303,6 @@ public class HyperLap2dRenderer extends IteratingSystem {
 	public void setRayHandler(RayHandler rayHandler){
 		this.rayHandler = rayHandler;
 	}
-
-//	public void setBox2dWorld(World world) {
-//		this.world = world;
-//	}
 
 	public Batch getBatch() {
         return batch;

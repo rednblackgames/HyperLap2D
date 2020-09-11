@@ -11,7 +11,6 @@ import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.RemovableComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
-import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 
 public class LightBodyComponent extends RefreshableObject implements RemovableComponent {
@@ -96,11 +95,11 @@ public class LightBodyComponent extends RefreshableObject implements RemovableCo
             int i = 0;
             float[] chain = new float[chainArray.size];
             for (Float f : chainArray) {
-                chain[i++] = (f != null ? f* PhysicsBodyLoader.getScale() : Float.NaN);
+                chain[i++] = (f != null ? f : Float.NaN);
             }
 
             Color lightColor = new Color(color[0], color[1], color[2], color[3]);
-            lightObject = new ChainLight(rayHandler, rays, lightColor, distance * PhysicsBodyLoader.getScale(), rayDirection, chain);
+            lightObject = new ChainLight(rayHandler, rays, lightColor, distance, rayDirection, chain);
             lightObject.attachToBody(physicsComponent.body);
         }
     }

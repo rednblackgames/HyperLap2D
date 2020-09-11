@@ -24,7 +24,6 @@ import games.rednblack.editor.renderer.components.light.LightObjectComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.editor.renderer.resources.ResourceManager;
 import games.rednblack.editor.renderer.scripts.IScript;
@@ -127,8 +126,6 @@ public class SceneLoader {
 	}
 
 	private void addSystems(boolean cullingEnabled) {
-        PhysicsBodyLoader.getInstance().setScaleFromPPWU(pixelsPerWU);
-
 		ParticleSystem particleSystem = new ParticleSystem();
 		LightSystem lightSystem = new LightSystem();
 		lightSystem.setRayHandler(rayHandler);

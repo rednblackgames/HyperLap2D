@@ -11,7 +11,6 @@ import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.ScriptComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
-import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
 import games.rednblack.editor.renderer.physics.PhysicsContact;
 import games.rednblack.editor.renderer.scripts.IScript;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
@@ -50,7 +49,6 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener {
         PhysicsBodyComponent physicsBodyComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
         Body body = physicsBodyComponent.body;
         tmp.set(body.getPosition());
-        tmp.scl(1f / PhysicsBodyLoader.getScale());
 
         transformComponent.x = tmp.x - transformComponent.originX;
         transformComponent.y = tmp.y - transformComponent.originY;

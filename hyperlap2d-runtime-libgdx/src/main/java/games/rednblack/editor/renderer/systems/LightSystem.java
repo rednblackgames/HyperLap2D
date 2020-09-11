@@ -19,7 +19,6 @@ import games.rednblack.editor.renderer.components.light.LightObjectComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.data.LightVO;
 import games.rednblack.editor.renderer.data.LightVO.LightType;
-import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 
 public class LightSystem extends IteratingSystem {
@@ -81,7 +80,7 @@ public class LightSystem extends IteratingSystem {
 				xx=transformComponent.x-xx;
 			}
 
-			light.setPosition((relativeX-xx)*PhysicsBodyLoader.getScale(), (relativeY-yy)*PhysicsBodyLoader.getScale());
+			light.setPosition(relativeX-xx, relativeY-yy);
 			light.setSoftnessLength(lightObjectComponent.softnessLength);
 			light.setActive(lightObjectComponent.isActive);
 			light.setSoft(lightObjectComponent.isSoft);
@@ -94,12 +93,12 @@ public class LightSystem extends IteratingSystem {
 		if (lightObjectComponent.getType() == LightVO.LightType.POINT) {
 			lightObjectComponent.lightObject.setColor(Color.CLEAR);
             // TODO Physics and resolution part
-            lightObjectComponent.lightObject.setDistance(lightObjectComponent.distance * PhysicsBodyLoader.getScale());
+            lightObjectComponent.lightObject.setDistance(lightObjectComponent.distance);
             lightObjectComponent.lightObject.setStaticLight(lightObjectComponent.isStatic);
             lightObjectComponent.lightObject.setXray(lightObjectComponent.isXRay);
         } else {
         	lightObjectComponent.lightObject.setColor(Color.CLEAR);
-            lightObjectComponent.lightObject.setDistance(lightObjectComponent.distance * PhysicsBodyLoader.getScale());
+            lightObjectComponent.lightObject.setDistance(lightObjectComponent.distance);
             lightObjectComponent.lightObject.setStaticLight(lightObjectComponent.isStatic);
             lightObjectComponent.lightObject.setDirection(lightObjectComponent.directionDegree);
             ((ConeLight) lightObjectComponent.lightObject).setConeDegree(lightObjectComponent.coneDegree);
@@ -135,7 +134,7 @@ public class LightSystem extends IteratingSystem {
 
 		if (lightBodyComponent.lightObject != null) {
 			lightBodyComponent.lightObject.setSoftnessLength(lightBodyComponent.softnessLength);
-			lightBodyComponent.lightObject.setDistance(lightBodyComponent.distance * PhysicsBodyLoader.getScale());
+			lightBodyComponent.lightObject.setDistance(lightBodyComponent.distance);
 			lightBodyComponent.lightObject.setActive(lightBodyComponent.isActive);
 			lightBodyComponent.lightObject.setSoft(lightBodyComponent.isSoft);
 			lightBodyComponent.lightObject.setStaticLight(false);//TODO Figure out why static lights does not change position
