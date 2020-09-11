@@ -20,15 +20,10 @@ package games.rednblack.editor.controller.commands.component;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
-import games.rednblack.editor.renderer.components.TransformComponent;
-import games.rednblack.editor.renderer.components.light.LightBodyComponent;
-import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
-import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.PolygonComponent;
-import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 
@@ -59,25 +54,7 @@ public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
         PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
         polygonComponent.vertices = dataTo;
 
-        // if it's image update polygon sprite data
-        TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
-        if(textureRegionComponent != null && textureRegionComponent.isPolygon) {
-            DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
-            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
-            float ppwu = dimensionsComponent.width/textureRegionComponent.region.getRegionWidth();
-            dimensionsComponent.setPolygon(polygonComponent);
-            textureRegionComponent.setPolygonSprite(polygonComponent,1f/ppwu, transformComponent.scaleX, transformComponent.scaleY);
-        }
-
-        PhysicsBodyComponent physicsBodyComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
-        if (physicsBodyComponent != null) {
-            physicsBodyComponent.needToRefreshBody = true;
-        }
-
-        LightBodyComponent lightBodyComponent = ComponentRetriever.get(entity, LightBodyComponent.class);
-        if (lightBodyComponent != null) {
-            lightBodyComponent.needToRefreshLight = true;
-        }
+        EntityUtils.refreshComponents(entity);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
 
@@ -90,25 +67,7 @@ public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
         PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
         polygonComponent.vertices = dataFrom;
 
-        // if it's image update polygon sprite data
-        TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
-        if(textureRegionComponent != null && textureRegionComponent.isPolygon) {
-            DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
-            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
-            float ppwu = dimensionsComponent.width/textureRegionComponent.region.getRegionWidth();
-            dimensionsComponent.setPolygon(polygonComponent);
-            textureRegionComponent.setPolygonSprite(polygonComponent, 1f/ppwu, transformComponent.scaleX, transformComponent.scaleY);
-        }
-
-        PhysicsBodyComponent physicsBodyComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
-        if (physicsBodyComponent != null) {
-            physicsBodyComponent.needToRefreshBody = true;
-        }
-
-        LightBodyComponent lightBodyComponent = ComponentRetriever.get(entity, LightBodyComponent.class);
-        if (lightBodyComponent != null) {
-            lightBodyComponent.needToRefreshLight = true;
-        }
+        EntityUtils.refreshComponents(entity);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

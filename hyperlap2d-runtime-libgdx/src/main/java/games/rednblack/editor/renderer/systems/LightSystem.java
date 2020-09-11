@@ -1,6 +1,5 @@
 package games.rednblack.editor.renderer.systems;
 
-import box2dLight.ChainLight;
 import box2dLight.ConeLight;
 import box2dLight.Light;
 
@@ -12,7 +11,6 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
@@ -114,8 +112,9 @@ public class LightSystem extends IteratingSystem {
 	private void processLightBody(Entity entity) {
 		LightBodyComponent lightBodyComponent = ComponentRetriever.get(entity, LightBodyComponent.class);
 		PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
-		TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
 		PhysicsBodyComponent physicsComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
+
+		lightBodyComponent.setRayHandler(rayHandler);
 
 		if((polygonComponent == null || physicsComponent == null) && lightBodyComponent.lightObject != null) {
 			lightBodyComponent.lightObject.remove();
@@ -123,41 +122,16 @@ public class LightSystem extends IteratingSystem {
 			return;
 		}
 
+		if (lightBodyComponent.lightObject == null && polygonComponent != null &&  physicsComponent != null) {
+			lightBodyComponent.scheduleRefresh();
+		}
+
 		if (lightBodyComponent.lightObject != null &&
-				(lightBodyComponent.lightObject.getRayNum() != lightBodyComponent.rays ||
-						lightBodyComponent.needToRefreshLight)) {
-			lightBodyComponent.lightObject.remove();
-			lightBodyComponent.lightObject = null;
-			lightBodyComponent.needToRefreshLight = false;
+				(lightBodyComponent.lightObject.getRayNum() != lightBodyComponent.rays)) {
+			lightBodyComponent.scheduleRefresh();
 		}
 
-		if (lightBodyComponent.lightObject == null && polygonComponent != null && physicsComponent != null) {
-			if(polygonComponent.vertices == null) return;
-
-			Array<Float> chainArray = new Array<>();
-
-			for (int i = 0; i < polygonComponent.vertices.length; i++) {
-				for (int j = 0; j < polygonComponent.vertices[i].length; j++) {
-					Vector2 point = polygonComponent.vertices[i][j];
-					tmp.set(point).sub(transformComponent.originX, transformComponent.originY);
-					chainArray.add(tmp.x, tmp.y);
-				}
-			}
-			Vector2 point = polygonComponent.vertices[0][0];
-			tmp.set(point).sub(transformComponent.originX, transformComponent.originY);
-			chainArray.add(tmp.x, tmp.y);
-
-			int i = 0;
-			float[] chain = new float[chainArray.size];
-			for (Float f : chainArray) {
-				chain[i++] = (f != null ? f*PhysicsBodyLoader.getScale() : Float.NaN);
-			}
-
-			Color lightColor = new Color(lightBodyComponent.color[0], lightBodyComponent.color[1], lightBodyComponent.color[2], lightBodyComponent.color[3]);
-			lightBodyComponent.lightObject = new ChainLight(rayHandler, lightBodyComponent.rays,
-					lightColor, lightBodyComponent.distance * PhysicsBodyLoader.getScale(), lightBodyComponent.rayDirection, chain);
-			lightBodyComponent.lightObject.attachToBody(physicsComponent.body);
-		}
+		lightBodyComponent.executeRefresh(entity);
 
 		if (lightBodyComponent.lightObject != null) {
 			lightBodyComponent.lightObject.setSoftnessLength(lightBodyComponent.softnessLength);

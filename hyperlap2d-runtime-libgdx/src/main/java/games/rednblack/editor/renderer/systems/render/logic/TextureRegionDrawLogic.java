@@ -28,6 +28,8 @@ public class TextureRegionDrawLogic implements Drawable {
 	public void draw(Batch batch, Entity entity, float parentAlpha) {
         TextureRegionComponent entityTextureRegionComponent = textureRegionMapper.get(entity);
 
+        entityTextureRegionComponent.executeRefresh(entity);
+
         if(entityTextureRegionComponent.polygonSprite != null) {
             drawTiledPolygonSprite(batch, entity);
         } else {

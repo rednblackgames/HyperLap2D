@@ -1,11 +1,18 @@
 package games.rednblack.editor.renderer.components.physics;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.World;
+import games.rednblack.editor.renderer.commons.RefreshableObject;
+import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.RemovableComponent;
+import games.rednblack.editor.renderer.components.TransformComponent;
+import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
 
-public class PhysicsBodyComponent implements RemovableComponent {
+public class PhysicsBodyComponent extends RefreshableObject implements RemovableComponent {
 	public int bodyType = 0;
 
 	public float mass = 0;
@@ -30,7 +37,7 @@ public class PhysicsBodyComponent implements RemovableComponent {
     public float centerY;
 
     public Body body;
-    public boolean needToRefreshBody = false;
+    private World world;
 
     public PhysicsBodyComponent() {
 
@@ -69,7 +76,30 @@ public class PhysicsBodyComponent implements RemovableComponent {
         filter.maskBits = -1;
         filter.groupIndex = 0;
 
-        needToRefreshBody = false;
+        needsRefresh = false;
         body = null;
+    }
+
+    public void setWorld(World world) {
+        if (this.world == null)
+            this.world = world;
+    }
+
+    @Override
+    protected void refresh(Entity entity) {
+        PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
+        if(polygonComponent == null || polygonComponent.vertices == null) return;
+
+        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+
+        if (body != null) {
+            world.destroyBody(body);
+        }
+
+        centerX = transformComponent.originX;
+        centerY = transformComponent.originY;
+
+        body = PhysicsBodyLoader.getInstance().createBody(world, entity, this, polygonComponent.vertices, transformComponent);
+        body.setUserData(entity);
     }
 }
