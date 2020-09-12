@@ -325,12 +325,6 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
             //TODO Shortcuts for tools should be handled better, because custom tools too
             if (keycode == Input.Keys.V || keycode == Input.Keys.ESCAPE) {
-                facade.sendNotification(TOOL_CLICKED, SelectionTool.NAME);
-                UIToolBoxMediator toolBoxMediator = facade.retrieveMediator(UIToolBoxMediator.NAME);
-                toolBoxMediator.setCurrentTool(SelectionTool.NAME);
-            }
-
-            if (Gdx.input.isKeyPressed(Input.Keys.S) && !isControlPressed()) {
                 setCurrentTool(SelectionTool.NAME);
             }
 
