@@ -38,9 +38,6 @@ public class BasicStrategy extends AbstractTransformStrategy {
         deltaW = horizontal[0];
         deltaH = vertical[0];
 
-        transformComponent.originX = dimensionsComponent.width * 0.5f;
-        transformComponent.originY = dimensionsComponent.height * 0.5f;
-
         switch (anchor) {
             case NormalSelectionFollower.L:
                 positionHorizontally(transformComponent, horizontal);
@@ -81,7 +78,7 @@ public class BasicStrategy extends AbstractTransformStrategy {
         }
 
         // Origin
-        origin(mouseDx, mouseDy, anchor, transformComponent);
+        origin(deltaW, deltaH, anchor, transformComponent);
 
         // Rotating
         rotating(anchor, transformCommandBuilder, mousePointStage, lastTransformAngle, lastEntityAngle, transformComponent);

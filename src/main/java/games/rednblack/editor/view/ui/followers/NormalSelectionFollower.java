@@ -38,9 +38,6 @@ import org.puremvc.java.interfaces.INotification;
  */
 public class NormalSelectionFollower extends BasicFollower {
 
-    private HyperLap2DFacade facade;
-    private CursorManager cursorManager;
-
     protected PixelRect pixelRect;
 
     protected Group transformGroup;
@@ -73,9 +70,6 @@ public class NormalSelectionFollower extends BasicFollower {
 
     @Override
     public void create() {
-        facade = HyperLap2DFacade.getInstance();
-        cursorManager = HyperLap2DFacade.getInstance().retrieveProxy(CursorManager.NAME);
-
         transformGroup = new Group();
         transformGroup.setVisible(false);
 
@@ -124,9 +118,6 @@ public class NormalSelectionFollower extends BasicFollower {
         miniRects[L].setX(-w);
         miniRects[L].setY((int) (getHeight() / 2) - h);
 
-        miniRects[ORIGIN].setX((int) (transformComponent.originX*transformComponent.scaleX) - w);
-        miniRects[ORIGIN].setY((int) (transformComponent.originY*transformComponent.scaleY) - h);
-
         miniRects[ROTATION_LT].setX(-w * 4);
         miniRects[ROTATION_LT].setY(getHeight() - h);
         miniRects[ROTATION_RT].setX(getWidth() - w);
@@ -135,6 +126,11 @@ public class NormalSelectionFollower extends BasicFollower {
         miniRects[ROTATION_RB].setY(-h * 4);
         miniRects[ROTATION_LB].setX(-w * 4);
         miniRects[ROTATION_LB].setY(-h * 4);
+
+        w = (int) (miniRects[ORIGIN].getWidth()/2);
+        h = (int) (miniRects[ORIGIN].getHeight()/2);
+        miniRects[ORIGIN].setX(pointOriginX - w);
+        miniRects[ORIGIN].setY(pointOriginY - h);
     }
 
     private void initTransformGroup() {
@@ -160,9 +156,6 @@ public class NormalSelectionFollower extends BasicFollower {
         Image originAnchor = new Image(VisUI.getSkin().getDrawable("origin-anchor"));
         transformGroup.addActor(originAnchor);
         miniRects[ORIGIN] = originAnchor;
-
-        //TODO: till it works bad, let's hide it
-        //miniRects[ORIGIN].setVisible(false);
     }
 
     public void setAnchorOriginVisible(boolean visible) {

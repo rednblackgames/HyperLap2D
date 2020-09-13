@@ -51,8 +51,8 @@ public abstract class AbstractTransformStrategy implements ITransformStrategy {
             float newOriginX = transformComponent.originX;
             float newOriginY = transformComponent.originY;
 
-            newOriginX = newOriginX + mouseDx * Sandbox.getInstance().getPixelPerWU();
-            newOriginY = newOriginY + mouseDy * Sandbox.getInstance().getPixelPerWU();
+            newOriginX = newOriginX + mouseDx;
+            newOriginY = newOriginY + mouseDy;
 
             transformComponent.originX = newOriginX;
             transformComponent.originY = newOriginY;

@@ -107,16 +107,17 @@ public class CompositeStrategy extends AbstractTransformStrategy {
     public void calculate(float mouseDx, float mouseDy, int anchor, Entity entity, TransformCommandBuilder transformCommandBuilder, Vector2 mousePointStage, float lastTransformAngle, float lastEntityAngle) {
         CompositeTransformComponent component = entity.getComponent(CompositeTransformComponent.class);
         TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+
+        float[] horizontal = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation);
+        float[] vertical = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation + 90);
+        float deltaW = horizontal[0] / transformComponent.scaleX;
+        float deltaH = vertical[0] / transformComponent.scaleY;
+
         if (!component.automaticResize) {
             DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
 
             float newWidth = dimensionsComponent.width;
             float newHeight = dimensionsComponent.height;
-
-            float[] horizontal = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation);
-            float[] vertical = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation + 90);
-            float deltaW = horizontal[0] / transformComponent.scaleX;
-            float deltaH = vertical[0] / transformComponent.scaleY;
 
             switch (anchor) {
                 case NormalSelectionFollower.L:
@@ -224,7 +225,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
         }
 
         // Origin
-        origin(mouseDx, mouseDy, anchor, transformComponent);
+        origin(deltaW, deltaH, anchor, transformComponent);
 
         // Rotating
         rotating(anchor, transformCommandBuilder, mousePointStage, lastTransformAngle, lastEntityAngle, transformComponent);
@@ -239,5 +240,4 @@ public class CompositeStrategy extends AbstractTransformStrategy {
             transformComponent.y += y;
         }
     }
-
 }

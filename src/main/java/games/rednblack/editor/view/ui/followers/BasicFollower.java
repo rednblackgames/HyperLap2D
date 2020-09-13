@@ -41,6 +41,8 @@ public abstract class BasicFollower extends Group {
     protected DimensionsComponent dimensionsComponent;
     protected Entity entity;
 
+    protected float pointOriginX;
+    protected float pointOriginY;
 
     private Array<SubFollower> subFollowers = new Array<>();
 
@@ -95,7 +97,9 @@ public abstract class BasicFollower extends Group {
 
         Pools.free(position);
 
-        //setOrigin(transformComponent.originX, transformComponent.originY);
+        pointOriginX = pixelPerWU * transformComponent.originX * transformComponent.scaleX / camera.zoom;
+        pointOriginY = pixelPerWU * transformComponent.originY * transformComponent.scaleY / camera.zoom;
+
         setRotation(transformComponent.rotation);
 
         if(subFollowers != null) {
