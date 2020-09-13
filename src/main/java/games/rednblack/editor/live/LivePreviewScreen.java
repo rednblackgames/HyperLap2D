@@ -56,7 +56,7 @@ public class LivePreviewScreen extends ScreenAdapter {
         sceneLoader.getEngine().update(delta);
 
         if (projectManager.currentProjectVO.box2dDebugRender)
-            mBox2DDebugRenderer.render(sceneLoader.world, viewport.getCamera().combined);
+            mBox2DDebugRenderer.render(sceneLoader.getWorld(), viewport.getCamera().combined);
     }
 
     @Override

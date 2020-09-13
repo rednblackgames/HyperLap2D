@@ -126,12 +126,12 @@ public class Sandbox {
         sceneLoader.injectExternalItemType(new SpineItemType());
 
         //Remove Physics System and add Adjusting System for box2d objects to follow items and stop world tick
-        sceneLoader.engine.removeSystem(sceneLoader.engine.getSystem(PhysicsSystem.class));
-        sceneLoader.engine.removeSystem(sceneLoader.engine.getSystem(LightSystem.class));
+        sceneLoader.getEngine().removeSystem(sceneLoader.getEngine().getSystem(PhysicsSystem.class));
+        sceneLoader.getEngine().removeSystem(sceneLoader.getEngine().getSystem(LightSystem.class));
         LightSystem lightSystem = new LightSystem();
-        lightSystem.setRayHandler(sceneLoader.rayHandler);
-        sceneLoader.engine.addSystem(new PhysicsAdjustSystem(sceneLoader.world));
-        sceneLoader.engine.addSystem(lightSystem);
+        lightSystem.setRayHandler(sceneLoader.getRayHandler());
+        sceneLoader.getEngine().addSystem(new PhysicsAdjustSystem(sceneLoader.getWorld()));
+        sceneLoader.getEngine().addSystem(lightSystem);
 
         sceneControl = new SceneControlMediator(sceneLoader);
         itemControl = new ItemControlMediator(sceneControl);
@@ -511,9 +511,6 @@ public class Sandbox {
     }
 
     public int getPixelPerWU() {
-        if (sceneLoader.getRm().getProjectVO() == null) {
-            return 1;
-        }
-        return sceneLoader.getRm().getProjectVO().pixelToWorld;
+        return (int) sceneLoader.getPixelsPerWU();
     }
 }

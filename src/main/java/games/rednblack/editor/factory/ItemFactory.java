@@ -183,8 +183,8 @@ public class ItemFactory {
         if(!setEssentialData(vo, position)) return null;
 
         Entity entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), vo);
-        Engine engine = sceneLoader.engine;
-        EntityFactory factory = sceneLoader.entityFactory;
+        Engine engine = sceneLoader.getEngine();
+        EntityFactory factory = sceneLoader.getEntityFactory();
         factory.initAllChildren(engine, entity, vo.composite);
 
         return entity;

@@ -99,6 +99,6 @@ public class SceneControlMediator {
 	}
 	
 	public Entity getRootEntity() {
-		return sceneLoader.rootEntity;
+		return sceneLoader.getRoot();
 	}
 }

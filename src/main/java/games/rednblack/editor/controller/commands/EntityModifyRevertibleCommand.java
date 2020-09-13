@@ -75,8 +75,8 @@ public abstract class EntityModifyRevertibleCommand extends RevertibleCommand {
                 }
                 nodeComponent.children.clear();
 
-                Engine engine = sandbox.getSceneControl().sceneLoader.engine;
-                EntityFactory factory = sandbox.getSceneControl().sceneLoader.entityFactory;
+                Engine engine = sandbox.getSceneControl().sceneLoader.getEngine();
+                EntityFactory factory = sandbox.getSceneControl().sceneLoader.getEntityFactory();
                 factory.initAllChildren(engine, dependable, libraryItems.get(link).composite);
             }
         }

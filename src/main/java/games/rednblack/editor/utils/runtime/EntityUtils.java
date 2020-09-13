@@ -97,13 +97,13 @@ public class EntityUtils {
     }
 
     public static Entity getByUniqueId(Integer id) {
-        return Sandbox.getInstance().getSceneControl().sceneLoader.entityFactory.getEntityByUniqueId(id);
+        return Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory().getEntityByUniqueId(id);
     }
 
     public static HashSet<Entity> getByUniqueId(Array<Integer> ids) {
         HashSet<Entity> entities = new HashSet<>();
         for (Integer id : ids) {
-            Entity entity = Sandbox.getInstance().getSceneControl().sceneLoader.entityFactory.getEntityByUniqueId(id);
+            Entity entity = Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory().getEntityByUniqueId(id);
             entities.add(entity);
         }
         return entities;
@@ -265,7 +265,7 @@ public class EntityUtils {
             entity.add(new NodeComponent());
 
             SceneLoader sceneLoader = Sandbox.getInstance().getSceneControl().sceneLoader;
-            sceneLoader.entityFactory.initAllChildren(Sandbox.getInstance().getEngine(), entity, compositeVo);
+            sceneLoader.getEntityFactory().initAllChildren(Sandbox.getInstance().getEngine(), entity, compositeVo);
         }
     }
 

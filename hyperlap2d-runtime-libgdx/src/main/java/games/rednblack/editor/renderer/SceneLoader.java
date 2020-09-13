@@ -44,18 +44,17 @@ public class SceneLoader {
 	private SceneVO sceneVO;
 	private IResourceRetriever rm = null;
 
-    public PooledEngine engine = null;
-	public RayHandler rayHandler;
-	public World world;
-	public Entity rootEntity;
-	public DirectionalLight sceneDirectionalLight;
+    private PooledEngine engine = null;
+	private RayHandler rayHandler;
+	private World world;
+	private Entity rootEntity;
+	private DirectionalLight sceneDirectionalLight;
 
-	public EntityFactory entityFactory;
+	private EntityFactory entityFactory;
 
 	private float pixelsPerWU = 1;
 
 	private HyperLap2dRenderer renderer;
-	private Entity root;
 
     public SceneLoader(World world, RayHandler rayHandler, boolean cullingEnabled, int entityPoolInitialSize, int entityPoolMaxSize, int componentPoolInitialSize, int componentPoolMaxSize) {
         this.world = world;
@@ -364,6 +363,18 @@ public class SceneLoader {
     public PooledEngine getEngine() {
         return engine;
     }
+
+	public RayHandler getRayHandler() {
+		return rayHandler;
+	}
+
+	public World getWorld() {
+		return world;
+	}
+
+	public float getPixelsPerWU() {
+		return pixelsPerWU;
+	}
 
 	public Entity getRoot() {
 		return rootEntity;
