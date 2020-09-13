@@ -42,3 +42,8 @@ dependencies {
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+}

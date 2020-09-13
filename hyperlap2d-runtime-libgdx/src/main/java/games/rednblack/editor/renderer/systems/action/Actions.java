@@ -15,7 +15,7 @@ import java.util.HashMap;
  */
 public class Actions {
 
-    public static HashMap<String, ActionLogic> actionLogicMap = new HashMap<String, ActionLogic>();
+    public static HashMap<String, ActionLogic> actionLogicMap = new HashMap<>();
     private static boolean initialized;
 
     private static void initialize() throws InstantiationException, IllegalAccessException {
@@ -48,9 +48,7 @@ public class Actions {
     private static void checkInit() {
         if (!initialized) try {
             initialize();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
