@@ -1,7 +1,5 @@
 package games.rednblack.editor.renderer.systems.action.data;
 
-import com.badlogic.gdx.Gdx;
-
 /**
  * Created by ZeppLondon on 10/29/15.
  */
