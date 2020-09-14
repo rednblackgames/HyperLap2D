@@ -69,6 +69,14 @@ public class UILivePreviewBoxMediator extends Mediator<UILivePreviewBox> {
 		int previewWidth = resolutionManager.getOriginalResolution().width;
 		int previewHeight = resolutionManager.getOriginalResolution().height;
 
+		if (previewWidth > Gdx.graphics.getWidth() * 0.8 || previewHeight > Gdx.graphics.getHeight() * 0.8) {
+			float ratio = (float) Math.min((Gdx.graphics.getWidth() * 0.8) / previewWidth,
+					(Gdx.graphics.getHeight() * 0.8) / previewHeight);
+
+			previewHeight *= ratio;
+			previewWidth *= ratio;
+		}
+
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setWindowedMode(previewWidth, previewHeight);
 		config.setTitle("HyperLap2D - Live Preview");
