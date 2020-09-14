@@ -10,8 +10,21 @@ public class ColorData extends TemporalData {
     public float startR, startG, startB, startA;
     public Color endColor = new Color();
 
-    public ColorData(Interpolation interpolation, float duration, Color color) {
-        super(interpolation, duration);
-        this.endColor = color;
+    public void setEndColor(Color endColor) {
+        this.endColor.set(endColor);
+    }
+
+    public void setEndColor(float r, float g, float b, float a) {
+        this.endColor.set(r, g, b, a);
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        endColor.set(0,0,0,0);
+        startA = 0;
+        startR = 0;
+        startG = 0;
+        startB = 0;
     }
 }

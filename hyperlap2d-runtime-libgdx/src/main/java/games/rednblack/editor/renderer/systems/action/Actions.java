@@ -1,8 +1,11 @@
 package games.rednblack.editor.renderer.systems.action;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import games.rednblack.editor.renderer.components.ActionComponent;
 import games.rednblack.editor.renderer.systems.action.data.*;
 import games.rednblack.editor.renderer.systems.action.logic.*;
@@ -45,6 +48,13 @@ public class Actions {
         }
     }
 
+    static public <T extends ActionData> T actionData(Class<T> type) {
+        Pool<T> pool = Pools.get(type);
+        T action = pool.obtain();
+        action.setPool(pool);
+        return action;
+    }
+
     private static void checkInit() {
         if (!initialized) try {
             initialize();
@@ -58,12 +68,11 @@ public class Actions {
     }
 
     public static ActionData moveTo(float x, float y, float duration, Interpolation interpolation) {
-        MoveToData actionData = new MoveToData(
-                interpolation,
-                duration,
-                x,
-                y
-        );
+        MoveToData actionData = actionData(MoveToData.class);
+        actionData.setDuration(duration);
+        actionData.setInterpolation(interpolation);
+        actionData.setEndX(x);
+        actionData.setEndY(y);
         actionData.logicClassName = MoveToAction.class.getName();
         return (actionData);
     }
@@ -73,20 +82,18 @@ public class Actions {
     }
 
     public static ActionData moveBy(float x, float y, float duration, Interpolation interpolation) {
-        MoveByData actionData = new MoveByData(
-                interpolation,
-                duration,
-                x,
-                y
-        );
+        MoveByData actionData = actionData(MoveByData.class);
+        actionData.setDuration(duration);
+        actionData.setInterpolation(interpolation);
+        actionData.setAmountX(x);
+        actionData.setAmountY(y);
         actionData.logicClassName = MoveByAction.class.getName();
         return actionData;
     }
 
     static public ActionData run(Runnable runnable) {
-        RunnableData actionData = new RunnableData(
-                runnable
-        );
+        RunnableData actionData = actionData(RunnableData.class);
+        actionData.setRunnable(runnable);
         actionData.logicClassName = RunnableAction.class.getName();
         return actionData;
     }
@@ -96,11 +103,10 @@ public class Actions {
     }
 
     static public RotateToData rotateTo(float end, float duration, Interpolation interpolation) {
-        RotateToData actionData = new RotateToData(
-                interpolation,
-                duration,
-                end
-        );
+        RotateToData actionData = actionData(RotateToData.class);
+        actionData.setDuration(duration);
+        actionData.setInterpolation(interpolation);
+        actionData.setEnd(end);
         actionData.logicClassName = RotateToAction.class.getName();
         return actionData;
     }
@@ -111,11 +117,10 @@ public class Actions {
     }
 
     static public RotateByData rotateBy(float amount, float duration, Interpolation interpolation) {
-        RotateByData actionData = new RotateByData(
-                interpolation,
-                duration,
-                amount
-        );
+        RotateByData actionData = actionData(RotateByData.class);
+        actionData.setDuration(duration);
+        actionData.setInterpolation(interpolation);
+        actionData.setAmount(amount);
         actionData.logicClassName = RotateByAction.class.getName();
         return actionData;
     }
@@ -125,12 +130,11 @@ public class Actions {
     }
 
     public static SizeToData sizeTo(float width, float height, float duration, Interpolation interpolation) {
-        SizeToData actionData = new SizeToData(
-                interpolation,
-                duration,
-                width,
-                height
-        );
+        SizeToData actionData = actionData(SizeToData.class);
+        actionData.setDuration(duration);
+        actionData.setInterpolation(interpolation);
+        actionData.setEndWidth(width);
+        actionData.setEndHeight(height);
         actionData.logicClassName = SizeToAction.class.getName();
         return actionData;
     }
@@ -140,12 +144,11 @@ public class Actions {
     }
 
     public static SizeByData sizeBy(float width, float height, float duration, Interpolation interpolation) {
-        SizeByData actionData = new SizeByData(
-                interpolation,
-                duration,
-                width,
-                height
-        );
+        SizeByData actionData = actionData(SizeByData.class);
+        actionData.setDuration(duration);
+        actionData.setInterpolation(interpolation);
+        actionData.setAmountWidth(width);
+        actionData.setAmountHeight(height);
         actionData.logicClassName = SizeByAction.class.getName();
         return actionData;
     }
@@ -155,12 +158,11 @@ public class Actions {
     }
 
     public static ScaleToData scaleTo(float width, float height, float duration, Interpolation interpolation) {
-        ScaleToData actionData = new ScaleToData(
-                interpolation,
-                duration,
-                width,
-                height
-        );
+        ScaleToData actionData = actionData(ScaleToData.class);
+        actionData.setDuration(duration);
+        actionData.setInterpolation(interpolation);
+        actionData.setEndX(width);
+        actionData.setEndY(height);
         actionData.logicClassName = ScaleToAction.class.getName();
         return actionData;
     }
@@ -170,12 +172,11 @@ public class Actions {
     }
 
     public static ScaleByData scaleBy(float width, float height, float duration, Interpolation interpolation) {
-        ScaleByData actionData = new ScaleByData(
-                interpolation,
-                duration,
-                width,
-                height
-        );
+        ScaleByData actionData = actionData(ScaleByData.class);
+        actionData.setDuration(duration);
+        actionData.setInterpolation(interpolation);
+        actionData.setAmountX(width);
+        actionData.setAmountY(height);
         actionData.logicClassName = ScaleByAction.class.getName();
         return actionData;
     }
@@ -186,13 +187,12 @@ public class Actions {
     }
 
     public static ColorData color(Color color, float duration, Interpolation interpolation) {
-        ColorData colorData = new ColorData(
-                interpolation,
-                duration,
-                color
-        );
-        colorData.logicClassName = ColorAction.class.getName();
-        return colorData;
+        ColorData actionData = actionData(ColorData.class);
+        actionData.setDuration(duration);
+        actionData.setInterpolation(interpolation);
+        actionData.setEndColor(color);
+        actionData.logicClassName = ColorAction.class.getName();
+        return actionData;
     }
 
     public static AlphaData alpha(float alpha, float duration) {
@@ -200,13 +200,12 @@ public class Actions {
     }
 
     public static AlphaData alpha(float alpha, float duration, Interpolation interpolation) {
-        AlphaData alphaData = new AlphaData(
-                interpolation,
-                duration,
-                alpha
-        );
-        alphaData.logicClassName = AlphaAction.class.getName();
-        return alphaData;
+        AlphaData actionData = actionData(AlphaData.class);
+        actionData.setDuration(duration);
+        actionData.setInterpolation(interpolation);
+        actionData.setEnd(alpha);
+        actionData.logicClassName = AlphaAction.class.getName();
+        return actionData;
     }
 
     public static AlphaData fadeIn(float duration) {
@@ -227,33 +226,34 @@ public class Actions {
     }
 
     public static DelayData delay(float duration) {
-        DelayData delayData = new DelayData(
-                duration
-        );
-        delayData.logicClassName = DelayAction.class.getName();
-        return delayData;
+        DelayData actionData = actionData(DelayData.class);
+        actionData.setDuration(duration);
+        actionData.logicClassName = DelayAction.class.getName();
+        return actionData;
     }
 
 
-    static public ParallelData parallel(ActionData... actionDatas) {
-        ParallelData actionData = new ParallelData(actionDatas);
+    static public ParallelData parallel(ActionData... actionsData) {
+        ParallelData actionData = actionData(ParallelData.class);
+        actionData.setActionsData(actionsData);
         actionData.logicClassName = ParallelAction.class.getName();
         return actionData;
     }
 
-    static public SequenceData sequence(ActionData... actionDatas) {
-        SequenceData actionData = new SequenceData(actionDatas);
+    static public SequenceData sequence(ActionData... actionsData) {
+        SequenceData actionData = actionData(SequenceData.class);
+        actionData.setActionsData(actionsData);
         actionData.logicClassName = SequenceAction.class.getName();
         return actionData;
     }
 
-    public static void addAction(final Entity entity, ActionData data) {
+    public static void addAction(PooledEngine engine, final Entity entity, ActionData data) {
         checkInit();
         ActionComponent actionComponent;
         actionComponent = ComponentRetriever.get(entity, ActionComponent.class);
 
         if (actionComponent == null) {
-            actionComponent = new ActionComponent();
+            actionComponent = engine.createComponent(ActionComponent.class);
             entity.add(actionComponent);
         }
 
@@ -263,7 +263,7 @@ public class Actions {
     public static void removeActions(Entity entity) {
         ActionComponent actionComponent = ComponentRetriever.get(entity, ActionComponent.class);
         if (actionComponent != null) {
-            actionComponent.dataArray.clear(); // action component with empty data array will be removed later by ActionSystem
+            actionComponent.reset(); // action component with empty data array will be removed later by ActionSystem
         }
     }
 
@@ -272,6 +272,8 @@ public class Actions {
         if (actionComponent != null) {
             if (actionComponent.dataArray.contains(data, true)) {
                 actionComponent.dataArray.removeValue(data, true);
+                if (data.getPool() != null)
+                    data.getPool().free(data);
             }
         }
     }

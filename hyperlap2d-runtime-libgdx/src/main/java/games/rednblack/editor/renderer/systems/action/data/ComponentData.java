@@ -7,4 +7,10 @@ import com.badlogic.ashley.core.ComponentMapper;
  */
 public class ComponentData extends DelegateData {
     public ComponentMapper linkedComponentMapper;
+
+    @Override
+    public void reset() {
+        super.reset();
+        linkedComponentMapper = null;
+    }
 }

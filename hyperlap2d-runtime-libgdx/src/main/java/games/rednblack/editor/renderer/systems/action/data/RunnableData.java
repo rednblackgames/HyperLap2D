@@ -7,8 +7,15 @@ public class RunnableData extends ActionData {
     public Runnable runnable;
     public boolean ran;
 
-    public RunnableData(Runnable runnable) {
-        super();
+    public void setRunnable(Runnable runnable) {
         this.runnable = runnable;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+
+        runnable = null;
+        ran = false;
     }
 }

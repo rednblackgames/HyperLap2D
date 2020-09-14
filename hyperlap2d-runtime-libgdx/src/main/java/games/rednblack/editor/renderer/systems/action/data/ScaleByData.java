@@ -8,9 +8,19 @@ import com.badlogic.gdx.math.Interpolation;
 public class ScaleByData extends RelativeTemporalData {
     public float amountX, amountY;
 
-    public ScaleByData(Interpolation interpolation, float duration, float amountX, float amountY) {
-        super(interpolation, duration);
-        this.amountX = amountX;
+    public void setAmountY(float amountY) {
         this.amountY = amountY;
+    }
+
+    public void setAmountX(float amountX) {
+        this.amountX = amountX;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+
+        amountX = 0;
+        amountY = 0;
     }
 }

@@ -9,10 +9,19 @@ public class MoveByData extends RelativeTemporalData {
     public float amountX;
     public float amountY;
 
-
-    public MoveByData(Interpolation interpolation, float duration, float amountX, float amountY) {
-        super(interpolation, duration);
+    public void setAmountX(float amountX) {
         this.amountX = amountX;
+    }
+
+    public void setAmountY(float amountY) {
         this.amountY = amountY;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+
+        amountX = 0;
+        amountY = 0;
     }
 }

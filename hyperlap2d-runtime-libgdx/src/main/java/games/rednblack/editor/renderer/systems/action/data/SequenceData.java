@@ -6,8 +6,10 @@ package games.rednblack.editor.renderer.systems.action.data;
 public class SequenceData extends ParallelData {
     public int index;
 
+    @Override
+    public void reset() {
+        super.reset();
 
-    public SequenceData(ActionData[] actionDatas) {
-        super(actionDatas);
+        index = 0;
     }
 }

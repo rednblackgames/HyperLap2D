@@ -9,9 +9,21 @@ public class ScaleToData extends TemporalData {
     public float startX, startY;
     public float endX, endY;
 
-    public ScaleToData(Interpolation interpolation, float duration, float endX, float endY) {
-        super(interpolation, duration);
-        this.endX = endX;
+    public void setEndY(float endY) {
         this.endY = endY;
+    }
+
+    public void setEndX(float endX) {
+        this.endX = endX;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+
+        startX = 0;
+        startY = 0;
+        endX = 0;
+        endY = 0;
     }
 }

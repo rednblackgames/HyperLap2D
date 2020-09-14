@@ -8,9 +8,19 @@ import com.badlogic.gdx.math.Interpolation;
 public class SizeByData extends RelativeTemporalData {
     public float amountWidth, amountHeight;
 
-    public SizeByData(Interpolation interpolation, float duration, float amountWidth, float amountHeight) {
-        super(interpolation, duration);
-        this.amountWidth = amountWidth;
+    public void setAmountHeight(float amountHeight) {
         this.amountHeight = amountHeight;
+    }
+
+    public void setAmountWidth(float amountWidth) {
+        this.amountWidth = amountWidth;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+
+        amountHeight = 0;
+        amountWidth = 0;
     }
 }

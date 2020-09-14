@@ -7,8 +7,14 @@ public class DelayData extends DelegateData {
     public float duration;
     public float passedTime;
 
-    public DelayData(float duration) {
-        super();
+    public void setDuration(float duration) {
         this.duration = duration;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        duration = 0;
+        passedTime = 0;
     }
 }

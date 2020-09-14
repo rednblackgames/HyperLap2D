@@ -11,6 +11,11 @@ public class ActionComponent implements BaseComponent {
 
     @Override
     public void reset() {
+        for (int i = 0; i < dataArray.size; i++) {
+            ActionData data = dataArray.get(i);
+            if (data.getPool() != null)
+                data.getPool().free(data);
+        }
         dataArray.clear();
     }
 }

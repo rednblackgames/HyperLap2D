@@ -16,9 +16,7 @@ public class PhysicsActions {
     private static void initialize(Class<? extends ActionLogic> type) {
         try {
             Actions.registerActionClass(type);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
@@ -31,7 +29,8 @@ public class PhysicsActions {
      */
     public static ForceData force(Vector2 force) {
         initialize(ForceAction.class);
-        ForceData forceData = new ForceData(force);
+        ForceData forceData = Actions.actionData(ForceData.class);
+        forceData.setForce(force);
 
         forceData.logicClassName = ForceAction.class.getName();
         return forceData;
@@ -46,7 +45,8 @@ public class PhysicsActions {
      */
     public static ForceData force(Vector2 force, Vector2 relativePoint) {
         initialize(ForceAction.class);
-        ForceData forceData = new ForceData(force, relativePoint);
+        ForceData forceData = Actions.actionData(ForceData.class);
+        forceData.setForce(force, relativePoint);
 
         forceData.logicClassName = ForceAction.class.getName();
         return forceData;

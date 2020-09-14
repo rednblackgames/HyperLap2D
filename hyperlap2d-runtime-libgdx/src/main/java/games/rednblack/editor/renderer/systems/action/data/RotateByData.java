@@ -8,8 +8,14 @@ import com.badlogic.gdx.math.Interpolation;
 public class RotateByData extends RelativeTemporalData {
     public float amount;
 
-    public RotateByData(Interpolation interpolation, float duration, float amount) {
-        super(interpolation, duration);
+    public void setAmount(float amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+
+        amount = 0;
     }
 }

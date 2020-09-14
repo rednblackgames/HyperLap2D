@@ -9,8 +9,15 @@ public class RotateToData extends TemporalData {
     public float start;
     public float end;
 
-    public RotateToData(Interpolation interpolation,float duration, float end) {
-        super(interpolation, duration);
+    public void setEnd(float end) {
         this.end = end;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+
+        start = 0;
+        end = 0;
     }
 }

@@ -9,9 +9,21 @@ public class SizeToData extends TemporalData{
     public float startWidth, startHeight;
     public float endWidth, endHeight;
 
-    public SizeToData(Interpolation interpolation, float duration, float endWidth, float endHeight) {
-        super(interpolation, duration);
-        this.endWidth = endWidth;
+    public void setEndHeight(float endHeight) {
         this.endHeight = endHeight;
+    }
+
+    public void setEndWidth(float endWidth) {
+        this.endWidth = endWidth;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+
+        startHeight = 0;
+        startWidth = 0;
+        endHeight = 0;
+        endWidth = 0;
     }
 }

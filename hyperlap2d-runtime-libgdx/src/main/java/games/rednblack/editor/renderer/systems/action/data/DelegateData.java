@@ -7,4 +7,9 @@ public class DelegateData extends ActionData {
     public DelegateData() {
         super();
     }
+
+    @Override
+    public void reset() {
+        super.reset();
+    }
 }

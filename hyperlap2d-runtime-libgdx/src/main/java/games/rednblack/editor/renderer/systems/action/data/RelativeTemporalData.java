@@ -8,7 +8,10 @@ import com.badlogic.gdx.math.Interpolation;
 public class RelativeTemporalData extends TemporalData {
     public float lastPercent;
 
-    public RelativeTemporalData(Interpolation interpolation, float duration) {
-        super(interpolation, duration);
+    @Override
+    public void reset() {
+        super.reset();
+
+        lastPercent = 0;
     }
 }

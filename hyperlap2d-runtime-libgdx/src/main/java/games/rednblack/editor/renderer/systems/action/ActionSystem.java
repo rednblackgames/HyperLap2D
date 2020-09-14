@@ -29,6 +29,8 @@ public class ActionSystem extends IteratingSystem {
             ActionLogic actionLogic = Actions.actionLogicMap.get(data.logicClassName);
             if (actionLogic.act(deltaTime, entity, data)) {
                 dataArray.removeValue(data, true);
+                if (data.getPool() != null)
+                    data.getPool().free(data);
             }
         }
 
