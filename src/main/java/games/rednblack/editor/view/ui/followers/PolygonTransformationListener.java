@@ -22,12 +22,10 @@ package games.rednblack.editor.view.ui.followers;
  * Created by azakhary on 7/3/2015.
  */
 public interface PolygonTransformationListener {
-
-    public abstract void vertexUp(PolygonFollower follower, int vertexIndex, float x, float y);
-    public abstract void vertexDown(PolygonFollower follower, int vertexIndex, float x, float y);
-    public abstract void VertexMouseOver(PolygonFollower follower, int vertexIndex, float x, float y);
+    void vertexUp(PolygonFollower follower, int vertexIndex, float x, float y);
+    void vertexDown(PolygonFollower follower, int vertexIndex, float x, float y);
+    void VertexMouseOver(PolygonFollower follower, int vertexIndex, float x, float y);
     void anchorDown(PolygonFollower follower, int anchor, float x, float y);
     void anchorDragged(PolygonFollower follower, int anchor, float x, float y);
-    void anchorUp(PolygonFollower follower, int anchor, float x, float y);
-
+    void anchorUp(PolygonFollower follower, int anchor, int button, float x, float y);
 }

@@ -20,7 +20,6 @@ package games.rednblack.editor.view.stage.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -188,7 +187,16 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
     }
 
     @Override
-    public void anchorUp(PolygonFollower follower, int anchor, float x, float y) {
+    public void anchorUp(PolygonFollower follower, int anchor, int button, float x, float y) {
+        if (button == Input.Buttons.RIGHT && anchor >= 0) {
+            follower.setSelectedAnchor(anchor);
+            Object[] payload = new Object[2];
+            payload[0] = follower;
+            payload[1] = anchor;
+            HyperLap2DFacade.getInstance().sendNotification(PolygonTool.MANUAL_VERTEX_POSITION, payload);
+            return;
+        }
+
         PolygonComponent polygonComponent = ComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
 
         Vector2[] points = follower.getOriginalPoints().toArray(new Vector2[0]);

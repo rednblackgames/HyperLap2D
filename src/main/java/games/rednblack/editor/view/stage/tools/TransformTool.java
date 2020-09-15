@@ -191,7 +191,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
     }
 
     @Override
-    public void anchorUp(NormalSelectionFollower follower, int anchor, float x, float y) {
+    public void anchorUp(NormalSelectionFollower follower, int anchor, int button, float x, float y) {
         fixCursor = false;
 
         commandBuilder.execute();

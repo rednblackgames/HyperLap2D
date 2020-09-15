@@ -61,7 +61,7 @@ public class AnchorListener extends ClickListener {
     @Override
     public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
     	localTOglobal.set(event.getStageX(), event.getStageY());
-        if(listener != null) listener.anchorUp(follower, anchorId, localTOglobal.x, localTOglobal.y);
+        if(listener != null) listener.anchorUp(follower, anchorId, button, localTOglobal.x, localTOglobal.y);
     }
     @Override
     public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {

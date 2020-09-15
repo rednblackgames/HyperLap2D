@@ -256,18 +256,9 @@ public class PolygonFollower extends SubFollower {
 
                 int anchorId = anchorHitTest(x, y);
 
-                if (button == Input.Buttons.RIGHT && anchorId >= 0) {
-                    setSelectedAnchor(anchorId);
-                    Object[] payload = new Object[2];
-                    payload[0] = PolygonFollower.this;
-                    payload[1] = anchorId;
-                    HyperLap2DFacade.getInstance().sendNotification(PolygonTool.MANUAL_VERTEX_POSITION, payload);
-                    return;
-                }
-
                 lineIndex = vertexHitTest(x, y);
                 if (anchorId >= 0) {
-                    listener.anchorUp(PolygonFollower.this, anchorId, x*runtimeCamera.zoom/transformComponent.scaleX, y*runtimeCamera.zoom/transformComponent.scaleY);
+                    listener.anchorUp(PolygonFollower.this, anchorId, button,x*runtimeCamera.zoom/transformComponent.scaleX, y*runtimeCamera.zoom/transformComponent.scaleY);
                 } else if (lineIndex > -1) {
                     listener.vertexUp(PolygonFollower.this, lineIndex, x*runtimeCamera.zoom/transformComponent.scaleX, y*runtimeCamera.zoom/transformComponent.scaleY);
                 }

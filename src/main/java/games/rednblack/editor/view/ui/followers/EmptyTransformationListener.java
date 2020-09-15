@@ -34,7 +34,7 @@ public class EmptyTransformationListener implements FollowerTransformationListen
     }
 
     @Override
-    public void anchorUp(NormalSelectionFollower follower, int anchor, float x, float y) {
+    public void anchorUp(NormalSelectionFollower follower, int anchor, int button, float x, float y) {
 
     }
 
