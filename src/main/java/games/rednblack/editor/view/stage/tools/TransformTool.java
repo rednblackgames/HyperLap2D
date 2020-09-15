@@ -47,6 +47,8 @@ import java.util.Set;
 public class TransformTool extends SelectionTool implements FollowerTransformationListener {
 
     public static final String NAME = "TRANSFORM_TOOL";
+    public static final String prefix = "games.rednblack.editor.view.stage.tools.TransformTool";
+    public static final String MANUAL_ORIGIN_POSITION = prefix + ".MANUAL_ORIGIN_POSITION";
 
     private float lastTransformAngle = 0;
     private float lastEntityAngle = 0;
@@ -193,6 +195,11 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
     @Override
     public void anchorUp(NormalSelectionFollower follower, int anchor, int button, float x, float y) {
         fixCursor = false;
+
+        if (anchor == NormalSelectionFollower.ORIGIN && button == Input.Buttons.RIGHT) {
+            HyperLap2DFacade.getInstance().sendNotification(MANUAL_ORIGIN_POSITION, follower.getEntity());
+            return;
+        }
 
         commandBuilder.execute();
         if (transformStrategy == compositeStrategy) {

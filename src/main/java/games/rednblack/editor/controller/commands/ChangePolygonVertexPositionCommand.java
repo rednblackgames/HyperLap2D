@@ -1,7 +1,6 @@
 package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.math.Vector2;
-import com.kotcrab.vis.ui.util.InputValidator;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
@@ -9,6 +8,7 @@ import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
+import games.rednblack.editor.view.ui.validator.FloatInputValidator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.dialog.MultipleInputDialog;
 import games.rednblack.h2d.common.view.ui.listener.MultipleInputDialogListener;
@@ -32,7 +32,7 @@ public class ChangePolygonVertexPositionCommand extends SandboxCommand {
         Vector2 backup = points[anchor].cpy();
         currentCommandPayload = UpdatePolygonDataCommand.payloadInitialState(follower.getEntity());
 
-        MultipleInputDialog dialog = new MultipleInputDialog("Vertex Position", new String[]{"X : ", "Y : "}, false, new MyInputValidator(), new MultipleInputDialogListener() {
+        MultipleInputDialog dialog = new MultipleInputDialog("Vertex Position", new String[]{"X : ", "Y : "}, false, new FloatInputValidator(), new MultipleInputDialogListener() {
             @Override
             public void finished(String[] input) {
                 Vector2[] points = follower.getOriginalPoints().toArray(new Vector2[0]);
@@ -62,17 +62,5 @@ public class ChangePolygonVertexPositionCommand extends SandboxCommand {
         });
         dialog.setText(new String[]{points[anchor].x+"", points[anchor].y+""});
         sandbox.getUIStage().addActor(dialog.fadeIn());
-    }
-
-    private static class MyInputValidator implements InputValidator {
-        @Override
-        public boolean validateInput(String input) {
-            try {
-                Float.parseFloat(input);
-                return true;
-            } catch (NumberFormatException ex) {
-                return false;
-            }
-        }
     }
 }

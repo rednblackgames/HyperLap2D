@@ -22,6 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.view.stage.tools.PolygonTool;
+import games.rednblack.editor.view.stage.tools.TransformTool;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.PluginManager;
@@ -49,6 +50,7 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
     public static final Integer SPRITER_ANIMATION_ACTION_SET = 8;
     public static final Integer PARTICLE_ACTION_SET = 9;
     public static final Integer POLYGON_VERTEX_ACTION_SET = 10;
+    public static final Integer ORIGIN_POINT_ACTION_SET = 11;
 
     private Sandbox sandbox;
 
@@ -105,6 +107,9 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
         actionSets.get(POLYGON_VERTEX_ACTION_SET).add(MsgAPI.ACTION_CHANGE_POLYGON_VERTEX_POSITION);
         actionSets.get(POLYGON_VERTEX_ACTION_SET).add(MsgAPI.ACTION_DELETE_POLYGON_VERTEX);
 
+        actionSets.put(ORIGIN_POINT_ACTION_SET, new Array<>());
+        actionSets.get(ORIGIN_POINT_ACTION_SET).add(MsgAPI.ACTION_CHANGE_ORIGIN_POSITION);
+
         facade = HyperLap2DFacade.getInstance();
     }
 
@@ -121,7 +126,8 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
                 UIResourcesBoxMediator.LIBRARY_ITEM_RIGHT_CLICK,
                 UIResourcesBoxMediator.PARTICLE_EFFECT_RIGHT_CLICK,
                 RulersUI.RIGHT_CLICK_RULER,
-                PolygonTool.MANUAL_VERTEX_POSITION
+                PolygonTool.MANUAL_VERTEX_POSITION,
+                TransformTool.MANUAL_ORIGIN_POSITION
         };
     }
 
@@ -180,6 +186,9 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
             	break;
             case PolygonTool.MANUAL_VERTEX_POSITION:
                 showPopup(POLYGON_VERTEX_ACTION_SET, notification.getBody());
+                break;
+            case TransformTool.MANUAL_ORIGIN_POSITION:
+                showPopup(ORIGIN_POINT_ACTION_SET, notification.getBody());
                 break;
             case UIDropDownMenu.ITEM_CLICKED:
                 facade.sendNotification(notification.getBody(), currentObservable);
