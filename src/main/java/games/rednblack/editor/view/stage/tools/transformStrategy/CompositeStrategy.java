@@ -62,7 +62,8 @@ public class CompositeStrategy extends AbstractTransformStrategy {
             payload[1] = entrySet.getValue();
             payloads.add(payload);
         }
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_ITEM_AND_CHILDREN_TO, payloads);
+        if (!parentFinalPosition.equals(parentInitialPosition) || !parentFinalSize.equals(parentInitialSize))
+            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_ITEM_AND_CHILDREN_TO, payloads);
     }
 
     private void setParentState(Entity entity, Vector2 position, Vector2 size) {
