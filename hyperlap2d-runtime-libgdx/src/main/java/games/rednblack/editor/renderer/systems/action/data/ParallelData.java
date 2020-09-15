@@ -12,6 +12,16 @@ public class ParallelData extends ActionData {
     }
 
     @Override
+    public void restart() {
+        super.restart();
+
+        for (ActionData data : actionsData) {
+            data.restart();
+        }
+        complete = false;
+    }
+
+    @Override
     public void reset() {
         super.reset();
 

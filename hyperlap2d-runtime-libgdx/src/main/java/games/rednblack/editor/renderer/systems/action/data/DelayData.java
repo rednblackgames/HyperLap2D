@@ -12,6 +12,13 @@ public class DelayData extends DelegateData {
     }
 
     @Override
+    public void restart() {
+        super.restart();
+
+        passedTime = 0;
+    }
+
+    @Override
     public void reset() {
         super.reset();
         duration = 0;

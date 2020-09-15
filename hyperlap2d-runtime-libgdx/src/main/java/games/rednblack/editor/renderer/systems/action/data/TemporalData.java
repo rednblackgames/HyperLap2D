@@ -21,6 +21,14 @@ public class TemporalData extends ActionData {
     }
 
     @Override
+    public void restart() {
+        super.restart();
+
+        passedTime = 0;
+        complete = false;
+    }
+
+    @Override
     public void reset() {
         super.reset();
 

@@ -7,6 +7,13 @@ public class SequenceData extends ParallelData {
     public int index;
 
     @Override
+    public void restart() {
+        super.restart();
+
+        index = 0;
+    }
+
+    @Override
     public void reset() {
         super.reset();
 

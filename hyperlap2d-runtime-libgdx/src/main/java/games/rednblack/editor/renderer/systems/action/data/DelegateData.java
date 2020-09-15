@@ -8,10 +8,18 @@ public class DelegateData extends ActionData {
     }
 
     @Override
+    public void restart() {
+        super.restart();
+
+        if (delegatedData != null)
+            delegatedData.restart();
+    }
+
+    @Override
     public void reset() {
         super.reset();
 
-        if (delegatedData.getPool() != null)
+        if (delegatedData != null && delegatedData.getPool() != null)
             delegatedData.getPool().free(delegatedData);
 
         delegatedData = null;

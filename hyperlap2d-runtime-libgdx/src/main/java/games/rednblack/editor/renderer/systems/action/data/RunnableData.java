@@ -12,6 +12,13 @@ public class RunnableData extends ActionData {
     }
 
     @Override
+    public void restart() {
+        super.restart();
+
+        ran = false;
+    }
+
+    @Override
     public void reset() {
         super.reset();
 

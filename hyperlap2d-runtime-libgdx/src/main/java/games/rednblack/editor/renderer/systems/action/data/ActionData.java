@@ -20,6 +20,10 @@ public class ActionData implements Pool.Poolable {
         pool = null;
     }
 
+    public void restart() {
+        detached = false;
+    }
+
     public void setPool(@Null Pool pool) {
         this.pool = pool;
     }
