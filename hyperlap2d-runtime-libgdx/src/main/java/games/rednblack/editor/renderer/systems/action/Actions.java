@@ -111,7 +111,6 @@ public class Actions {
         return actionData;
     }
 
-
     static public RotateByData rotateBy(float amount, float duration) {
         return rotateBy(amount, duration, null);
     }
@@ -232,6 +231,13 @@ public class Actions {
         return actionData;
     }
 
+    public static DelayData delay(float duration, ActionData delayedAction) {
+        DelayData actionData = actionData(DelayData.class);
+        actionData.setDuration(duration);
+        actionData.setDelegatedAction(delayedAction);
+        actionData.logicClassName = DelayAction.class.getName();
+        return actionData;
+    }
 
     static public ParallelData parallel(ActionData... actionsData) {
         ParallelData actionData = actionData(ParallelData.class);

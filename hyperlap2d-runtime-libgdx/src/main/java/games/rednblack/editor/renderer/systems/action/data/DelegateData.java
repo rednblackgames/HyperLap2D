@@ -1,15 +1,19 @@
 package games.rednblack.editor.renderer.systems.action.data;
 
-/**
- * Created by ZeppLondon on 10/15/2015.
- */
 public class DelegateData extends ActionData {
-    public DelegateData() {
-        super();
+    public ActionData delegatedData;
+
+    public void setDelegatedAction(ActionData actionData) {
+        this.delegatedData = actionData;
     }
 
     @Override
     public void reset() {
         super.reset();
+
+        if (delegatedData.getPool() != null)
+            delegatedData.getPool().free(delegatedData);
+
+        delegatedData = null;
     }
 }
