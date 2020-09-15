@@ -92,6 +92,9 @@ public class PanTool extends SimpleTool {
     }
 
     private void doPanning(float x, float y) {
+        if (lastCoordinates == null)
+            return;
+
         Sandbox sandbox = Sandbox.getInstance();
 
         ResourceManager resourceManager = HyperLap2DFacade.getInstance().retrieveProxy(ResourceManager.NAME);
