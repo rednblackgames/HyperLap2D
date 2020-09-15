@@ -38,6 +38,7 @@ public class Actions {
 
         registerActionClass(ParallelAction.class);
         registerActionClass(SequenceAction.class);
+        registerActionClass(RepeatAction.class);
 
         initialized = true;
     }
@@ -250,6 +251,22 @@ public class Actions {
         SequenceData actionData = actionData(SequenceData.class);
         actionData.setActionsData(actionsData);
         actionData.logicClassName = SequenceAction.class.getName();
+        return actionData;
+    }
+
+    static public RepeatData repeat(int count, ActionData action) {
+        RepeatData actionData = actionData(RepeatData.class);
+        actionData.setRepeatCount(count);
+        actionData.setDelegatedAction(action);
+        actionData.logicClassName = RepeatAction.class.getName();
+        return actionData;
+    }
+
+    static public RepeatData forever(ActionData action) {
+        RepeatData actionData = actionData(RepeatData.class);
+        actionData.setRepeatCount(RepeatData.FOREVER);
+        actionData.setDelegatedAction(action);
+        actionData.logicClassName = RepeatAction.class.getName();
         return actionData;
     }
 
