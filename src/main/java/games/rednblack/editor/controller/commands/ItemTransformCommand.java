@@ -35,6 +35,7 @@ public class ItemTransformCommand extends EntityModifyRevertibleCommand {
         Vector2 newSize = (Vector2) newData[1];
         Vector2 newScale = (Vector2) newData[2];
         Float newRotation = (Float) newData[3];
+        Vector2 newOrigin = (Vector2) newData[4];
 
         TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
         DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
@@ -46,6 +47,8 @@ public class ItemTransformCommand extends EntityModifyRevertibleCommand {
         if(newScale != null) transformComponent.scaleX = newScale.x;
         if(newScale != null) transformComponent.scaleY = newScale.y;
         if(newRotation != null) transformComponent.rotation = newRotation;
+        if(newOrigin != null) transformComponent.originX = newOrigin.x;
+        if(newOrigin != null) transformComponent.originY = newOrigin.y;
 
         EntityUtils.refreshComponents(entity);
 
@@ -61,6 +64,7 @@ public class ItemTransformCommand extends EntityModifyRevertibleCommand {
         Vector2 prevSize = (Vector2) prevData[1];
         Vector2 prevScale = (Vector2) prevData[2];
         Float prevRotation = (Float) prevData[3];
+        Vector2 prevOrigin = (Vector2) prevData[4];
 
         TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
         DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
@@ -76,6 +80,8 @@ public class ItemTransformCommand extends EntityModifyRevertibleCommand {
         transformComponent.scaleX = prevScale.x;
         transformComponent.scaleY = prevScale.y;
         transformComponent.rotation = prevRotation;
+        transformComponent.originX = prevOrigin.x;
+        transformComponent.originY = prevOrigin.y;
 
         EntityUtils.refreshComponents(entity);
 

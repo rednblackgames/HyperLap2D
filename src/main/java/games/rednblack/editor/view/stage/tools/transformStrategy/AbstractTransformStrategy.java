@@ -46,7 +46,7 @@ public abstract class AbstractTransformStrategy implements ITransformStrategy {
         }
     }
 
-    void origin(float mouseDx, float mouseDy, int anchor, TransformComponent transformComponent) {
+    void origin(float mouseDx, float mouseDy, int anchor, TransformComponent transformComponent, TransformCommandBuilder transformCommandBuilder) {
         if (anchor == NormalSelectionFollower.ORIGIN) {
             float newOriginX = transformComponent.originX;
             float newOriginY = transformComponent.originY;
@@ -56,6 +56,8 @@ public abstract class AbstractTransformStrategy implements ITransformStrategy {
 
             transformComponent.originX = newOriginX;
             transformComponent.originY = newOriginY;
+
+            transformCommandBuilder.setOrigin(newOriginX, newOriginY);
         }
     }
 }

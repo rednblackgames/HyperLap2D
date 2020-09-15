@@ -20,18 +20,18 @@ public class TransformCommandBuilder {
 
         TransformComponent transformComponent = ComponentRetriever.get(forEntity, TransformComponent.class);
         DimensionsComponent dimensionsComponent = ComponentRetriever.get(forEntity, DimensionsComponent.class);
-        Object[] prevData = new Object[4];
+        Object[] prevData = new Object[5];
 
         payload = new Array<>(3);
         payload.add(forEntity);
         payload.add(prevData);
-        payload.add(new Object[4]);
+        payload.add(new Object[5]);
 
         setPos(1, transformComponent.x, transformComponent.y);
         setSize(1, dimensionsComponent.width, dimensionsComponent.height);
         setScale(1, transformComponent.scaleX, transformComponent.scaleY);
         setRotation(1, transformComponent.rotation);
-
+        setOrigin(1, transformComponent.originX, transformComponent.originY);
     }
 
     private void setPos(int pIndex, float x, float y) {
@@ -50,6 +50,10 @@ public class TransformCommandBuilder {
         ((Object[])payload.get(pIndex))[3] = rotation;
     }
 
+    private void setOrigin(int pIndex, float originX, float originY) {
+        ((Object[])payload.get(pIndex))[4] = new Vector2(originX, originY);
+    }
+
     public void setPos(float x, float y) {
         setPos(2, x, y);
     }
@@ -64,6 +68,10 @@ public class TransformCommandBuilder {
 
     public void setRotation(float rotation) {
         setRotation(2, rotation);
+    }
+
+    public void setOrigin(float x, float y) {
+        setOrigin(2, x, y);
     }
 
     public void execute() {

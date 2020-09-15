@@ -225,7 +225,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
         }
 
         // Origin
-        origin(deltaW, deltaH, anchor, transformComponent);
+        origin(deltaW, deltaH, anchor, transformComponent, transformCommandBuilder);
 
         // Rotating
         rotating(anchor, transformCommandBuilder, mousePointStage, lastTransformAngle, lastEntityAngle, transformComponent);

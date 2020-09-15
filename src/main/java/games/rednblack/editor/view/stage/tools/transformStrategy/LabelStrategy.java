@@ -66,6 +66,6 @@ public class LabelStrategy extends AbstractTransformStrategy {
         transformCommandBuilder.setPos(newX, newY);
 
         // Origin
-        origin(mouseDx, mouseDy, anchor, transformComponent);
+        origin(mouseDx, mouseDy, anchor, transformComponent, transformCommandBuilder);
     }
 }
