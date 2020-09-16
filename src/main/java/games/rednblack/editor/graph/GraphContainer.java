@@ -680,8 +680,11 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
     public void draw(Batch batch, float parentAlpha) {
         validate();
         batch.end();
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         drawGroups(batch);
-        drawConnections();
+        drawConnections(parentAlpha);
+        Gdx.gl.glDisable(GL20.GL_BLEND);
         batch.begin();
         super.draw(batch, parentAlpha);
     }
@@ -705,8 +708,6 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
             float x = getX();
             float y = getY();
 
-            Gdx.gl.glEnable(GL20.GL_BLEND);
-            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(GROUP_BACKGROUND_COLOR);
             for (Map.Entry<NodeGroupImpl, Rectangle> nodeGroupEntry : nodeGroups.entrySet()) {
@@ -728,7 +729,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         }
     }
 
-    private void drawConnections() {
+    private void drawConnections(float parentAlpha) {
         float x = getX();
         float y = getY();
 
@@ -737,6 +738,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(LINE_COLOR);
+        shapeRenderer.getColor().a = parentAlpha;
 
         for (Map.Entry<String, VisWindow> windowEntry : boxWindows.entrySet()) {
             String nodeId = windowEntry.getKey();
@@ -776,6 +778,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
 
             boolean error = validationResult.getErrorConnections().contains(graphConnection);
             shapeRenderer.setColor(error ? INVALID_CONNECTOR_COLOR : VALID_CONNECTOR_COLOR);
+            shapeRenderer.getColor().a = parentAlpha;
 
             from.add(x, y);
             to.add(x, y);
@@ -785,6 +788,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
 
         if (drawingFromConnector != null) {
             shapeRenderer.setColor(LINE_COLOR);
+            shapeRenderer.getColor().a = parentAlpha;
             GraphBox<T> drawingFromNode = getGraphBoxById(drawingFromConnector.getNodeId());
             Window fromWindow = getBoxWindow(drawingFromConnector.getNodeId());
             if (drawingFromNode.isInputField(drawingFromConnector.getFieldId())) {
@@ -819,6 +823,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                         }
                     }
                     shapeRenderer.setColor(isErrorous ? INVALID_CONNECTOR_COLOR : VALID_CONNECTOR_COLOR);
+                    shapeRenderer.getColor().a = parentAlpha;
 
                     shapeRenderer.line(from, to);
                     shapeRenderer.circle(from.x, from.y, CONNECTOR_RADIUS);
