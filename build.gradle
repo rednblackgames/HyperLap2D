@@ -103,6 +103,7 @@ dependencies {
     implementation "org.apache.commons:commons-lang3:3.11"
     implementation "commons-io:commons-io:2.7"
     implementation 'net.mountainblade:modular:1.0'
+    implementation "com.googlecode.json-simple:json-simple:1.1.1"
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
