@@ -129,10 +129,10 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                                             }
                                         });
                                 popupMenu.addItem(remove);
-                                popupMenu.showMenu(getStage(), x + getX(), y + getY());
+                                showPopupMenu(popupMenu, x, y);
                             } else {
                                 PopupMenu popupMenu = popupMenuProducer.createPopupMenu(x, y);
-                                popupMenu.showMenu(getStage(), x + getX(), y + getY());
+                                showPopupMenu(popupMenu, x, y);
                             }
                         }
                     }
@@ -230,6 +230,13 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         navigating = false;
 
         windowsMoved();
+    }
+
+    private void showPopupMenu(PopupMenu popupMenu, float x, float y) {
+        popupMenu.setPosition(x, y - popupMenu.getHeight());
+        if (getHeight() - popupMenu.getY() > getHeight())
+            popupMenu.setY(popupMenu.getY() + popupMenu.getHeight());
+        addActor(popupMenu);
     }
 
     @Override
