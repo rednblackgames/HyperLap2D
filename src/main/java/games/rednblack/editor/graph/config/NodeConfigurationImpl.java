@@ -1,4 +1,4 @@
-package games.rednblack.editor.graph;
+package games.rednblack.editor.graph.config;
 
 import games.rednblack.editor.graph.data.FieldType;
 import games.rednblack.editor.graph.data.GraphNodeInput;

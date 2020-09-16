@@ -1,6 +1,7 @@
-package games.rednblack.editor.graph;
+package games.rednblack.editor.graph.producer;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import games.rednblack.editor.graph.GraphBox;
 import games.rednblack.editor.graph.data.FieldType;
 import org.json.simple.JSONObject;
 

@@ -5,7 +5,7 @@ import games.rednblack.editor.renderer.systems.action.data.AlphaData;
 import games.rednblack.editor.renderer.systems.action.data.DelayData;
 
 public enum ActionFieldType implements FieldType {
-    Entity, Delay, Alpha;
+    Entity, Boolean, Float, Color, Delay, Alpha;
 
     @Override
     public boolean accepts(Object value) {
@@ -16,6 +16,12 @@ public enum ActionFieldType implements FieldType {
                 return value instanceof DelayData;
             case Entity:
                 return value instanceof com.badlogic.ashley.core.Entity;
+            case Color:
+                return value instanceof com.badlogic.gdx.graphics.Color;
+            case Boolean:
+                return value instanceof Boolean;
+            case Float:
+                return value instanceof Float;
         }
 
         return false;
