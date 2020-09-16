@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -71,6 +72,8 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
     private float canvasWidth;
     private float canvasHeight;
     private boolean navigating;
+
+    private Group parentWindow;
 
     private Map<String, GraphBox<T>> graphBoxes = new HashMap<>();
     private Map<String, VisWindow> boxWindows = new HashMap<>();
@@ -291,6 +294,10 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                 window.getTitleLabel().setColor(VALID_LABEL_COLOR);
             }
         }
+    }
+
+    public void setParentWindow(Group parentWindow) {
+        this.parentWindow = parentWindow;
     }
 
     public GraphValidator.ValidationResult<GraphBox<T>, GraphConnection, PropertyBox<T>, T> getValidationResult() {
@@ -670,6 +677,20 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         drawConnections();
         batch.begin();
         super.draw(batch, parentAlpha);
+    }
+
+    @Override
+    public float getX() {
+        if (parentWindow != null)
+            return super.getX() + parentWindow.getX();
+        return super.getX();
+    }
+
+    @Override
+    public float getY() {
+        if (parentWindow != null)
+            return super.getY() + parentWindow.getY();
+        return super.getY();
     }
 
     private void drawGroups(Batch batch) {

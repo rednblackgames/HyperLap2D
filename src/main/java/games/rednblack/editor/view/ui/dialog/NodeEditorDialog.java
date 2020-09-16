@@ -49,6 +49,7 @@ public class NodeEditorDialog extends H2DDialog {
                 return createGraphPopupMenu(x, y);
             }
         });
+        graphContainer.setParentWindow(this);
 
         EntityBoxProducer entityProducer = new EntityBoxProducer(new EntityNodeConfiguration());
 
@@ -112,11 +113,11 @@ public class NodeEditorDialog extends H2DDialog {
 
     @Override
     public float getPrefWidth() {
-        return Sandbox.getInstance().getUIStage().getWidth();
+        return Sandbox.getInstance().getUIStage().getWidth() * 0.7f;
     }
 
     @Override
     public float getPrefHeight() {
-        return Sandbox.getInstance().getUIStage().getHeight();
+        return Sandbox.getInstance().getUIStage().getHeight() * 0.8f;
     }
 }
