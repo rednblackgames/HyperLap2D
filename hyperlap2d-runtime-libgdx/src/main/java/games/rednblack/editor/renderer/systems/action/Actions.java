@@ -64,6 +64,10 @@ public class Actions {
         }
     }
 
+    public static ActionData moveTo(float x, float y) {
+        return moveTo(x, y, 0, null);
+    }
+
     public static ActionData moveTo(float x, float y, float duration) {
         return moveTo(x, y, duration, null);
     }
@@ -76,6 +80,10 @@ public class Actions {
         actionData.setEndY(y);
         actionData.logicClassName = MoveToAction.class.getName();
         return (actionData);
+    }
+
+    public static ActionData moveBy(float x, float y) {
+        return moveBy(x, y, 0, null);
     }
 
     public static ActionData moveBy(float x, float y, float duration) {
@@ -99,6 +107,10 @@ public class Actions {
         return actionData;
     }
 
+    static public RotateToData rotateTo(float end) {
+        return rotateTo(end, 0, null);
+    }
+
     static public RotateToData rotateTo(float end, float duration) {
         return rotateTo(end, duration, null);
     }
@@ -112,6 +124,10 @@ public class Actions {
         return actionData;
     }
 
+    static public RotateByData rotateBy(float amount) {
+        return rotateBy(amount, 0, null);
+    }
+
     static public RotateByData rotateBy(float amount, float duration) {
         return rotateBy(amount, duration, null);
     }
@@ -123,6 +139,10 @@ public class Actions {
         actionData.setAmount(amount);
         actionData.logicClassName = RotateByAction.class.getName();
         return actionData;
+    }
+
+    public static SizeToData sizeTo(float width, float height) {
+        return sizeTo(width, height, 0, null);
     }
 
     public static SizeToData sizeTo(float width, float height, float duration) {
@@ -139,6 +159,10 @@ public class Actions {
         return actionData;
     }
 
+    public static SizeByData sizeBy(float width, float height) {
+        return sizeBy(width, height, 0, null);
+    }
+
     public static SizeByData sizeBy(float width, float height, float duration) {
         return sizeBy(width, height, duration, null);
     }
@@ -151,6 +175,10 @@ public class Actions {
         actionData.setAmountHeight(height);
         actionData.logicClassName = SizeByAction.class.getName();
         return actionData;
+    }
+
+    public static ScaleToData scaleTo(float width, float height) {
+        return scaleTo(width, height, 0, null);
     }
 
     public static ScaleToData scaleTo(float width, float height, float duration) {
@@ -167,6 +195,10 @@ public class Actions {
         return actionData;
     }
 
+    public static ScaleByData scaleBy(float width, float height) {
+        return scaleBy(width, height, 0, null);
+    }
+
     public static ScaleByData scaleBy(float width, float height, float duration) {
         return scaleBy(width, height, duration, null);
     }
@@ -181,6 +213,9 @@ public class Actions {
         return actionData;
     }
 
+    public static ColorData color(Color color) {
+        return color(color, 0, null);
+    }
 
     public static ColorData color(Color color, float duration) {
         return color(color, duration, null);
@@ -193,6 +228,10 @@ public class Actions {
         actionData.setEndColor(color);
         actionData.logicClassName = ColorAction.class.getName();
         return actionData;
+    }
+
+    public static AlphaData alpha(float alpha) {
+        return alpha(alpha, 0, null);
     }
 
     public static AlphaData alpha(float alpha, float duration) {
