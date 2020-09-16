@@ -11,15 +11,15 @@ import games.rednblack.editor.graph.GraphBox;
 import games.rednblack.editor.graph.actions.config.value.ValueBooleanNodeConfiguration;
 import games.rednblack.editor.graph.actions.config.value.ValueColorNodeConfiguration;
 import games.rednblack.editor.graph.actions.config.value.ValueFloatNodeConfiguration;
-import games.rednblack.editor.graph.actions.producer.value.ValueBooleanBoxProducer;
-import games.rednblack.editor.graph.actions.producer.value.ValueColorBoxProducer;
-import games.rednblack.editor.graph.actions.producer.value.ValueFloatBoxProducer;
+import games.rednblack.editor.graph.actions.producer.EntityBoxProducer;
 import games.rednblack.editor.graph.producer.GraphBoxProducer;
-import games.rednblack.editor.graph.producer.GraphBoxProducerImpl;
 import games.rednblack.editor.graph.GraphContainer;
 import games.rednblack.editor.graph.PopupMenuProducer;
 import games.rednblack.editor.graph.actions.ActionFieldType;
 import games.rednblack.editor.graph.actions.config.EntityNodeConfiguration;
+import games.rednblack.editor.graph.producer.value.ValueBooleanBoxProducer;
+import games.rednblack.editor.graph.producer.value.ValueColorBoxProducer;
+import games.rednblack.editor.graph.producer.value.ValueFloatBoxProducer;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
 
@@ -30,7 +30,6 @@ import java.util.UUID;
 public class NodeEditorDialog extends H2DDialog {
 
     private final GraphContainer<ActionFieldType> graphContainer;
-    GraphBoxProducerImpl<ActionFieldType> entityProducer;
 
     private final Set<GraphBoxProducer<ActionFieldType>> graphBoxProducers = new LinkedHashSet<>();
 
@@ -44,14 +43,14 @@ public class NodeEditorDialog extends H2DDialog {
         graphBoxProducers.add(new ValueFloatBoxProducer<>(new ValueFloatNodeConfiguration()));
         graphBoxProducers.add(new ValueBooleanBoxProducer<>(new ValueBooleanNodeConfiguration()));
 
-        entityProducer = new GraphBoxProducerImpl<>(new EntityNodeConfiguration());
-
         graphContainer = new GraphContainer<>(VisUI.getSkin(), new PopupMenuProducer() {
             @Override
             public PopupMenu createPopupMenu(float x, float y) {
                 return createGraphPopupMenu(x, y);
             }
         });
+
+        EntityBoxProducer entityProducer = new EntityBoxProducer(new EntityNodeConfiguration());
 
         String id = UUID.randomUUID().toString().replace("-", "");
         GraphBox<ActionFieldType> graphBox = entityProducer.createDefault(VisUI.getSkin(), id);

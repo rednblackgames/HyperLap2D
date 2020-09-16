@@ -1,4 +1,4 @@
-package games.rednblack.editor.graph.actions.producer.value;
+package games.rednblack.editor.graph.producer.value;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;

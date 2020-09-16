@@ -1,4 +1,4 @@
-package games.rednblack.editor.graph.actions.producer.value;
+package games.rednblack.editor.graph.producer.value;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
