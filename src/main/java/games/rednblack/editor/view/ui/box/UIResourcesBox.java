@@ -74,6 +74,5 @@ public class UIResourcesBox extends UICollapsibleBox {
 
     public void addTab(int index, ImageTab tab) {
         tabbedPane.insert(index, tab);
-        tabbedPane.getTabsPane().getActor().getChild(index);
     }
 }

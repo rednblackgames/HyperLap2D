@@ -211,7 +211,7 @@ public class ImageTabbedPane {
     protected void addTab (ImageTab tab, int index) {
         TabButtonTable buttonTable = tabsButtonMap.get(tab);
         if (buttonTable == null) {
-            buttonTable = new TabButtonTable(tab);
+            buttonTable = new TabButtonTable(tab, index);
             tabsButtonMap.put(tab, buttonTable);
         }
 
@@ -480,6 +480,8 @@ public class ImageTabbedPane {
         public boolean draggable = true;
         /** Optional, defaults 5. */
         public float tabPadding = 5;
+        /** Optional, set all tabs with equal width in a single line. */
+        public boolean singleLine = false;
 
         public TabbedPaneStyle () {
         }
@@ -491,6 +493,7 @@ public class ImageTabbedPane {
             this.vertical = style.vertical;
             this.draggable = style.draggable;
             this.tabPadding = style.tabPadding;
+            this.singleLine = style.singleLine;
         }
 
         public TabbedPaneStyle (Drawable background, Drawable separatorBar, VisImageButton.VisImageButtonStyle buttonStyle) {
@@ -499,13 +502,14 @@ public class ImageTabbedPane {
             this.buttonStyle = buttonStyle;
         }
 
-        public TabbedPaneStyle (Drawable separatorBar, Drawable background, VisImageButton.VisImageButtonStyle buttonStyle, boolean vertical, boolean draggable, float tabPadding) {
+        public TabbedPaneStyle (Drawable separatorBar, Drawable background, VisImageButton.VisImageButtonStyle buttonStyle, boolean vertical, boolean draggable, float tabPadding, boolean singleLine) {
             this.separatorBar = separatorBar;
             this.background = background;
             this.buttonStyle = buttonStyle;
             this.vertical = vertical;
             this.draggable = draggable;
             this.tabPadding = tabPadding;
+            this.singleLine = singleLine;
         }
     }
 
@@ -546,8 +550,13 @@ public class ImageTabbedPane {
         private VisImageButton.VisImageButtonStyle closeButtonStyle;
         private Drawable up;
 
-        public TabButtonTable (ImageTab tab) {
+        private boolean dimSet = false;
+        private Cell<VisImageButton> cellButton;
+        private int index;
+
+        public TabButtonTable (ImageTab tab, int index) {
             this.tab = tab;
+            this.index = index;
 
             buttonStyle = new VisImageButton.VisImageButtonStyle(style.buttonStyle);
             if (tab.getTabIconStyle() != null) {
@@ -580,9 +589,34 @@ public class ImageTabbedPane {
             closeButtonStyle = closeButton.getStyle();
             up = buttonStyle.up;
 
-            add(button).width(button.getWidth() + style.tabPadding);
+            cellButton = add(button).width(button.getWidth() + style.tabPadding);
             if (tab.isCloseableByUser()) {
                 add(closeButton).size(14 * sizes.scaleFactor, button.getHeight());
+            }
+        }
+
+        @Override
+        public void layout() {
+            super.layout();
+            if (!dimSet && style.singleLine) {
+                dimSet = true;
+                int buttonsSize = group.getButtons().size;
+                float availableSpace = mainTable.getWidth();
+
+                int maxLineElements = (int) Math.ceil(availableSpace / (button.getWidth() + style.tabPadding));
+
+                if (buttonsSize <= maxLineElements) {
+                    float cellWidth = (availableSpace - style.tabPadding * buttonsSize) / buttonsSize;
+                    cellButton.width(cellWidth + style.tabPadding);
+                } else {
+                    int linesNeeded = (int) Math.ceil((double) (buttonsSize) / maxLineElements) - 1;
+                    int line = index / maxLineElements;
+
+                    int buttonsOnLine = buttonsSize % maxLineElements == 0 ? maxLineElements : line != linesNeeded ? maxLineElements : buttonsSize % maxLineElements;
+                    float cellWidth = (availableSpace - style.tabPadding * buttonsOnLine) / buttonsOnLine;
+                    cellButton.width(cellWidth + style.tabPadding);
+                }
+                invalidateHierarchy();
             }
         }
 

@@ -20,13 +20,10 @@ package games.rednblack.editor.view.ui.box;
 
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.view.ui.box.resourcespanel.*;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
-import games.rednblack.editor.view.ui.box.resourcespanel.UIAnimationsTabMediator;
-import games.rednblack.editor.view.ui.box.resourcespanel.UIImagesTabMediator;
-import games.rednblack.editor.view.ui.box.resourcespanel.UILibraryItemsTabMediator;
-import games.rednblack.editor.view.ui.box.resourcespanel.UIParticleEffectsTabMediator;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
 import org.puremvc.java.interfaces.INotification;
 
