@@ -429,6 +429,21 @@
       imageOver: icon-trash-over,
       imageUp: icon-trash
     },
+    image-button: {
+      imageUp: image-up
+    },
+    animation-button: {
+      imageUp: animation-up
+    },
+    particle-button: {
+      imageUp: particle-up
+    },
+    library-button: {
+      imageUp: library-up
+    },
+    action-button: {
+      imageUp: action-up
+    },
     close: {
       down: button-red,
       up: button,

@@ -40,7 +40,7 @@ public class UILibraryItemsTab extends UIResourcesTab {
 
     @Override
     public String getTabIconStyle() {
-        return null;
+        return "library-button";
     }
 
     @Override

@@ -51,7 +51,7 @@ public class UIImagesTab extends UIResourcesTab {
 
     @Override
     public String getTabIconStyle() {
-        return "trash-button";
+        return "image-button";
     }
 
     public void setThumbnailBoxes(Array<DraggableResource> draggableResources) {

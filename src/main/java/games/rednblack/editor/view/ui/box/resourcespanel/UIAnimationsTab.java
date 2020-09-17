@@ -39,7 +39,7 @@ public class UIAnimationsTab extends UIResourcesTab {
 
     @Override
     public String getTabIconStyle() {
-        return null;
+        return "animation-button";
     }
 
     public void setThumbnailBoxes(Array<DraggableResource> draggableResources) {

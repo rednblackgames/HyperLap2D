@@ -46,7 +46,7 @@ public class UIParticleEffectsTab extends UIResourcesTab {
 
     @Override
     public String getTabIconStyle() {
-        return null;
+        return "particle-button";
     }
 
     public void setItems(Array<DraggableResource> items) {

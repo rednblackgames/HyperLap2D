@@ -92,6 +92,7 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
         facade.registerMediator(new UIAnimationsTabMediator());
         facade.registerMediator(new UILibraryItemsTabMediator());
         facade.registerMediator(new UIParticleEffectsTabMediator());
+        facade.registerMediator(new UIActionsTabMediator());
     }
 
     private void initTabs() {
@@ -103,13 +104,17 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
         ImageTab animationsTab = animationsTabMediator.getViewComponent();
         viewComponent.addTab(1, animationsTab);
 
-        UILibraryItemsTabMediator libraryTabMediator = facade.retrieveMediator(UILibraryItemsTabMediator.NAME);
-        ImageTab libraryItemsTab = libraryTabMediator.getViewComponent();
-        viewComponent.addTab(2, libraryItemsTab);
-
         UIParticleEffectsTabMediator particlesTabMediator = facade.retrieveMediator(UIParticleEffectsTabMediator.NAME);
         ImageTab particlesTab = particlesTabMediator.getViewComponent();
-        viewComponent.addTab(3, particlesTab);
+        viewComponent.addTab(2, particlesTab);
+
+        UILibraryItemsTabMediator libraryTabMediator = facade.retrieveMediator(UILibraryItemsTabMediator.NAME);
+        ImageTab libraryItemsTab = libraryTabMediator.getViewComponent();
+        viewComponent.addTab(3, libraryItemsTab);
+
+        UIActionsTabMediator actionsTabMediator = facade.retrieveMediator(UIActionsTabMediator.NAME);
+        ImageTab actionsTab = actionsTabMediator.getViewComponent();
+        viewComponent.addTab(4, actionsTab);
 
         viewComponent.setActiveTabContent(imagesTab);
     }
