@@ -29,7 +29,7 @@ Open Source ❤️
 
 You can download the latest stable release using [GitHub Release](https://github.com/rednblackgames/HyperLap2D/releases).
 
-Snapshot releases can be download using [GitHub Actions](https://github.com/rednblackgames/HyperLap2D/actions?query=workflow%3A%22Java+CI+with+Gradle%22)
+Snapshot releases can be download using [GitHub Actions](https://github.com/rednblackgames/HyperLap2D/actions?query=workflow%3A%22SNAPSHOT+Build%22).
 
 ### Runtime
 

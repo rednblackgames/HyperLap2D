@@ -1,81 +1,24 @@
 # This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: SNAPSHOT Build
+name: Java CI with Gradle
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
 jobs:
-  linux:
+  build:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 14
-      uses: actions/setup-java@v1
-      with:
-        java-version: 14
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build JAR dist files
-      run: ./gradlew dist
-    - name: Build deb package
-      run: ./gradlew jpackage
-    - name: Fix file names
-      run: mv build/jpackage/*.deb HyperLap2D-SNAPSHOT.deb
-    - name: Upload deb artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: HyperLap2D-SNAPSHOT.deb
-        path: HyperLap2D-SNAPSHOT.deb
-
-  windows:
-
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 14
-      uses: actions/setup-java@v1
-      with:
-        java-version: 14
-    - name: Build JAR dist files
-      run: ./gradlew.bat dist
-    - name: Build msi package
-      run: ./gradlew.bat jpackage
-    - name: Fix file names
-      run: mv build/jpackage/*.msi HyperLap2D-SNAPSHOT.msi
-    - name: Upload msi artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: HyperLap2D-SNAPSHOT.msi
-        path: HyperLap2D-SNAPSHOT.msi
-
-  macOS:
-
-    runs-on: macOS-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 14
-      uses: actions/setup-java@v1
-      with:
-        java-version: 14
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build JAR dist files
-      run: ./gradlew dist
-    - name: Build dmg package
-      run: ./gradlew jpackage
-    - name: Fix file names
-      run: mv build/jpackage/*.dmg HyperLap2D-SNAPSHOT.dmg
-    - name: Upload dmg artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: HyperLap2D-SNAPSHOT.dmg
-        path: HyperLap2D-SNAPSHOT.dmg
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build with Gradle
+        run: ./gradlew build
