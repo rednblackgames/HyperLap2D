@@ -19,7 +19,6 @@
 package games.rednblack.editor.controller.commands;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.utils.Array;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.NodeComponent;
@@ -30,6 +29,7 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by azakhary on 6/9/2015.
@@ -37,7 +37,6 @@ import java.util.HashSet;
 public class CreateItemCommand extends EntityModifyRevertibleCommand {
 
     private Integer entityId;
-    private Array<Integer> previousSelectionIds;
 
     @Override
     public void doAction() {
@@ -54,11 +53,9 @@ public class CreateItemCommand extends EntityModifyRevertibleCommand {
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
 
-        // select newly created item
-        // get current selection
-        HashSet<Entity> previousSelection = new HashSet<>(Sandbox.getInstance().getSelector().getSelectedItems());
-        previousSelectionIds = EntityUtils.getEntityId(previousSelection);
-        sandbox.getSelector().setSelection(entity, true);
+        Set<Entity> items = new HashSet<>();
+        items.add(entity);
+        facade.sendNotification(MsgAPI.ACTION_ADD_SELECTION, items);
     }
 
     @Override
@@ -68,7 +65,6 @@ public class CreateItemCommand extends EntityModifyRevertibleCommand {
         FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
         followersUIMediator.removeFollower(entity);
         sandbox.getEngine().removeEntity(entity);
-
-        Sandbox.getInstance().getSelector().setSelections(EntityUtils.getByUniqueId(previousSelectionIds), true);
+        facade.sendNotification(MsgAPI.DELETE_ITEMS_COMMAND_DONE);
     }
 }
