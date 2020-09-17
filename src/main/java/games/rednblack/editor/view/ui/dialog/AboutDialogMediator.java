@@ -37,6 +37,7 @@ public class AboutDialogMediator extends Mediator<AboutDialog> {
         switch (notification.getName()) {
             case HelpMenu.ABOUT_DIALOG_OPEN:
                 viewComponent.show(uiStage);
+                new NodeEditorDialog().show(uiStage);
                 break;
         }
     }

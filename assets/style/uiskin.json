@@ -782,7 +782,6 @@
   com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane$TabbedPaneStyle: {
     default: {
       draggable: false,
-      separatorBar: list-selection,
       vertical: false,
       buttonStyle: {
         down: tab-active,
@@ -808,6 +807,20 @@
         font: default-font,
         fontColor: white,
         disabledFontColor: grey
+      }
+    }
+  },
+  games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPane$TabbedPaneStyle: {
+    default: {
+      draggable: false,
+      vertical: false,
+      tabPadding: 20,
+      buttonStyle: {
+        down: tab-active,
+        up: tab-inactive,
+        checked: tab-active,
+        over: tab-inactive,
+        disabled: tab-inactive
       }
     }
   },

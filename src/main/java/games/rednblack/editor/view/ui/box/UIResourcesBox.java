@@ -19,10 +19,10 @@
 package games.rednblack.editor.view.ui.box;
 
 import com.kotcrab.vis.ui.widget.VisTable;
-import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
-import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane;
-import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneListener;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
+import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPane;
+import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPaneListener;
 
 /**
  * Created by azakhary on 4/17/2015.
@@ -33,7 +33,7 @@ public class UIResourcesBox extends UICollapsibleBox {
     private VisTable contentTable;
     private VisTable tabContent;
 
-    private TabbedPane tabbedPane;
+    private ImageTabbedPane tabbedPane;
 
     public UIResourcesBox() {
         super("Resources", 230);
@@ -42,16 +42,16 @@ public class UIResourcesBox extends UICollapsibleBox {
         setMovable(false);
         contentTable = new VisTable();
         tabContent = new VisTable();
-        tabbedPane = new TabbedPane();
-        tabbedPane.addListener(new TabbedPaneListener() {
+        tabbedPane = new ImageTabbedPane();
+        tabbedPane.addListener(new ImageTabbedPaneListener() {
             @Override
-            public void switchedTab(Tab tab) {
+            public void switchedTab(ImageTab tab) {
                 if (tab == null) return;
                 setActiveTabContent(tab);
             }
 
             @Override
-            public void removedTab(Tab tab) {
+            public void removedTab(ImageTab tab) {
 
             }
 
@@ -67,12 +67,13 @@ public class UIResourcesBox extends UICollapsibleBox {
         createCollapsibleWidget(contentTable);
     }
 
-    public void setActiveTabContent(Tab tab) {
+    public void setActiveTabContent(ImageTab tab) {
         tabContent.clear();
         tabContent.add(tab.getContentTable()).expandX().fillX();
     }
 
-    public void addTab(int index, Tab tab) {
+    public void addTab(int index, ImageTab tab) {
         tabbedPane.insert(index, tab);
+        tabbedPane.getTabsPane().getActor().getChild(index);
     }
 }

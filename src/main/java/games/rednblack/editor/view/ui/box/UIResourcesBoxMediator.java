@@ -21,13 +21,13 @@ package games.rednblack.editor.view.ui.box;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.h2d.common.MsgAPI;
-import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.ui.box.resourcespanel.UIAnimationsTabMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.UIImagesTabMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.UILibraryItemsTabMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.UIParticleEffectsTabMediator;
+import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
 import org.puremvc.java.interfaces.INotification;
 
 import java.util.stream.Stream;
@@ -99,19 +99,19 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
 
     private void initTabs() {
         UIImagesTabMediator imagesTabMediator = facade.retrieveMediator(UIImagesTabMediator.NAME);
-        Tab imagesTab = imagesTabMediator.getViewComponent();
+        ImageTab imagesTab = imagesTabMediator.getViewComponent();
         viewComponent.addTab(0, imagesTab);
 
         UIAnimationsTabMediator animationsTabMediator = facade.retrieveMediator(UIAnimationsTabMediator.NAME);
-        Tab animationsTab = animationsTabMediator.getViewComponent();
+        ImageTab animationsTab = animationsTabMediator.getViewComponent();
         viewComponent.addTab(1, animationsTab);
 
         UILibraryItemsTabMediator libraryTabMediator = facade.retrieveMediator(UILibraryItemsTabMediator.NAME);
-        Tab libraryItemsTab = libraryTabMediator.getViewComponent();
+        ImageTab libraryItemsTab = libraryTabMediator.getViewComponent();
         viewComponent.addTab(2, libraryItemsTab);
 
         UIParticleEffectsTabMediator particlesTabMediator = facade.retrieveMediator(UIParticleEffectsTabMediator.NAME);
-        Tab particlesTab = particlesTabMediator.getViewComponent();
+        ImageTab particlesTab = particlesTabMediator.getViewComponent();
         viewComponent.addTab(3, particlesTab);
 
         viewComponent.setActiveTabContent(imagesTab);

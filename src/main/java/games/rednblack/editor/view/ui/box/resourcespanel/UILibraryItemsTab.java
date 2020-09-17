@@ -19,6 +19,7 @@
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -34,7 +35,12 @@ public class UILibraryItemsTab extends UIResourcesTab {
 
     @Override
     public String getTabTitle() {
-        return " Library ";
+        return "Library";
+    }
+
+    @Override
+    public String getTabIconStyle() {
+        return null;
     }
 
     @Override

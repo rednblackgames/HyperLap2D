@@ -19,53 +19,46 @@
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Align;
-import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextField;
-import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
 
 /**
  * Created by sargis on 5/4/15.
  */
-public abstract class UIResourcesTab extends Tab {
-    private VisTable contentTable;
-    private VisScrollPane scrollPane;
-    private VisTextField visTextField;
-    public String searchString  =   "";
+public abstract class UIResourcesTab extends ImageTab {
+
+    private final VisTable contentTable;
+
+    public String searchString = "";
+
     public static final String SEARCH = "games.rednblack.editor.view.ui.box.resourcespanel.UIResourcesTab" + ".SEARCH";
+
     public UIResourcesTab() {
         super(false, false);
         contentTable = new VisTable();
-        contentTable.add(createLabel("Search:")).padLeft(1).padBottom(6);
+        contentTable.add(StandardWidgetsFactory.createLabel("Search:")).padLeft(1).padBottom(6);
         contentTable.add(createTextField()).padLeft(0).padRight(7).fillX().padBottom(4);
         contentTable.row();
-        scrollPane = crateScrollPane();
+
+        VisScrollPane scrollPane = crateScrollPane();
         contentTable.add(scrollPane).colspan(2).maxHeight(Gdx.graphics.getHeight() * 0.22f).expandX().fillX();
         contentTable.padTop(4);
     }
 
-    protected VisLabel createLabel(String text, int alignment) {
-        VisLabel visLabel = new VisLabel(text, alignment);
-        visLabel.setStyle(VisUI.getSkin().get("small", Label.LabelStyle.class));
-        return visLabel;
-    }
     protected VisTextField createTextField() {
-        visTextField = StandardWidgetsFactory.createTextField();
-        final String notification = SEARCH;
+        VisTextField visTextField = StandardWidgetsFactory.createTextField();
+        visTextField.setMessageText(getTabTitle());
         visTextField.setTextFieldListener(new VisTextField.TextFieldListener() {
-
             @Override
             public void keyTyped(VisTextField textField, char c) {
                 searchString    =   textField.getText();
                 HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
-                facade.sendNotification(notification);
+                facade.sendNotification(SEARCH);
             }
         });
         return visTextField;
@@ -74,10 +67,6 @@ public abstract class UIResourcesTab extends Tab {
     @Override
     public Table getContentTable() {
         return contentTable;
-    }
-
-    protected VisLabel createLabel(String text) {
-        return createLabel(text, Align.right);
     }
 
     protected abstract VisScrollPane crateScrollPane();

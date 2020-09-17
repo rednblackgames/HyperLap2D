@@ -19,6 +19,7 @@
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -33,9 +34,13 @@ public class UIAnimationsTab extends UIResourcesTab {
 
     @Override
     public String getTabTitle() {
-        return " Anim ";
+        return "Animations";
     }
 
+    @Override
+    public String getTabIconStyle() {
+        return null;
+    }
 
     public void setThumbnailBoxes(Array<DraggableResource> draggableResources) {
         animationsTable.clearChildren();
