@@ -46,6 +46,7 @@ public class BootstrapViewCommand extends SimpleCommand {
 
         facade.registerMediator(new HyperLap2DScreenMediator());
         facade.registerMediator(new HyperLap2DMenuBarMediator());
+        facade.registerMediator(new UIWindowTitleMediator());
         facade.registerMediator(new UIWindowActionMediator());
 
         facade.registerMediator(new UICompositeHierarchyMediator());

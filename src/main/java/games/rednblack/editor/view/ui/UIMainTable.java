@@ -18,11 +18,9 @@
 
 package games.rednblack.editor.view.ui;
 
-import com.badlogic.gdx.utils.Align;
-import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBarMediator;
 import games.rednblack.editor.view.ui.box.UIAlignBox;
@@ -38,7 +36,6 @@ import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.editor.view.ui.box.UIToolBox;
 import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
 import games.rednblack.editor.view.ui.widget.H2DLogo;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 public class UIMainTable extends VisTable {
     private final VisTable topTable, middleTable;
@@ -61,6 +58,8 @@ public class UIMainTable extends VisTable {
         initToolsPanel();
         initLeftBoxesPanel();
         initRightBoxesPanel();
+
+        HyperLap2DUtils.setWindowDragListener(topTable);
     }
 
 	private void initMenuBar() {
@@ -70,11 +69,10 @@ public class UIMainTable extends VisTable {
         HyperLap2DMenuBar menuBar = hyperlap2DMenuBarMediator.getViewComponent();
 		topTable.add(menuBar.getTable()).height(32).growX();
 
-		//TODO Undecorated window is cool but should enable window dragging
-		/*VisTable titleTable = new VisTable();
-        titleTable.setBackground(VisUI.getSkin().getDrawable("menu-bg"));
-		titleTable.add("Title");
-        topTable.add(titleTable).growX().fillY();
+		//TODO Undecorated window is cool but should enable window resizing before switch to undecorated
+        /*UIWindowTitleMediator uiWindowTitleMediator = facade.retrieveMediator(UIWindowTitleMediator.NAME);
+        UIWindowTitle uiWindowTitle = uiWindowTitleMediator.getViewComponent();
+        topTable.add(uiWindowTitle).growX().fillY();
 
         UIWindowActionMediator uiWindowActionMediator = facade.retrieveMediator(UIWindowActionMediator.NAME);
         UIWindowAction uiWindowAction = uiWindowActionMediator.getViewComponent();

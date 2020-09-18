@@ -26,7 +26,7 @@ ext {
     appName = 'HyperLap2D'
     gdxVersion = '1.9.11'
     gdxVersionBeta = '1.9.11'
-    box2dlightsVersion = '1.5'
+    box2dlightsVersion = '1.6-SNAPSHOT'
     ashleyVersion = '1.7.3'
     spineVersion = '3.8.55.1'
     visuiVersion = '1.4.7-SNAPSHOT'

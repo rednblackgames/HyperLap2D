@@ -1,6 +1,8 @@
 package games.rednblack.editor.view.ui;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.VisUI;
@@ -19,36 +21,39 @@ public class UIWindowAction extends VisTable {
         align(Align.top);
         VisImageButton iconifyButton = StandardWidgetsFactory.createImageButton("window-action-iconify");
         add(iconifyButton).padRight(-1);
-        iconifyButton.addListener(new ClickListener(){
+        iconifyButton.addListener(new ChangeListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
+            public void changed (ChangeEvent event, Actor actor) {
                 HyperLap2DApp.getInstance().mainWindow.iconifyWindow();
             }
         });
+        setListener(iconifyButton);
 
         maximizeButton = StandardWidgetsFactory.createImageButton("window-action-maximize");
         add(maximizeButton).padRight(-1);
-        maximizeButton.addListener(new ClickListener(){
+        maximizeButton.addListener(new ChangeListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
+            public void changed (ChangeEvent event, Actor actor) {
                 if (isMaximized) {
                     HyperLap2DApp.getInstance().mainWindow.restoreWindow();
                 } else {
                     HyperLap2DApp.getInstance().mainWindow.maximizeWindow();
                 }
-
             }
         });
         setMaximized(true);
+        setListener(maximizeButton);
 
         VisImageButton closeButton = StandardWidgetsFactory.createImageButton("window-action-close");
         add(closeButton);
-        closeButton.addListener(new ClickListener(){
+        closeButton.addListener(new ChangeListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
+            public void changed (ChangeEvent event, Actor actor) {
                 HyperLap2DApp.getInstance().hyperlap2D.closeRequested();
             }
         });
+
+        setListener(closeButton);
     }
 
     public void setMaximized(boolean maximized) {
@@ -58,5 +63,19 @@ public class UIWindowAction extends VisTable {
         } else {
             maximizeButton.setStyle(VisUI.getSkin().get("window-action-maximize", VisImageButton.VisImageButtonStyle.class));
         }
+    }
+
+    public boolean isMaximized() {
+        return isMaximized;
+    }
+
+    private void setListener(Actor actor) {
+        actor.addListener(new ClickListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                event.cancel();
+                return true;
+            }
+        });
     }
 }

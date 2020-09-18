@@ -8,8 +8,9 @@ group 'games.rednblack'
 version '0.0.1'
 
 repositories {
+    jcenter()
     mavenCentral()
-    mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 publish {

@@ -21,9 +21,21 @@ package games.rednblack.editor.utils;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.InputStream;
+import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import games.rednblack.editor.HyperLap2D;
+import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.view.ui.UIWindowAction;
+import games.rednblack.editor.view.ui.UIWindowActionMediator;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang3.SystemUtils;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * Created by sargis on 4/1/15.
@@ -67,4 +79,44 @@ public class HyperLap2DUtils {
         return myDocuments;
     }
 
+
+    public static void setWindowDragListener(Actor actor) {
+        actor.addListener(new InputListener() {
+            private final long context = GLFW.glfwGetCurrentContext();
+            private float startX = 0;
+            private float startY = 0;
+            private final DoubleBuffer cursorX = BufferUtils.createDoubleBuffer(1);
+            private final DoubleBuffer cursorY = BufferUtils.createDoubleBuffer(1);
+            private final IntBuffer windowX = BufferUtils.createIntBuffer(1);
+            private final IntBuffer windowY = BufferUtils.createIntBuffer(1);
+
+            private int getX() {
+                return MathUtils.floor((float) cursorX.get(0));
+            }
+            private int getY() {
+                return MathUtils.floor((float) cursorY.get(0));
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                UIWindowActionMediator uiWindowActionMediator = HyperLap2DFacade.getInstance().retrieveMediator(UIWindowActionMediator.NAME);
+                UIWindowAction uiWindowAction = uiWindowActionMediator.getViewComponent();
+                if (uiWindowAction.isMaximized())
+                    return false;
+                GLFW.glfwGetCursorPos(context, cursorX, cursorY);
+                startX = getX();
+                startY = getY();
+                return true;
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                GLFW.glfwGetCursorPos(context, cursorX, cursorY);
+                float offsetX = getX() - startX;
+                float offsetY = getY() - startY;
+                GLFW.glfwGetWindowPos(context, windowX, windowY);
+                GLFW.glfwSetWindowPos(context, (int)(windowX.get(0) + offsetX), (int)(windowY.get(0) + offsetY));
+            }
+        });
+    }
 }
