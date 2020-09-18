@@ -248,8 +248,8 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         if (!navigating) {
             float minX = Float.MAX_VALUE;
             float minY = Float.MAX_VALUE;
-            float maxX = Float.MIN_VALUE;
-            float maxY = Float.MIN_VALUE;
+            float maxX = -Float.MAX_VALUE;
+            float maxY = -Float.MAX_VALUE;
 
             Collection<VisWindow> children = boxWindows.values();
             if (children.size() == 0) {
@@ -468,7 +468,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         if (closeable) {
             window.addCloseButton();
         }
-        window.add(graphBox.getActor()).grow().row();
+        graphBox.addToWindow(window);
         windowPositions.put(window, new Vector2(x, y));
         window.setPosition(x, y);
         addActor(window);
@@ -526,7 +526,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
 
     private void updateSelectedVisuals() {
         Window.WindowStyle notSelectedStyle = VisUI.getSkin().get("noborder", Window.WindowStyle.class);
-        Window.WindowStyle selectedStyle = VisUI.getSkin().get("default", Window.WindowStyle.class);
+        Window.WindowStyle selectedStyle = VisUI.getSkin().get("noborder", Window.WindowStyle.class);
 
         for (Map.Entry<String, VisWindow> windowEntry : boxWindows.entrySet()) {
             Window.WindowStyle newStyle = selectedNodes.contains(windowEntry.getKey()) ? selectedStyle : notSelectedStyle;

@@ -8,15 +8,18 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
 import games.rednblack.editor.graph.GraphBox;
+import games.rednblack.editor.graph.actions.config.AddActionNodeConfiguration;
 import games.rednblack.editor.graph.actions.config.value.ValueBooleanNodeConfiguration;
 import games.rednblack.editor.graph.actions.config.value.ValueColorNodeConfiguration;
 import games.rednblack.editor.graph.actions.config.value.ValueFloatNodeConfiguration;
-import games.rednblack.editor.graph.actions.producer.EntityBoxProducer;
+import games.rednblack.editor.graph.actions.producer.ParallelActionBoxProducer;
+import games.rednblack.editor.graph.actions.producer.SequenceActionBoxProducer;
 import games.rednblack.editor.graph.producer.GraphBoxProducer;
 import games.rednblack.editor.graph.GraphContainer;
 import games.rednblack.editor.graph.PopupMenuProducer;
 import games.rednblack.editor.graph.actions.ActionFieldType;
 import games.rednblack.editor.graph.actions.config.EntityNodeConfiguration;
+import games.rednblack.editor.graph.producer.GraphBoxProducerImpl;
 import games.rednblack.editor.graph.producer.value.ValueBooleanBoxProducer;
 import games.rednblack.editor.graph.producer.value.ValueColorBoxProducer;
 import games.rednblack.editor.graph.producer.value.ValueFloatBoxProducer;
@@ -43,6 +46,9 @@ public class NodeEditorDialog extends H2DDialog {
         graphBoxProducers.add(new ValueFloatBoxProducer<>(new ValueFloatNodeConfiguration()));
         graphBoxProducers.add(new ValueBooleanBoxProducer<>(new ValueBooleanNodeConfiguration()));
 
+        graphBoxProducers.add(new ParallelActionBoxProducer());
+        graphBoxProducers.add(new SequenceActionBoxProducer());
+
         graphContainer = new GraphContainer<>(VisUI.getSkin(), new PopupMenuProducer() {
             @Override
             public PopupMenu createPopupMenu(float x, float y) {
@@ -51,11 +57,16 @@ public class NodeEditorDialog extends H2DDialog {
         });
         graphContainer.setParentWindow(this);
 
-        EntityBoxProducer entityProducer = new EntityBoxProducer(new EntityNodeConfiguration());
-
+        GraphBoxProducerImpl<ActionFieldType> entityProducer = new GraphBoxProducerImpl<>(new EntityNodeConfiguration());
         String id = UUID.randomUUID().toString().replace("-", "");
         GraphBox<ActionFieldType> graphBox = entityProducer.createDefault(VisUI.getSkin(), id);
         graphContainer.addGraphBox(graphBox, "Entity", false, 0, 0);
+
+
+        GraphBoxProducerImpl<ActionFieldType> addActionProducer = new GraphBoxProducerImpl<>(new AddActionNodeConfiguration());
+        id = UUID.randomUUID().toString().replace("-", "");
+        graphBox = addActionProducer.createDefault(VisUI.getSkin(), id);
+        graphContainer.addGraphBox(graphBox, "Add Action", false, 100, 100);
 
         getContentTable().add(graphContainer).grow();
 

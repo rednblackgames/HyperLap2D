@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Align;
 import games.rednblack.editor.graph.data.FieldType;
 import games.rednblack.editor.graph.data.Graph;
@@ -24,15 +25,21 @@ import java.util.Map;
 public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
     private String id;
     private NodeConfiguration<T> configuration;
-    private Table table;
+    private Table table, headerTable, partTable;
     private List<GraphBoxPart<T>> graphBoxParts = new LinkedList<>();
     private Map<String, GraphBoxInputConnector<T>> inputConnectors = new HashMap<>();
     private Map<String, GraphBoxOutputConnector<T>> outputConnectors = new HashMap<>();
+
+    private Window window;
 
     public GraphBoxImpl(String id, NodeConfiguration<T> configuration, Skin skin) {
         this.id = id;
         this.configuration = configuration;
         table = new Table(skin);
+        headerTable = new Table(skin);
+        partTable = new Table(skin);
+        table.add(headerTable).growX().row();
+        table.add(partTable).growX();
     }
 
     @Override
@@ -118,10 +125,15 @@ public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
         addGraphBoxPart(graphBoxPart);
     }
 
+    public void addHeaderGraphBoxPart(GraphBoxPart<T> graphBoxPart) {
+        final Actor actor = graphBoxPart.getActor();
+        headerTable.add(actor).growX().row();
+    }
+
     public void addGraphBoxPart(GraphBoxPart<T> graphBoxPart) {
         graphBoxParts.add(graphBoxPart);
         final Actor actor = graphBoxPart.getActor();
-        table.add(actor).growX().row();
+        partTable.add(actor).growX().row();
         final GraphBoxInputConnector<T> inputConnector = graphBoxPart.getInputConnector();
         if (inputConnector != null) {
             inputConnectors.put(inputConnector.getFieldId(),
@@ -148,6 +160,16 @@ public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
         }
     }
 
+    public void invalidate() {
+        if (window != null) {
+            window.setSize(Math.max(150, window.getPrefWidth()), window.getPrefHeight());
+            window.validate();
+            //Two times according to `pack` function
+            window.setSize(Math.max(150, window.getPrefWidth()), window.getPrefHeight());
+            window.validate();
+        }
+    }
+
     @Override
     public Map<String, GraphBoxInputConnector<T>> getInputs() {
         return inputConnectors;
@@ -156,6 +178,17 @@ public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
     @Override
     public Map<String, GraphBoxOutputConnector<T>> getOutputs() {
         return outputConnectors;
+    }
+
+    @Override
+    public void addToWindow(Window window) {
+        this.window = window;
+        window.add(table).grow().row();
+    }
+
+    @Override
+    public Window getWindow() {
+        return window;
     }
 
     @Override

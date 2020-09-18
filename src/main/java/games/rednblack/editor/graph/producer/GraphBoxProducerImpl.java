@@ -12,7 +12,7 @@ import org.json.simple.JSONObject;
 import java.util.Iterator;
 
 public class GraphBoxProducerImpl<T extends FieldType> implements GraphBoxProducer<T> {
-    private NodeConfiguration<T> configuration;
+    protected NodeConfiguration<T> configuration;
 
     public GraphBoxProducerImpl(NodeConfiguration<T> configuration) {
         this.configuration = configuration;
@@ -40,6 +40,10 @@ public class GraphBoxProducerImpl<T extends FieldType> implements GraphBoxProduc
 
     @Override
     public GraphBoxImpl<T> createPipelineGraphBox(Skin skin, String id, JSONObject data) {
+        return createPipelineGraphBoxConfig(skin, id, configuration);
+    }
+
+    public GraphBoxImpl<T> createPipelineGraphBoxConfig(Skin skin, String id, NodeConfiguration<T> configuration) {
         GraphBoxImpl<T> start = new GraphBoxImpl<T>(id, configuration, skin);
         Iterator<GraphNodeInput<T>> inputIterator = configuration.getNodeInputs().values().iterator();
         Iterator<GraphNodeOutput<T>> outputIterator = configuration.getNodeOutputs().values().iterator();
