@@ -1,13 +1,10 @@
 package games.rednblack.editor.graph.actions;
 
 import games.rednblack.editor.graph.data.FieldType;
-import games.rednblack.editor.renderer.systems.action.data.ActionData;
-import games.rednblack.editor.renderer.systems.action.data.AlphaData;
-import games.rednblack.editor.renderer.systems.action.data.DelayData;
-import games.rednblack.editor.renderer.systems.action.data.ParallelData;
+import games.rednblack.editor.renderer.systems.action.data.*;
 
 public enum ActionFieldType implements FieldType {
-    Entity, Boolean, Float, Color, Action, Delay, Alpha, Parallel;
+    Entity, Boolean, Float, Color, Action, Delay, Alpha, Parallel, Sequence;
 
     @Override
     public boolean accepts(Object value) {
@@ -16,6 +13,8 @@ public enum ActionFieldType implements FieldType {
                 return value instanceof ActionData;
             case Parallel:
                 return value instanceof ParallelData;
+            case Sequence:
+                return value instanceof SequenceData;
             case Alpha:
                 return value instanceof AlphaData;
             case Delay:
