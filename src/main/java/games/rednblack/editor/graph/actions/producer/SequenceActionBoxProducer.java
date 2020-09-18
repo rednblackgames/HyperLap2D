@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.graph.GraphBoxImpl;
 import games.rednblack.editor.graph.GraphBoxPartImpl;
+import games.rednblack.editor.graph.GraphChangedEvent;
 import games.rednblack.editor.graph.GraphNodeInputImpl;
 import games.rednblack.editor.graph.actions.ActionFieldType;
 import games.rednblack.editor.graph.actions.config.SequenceActionNodeConfiguration;
@@ -48,6 +49,7 @@ public class SequenceActionBoxProducer extends GraphBoxProducerImpl<ActionFieldT
                 inputs.put(n.getFieldId(), n);
                 graphBox.addInputGraphPart(skin, n);
                 graphBox.invalidate();
+                addButton.fire(new GraphChangedEvent(true, false));
             }
         });
         addButton.addListener(new ClickListener(){

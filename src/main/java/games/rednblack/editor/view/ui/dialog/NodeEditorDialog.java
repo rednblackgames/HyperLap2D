@@ -7,22 +7,24 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
-import games.rednblack.editor.graph.GraphBox;
+import games.rednblack.editor.graph.*;
 import games.rednblack.editor.graph.actions.config.AddActionNodeConfiguration;
 import games.rednblack.editor.graph.actions.config.value.ValueBooleanNodeConfiguration;
 import games.rednblack.editor.graph.actions.config.value.ValueColorNodeConfiguration;
 import games.rednblack.editor.graph.actions.config.value.ValueFloatNodeConfiguration;
 import games.rednblack.editor.graph.actions.producer.ParallelActionBoxProducer;
 import games.rednblack.editor.graph.actions.producer.SequenceActionBoxProducer;
+import games.rednblack.editor.graph.data.Graph;
+import games.rednblack.editor.graph.data.GraphConnection;
+import games.rednblack.editor.graph.data.GraphValidator;
 import games.rednblack.editor.graph.producer.GraphBoxProducer;
-import games.rednblack.editor.graph.GraphContainer;
-import games.rednblack.editor.graph.PopupMenuProducer;
 import games.rednblack.editor.graph.actions.ActionFieldType;
 import games.rednblack.editor.graph.actions.config.EntityNodeConfiguration;
 import games.rednblack.editor.graph.producer.GraphBoxProducerImpl;
 import games.rednblack.editor.graph.producer.value.ValueBooleanBoxProducer;
 import games.rednblack.editor.graph.producer.value.ValueColorBoxProducer;
 import games.rednblack.editor.graph.producer.value.ValueFloatBoxProducer;
+import games.rednblack.editor.graph.property.PropertyBox;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
 
@@ -30,8 +32,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class NodeEditorDialog extends H2DDialog {
+public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<ActionFieldType>, GraphConnection, PropertyBox<ActionFieldType>, ActionFieldType> {
 
+    private GraphValidator<GraphBox<ActionFieldType>, GraphConnection, PropertyBox<ActionFieldType>, ActionFieldType> graphValidator = new GraphValidator<>();
     private final GraphContainer<ActionFieldType> graphContainer;
 
     private final Set<GraphBoxProducer<ActionFieldType>> graphBoxProducers = new LinkedHashSet<>();
@@ -64,13 +67,34 @@ public class NodeEditorDialog extends H2DDialog {
 
 
         GraphBoxProducerImpl<ActionFieldType> addActionProducer = new GraphBoxProducerImpl<>(new AddActionNodeConfiguration());
-        id = UUID.randomUUID().toString().replace("-", "");
-        graphBox = addActionProducer.createDefault(VisUI.getSkin(), id);
-        graphContainer.addGraphBox(graphBox, "Add Action", false, 100, 100);
+        graphBox = addActionProducer.createDefault(VisUI.getSkin(), "end");
+        graphContainer.addGraphBox(graphBox, "Add Action", false, getPrefWidth() - 190, 0);
 
         getContentTable().add(graphContainer).grow();
 
         pack();
+
+        addListener(
+                new GraphChangedListener() {
+                    @Override
+                    protected boolean graphChanged(GraphChangedEvent event) {
+                        if (event.isStructure())
+                            updatePipelineValidation();
+                        for (GraphBox<ActionFieldType> graphBox : graphContainer.getGraphBoxes()) {
+                            graphBox.graphChanged(event, graphContainer.getValidationResult().hasErrors(),
+                                    NodeEditorDialog.this);
+                        }
+
+                        event.stop();
+                        return true;
+                    }
+                });
+
+        updatePipelineValidation();
+    }
+
+    private void updatePipelineValidation() {
+        graphContainer.setValidationResult(graphValidator.validateGraph(this, "end"));
     }
 
     private PopupMenu createGraphPopupMenu(final float popupX, final float popupY) {
@@ -130,5 +154,30 @@ public class NodeEditorDialog extends H2DDialog {
     @Override
     public float getPrefHeight() {
         return Sandbox.getInstance().getUIStage().getHeight() * 0.8f;
+    }
+
+    @Override
+    public GraphBox<ActionFieldType> getNodeById(String id) {
+        return graphContainer.getGraphBoxById(id);
+    }
+
+    @Override
+    public PropertyBox<ActionFieldType> getPropertyByName(String name) {
+        return null;
+    }
+
+    @Override
+    public Iterable<? extends GraphConnection> getConnections() {
+        return graphContainer.getConnections();
+    }
+
+    @Override
+    public Iterable<? extends GraphBox<ActionFieldType>> getNodes() {
+        return graphContainer.getGraphBoxes();
+    }
+
+    @Override
+    public Iterable<? extends PropertyBox<ActionFieldType>> getProperties() {
+        return null;
     }
 }

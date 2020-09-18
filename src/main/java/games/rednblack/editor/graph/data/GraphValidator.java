@@ -17,14 +17,16 @@ public class GraphValidator<T extends GraphNode<W>, U extends GraphConnection, V
             return result;
 
         // Check duplicate property names
-        Map<String, V> propertyNames = new HashMap<>();
-        for (V property : graph.getProperties()) {
-            String propertyName = property.getName();
-            if (propertyNames.containsKey(propertyName)) {
-                result.addErrorProperty(property);
-                result.addErrorProperty(propertyNames.get(propertyName));
+        if (graph.getProperties() != null) {
+            Map<String, V> propertyNames = new HashMap<>();
+            for (V property : graph.getProperties()) {
+                String propertyName = property.getName();
+                if (propertyNames.containsKey(propertyName)) {
+                    result.addErrorProperty(property);
+                    result.addErrorProperty(propertyNames.get(propertyName));
+                }
+                propertyNames.put(propertyName, property);
             }
-            propertyNames.put(propertyName, property);
         }
 
         boolean cyclic = isCyclic(result, graph, nodeEnd);
