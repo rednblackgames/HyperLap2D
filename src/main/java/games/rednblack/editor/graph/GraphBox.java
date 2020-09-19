@@ -18,7 +18,7 @@ public interface GraphBox<T extends FieldType> extends GraphNode<T>, Disposable 
 
     Map<String, GraphBoxOutputConnector<T>> getOutputs();
 
-    void addToWindow(Window window);
+    void addToWindow(GraphContainer<T>.GraphBoxWindow window);
 
     Window getWindow();
 

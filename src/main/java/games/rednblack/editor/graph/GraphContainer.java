@@ -437,7 +437,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
 
     public void addGraphBox(GraphBox<T> graphBox, String windowTitle, boolean closeable, float x, float y) {
         graphBoxes.put(graphBox.getId(), graphBox);
-        VisWindow window = new GraphBoxWindow(graphBox, windowTitle);
+        GraphBoxWindow window = new GraphBoxWindow(graphBox, windowTitle);
         window.setKeepWithinStage(false);
         if (closeable) {
             window.addCloseButton();
@@ -966,7 +966,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         }
     }
 
-    private class GraphBoxWindow extends VisWindow {
+    public class GraphBoxWindow extends VisWindow {
         GraphBox<T> graphBox;
         private boolean removeActionRunning;
 
@@ -1016,6 +1016,15 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                     addToSelection(nodeId);
             } else {
                 setSelection(nodeId);
+            }
+        }
+
+        public void connectorRemoved(String nodeId, String fieldId) {
+            for (GraphConnection graphConnection : graphConnections) {
+                if ((graphConnection.getNodeFrom().equals(nodeId) && graphConnection.getFieldFrom().equals(fieldId))
+                        || (graphConnection.getNodeTo().equals(nodeId) && graphConnection.getFieldTo().equals(fieldId))) {
+                    removeConnection(graphConnection);
+                }
             }
         }
     }

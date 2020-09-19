@@ -30,7 +30,7 @@ public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
     private Map<String, GraphBoxInputConnector<T>> inputConnectors = new HashMap<>();
     private Map<String, GraphBoxOutputConnector<T>> outputConnectors = new HashMap<>();
 
-    private Window window;
+    private GraphContainer<T>.GraphBoxWindow window;
 
     public GraphBoxImpl(String id, NodeConfiguration<T> configuration, Skin skin) {
         this.id = id;
@@ -172,10 +172,12 @@ public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
         graphBoxPart.getActor().remove();
         GraphBoxInputConnector<T> inputConnector = graphBoxPart.getInputConnector();
         if (inputConnector != null) {
+            window.connectorRemoved(id, inputConnector.getFieldId());
             inputConnectors.remove(inputConnector.getFieldId());
         }
         GraphBoxOutputConnector<T> outputConnector = graphBoxPart.getOutputConnector();
         if (outputConnector != null) {
+            window.connectorRemoved(id, outputConnector.getFieldId());
             outputConnectors.remove(outputConnector.getFieldId());
         }
         graphBoxParts.remove(index);
@@ -202,7 +204,7 @@ public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
     }
 
     @Override
-    public void addToWindow(Window window) {
+    public void addToWindow(GraphContainer<T>.GraphBoxWindow window) {
         this.window = window;
         window.add(table).grow().row();
     }
