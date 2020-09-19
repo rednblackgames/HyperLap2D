@@ -7,19 +7,19 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Align;
+import com.kotcrab.vis.ui.FocusManager;
 import games.rednblack.editor.graph.data.FieldType;
 import games.rednblack.editor.graph.data.GraphConnection;
 import games.rednblack.editor.graph.data.GraphNodeInput;
@@ -435,35 +435,9 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         return result;
     }
 
-    public void addGraphBox(final GraphBox<T> graphBox, String windowTitle, boolean closeable, float x, float y) {
+    public void addGraphBox(GraphBox<T> graphBox, String windowTitle, boolean closeable, float x, float y) {
         graphBoxes.put(graphBox.getId(), graphBox);
-        VisWindow window = new VisWindow(windowTitle, false) {
-            @Override
-            protected void positionChanged() {
-                graphWindowMoved(this, graphBox.getId());
-            }
-
-            @Override
-            protected void close() {
-                removeGraphBox(graphBox);
-                windowPositions.remove(this);
-                super.close();
-            }
-
-            @Override
-            public void toFront() {
-                super.toFront();
-                String nodeId = graphBox.getId();
-                if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-                    if (selectedNodes.contains(nodeId))
-                        removeFromSelection(nodeId);
-                    else
-                        addToSelection(nodeId);
-                } else {
-                    setSelection(nodeId);
-                }
-            }
-        };
+        VisWindow window = new GraphBoxWindow(graphBox, windowTitle);
         window.setKeepWithinStage(false);
         if (closeable) {
             window.addCloseButton();
@@ -473,6 +447,11 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         window.setPosition(x, y);
         addActor(window);
         window.setSize(Math.max(150, window.getPrefWidth()), window.getPrefHeight());
+        window.setOrigin(Align.center);
+        window.addAction(Actions.sequence(
+                Actions.scaleTo(0, 0),
+                Actions.scaleTo(1, 1, .35f, Interpolation.swingOut)
+        ));
         boxWindows.put(graphBox.getId(), window);
         fire(new GraphChangedEvent(true, false));
     }
@@ -783,7 +762,8 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
             from.add(x, y);
             to.add(x, y);
 
-            shapeRenderer.line(from, to);
+            float xDiff = Math.min(150, Math.abs(from.x - to.x));
+            shapeRenderer.curve(from.x, from.y, from.x + xDiff, from.y, to.x - xDiff, to.y, to.x, to.y, 25);
         }
 
         if (drawingFromConnector != null) {
@@ -985,4 +965,59 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
             return nodes;
         }
     }
+
+    private class GraphBoxWindow extends VisWindow {
+        GraphBox<T> graphBox;
+        private boolean removeActionRunning;
+
+        public GraphBoxWindow(GraphBox<T> graphBox, String windowTitle) {
+            super(windowTitle, false);
+            this.graphBox = graphBox;
+        }
+
+        @Override
+        protected void positionChanged() {
+            graphWindowMoved(this, graphBox.getId());
+        }
+
+        @Override
+        protected void close() {
+            removeGraphBox(graphBox);
+            windowPositions.remove(this);
+
+            if (removeActionRunning) return;
+            removeActionRunning = true;
+            final Touchable previousTouchable = getTouchable();
+            setTouchable(Touchable.disabled);
+            Stage stage = getStage();
+            if (stage != null && stage.getKeyboardFocus() != null && stage.getKeyboardFocus().isDescendantOf(this)) {
+                FocusManager.resetFocus(stage);
+            }
+            addAction(Actions.sequence(Actions.scaleTo(0, 0, 0.3f, Interpolation.swingIn), new Action() {
+                @Override
+                public boolean act (float delta) {
+                    remove();
+                    setTouchable(previousTouchable);
+                    setScale(1);
+                    removeActionRunning = false;
+                    return true;
+                }
+            }));
+        }
+
+        @Override
+        public void toFront() {
+            super.toFront();
+            String nodeId = graphBox.getId();
+            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                if (selectedNodes.contains(nodeId))
+                    removeFromSelection(nodeId);
+                else
+                    addToSelection(nodeId);
+            } else {
+                setSelection(nodeId);
+            }
+        }
+    }
+
 }
