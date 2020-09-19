@@ -25,7 +25,7 @@ import java.util.Map;
 public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
     private String id;
     private NodeConfiguration<T> configuration;
-    private Table table, headerTable, partTable;
+    private Table table, headerTable, partTable, footerTable;
     private List<GraphBoxPart<T>> graphBoxParts = new LinkedList<>();
     private Map<String, GraphBoxInputConnector<T>> inputConnectors = new HashMap<>();
     private Map<String, GraphBoxOutputConnector<T>> outputConnectors = new HashMap<>();
@@ -38,8 +38,10 @@ public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
         table = new Table(skin);
         headerTable = new Table(skin);
         partTable = new Table(skin);
-        table.add(headerTable).growX().row();
-        table.add(partTable).growX();
+        footerTable = new Table(skin);
+        table.add(headerTable).padBottom(5).growX().row();
+        table.add(partTable).growX().row();
+        table.add(footerTable).growX();
     }
 
     @Override
@@ -130,6 +132,11 @@ public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
         headerTable.add(actor).growX().row();
     }
 
+    public void addFooterGraphBoxPart(GraphBoxPart<T> graphBoxPart) {
+        final Actor actor = graphBoxPart.getActor();
+        footerTable.add(actor).padTop(5).growX().row();
+    }
+
     public void addGraphBoxPart(GraphBoxPart<T> graphBoxPart) {
         graphBoxParts.add(graphBoxPart);
         final Actor actor = graphBoxPart.getActor();
@@ -141,7 +148,7 @@ public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
                             new Supplier<Float>() {
                                 @Override
                                 public Float get() {
-                                    return actor.getY() + actor.getHeight() / 2f;
+                                    return actor.getY() + footerTable.getHeight() + actor.getHeight() / 2f;
                                 }
                             },
                             inputConnector.getFieldId()));
@@ -153,11 +160,25 @@ public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
                             new Supplier<Float>() {
                                 @Override
                                 public Float get() {
-                                    return actor.getY() + actor.getHeight() / 2f;
+                                    return actor.getY() + footerTable.getHeight() + actor.getHeight() / 2f;
                                 }
                             },
                             outputConnector.getFieldId()));
         }
+    }
+
+    public void removeGraphBoxPart(int index) {
+        GraphBoxPart<T> graphBoxPart = graphBoxParts.get(index);
+        graphBoxPart.getActor().remove();
+        GraphBoxInputConnector<T> inputConnector = graphBoxPart.getInputConnector();
+        if (inputConnector != null) {
+            inputConnectors.remove(inputConnector.getFieldId());
+        }
+        GraphBoxOutputConnector<T> outputConnector = graphBoxPart.getOutputConnector();
+        if (outputConnector != null) {
+            outputConnectors.remove(outputConnector.getFieldId());
+        }
+        graphBoxParts.remove(index);
     }
 
     public void invalidate() {

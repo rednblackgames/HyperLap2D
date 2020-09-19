@@ -9,11 +9,12 @@ import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
 import games.rednblack.editor.graph.*;
 import games.rednblack.editor.graph.actions.config.AddActionNodeConfiguration;
+import games.rednblack.editor.graph.actions.config.ParallelActionNodeConfiguration;
+import games.rednblack.editor.graph.actions.config.SequenceActionNodeConfiguration;
 import games.rednblack.editor.graph.actions.config.value.ValueBooleanNodeConfiguration;
 import games.rednblack.editor.graph.actions.config.value.ValueColorNodeConfiguration;
 import games.rednblack.editor.graph.actions.config.value.ValueFloatNodeConfiguration;
-import games.rednblack.editor.graph.actions.producer.ParallelActionBoxProducer;
-import games.rednblack.editor.graph.actions.producer.SequenceActionBoxProducer;
+import games.rednblack.editor.graph.actions.producer.ArrayActionBoxProducer;
 import games.rednblack.editor.graph.data.Graph;
 import games.rednblack.editor.graph.data.GraphConnection;
 import games.rednblack.editor.graph.data.GraphValidator;
@@ -28,6 +29,7 @@ import games.rednblack.editor.graph.property.PropertyBox;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -49,8 +51,12 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         graphBoxProducers.add(new ValueFloatBoxProducer<>(new ValueFloatNodeConfiguration()));
         graphBoxProducers.add(new ValueBooleanBoxProducer<>(new ValueBooleanNodeConfiguration()));
 
-        graphBoxProducers.add(new ParallelActionBoxProducer());
-        graphBoxProducers.add(new SequenceActionBoxProducer());
+        try {
+            graphBoxProducers.add(new ArrayActionBoxProducer(ParallelActionNodeConfiguration.class));
+            graphBoxProducers.add(new ArrayActionBoxProducer(SequenceActionNodeConfiguration.class));
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            e.printStackTrace();
+        }
 
         graphContainer = new GraphContainer<>(VisUI.getSkin(), new PopupMenuProducer() {
             @Override
