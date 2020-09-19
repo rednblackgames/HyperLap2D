@@ -8,23 +8,20 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
 import games.rednblack.editor.graph.*;
-import games.rednblack.editor.graph.actions.config.AddActionNodeConfiguration;
-import games.rednblack.editor.graph.actions.config.ParallelActionNodeConfiguration;
-import games.rednblack.editor.graph.actions.config.SequenceActionNodeConfiguration;
-import games.rednblack.editor.graph.actions.config.value.ValueBooleanNodeConfiguration;
-import games.rednblack.editor.graph.actions.config.value.ValueColorNodeConfiguration;
-import games.rednblack.editor.graph.actions.config.value.ValueFloatNodeConfiguration;
+import games.rednblack.editor.graph.actions.config.*;
+import games.rednblack.editor.graph.actions.config.value.*;
 import games.rednblack.editor.graph.actions.producer.ArrayActionBoxProducer;
+import games.rednblack.editor.graph.actions.producer.ValueInterpolationBoxProducer;
 import games.rednblack.editor.graph.data.Graph;
 import games.rednblack.editor.graph.data.GraphConnection;
 import games.rednblack.editor.graph.data.GraphValidator;
 import games.rednblack.editor.graph.producer.GraphBoxProducer;
 import games.rednblack.editor.graph.actions.ActionFieldType;
-import games.rednblack.editor.graph.actions.config.EntityNodeConfiguration;
 import games.rednblack.editor.graph.producer.GraphBoxProducerImpl;
 import games.rednblack.editor.graph.producer.value.ValueBooleanBoxProducer;
 import games.rednblack.editor.graph.producer.value.ValueColorBoxProducer;
 import games.rednblack.editor.graph.producer.value.ValueFloatBoxProducer;
+import games.rednblack.editor.graph.producer.value.ValueVector2BoxProducer;
 import games.rednblack.editor.graph.property.PropertyBox;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
@@ -50,6 +47,8 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         graphBoxProducers.add(new ValueColorBoxProducer<>(new ValueColorNodeConfiguration()));
         graphBoxProducers.add(new ValueFloatBoxProducer<>(new ValueFloatNodeConfiguration()));
         graphBoxProducers.add(new ValueBooleanBoxProducer<>(new ValueBooleanNodeConfiguration()));
+        graphBoxProducers.add(new ValueVector2BoxProducer<>(new ValueVector2NodeConfiguration()));
+        graphBoxProducers.add(new ValueInterpolationBoxProducer(new ValueInterpolationNodeConfiguration()));
 
         try {
             graphBoxProducers.add(new ArrayActionBoxProducer(ParallelActionNodeConfiguration.class));
@@ -57,6 +56,22 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
             e.printStackTrace();
         }
+
+        graphBoxProducers.add(new GraphBoxProducerImpl<>(new MoveToActionNodeConfiguration()));
+        graphBoxProducers.add(new GraphBoxProducerImpl<>(new MoveByActionNodeConfiguration()));
+        graphBoxProducers.add(new GraphBoxProducerImpl<>(new SizeToActionNodeConfiguration()));
+        graphBoxProducers.add(new GraphBoxProducerImpl<>(new SizeByActionNodeConfiguration()));
+        graphBoxProducers.add(new GraphBoxProducerImpl<>(new ScaleToActionNodeConfiguration()));
+        graphBoxProducers.add(new GraphBoxProducerImpl<>(new ScaleByActionNodeConfiguration()));
+        graphBoxProducers.add(new GraphBoxProducerImpl<>(new RotateToActionNodeConfiguration()));
+        graphBoxProducers.add(new GraphBoxProducerImpl<>(new RotateByActionNodeConfiguration()));
+        graphBoxProducers.add(new GraphBoxProducerImpl<>(new RepeatActionNodeConfiguration()));
+        graphBoxProducers.add(new GraphBoxProducerImpl<>(new ForeverActionNodeConfiguration()));
+        graphBoxProducers.add(new GraphBoxProducerImpl<>(new FadeInActionNodeConfiguration()));
+        graphBoxProducers.add(new GraphBoxProducerImpl<>(new FadeOutActionNodeConfiguration()));
+        graphBoxProducers.add(new GraphBoxProducerImpl<>(new DelayActionNodeConfiguration()));
+        graphBoxProducers.add(new GraphBoxProducerImpl<>(new ColorActionNodeConfiguration()));
+        graphBoxProducers.add(new GraphBoxProducerImpl<>(new AlphaActionNodeConfiguration()));
 
         graphContainer = new GraphContainer<>(VisUI.getSkin(), new PopupMenuProducer() {
             @Override

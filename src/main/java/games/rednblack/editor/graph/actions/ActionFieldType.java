@@ -4,7 +4,7 @@ import games.rednblack.editor.graph.data.FieldType;
 import games.rednblack.editor.renderer.systems.action.data.*;
 
 public enum ActionFieldType implements FieldType {
-    Entity, Boolean, Float, Color, Action, Delay, Alpha, Parallel, Sequence;
+    Entity, Boolean, Float, Color, Vector2, Action, Delay, Alpha, Parallel, Sequence, Interpolation;
 
     @Override
     public boolean accepts(Object value) {
@@ -27,6 +27,10 @@ public enum ActionFieldType implements FieldType {
                 return value instanceof Boolean;
             case Float:
                 return value instanceof Float;
+            case Interpolation:
+                return value instanceof com.badlogic.gdx.math.Interpolation;
+            case Vector2:
+                return value instanceof com.badlogic.gdx.math.Vector2;
         }
 
         return false;
