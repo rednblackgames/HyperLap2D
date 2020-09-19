@@ -41,14 +41,7 @@ import java.awt.BasicStroke;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class GraphContainer<T extends FieldType> extends Table implements NavigableCanvas {
     private static final float CANVAS_GAP = 50f;
@@ -763,7 +756,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
             to.add(x, y);
 
             float xDiff = Math.min(150, Math.abs(from.x - to.x));
-            shapeRenderer.curve(from.x, from.y, from.x + xDiff, from.y, to.x - xDiff, to.y, to.x, to.y, 25);
+            shapeRenderer.curve(from.x, from.y, from.x + xDiff, from.y, to.x - xDiff, to.y, to.x, to.y, 50);
         }
 
         if (drawingFromConnector != null) {
@@ -1020,11 +1013,16 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         }
 
         public void connectorRemoved(String nodeId, String fieldId) {
+            List<GraphConnection> toRemove = new ArrayList<>();
             for (GraphConnection graphConnection : graphConnections) {
                 if ((graphConnection.getNodeFrom().equals(nodeId) && graphConnection.getFieldFrom().equals(fieldId))
                         || (graphConnection.getNodeTo().equals(nodeId) && graphConnection.getFieldTo().equals(fieldId))) {
-                    removeConnection(graphConnection);
+                    toRemove.add(graphConnection);
                 }
+            }
+
+            for (GraphConnection connection : toRemove) {
+                removeConnection(connection);
             }
         }
     }
