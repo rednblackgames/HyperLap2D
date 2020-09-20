@@ -469,9 +469,9 @@ public class ProjectManager extends Proxy {
 
                     String destName;
                     if (noFileNameWithoutFrame) {
-                        destName = targetPath + "Tmp" + File.separator + fileNameWithoutFrame + src.getName();
+                        destName = targetPath + "Tmp" + File.separator + fileNameWithoutFrame + src.getName().replaceAll("[_](?=.*[_])", "");
                     } else {
-                        destName = targetPath + "Tmp" + File.separator + src.getName();
+                        destName = targetPath + "Tmp" + File.separator + src.getName().replaceAll("[_](?=.*[_])", "");
                     }
 
                     File dest = new File(destName);
@@ -865,7 +865,6 @@ public class ProjectManager extends Proxy {
                         FileUtils.copyFile(copyFontFile, fontTarget);
                         FileUtils.copyFile(copyImageFile, imageTarget);
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         System.err.println(e.getMessage());
                         e.printStackTrace();
                     }
@@ -911,7 +910,6 @@ public class ProjectManager extends Proxy {
             FileUtils.copyDirectory(source, fileTarget);
             textureManager.loadCurrentProjectSkin(targetPath);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
