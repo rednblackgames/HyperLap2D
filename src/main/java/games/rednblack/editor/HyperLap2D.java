@@ -31,6 +31,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ObjectMap;
+import games.rednblack.editor.graph.ui.WhitePixel;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
@@ -69,6 +70,7 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
 
     @Override
     public void create() {
+        WhitePixel.initializeShared();
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf"));
         FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSansMono.ttf"));
 
@@ -227,6 +229,7 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
     @Override
     public boolean closeRequested() {
         facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> {
+            WhitePixel.disposeShared();
             sendNotification(MsgAPI.DISPOSE);
             VisUI.dispose();
 

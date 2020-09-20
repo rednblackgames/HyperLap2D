@@ -20,17 +20,20 @@ public class WhitePixel {
     public TextureRegion textureRegion;
 
     public WhitePixel() {
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.WHITE);
         pixmap.fill();
 
-        texture = new Texture(pixmap);
+        texture = new Texture(pixmap, true);
+        texture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.MipMapLinearLinear);
         textureRegion = new TextureRegion(texture);
     }
 
     public void dispose() {
-        texture.dispose();
-        texture = null;
-        textureRegion = null;
+        if (texture != null) {
+            texture.dispose();
+            texture = null;
+            textureRegion = null;
+        }
     }
 }

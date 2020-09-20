@@ -73,6 +73,7 @@ public class AboutDialog extends H2DDialog {
         contentTable.add(new LinkLabel("- LibGDX Spriter [https://github.com/Trixt0r/gdx-spriter]", "https://github.com/Trixt0r/gdx-spriter")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Physics Body Editor [https://www.aurelienribon.com]", "https://www.aurelienribon.com")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Typing Label [https://github.com/rafaskb/typing-label]", "https://github.com/rafaskb/typing-label")).padLeft(6).left().row();
+        contentTable.add(new LinkLabel("- Shape Drawer [https://github.com/earlygrey/shapedrawer]", "https://github.com/earlygrey/shapedrawer")).padLeft(6).left().row();
         contentTable.add("\n").row();
         VisTable legalTable = new VisTable();
         legalTable.add(new LinkLabel("See Contributors list", "https://github.com/rednblackgames/HyperLap2D/blob/master/AUTHORS"));

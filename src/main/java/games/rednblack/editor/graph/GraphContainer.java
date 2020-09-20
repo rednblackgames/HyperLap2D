@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.FocusManager;
 import games.rednblack.editor.graph.data.FieldType;
 import games.rednblack.editor.graph.data.GraphConnection;
@@ -28,6 +29,7 @@ import games.rednblack.editor.graph.data.GraphValidator;
 import games.rednblack.editor.graph.data.NodeConnector;
 import games.rednblack.editor.graph.data.NodeGroup;
 import games.rednblack.editor.graph.property.PropertyBox;
+import games.rednblack.editor.graph.ui.WhitePixel;
 import games.rednblack.editor.graph.ui.preview.NavigableCanvas;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.InputValidator;
@@ -36,6 +38,9 @@ import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
 import com.kotcrab.vis.ui.widget.VisWindow;
+import games.rednblack.editor.utils.poly.PolygonUtils;
+import space.earlygrey.shapedrawer.JoinType;
+import space.earlygrey.shapedrawer.ShapeDrawer;
 
 import java.awt.BasicStroke;
 import java.awt.Shape;
@@ -49,9 +54,10 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
     private static final float GROUP_LABEL_HEIGHT = 20f;
     private static final float CONNECTOR_LENGTH = 10;
     private static final float CONNECTOR_RADIUS = 5;
+    private static final int LINE_WEIGHT = 4;
 
     private static final Color GROUP_BACKGROUND_COLOR = new Color(1f, 1f, 1f, 0.3f);
-    private static final Color LINE_COLOR = Color.WHITE;
+    private static final Color LINE_COLOR = new Color(1, 1, 1,.7f);
     private static final Color VALID_CONNECTOR_COLOR = Color.WHITE;
     private static final Color INVALID_CONNECTOR_COLOR = Color.RED;
 
@@ -78,6 +84,8 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
     private Map<NodeGroupImpl, Rectangle> nodeGroups = new HashMap<>();
 
     private ShapeRenderer shapeRenderer;
+    private ShapeDrawer shapeDrawer;
+    private final Color shapeDrawerColor = new Color();
 
     private NodeConnector drawingFromConnector;
     private GraphValidator.ValidationResult<GraphBox<T>, GraphConnection, PropertyBox<T>, T> validationResult = new GraphValidator.ValidationResult<>();
@@ -650,29 +658,18 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        if (shapeDrawer == null) {
+            shapeDrawer = new ShapeDrawer(batch, WhitePixel.sharedInstance.textureRegion);
+        }
         validate();
         batch.end();
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         drawGroups(batch);
-        drawConnections(parentAlpha);
         Gdx.gl.glDisable(GL20.GL_BLEND);
         batch.begin();
+        drawShapeConnections(parentAlpha);
         super.draw(batch, parentAlpha);
-    }
-
-    @Override
-    public float getX() {
-        if (parentWindow != null)
-            return super.getX() + parentWindow.getX();
-        return super.getX();
-    }
-
-    @Override
-    public float getY() {
-        if (parentWindow != null)
-            return super.getY() + parentWindow.getY();
-        return super.getY();
     }
 
     private void drawGroups(Batch batch) {
@@ -701,16 +698,12 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         }
     }
 
-    private void drawConnections(float parentAlpha) {
+    private void drawShapeConnections(float parentAlpha) {
         float x = getX();
         float y = getY();
 
         Vector2 from = new Vector2();
         Vector2 to = new Vector2();
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(LINE_COLOR);
-        shapeRenderer.getColor().a = parentAlpha;
 
         for (Map.Entry<String, VisWindow> windowEntry : boxWindows.entrySet()) {
             String nodeId = windowEntry.getKey();
@@ -723,8 +716,12 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                     from.add(x, y);
                     to.add(x, y);
 
-                    shapeRenderer.line(from, to);
-                    shapeRenderer.circle(from.x, from.y, CONNECTOR_RADIUS);
+                    shapeDrawerColor.set(VALID_CONNECTOR_COLOR);
+                    shapeDrawerColor.a *= parentAlpha;
+                    shapeDrawer.setColor(shapeDrawerColor);
+
+                    shapeDrawer.line(from, to);
+                    shapeDrawer.circle(from.x, from.y, CONNECTOR_RADIUS);
                 }
             }
 
@@ -733,49 +730,34 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                 from.add(x, y);
                 to.add(x, y);
 
-                shapeRenderer.line(from, to);
-                shapeRenderer.circle(from.x, from.y, CONNECTOR_RADIUS);
+                shapeDrawerColor.set(VALID_CONNECTOR_COLOR);
+                shapeDrawerColor.a *= parentAlpha;
+                shapeDrawer.setColor(shapeDrawerColor);
+
+                shapeDrawer.line(from, to);
+                shapeDrawer.circle(from.x, from.y, CONNECTOR_RADIUS);
             }
         }
 
-        for (GraphConnection graphConnection : graphConnections) {
-            NodeConnector fromNode = getNodeInfo(graphConnection.getNodeFrom(), graphConnection.getFieldFrom());
-            Window fromWindow = boxWindows.get(fromNode.getNodeId());
-            GraphBoxOutputConnector<T> output = getGraphBoxById(fromNode.getNodeId()).getOutputs().get(fromNode.getFieldId());
-            calculateConnection(from, fromWindow, output);
-            NodeConnector toNode = getNodeInfo(graphConnection.getNodeTo(), graphConnection.getFieldTo());
-            Window toWindow = boxWindows.get(toNode.getNodeId());
-            GraphBoxInputConnector<T> input = getGraphBoxById(toNode.getNodeId()).getInputs().get(toNode.getFieldId());
-            calculateConnection(to, toWindow, input);
-
-            boolean error = validationResult.getErrorConnections().contains(graphConnection);
-            shapeRenderer.setColor(error ? INVALID_CONNECTOR_COLOR : VALID_CONNECTOR_COLOR);
-            shapeRenderer.getColor().a = parentAlpha;
-
-            from.add(x, y);
-            to.add(x, y);
-
-            float xDiff = Math.min(150, Math.abs(from.x - to.x));
-            shapeRenderer.curve(from.x, from.y, from.x + xDiff, from.y, to.x - xDiff, to.y, to.x, to.y, 50);
-        }
-
         if (drawingFromConnector != null) {
-            shapeRenderer.setColor(LINE_COLOR);
-            shapeRenderer.getColor().a = parentAlpha;
             GraphBox<T> drawingFromNode = getGraphBoxById(drawingFromConnector.getNodeId());
             Window fromWindow = getBoxWindow(drawingFromConnector.getNodeId());
             if (drawingFromNode.isInputField(drawingFromConnector.getFieldId())) {
                 GraphBoxInputConnector<T> input = drawingFromNode.getInputs().get(drawingFromConnector.getFieldId());
                 calculateConnection(from, fromWindow, input);
-                shapeRenderer.line(x + from.x, y + from.y, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+                shapeDrawerColor.set(LINE_COLOR);
+                shapeDrawerColor.a *= parentAlpha;
+                shapeDrawer.setColor(shapeDrawerColor);
+                shapeDrawer.line(x + from.x, y + from.y, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), LINE_WEIGHT);
             } else {
                 GraphBoxOutputConnector<T> output = drawingFromNode.getOutputs().get(drawingFromConnector.getFieldId());
                 calculateConnection(from, fromWindow, output);
-                shapeRenderer.line(x + from.x, y + from.y, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+                shapeDrawerColor.set(LINE_COLOR);
+                shapeDrawerColor.a *= parentAlpha;
+                shapeDrawer.setColor(shapeDrawerColor);
+                shapeDrawer.line(x + from.x, y + from.y, Gdx.input.getX() - parentWindow.getX(), Gdx.graphics.getHeight() - Gdx.input.getY()  - parentWindow.getY(), LINE_WEIGHT);
             }
         }
-
-        shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
         for (Map.Entry<String, VisWindow> windowEntry : boxWindows.entrySet()) {
             String nodeId = windowEntry.getKey();
@@ -795,15 +777,44 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                             break;
                         }
                     }
-                    shapeRenderer.setColor(isErrorous ? INVALID_CONNECTOR_COLOR : VALID_CONNECTOR_COLOR);
-                    shapeRenderer.getColor().a = parentAlpha;
 
-                    shapeRenderer.line(from, to);
-                    shapeRenderer.circle(from.x, from.y, CONNECTOR_RADIUS);
+                    shapeDrawerColor.set(isErrorous ? INVALID_CONNECTOR_COLOR : VALID_CONNECTOR_COLOR);
+                    shapeDrawerColor.a *= parentAlpha;
+                    shapeDrawer.setColor(shapeDrawerColor);
+                    shapeDrawer.line(from, to);
+                    shapeDrawer.filledCircle(from.x, from.y, CONNECTOR_RADIUS);
                 }
             }
         }
-        shapeRenderer.end();
+
+        for (GraphConnection graphConnection : graphConnections) {
+            NodeConnector fromNode = getNodeInfo(graphConnection.getNodeFrom(), graphConnection.getFieldFrom());
+            Window fromWindow = boxWindows.get(fromNode.getNodeId());
+            GraphBoxOutputConnector<T> output = getGraphBoxById(fromNode.getNodeId()).getOutputs().get(fromNode.getFieldId());
+            calculateConnection(from, fromWindow, output);
+            NodeConnector toNode = getNodeInfo(graphConnection.getNodeTo(), graphConnection.getFieldTo());
+            Window toWindow = boxWindows.get(toNode.getNodeId());
+            GraphBoxInputConnector<T> input = getGraphBoxById(toNode.getNodeId()).getInputs().get(toNode.getFieldId());
+            calculateConnection(to, toWindow, input);
+
+            boolean error = validationResult.getErrorConnections().contains(graphConnection);
+
+            from.add(x, y);
+            to.add(x, y);
+
+            float xDiff = Math.min(150, Math.abs(from.x - to.x));
+            to.y = from.y - to.y == 0 ? to.y + 1 : to.y;
+
+            shapeDrawerColor.set(error ? INVALID_CONNECTOR_COLOR : LINE_COLOR);
+            shapeDrawerColor.a *= parentAlpha;
+            shapeDrawer.setColor(shapeDrawerColor);
+
+            Array<Vector2> path = PolygonUtils.getCurvedLine(from, to,
+                    PolygonUtils.vector2Pool.obtain().set(from.x + xDiff, from.y),
+                    PolygonUtils.vector2Pool.obtain().set(to.x - xDiff, to.y), 50);
+            shapeDrawer.path(path, LINE_WEIGHT, JoinType.SMOOTH,true);
+            PolygonUtils.vector2Pool.freeAll(path);
+        }
     }
 
     private void calculateConnector(Vector2 from, Vector2 to, Window window, GraphBoxOutputConnector<T> connector) {

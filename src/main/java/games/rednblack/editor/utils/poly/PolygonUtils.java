@@ -20,6 +20,9 @@ package games.rednblack.editor.utils.poly;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
+import games.rednblack.editor.utils.Vector2Pool;
 import games.rednblack.editor.view.stage.Sandbox;
 
 import java.util.HashSet;
@@ -115,5 +118,53 @@ public class PolygonUtils {
 		int[] result = problems.stream().mapToInt(i->i).toArray();
 
 		return result;
+	}
+
+	public static Pool<Vector2> vector2Pool = new Vector2Pool(60);
+	private static final Array<Vector2> tmpResult = new Array<>();
+
+	public static Array<Vector2> getCurvedLine(Vector2 from, Vector2 to, Vector2 center1, Vector2 center2, int segments) {
+		tmpResult.clear();
+
+		float subdiv_step = 1f / segments;
+		float subdiv_step2 = subdiv_step * subdiv_step;
+		float subdiv_step3 = subdiv_step * subdiv_step * subdiv_step;
+
+		float pre1 = 3 * subdiv_step;
+		float pre2 = 3 * subdiv_step2;
+		float pre4 = 6 * subdiv_step2;
+		float pre5 = 6 * subdiv_step3;
+
+		float tmp1x = from.x - center1.x * 2 + center2.x;
+		float tmp1y = from.y - center1.y * 2 + center2.y;
+
+		float tmp2x = (center1.x - center2.x) * 3 - from.x + to.x;
+		float tmp2y = (center1.y - center2.y) * 3 - from.y + to.y;
+
+		float fx = from.x;
+		float fy = from.y;
+
+		float dfx = (center1.x - from.x) * pre1 + tmp1x * pre2 + tmp2x * subdiv_step3;
+		float dfy = (center1.y - from.y) * pre1 + tmp1y * pre2 + tmp2y * subdiv_step3;
+
+		float ddfx = tmp1x * pre4 + tmp2x * pre5;
+		float ddfy = tmp1y * pre4 + tmp2y * pre5;
+
+		float dddfx = tmp2x * pre5;
+		float dddfy = tmp2y * pre5;
+
+		while (segments-- > 0) {
+			tmpResult.add(vector2Pool.obtain().set(fx, fy));
+			fx += dfx;
+			fy += dfy;
+			dfx += ddfx;
+			dfy += ddfy;
+			ddfx += dddfx;
+			ddfy += dddfy;
+		}
+		tmpResult.add(vector2Pool.obtain().set(fx, fy));
+		tmpResult.add(vector2Pool.obtain().set(to.x, to.y));
+
+		return tmpResult;
 	}
 }
