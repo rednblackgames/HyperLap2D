@@ -4,9 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.SnapshotArray;
 import games.rednblack.editor.renderer.components.*;
@@ -28,12 +26,20 @@ public class CompositeSystem extends IteratingSystem {
     private final Vector2 p4 = new Vector2();
     private final Vector2 tmpBoundPoints = new Vector2();
 
+    private final Vector2[] tmpVectorArray = new Vector2[5];
+
     public CompositeSystem() {
         super(Family.all(CompositeTransformComponent.class).get());
         dimensionsMapper = ComponentMapper.getFor(DimensionsComponent.class);
         transformMapper = ComponentMapper.getFor(TransformComponent.class);
         nodeMapper = ComponentMapper.getFor(NodeComponent.class);
         compositeMapper = ComponentMapper.getFor(CompositeTransformComponent.class);
+
+        tmpVectorArray[0] = p1;
+        tmpVectorArray[1] = p2;
+        tmpVectorArray[2] = p3;
+        tmpVectorArray[3] = p4;
+        tmpVectorArray[4] = tmpBoundPoints;
     }
 
     @Override
@@ -76,16 +82,16 @@ public class CompositeSystem extends IteratingSystem {
             p4.set(x, y + height).mul(transMat);
 
             tmpBoundPoints.set(lowerX, 0);
-            lowerX = getX(MinMaxOp.MIN, p1, p2, p3, p4, tmpBoundPoints);
+            lowerX = getX(MinMaxOp.MIN, tmpVectorArray);
 
             tmpBoundPoints.set(upperX, 0);
-            upperX = getX(MinMaxOp.MAX, p1, p2, p3, p4, tmpBoundPoints);
+            upperX = getX(MinMaxOp.MAX, tmpVectorArray);
 
             tmpBoundPoints.set(0, lowerY);
-            lowerY = getY(MinMaxOp.MIN, p1, p2, p3, p4, tmpBoundPoints);
+            lowerY = getY(MinMaxOp.MIN, tmpVectorArray);
 
             tmpBoundPoints.set(0, upperY);
-            upperY = getY(MinMaxOp.MAX, p1, p2, p3, p4, tmpBoundPoints);
+            upperY = getY(MinMaxOp.MAX, tmpVectorArray);
         }
 
         for (Entity entity : entities) {
@@ -102,7 +108,7 @@ public class CompositeSystem extends IteratingSystem {
         dimensionsComponent.boundBox.set(lowerX, lowerY, dimensionsComponent.width, dimensionsComponent.height);
     }
 
-    private float getX(MinMaxOp op, Vector2... points) {
+    private float getX(MinMaxOp op, Vector2[] points) {
         float pointX = points[0].x;
         for (Vector2 point : points) {
             pointX = op.compare(pointX, point.x);
@@ -110,7 +116,7 @@ public class CompositeSystem extends IteratingSystem {
         return pointX;
     }
 
-    private float getY(MinMaxOp op, Vector2... points) {
+    private float getY(MinMaxOp op, Vector2[] points) {
         float pointY = points[0].y;
         for (Vector2 point : points) {
             pointY = op.compare(pointY, point.y);
@@ -122,14 +128,14 @@ public class CompositeSystem extends IteratingSystem {
         MIN("<") {
             @Override
             public float compare(float a, float b) {
-                return (a < b) ? a : b;
+                return Math.min(a, b);
             }
         },
 
         MAX(">") {
             @Override
             public float compare(float a, float b) {
-                return (a > b) ? a : b;
+                return Math.max(a, b);
             }
         };
 
