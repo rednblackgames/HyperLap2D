@@ -13,7 +13,7 @@ public class ForeverActionNodeConfiguration extends NodeConfigurationImpl<Action
         super("Action", "Forever", "Action");
 
         addNodeInput(
-                new GraphNodeInputImpl<ActionFieldType>("action", "Action", true, Action));
+                new GraphNodeInputImpl<ActionFieldType>("action0", "Action", true, Action));
 
         addNodeOutput(
                 new GraphNodeOutputImpl<>("action", "Action", Action));

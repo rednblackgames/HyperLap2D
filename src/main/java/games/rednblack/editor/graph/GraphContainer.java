@@ -57,7 +57,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
     private static final int LINE_WEIGHT = 4;
 
     private static final Color GROUP_BACKGROUND_COLOR = new Color(1f, 1f, 1f, 0.3f);
-    private static final Color LINE_COLOR = new Color(1, 1, 1,.7f);
+    private static final Color LINE_COLOR = new Color(0x607d8bb0);
     private static final Color VALID_CONNECTOR_COLOR = Color.WHITE;
     private static final Color INVALID_CONNECTOR_COLOR = Color.RED;
 
@@ -748,14 +748,14 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                 shapeDrawerColor.set(LINE_COLOR);
                 shapeDrawerColor.a *= parentAlpha;
                 shapeDrawer.setColor(shapeDrawerColor);
-                shapeDrawer.line(x + from.x, y + from.y, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), LINE_WEIGHT);
+                shapeDrawer.line(x + from.x, y + from.y, Gdx.input.getX() - parentWindow.getX(), Gdx.graphics.getHeight() - Gdx.input.getY() - parentWindow.getY(), LINE_WEIGHT);
             } else {
                 GraphBoxOutputConnector<T> output = drawingFromNode.getOutputs().get(drawingFromConnector.getFieldId());
                 calculateConnection(from, fromWindow, output);
                 shapeDrawerColor.set(LINE_COLOR);
                 shapeDrawerColor.a *= parentAlpha;
                 shapeDrawer.setColor(shapeDrawerColor);
-                shapeDrawer.line(x + from.x, y + from.y, Gdx.input.getX() - parentWindow.getX(), Gdx.graphics.getHeight() - Gdx.input.getY()  - parentWindow.getY(), LINE_WEIGHT);
+                shapeDrawer.line(x + from.x, y + from.y, Gdx.input.getX() - parentWindow.getX(), Gdx.graphics.getHeight() - Gdx.input.getY() - parentWindow.getY(), LINE_WEIGHT);
             }
         }
 

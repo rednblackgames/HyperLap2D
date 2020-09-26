@@ -16,7 +16,7 @@ public class RepeatActionNodeConfiguration extends NodeConfigurationImpl<ActionF
                 new GraphNodeInputImpl<ActionFieldType>("count", "Count", true, ActionFieldType.Float));
 
         addNodeInput(
-                new GraphNodeInputImpl<ActionFieldType>("action", "Action", true, Action));
+                new GraphNodeInputImpl<ActionFieldType>("action0", "Action", true, Action));
 
         addNodeOutput(
                 new GraphNodeOutputImpl<>("action", "Action", Action));
