@@ -132,6 +132,7 @@ runtime {
     jpackage {
         mainJar = dist.archiveFileName.get()
         imageOptions += ['--app-version', getVersion(), '--vendor', 'Red & Black Games', '--description', 'HyperLap2D Editor', '--name', 'HyperLap2D']
+        installerOptions += ['--license-file', 'LICENSE']
         if (osName.contains('windows')) {
             imageOptions += ["--icon", file("icons/icon.ico")]
             installerType = 'msi'
