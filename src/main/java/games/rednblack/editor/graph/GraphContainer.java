@@ -3,10 +3,8 @@ package games.rednblack.editor.graph;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -657,7 +655,13 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
     @Override
     public void draw(Batch batch, float parentAlpha) {
         if (shapeDrawer == null) {
-            shapeDrawer = new ShapeDrawer(batch, WhitePixel.sharedInstance.textureRegion);
+            shapeDrawer = new ShapeDrawer(batch, WhitePixel.sharedInstance.textureRegion){
+                /* OPTIONAL: Ensuring a certain smoothness. */
+                @Override
+                protected int estimateSidesRequired(float radiusX, float radiusY) {
+                    return 200;
+                }
+            };
         }
         validate();
         drawShapeGroups(batch, parentAlpha);
@@ -694,8 +698,8 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         float x = getX();
         float y = getY();
 
-        Vector2 from = new Vector2();
-        Vector2 to = new Vector2();
+        Vector2 from = PolygonUtils.vector2Pool.obtain();
+        Vector2 to = PolygonUtils.vector2Pool.obtain();
 
         for (Map.Entry<String, VisWindow> windowEntry : boxWindows.entrySet()) {
             String nodeId = windowEntry.getKey();
@@ -801,12 +805,21 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
             shapeDrawerColor.a *= parentAlpha;
             shapeDrawer.setColor(shapeDrawerColor);
 
-            Array<Vector2> path = PolygonUtils.getCurvedLine(from, to,
-                    PolygonUtils.vector2Pool.obtain().set(from.x + xDiff, from.y),
-                    PolygonUtils.vector2Pool.obtain().set(to.x - xDiff, to.y), 50);
+            Vector2 center1 = PolygonUtils.vector2Pool.obtain();
+            center1.set(from.x + xDiff, from.y);
+            Vector2 center2 = PolygonUtils.vector2Pool.obtain();
+            center2.set(to.x - xDiff, to.y);
+
+            Array<Vector2> path = PolygonUtils.getCurvedLine(from, to, center1, center2, 50);
             shapeDrawer.path(path, LINE_WEIGHT, JoinType.SMOOTH,true);
+
             PolygonUtils.vector2Pool.freeAll(path);
+            PolygonUtils.vector2Pool.free(center1);
+            PolygonUtils.vector2Pool.free(center2);
         }
+
+        PolygonUtils.vector2Pool.free(from);
+        PolygonUtils.vector2Pool.free(to);
     }
 
     private void calculateConnector(Vector2 from, Vector2 to, Window window, GraphBoxOutputConnector<T> connector) {

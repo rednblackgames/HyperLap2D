@@ -54,7 +54,7 @@ public class ValueFloatBoxProducer<T extends FieldType> extends ValueGraphBoxPro
                 });
 
         HorizontalGroup horizontalGroup = new HorizontalGroup();
-        horizontalGroup.addActor(new Label("X: ", skin));
+        horizontalGroup.addActor(new Label("Value: ", skin));
         horizontalGroup.addActor(v1Input);
 
         GraphBoxPartImpl<T> colorPart = new GraphBoxPartImpl<T>(horizontalGroup,

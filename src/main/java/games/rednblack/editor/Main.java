@@ -50,6 +50,7 @@ public class Main {
         config.setIdleFPS(60);
         config.setTitle("HyperLap2D");
         config.setWindowIcon("hyperlap_icon_96.png");
+        config.setBackBufferConfig(8,8,8,8,24,8,4);
 
         //Thread.currentThread().setUncaughtExceptionHandler(new CustomExceptionHandler());
 
