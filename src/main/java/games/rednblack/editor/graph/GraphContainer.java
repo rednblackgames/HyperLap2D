@@ -39,6 +39,7 @@ import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
 import com.kotcrab.vis.ui.widget.VisWindow;
 import games.rednblack.editor.utils.poly.PolygonUtils;
+import games.rednblack.editor.view.stage.Sandbox;
 import space.earlygrey.shapedrawer.JoinType;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
@@ -83,7 +84,6 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
     private Map<GraphConnection, Shape> connections = new HashMap<>();
     private Map<NodeGroupImpl, Rectangle> nodeGroups = new HashMap<>();
 
-    private ShapeRenderer shapeRenderer;
     private ShapeDrawer shapeDrawer;
     private final Color shapeDrawerColor = new Color();
 
@@ -96,8 +96,6 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
 
     public GraphContainer(Skin skin, final PopupMenuProducer popupMenuProducer) {
         this.skin = skin;
-        shapeRenderer = new ShapeRenderer();
-        shapeRenderer.setAutoShapeType(true);
 
         setClip(true);
         setTouchable(Touchable.enabled);
@@ -130,10 +128,10 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                                             }
                                         });
                                 popupMenu.addItem(remove);
-                                showPopupMenu(popupMenu, x, y);
+                                showPopupMenu(popupMenu);
                             } else {
                                 PopupMenu popupMenu = popupMenuProducer.createPopupMenu(x, y);
-                                showPopupMenu(popupMenu, x, y);
+                                showPopupMenu(popupMenu);
                             }
                         }
                     }
@@ -169,6 +167,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                         }
                     }
                 }
+                processLeftClick(x, y);
             }
 
             @Override
@@ -217,6 +216,8 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
 
     @Override
     public void navigateTo(float x, float y) {
+        if (drawingFromConnector != null)
+            return;
         x = MathUtils.round(x);
         y = MathUtils.round(y);
 
@@ -233,11 +234,9 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         windowsMoved();
     }
 
-    private void showPopupMenu(PopupMenu popupMenu, float x, float y) {
-        popupMenu.setPosition(x, y - popupMenu.getHeight());
-        if (getHeight() - popupMenu.getY() > getHeight())
-            popupMenu.setY(popupMenu.getY() + popupMenu.getHeight());
-        addActor(popupMenu);
+    private void showPopupMenu(PopupMenu popupMenu) {
+        popupMenu.setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY() - popupMenu.getHeight());
+        Sandbox.getInstance().getUIStage().addActor(popupMenu);
     }
 
     @Override
@@ -554,7 +553,6 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
     @Override
     public void layout() {
         super.layout();
-        updateShadeRenderer();
         recreateClickableShapes();
         updateNodeGroups();
         updateCanvas(false);
@@ -662,31 +660,26 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
             shapeDrawer = new ShapeDrawer(batch, WhitePixel.sharedInstance.textureRegion);
         }
         validate();
-        batch.end();
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        drawGroups(batch);
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-        batch.begin();
+        drawShapeGroups(batch, parentAlpha);
         drawShapeConnections(parentAlpha);
         super.draw(batch, parentAlpha);
     }
 
-    private void drawGroups(Batch batch) {
+    private void drawShapeGroups(Batch batch, float parentAlpha) {
         if (!nodeGroups.isEmpty()) {
             float x = getX();
             float y = getY();
 
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(GROUP_BACKGROUND_COLOR);
+            shapeDrawerColor.set(GROUP_BACKGROUND_COLOR);
+            shapeDrawerColor.a *= parentAlpha;
+            shapeDrawer.setColor(shapeDrawerColor);
+
             for (Map.Entry<NodeGroupImpl, Rectangle> nodeGroupEntry : nodeGroups.entrySet()) {
                 Rectangle rectangle = nodeGroupEntry.getValue();
-                shapeRenderer.rect(x + rectangle.x, y + rectangle.y, rectangle.width, rectangle.height);
+                shapeDrawer.filledRectangle(x + rectangle.x, y + rectangle.y, rectangle.width, rectangle.height);
             }
-            shapeRenderer.end();
 
             BitmapFont font = skin.getFont("default-font");
-            batch.begin();
             for (Map.Entry<NodeGroupImpl, Rectangle> nodeGroupEntry : nodeGroups.entrySet()) {
                 NodeGroupImpl nodeGroupImpl = nodeGroupEntry.getKey();
                 Rectangle rectangle = nodeGroupEntry.getValue();
@@ -694,7 +687,6 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                 font.draw(batch, name, x + rectangle.x + NODE_GROUP_PADDING, y + rectangle.y + rectangle.height - NODE_GROUP_PADDING,
                         0, name.length(), rectangle.width - NODE_GROUP_PADDING * 2, Align.center, false, "...");
             }
-            batch.end();
         }
     }
 
@@ -872,11 +864,6 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         return nodeGroups.keySet();
     }
 
-    private void updateShadeRenderer() {
-        shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        shapeRenderer.updateMatrices();
-    }
-
     private void calculateConnection(Vector2 position, Window window, GraphBoxInputConnector<T> connector) {
         float windowX = window.getX();
         float windowY = window.getY();
@@ -904,7 +891,6 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
     }
 
     public void dispose() {
-        shapeRenderer.dispose();
         for (GraphBox<T> graphBox : graphBoxes.values()) {
             graphBox.dispose();
         }

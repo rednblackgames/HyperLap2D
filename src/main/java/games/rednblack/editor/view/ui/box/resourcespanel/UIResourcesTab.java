@@ -32,7 +32,7 @@ import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
  */
 public abstract class UIResourcesTab extends ImageTab {
 
-    private final VisTable contentTable;
+    protected final VisTable contentTable;
 
     public String searchString = "";
 

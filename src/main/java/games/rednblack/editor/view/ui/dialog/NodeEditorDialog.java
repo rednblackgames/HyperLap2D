@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.graph.*;
 import games.rednblack.editor.graph.actions.config.*;
 import games.rednblack.editor.graph.actions.config.value.*;
@@ -25,6 +26,7 @@ import games.rednblack.editor.graph.producer.value.ValueVector2BoxProducer;
 import games.rednblack.editor.graph.property.PropertyBox;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashSet;
@@ -89,11 +91,9 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
 
         GraphBoxProducerImpl<ActionFieldType> addActionProducer = new GraphBoxProducerImpl<>(new AddActionNodeConfiguration());
         graphBox = addActionProducer.createDefault(VisUI.getSkin(), "end");
-        graphContainer.addGraphBox(graphBox, "Add Action", false, getPrefWidth() - 190, 0);
+        graphContainer.addGraphBox(graphBox, "Add Action", false, getPrefWidth() - 270, 0);
 
         getContentTable().add(graphContainer).grow();
-
-        pack();
 
         addListener(
                 new GraphChangedListener() {
@@ -112,6 +112,35 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
                 });
 
         updatePipelineValidation();
+
+        VisTextButton cancelButton = StandardWidgetsFactory.createTextButton("Cancel");
+        cancelButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                close();
+            }
+        });
+        VisTextButton groupButton = StandardWidgetsFactory.createTextButton("Create Group");
+        groupButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                graphContainer.createNodeGroup();
+            }
+        });
+        VisTextButton saveButton = StandardWidgetsFactory.createTextButton("Save");
+        saveButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                close();
+            }
+        });
+
+        getButtonsTable().add(groupButton).width(140).pad(2).right();
+        getButtonsTable().add(cancelButton).width(65).pad(2).right();
+        getButtonsTable().add(saveButton).width(65).pad(2).right();
+        getCell(getButtonsTable()).right();
+
+        pack();
     }
 
     private void updatePipelineValidation() {

@@ -40,6 +40,7 @@ public class MsgAPI {
     public static final String SAVE_EDITOR_CONFIG = GLOBAL_PREFIX + ".SAVE_EDITOR_CONFIG";
 
     public static final String OPEN_CODE_EDITOR = GLOBAL_PREFIX + ".OPEN_CODE_EDITOR";
+    public static final String OPEN_NODE_EDITOR = GLOBAL_PREFIX + ".OPEN_NODE_EDITOR";
 
     public static final String PROJECT_FILE_CREATED = GLOBAL_PREFIX + ".PROJECT_FILE_CREATED";
     public static final String PROJECT_FILE_DELETED = GLOBAL_PREFIX + ".PROJECT_FILE_DELETED";
