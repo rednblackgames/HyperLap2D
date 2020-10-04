@@ -10,7 +10,7 @@ import static games.rednblack.editor.graph.actions.ActionFieldType.Action;
 public class RepeatActionNodeConfiguration extends NodeConfigurationImpl<ActionFieldType> {
 
     public RepeatActionNodeConfiguration() {
-        super("Action", "Repeat", "Action");
+        super("RepeatAction", "Repeat", "Action");
 
         addNodeInput(
                 new GraphNodeInputImpl<ActionFieldType>("count", "Count", true, ActionFieldType.Float));

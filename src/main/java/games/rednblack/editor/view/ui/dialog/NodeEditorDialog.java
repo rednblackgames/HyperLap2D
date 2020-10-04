@@ -8,6 +8,7 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.graph.*;
 import games.rednblack.editor.graph.actions.config.*;
 import games.rednblack.editor.graph.actions.config.value.*;
@@ -24,19 +25,25 @@ import games.rednblack.editor.graph.producer.value.ValueColorBoxProducer;
 import games.rednblack.editor.graph.producer.value.ValueFloatBoxProducer;
 import games.rednblack.editor.graph.producer.value.ValueVector2BoxProducer;
 import games.rednblack.editor.graph.property.PropertyBox;
+import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<ActionFieldType>, GraphConnection, PropertyBox<ActionFieldType>, ActionFieldType> {
 
     private GraphValidator<GraphBox<ActionFieldType>, GraphConnection, PropertyBox<ActionFieldType>, ActionFieldType> graphValidator = new GraphValidator<>();
     private final GraphContainer<ActionFieldType> graphContainer;
+
+    private final GraphBoxProducerImpl<ActionFieldType> entityProducer;
+    private final GraphBoxProducerImpl<ActionFieldType> addActionProducer;
 
     private final Set<GraphBoxProducer<ActionFieldType>> graphBoxProducers = new LinkedHashSet<>();
 
@@ -45,6 +52,12 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
 
         addCloseButton();
         setResizable(true);
+
+        entityProducer = new GraphBoxProducerImpl<>(new EntityNodeConfiguration());
+        addActionProducer = new GraphBoxProducerImpl<>(new AddActionNodeConfiguration());
+
+        graphBoxProducers.add(entityProducer);
+        graphBoxProducers.add(addActionProducer);
 
         graphBoxProducers.add(new ValueColorBoxProducer<>(new ValueColorNodeConfiguration()));
         graphBoxProducers.add(new ValueFloatBoxProducer<>(new ValueFloatNodeConfiguration()));
@@ -82,16 +95,6 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
             }
         });
         graphContainer.setParentWindow(this);
-
-        GraphBoxProducerImpl<ActionFieldType> entityProducer = new GraphBoxProducerImpl<>(new EntityNodeConfiguration());
-        String id = UUID.randomUUID().toString().replace("-", "");
-        GraphBox<ActionFieldType> graphBox = entityProducer.createDefault(VisUI.getSkin(), id);
-        graphContainer.addGraphBox(graphBox, "Entity", false, 0, 0);
-
-
-        GraphBoxProducerImpl<ActionFieldType> addActionProducer = new GraphBoxProducerImpl<>(new AddActionNodeConfiguration());
-        graphBox = addActionProducer.createDefault(VisUI.getSkin(), "end");
-        graphContainer.addGraphBox(graphBox, "Add Action", false, getPrefWidth() - 270, 0);
 
         getContentTable().add(graphContainer).grow();
 
@@ -131,6 +134,9 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+                HashMap<String, String> items = projectManager.currentProjectInfoVO.libraryActions;
+                items.put("test", graphContainer.serializeGraph().toJSONString());
                 close();
             }
         });
@@ -229,5 +235,69 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
     @Override
     public Iterable<? extends PropertyBox<ActionFieldType>> getProperties() {
         return null;
+    }
+
+    private GraphBoxProducer<ActionFieldType> findProducerByType(String type) {
+        for (GraphBoxProducer<ActionFieldType> graphBoxProducer : graphBoxProducers) {
+            if (graphBoxProducer.getType().equals(type))
+                return graphBoxProducer;
+        }
+        return null;
+    }
+
+    public void loadGraph(JSONObject graph) {
+        for (JSONObject object : (List<JSONObject>) graph.get("nodes")) {
+            String type = (String) object.get("type");
+            String id = (String) object.get("id");
+            float x = ((Number) object.get("x")).floatValue();
+            float y = ((Number) object.get("y")).floatValue();
+            JSONObject data = (JSONObject) object.get("data");
+
+            GraphBoxProducer<ActionFieldType> producer = findProducerByType(type);
+            if (producer == null)
+                throw new IllegalArgumentException("Unable to find pipeline producer for type: " + type);
+            GraphBox<ActionFieldType> graphBox = producer.createPipelineGraphBox(skin, id, data);
+            graphContainer.addGraphBox(graphBox, producer.getName(), producer.isCloseable(), x, y);
+        }
+        for (JSONObject connection : (List<JSONObject>) graph.get("connections")) {
+            String fromNode = (String) connection.get("fromNode");
+            String fromField = (String) connection.get("fromField");
+            String toNode = (String) connection.get("toNode");
+            String toField = (String) connection.get("toField");
+
+            graphContainer.addGraphConnection(fromNode, fromField, toNode, toField);
+        }
+        List<JSONObject> groups = (List<JSONObject>) graph.get("groups");
+        if (groups != null) {
+            for (JSONObject group : groups) {
+                String name = (String) group.get("name");
+                JSONArray nodes = (JSONArray) group.get("nodes");
+                Set<String> nodeIds = new HashSet<>(nodes);
+                graphContainer.addNodeGroup(name, nodeIds);
+            }
+        }
+    }
+
+    public void loadData() {
+        boolean loadTest = true;
+        if (!loadTest) {
+            String id = UUID.randomUUID().toString().replace("-", "");
+            GraphBox<ActionFieldType> graphBox = entityProducer.createDefault(VisUI.getSkin(), id);
+            graphContainer.addGraphBox(graphBox, "Entity", false, 0, 0);
+
+            graphBox = addActionProducer.createDefault(VisUI.getSkin(), "end");
+            graphContainer.addGraphBox(graphBox, "Add Action", false, getPrefWidth() - 270, 0);
+        } else {
+            ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+            HashMap<String, String> items = projectManager.currentProjectInfoVO.libraryActions;
+            JSONParser parser = new JSONParser();
+            JSONObject test;
+            try {
+                test = (JSONObject) parser.parse(items.get("test"));
+                loadGraph(test);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

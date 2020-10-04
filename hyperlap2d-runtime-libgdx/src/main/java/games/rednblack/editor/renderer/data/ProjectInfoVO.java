@@ -1,8 +1,6 @@
 package games.rednblack.editor.renderer.data;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 
 import com.badlogic.gdx.utils.Array;
@@ -18,7 +16,8 @@ public class ProjectInfoVO {
     public Array<ResolutionEntryVO> resolutions = new Array<ResolutionEntryVO>();
     public ArrayList<SceneVO> scenes = new ArrayList<SceneVO>();
 
-    public HashMap<String, CompositeItemVO> libraryItems = new HashMap<String, CompositeItemVO>();
+    public HashMap<String, CompositeItemVO> libraryItems = new HashMap<>();
+    public HashMap<String, String> libraryActions = new HashMap<>();
 
     public String constructJsonString() {
         String str = "";

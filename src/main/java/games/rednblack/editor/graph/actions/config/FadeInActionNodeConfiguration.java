@@ -10,7 +10,7 @@ import static games.rednblack.editor.graph.actions.ActionFieldType.*;
 public class FadeInActionNodeConfiguration extends NodeConfigurationImpl<ActionFieldType> {
 
     public FadeInActionNodeConfiguration() {
-        super("Action", "Fade In", "Action");
+        super("FadeInAction", "Fade In", "Action");
 
         addNodeInput(
                 new GraphNodeInputImpl<ActionFieldType>("duration", "Duration", true, Float));

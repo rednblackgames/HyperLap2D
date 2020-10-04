@@ -10,7 +10,7 @@ import static games.rednblack.editor.graph.actions.ActionFieldType.Action;
 public class ForeverActionNodeConfiguration extends NodeConfigurationImpl<ActionFieldType> {
 
     public ForeverActionNodeConfiguration() {
-        super("Action", "Forever", "Action");
+        super("ForeverAction", "Forever", "Action");
 
         addNodeInput(
                 new GraphNodeInputImpl<ActionFieldType>("action0", "Action", true, Action));

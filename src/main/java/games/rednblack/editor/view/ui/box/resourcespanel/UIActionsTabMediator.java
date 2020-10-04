@@ -1,6 +1,13 @@
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
+import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
+import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.LibraryItemResource;
 import org.puremvc.java.interfaces.INotification;
+
+import java.util.HashMap;
 
 public class UIActionsTabMediator extends UIResourcesTabMediator<UIActionsTab> {
 
@@ -31,18 +38,16 @@ public class UIActionsTabMediator extends UIResourcesTabMediator<UIActionsTab> {
 
     @Override
     protected void initList(String searchText) {
-        /*searchText = searchText.toLowerCase();
+        searchText = searchText.toLowerCase();
         ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
-        HashMap<String, CompositeItemVO> items = projectManager.currentProjectInfoVO.libraryItems;
+        HashMap<String, String> items = projectManager.currentProjectInfoVO.libraryActions;
 
         Array<DraggableResource> itemArray = new Array<>();
         for (String key : items.keySet()) {
             if(!key.toLowerCase().contains(searchText))continue;
             DraggableResource draggableResource = new DraggableResource(new LibraryItemResource(key));
-            draggableResource.setFactoryFunction(ItemFactory.get()::createItemFromLibrary);
-            draggableResource.initDragDrop();
             itemArray.add(draggableResource);
         }
-        viewComponent.setItems(itemArray);*/
+        viewComponent.setItems(itemArray);
     }
 }

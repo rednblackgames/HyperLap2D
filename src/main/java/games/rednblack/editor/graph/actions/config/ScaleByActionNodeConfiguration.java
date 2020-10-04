@@ -11,7 +11,7 @@ import static games.rednblack.editor.graph.actions.ActionFieldType.Interpolation
 public class ScaleByActionNodeConfiguration extends NodeConfigurationImpl<ActionFieldType> {
 
     public ScaleByActionNodeConfiguration() {
-        super("Action", "Scale By", "Action");
+        super("ScaleByAction", "Scale By", "Action");
 
         addNodeInput(
                 new GraphNodeInputImpl<ActionFieldType>("scale", "Scale", true, ActionFieldType.Vector2));

@@ -10,7 +10,7 @@ import static games.rednblack.editor.graph.actions.ActionFieldType.*;
 public class AlphaActionNodeConfiguration extends NodeConfigurationImpl<ActionFieldType> {
 
     public AlphaActionNodeConfiguration() {
-        super("Action", "Alpha", "Action");
+        super("AlphaAction", "Alpha", "Action");
 
         addNodeInput(
                 new GraphNodeInputImpl<ActionFieldType>("alpha", "Alpha", true, Float));

@@ -38,6 +38,8 @@ import com.kotcrab.vis.ui.widget.PopupMenu;
 import com.kotcrab.vis.ui.widget.VisWindow;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.view.stage.Sandbox;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import space.earlygrey.shapedrawer.JoinType;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
@@ -542,7 +544,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         NodeConnector nodeFrom = getNodeInfo(fromNode, fromField);
         NodeConnector nodeTo = getNodeInfo(toNode, toField);
         if (nodeFrom == null || nodeTo == null)
-            throw new IllegalArgumentException("Can't find node");
+            throw new IllegalArgumentException("Can't find node: (" + fromNode + ";" + fromField + ") -> (" + toNode + ";" + toField + ")");
         graphConnections.add(new GraphConnectionImpl(fromNode, fromField, toNode, toField));
         fire(new GraphChangedEvent(true, false));
         invalidate();
@@ -1037,4 +1039,51 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         }
     }
 
+    public JSONObject serializeGraph() {
+        JSONObject graph = new JSONObject();
+        graph.put("version", 1);
+
+        JSONArray objects = new JSONArray();
+        Vector2 tmp = new Vector2();
+        getCanvasPosition(tmp);
+        for (GraphBox<T> graphBox : getGraphBoxes()) {
+            Window window = getBoxWindow(graphBox.getId());
+            JSONObject object = new JSONObject();
+            object.put("id", graphBox.getId());
+            object.put("type", graphBox.getType());
+            object.put("x", tmp.x + window.getX());
+            object.put("y", tmp.y + window.getY());
+
+            JSONObject data = graphBox.getData();
+            if (data != null)
+                object.put("data", data);
+
+            objects.add(object);
+        }
+        graph.put("nodes", objects);
+
+        JSONArray connections = new JSONArray();
+        for (GraphConnection connection : getConnections()) {
+            JSONObject conn = new JSONObject();
+            conn.put("fromNode", connection.getNodeFrom());
+            conn.put("fromField", connection.getFieldFrom());
+            conn.put("toNode", connection.getNodeTo());
+            conn.put("toField", connection.getFieldTo());
+            connections.add(conn);
+        }
+        graph.put("connections", connections);
+
+        JSONArray groups = new JSONArray();
+        for (NodeGroup nodeGroup : getNodeGroups()) {
+            JSONObject group = new JSONObject();
+            group.put("name", nodeGroup.getName());
+            JSONArray nodes = new JSONArray();
+            nodes.addAll(nodeGroup.getNodeIds());
+            group.put("nodes", nodes);
+            groups.add(group);
+        }
+        graph.put("groups", groups);
+
+        return graph;
+    }
 }

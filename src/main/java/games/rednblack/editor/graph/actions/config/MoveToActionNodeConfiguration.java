@@ -12,7 +12,7 @@ import static games.rednblack.editor.graph.actions.ActionFieldType.Interpolation
 public class MoveToActionNodeConfiguration extends NodeConfigurationImpl<ActionFieldType> {
 
     public MoveToActionNodeConfiguration() {
-        super("Action", "Move To", "Action");
+        super("MoveToAction", "Move To", "Action");
 
         addNodeInput(
                 new GraphNodeInputImpl<ActionFieldType>("position", "Position", true, ActionFieldType.Vector2));

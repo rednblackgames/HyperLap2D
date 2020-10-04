@@ -37,6 +37,7 @@ public class NodeEditorDialogMediator extends Mediator<NodeEditorDialog> {
         switch (notification.getName()) {
             case MsgAPI.OPEN_NODE_EDITOR:
                 viewComponent.show(uiStage);
+                viewComponent.loadData();
                 break;
         }
     }

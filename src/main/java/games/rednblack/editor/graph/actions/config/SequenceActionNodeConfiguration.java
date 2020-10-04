@@ -12,7 +12,7 @@ import static games.rednblack.editor.graph.actions.ActionFieldType.Sequence;
 public class SequenceActionNodeConfiguration extends NodeConfigurationImpl<ActionFieldType> {
 
     public SequenceActionNodeConfiguration() {
-        super("Action", "Sequence", "Action");
+        super("SequenceAction", "Sequence", "Action");
 
         addNodeInput(
                 new GraphNodeInputImpl<ActionFieldType>("action0", "Action 0", true, Action));

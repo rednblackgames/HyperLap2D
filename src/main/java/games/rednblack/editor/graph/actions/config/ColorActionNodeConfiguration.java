@@ -10,7 +10,7 @@ import static games.rednblack.editor.graph.actions.ActionFieldType.*;
 public class ColorActionNodeConfiguration extends NodeConfigurationImpl<ActionFieldType> {
 
     public ColorActionNodeConfiguration() {
-        super("Action", "Color", "Action");
+        super("ColorAction", "Color", "Action");
 
         addNodeInput(
                 new GraphNodeInputImpl<ActionFieldType>("color", "Color", true, Color));

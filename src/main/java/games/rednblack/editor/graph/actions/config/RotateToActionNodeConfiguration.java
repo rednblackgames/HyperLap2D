@@ -11,7 +11,7 @@ import static games.rednblack.editor.graph.actions.ActionFieldType.Interpolation
 public class RotateToActionNodeConfiguration extends NodeConfigurationImpl<ActionFieldType> {
 
     public RotateToActionNodeConfiguration() {
-        super("Action", "Rotate To", "Action");
+        super("RotateToAction", "Rotate To", "Action");
 
         addNodeInput(
                 new GraphNodeInputImpl<ActionFieldType>("degree", "Degree", true, ActionFieldType.Float));

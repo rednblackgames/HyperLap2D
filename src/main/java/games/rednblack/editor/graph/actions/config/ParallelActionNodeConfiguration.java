@@ -12,7 +12,7 @@ import static games.rednblack.editor.graph.actions.ActionFieldType.Parallel;
 public class ParallelActionNodeConfiguration extends NodeConfigurationImpl<ActionFieldType> {
 
     public ParallelActionNodeConfiguration() {
-        super("Action", "Parallel", "Action");
+        super("ParallelAction", "Parallel", "Action");
 
         addNodeInput(
                 new GraphNodeInputImpl<ActionFieldType>("action0", "Action 0", true, Action));
