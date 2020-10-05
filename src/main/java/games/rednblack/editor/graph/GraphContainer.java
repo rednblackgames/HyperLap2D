@@ -145,7 +145,14 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         addListener(
                 new ClickListener(Input.Buttons.LEFT) {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        processLeftClick(x, y);
+                        return super.touchDown(event, x, y, pointer, button);
+                    }
+
+                    @Override
+                    public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                        super.touchUp(event, x, y, pointer, button);
                         processLeftClick(x, y);
                     }
                 });
@@ -173,7 +180,6 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                         }
                     }
                 }
-                processLeftClick(x, y);
             }
 
             @Override
@@ -198,6 +204,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
             }
         };
         dragListener.setTapSquareSize(0f);
+        dragListener.setButton(Input.Buttons.MIDDLE);
         addListener(dragListener);
     }
 
