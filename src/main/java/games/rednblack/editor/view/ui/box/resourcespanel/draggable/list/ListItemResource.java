@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -55,6 +56,17 @@ public abstract class ListItemResource extends Button implements DraggableResour
             }
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 if(button == Input.Buttons.RIGHT) {
+                    HyperLap2DFacade.getInstance().sendNotification(eventName, payload);
+                }
+            }
+        });
+    }
+
+    public void setDoubleClickEvent(String eventName, String payload) {
+        addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(getTapCount() == 2) {
                     HyperLap2DFacade.getInstance().sendNotification(eventName, payload);
                 }
             }

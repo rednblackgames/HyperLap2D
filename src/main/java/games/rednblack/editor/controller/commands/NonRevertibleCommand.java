@@ -21,6 +21,7 @@ public abstract class NonRevertibleCommand extends SandboxCommand {
 
     protected boolean isCancelled = false;
     protected final HashMap<String, CompositeItemVO> libraryItems;
+    protected final HashMap<String, String> libraryActions;
     protected final ProjectManager projectManager;
     protected final SettingsManager settingsManager;
 
@@ -28,6 +29,7 @@ public abstract class NonRevertibleCommand extends SandboxCommand {
         this.projectManager = facade.retrieveProxy(ProjectManager.NAME);
         this.settingsManager = facade.retrieveProxy(SettingsManager.NAME);
         this.libraryItems = projectManager.getCurrentProjectInfoVO().libraryItems;
+        this.libraryActions = projectManager.getCurrentProjectInfoVO().libraryActions;
     }
 
     @Override

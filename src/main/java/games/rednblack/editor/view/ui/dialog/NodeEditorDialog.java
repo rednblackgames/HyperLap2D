@@ -9,6 +9,7 @@ import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.controller.commands.AddToLibraryAction;
 import games.rednblack.editor.graph.*;
 import games.rednblack.editor.graph.actions.config.*;
 import games.rednblack.editor.graph.actions.config.value.*;
@@ -28,6 +29,7 @@ import games.rednblack.editor.graph.property.PropertyBox;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -46,6 +48,8 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
     private final GraphBoxProducerImpl<ActionFieldType> addActionProducer;
 
     private final Set<GraphBoxProducer<ActionFieldType>> graphBoxProducers = new LinkedHashSet<>();
+
+    private String actionName;
 
     public NodeEditorDialog() {
         super("Node Editor");
@@ -134,9 +138,8 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
-                HashMap<String, String> items = projectManager.currentProjectInfoVO.libraryActions;
-                items.put("test", graphContainer.serializeGraph().toJSONString());
+                Object[] payload = AddToLibraryAction.getPayload(actionName, graphContainer.serializeGraph().toJSONString());
+                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_ADD_TO_LIBRARY_ACTION, payload);
                 close();
             }
         });
@@ -278,26 +281,32 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         }
     }
 
-    public void loadData() {
-        boolean loadTest = true;
-        if (!loadTest) {
+    public void loadData(String actionName) {
+        this.actionName = actionName;
+
+        graphContainer.clear();
+
+        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+        HashMap<String, String> items = projectManager.currentProjectInfoVO.libraryActions;
+
+        if (items.get(actionName) != null) {
+            JSONParser parser = new JSONParser();
+            JSONObject test;
+            try {
+                test = (JSONObject) parser.parse(items.get(actionName));
+                loadGraph(test);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else {
             String id = UUID.randomUUID().toString().replace("-", "");
             GraphBox<ActionFieldType> graphBox = entityProducer.createDefault(VisUI.getSkin(), id);
             graphContainer.addGraphBox(graphBox, "Entity", false, 0, 0);
 
             graphBox = addActionProducer.createDefault(VisUI.getSkin(), "end");
             graphContainer.addGraphBox(graphBox, "Add Action", false, getPrefWidth() - 270, 0);
-        } else {
-            ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
-            HashMap<String, String> items = projectManager.currentProjectInfoVO.libraryActions;
-            JSONParser parser = new JSONParser();
-            JSONObject test;
-            try {
-                test = (JSONObject) parser.parse(items.get("test"));
-                loadGraph(test);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
         }
+
+        graphContainer.adjustCanvas();
     }
 }

@@ -2,9 +2,12 @@ package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.controller.commands.resource.DeleteLibraryAction;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
-import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.LibraryItemResource;
+import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.LibraryActionResource;
+import games.rednblack.h2d.common.MsgAPI;
+import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 
 import java.util.HashMap;
@@ -14,7 +17,6 @@ public class UIActionsTabMediator extends UIResourcesTabMediator<UIActionsTab> {
     private static final String TAG = UIActionsTabMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
-
     public UIActionsTabMediator() {
         super(NAME, new UIActionsTab());
     }
@@ -23,6 +25,8 @@ public class UIActionsTabMediator extends UIResourcesTabMediator<UIActionsTab> {
     public String[] listNotificationInterests() {
         String[] listNotification = super.listNotificationInterests();
 
+        listNotification = ArrayUtils.add(listNotification, MsgAPI.LIBRARY_ACTIONS_UPDATED);
+        listNotification = ArrayUtils.add(listNotification, DeleteLibraryAction.DONE);
 
         return listNotification;
     }
@@ -31,6 +35,10 @@ public class UIActionsTabMediator extends UIResourcesTabMediator<UIActionsTab> {
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
+            case MsgAPI.LIBRARY_ACTIONS_UPDATED:
+            case DeleteLibraryAction.DONE:
+                initList(viewComponent.searchString);
+                break;
             default:
                 break;
         }
@@ -45,7 +53,7 @@ public class UIActionsTabMediator extends UIResourcesTabMediator<UIActionsTab> {
         Array<DraggableResource> itemArray = new Array<>();
         for (String key : items.keySet()) {
             if(!key.toLowerCase().contains(searchText))continue;
-            DraggableResource draggableResource = new DraggableResource(new LibraryItemResource(key));
+            DraggableResource draggableResource = new DraggableResource(new LibraryActionResource(key));
             itemArray.add(draggableResource);
         }
         viewComponent.setItems(itemArray);

@@ -51,10 +51,9 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
     public static final Integer PARTICLE_ACTION_SET = 9;
     public static final Integer POLYGON_VERTEX_ACTION_SET = 10;
     public static final Integer ORIGIN_POINT_ACTION_SET = 11;
+    public static final Integer LIBRARY_ACTION_ACTION_SET = 12;
 
     private Sandbox sandbox;
-
-    private Vector2 currentCoordinates;
 
     private Object currentObservable;
 
@@ -76,9 +75,13 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
 
         actionSets.put(IMAGE_RESOURCE_ACTION_SET, new Array<>());
         actionSets.get(IMAGE_RESOURCE_ACTION_SET).add(MsgAPI.ACTION_DELETE_IMAGE_RESOURCE);
+
         actionSets.put(LIBRARY_ITEM_ACTION_SET, new Array<>());
         actionSets.get(LIBRARY_ITEM_ACTION_SET).add(MsgAPI.ACTION_DELETE_LIBRARY_ITEM);
         actionSets.get(LIBRARY_ITEM_ACTION_SET).add(MsgAPI.ACTION_EXPORT_LIBRARY_ITEM);
+
+        actionSets.put(LIBRARY_ACTION_ACTION_SET, new Array<>());
+        actionSets.get(LIBRARY_ACTION_ACTION_SET).add(MsgAPI.ACTION_DELETE_LIBRARY_ACTION);
 
         actionSets.put(SPINE_ANIMATION_ACTION_SET, new Array<>());
         actionSets.get(SPINE_ANIMATION_ACTION_SET).add(MsgAPI.ACTION_DELETE_SPINE_ANIMATION_RESOURCE);
@@ -125,6 +128,7 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
                 UIResourcesBoxMediator.SPRITER_ANIMATION_RIGHT_CLICK,
                 UIResourcesBoxMediator.LIBRARY_ITEM_RIGHT_CLICK,
                 UIResourcesBoxMediator.PARTICLE_EFFECT_RIGHT_CLICK,
+                UIResourcesBoxMediator.LIBRARY_ACTION_RIGHT_CLICK,
                 RulersUI.RIGHT_CLICK_RULER,
                 PolygonTool.MANUAL_VERTEX_POSITION,
                 TransformTool.MANUAL_ORIGIN_POSITION
@@ -178,6 +182,9 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
             case UIResourcesBoxMediator.LIBRARY_ITEM_RIGHT_CLICK:
                 showPopup(LIBRARY_ITEM_ACTION_SET, notification.getBody());
                 break;
+            case UIResourcesBoxMediator.LIBRARY_ACTION_RIGHT_CLICK:
+                showPopup(LIBRARY_ACTION_ACTION_SET, notification.getBody());
+                break;
             case UIResourcesBoxMediator.PARTICLE_EFFECT_RIGHT_CLICK:
                 showPopup(PARTICLE_ACTION_SET, notification.getBody());
                 break;
@@ -210,8 +217,6 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
         viewComponent.setX(coordinates.x);
         viewComponent.setY(coordinates.y - viewComponent.getHeight());
         viewComponent.keepWithinStage();
-
-        currentCoordinates = new Vector2(coordinates);
 
         currentObservable = observable;
     }

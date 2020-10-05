@@ -93,13 +93,19 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
     private Set<String> selectedNodes = new HashSet<>();
     private boolean movingSelected = false;
     private Skin skin;
+    private PopupMenuProducer popupMenuProducer;
 
     public GraphContainer(Skin skin, final PopupMenuProducer popupMenuProducer) {
         this.skin = skin;
+        this.popupMenuProducer = popupMenuProducer;
 
         setClip(true);
         setTouchable(Touchable.enabled);
 
+        setupListeners();
+    }
+
+    private void setupListeners() {
         addListener(
                 new ClickListener(Input.Buttons.RIGHT) {
                     @Override
@@ -1085,5 +1091,20 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         graph.put("groups", groups);
 
         return graph;
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        graphBoxes.clear();
+        boxWindows.clear();
+        windowPositions.clear();
+        graphConnections.clear();
+        connectionNodeMap.clear();
+        connections.clear();
+        nodeGroups.clear();
+        selectedNodes.clear();
+
+        setupListeners();
     }
 }

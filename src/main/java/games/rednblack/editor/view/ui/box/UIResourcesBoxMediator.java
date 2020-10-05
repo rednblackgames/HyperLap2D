@@ -45,6 +45,7 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
     public static final String SPRITER_ANIMATION_RIGHT_CLICK = "SPRITER_ANIMATION_RIGHT_CLICK";
     public static final String LIBRARY_ITEM_RIGHT_CLICK = "LIBRARY_ITEM_RIGHT_CLICK";
     public static final String PARTICLE_EFFECT_RIGHT_CLICK = "PARTICLE_EFFECT_RIGHT_CLICK";
+    public static final String LIBRARY_ACTION_RIGHT_CLICK = "LIBRARY_ACTION_RIGHT_CLICK";
 
     public Array<DragAndDrop.Target> customTargets = new Array<DragAndDrop.Target>();
 

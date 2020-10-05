@@ -187,6 +187,7 @@ public class Sandbox {
         projectManager.saveCurrentProject();
 
         facade.sendNotification(MsgAPI.LIBRARY_LIST_UPDATED);
+        facade.sendNotification(MsgAPI.LIBRARY_ACTIONS_UPDATED);
 
         currentViewingEntity = getRootEntity();
 
