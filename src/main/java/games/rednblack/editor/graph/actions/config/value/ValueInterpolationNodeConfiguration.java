@@ -9,7 +9,7 @@ import static games.rednblack.editor.graph.actions.ActionFieldType.Interpolation
 public class ValueInterpolationNodeConfiguration extends NodeConfigurationImpl<ActionFieldType> {
 
     public ValueInterpolationNodeConfiguration() {
-        super("ValueInterpolation", "Interpolation", "Value");
+        super("ValueInterpolation", "Interpolation", "Math");
         addNodeOutput(
                 new GraphNodeOutputImpl<ActionFieldType>("value", "Value", Interpolation));
     }

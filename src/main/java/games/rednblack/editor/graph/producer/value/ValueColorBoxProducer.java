@@ -93,4 +93,9 @@ public class ValueColorBoxProducer<T extends FieldType> extends ValueGraphBoxPro
         colorPart.setOutputConnector(GraphBoxOutputConnector.Side.Right, configuration.getNodeOutputs().get("value"));
         return colorPart;
     }
+
+    @Override
+    public boolean isUnique() {
+        return false;
+    }
 }

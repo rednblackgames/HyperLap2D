@@ -59,4 +59,9 @@ public class ValueBooleanBoxProducer<T extends FieldType> extends ValueGraphBoxP
         colorPart.setOutputConnector(GraphBoxOutputConnector.Side.Right, configuration.getNodeOutputs().get("value"));
         return colorPart;
     }
+
+    @Override
+    public boolean isUnique() {
+        return false;
+    }
 }

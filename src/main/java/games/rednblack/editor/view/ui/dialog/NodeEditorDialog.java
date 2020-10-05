@@ -57,8 +57,8 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         addCloseButton();
         setResizable(true);
 
-        entityProducer = new GraphBoxProducerImpl<>(new EntityNodeConfiguration());
-        addActionProducer = new GraphBoxProducerImpl<>(new AddActionNodeConfiguration());
+        entityProducer = new GraphBoxProducerImpl<>(new EntityNodeConfiguration(), true);
+        addActionProducer = new GraphBoxProducerImpl<>(new AddActionNodeConfiguration(), true);
 
         graphBoxProducers.add(entityProducer);
         graphBoxProducers.add(addActionProducer);
@@ -160,6 +160,8 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         PopupMenu popupMenu = new PopupMenu();
 
         for (final GraphBoxProducer<ActionFieldType> producer : graphBoxProducers) {
+            if (producer.isUnique())
+                continue;
             String menuLocation = producer.getMenuLocation();
             if (menuLocation != null) {
                 String[] menuSplit = menuLocation.split("/");
@@ -285,6 +287,7 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         this.actionName = actionName;
 
         graphContainer.clear();
+        getTitleLabel().setText(actionName);
 
         ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
         HashMap<String, String> items = projectManager.currentProjectInfoVO.libraryActions;

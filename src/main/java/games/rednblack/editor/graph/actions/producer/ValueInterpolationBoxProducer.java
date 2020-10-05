@@ -56,4 +56,9 @@ public class ValueInterpolationBoxProducer extends ValueGraphBoxProducer<ActionF
         addPart.setOutputConnector(GraphBoxOutputConnector.Side.Right, configuration.getNodeOutputs().get("value"));
         return addPart;
     }
+
+    @Override
+    public boolean isUnique() {
+        return false;
+    }
 }

@@ -13,9 +13,15 @@ import java.util.Iterator;
 
 public class GraphBoxProducerImpl<T extends FieldType> implements GraphBoxProducer<T> {
     protected NodeConfiguration<T> configuration;
+    private boolean isUnique;
 
     public GraphBoxProducerImpl(NodeConfiguration<T> configuration) {
+        this(configuration, false);
+    }
+
+    public GraphBoxProducerImpl(NodeConfiguration<T> configuration, boolean isUnique) {
         this.configuration = configuration;
+        this.isUnique = isUnique;
     }
 
     @Override
@@ -84,6 +90,11 @@ public class GraphBoxProducerImpl<T extends FieldType> implements GraphBoxProduc
     @Override
     public GraphBoxImpl<T> createDefault(Skin skin, String id) {
         return createPipelineGraphBox(skin, id, null);
+    }
+
+    @Override
+    public boolean isUnique() {
+        return isUnique;
     }
 }
 

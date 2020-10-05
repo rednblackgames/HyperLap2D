@@ -17,4 +17,6 @@ public interface GraphBoxProducer<T extends FieldType> {
     GraphBox<T> createPipelineGraphBox(Skin skin, String id, JSONObject data);
 
     GraphBox<T> createDefault(Skin skin, String id);
+
+    boolean isUnique();
 }
