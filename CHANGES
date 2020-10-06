@@ -3,6 +3,9 @@
 - Experimental Code Editor for:
     * Typing Labels
     * GLSL Fragment shaders
+- Experimental Node Graph Editor for:
+    * Create complex actions
+- Actions Library
 - Animations and UI/UX enhancements
 - Better cursor management
 - Track total time spent using HyperLap2D

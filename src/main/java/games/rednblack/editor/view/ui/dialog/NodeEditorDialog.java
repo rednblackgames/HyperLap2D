@@ -28,6 +28,7 @@ import games.rednblack.editor.graph.producer.value.ValueVector2BoxProducer;
 import games.rednblack.editor.graph.property.PropertyBox;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.view.ui.widget.actors.StaticGrid;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
@@ -53,6 +54,9 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
 
     public NodeEditorDialog() {
         super("Node Editor");
+
+        StaticGrid gridView = new StaticGrid(this);
+        getContentTable().addActor(gridView);
 
         addCloseButton();
         setResizable(true);

@@ -168,6 +168,16 @@
       background: window-noborder,
       titleFontColor: white
     },
+    node: {
+      titleFont: big-font,
+      background: window-node,
+      titleFontColor: white
+    },
+    node-selected: {
+      titleFont: big-font,
+      background: window-node-selected,
+      titleFontColor: white
+    },
     dialog: {
       titleFont: big-font,
       background: window,
@@ -415,6 +425,11 @@
       down: button-red,
       up: button-window-bg,
       imageUp: icon-close-white
+    },
+    close-node-window: {
+      imageDown: close-node-pressed,
+      imageOver: close-node-hover,
+      imageUp: close-node
     },
     close-panel: {
       down: button-red,
