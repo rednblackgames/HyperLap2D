@@ -19,40 +19,49 @@ import java.util.HashMap;
 public class Actions {
 
     public static HashMap<String, ActionLogic> actionLogicMap = new HashMap<>();
+    public static HashMap<String, String> actionDataLogicMap = new HashMap<>();
     private static boolean initialized;
 
     private static void initialize() throws InstantiationException, IllegalAccessException {
-        registerActionClass(MoveToAction.class);
-        registerActionClass(MoveByAction.class);
-        registerActionClass(SizeToAction.class);
-        registerActionClass(SizeByAction.class);
-        registerActionClass(ScaleToAction.class);
-        registerActionClass(ScaleByAction.class);
-        registerActionClass(RotateToAction.class);
-        registerActionClass(RotateByAction.class);
-        registerActionClass(ColorAction.class);
-        registerActionClass(AlphaAction.class);
+        registerActionClass(MoveToData.class, MoveToAction.class);
+        registerActionClass(MoveByData.class, MoveByAction.class);
+        registerActionClass(SizeToData.class, SizeToAction.class);
+        registerActionClass(SizeByData.class, SizeByAction.class);
+        registerActionClass(ScaleToData.class, ScaleToAction.class);
+        registerActionClass(ScaleByData.class, ScaleByAction.class);
+        registerActionClass(RotateToData.class, RotateToAction.class);
+        registerActionClass(RotateByData.class, RotateByAction.class);
+        registerActionClass(ColorData.class, ColorAction.class);
+        registerActionClass(AlphaData.class, AlphaAction.class);
 
-        registerActionClass(RunnableAction.class);
-        registerActionClass(DelayAction.class);
+        registerActionClass(RunnableData.class, RunnableAction.class);
+        registerActionClass(DelayData.class, DelayAction.class);
 
-        registerActionClass(ParallelAction.class);
-        registerActionClass(SequenceAction.class);
-        registerActionClass(RepeatAction.class);
+        registerActionClass(ParallelData.class, ParallelAction.class);
+        registerActionClass(SequenceData.class, SequenceAction.class);
+        registerActionClass(RepeatData.class, RepeatAction.class);
 
         initialized = true;
     }
 
-    public static <T extends ActionLogic> void registerActionClass(Class<T> type) throws IllegalAccessException, InstantiationException {
+    public static <T extends ActionLogic, U extends ActionData> void registerActionClass(Class<U> typeData, Class<T> type) throws IllegalAccessException, InstantiationException {
         if (!actionLogicMap.containsKey(type.getName())) {
             actionLogicMap.put(type.getName(), type.newInstance());
+            actionDataLogicMap.put(typeData.getName(), type.getName());
         }
     }
 
     static public <T extends ActionData> T actionData(Class<T> type) {
+        return actionData(type, true);
+    }
+
+    static public <T extends ActionData> T actionData(Class<T> type, boolean autoPoolable) {
+        checkInit();
         Pool<T> pool = Pools.get(type);
         T action = pool.obtain();
-        action.setPool(pool);
+        if (autoPoolable)
+            action.setPool(pool);
+        action.logicClassName = actionDataLogicMap.get(type.getName());
         return action;
     }
 

@@ -1,15 +1,13 @@
 package games.rednblack.editor.graph.actions.producer;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import games.rednblack.editor.graph.GraphBoxImpl;
-import games.rednblack.editor.graph.GraphBoxPartImpl;
-import games.rednblack.editor.graph.GraphChangedEvent;
-import games.rednblack.editor.graph.GraphNodeInputImpl;
+import games.rednblack.editor.graph.*;
 import games.rednblack.editor.graph.actions.ActionFieldType;
 import games.rednblack.editor.graph.data.GraphNodeInput;
 import games.rednblack.editor.graph.data.NodeConfiguration;
@@ -34,8 +32,14 @@ public class ArrayActionBoxProducer extends GraphBoxProducerImpl<ActionFieldType
     @Override
     public GraphBoxImpl<ActionFieldType> createPipelineGraphBox(Skin skin, String id, JSONObject data) {
         GraphBoxImpl<ActionFieldType> graphBox = null;
+        int pins = ((Number) data.get("pins")).intValue();
         try {
             graphBox = createPipelineGraphBoxConfig(skin, id, configurationType.getDeclaredConstructor().newInstance());
+            if (pins != graphBox.getInputs().size()) {
+                for (int i = 0; i < pins - 2; i++) {
+                    addPin(skin, graphBox);
+                }
+            }
             addPart(skin, graphBox);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
@@ -49,18 +53,15 @@ public class ArrayActionBoxProducer extends GraphBoxProducerImpl<ActionFieldType
     }
 
     private void addPart(Skin skin, GraphBoxImpl<ActionFieldType> graphBox) {
+        Map<String, GraphNodeInput<ActionFieldType>> inputs = graphBox.getConfiguration().getNodeInputs();
         VisTextButton addButton = StandardWidgetsFactory.createTextButton("+ Add Pin");
         VisTextButton removeButton = StandardWidgetsFactory.createTextButton("- Remove Pin");
-        removeButton.setDisabled(true);
+        removeButton.setDisabled(inputs.size() <= 2);
 
         addButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Map<String, GraphNodeInput<ActionFieldType>> inputs = graphBox.getConfiguration().getNodeInputs();
-                GraphNodeInputImpl<ActionFieldType> n = new GraphNodeInputImpl<>("action" + inputs.size(), "Action " + inputs.size(), true, Action);
-                inputs.put(n.getFieldId(), n);
-                graphBox.addInputGraphPart(skin, n);
-                graphBox.invalidate();
+                addPin(skin, graphBox);
                 addButton.fire(new GraphChangedEvent(true, false));
 
                 if (inputs.size() > 2) {
@@ -104,5 +105,17 @@ public class ArrayActionBoxProducer extends GraphBoxProducerImpl<ActionFieldType
 
         GraphBoxPartImpl<ActionFieldType> removePart = new GraphBoxPartImpl<>(removeButton, null);
         graphBox.addFooterGraphBoxPart(removePart);
+
+        graphBox.setSerializeCallback(object -> {
+            object.put("pins", inputs.size());
+        });
+    }
+
+    private void addPin(Skin skin, GraphBoxImpl<ActionFieldType> graphBox){
+        Map<String, GraphNodeInput<ActionFieldType>> inputs = graphBox.getConfiguration().getNodeInputs();
+        GraphNodeInputImpl<ActionFieldType> n = new GraphNodeInputImpl<>("action" + inputs.size(), "Action " + inputs.size(), true, Action);
+        inputs.put(n.getFieldId(), n);
+        graphBox.addInputGraphPart(skin, n);
+        graphBox.invalidate();
     }
 }

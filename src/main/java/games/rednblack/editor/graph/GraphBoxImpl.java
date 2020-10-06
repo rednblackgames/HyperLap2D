@@ -32,6 +32,8 @@ public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
 
     private GraphContainer<T>.GraphBoxWindow window;
 
+    private GraphBoxSerializeCallback serializeCallback;
+
     public GraphBoxImpl(String id, NodeConfiguration<T> configuration, Skin skin) {
         this.id = id;
         this.configuration = configuration;
@@ -193,6 +195,10 @@ public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
         }
     }
 
+    public void setSerializeCallback(GraphBoxSerializeCallback serializeCallback) {
+        this.serializeCallback = serializeCallback;
+    }
+
     @Override
     public Map<String, GraphBoxInputConnector<T>> getInputs() {
         return inputConnectors;
@@ -225,6 +231,9 @@ public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
 
         for (GraphBoxPart<T> graphBoxPart : graphBoxParts)
             graphBoxPart.serializePart(result);
+
+        if (serializeCallback != null)
+            serializeCallback.serializeBox(result);
 
         if (result.isEmpty())
             return null;

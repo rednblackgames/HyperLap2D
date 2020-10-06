@@ -23,12 +23,14 @@ import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.components.light.LightObjectComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.data.*;
+import games.rednblack.editor.renderer.factory.ActionFactory;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.editor.renderer.resources.ResourceManager;
 import games.rednblack.editor.renderer.scripts.IScript;
 import games.rednblack.editor.renderer.systems.*;
 import games.rednblack.editor.renderer.systems.action.ActionSystem;
+import games.rednblack.editor.renderer.systems.action.data.ActionData;
 import games.rednblack.editor.renderer.systems.render.HyperLap2dRenderer;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 
@@ -51,6 +53,7 @@ public class SceneLoader {
 	private DirectionalLight sceneDirectionalLight;
 
 	private EntityFactory entityFactory;
+	private ActionFactory actionFactory;
 
 	private float pixelsPerWU = 1;
 
@@ -274,6 +277,8 @@ public class SceneLoader {
 			setAmbientInfo(sceneVO);
 		}
 
+		actionFactory = new ActionFactory(rm.getProjectVO().libraryActions);
+
 		return sceneVO;
 	}
 
@@ -298,6 +303,10 @@ public class SceneLoader {
 
        return compositeItemVO;
     }
+
+    public ActionData loadActionFromLibrary(String actionName) {
+		return actionFactory.loadFromLibrary(actionName);
+	}
 
     public void addComponentsByTagName(String tagName, Class componentClass) {
         ImmutableArray<Entity> entities = engine.getEntities();

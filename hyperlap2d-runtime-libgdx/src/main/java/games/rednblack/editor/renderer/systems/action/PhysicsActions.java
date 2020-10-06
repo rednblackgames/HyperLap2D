@@ -3,6 +3,7 @@ package games.rednblack.editor.renderer.systems.action;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.gdx.math.Vector2;
+import games.rednblack.editor.renderer.systems.action.data.ActionData;
 import games.rednblack.editor.renderer.systems.action.data.ForceData;
 import games.rednblack.editor.renderer.systems.action.logic.ActionLogic;
 import games.rednblack.editor.renderer.systems.action.logic.ForceAction;
@@ -13,9 +14,9 @@ import games.rednblack.editor.renderer.systems.action.logic.ForceAction;
 public class PhysicsActions {
 
 
-    private static void initialize(Class<? extends ActionLogic> type) {
+    private static void initialize(Class<? extends ActionData> data, Class<? extends ActionLogic> type) {
         try {
-            Actions.registerActionClass(type);
+            Actions.registerActionClass(data, type);
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -28,7 +29,7 @@ public class PhysicsActions {
      * @return The games.rednblack.editor.renderer.systems.action.data.ForceData object
      */
     public static ForceData force(Vector2 force) {
-        initialize(ForceAction.class);
+        initialize(ForceData.class, ForceAction.class);
         ForceData forceData = Actions.actionData(ForceData.class);
         forceData.setForce(force);
 
@@ -44,7 +45,7 @@ public class PhysicsActions {
      * @return The games.rednblack.editor.renderer.systems.action.data.ForceData object
      */
     public static ForceData force(Vector2 force, Vector2 relativePoint) {
-        initialize(ForceAction.class);
+        initialize(ForceData.class, ForceAction.class);
         ForceData forceData = Actions.actionData(ForceData.class);
         forceData.setForce(force, relativePoint);
 

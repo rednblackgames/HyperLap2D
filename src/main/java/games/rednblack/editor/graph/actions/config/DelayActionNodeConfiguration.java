@@ -16,7 +16,7 @@ public class DelayActionNodeConfiguration extends NodeConfigurationImpl<ActionFi
                 new GraphNodeInputImpl<ActionFieldType>("delay", "Delay", true, ActionFieldType.Float));
 
         addNodeInput(
-                new GraphNodeInputImpl<ActionFieldType>("delayed", "Action", false, Action));
+                new GraphNodeInputImpl<ActionFieldType>("action0", "Action", false, Action));
 
         addNodeOutput(
                 new GraphNodeOutputImpl<>("action", "Action", Action));
