@@ -25,13 +25,16 @@ public class ActionFactory {
     }
 
     public ActionData loadFromLibrary(String actionName, boolean autoPoolable) {
+        if (actionsLibrary.get(actionName) == null)
+            throw new IllegalArgumentException("The action '" + actionName + "' does not exists.");
+
         JSONParser parser = new JSONParser();
         ActionData data = null;
         try {
             JSONObject actionGraph = (JSONObject) parser.parse(actionsLibrary.get(actionName));
             data = parseGraph(actionGraph, autoPoolable);
         } catch (ParseException e) {
-            e.printStackTrace();
+            throw new RuntimeException("The action '" + actionName + "' has not a valid format.");
         }
         return data;
     }
