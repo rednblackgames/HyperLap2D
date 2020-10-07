@@ -49,7 +49,9 @@ public class ArrayActionBoxProducer extends GraphBoxProducerImpl<ActionFieldType
 
     @Override
     public GraphBoxImpl<ActionFieldType> createDefault(Skin skin, String id) {
-        return createPipelineGraphBox(skin, id, null);
+        JSONObject data = new JSONObject();
+        data.put("pins", 2);
+        return createPipelineGraphBox(skin, id, data);
     }
 
     private void addPart(Skin skin, GraphBoxImpl<ActionFieldType> graphBox) {

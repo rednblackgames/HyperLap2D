@@ -795,7 +795,7 @@
   com.kotcrab.vis.ui.widget.toast.Toast$ToastStyle: {
     default: {
       background: tooltip-bg,
-      closeButtonStyle: close-panel
+      closeButtonStyle: close-window
     },
     dark: {
       background: window-bg,
