@@ -90,6 +90,9 @@ public class SpineComponentFactory extends ComponentFactory {
         transformComponent.scaleX = vo.scaleX;
         transformComponent.scaleY = vo.scaleY;
 
+        transformComponent.originX = dimensionsComponent.width / 2;
+        transformComponent.originY = 0;
+
         entity.add(component);
 
         return component;

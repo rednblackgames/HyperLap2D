@@ -5,7 +5,7 @@ plugins {
 apply plugin: 'com.novoda.bintray-release'
 
 group 'games.rednblack'
-version '0.0.1'
+version '0.0.2'
 
 repositories {
     jcenter()
@@ -16,7 +16,7 @@ repositories {
 publish {
     def groupProjectID = 'games.rednblack.editor'
     def artifactProjectID = 'h2d-libgdx-spine-extension'
-    def publishVersionID = '0.0.1'
+    def publishVersionID = '0.0.2'
 
     userOrg = 'rednblackgames'
     repoName = 'HyperLap2D'

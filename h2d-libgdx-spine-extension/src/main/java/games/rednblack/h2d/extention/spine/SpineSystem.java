@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.spine.Bone;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
@@ -22,10 +23,9 @@ public class SpineSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-
-        TransformComponent transformComponent = transformComponentMapper.get(entity);
         SpineObjectComponent spineObjectComponent = spineObjectComponentMapper.get(entity);
         DimensionsComponent dimensionsComponent = dimensionsComponentMapper.get(entity);
+        TransformComponent curTransform = transformComponentMapper.get(entity);
 
         ParentNodeComponent parentNodeComponent = entity.getComponent(ParentNodeComponent.class);
         Entity parentEntity = parentNodeComponent.parentEntity;
@@ -55,15 +55,13 @@ public class SpineSystem extends IteratingSystem {
         }
 
         Bone rootBone = spineObjectComponent.skeleton.getRootBone();
-        TransformComponent curTransform = transformComponentMapper.get(entity);
-        if (rootBone.getScaleX() != curTransform.scaleX * spineObjectComponent.worldMultiplier || rootBone.getScaleY() != curTransform.scaleY * spineObjectComponent.worldMultiplier) {
-            rootBone.setScale(curTransform.scaleX * spineObjectComponent.worldMultiplier, curTransform.scaleY * spineObjectComponent.worldMultiplier);
-        }
+
+        rootBone.setScale(curTransform.scaleX * spineObjectComponent.worldMultiplier, curTransform.scaleY * spineObjectComponent.worldMultiplier);
+        rootBone.setRotation(curTransform.rotation);
+        rootBone.setPosition(curTransform.x + dimensionsComponent.width / 2 + offsetX, curTransform.y + offsetY);
 
         spineObjectComponent.skeleton.updateWorldTransform(); //
         spineObjectComponent.state.update(deltaTime); // Update the animation time.
         spineObjectComponent.state.apply(spineObjectComponent.skeleton); // Poses skeleton using current animations. This sets the bones' local SRT.
-        //spineObjectComponent.skeleton.setPosition(transformComponent.x - spineObjectComponent.minX + offsetX, transformComponent.y - spineObjectComponent.minY + offsetY);
-        //TODO rotation and scale when in composite does not work well because origin stuff
     }
 }

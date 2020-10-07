@@ -190,6 +190,8 @@ public class SelectionTool extends SimpleTool {
         dragTouchDiff.clear();
         for (Entity itemInstance : sandbox.getSelector().getCurrentSelection()) {
             transformComponent = ComponentRetriever.get(itemInstance, TransformComponent.class);
+            if (transformComponent == null)
+                continue;
 
             dragTouchDiff.put(itemInstance, new Vector2(x - transformComponent.x, y - transformComponent.y));
             dragStartPositions.put(itemInstance, new Vector2(transformComponent.x, transformComponent.y));
