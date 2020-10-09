@@ -2,6 +2,7 @@ package games.rednblack.h2d.extention.spine;
 
 import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.esotericsoftware.spine.*;
@@ -19,6 +20,7 @@ public class SpineObjectComponent implements BaseComponent {
     public float minX;
     public float minY;
     public float worldMultiplier;
+    public Vector2 rootBonePosition = new Vector2();
     private final FloatArray temp = new FloatArray();
     public final Affine2 worldTransform = new Affine2();
     public final Matrix4 computedTransform = new Matrix4();

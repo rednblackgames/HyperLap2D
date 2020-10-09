@@ -74,7 +74,8 @@ public class SpineComponentFactory extends ComponentFactory {
         component.skeletonData = component.skeletonJson.readSkeletonData((rm.getSkeletonJSON(vo.animationName)));
 
         BoneData rootBone = component.skeletonData.getBones().get(0);
-        rootBone.setScale(vo.scaleX / projectInfoVO.pixelToWorld, vo.scaleX / projectInfoVO.pixelToWorld);
+        component.rootBonePosition.set(rootBone.getX(), rootBone.getY());
+        rootBone.setScale(1f /projectInfoVO.pixelToWorld, 1f / projectInfoVO.pixelToWorld);
 
         component.skeleton = new Skeleton(component.skeletonData);
         component.worldMultiplier = 1f/projectInfoVO.pixelToWorld;
@@ -85,13 +86,6 @@ public class SpineComponentFactory extends ComponentFactory {
         component.computeBoundBox(dimensionsComponent);
 
         component.setAnimation(vo.currentAnimationName.isEmpty() ? component.skeletonData.getAnimations().get(0).getName() : vo.currentAnimationName);
-
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
-        transformComponent.scaleX = vo.scaleX;
-        transformComponent.scaleY = vo.scaleY;
-
-        transformComponent.originX = dimensionsComponent.width / 2;
-        transformComponent.originY = 0;
 
         entity.add(component);
 

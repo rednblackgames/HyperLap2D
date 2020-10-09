@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.spine.Bone;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
@@ -30,35 +29,18 @@ public class SpineSystem extends IteratingSystem {
         ParentNodeComponent parentNodeComponent = entity.getComponent(ParentNodeComponent.class);
         Entity parentEntity = parentNodeComponent.parentEntity;
         TransformComponent parentTransformComponent = transformComponentMapper.get(parentEntity);
-        float offsetX = 0;
-        float offsetY = 0;
-
-        if (parentTransformComponent.scaleX == 1 && parentTransformComponent.scaleY == 1 && parentTransformComponent.rotation == 0) {
-            offsetX = parentTransformComponent.x;
-            offsetY = parentTransformComponent.y;
-
-            while (true) {
-                parentNodeComponent = parentEntity.getComponent(ParentNodeComponent.class);
-                if (parentNodeComponent == null) {
-                    break;
-                }
-
-                parentEntity = parentNodeComponent.parentEntity;
-                if (parentEntity == null) {
-                    break;
-                }
-
-                parentTransformComponent = transformComponentMapper.get(parentEntity);
-                offsetX += parentTransformComponent.x;
-                offsetY += parentTransformComponent.y;
-            }
-        }
 
         Bone rootBone = spineObjectComponent.skeleton.getRootBone();
 
-        rootBone.setScale(curTransform.scaleX * spineObjectComponent.worldMultiplier, curTransform.scaleY * spineObjectComponent.worldMultiplier);
-        rootBone.setRotation(curTransform.rotation);
-        rootBone.setPosition(curTransform.x + dimensionsComponent.width / 2 + offsetX, curTransform.y + offsetY);
+        if (parentTransformComponent.scaleX == 1 && parentTransformComponent.scaleY == 1 && parentTransformComponent.rotation == 0) {
+            rootBone.setScale(spineObjectComponent.worldMultiplier, spineObjectComponent.worldMultiplier);
+            rootBone.setRotation(0);
+            rootBone.setPosition(spineObjectComponent.rootBonePosition.x, spineObjectComponent.rootBonePosition.y);
+        } else {
+            rootBone.setScale(curTransform.scaleX * spineObjectComponent.worldMultiplier, curTransform.scaleY * spineObjectComponent.worldMultiplier);
+            rootBone.setRotation(curTransform.rotation);
+            rootBone.setPosition(curTransform.x + dimensionsComponent.width / 2, curTransform.y);
+        }
 
         spineObjectComponent.skeleton.updateWorldTransform(); //
         spineObjectComponent.state.update(deltaTime); // Update the animation time.
