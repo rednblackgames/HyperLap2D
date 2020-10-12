@@ -49,7 +49,7 @@ We need your help! HyperLap2D is a very large and complex project, if you have s
 
 #### Building from source
 
-HyperLap2D is developed using IntelliJ IDEA.
+HyperLap2D is developed using IntelliJ IDEA. HyperLap2D needs `Java 14`.
 
 1. Fork this repository
 2. Clone it

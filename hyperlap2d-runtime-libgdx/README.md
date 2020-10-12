@@ -7,9 +7,21 @@ HyperLap2D runtime for libGDX framework.
 #### Gradle
 Release artifacts are available through [Bintray][bintray]. 
 
+Runtime needs to be included into your `core` project.
 ```groovy
 dependencies {
-    implementation 'games.rednblack.editor:hyperlap2d-runtime-libgdx:0.0.1'
+    //Mandatory
+    api "com.badlogicgames.gdx:gdx:$gdxVersion"
+    api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
+    api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+    api "com.badlogicgames.ashley:ashley:$ashleyVersion"
+
+    //Optional - graph node actions
+    api "com.googlecode.json-simple:json-simple:1.1.1"
+    
+    //HyperLap2D Runtime
+    api "games.rednblack.editor:hyperlap2d-runtime-libgdx:$h2dVersion"
 }
 ```
 
@@ -21,6 +33,18 @@ dependencies {
   <version>0.0.1</version>
   <type>pom</type>
 </dependency>
+```
+
+This runtime needs `Java 8`. In order to integrate into an Android project add the following to your platform specific `build.gradle`
+
+```groovy
+android {
+    ...
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+}
 ```
 
 ### Support
