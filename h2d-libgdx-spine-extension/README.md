@@ -5,7 +5,7 @@ HyperLap2D extension for libgdx runtime that adds Spine rendering support.
 ### Integration
 
 #### Gradle
-Release artifacts are available through [Bintray][bintray]. 
+Release artifacts are available through ![Bintray](https://img.shields.io/bintray/v/rednblackgames/HyperLap2D/h2d-libgdx-spine-extension) 
 
 Extension needs to be included into your `core` project.
 ```groovy

@@ -1,4 +1,10 @@
 ![Logo](https://raw.githubusercontent.com/rednblackgames/HyperLap2D/master/icons/HyperLap2D.png)
+
+![build](https://img.shields.io/github/workflow/status/rednblackgames/HyperLap2D/SNAPSHOT%20Build)
+![release](https://img.shields.io/github/v/release/rednblackgames/HyperLap2D)
+
+![Discord](https://img.shields.io/discord/740954840259362826?label=Discord&logo=discord)
+
 # HyperLap2D
 HyperLap2D is a powerful, platform-independent, visual editor for complex 2D worlds and scenes. 
 

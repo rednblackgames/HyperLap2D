@@ -5,7 +5,7 @@ HyperLap2D runtime for libGDX framework.
 ### Integration
 
 #### Gradle
-Release artifacts are available through [Bintray][bintray]. 
+Release artifacts are available through ![Bintray](https://img.shields.io/bintray/v/rednblackgames/HyperLap2D/hyperlap2d-runtime-libgdx)
 
 Runtime needs to be included into your `core` project.
 ```groovy
