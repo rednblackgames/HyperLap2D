@@ -79,7 +79,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
 
     @Override
     public String getShortcut() {
-        return OsUtils.getShortcutFor(Input.Keys.CONTROL_LEFT, Input.Keys.V);
+        return OsUtils.getShortcutFor(Input.Keys.CONTROL_LEFT, Input.Keys.T);
     }
 
     @Override
