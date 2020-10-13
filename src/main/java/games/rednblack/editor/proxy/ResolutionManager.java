@@ -451,15 +451,12 @@ public class ResolutionManager extends Proxy {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG);
-            ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-            rePackProjectImages(projectManager.getCurrentProjectInfoVO().originalResolution);
-            for (ResolutionEntryVO resolutionEntryVO : projectManager.getCurrentProjectInfoVO().resolutions) {
-                rePackProjectImages(resolutionEntryVO);
-            }
+            rePackProjectImagesForAllResolutionsSync();
             facade.sendNotification(MsgAPI.HIDE_LOADING_DIALOG);
 
             if (reloadProjectData) {
                 Gdx.app.postRunnable(() -> {
+                    ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
                     ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
                     resourceManager.loadCurrentProjectData(projectManager.getCurrentProjectPath(), currentResolutionName);
                     facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
@@ -467,6 +464,14 @@ public class ResolutionManager extends Proxy {
             }
         });
         executor.shutdown();
+    }
+
+    public void rePackProjectImagesForAllResolutionsSync() {
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        rePackProjectImages(projectManager.getCurrentProjectInfoVO().originalResolution);
+        for (ResolutionEntryVO resolutionEntryVO : projectManager.getCurrentProjectInfoVO().resolutions) {
+            rePackProjectImages(resolutionEntryVO);
+        }
     }
 
     public void deleteResolution(ResolutionEntryVO resolutionEntryVO) {

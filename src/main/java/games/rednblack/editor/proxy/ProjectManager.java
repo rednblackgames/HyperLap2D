@@ -301,7 +301,7 @@ public class ProjectManager extends Proxy {
         ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
         File pack = new File(currentProjectPath + "/assets/" + resolutionManager.currentResolutionName + "/pack/pack.atlas");
         if (!pack.exists()) {
-            resolutionManager.rePackProjectImagesForAllResolutions(false);
+            resolutionManager.rePackProjectImagesForAllResolutionsSync();
         }
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
         resourceManager.loadCurrentProjectData(projectPath, resolutionManager.currentResolutionName);
@@ -685,7 +685,7 @@ public class ProjectManager extends Proxy {
             }
             if (!skipRepack) {
                 ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-                resolutionManager.rePackProjectImagesForAllResolutions(false);
+                resolutionManager.rePackProjectImagesForAllResolutionsSync();
             }
         });
         executor.execute(() -> {
@@ -729,7 +729,7 @@ public class ProjectManager extends Proxy {
             copyImageFilesForAllResolutionsIntoProject(files, true, progressHandler);
             if (!skipRepack) {
                 ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-                resolutionManager.rePackProjectImagesForAllResolutions(false);
+                resolutionManager.rePackProjectImagesForAllResolutionsSync();
             }
         });
         executor.execute(() -> {
@@ -1305,7 +1305,7 @@ public class ProjectManager extends Proxy {
                                 }
 
                                 ResolutionManager resolutionManager = HyperLap2DFacade.getInstance().retrieveProxy(ResolutionManager.NAME);
-                                resolutionManager.rePackProjectImagesForAllResolutions(false);
+                                resolutionManager.rePackProjectImagesForAllResolutionsSync();
 
                                 progressHandler.progressChanged(100);
                                 try {
