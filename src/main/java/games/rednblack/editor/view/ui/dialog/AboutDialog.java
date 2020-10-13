@@ -13,6 +13,7 @@ import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.AppConfig;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.H2DDialog;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -91,6 +92,10 @@ public class AboutDialog extends H2DDialog {
         File tempFile = new File(settingsManager.cacheDir + File.separator + fileName);
 
         try {
+            if (!tempFile.exists()) {
+                FileUtils.write(tempFile, "", "utf-8");
+            }
+
             InputStream in = getClass().getResourceAsStream("/"+fileName);
             FileOutputStream out = new FileOutputStream(tempFile);
             if (in != null) {
