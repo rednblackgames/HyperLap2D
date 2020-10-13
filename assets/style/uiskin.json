@@ -863,19 +863,19 @@
   com.kotcrab.vis.ui.widget.BusyBar$BusyBarStyle: {
     default: {
       height: 2,
-      segment: vis-blue,
+      segment: select-box-list-bg-white,
       segmentWidth: 100,
       segmentOverflow: 50
     },
     slim: {
       height: 1,
-      segment: vis-blue,
+      segment: select-box-list-bg-white,
       segmentWidth: 100,
       segmentOverflow: 50
     },
     thick: {
       height: 6,
-      segment: vis-blue,
+      segment: select-box-list-bg-white,
       segmentWidth: 100,
       segmentOverflow: 50
     }

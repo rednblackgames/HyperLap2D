@@ -9,6 +9,11 @@ public class LoadingBarDialog extends H2DDialog {
         super("Loading...");
 
         BusyBar progressBar = new BusyBar();
-        getContentTable().add(progressBar).growX();
+        getContentTable().add(progressBar).padTop(5).growX();
+    }
+
+    @Override
+    public float getPrefWidth() {
+        return 250;
     }
 }
