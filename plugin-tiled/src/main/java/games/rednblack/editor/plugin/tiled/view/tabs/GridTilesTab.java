@@ -169,8 +169,7 @@ public class GridTilesTab extends DefaultTab {
                 @Override
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                     super.touchUp(event, x, y, pointer, button);
-
-                    if(button == Input.Buttons.RIGHT) {
+                    if(button == Input.Buttons.RIGHT && index < savedTiles.size) {
                         tiledPlugin.facade.sendNotification(TiledPlugin.OPEN_DROP_DOWN, savedTiles.get(index).regionName);
                         return;
                     }
