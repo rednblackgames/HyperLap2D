@@ -101,7 +101,7 @@ public class UIResolutionBoxMediator extends Mediator<UIResolutionBox> {
 
             case UIResolutionBox.REPACK_BTN_CLICKED:
                 ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-                resolutionManager.rePackProjectImagesForAllResolutions();
+                resolutionManager.rePackProjectImagesForAllResolutions(true);
                 String sceneName = sandbox.sceneControl.getCurrentSceneVO().sceneName;
                 sandbox.loadScene(sceneName);
                 break;

@@ -69,7 +69,7 @@ public class H2DDialog extends VisDialog {
 	}
 
 	@Override
-	protected void close () {
+	public void close () {
 		super.close();
 		onDismiss();
 	}

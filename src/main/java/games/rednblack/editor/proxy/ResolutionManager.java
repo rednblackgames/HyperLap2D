@@ -28,7 +28,9 @@ import java.util.concurrent.Executors;
 
 import javax.imageio.ImageIO;
 
+import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
+import games.rednblack.h2d.common.MsgAPI;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -145,9 +147,6 @@ public class ResolutionManager extends Proxy {
         facade = HyperLap2DFacade.getInstance();
     }
 
-//    private static BufferedImage convertTo9Patch(BufferedImage image) {
-
-    //    }
     public void createNewResolution(ResolutionEntryVO resolutionEntryVO) {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         projectManager.getCurrentProjectInfoVO().resolutions.add(resolutionEntryVO);
@@ -448,12 +447,26 @@ public class ResolutionManager extends Proxy {
         return mul;
     }
 
-    public void rePackProjectImagesForAllResolutions() {
-        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        rePackProjectImages(projectManager.getCurrentProjectInfoVO().originalResolution);
-        for (ResolutionEntryVO resolutionEntryVO : projectManager.getCurrentProjectInfoVO().resolutions) {
-            rePackProjectImages(resolutionEntryVO);
-        }
+    public void rePackProjectImagesForAllResolutions(boolean reloadProjectData) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG);
+            ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+            rePackProjectImages(projectManager.getCurrentProjectInfoVO().originalResolution);
+            for (ResolutionEntryVO resolutionEntryVO : projectManager.getCurrentProjectInfoVO().resolutions) {
+                rePackProjectImages(resolutionEntryVO);
+            }
+            facade.sendNotification(MsgAPI.HIDE_LOADING_DIALOG);
+
+            if (reloadProjectData) {
+                Gdx.app.postRunnable(() -> {
+                    ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
+                    resourceManager.loadCurrentProjectData(projectManager.getCurrentProjectPath(), currentResolutionName);
+                    facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
+                });
+            }
+        });
+        executor.shutdown();
     }
 
     public void deleteResolution(ResolutionEntryVO resolutionEntryVO) {

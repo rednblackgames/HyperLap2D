@@ -87,7 +87,7 @@ public class CreateNewResolutionDialog extends H2DDialog {
     }
 
 	@Override
-	protected void close() {
+	public void close() {
     	super.close();
 		HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
 		facade.sendNotification(CLOSE_DIALOG);

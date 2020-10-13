@@ -83,7 +83,7 @@ public class UIDraggablePanel extends H2DDialog {
     }
 
     @Override
-    protected void close() {
+    public void close() {
         super.close();
         isOpen = false;
     }

@@ -36,8 +36,7 @@ public class DeleteImageResource extends DeleteResourceCommand {
             deleteEntitiesWithImages(sandbox.getRootEntity(), imageName);
             deleteAllItemsImages(imageName);
             ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-            resolutionManager.rePackProjectImagesForAllResolutions();
-            projectManager.loadProjectData(projectManager.getCurrentProjectPath());
+            resolutionManager.rePackProjectImagesForAllResolutions(true);
             sendNotification(DONE, imageName);
             SceneVO vo = sandbox.sceneVoFromItems();
             projectManager.saveCurrentProject(vo);
