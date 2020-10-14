@@ -41,6 +41,7 @@ public class SetSelectionCommand extends RevertibleCommand {
 
     @Override
     public void doAction() {
+        cancel();
         HashSet<Entity> previousSelection = new HashSet<>(Sandbox.getInstance().getSelector().getSelectedItems());
         previousSelectionIds = EntityUtils.getEntityId(previousSelection);
 

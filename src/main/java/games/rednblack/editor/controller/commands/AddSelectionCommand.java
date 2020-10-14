@@ -37,6 +37,7 @@ public class AddSelectionCommand extends RevertibleCommand {
 
     @Override
     public void doAction() {
+        cancel();
         if(entityIds == null) {
             Set<Entity> items = getNotification().getBody();
             entityIds = EntityUtils.getEntityId(items);

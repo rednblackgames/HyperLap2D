@@ -39,6 +39,7 @@ public class ReleaseSelectionCommand extends RevertibleCommand {
 
     @Override
     public void doAction() {
+        cancel();
         Set<Entity> items = new HashSet<>(getNotification().<Collection<Entity>>getBody());
         Sandbox.getInstance().getSelector().releaseSelections(items);
 
