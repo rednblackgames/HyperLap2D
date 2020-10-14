@@ -21,6 +21,7 @@ package games.rednblack.editor.controller.commands;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
+import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.CompositeVO;
@@ -37,8 +38,8 @@ public class CutItemsCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void doAction() {
-        backup = CopyItemsCommand.getJsonStringFromEntities(sandbox.getSelector().getSelectedItems());
-        String data = CopyItemsCommand.getJsonStringFromEntities(sandbox.getSelector().getSelectedItems());
+        backup = EntityUtils.getJsonStringFromEntities(sandbox.getSelector().getSelectedItems());
+        String data = EntityUtils.getJsonStringFromEntities(sandbox.getSelector().getSelectedItems());
 
         Object[] payload = new Object[2];
         payload[0] = new Vector2(Sandbox.getInstance().getCamera().position.x,Sandbox.getInstance().getCamera().position.y);

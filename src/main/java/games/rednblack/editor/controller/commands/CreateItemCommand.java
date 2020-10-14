@@ -19,6 +19,7 @@
 package games.rednblack.editor.controller.commands;
 
 import com.badlogic.ashley.core.Entity;
+import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.NodeComponent;
@@ -37,12 +38,22 @@ import java.util.Set;
 public class CreateItemCommand extends EntityModifyRevertibleCommand {
 
     private Integer entityId;
+    private int entityType;
+    private String serializedEntity;
 
     @Override
     public void doAction() {
         Entity entity = getNotification().getBody();
 
+        if (serializedEntity != null) {
+            EntityFactory factory = Sandbox.getInstance().sceneControl.sceneLoader.getEntityFactory();
+            Entity parentEntity = Sandbox.getInstance().getCurrentViewingEntity();
+            entity =  EntityUtils.getEntityFromJson(serializedEntity, entityType, factory, parentEntity);
+            serializedEntity = null;
+        }
+
         entityId = EntityUtils.getEntityId(entity);
+        entityType = EntityUtils.getType(entity);
 
         sandbox.getEngine().addEntity(entity);
 
@@ -55,15 +66,17 @@ public class CreateItemCommand extends EntityModifyRevertibleCommand {
 
         Set<Entity> items = new HashSet<>();
         items.add(entity);
-        facade.sendNotification(MsgAPI.ACTION_ADD_SELECTION, items);
+        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, items);
     }
 
     @Override
     public void undoAction() {
         Entity entity = EntityUtils.getByUniqueId(entityId);
+        serializedEntity = EntityUtils.getJsonStringFromEntity(entity);
 
         FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
         followersUIMediator.removeFollower(entity);
+
         sandbox.getEngine().removeEntity(entity);
         facade.sendNotification(MsgAPI.DELETE_ITEMS_COMMAND_DONE);
     }

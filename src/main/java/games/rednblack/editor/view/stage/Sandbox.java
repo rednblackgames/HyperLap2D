@@ -18,8 +18,8 @@
 
 package games.rednblack.editor.view.stage;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.graphics.Color;
@@ -166,7 +166,7 @@ public class Sandbox {
         return sceneControl;
     }
     
-    public Engine getEngine() {
+    public PooledEngine getEngine() {
         return sceneLoader.getEngine();
     }
 

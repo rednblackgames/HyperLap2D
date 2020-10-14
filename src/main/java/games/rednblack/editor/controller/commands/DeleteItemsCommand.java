@@ -52,7 +52,7 @@ public class DeleteItemsCommand extends EntityModifyRevertibleCommand {
             }
         }
 
-        backup = CopyItemsCommand.getJsonStringFromEntities(entitySet);
+        backup = EntityUtils.getJsonStringFromEntities(entitySet);
     }
 
     @Override
