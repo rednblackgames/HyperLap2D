@@ -5,14 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
-import games.rednblack.editor.renderer.components.PolygonComponent;
-import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
-import games.rednblack.editor.renderer.components.light.LightBodyComponent;
-import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.RoundUtils;
-import games.rednblack.editor.utils.TransformCommandBuilder;
+import games.rednblack.h2d.common.TransformCommandBuilder;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 

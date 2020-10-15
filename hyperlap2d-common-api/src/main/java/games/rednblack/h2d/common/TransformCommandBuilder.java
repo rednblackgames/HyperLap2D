@@ -1,13 +1,12 @@
-package games.rednblack.editor.utils;
+package games.rednblack.h2d.common;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import org.puremvc.java.interfaces.IFacade;
 
 /**
  * Created by Osman on 01.08.2015.
@@ -74,12 +73,12 @@ public class TransformCommandBuilder {
         setOrigin(2, x, y);
     }
 
-    public void execute() {
+    public void execute(IFacade facade) {
         // check if payload is worth sending
         Object[] newData = (Object[]) payload.get(2);
         for(Object o : newData) {
             if (o != null) {
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_ITEM_TRANSFORM_TO, payload);
+                facade.sendNotification(MsgAPI.ACTION_ITEM_TRANSFORM_TO, payload);
                 return;
             }
         }

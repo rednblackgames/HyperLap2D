@@ -11,6 +11,7 @@ import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.h2d.common.TransformCommandBuilder;
 import games.rednblack.h2d.common.view.tools.Tool;
 import org.puremvc.java.interfaces.INotification;
 
@@ -94,23 +95,19 @@ public class DrawTileTool implements Tool {
             // there is already other tile under this one
             if (textureRegionComponent.regionName.equals(tiledPlugin.getSelectedTileName())) {
                 //rotate
+                TransformCommandBuilder commandBuilder = new TransformCommandBuilder();
+                commandBuilder.begin(entity);
                 TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
                 if (transformComponent.scaleX > 0 && transformComponent.scaleY > 0) {
-                    transformComponent.scaleX *= -1f;
-                    return;
+                    commandBuilder.setScale(transformComponent.scaleX * -1f, transformComponent.scaleY);
+                } else if (transformComponent.scaleX < 0 && transformComponent.scaleY > 0) {
+                    commandBuilder.setScale(transformComponent.scaleX, transformComponent.scaleY * -1f);
+                } else if (transformComponent.scaleX < 0 && transformComponent.scaleY < 0) {
+                    commandBuilder.setScale(transformComponent.scaleX * -1f, transformComponent.scaleY);
+                } else if (transformComponent.scaleX > 0 && transformComponent.scaleY < 0) {
+                    commandBuilder.setScale(transformComponent.scaleX, transformComponent.scaleY * -1f);
                 }
-                if (transformComponent.scaleX < 0 && transformComponent.scaleY > 0) {
-                    transformComponent.scaleY *= -1f;
-                    return;
-                }
-                if (transformComponent.scaleX < 0 && transformComponent.scaleY < 0) {
-                    transformComponent.scaleX *= -1f;
-                    return;
-                }
-                if (transformComponent.scaleX > 0 && transformComponent.scaleY < 0) {
-                    transformComponent.scaleY *= -1f;
-                    return;
-                }
+                commandBuilder.execute(tiledPlugin.facade);
             }
         }
     }

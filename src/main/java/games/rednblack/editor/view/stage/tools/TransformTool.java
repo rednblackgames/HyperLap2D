@@ -29,7 +29,7 @@ import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
-import games.rednblack.editor.utils.TransformCommandBuilder;
+import games.rednblack.h2d.common.TransformCommandBuilder;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
@@ -201,7 +201,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
             return;
         }
 
-        commandBuilder.execute();
+        commandBuilder.execute(HyperLap2DFacade.getInstance());
         if (transformStrategy == compositeStrategy) {
             compositeStrategy.swapItemFinalAndInitialStates(follower.getEntity());
         }
