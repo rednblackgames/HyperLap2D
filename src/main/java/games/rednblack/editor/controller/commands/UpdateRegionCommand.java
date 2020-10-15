@@ -2,12 +2,14 @@ package games.rednblack.editor.controller.commands;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.MsgAPI;
 
 public class UpdateRegionCommand extends EntityModifyRevertibleCommand {
 
@@ -36,6 +38,8 @@ public class UpdateRegionCommand extends EntityModifyRevertibleCommand {
         float ppwu = projectInfoVO.pixelToWorld;
         size.width = textureRegionComponent.region.getRegionWidth() / ppwu;
         size.height = textureRegionComponent.region.getRegionHeight() / ppwu;
+
+        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     @Override
@@ -51,5 +55,7 @@ public class UpdateRegionCommand extends EntityModifyRevertibleCommand {
         float ppwu = projectInfoVO.pixelToWorld;
         size.width = textureRegionComponent.region.getRegionWidth() / ppwu;
         size.height = textureRegionComponent.region.getRegionHeight() / ppwu;
+
+        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 }
