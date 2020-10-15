@@ -28,7 +28,6 @@ import games.rednblack.editor.plugin.tiled.tools.DeleteTileTool;
 import games.rednblack.editor.plugin.tiled.tools.DrawTileTool;
 import games.rednblack.editor.plugin.tiled.view.tabs.SettingsTab;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
-import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.ResourcePayloadObject;
@@ -68,7 +67,6 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 SettingsTab.OK_BTN_CLICKED,
                 TiledPlugin.ACTION_SET_GRID_SIZE_FROM_ITEM,
                 MsgAPI.ACTION_DELETE_IMAGE_RESOURCE,
-                MsgAPI.ITEM_DATA_UPDATED,
                 MsgAPI.TOOL_SELECTED
         };
     }
@@ -162,7 +160,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
             case MsgAPI.TOOL_SELECTED:
                 String body = notification.getBody();
                 String cursorName = null;
-                switch (body.toString()) {
+                switch (body) {
                     case DrawTileTool.NAME:
                         cursorName = "tile";
                         tiledPlugin.facade.sendNotification(TiledPlugin.PANEL_OPEN);
@@ -177,6 +175,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 if (cursorName != null) {
                     CursorData cursorData = new CursorData(cursorName, 14, 14);
                     TextureRegion region = tiledPlugin.pluginRM.getTextureRegion(cursorName);
+                    //TODO A custom cursor has to be a Texture not a region of an atlas
                     //tiledPlugin.getAPI().setCursor(cursorData, region);
                 }
                 break;
@@ -193,12 +192,6 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 DimensionsComponent dimensionsComponent = ComponentRetriever.get(observable, DimensionsComponent.class);
                 tiledPlugin.dataToSave.setGrid(dimensionsComponent.width, dimensionsComponent.height);
                 tiledPlugin.facade.sendNotification(TiledPlugin.GRID_CHANGED);
-                break;
-            case MsgAPI.ITEM_DATA_UPDATED:
-                Entity item = notification.getBody();
-                if (tiledPlugin.isTile(item)) {
-                    ComponentRetriever.get(item, MainItemComponent.class).tags.remove(TiledPlugin.TILE_TAG);
-                }
                 break;
         }
     }

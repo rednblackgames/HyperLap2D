@@ -91,22 +91,24 @@ public class DrawTileTool implements Tool {
         if (!tiledPlugin.isOnCurrentSelectedLayer(entity)) return;
         if (entity != null) {
             TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
-            // there is already other tile under this one
-            if (textureRegionComponent.regionName.equals(tiledPlugin.getSelectedTileName())) {
-                //rotate
-                TransformCommandBuilder commandBuilder = new TransformCommandBuilder();
-                commandBuilder.begin(entity);
-                TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
-                if (transformComponent.scaleX > 0 && transformComponent.scaleY > 0) {
-                    commandBuilder.setScale(transformComponent.scaleX * -1f, transformComponent.scaleY);
-                } else if (transformComponent.scaleX < 0 && transformComponent.scaleY > 0) {
-                    commandBuilder.setScale(transformComponent.scaleX, transformComponent.scaleY * -1f);
-                } else if (transformComponent.scaleX < 0 && transformComponent.scaleY < 0) {
-                    commandBuilder.setScale(transformComponent.scaleX * -1f, transformComponent.scaleY);
-                } else if (transformComponent.scaleX > 0 && transformComponent.scaleY < 0) {
-                    commandBuilder.setScale(transformComponent.scaleX, transformComponent.scaleY * -1f);
+            if (textureRegionComponent != null && tiledPlugin.isTile(entity)) {
+                // there is already other tile under this one
+                if (textureRegionComponent.regionName.equals(tiledPlugin.getSelectedTileName())) {
+                    //rotate
+                    TransformCommandBuilder commandBuilder = new TransformCommandBuilder();
+                    commandBuilder.begin(entity);
+                    TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+                    if (transformComponent.scaleX > 0 && transformComponent.scaleY > 0) {
+                        commandBuilder.setScale(transformComponent.scaleX * -1f, transformComponent.scaleY);
+                    } else if (transformComponent.scaleX < 0 && transformComponent.scaleY > 0) {
+                        commandBuilder.setScale(transformComponent.scaleX, transformComponent.scaleY * -1f);
+                    } else if (transformComponent.scaleX < 0 && transformComponent.scaleY < 0) {
+                        commandBuilder.setScale(transformComponent.scaleX * -1f, transformComponent.scaleY);
+                    } else if (transformComponent.scaleX > 0 && transformComponent.scaleY < 0) {
+                        commandBuilder.setScale(transformComponent.scaleX, transformComponent.scaleY * -1f);
+                    }
+                    commandBuilder.execute(tiledPlugin.facade);
                 }
-                commandBuilder.execute(tiledPlugin.facade);
             }
         }
     }
@@ -149,7 +151,6 @@ public class DrawTileTool implements Tool {
 
         Entity underneathTile = tiledPlugin.getPluginEntityWithParams(row, column);
         if (underneathTile != null) {
-            //updateRegion(underneathTile, tiledPlugin.getSelectedTileName());
             drawOnEntity(underneathTile, x, y);
             return;
         }
@@ -166,7 +167,8 @@ public class DrawTileTool implements Tool {
         if (!tiledPlugin.isOnCurrentSelectedLayer(entity)) return;
         if (entity != null) {
             TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
-            if (textureRegionComponent != null && textureRegionComponent.regionName != null) {
+            if (textureRegionComponent != null && textureRegionComponent.regionName != null
+                    && tiledPlugin.isTile(entity)) {
                 // there is already other tile under this one
                 if(textureRegionComponent.regionName.equals(tiledPlugin.getSelectedTileName())) {
                     return;
