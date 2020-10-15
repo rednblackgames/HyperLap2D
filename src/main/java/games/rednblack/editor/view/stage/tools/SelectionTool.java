@@ -273,7 +273,8 @@ public class SelectionTool extends SimpleTool {
             for (Entity itemInstance : sandbox.getSelector().getCurrentSelection()) {
                 transformComponent = ComponentRetriever.get(itemInstance, TransformComponent.class);
 
-
+                if (dragTouchDiff.get(itemInstance) == null)
+                    continue;
                 Vector2 diff = new Vector2(dragTouchDiff.get(itemInstance));
                 diff.x = MathUtils.floor(diff.x / gridSize) * gridSize;
                 diff.y = MathUtils.floor(diff.y / gridSize) * gridSize;
