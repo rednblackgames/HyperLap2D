@@ -4,7 +4,7 @@ package games.rednblack.editor.view.stage.tools.transformStrategy;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.components.TransformComponent;
-import games.rednblack.h2d.common.TransformCommandBuilder;
+import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 
 /**

@@ -29,7 +29,7 @@ import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
-import games.rednblack.h2d.common.TransformCommandBuilder;
+import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.FollowersUIMediator;

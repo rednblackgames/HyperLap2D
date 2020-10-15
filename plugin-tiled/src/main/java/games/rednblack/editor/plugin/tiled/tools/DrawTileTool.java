@@ -5,13 +5,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
-import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
-import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
-import games.rednblack.h2d.common.TransformCommandBuilder;
+import games.rednblack.h2d.common.command.TransformCommandBuilder;
+import games.rednblack.h2d.common.command.UpdateRegionCommandBuilder;
 import games.rednblack.h2d.common.view.tools.Tool;
 import org.puremvc.java.interfaces.INotification;
 
@@ -150,7 +149,8 @@ public class DrawTileTool implements Tool {
 
         Entity underneathTile = tiledPlugin.getPluginEntityWithParams(row, column);
         if (underneathTile != null) {
-            updateRegion(underneathTile, tiledPlugin.getSelectedTileName());
+            //updateRegion(underneathTile, tiledPlugin.getSelectedTileName());
+            drawOnEntity(underneathTile, x, y);
             return;
         }
 
@@ -181,14 +181,11 @@ public class DrawTileTool implements Tool {
     }
 
     private void updateRegion(Entity entity, String region) {
-        TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
-        DimensionsComponent size = ComponentRetriever.get(entity, DimensionsComponent.class);
-        textureRegionComponent.regionName = tiledPlugin.getSelectedTileName();
-        textureRegionComponent.region = tiledPlugin.getAPI().getSceneLoader().getRm().getTextureRegion(region);
-        ProjectInfoVO projectInfoVO = tiledPlugin.getAPI().getSceneLoader().getRm().getProjectVO();
-        float ppwu = projectInfoVO.pixelToWorld;
-        size.width = textureRegionComponent.region.getRegionWidth() / ppwu;
-        size.height = textureRegionComponent.region.getRegionHeight() / ppwu;
+        UpdateRegionCommandBuilder builder = new UpdateRegionCommandBuilder();
+        builder.begin(entity);
+        builder.setRegion(tiledPlugin.getAPI().getSceneLoader().getRm().getTextureRegion(region));
+        builder.setRegionName(tiledPlugin.getSelectedTileName());
+        builder.execute(tiledPlugin.facade);
     }
 
 }

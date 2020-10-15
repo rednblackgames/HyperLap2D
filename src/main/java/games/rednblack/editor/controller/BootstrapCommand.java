@@ -59,6 +59,7 @@ public class BootstrapCommand extends SimpleCommand {
         facade.registerCommand(MsgAPI.ACTION_ITEM_AND_CHILDREN_TO, ItemChildrenTransformCommand::new);
 
         facade.registerCommand(MsgAPI.ACTION_ITEM_TRANSFORM_TO, ItemTransformCommand::new);
+        facade.registerCommand(MsgAPI.ACTION_UPDATE_REGION_DATA, UpdateRegionCommand::new);
         facade.registerCommand(MsgAPI.ACTION_ADD_TO_LIBRARY, AddToLibraryCommand::new);
         facade.registerCommand(MsgAPI.ACTION_ADD_TO_LIBRARY_ACTION, AddToLibraryAction::new);
         facade.registerCommand(MsgAPI.ACTION_CONVERT_TO_BUTTON, ConvertToButtonCommand::new);

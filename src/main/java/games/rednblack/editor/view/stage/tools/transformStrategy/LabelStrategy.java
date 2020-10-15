@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
-import games.rednblack.h2d.common.TransformCommandBuilder;
+import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 
 public class LabelStrategy extends AbstractTransformStrategy {

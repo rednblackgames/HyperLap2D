@@ -1,4 +1,4 @@
-package games.rednblack.h2d.common;
+package games.rednblack.h2d.common.command;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.IFacade;
 
 /**
