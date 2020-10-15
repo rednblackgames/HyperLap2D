@@ -1,16 +1,13 @@
 package games.rednblack.editor.plugin.performance;
 
 import com.badlogic.ashley.core.Engine;
+import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 
 public class PerformancePanelMediator extends Mediator<PerformancePanel> {
     private static final String TAG = PerformancePanelMediator.class.getCanonicalName();
     public static final String NAME = TAG;
-
-    public static final String SCENE_LOADED = "games.rednblack.editor.proxy.SceneDataManager.SCENE_LOADED";
-    public static final String NEW_ITEM_ADDED = "games.rednblack.editor.factory.ItemFactory.NEW_ITEM_ADDED";
-    public static final String ACTION_DELETE = "games.rednblack.editor.controller.commands.DeleteItemsCommandDONE";
 
     private PerformancePlugin performancePlugin;
 
@@ -24,9 +21,7 @@ public class PerformancePanelMediator extends Mediator<PerformancePanel> {
     @Override
     public String[] listNotificationInterests() {
         return new String[]{
-                SCENE_LOADED,
-                NEW_ITEM_ADDED,
-                ACTION_DELETE,
+                MsgAPI.SCENE_LOADED,
                 PerformancePlugin.PANEL_OPEN
         };
     }
@@ -35,7 +30,7 @@ public class PerformancePanelMediator extends Mediator<PerformancePanel> {
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
-            case SCENE_LOADED:
+            case MsgAPI.SCENE_LOADED:
                 viewComponent.initView();
                 Engine engine = performancePlugin.getAPI().getEngine();
                 viewComponent.setEngine(engine);
