@@ -28,7 +28,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import games.rednblack.editor.HyperLap2D;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.UIWindowAction;
 import games.rednblack.editor.view.ui.UIWindowActionMediator;
@@ -116,6 +115,135 @@ public class HyperLap2DUtils {
                 float offsetY = getY() - startY;
                 GLFW.glfwGetWindowPos(context, windowX, windowY);
                 GLFW.glfwSetWindowPos(context, (int)(windowX.get(0) + offsetX), (int)(windowY.get(0) + offsetY));
+            }
+        });
+    }
+
+    public static void setWindowResizeListener(Actor actor) {
+        actor.addListener(new InputListener() {
+            private static final int TOP_BORDER = 0;
+            private static final int BOTTOM_BORDER = 1;
+            private static final int LEFT_BORDER = 2;
+            private static final int RIGHT_BORDER = 3;
+            private static final int BOTTOM_LEFT_CORNER = 4;
+            private static final int BOTTOM_RIGHT_CORNER = 5;
+            private static final int TOP_LEFT_CORNER = 6;
+            private static final int TOP_RIGHT_CORNER = 7;
+
+            private static final int BORDER_SIZE = 10;
+
+            private final long context = GLFW.glfwGetCurrentContext();
+            private float startX = 0;
+            private float startY = 0;
+            private float startW = 0;
+            private float startH = 0;
+            private float startWindowX = 0;
+            private float startWindowY = 0;
+            private int anchorPoint = -1;
+            private final DoubleBuffer cursorX = BufferUtils.createDoubleBuffer(1);
+            private final DoubleBuffer cursorY = BufferUtils.createDoubleBuffer(1);
+
+            private final IntBuffer windowX = BufferUtils.createIntBuffer(1);
+            private final IntBuffer windowY = BufferUtils.createIntBuffer(1);
+            private final IntBuffer windowW = BufferUtils.createIntBuffer(1);
+            private final IntBuffer windowH = BufferUtils.createIntBuffer(1);
+
+            private int getX() {
+                return MathUtils.floor((float) cursorX.get(0));
+            }
+            private int getY() {
+                return MathUtils.floor((float) cursorY.get(0));
+            }
+            private int getWidth() {
+                return MathUtils.floor((float) windowW.get(0));
+            }
+            private int getHeight() {
+                return MathUtils.floor((float) windowH.get(0));
+            }
+            private int getWindowX() {
+                return MathUtils.floor((float) windowX.get(0));
+            }
+            private int getWindowY() {
+                return MathUtils.floor((float) windowY.get(0));
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                UIWindowActionMediator uiWindowActionMediator = HyperLap2DFacade.getInstance().retrieveMediator(UIWindowActionMediator.NAME);
+                UIWindowAction uiWindowAction = uiWindowActionMediator.getViewComponent();
+                if (uiWindowAction.isMaximized())
+                    return false;
+
+                GLFW.glfwGetCursorPos(context, cursorX, cursorY);
+                GLFW.glfwGetWindowSize(context, windowW, windowH);
+                GLFW.glfwGetWindowPos(context, windowX, windowY);
+                anchorPoint = getAnchorPoint();
+
+                if (anchorPoint == -1)
+                    return false;
+
+                startX = getX();
+                startY = getY();
+                startW = getWidth();
+                startH = getHeight();
+                startWindowX = getWindowX();
+                startWindowY = getWindowY();
+                return true;
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                GLFW.glfwGetWindowPos(context, windowX, windowY);
+                GLFW.glfwGetCursorPos(context, cursorX, cursorY);
+                float offsetX = getX() - startX + (startWindowX - getWindowX());
+                float offsetY = getY() - startY;
+                GLFW.glfwGetWindowSize(context, windowW, windowH);
+                switch (anchorPoint) {
+                    case BOTTOM_BORDER:
+                        GLFW.glfwSetWindowSize(context, (int) startW, (int)(startH + offsetY));
+                        break;
+                    case TOP_BORDER:
+                        GLFW.glfwSetWindowSize(context, (int) startW, (int)(startH - offsetY));
+                        break;
+                    case LEFT_BORDER:
+                        GLFW.glfwSetWindowSize(context, (int)(startW - offsetX), (int) startH);
+                        break;
+                    case RIGHT_BORDER:
+                        GLFW.glfwSetWindowSize(context, (int)(startW + offsetX), (int) startH);
+                        break;
+                    case BOTTOM_RIGHT_CORNER:
+                        GLFW.glfwSetWindowSize(context, (int)(startW + offsetX), (int)(startH + offsetY));
+                        break;
+                    case TOP_RIGHT_CORNER:
+                        GLFW.glfwSetWindowSize(context, (int)(startW + offsetX), (int)(startH - offsetY));
+                        break;
+                    case BOTTOM_LEFT_CORNER:
+                        GLFW.glfwSetWindowSize(context, (int)(startW - offsetX), (int)(startH + offsetY));
+                        break;
+                    case TOP_LEFT_CORNER:
+                        GLFW.glfwSetWindowSize(context, (int)(startW - offsetX), (int)(startH - offsetY));
+                        break;
+                }
+            }
+
+            private int getAnchorPoint() {
+                if (getX() < BORDER_SIZE && getY() > BORDER_SIZE && getY() < getHeight() - BORDER_SIZE)
+                    return LEFT_BORDER;
+                if (getX() < BORDER_SIZE && getY() < BORDER_SIZE)
+                    return TOP_LEFT_CORNER;
+                if (getX() < BORDER_SIZE && getY() > getHeight() - BORDER_SIZE)
+                    return BOTTOM_LEFT_CORNER;
+                if (getX() > BORDER_SIZE && getY() > getHeight() - BORDER_SIZE && getX() < getWidth() - BORDER_SIZE)
+                    return BOTTOM_BORDER;
+                if (getX() > getWidth() - BORDER_SIZE && getY() > getHeight() - BORDER_SIZE)
+                    return BOTTOM_RIGHT_CORNER;
+                if (getX() > getWidth() - BORDER_SIZE && getY() > BORDER_SIZE && getY() < getHeight() - BORDER_SIZE)
+                    return RIGHT_BORDER;
+                if (getX() > getWidth() - BORDER_SIZE && getY() < BORDER_SIZE)
+                    return TOP_RIGHT_CORNER;
+                if (getX() > BORDER_SIZE && getY() < BORDER_SIZE && getX() < getWidth() - BORDER_SIZE)
+                    return TOP_BORDER;
+                return -1;
             }
         });
     }

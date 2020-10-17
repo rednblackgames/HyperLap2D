@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.util.ToastManager;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.RulersUIMediator;
 import games.rednblack.editor.view.ui.UIBottomMenuBar;
@@ -135,6 +136,9 @@ public class UIStage extends Stage {
                 return event.getTarget() != getRoot() && event.getTarget() != dummyTarget;
             }
         });
+
+        //TODO Undecorated window is cool but too much glitches
+        //HyperLap2DUtils.setWindowResizeListener(this.getRoot());
     }
 
     @Override

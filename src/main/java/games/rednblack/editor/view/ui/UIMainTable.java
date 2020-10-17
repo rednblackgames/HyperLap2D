@@ -69,7 +69,7 @@ public class UIMainTable extends VisTable {
         HyperLap2DMenuBar menuBar = hyperlap2DMenuBarMediator.getViewComponent();
 		topTable.add(menuBar.getTable()).height(32).growX();
 
-		//TODO Undecorated window is cool but should enable window resizing before switch to undecorated
+		//TODO Undecorated window is cool but too much glitches
         /*UIWindowTitleMediator uiWindowTitleMediator = facade.retrieveMediator(UIWindowTitleMediator.NAME);
         UIWindowTitle uiWindowTitle = uiWindowTitleMediator.getViewComponent();
         topTable.add(uiWindowTitle).growX().fillY();
@@ -81,7 +81,7 @@ public class UIMainTable extends VisTable {
 
     private void initSupportMenus() {
 		UISubmenuBar compositePanel = new UISubmenuBar();
-        topTable.add(compositePanel).fillX().colspan(2).expandX().height(32);
+        topTable.add(compositePanel).fillX().colspan(topTable.getChildren().size).expandX().height(32);
     }
 
 	private void initLeftBoxesPanel() {
