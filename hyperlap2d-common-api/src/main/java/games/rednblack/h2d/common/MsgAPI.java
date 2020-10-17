@@ -129,6 +129,7 @@ public class MsgAPI {
     public static final String ACTION_PLUGIN_PROXY_COMMAND = SANDBOX_PREFIX + ".ACTION_PLUGIN_PROXY_COMMAND";
 
     public static final String ACTION_EXPORT_PROJECT = SANDBOX_PREFIX + ".ACTION_EXPORT_PROJECT";
+    public static final String ACTION_REPACK = SANDBOX_PREFIX + ".ACTION_REPACK";
     public static final String SAVE_EXPORT_PATH = SANDBOX_PREFIX + ".SAVE_EXPORT_SETTINGS";
 
     // drop down resources

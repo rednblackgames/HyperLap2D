@@ -77,7 +77,7 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.characters += "⌘⇧⌥\u25CF\u2022";
         parameter.kerning = false;
-        parameter.renderCount = 2;
+        parameter.renderCount = 3;
         parameter.hinting = FreeTypeFontGenerator.Hinting.Slight;
 
         parameter.size = 10;

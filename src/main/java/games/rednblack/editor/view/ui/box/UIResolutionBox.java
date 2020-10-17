@@ -31,6 +31,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 public class UIResolutionBox extends UIBaseBox {
@@ -39,7 +40,6 @@ public class UIResolutionBox extends UIBaseBox {
     public static final String CREATE_NEW_RESOLUTION_BTN_CLICKED = prefix + ".CREATE_NEW_RESOLUTION_BTN_CLICKED";
     public static final String CHANGE_RESOLUTION_BTN_CLICKED = prefix + ".CHANGE_RESOLUTION_BTN_CLICKED";
     public static final String DELETE_RESOLUTION_BTN_CLICKED = prefix + ".DELETE_RESOLUTION_BTN_CLICKED";
-    public static final String REPACK_BTN_CLICKED = prefix + ".REPACK_BTN_CLICKED";
 
     private final ResolutionManager resolutionManager;
     private final Skin skin;
@@ -73,7 +73,7 @@ public class UIResolutionBox extends UIBaseBox {
         add(deleteBtn).padRight(11).height(25);
 
         VisTextButton repackBtn = StandardWidgetsFactory.createTextButton("Repack", "red");
-        repackBtn.addListener(new UIResolutionBoxButtonClickListener(REPACK_BTN_CLICKED));
+        repackBtn.addListener(new UIResolutionBoxButtonClickListener(MsgAPI.ACTION_REPACK));
         add(repackBtn).width(93);
     }
 
@@ -127,7 +127,7 @@ public class UIResolutionBox extends UIBaseBox {
                 	if (!deleteBtn.isDisabled())
                     	facade.sendNotification(btnClicked, visSelectBox.getSelected());
                     break;
-                case REPACK_BTN_CLICKED:
+                case MsgAPI.ACTION_REPACK:
                     facade.sendNotification(btnClicked);
                     break;
             }

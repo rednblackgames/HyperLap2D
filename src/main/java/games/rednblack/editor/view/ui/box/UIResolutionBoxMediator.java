@@ -26,6 +26,7 @@ import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.view.ui.dialog.CreateNewResolutionDialog;
+import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 
@@ -54,7 +55,7 @@ public class UIResolutionBoxMediator extends Mediator<UIResolutionBox> {
                 ProjectManager.PROJECT_OPENED,
                 UIResolutionBox.CHANGE_RESOLUTION_BTN_CLICKED,
                 UIResolutionBox.DELETE_RESOLUTION_BTN_CLICKED,
-                UIResolutionBox.REPACK_BTN_CLICKED,
+                MsgAPI.ACTION_REPACK,
                 ResolutionManager.RESOLUTION_LIST_CHANGED,
 				CreateNewResolutionDialog.CLOSE_DIALOG
         };
@@ -99,7 +100,7 @@ public class UIResolutionBoxMediator extends Mediator<UIResolutionBox> {
                         }).padBottom(20).pack();
                 break;
 
-            case UIResolutionBox.REPACK_BTN_CLICKED:
+            case MsgAPI.ACTION_REPACK:
                 ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
                 resolutionManager.rePackProjectImagesForAllResolutions(true);
                 String sceneName = sandbox.sceneControl.getCurrentSceneVO().sceneName;
