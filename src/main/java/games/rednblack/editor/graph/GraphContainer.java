@@ -30,7 +30,7 @@ import games.rednblack.editor.graph.data.GraphValidator;
 import games.rednblack.editor.graph.data.NodeConnector;
 import games.rednblack.editor.graph.data.NodeGroup;
 import games.rednblack.editor.graph.property.PropertyBox;
-import games.rednblack.editor.graph.ui.WhitePixel;
+import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.editor.graph.ui.preview.NavigableCanvas;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.InputValidator;
