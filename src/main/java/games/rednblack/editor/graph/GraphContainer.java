@@ -72,7 +72,6 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
 
     private float canvasX;
     private float canvasY;
-    private final Vector2 canvasPos = new Vector2();
     private float canvasWidth;
     private float canvasHeight;
     private boolean navigating;
