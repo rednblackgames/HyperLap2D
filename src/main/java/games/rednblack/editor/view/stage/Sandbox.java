@@ -85,11 +85,11 @@ public class Sandbox {
     private ResourceManager resourceManager;
 
     SceneConfigVO sceneConfigVO;
-    
+
     public PixelRect selectionRec;
 
     private SceneLoader sceneLoader;
-	private Array<InputListener> listeners = new Array<>(1);
+    private Array<InputListener> listeners = new Array<>(1);
 
     Vector3 temp = new Vector3();
     private float timeToCameraZoomTarget, cameraZoomTarget, cameraZoomOrigin;
@@ -138,7 +138,7 @@ public class Sandbox {
 
         selector = new ItemSelector(this);
     }
-    
+
     public void initView() {
         selectionRec = new PixelRect(0, 0);
         selectionRec.setFillColor(new Color(1, 1, 1, 0.1f));
@@ -165,7 +165,7 @@ public class Sandbox {
     public SceneControlMediator getSceneControl() {
         return sceneControl;
     }
-    
+
     public PooledEngine getEngine() {
         return sceneLoader.getEngine();
     }
@@ -214,8 +214,8 @@ public class Sandbox {
      * @param deltaTime
      */
     public void render(float deltaTime) {
-        if (timeToCameraZoomTarget > 0){
-            getCamera().unproject(temp.set(Gdx.input.getX(), Gdx.input.getY(), 0 ));
+        if (timeToCameraZoomTarget > 0) {
+            getCamera().unproject(temp.set(Gdx.input.getX(), Gdx.input.getY(), 0));
             float px = temp.x;
             float py = temp.y;
 
@@ -225,7 +225,7 @@ public class Sandbox {
             getCamera().update();
 
             if (moveCameraWithZoom) {
-                getCamera().unproject(temp.set(Gdx.input.getX(), Gdx.input.getY(), 0 ));
+                getCamera().unproject(temp.set(Gdx.input.getX(), Gdx.input.getY(), 0));
                 getCamera().position.add(px - temp.x, py - temp.y, 0);
                 getCamera().update();
             }
@@ -269,7 +269,7 @@ public class Sandbox {
      *
      * @param composite composite on screen with particles to be forced to be continuous
      */
-  //TODO fix and uncomment
+    //TODO fix and uncomment
 //    private void forceContinuousParticles(CompositeItem composite) {
 //        ArrayList<IBaseItem> asd = composite.getItems();
 //        for (int i = 0; i < asd.size(); i++) {
@@ -302,7 +302,7 @@ public class Sandbox {
      * TODO: what does this do? seems to be saving as checkpoint of Flow? it so it should be renamed
      */
     public void saveSceneCurrentSceneData() {
-		//TODO fix and uncomment
+        //TODO fix and uncomment
         //sceneControl.getCurrentScene().updateDataVO();
     }
 
@@ -325,7 +325,7 @@ public class Sandbox {
 
 
     public int getZoomPercent() {
-        return (int)sceneConfigVO.cameraZoom;
+        return (int) sceneConfigVO.cameraZoom;
     }
 
     public void setZoomPercent(float percent, boolean moveCamera) {
@@ -346,8 +346,8 @@ public class Sandbox {
         setZoomPercent(zoomPercent, false);
     }
 
-    public float getWorldGridSize(){
-        return (float)getGridSize()/sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
+    public float getWorldGridSize() {
+        return (float) getGridSize() / sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
     }
 
     public int getGridSize() {
@@ -370,9 +370,9 @@ public class Sandbox {
         facade.sendNotification(MsgAPI.LOCK_LINES_CHANGED, lockLines);
     }
 
-    
-    public Entity getRootEntity(){
-    	return sceneControl.getRootEntity();
+
+    public Entity getRootEntity() {
+        return sceneControl.getRootEntity();
     }
 
     public boolean isViewingRootEntity() {
@@ -386,27 +386,27 @@ public class Sandbox {
         boolean override = !isViewingRootEntity() && settingsManager.editorConfigVO.disableAmbientComposite;
         sceneLoader.setAmbientInfo(sceneVO, override);
     }
-    
+
     //Global Listeners part
-    
-    public void addListener(InputListener listener){
-		if (!listeners.contains(listener, true)) {
-			listeners.add(listener);
-		}
-	}
-	
-	public void removeListener(InputListener listener){
-		listeners.removeValue(listener, true);
-	}
-	
-	public void removeAllListener(){
-		listeners.clear();
-	}
-	
-	public Array<InputListener> getAllListeners(){
-		listeners.shrink();
-		return listeners;
-	}
+
+    public void addListener(InputListener listener) {
+        if (!listeners.contains(listener, true)) {
+            listeners.add(listener);
+        }
+    }
+
+    public void removeListener(InputListener listener) {
+        listeners.removeValue(listener, true);
+    }
+
+    public void removeAllListener() {
+        listeners.clear();
+    }
+
+    public Array<InputListener> getAllListeners() {
+        listeners.shrink();
+        return listeners;
+    }
 
     public OrthographicCamera getCamera() {
         return (OrthographicCamera) getViewport().getCamera();
@@ -421,17 +421,19 @@ public class Sandbox {
     }
 
     public ViewPortComponent getViewportComponent() {
-        if(getCurrentViewingEntity() == null) return null;
+        if (getCurrentViewingEntity() == null) return null;
         return ComponentRetriever.get(getCurrentViewingEntity(), ViewPortComponent.class);
     }
 
     public Viewport getViewport() {
         ViewPortComponent viewPortComponent = getViewportComponent();
-        if(viewPortComponent == null) return null;
+        if (viewPortComponent == null) return null;
         return viewPortComponent.viewPort;
     }
 
-    /** Transformations **/
+    /**
+     * Transformations
+     **/
 
     public Rectangle screenToWorld(Rectangle rect) {
         Vector2 pos = screenToWorld(new Vector2(rect.x, rect.y));
@@ -446,17 +448,17 @@ public class Sandbox {
     public Vector2 screenToWorld(Vector2 vector) {
         // TODO: now unproject doesnot do well too. I am completely lost here. how hard is it to do screen to world, madafakas.
         //getViewport().unproject(vector);
-        if ( sceneControl.sceneLoader.getRm().getProjectVO() == null) {
+        if (sceneControl.sceneLoader.getRm().getProjectVO() == null) {
             return vector;
         }
         int pixelPerWU = sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
         OrthographicCamera camera = Sandbox.getInstance().getCamera();
         Viewport viewport = Sandbox.getInstance().getViewport();
 
-        vector.x = (vector.x - (viewport.getScreenWidth()/2f - camera.position.x*pixelPerWU/camera.zoom))*camera.zoom;
-        vector.y = (vector.y - (viewport.getScreenHeight()/2f - camera.position.y*pixelPerWU/camera.zoom))*camera.zoom;
+        vector.x = (vector.x - (viewport.getScreenWidth() / 2f - camera.position.x * pixelPerWU / camera.zoom)) * camera.zoom;
+        vector.y = (vector.y - (viewport.getScreenHeight() / 2f - camera.position.y * pixelPerWU / camera.zoom)) * camera.zoom;
 
-        vector.scl(1f/pixelPerWU);
+        vector.scl(1f / pixelPerWU);
 
 
         return vector;
@@ -468,8 +470,8 @@ public class Sandbox {
         int pixelPerWU = sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
         OrthographicCamera camera = Sandbox.getInstance().getCamera();
         Viewport viewport = Sandbox.getInstance().getViewport();
-        vector.x = vector.x/camera.zoom + (viewport.getWorldWidth()/2 - (camera.position.x)/camera.zoom);
-        vector.y = vector.y/camera.zoom + (viewport.getWorldHeight()/2 - (camera.position.y)/camera.zoom);
+        vector.x = vector.x / camera.zoom + (viewport.getWorldWidth() / 2 - (camera.position.x) / camera.zoom);
+        vector.y = vector.y / camera.zoom + (viewport.getWorldHeight() / 2 - (camera.position.y) / camera.zoom);
 
         vector.scl(pixelPerWU);
 

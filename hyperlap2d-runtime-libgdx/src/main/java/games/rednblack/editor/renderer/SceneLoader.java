@@ -308,16 +308,12 @@ public class SceneLoader {
         return actionFactory.loadFromLibrary(actionName);
     }
 
-    public void addComponentsByTagName(String tagName, Class componentClass) {
+    public void addComponentsByTagName(String tagName, Class<? extends Component> componentClass) {
         ImmutableArray<Entity> entities = engine.getEntities();
         for (Entity entity : entities) {
             MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
             if (mainItemComponent.tags.contains(tagName)) {
-                try {
-                    entity.add(ClassReflection.<Component>newInstance(componentClass));
-                } catch (ReflectionException e) {
-                    e.printStackTrace();
-                }
+                entity.add(engine.createComponent(componentClass));
             }
         }
     }
