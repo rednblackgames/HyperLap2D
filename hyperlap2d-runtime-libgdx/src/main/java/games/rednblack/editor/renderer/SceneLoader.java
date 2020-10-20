@@ -5,6 +5,7 @@ import box2dLight.RayHandler;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -333,12 +334,23 @@ public class SceneLoader {
             sceneDirectionalLight.remove();
             sceneDirectionalLight = null;
         }
+        boolean isDiffuse = !vo.lightsPropertiesVO.lightType.equals("BRIGHT");
         if (override || !vo.lightsPropertiesVO.enabled) {
-            RayHandler.useDiffuseLight(true);
+            isDiffuse = true;
+            if (isDiffuse != RayHandler.isDiffuse) {
+                RayHandler.useDiffuseLight(isDiffuse);
+                rayHandler.resizeFBO(Gdx.graphics.getWidth() / 4, Gdx.graphics
+                        .getHeight() / 4);
+            }
             rayHandler.setAmbientLight(1f, 1f, 1f, 1f);
             return;
         }
-        RayHandler.useDiffuseLight(!vo.lightsPropertiesVO.lightType.equals("BRIGHT"));
+
+        if (isDiffuse != RayHandler.isDiffuse) {
+            RayHandler.useDiffuseLight(isDiffuse);
+            rayHandler.resizeFBO(Gdx.graphics.getWidth() / 4, Gdx.graphics
+                    .getHeight() / 4);
+        }
 
         if (vo.lightsPropertiesVO.ambientColor != null) {
             Color clr = new Color(vo.lightsPropertiesVO.ambientColor[0], vo.lightsPropertiesVO.ambientColor[1],

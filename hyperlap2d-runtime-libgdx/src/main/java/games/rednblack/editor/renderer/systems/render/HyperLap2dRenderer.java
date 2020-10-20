@@ -77,7 +77,6 @@ public class HyperLap2dRenderer extends IteratingSystem {
 		shaderManager.end();*/
 
 		if (rayHandler != null) {
-			rayHandler.setCulling(true);
 			OrthographicCamera orthoCamera = (OrthographicCamera) camera;
 
 			rayHandler.setCombinedMatrix(camera.combined,
