@@ -36,7 +36,12 @@ public class ParticleEffectResource extends ListItemResource {
     public ParticleEffectResource(String particleName) {
         super(particleName, "particle");
         facade = HyperLap2DFacade.getInstance();
-        payloadImg = new Image(getStyle().resourceOver);
+        payloadImg = new Image(getStyle().resourceOver) {
+            @Override
+            public void setScale(float scaleXY) {
+                //Do not scale
+            }
+        };
         payloadImg.setScale(2);
         payloadImg.getColor().a = .85f;
         payload = new ResourcePayloadObject();
