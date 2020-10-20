@@ -154,34 +154,20 @@ public class SelectionTool extends SimpleTool {
 
         currentTouchedItemWasSelected = sandbox.getSelector().getCurrentSelection().contains(entity);
 
-        if (isEntityVisible(entity)) {
-
-            // if shift is pressed we are in add/remove selection mode
-            if (isShiftPressed()) {
-                //TODO block selection handling (wat?)
-                if (!currentTouchedItemWasSelected) {
-                    // item was not selected, adding it to selection
-                    Set<Entity> items = new HashSet<>();
-                    items.add(entity);
-                    facade.sendNotification(MsgAPI.ACTION_ADD_SELECTION, items);
-                }
-            } else {
-
-                //TODO fix and uncomment layer locking
-//            if (item.isLockedByLayer()) {
-//                // this is considered empty space click and thus should release all selections
-//                facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, null);
-//                commands.getSelector().clearSelections();
-//                return false;
-//            } else {
-                if (!currentTouchedItemWasSelected) {
-                    // get selection, add this item to selection
-                    Set<Entity> items = new HashSet<>();
-                    items.add(entity);
-                    facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, items);
-
-                }
-                //}
+        // if shift is pressed we are in add/remove selection mode
+        if (isShiftPressed()) {
+            if (!currentTouchedItemWasSelected) {
+                // item was not selected, adding it to selection
+                Set<Entity> items = new HashSet<>();
+                items.add(entity);
+                facade.sendNotification(MsgAPI.ACTION_ADD_SELECTION, items);
+            }
+        } else {
+            if (!currentTouchedItemWasSelected) {
+                // get selection, add this item to selection
+                Set<Entity> items = new HashSet<>();
+                items.add(entity);
+                facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, items);
             }
         }
 
