@@ -229,7 +229,7 @@ public class SandboxInputAdapter implements InputProcessor {
 
 			// get layer locked or not
 			LayerItemVO layerItemVO = EntityUtils.getEntityLayer(childEntity);
-			if(layerItemVO != null && layerItemVO.isLocked) {
+			if(layerItemVO != null && (layerItemVO.isLocked || !layerItemVO.isVisible)) {
 				continue;
 			}
 
