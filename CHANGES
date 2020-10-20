@@ -1,3 +1,12 @@
+[0.0.3]
+- Fixed bright lights on some GPUs
+- Fixed undo\redo when creating new objects
+- Fixed common crashes with Tiled plugin
+- Improved Tiled plugin with undo\redo commands
+- Improved Plugin APIs
+- Add async texture packing operation
+- General bug fix
+
 [0.0.2]
 - Support to Typing Labels
 - Experimental Code Editor for:
