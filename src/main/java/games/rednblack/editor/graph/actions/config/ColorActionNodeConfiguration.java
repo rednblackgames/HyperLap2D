@@ -13,13 +13,13 @@ public class ColorActionNodeConfiguration extends NodeConfigurationImpl<ActionFi
         super("ColorAction", "Color", "Action");
 
         addNodeInput(
-                new GraphNodeInputImpl<ActionFieldType>("color", "Color", true, Color));
+                new GraphNodeInputImpl<ActionFieldType>("color", "Color", true, Color, Param));
 
         addNodeInput(
-                new GraphNodeInputImpl<ActionFieldType>("duration", "Duration", false, ActionFieldType.Float));
+                new GraphNodeInputImpl<ActionFieldType>("duration", "Duration", false, ActionFieldType.Float, Param));
 
         addNodeInput(
-                new GraphNodeInputImpl<ActionFieldType>("interpolation", "Interpolation", false, Interpolation));
+                new GraphNodeInputImpl<ActionFieldType>("interpolation", "Interpolation", false, Interpolation, Param));
 
         addNodeOutput(
                 new GraphNodeOutputImpl<>("action", "Action", Action));

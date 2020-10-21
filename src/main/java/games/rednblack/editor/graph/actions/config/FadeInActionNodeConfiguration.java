@@ -13,10 +13,10 @@ public class FadeInActionNodeConfiguration extends NodeConfigurationImpl<ActionF
         super("FadeInAction", "Fade In", "Action");
 
         addNodeInput(
-                new GraphNodeInputImpl<ActionFieldType>("duration", "Duration", true, Float));
+                new GraphNodeInputImpl<ActionFieldType>("duration", "Duration", true, Float, Param));
 
         addNodeInput(
-                new GraphNodeInputImpl<ActionFieldType>("interpolation", "Interpolation", false, Interpolation));
+                new GraphNodeInputImpl<ActionFieldType>("interpolation", "Interpolation", false, Interpolation, Param));
 
         addNodeOutput(
                 new GraphNodeOutputImpl<>("action", "Action", Action));

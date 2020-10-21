@@ -13,13 +13,13 @@ public class AlphaActionNodeConfiguration extends NodeConfigurationImpl<ActionFi
         super("AlphaAction", "Alpha", "Action");
 
         addNodeInput(
-                new GraphNodeInputImpl<ActionFieldType>("alpha", "Alpha", true, Float));
+                new GraphNodeInputImpl<ActionFieldType>("alpha", "Alpha", true, Float, Param));
 
         addNodeInput(
-                new GraphNodeInputImpl<ActionFieldType>("duration", "Duration", false, Float));
+                new GraphNodeInputImpl<ActionFieldType>("duration", "Duration", false, Float, Param));
 
         addNodeInput(
-                new GraphNodeInputImpl<ActionFieldType>("interpolation", "Interpolation", false, Interpolation));
+                new GraphNodeInputImpl<ActionFieldType>("interpolation", "Interpolation", false, Interpolation, Param));
 
         addNodeOutput(
                 new GraphNodeOutputImpl<>("action", "Action", Action));

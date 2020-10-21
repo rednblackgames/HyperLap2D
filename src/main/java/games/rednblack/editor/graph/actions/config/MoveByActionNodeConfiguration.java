@@ -5,8 +5,7 @@ import games.rednblack.editor.graph.GraphNodeOutputImpl;
 import games.rednblack.editor.graph.actions.ActionFieldType;
 import games.rednblack.editor.graph.config.NodeConfigurationImpl;
 
-import static games.rednblack.editor.graph.actions.ActionFieldType.Action;
-import static games.rednblack.editor.graph.actions.ActionFieldType.Interpolation;
+import static games.rednblack.editor.graph.actions.ActionFieldType.*;
 
 public class MoveByActionNodeConfiguration extends NodeConfigurationImpl<ActionFieldType> {
 
@@ -14,13 +13,13 @@ public class MoveByActionNodeConfiguration extends NodeConfigurationImpl<ActionF
         super("MoveByAction", "Move By", "Action");
 
         addNodeInput(
-                new GraphNodeInputImpl<ActionFieldType>("position", "Position", true, ActionFieldType.Vector2));
+                new GraphNodeInputImpl<ActionFieldType>("position", "Position", true, ActionFieldType.Vector2, Param));
 
         addNodeInput(
-                new GraphNodeInputImpl<ActionFieldType>("duration", "Duration", false, ActionFieldType.Float));
+                new GraphNodeInputImpl<ActionFieldType>("duration", "Duration", false, ActionFieldType.Float, Param));
 
         addNodeInput(
-                new GraphNodeInputImpl<ActionFieldType>("interpolation", "Interpolation", false, Interpolation));
+                new GraphNodeInputImpl<ActionFieldType>("interpolation", "Interpolation", false, Interpolation, Param));
 
         addNodeOutput(
                 new GraphNodeOutputImpl<>("action", "Action", Action));

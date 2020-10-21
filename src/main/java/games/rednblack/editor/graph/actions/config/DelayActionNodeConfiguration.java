@@ -6,6 +6,7 @@ import games.rednblack.editor.graph.actions.ActionFieldType;
 import games.rednblack.editor.graph.config.NodeConfigurationImpl;
 
 import static games.rednblack.editor.graph.actions.ActionFieldType.Action;
+import static games.rednblack.editor.graph.actions.ActionFieldType.Param;
 
 public class DelayActionNodeConfiguration extends NodeConfigurationImpl<ActionFieldType> {
 
@@ -13,7 +14,7 @@ public class DelayActionNodeConfiguration extends NodeConfigurationImpl<ActionFi
         super("DelayAction", "Delay", "Action");
 
         addNodeInput(
-                new GraphNodeInputImpl<ActionFieldType>("delay", "Delay", true, ActionFieldType.Float));
+                new GraphNodeInputImpl<ActionFieldType>("delay", "Delay", true, ActionFieldType.Float, Param));
 
         addNodeInput(
                 new GraphNodeInputImpl<ActionFieldType>("action0", "Action", false, Action));

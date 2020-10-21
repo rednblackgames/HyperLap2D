@@ -14,8 +14,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import games.rednblack.editor.renderer.commons.IExternalItemType;
@@ -307,6 +305,10 @@ public class SceneLoader {
 
     public ActionData loadActionFromLibrary(String actionName) {
         return actionFactory.loadFromLibrary(actionName);
+    }
+
+    public ActionFactory getActionFactory() {
+        return actionFactory;
     }
 
     public void addComponentsByTagName(String tagName, Class<? extends Component> componentClass) {
