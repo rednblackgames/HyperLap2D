@@ -3,9 +3,16 @@ package games.rednblack.editor.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.ObjectMap;
+import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.proxy.SettingsManager;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SystemUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -47,44 +54,70 @@ public class KeyBindingsLayout {
 
     public static final int DELETE = 25;
 
+    private static final ObjectMap<Integer, KeyMapper> defaultMapper = new ObjectMap<>();
+    static {
+        defaultMapper.put(NEW_PROJECT, new KeyMapper(NEW_PROJECT, true, false, false, Input.Keys.N));
+        defaultMapper.put(OPEN_PROJECT, new KeyMapper(OPEN_PROJECT, true, false, false, Input.Keys.O));
+        defaultMapper.put(SAVE_PROJECT, new KeyMapper(SAVE_PROJECT, true, false, false, Input.Keys.S));
+        defaultMapper.put(EXPORT_PROJECT, new KeyMapper(EXPORT_PROJECT, true, false, false, Input.Keys.E));
+        defaultMapper.put(IMPORT_TO_LIBRARY, new KeyMapper(IMPORT_TO_LIBRARY, true, false, false, Input.Keys.I));
+
+        defaultMapper.put(OPEN_SETTINGS, new KeyMapper(OPEN_SETTINGS, true, true, false, Input.Keys.S));
+        defaultMapper.put(EXIT_APP, new KeyMapper(EXIT_APP, true, false, false, Input.Keys.Q));
+
+        defaultMapper.put(SELECTION_TOOL, new KeyMapper(SELECTION_TOOL, false, false, false, Input.Keys.V, Input.Keys.ESCAPE));
+        defaultMapper.put(TRANSFORM_TOOL, new KeyMapper(TRANSFORM_TOOL, true, false, false, Input.Keys.T));
+        defaultMapper.put(PAN_TOOL, new KeyMapper(PAN_TOOL, false, false, false, Input.Keys.SPACE));
+
+        defaultMapper.put(ZOOM_PLUS, new KeyMapper(ZOOM_PLUS, true, false, false, Input.Keys.MINUS, Input.Keys.SLASH));
+        defaultMapper.put(ZOOM_MINUS, new KeyMapper(ZOOM_MINUS, true, false, false, Input.Keys.PLUS, Input.Keys.RIGHT_BRACKET));
+
+        defaultMapper.put(Z_INDEX_UP, new KeyMapper(Z_INDEX_UP, true, false, false, Input.Keys.UP));
+        defaultMapper.put(Z_INDEX_DOWN, new KeyMapper(Z_INDEX_DOWN, true, false, false, Input.Keys.DOWN));
+
+        defaultMapper.put(SELECT_ALL, new KeyMapper(SELECT_ALL, true, false, false, Input.Keys.A));
+        defaultMapper.put(COPY, new KeyMapper(COPY, true, false, false, Input.Keys.C));
+        defaultMapper.put(CUT, new KeyMapper(CUT, true, false, false, Input.Keys.X));
+        defaultMapper.put(PASTE, new KeyMapper(PASTE, true, false, false, Input.Keys.V));
+
+        defaultMapper.put(UNDO, new KeyMapper(UNDO, true, false, false, Input.Keys.Z));
+        defaultMapper.put(REDO, new KeyMapper(REDO, true, false, true, Input.Keys.Z));
+
+        defaultMapper.put(RESET_CAMERA, new KeyMapper(RESET_CAMERA, true, false, false, Input.Keys.NUM_0, Input.Keys.NUMPAD_0));
+
+        defaultMapper.put(ALIGN_TOP, new KeyMapper(ALIGN_TOP, true, false, false, Input.Keys.NUM_1));
+        defaultMapper.put(ALIGN_LEFT, new KeyMapper(ALIGN_LEFT, true, false, false, Input.Keys.NUM_2));
+        defaultMapper.put(ALIGN_BOTTOM, new KeyMapper(ALIGN_BOTTOM, true, false, false, Input.Keys.NUM_3));
+        defaultMapper.put(ALIGN_RIGHT, new KeyMapper(ALIGN_RIGHT, true, false, false, Input.Keys.NUM_4));
+
+        defaultMapper.put(DELETE, new KeyMapper(DELETE, false, false, false, Input.Keys.DEL));
+    }
+
     private static final Array<KeyMapper> mapping = new Array<>();
 
     public static void init() {
-        mapping.add(new KeyMapper(NEW_PROJECT, true, false, false, Input.Keys.N));
-        mapping.add(new KeyMapper(OPEN_PROJECT, true, false, false, Input.Keys.O));
-        mapping.add(new KeyMapper(SAVE_PROJECT, true, false, false, Input.Keys.S));
-        mapping.add(new KeyMapper(EXPORT_PROJECT, true, false, false, Input.Keys.E));
-        mapping.add(new KeyMapper(IMPORT_TO_LIBRARY, true, false, false, Input.Keys.I));
+        SettingsManager settingsManager = HyperLap2DFacade.getInstance().retrieveProxy(SettingsManager.NAME);
+        if (!settingsManager.editorConfigVO.keyBindingLayout.equals("default")) {
+            String mapPath = settingsManager.getKeyMapPath() + File.separator + settingsManager.editorConfigVO.keyBindingLayout + ".keymap";
+            File mapFile = new File(mapPath);
+            if (mapFile.exists()) {
+                Json json = new Json();
+                try {
+                    String mapJson = FileUtils.readFileToString(mapFile, "utf-8");
+                    ObjectMap<String, KeyMapper> customBindings = json.fromJson(ObjectMap.class, mapJson);
+                    for (String key : new ObjectMap.Keys<>(customBindings)) {
+                        int action = Integer.parseInt(key);
+                        defaultMapper.put(action, customBindings.get(key));
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
-        mapping.add(new KeyMapper(OPEN_SETTINGS, true, true, false, Input.Keys.S));
-        mapping.add(new KeyMapper(EXIT_APP, true, false, false, Input.Keys.Q));
-
-        mapping.add(new KeyMapper(SELECTION_TOOL, false, false, false, Input.Keys.V, Input.Keys.ESCAPE));
-        mapping.add(new KeyMapper(TRANSFORM_TOOL, true, false, false, Input.Keys.T));
-        mapping.add(new KeyMapper(PAN_TOOL, false, false, false, Input.Keys.SPACE));
-
-        mapping.add(new KeyMapper(ZOOM_PLUS, true, false, false, Input.Keys.MINUS, Input.Keys.SLASH));
-        mapping.add(new KeyMapper(ZOOM_MINUS, true, false, false, Input.Keys.PLUS, Input.Keys.RIGHT_BRACKET));
-
-        mapping.add(new KeyMapper(Z_INDEX_UP, true, false, false, Input.Keys.UP));
-        mapping.add(new KeyMapper(Z_INDEX_DOWN, true, false, false, Input.Keys.DOWN));
-
-        mapping.add(new KeyMapper(SELECT_ALL, true, false, false, Input.Keys.A));
-        mapping.add(new KeyMapper(COPY, true, false, false, Input.Keys.C));
-        mapping.add(new KeyMapper(CUT, true, false, false, Input.Keys.X));
-        mapping.add(new KeyMapper(PASTE, true, false, false, Input.Keys.V));
-
-        mapping.add(new KeyMapper(UNDO, true, false, false, Input.Keys.Z));
-        mapping.add(new KeyMapper(REDO, true, false, true, Input.Keys.Z));
-
-        mapping.add(new KeyMapper(RESET_CAMERA, true, false, false, Input.Keys.NUM_0, Input.Keys.NUMPAD_0));
-
-        mapping.add(new KeyMapper(ALIGN_TOP, true, false, false, Input.Keys.NUM_1));
-        mapping.add(new KeyMapper(ALIGN_LEFT, true, false, false, Input.Keys.NUM_2));
-        mapping.add(new KeyMapper(ALIGN_BOTTOM, true, false, false, Input.Keys.NUM_3));
-        mapping.add(new KeyMapper(ALIGN_RIGHT, true, false, false, Input.Keys.NUM_4));
-
-        mapping.add(new KeyMapper(DELETE, false, false, false, Input.Keys.DEL));
+        for (KeyMapper keyMapper : new ObjectMap.Values<>(defaultMapper)) {
+            mapping.add(keyMapper);
+        }
 
         //Sort mapping in order to give priority to shortcuts that has more modifiers
         mapping.sort(new KeyMapperComparator());
@@ -145,6 +178,10 @@ public class KeyBindingsLayout {
         boolean isControl, isAlt, isShift;
         List<Integer> keyCodes = new ArrayList<>();
         int action;
+
+        public KeyMapper() {
+
+        }
 
         /**
          * KeyMapper object to map an action to a key combination

@@ -48,7 +48,7 @@ public class HyperLap2DFacade extends Facade {
         return instance;
     }
 
-    public void startup(HyperLap2D hyperlap2D) {
+    public void startup() {
         notifyObservers(new Notification(STARTUP, null, null));
     }
 

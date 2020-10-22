@@ -71,7 +71,6 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
 
     @Override
     public void create() {
-        KeyBindingsLayout.init();
         WhitePixel.initializeShared();
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf"));
@@ -115,7 +114,8 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
         VisUI.load((Skin) assetManager.get("style/uiskin.json"));
         VisUI.setDefaultTitleAlign(Align.center);
 
-        facade.startup(this);
+        facade.startup();
+        KeyBindingsLayout.init();
         sendNotification(MsgAPI.CREATE);
         facade.sendNotification(SplashScreenAdapter.CLOSE_SPLASH, "Initializing...");
         Lwjgl3Graphics graphics = (Lwjgl3Graphics)Gdx.graphics;

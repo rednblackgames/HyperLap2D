@@ -29,6 +29,7 @@ public class EditorConfigVO {
     public static final String EDITOR_CONFIG_FILE = "config.pit";
     public String lastOpenedSystemPath = "";
     public String lastImportedSystemPath = "";
+    public String keyBindingLayout = "default";
 
     public long totalSpentTime = 0;
 
