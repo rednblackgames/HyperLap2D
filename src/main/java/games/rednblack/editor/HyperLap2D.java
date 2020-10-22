@@ -31,6 +31,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ObjectMap;
+import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.SettingsManager;
@@ -70,7 +71,9 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
 
     @Override
     public void create() {
+        KeyBindingsLayout.init();
         WhitePixel.initializeShared();
+
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf"));
         FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSansMono.ttf"));
 

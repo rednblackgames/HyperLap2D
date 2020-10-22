@@ -26,6 +26,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.SnapshotArray;
+import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.tools.Tool;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -252,115 +253,101 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
         @Override
         public boolean keyDown(Entity entity, int keycode) {
-            boolean isControlPressed = isControlPressed();
             Sandbox sandbox = Sandbox.getInstance();
+            if (sandbox.sceneControl.getCurrentSceneVO() == null) {
+                return false;
+            }
 
             if(currentSelectedTool != null) {
                 currentSelectedTool.keyDown(entity, keycode);
             }
 
-            // Control pressed as well
-            if (isControlPressed() && sandbox.sceneControl.getCurrentSceneVO() != null) {
-                if (keycode == Input.Keys.UP) {
-                    // going to front of next item in z-index ladder
-                    sandbox.itemControl.itemZIndexChange(sandbox.getSelector().getCurrentSelection(), true);
-                    facade.sendNotification(MsgAPI.ACTION_Z_INDEX_CHANGED, sandbox.getSelector().getCurrentSelection());
-                }
-                if (keycode == Input.Keys.DOWN) {
-                    // going behind the next item in z-index ladder
-                    sandbox.itemControl.itemZIndexChange(sandbox.getSelector().getCurrentSelection(), false);
-                    facade.sendNotification(MsgAPI.ACTION_Z_INDEX_CHANGED, sandbox.getSelector().getCurrentSelection());
-                }
-                if (keycode == Input.Keys.A) {
-                    // Ctrl+A means select all
-                    facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, sandbox.getSelector().getAllFreeItems());
-                }
-                // Aligning Selections
-                if (keycode == Input.Keys.NUM_1 && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
-                    sandbox.getSelector().alignSelections(Align.top);
-                }
-                if (keycode == Input.Keys.NUM_2 && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
-                    sandbox.getSelector().alignSelections(Align.left);
-                }
-                if (keycode == Input.Keys.NUM_3 && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
-                    sandbox.getSelector().alignSelections(Align.bottom);
-                }
-                if (keycode == Input.Keys.NUM_4 && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
-                    sandbox.getSelector().alignSelections(Align.right);
-                }
-                if (keycode == Input.Keys.NUM_0 || keycode == Input.Keys.NUMPAD_0) {
-                    sandbox.getCamera().position.set(0 ,0, 0);
-                    sandbox.setZoomPercent(100, false);
-                }
-                if (keycode == Input.Keys.X) {
-                    facade.sendNotification(MsgAPI.ACTION_CUT);
-                }
-                if (keycode == Input.Keys.C) {
-                    facade.sendNotification(MsgAPI.ACTION_COPY);
-                }
-                if (keycode == Input.Keys.V) {
-                    facade.sendNotification(MsgAPI.ACTION_PASTE);
-                }
-
+            switch (KeyBindingsLayout.mapAction(keycode)) {
                 //TODO Shortcuts for tools should be handled better, because custom tools too
-                if (keycode == Input.Keys.T) {
+                case KeyBindingsLayout.SELECTION_TOOL:
+                    setCurrentTool(SelectionTool.NAME);
+                    break;
+                case KeyBindingsLayout.TRANSFORM_TOOL:
                     facade.sendNotification(TOOL_CLICKED, TransformTool.NAME);
                     UIToolBoxMediator toolBoxMediator = facade.retrieveMediator(UIToolBoxMediator.NAME);
                     toolBoxMediator.setCurrentTool(TransformTool.NAME);
-                }
-                if(keycode == Input.Keys.Z) {
-                    if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-                        CommandManager commandManager = facade.retrieveProxy(CommandManager.NAME);
-                        commandManager.redoCommand();
-                    } else {
-                        CommandManager commandManager = facade.retrieveProxy(CommandManager.NAME);
-                        commandManager.undoCommand();
-                    }
-                }
+                    break;
+                case KeyBindingsLayout.PAN_TOOL:
+                    toolHotSwap(sandboxTools.get(PanTool.NAME));
+                    break;
+                case KeyBindingsLayout.ZOOM_PLUS:
+                    sandbox.zoomDivideBy(2f);
+                    break;
+                case KeyBindingsLayout.ZOOM_MINUS:
+                    sandbox.zoomDivideBy(0.5f);
+                    break;
+                case KeyBindingsLayout.Z_INDEX_UP:
+                    // going to front of next item in z-index ladder
+                    sandbox.itemControl.itemZIndexChange(sandbox.getSelector().getCurrentSelection(), true);
+                    facade.sendNotification(MsgAPI.ACTION_Z_INDEX_CHANGED, sandbox.getSelector().getCurrentSelection());
+                    break;
+                case KeyBindingsLayout.Z_INDEX_DOWN:
+                    // going behind the next item in z-index ladder
+                    sandbox.itemControl.itemZIndexChange(sandbox.getSelector().getCurrentSelection(), false);
+                    facade.sendNotification(MsgAPI.ACTION_Z_INDEX_CHANGED, sandbox.getSelector().getCurrentSelection());
+                    break;
+                case KeyBindingsLayout.SELECT_ALL:
+                    // Ctrl+A means select all
+                    facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, sandbox.getSelector().getAllFreeItems());
+                    break;
+                case KeyBindingsLayout.COPY:
+                    facade.sendNotification(MsgAPI.ACTION_COPY);
+                    break;
+                case KeyBindingsLayout.CUT:
+                    facade.sendNotification(MsgAPI.ACTION_CUT);
+                    break;
+                case KeyBindingsLayout.PASTE:
+                    facade.sendNotification(MsgAPI.ACTION_PASTE);
+                    break;
+                case KeyBindingsLayout.UNDO:
+                    CommandManager commandManager = facade.retrieveProxy(CommandManager.NAME);
+                    commandManager.undoCommand();
+                    break;
+                case KeyBindingsLayout.REDO:
+                    commandManager = facade.retrieveProxy(CommandManager.NAME);
+                    commandManager.redoCommand();
+                    break;
+                case KeyBindingsLayout.RESET_CAMERA:
+                    sandbox.getCamera().position.set(0 ,0, 0);
+                    sandbox.setZoomPercent(100, false);
+                    break;
+                case KeyBindingsLayout.ALIGN_TOP:
+                    sandbox.getSelector().alignSelections(Align.top);
+                    break;
+                case KeyBindingsLayout.ALIGN_LEFT:
+                    sandbox.getSelector().alignSelections(Align.left);
+                    break;
+                case KeyBindingsLayout.ALIGN_BOTTOM:
+                    sandbox.getSelector().alignSelections(Align.bottom);
+                    break;
+                case KeyBindingsLayout.ALIGN_RIGHT:
+                    sandbox.getSelector().alignSelections(Align.right);
+                    break;
             }
 
             if (keycode == Input.Keys.ESCAPE) {
                 currentSelectedTool.stageMouseDoubleClick(0, 0);
             }
-
-            //TODO Shortcuts for tools should be handled better, because custom tools too
-            if (keycode == Input.Keys.V || keycode == Input.Keys.ESCAPE) {
-                setCurrentTool(SelectionTool.NAME);
-            }
-
-            // if space is pressed, that means we are going to pan, so set cursor accordingly
-            // TODO: this pan is kinda different from what happens when you press middle button, so things need to merge right
-            if (keycode == Input.Keys.SPACE) {
-                toolHotSwap(sandboxTools.get(PanTool.NAME));
-            }
-
-            // Zoom
-            if (isControlPressed) {
-                switch (keycode) {
-                    case Input.Keys.SLASH:
-                    case Input.Keys.MINUS:
-                        sandbox.zoomDivideBy(2f);
-                        break;
-                    case Input.Keys.PLUS:
-                    case Input.Keys.RIGHT_BRACKET:
-                        sandbox.zoomDivideBy(0.5f);
-                        break;
-                }
-            }
-
             return true;
         }
 
         @Override
         public boolean keyUp(Entity entity, int keycode) {
             Sandbox sandbox = Sandbox.getInstance();
-            if (keycode == Input.Keys.DEL) {
-                // delete selected item
-                sandbox.getSelector().removeCurrentSelectedItems();
-            }
-            if (keycode == Input.Keys.SPACE) {
-                // if pan mode is disabled set cursor back
-                toolHotSwapBack();
+            switch (KeyBindingsLayout.mapAction(keycode)) {
+                case KeyBindingsLayout.PAN_TOOL:
+                    // if pan mode is disabled set cursor back
+                    toolHotSwapBack();
+                    break;
+                case KeyBindingsLayout.DELETE:
+                    // delete selected item
+                    sandbox.getSelector().removeCurrentSelectedItems();
+                    break;
             }
 
             if(currentSelectedTool != null) {
@@ -468,16 +455,6 @@ public class SandboxMediator extends Mediator<Sandbox> {
             return Gdx.input.isKeyPressed(Input.Keys.SYM)
                     || Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)
                     || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT);
-        }
-
-        private boolean isShiftKey(int keycode) {
-            return keycode == Input.Keys.SHIFT_LEFT
-                    || keycode == Input.Keys.SHIFT_RIGHT;
-        }
-
-        private boolean isShiftPressed() {
-            return Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)
-                    || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
         }
     }
 

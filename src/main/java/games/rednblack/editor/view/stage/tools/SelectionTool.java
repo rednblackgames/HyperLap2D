@@ -23,11 +23,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.*;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.util.OsUtils;
+import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.proxy.CursorManager;
@@ -85,7 +84,7 @@ public class SelectionTool extends SimpleTool {
 
     @Override
     public String getShortcut() {
-        return OsUtils.getShortcutFor(Input.Keys.V);
+        return OsUtils.getShortcutFor(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.SELECTION_TOOL));
     }
 
     @Override
