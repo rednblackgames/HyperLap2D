@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Array;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -93,7 +94,10 @@ public class KeyBindingsLayout {
         for (KeyMapper keyMapper : new Array.ArrayIterator<>(mapping)) {
             if (keyMapper.keyCodes.contains(keyCode)) {
                 if (keyMapper.isControl) {
-                    if (!Gdx.input.isKeyPressed(Input.Keys.SYM) && !Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)
+                    if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
+                        if (!Gdx.input.isKeyPressed(Input.Keys.SYM))
+                            continue;
+                    } else if (!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)
                             && !Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
                         continue;
                     }
