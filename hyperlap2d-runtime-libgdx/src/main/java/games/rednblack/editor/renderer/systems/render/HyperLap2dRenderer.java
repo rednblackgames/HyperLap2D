@@ -79,11 +79,7 @@ public class HyperLap2dRenderer extends IteratingSystem {
 		if (rayHandler != null) {
 			OrthographicCamera orthoCamera = (OrthographicCamera) camera;
 
-			rayHandler.setCombinedMatrix(camera.combined,
-					camera.position.x,
-					camera.position.y,
-					2 * camera.viewportWidth * orthoCamera.zoom,
-					2 * camera.viewportHeight * orthoCamera.zoom);
+			rayHandler.setCombinedMatrix(orthoCamera);
 			rayHandler.updateAndRender();
 		}
 		//debugRenderer.render(world, camera.combined);
