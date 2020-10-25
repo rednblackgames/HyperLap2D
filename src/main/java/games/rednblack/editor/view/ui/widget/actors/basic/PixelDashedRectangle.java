@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.proxy.EditorTextureManager;
 
 /**
  * Class for showing dashed animated rectangle as {@link PixelRect}
@@ -24,13 +23,12 @@ public class PixelDashedRectangle extends Group {
 
     public PixelDashedRectangle(float width, float height) {
         facade = HyperLap2DFacade.getInstance();
-        EditorTextureManager tm = facade.retrieveProxy(EditorTextureManager.NAME);
-        lines[0] = new PixelDashedLine(tm, 0, 0, (int) width, 0, 5,8);
-        lines[1] = new PixelDashedLine(tm, 0, 0, 0, (int) height,5,8);
-        lines[2] = new PixelDashedLine(tm, (int) width, 0, (int) width, (int) height,5,8);
-        lines[3] = new PixelDashedLine(tm, 0, (int) height, (int) width, (int) height, 5,8);
+        lines[0] = new PixelDashedLine( 0, 0, (int) width, 0, 5,8);
+        lines[1] = new PixelDashedLine( 0, 0, 0, (int) height,5,8);
+        lines[2] = new PixelDashedLine( (int) width, 0, (int) width, (int) height,5,8);
+        lines[3] = new PixelDashedLine( 0, (int) height, (int) width, (int) height, 5,8);
 
-        fill = new Image(tm.getEditorAsset("pixel"));
+        fill = new Image(WhitePixel.sharedInstance.texture);
         fill.setColor(new Color(0, 0, 0, 0));
 
         addActor(fill);

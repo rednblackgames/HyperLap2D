@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
-import games.rednblack.editor.proxy.EditorTextureManager;
 
 /**
  * Class for creating, showing, animating a dashed line as {@link PixelLine}
@@ -22,8 +21,8 @@ public class PixelDashedLine extends Image {
     private double lineLength;
     private long time;
 
-    public PixelDashedLine(EditorTextureManager tm, int x, int y, int toX, int toY, int visibleLength, int invisibleLength) {
-        super(prepareTexture(tm)); //Necessary for showing dashed line
+    public PixelDashedLine(int x, int y, int toX, int toY, int visibleLength, int invisibleLength) {
+        super(WhitePixel.sharedInstance.texture); //Necessary for showing dashed line
         pix = new Pixmap(1000, 500, Pixmap.Format.RGBA8888); //Creating pix and tex here to stay away from
         tex = new Texture(pix);                                          //not initialised error, when disposing these two.
         this.visibleLength = visibleLength;
@@ -75,10 +74,6 @@ public class PixelDashedLine extends Image {
         Color clr = getColor();
         clr.a = opacity;
         setColor(clr);
-    }
-
-    private static Texture prepareTexture(EditorTextureManager tm) {
-        return tm.getEditorAsset("pixel");
     }
 
     @Override
