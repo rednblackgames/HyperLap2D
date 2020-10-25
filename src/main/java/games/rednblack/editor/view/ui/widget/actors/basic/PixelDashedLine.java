@@ -6,6 +6,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.TimeUtils;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
+/**
+ * Class for creating, showing, animating a dashed line as {@link PixelLine}
+ *
+ * @author alyrow
+ */
 public class PixelDashedLine extends Actor {
 
     private float thickness = 1f;
@@ -32,13 +37,21 @@ public class PixelDashedLine extends Actor {
         this.setRotation(90 - getAngle(x, y, toX, toY));
     }
 
+    /**
+     * Draw dashed line
+     *
+     * @param visibleLength   length of visible lines
+     * @param invisibleLength length of invisible lines (space between visible lines)
+     * @param offset          For animation
+     * @return Return a texture
+     */
     private void drawDash(int visibleLength, int invisibleLength, int offset) {
         int i = 0;
         boolean vertical = getRotation() == 90;
         if (vertical) {
             while (i <= lineLength) {
                 if (i + visibleLength < lineLength)
-                    shapeDrawer.filledRectangle(getX(),getY() + i + offset, thickness, visibleLength);
+                    shapeDrawer.filledRectangle(getX(), getY() + i + offset, thickness, visibleLength);
                 i = i + visibleLength + invisibleLength;
             }
         } else {
@@ -57,7 +70,7 @@ public class PixelDashedLine extends Actor {
         if (TimeUtils.timeSinceMillis(time) > 80) { //Every 80ms
             time = TimeUtils.millis();
             o = o + 1;
-            if (o >= visibleLength+invisibleLength) o = 0;
+            if (o >= visibleLength + invisibleLength) o = 0;
         }
     }
 
