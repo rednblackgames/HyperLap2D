@@ -6,14 +6,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import games.rednblack.editor.HyperLap2DFacade;
 
 /**
  * Class for showing dashed animated rectangle as {@link PixelRect}
  */
 public class PixelDashedRectangle extends Group {
 
-    private final HyperLap2DFacade facade;
     private final PixelDashedLine[] lines = new PixelDashedLine[4];
     private final Image fill;
 
@@ -22,7 +20,6 @@ public class PixelDashedRectangle extends Group {
     }
 
     public PixelDashedRectangle(float width, float height) {
-        facade = HyperLap2DFacade.getInstance();
         lines[0] = new PixelDashedLine( 0, 0, (int) width, 0, 5,8);
         lines[1] = new PixelDashedLine( 0, 0, 0, (int) height,5,8);
         lines[2] = new PixelDashedLine( (int) width, 0, (int) width, (int) height,5,8);
