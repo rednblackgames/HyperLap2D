@@ -52,7 +52,7 @@ public class Main {
         config.setWindowIcon("hyperlap_icon_96.png");
         config.setBackBufferConfig(8,8,8,8,16,8,16);
 
-        //Thread.currentThread().setUncaughtExceptionHandler(new CustomExceptionHandler());
+        Thread.currentThread().setUncaughtExceptionHandler(new CustomExceptionHandler());
 
         new Lwjgl3Application(HyperLap2DApp.initInstance(dm.width, dm.height), config);
     }

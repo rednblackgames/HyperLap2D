@@ -102,7 +102,7 @@ public class CustomExceptionHandler implements UncaughtExceptionHandler {
         try {
             File localPath = Gdx.files.internal("crash/java-hyperlog.txt").file();
             System.out.println(localPath.getAbsolutePath());
-            FileUtils.writeStringToFile(localPath, stacktrace);
+            FileUtils.writeStringToFile(localPath, stacktrace, "utf-8");
         } catch (Exception e) {
             e.printStackTrace();
         }
