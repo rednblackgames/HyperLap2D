@@ -19,11 +19,13 @@
 package games.rednblack.editor.view.ui.followers;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import games.rednblack.editor.view.ui.widget.actors.basic.PixelDashedRectangle;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.VisUI;
 import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
@@ -38,7 +40,7 @@ import org.puremvc.java.interfaces.INotification;
  */
 public class NormalSelectionFollower extends BasicFollower {
 
-    protected PixelRect pixelRect;
+    protected PixelDashedRectangle pixelRect;
 
     protected Group transformGroup;
     protected Actor[] miniRects;
@@ -73,8 +75,8 @@ public class NormalSelectionFollower extends BasicFollower {
         transformGroup = new Group();
         transformGroup.setVisible(false);
 
-        pixelRect = new PixelRect();
-        pixelRect.setOpacity(0.4f);
+        pixelRect = new PixelDashedRectangle();
+        //pixelRect.setOpacity(0.4f);
         pixelRect.setTouchable(Touchable.disabled);
         addActor(pixelRect);
         addActor(transformGroup);
