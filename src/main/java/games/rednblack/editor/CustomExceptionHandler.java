@@ -63,12 +63,13 @@ public class CustomExceptionHandler implements UncaughtExceptionHandler {
 
         //sendError(stacktrace);
 
-        showErrorDialog();
+        showErrorDialog(stacktrace);
     }
 
-    public static void showErrorDialog() {
+    public static void showErrorDialog(String stacktrace) {
+        File localPath = Gdx.files.internal("crash/java-hyperlog.txt").file();
         new Thread(() -> EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(null,
-                "HyperLap2D just crashed, see stacktrace in java-hyperlog.txt file", "Oops! Something went wrong",
+                "HyperLap2D just crashed, see stacktrace in " + localPath.getAbsolutePath() + " file\n\n\n" + stacktrace, "Oops! Something went wrong",
                 JOptionPane.ERROR_MESSAGE))).start();
     }
 
