@@ -23,11 +23,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.*;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.util.OsUtils;
+import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.proxy.CursorManager;
@@ -85,7 +84,7 @@ public class SelectionTool extends SimpleTool {
 
     @Override
     public String getShortcut() {
-        return OsUtils.getShortcutFor(Input.Keys.V);
+        return OsUtils.getShortcutFor(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.SELECTION_TOOL));
     }
 
     @Override
@@ -154,34 +153,20 @@ public class SelectionTool extends SimpleTool {
 
         currentTouchedItemWasSelected = sandbox.getSelector().getCurrentSelection().contains(entity);
 
-        if (isEntityVisible(entity)) {
-
-            // if shift is pressed we are in add/remove selection mode
-            if (isShiftPressed()) {
-                //TODO block selection handling (wat?)
-                if (!currentTouchedItemWasSelected) {
-                    // item was not selected, adding it to selection
-                    Set<Entity> items = new HashSet<>();
-                    items.add(entity);
-                    facade.sendNotification(MsgAPI.ACTION_ADD_SELECTION, items);
-                }
-            } else {
-
-                //TODO fix and uncomment layer locking
-//            if (item.isLockedByLayer()) {
-//                // this is considered empty space click and thus should release all selections
-//                facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, null);
-//                commands.getSelector().clearSelections();
-//                return false;
-//            } else {
-                if (!currentTouchedItemWasSelected) {
-                    // get selection, add this item to selection
-                    Set<Entity> items = new HashSet<>();
-                    items.add(entity);
-                    facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, items);
-
-                }
-                //}
+        // if shift is pressed we are in add/remove selection mode
+        if (isShiftPressed()) {
+            if (!currentTouchedItemWasSelected) {
+                // item was not selected, adding it to selection
+                Set<Entity> items = new HashSet<>();
+                items.add(entity);
+                facade.sendNotification(MsgAPI.ACTION_ADD_SELECTION, items);
+            }
+        } else {
+            if (!currentTouchedItemWasSelected) {
+                // get selection, add this item to selection
+                Set<Entity> items = new HashSet<>();
+                items.add(entity);
+                facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, items);
             }
         }
 

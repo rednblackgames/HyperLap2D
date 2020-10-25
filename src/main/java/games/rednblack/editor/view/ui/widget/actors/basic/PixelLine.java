@@ -19,17 +19,14 @@
 package games.rednblack.editor.view.ui.widget.actors.basic;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import games.rednblack.editor.proxy.EditorTextureManager;
 
 public class PixelLine extends Image {
 
 	 private float thickness = 1f;
 
-	public PixelLine(EditorTextureManager tm, float x, float y, float toX, float toY) {
-		super(prepareTexture(tm));
+	public PixelLine(float x, float y, float toX, float toY) {
+		super(WhitePixel.sharedInstance.texture);
 		
 		setPosition(x, y, toX, toY);
 	}
@@ -48,10 +45,6 @@ public class PixelLine extends Image {
 		Color clr = getColor();
 		clr.a = opacity;
 		setColor(clr);
-	}
-	
-	private static Texture prepareTexture(EditorTextureManager tm) {
-		return tm.getEditorAsset("pixel");
 	}
 
 	 @Override

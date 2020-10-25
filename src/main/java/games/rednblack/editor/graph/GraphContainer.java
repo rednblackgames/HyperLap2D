@@ -30,7 +30,7 @@ import games.rednblack.editor.graph.data.GraphValidator;
 import games.rednblack.editor.graph.data.NodeConnector;
 import games.rednblack.editor.graph.data.NodeGroup;
 import games.rednblack.editor.graph.property.PropertyBox;
-import games.rednblack.editor.graph.ui.WhitePixel;
+import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.editor.graph.ui.preview.NavigableCanvas;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.InputValidator;
@@ -72,7 +72,6 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
 
     private float canvasX;
     private float canvasY;
-    private final Vector2 canvasPos = new Vector2();
     private float canvasWidth;
     private float canvasHeight;
     private boolean navigating;
@@ -128,6 +127,34 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                                 final NodeGroupImpl finalNodeGroup = nodeGroup;
 
                                 PopupMenu popupMenu = new PopupMenu();
+                                MenuItem rename = new MenuItem("Rename group");
+                                rename.addListener(
+                                        new ClickListener(Input.Buttons.LEFT) {
+                                            @Override
+                                            public void clicked(InputEvent event, float x, float y) {
+                                                Dialogs.showInputDialog(getStage(), "Enter group name", "Name",
+                                                        new InputValidator() {
+                                                            @Override
+                                                            public boolean validateInput(String input) {
+                                                                return !input.trim().isEmpty();
+                                                            }
+                                                        },
+                                                        new InputDialogListener() {
+                                                            @Override
+                                                            public void finished(String input) {
+                                                                finalNodeGroup.setName(input.trim());
+                                                                fire(new GraphChangedEvent(false, false));
+                                                            }
+
+                                                            @Override
+                                                            public void canceled() {
+
+                                                            }
+                                                        }).setText(finalNodeGroup.getName(), true);
+                                            }
+                                        });
+                                popupMenu.addItem(rename);
+
                                 MenuItem remove = new MenuItem("Remove group");
                                 remove.addListener(
                                         new ClickListener(Input.Buttons.LEFT) {
@@ -138,6 +165,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                                             }
                                         });
                                 popupMenu.addItem(remove);
+
                                 showPopupMenu(popupMenu);
                             } else {
                                 PopupMenu popupMenu = popupMenuProducer.createPopupMenu(x, y);
@@ -146,6 +174,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                         }
                     }
                 });
+
         addListener(
                 new ClickListener(Input.Buttons.LEFT) {
                     @Override
@@ -160,6 +189,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                         processLeftClick(x, y);
                     }
                 });
+
         DragListener dragListener = new DragListener() {
             private float canvasXStart;
             private float canvasYStart;
@@ -709,6 +739,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                 NodeGroupImpl nodeGroupImpl = nodeGroupEntry.getKey();
                 Rectangle rectangle = nodeGroupEntry.getValue();
                 String name = nodeGroupImpl.getName();
+                font.getColor().a *= parentAlpha;
                 font.draw(batch, name, x + rectangle.x + NODE_GROUP_PADDING, y + rectangle.y + rectangle.height - NODE_GROUP_PADDING,
                         0, name.length(), rectangle.width - NODE_GROUP_PADDING * 2, Align.center, false, "...");
             }
@@ -979,6 +1010,10 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         public NodeGroupImpl(String name, Set<String> nodes) {
             this.name = name;
             this.nodes = nodes;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
 
         @Override

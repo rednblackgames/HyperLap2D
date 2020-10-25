@@ -41,6 +41,7 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
 
     @Override
     public void doAction() {
+        cancel();
         Entity entity = getNotification().getBody();
         Entity oldEntity = sandbox.getCurrentViewingEntity();
 

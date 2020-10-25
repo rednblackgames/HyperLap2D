@@ -1,4 +1,4 @@
-package games.rednblack.editor.graph.ui;
+package games.rednblack.editor.view.ui.widget.actors.basic;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;

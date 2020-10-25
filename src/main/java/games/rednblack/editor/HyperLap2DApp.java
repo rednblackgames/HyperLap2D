@@ -8,7 +8,6 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.utils.AppConfig;
 import org.apache.commons.lang3.SystemUtils;
-import org.lwjgl.glfw.GLFW;
 
 public class HyperLap2DApp extends ApplicationAdapter {
     private static HyperLap2DApp sInstance = null;

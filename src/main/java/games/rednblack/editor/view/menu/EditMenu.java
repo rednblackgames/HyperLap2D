@@ -1,8 +1,8 @@
 package games.rednblack.editor.view.menu;
 
-import com.badlogic.gdx.Input;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import games.rednblack.editor.event.MenuItemListener;
+import games.rednblack.editor.utils.KeyBindingsLayout;
 
 public class EditMenu extends H2DMenu {
 
@@ -21,11 +21,11 @@ public class EditMenu extends H2DMenu {
 
     public EditMenu() {
         super("Edit");
-        cut = new MenuItem("Cut", new MenuItemListener(CUT, null, EDIT_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.X);
-        copy = new MenuItem("Copy", new MenuItemListener(COPY, null, EDIT_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.C);
-        paste = new MenuItem("Paste", new MenuItemListener(PASTE, null, EDIT_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.V);
-        undo = new MenuItem("Undo", new MenuItemListener(UNDO, null, EDIT_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.Z);
-        redo = new MenuItem("Redo", new MenuItemListener(REDO, null, EDIT_MENU)).setShortcut(Input.Keys.CONTROL_LEFT,Input.Keys.SHIFT_LEFT, Input.Keys.Z);
+        cut = new MenuItem("Cut", new MenuItemListener(CUT, null, EDIT_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.CUT));
+        copy = new MenuItem("Copy", new MenuItemListener(COPY, null, EDIT_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.COPY));
+        paste = new MenuItem("Paste", new MenuItemListener(PASTE, null, EDIT_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.PASTE));
+        undo = new MenuItem("Undo", new MenuItemListener(UNDO, null, EDIT_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.UNDO));
+        redo = new MenuItem("Redo", new MenuItemListener(REDO, null, EDIT_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.REDO));
         addItem(cut);
         addItem(copy);
         addItem(paste);

@@ -22,6 +22,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.kotcrab.vis.ui.util.OsUtils;
+import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.view.stage.tools.transformStrategy.*;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -79,7 +80,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
 
     @Override
     public String getShortcut() {
-        return OsUtils.getShortcutFor(Input.Keys.CONTROL_LEFT, Input.Keys.T);
+        return OsUtils.getShortcutFor(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.TRANSFORM_TOOL));
     }
 
     @Override

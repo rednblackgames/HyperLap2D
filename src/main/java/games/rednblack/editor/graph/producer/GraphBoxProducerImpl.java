@@ -31,7 +31,7 @@ public class GraphBoxProducerImpl<T extends FieldType> implements GraphBoxProduc
 
     @Override
     public boolean isCloseable() {
-        return true;
+        return !isUnique;
     }
 
     @Override

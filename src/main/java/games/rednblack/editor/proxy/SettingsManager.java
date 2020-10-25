@@ -8,11 +8,13 @@ import games.rednblack.editor.Main;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.puremvc.java.patterns.proxy.Proxy;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class SettingsManager extends Proxy {
     private static final String TAG = SettingsManager.class.getCanonicalName();
@@ -43,11 +45,13 @@ public class SettingsManager extends Proxy {
             String myDocPath = HyperLap2DUtils.MY_DOCUMENTS_PATH;
             defaultWorkspacePath = myDocPath + File.separator + DEFAULT_FOLDER;
             FileUtils.forceMkdir(new File(defaultWorkspacePath));
+            FileUtils.forceMkdir(new File(getKeyMapPath()));
 
-            pluginDirs = new File[] {new File(Main.getJarContainingFolder(Main.class) + File.separator + "plugins"),
+            pluginDirs = new File[]{new File(Main.getJarContainingFolder(Main.class) + File.separator + "plugins"),
                     new File(getRootPath() + File.separator + "plugins"),
                     new File(System.getProperty("user.dir") + File.separator + "plugins")};
             cacheDir = new File(getRootPath() + File.separator + "cache");
+            FileUtils.forceMkdir(cacheDir);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -67,6 +71,18 @@ public class SettingsManager extends Proxy {
         return null;
     }
 
+    public String[] getKeyMappingFiles() {
+        File mappingDir = new File(getKeyMapPath());
+        String[] extensions = new String[]{"keymap"};
+        List<File> files = (List<File>) FileUtils.listFiles(mappingDir, extensions, true);
+        String[] maps = new String[files.size() + 1];
+        maps[0] = "default";
+        for (int i = 0; i < files.size(); i++) {
+            maps[i + 1] = FilenameUtils.removeExtension(files.get(i).getName());
+        }
+        return maps;
+    }
+
     private EditorConfigVO getEditorConfig() {
         EditorConfigVO editorConfig = new EditorConfigVO();
         String configFilePath = getRootPath() + File.separator + "configs" + File.separator + EditorConfigVO.EDITOR_CONFIG_FILE;
@@ -79,15 +95,19 @@ public class SettingsManager extends Proxy {
             }
         } else {
             Json gson = new Json();
-            String editorConfigJson = null;
+            String editorConfigJson;
             try {
-                editorConfigJson = FileUtils.readFileToString(Gdx.files.absolute(configFilePath).file());
+                editorConfigJson = FileUtils.readFileToString(Gdx.files.absolute(configFilePath).file(), "utf-8");
                 editorConfig = gson.fromJson(EditorConfigVO.class, editorConfigJson);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         return editorConfig;
+    }
+
+    public String getKeyMapPath() {
+        return getRootPath() + File.separator + "configs" + File.separator + "keymaps";
     }
 
     public String getRootPath() {
@@ -113,7 +133,7 @@ public class SettingsManager extends Proxy {
 
     public void saveEditorConfig() {
         try {
-            String configFilePath = getRootPath() + File.separator + "configs" + File.separator +  EditorConfigVO.EDITOR_CONFIG_FILE;
+            String configFilePath = getRootPath() + File.separator + "configs" + File.separator + EditorConfigVO.EDITOR_CONFIG_FILE;
             FileUtils.writeStringToFile(new File(configFilePath), editorConfigVO.constructJsonString(), "utf-8");
         } catch (IOException e) {
             e.printStackTrace();

@@ -25,7 +25,6 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.proxy.EditorTextureManager;
 
 public class PixelRect extends Group {
 
@@ -39,13 +38,12 @@ public class PixelRect extends Group {
 
     public PixelRect(float width, float height) {
         facade = HyperLap2DFacade.getInstance();
-        EditorTextureManager tm = facade.retrieveProxy(EditorTextureManager.NAME);
-        lines[0] = new PixelLine(tm, 0, 0, width, 0);
-        lines[1] = new PixelLine(tm, 0, 0, 0, height);
-        lines[2] = new PixelLine(tm, width, 0, width, height);
-        lines[3] = new PixelLine(tm, 0, height, width, height);
+        lines[0] = new PixelLine(0, 0, width, 0);
+        lines[1] = new PixelLine(0, 0, 0, height);
+        lines[2] = new PixelLine(width, 0, width, height);
+        lines[3] = new PixelLine(0, height, width, height);
 
-        fill = new Image(tm.getEditorAsset("pixel"));
+        fill = new Image(WhitePixel.sharedInstance.texture);
         fill.setColor(new Color(0, 0, 0, 0));
 
         addActor(fill);

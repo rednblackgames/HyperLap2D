@@ -1,11 +1,11 @@
 package games.rednblack.editor.view.menu;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
 import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.event.MenuItemListener;
+import games.rednblack.editor.utils.KeyBindingsLayout;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,17 +32,17 @@ public class FileMenu extends H2DMenu {
 
     public FileMenu() {
         super("File"); //⌘⇧⌥
-        saveProject = new MenuItem("Save Project", new MenuItemListener(SAVE_PROJECT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.S);
-        addItem(new MenuItem("New Project...", new MenuItemListener(NEW_PROJECT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.N));
-        addItem(new MenuItem("Open Project...", new MenuItemListener(OPEN_PROJECT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.O));
+        saveProject = new MenuItem("Save Project", new MenuItemListener(SAVE_PROJECT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.SAVE_PROJECT));
+        addItem(new MenuItem("New Project...", new MenuItemListener(NEW_PROJECT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.NEW_PROJECT)));
+        addItem(new MenuItem("Open Project...", new MenuItemListener(OPEN_PROJECT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.OPEN_PROJECT)));
         addItem(saveProject);
         //
         addSeparator();
-        importToLibrary = new MenuItem("Import Resources...", new MenuItemListener(IMPORT_TO_LIBRARY, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.I);
-        export = new MenuItem("Export", new MenuItemListener(EXPORT, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.E);
+        importToLibrary = new MenuItem("Import Resources...", new MenuItemListener(IMPORT_TO_LIBRARY, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.IMPORT_TO_LIBRARY));
+        export = new MenuItem("Export", new MenuItemListener(EXPORT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.EXPORT_PROJECT));
         addItem(importToLibrary);
         addItem(export);
-        addItem(new MenuItem("Settings...", new MenuItemListener(SETTINGS, null, FILE_MENU)).setShortcut(Input.Keys.CONTROL_LEFT, Input.Keys.ALT_LEFT, Input.Keys.S));
+        addItem(new MenuItem("Settings...", new MenuItemListener(SETTINGS, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.OPEN_SETTINGS)));
         //
         addSeparator();
         MenuItem recentProjectsMenuItem = new MenuItem("Recent Projects");

@@ -3,6 +3,7 @@ package games.rednblack.editor.renderer.factory;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.ObjectMap;
 import games.rednblack.editor.renderer.systems.action.Actions;
 import games.rednblack.editor.renderer.systems.action.data.*;
 import games.rednblack.editor.renderer.utils.ArrayUtils;
@@ -21,10 +22,14 @@ public class ActionFactory {
     }
 
     public ActionData loadFromLibrary(String actionName) {
-        return loadFromLibrary(actionName, true);
+        return loadFromLibrary(actionName, true, null);
     }
 
-    public ActionData loadFromLibrary(String actionName, boolean autoPoolable) {
+    public ActionData loadFromLibrary(String actionName, ObjectMap<String, Object> params) {
+        return loadFromLibrary(actionName, true, params);
+    }
+
+    public ActionData loadFromLibrary(String actionName, boolean autoPoolable, ObjectMap<String, Object> params) {
         if (actionsLibrary.get(actionName) == null)
             throw new IllegalArgumentException("The action '" + actionName + "' does not exists.");
 
@@ -32,14 +37,14 @@ public class ActionFactory {
         ActionData data = null;
         try {
             JSONObject actionGraph = (JSONObject) parser.parse(actionsLibrary.get(actionName));
-            data = parseGraph(actionGraph, autoPoolable);
+            data = parseGraph(actionGraph, autoPoolable, params);
         } catch (ParseException e) {
             throw new RuntimeException("The action '" + actionName + "' has not a valid format.");
         }
         return data;
     }
 
-    private ActionData parseGraph(JSONObject actionGraph, boolean autoPoolable) {
+    private ActionData parseGraph(JSONObject actionGraph, boolean autoPoolable, ObjectMap<String, Object> params) {
         Map<String, GraphNode> nodes = new HashMap<>();
         for (JSONObject object : (List<JSONObject>) actionGraph.get("nodes")) {
             String type = (String) object.get("type");
@@ -66,19 +71,20 @@ public class ActionFactory {
             }
         }
 
-        return getActionData(nodes.get(actionNode), toNodeConnections, nodes, autoPoolable);
+        return getActionData(nodes.get(actionNode), toNodeConnections, nodes, autoPoolable, params);
     }
 
-    private ActionData getActionData(GraphNode node, Map<String, List<GraphConnection>> toNodeConnections, Map<String, GraphNode> nodes, boolean autoPoolable) {
+    private ActionData getActionData(GraphNode node, Map<String, List<GraphConnection>> toNodeConnections,
+                                     Map<String, GraphNode> nodes, boolean autoPoolable, ObjectMap<String, Object> params) {
         ActionData actionData = mapTypeToActionData(node.type, autoPoolable);
 
         for (GraphConnection inConnection : toNodeConnections.get(node.id)) {
             if (inConnection.toField.contains("action")) {
-                ActionData subAction = getActionData(nodes.get(inConnection.fromNode), toNodeConnections, nodes, autoPoolable);
+                ActionData subAction = getActionData(nodes.get(inConnection.fromNode), toNodeConnections, nodes, autoPoolable, params);
                 addSubAction(actionData, subAction);
             }
 
-            addActionDataParameter(actionData, nodes, toNodeConnections.get(node.id));
+            addActionDataParameter(actionData, nodes, toNodeConnections.get(node.id), params);
         }
         return actionData;
     }
@@ -96,15 +102,15 @@ public class ActionFactory {
         }
     }
 
-    private void addActionDataParameter(ActionData actionData, Map<String, GraphNode> nodes, List<GraphConnection> connections) {
+    private void addActionDataParameter(ActionData actionData, Map<String, GraphNode> nodes, List<GraphConnection> connections, ObjectMap<String, Object> params) {
         if (actionData instanceof TemporalData) {
             for (GraphConnection connection : connections) {
                 switch (connection.toField) {
                     case "duration":
-                        ((TemporalData) actionData).setDuration((Float) getValue(nodes.get(connection.fromNode)));
+                        ((TemporalData) actionData).setDuration((Float) getValue(nodes.get(connection.fromNode), params));
                         break;
                     case "interpolation":
-                        ((TemporalData) actionData).setInterpolation((Interpolation) getValue(nodes.get(connection.fromNode)));
+                        ((TemporalData) actionData).setInterpolation((Interpolation) getValue(nodes.get(connection.fromNode), params));
                         break;
                 }
             }
@@ -114,7 +120,7 @@ public class ActionFactory {
             for (GraphConnection connection : connections) {
                 switch (connection.toField) {
                     case "position":
-                        Vector2 pos = (Vector2) getValue(nodes.get(connection.fromNode));
+                        Vector2 pos = (Vector2) getValue(nodes.get(connection.fromNode), params);
                         ((MoveToData) actionData).setEndX(pos.x);
                         ((MoveToData) actionData).setEndY(pos.y);
                         break;
@@ -126,7 +132,7 @@ public class ActionFactory {
             for (GraphConnection connection : connections) {
                 switch (connection.toField) {
                     case "position":
-                        Vector2 pos = (Vector2) getValue(nodes.get(connection.fromNode));
+                        Vector2 pos = (Vector2) getValue(nodes.get(connection.fromNode), params);
                         ((MoveByData) actionData).setAmountX(pos.x);
                         ((MoveByData) actionData).setAmountY(pos.y);
                         break;
@@ -138,7 +144,7 @@ public class ActionFactory {
             for (GraphConnection connection : connections) {
                 switch (connection.toField) {
                     case "degree":
-                        ((RotateToData) actionData).setEnd((Float) getValue(nodes.get(connection.fromNode)));
+                        ((RotateToData) actionData).setEnd((Float) getValue(nodes.get(connection.fromNode), params));
                         break;
                 }
             }
@@ -148,7 +154,7 @@ public class ActionFactory {
             for (GraphConnection connection : connections) {
                 switch (connection.toField) {
                     case "degree":
-                        ((RotateByData) actionData).setAmount((Float) getValue(nodes.get(connection.fromNode)));
+                        ((RotateByData) actionData).setAmount((Float) getValue(nodes.get(connection.fromNode), params));
                         break;
                 }
             }
@@ -158,7 +164,7 @@ public class ActionFactory {
             for (GraphConnection connection : connections) {
                 switch (connection.toField) {
                     case "size":
-                        Vector2 pos = (Vector2) getValue(nodes.get(connection.fromNode));
+                        Vector2 pos = (Vector2) getValue(nodes.get(connection.fromNode), params);
                         ((SizeToData) actionData).setEndWidth(pos.x);
                         ((SizeToData) actionData).setEndHeight(pos.y);
                         break;
@@ -170,7 +176,7 @@ public class ActionFactory {
             for (GraphConnection connection : connections) {
                 switch (connection.toField) {
                     case "size":
-                        Vector2 pos = (Vector2) getValue(nodes.get(connection.fromNode));
+                        Vector2 pos = (Vector2) getValue(nodes.get(connection.fromNode), params);
                         ((SizeByData) actionData).setAmountWidth(pos.x);
                         ((SizeByData) actionData).setAmountHeight(pos.y);
                         break;
@@ -182,7 +188,7 @@ public class ActionFactory {
             for (GraphConnection connection : connections) {
                 switch (connection.toField) {
                     case "scale":
-                        Vector2 pos = (Vector2) getValue(nodes.get(connection.fromNode));
+                        Vector2 pos = (Vector2) getValue(nodes.get(connection.fromNode), params);
                         ((ScaleToData) actionData).setEndX(pos.x);
                         ((ScaleToData) actionData).setEndY(pos.y);
                         break;
@@ -194,7 +200,7 @@ public class ActionFactory {
             for (GraphConnection connection : connections) {
                 switch (connection.toField) {
                     case "scale":
-                        Vector2 pos = (Vector2) getValue(nodes.get(connection.fromNode));
+                        Vector2 pos = (Vector2) getValue(nodes.get(connection.fromNode), params);
                         ((ScaleByData) actionData).setAmountX(pos.x);
                         ((ScaleByData) actionData).setAmountY(pos.y);
                         break;
@@ -206,7 +212,7 @@ public class ActionFactory {
             for (GraphConnection connection : connections) {
                 switch (connection.toField) {
                     case "color":
-                        ((ColorData) actionData).setEndColor((Color) getValue(nodes.get(connection.fromNode)));
+                        ((ColorData) actionData).setEndColor((Color) getValue(nodes.get(connection.fromNode), params));
                         break;
                 }
             }
@@ -216,7 +222,7 @@ public class ActionFactory {
             for (GraphConnection connection : connections) {
                 switch (connection.toField) {
                     case "alpha":
-                        ((AlphaData) actionData).setEnd((Float) getValue(nodes.get(connection.fromNode)));
+                        ((AlphaData) actionData).setEnd((Float) getValue(nodes.get(connection.fromNode), params));
                         break;
                 }
             }
@@ -226,7 +232,7 @@ public class ActionFactory {
             for (GraphConnection connection : connections) {
                 switch (connection.toField) {
                     case "delay":
-                        ((DelayData) actionData).setDuration((Float) getValue(nodes.get(connection.fromNode)));
+                        ((DelayData) actionData).setDuration((Float) getValue(nodes.get(connection.fromNode), params));
                         break;
                 }
             }
@@ -236,7 +242,7 @@ public class ActionFactory {
             for (GraphConnection connection : connections) {
                 switch (connection.toField) {
                     case "count":
-                        int count = (int) getValue(nodes.get(connection.fromNode));
+                        int count = (int) getValue(nodes.get(connection.fromNode), params);
                         ((RepeatData) actionData).setRepeatCount(count);
                         break;
                 }
@@ -244,7 +250,7 @@ public class ActionFactory {
         }
     }
 
-    private Object getValue(GraphNode node) {
+    private Object getValue(GraphNode node, ObjectMap<String, Object> params) {
         switch (node.type) {
             case "ValueBoolean":
                 return node.data.get("v");
@@ -256,6 +262,10 @@ public class ActionFactory {
                 return new Vector2(((Number) node.data.get("v1")).floatValue(), ((Number) node.data.get("v2")).floatValue());
             case "ValueInterpolation":
                 return InterpolationMap.map.get((String) node.data.get("interpolation"));
+            case "ValueParam":
+                if (params == null || params.get((String) node.data.get("v")) == null)
+                    throw new IllegalArgumentException("Custom parameter '" + node.data.get("v") + "' not found.");
+                return params.get((String) node.data.get("v"));
             default:
                 return null;
         }

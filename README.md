@@ -1,9 +1,9 @@
 ![Logo](https://raw.githubusercontent.com/rednblackgames/HyperLap2D/master/icons/HyperLap2D.png)
 
-![build](https://img.shields.io/github/workflow/status/rednblackgames/HyperLap2D/SNAPSHOT%20Build)
-![release](https://img.shields.io/github/v/release/rednblackgames/HyperLap2D)
+[![build](https://img.shields.io/github/workflow/status/rednblackgames/HyperLap2D/SNAPSHOT%20Build)](https://github.com/rednblackgames/HyperLap2D/actions?query=workflow%3A%22SNAPSHOT+Build%22)
+[![release](https://img.shields.io/github/v/release/rednblackgames/HyperLap2D)](https://github.com/rednblackgames/HyperLap2D/releases)
 
-![Discord](https://img.shields.io/discord/740954840259362826?label=Discord&logo=discord)
+[![Discord](https://img.shields.io/discord/740954840259362826?label=Discord&logo=discord)](https://discord.gg/p69rPNF)
 
 # HyperLap2D
 HyperLap2D is a powerful, platform-independent, visual editor for complex 2D worlds and scenes. 
@@ -55,15 +55,17 @@ We need your help! HyperLap2D is a very large and complex project, if you have s
 
 #### Building from source
 
-HyperLap2D is developed using IntelliJ IDEA. HyperLap2D needs `Java 14`.
+HyperLap2D is developed using IntelliJ IDEA. Needs `Java 14`.
 
 1. Fork this repository
 2. Clone it
 3. Open the main `build.gradle`, which you can find in the root directory
+4. Run `runHyperLap2D` gradle task
+5. If build fails: `File → Invalidate Caches / Restart`
 
 ### Project Status
 
-Currently, HyperLap2D is in Alpha stage. Many breaking changes could happen update after update without backwards compatibility. Therefore, please always check our changelog before updating.
+Currently, HyperLap2D is in Alpha stage. Many breaking changes could happen update after update without backwards compatibility. Therefore, please always check our [changelog](https://github.com/rednblackgames/HyperLap2D/tree/master/CHANGES) before updating.
 
 ### License
 

@@ -20,7 +20,6 @@ package games.rednblack.editor.view;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -32,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
+import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.view.ui.widget.actors.basic.SandboxBackUI;
@@ -158,36 +158,34 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (Gdx.input.isKeyPressed(Input.Keys.SYM) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
-            switch (keycode) {
-                case Input.Keys.N:
-                    facade.sendNotification(FileMenu.NEW_PROJECT, null, FileMenu.FILE_MENU);
-                    break;
-                case Input.Keys.O:
-                    facade.sendNotification(FileMenu.OPEN_PROJECT, null, FileMenu.FILE_MENU);
-                    break;
-                case Input.Keys.I:
-                    if (sandbox.sceneControl.getCurrentSceneVO() != null) {
-                        facade.sendNotification(FileMenu.IMPORT_TO_LIBRARY, null, FileMenu.FILE_MENU);
-                    }
-                    break;
-                case Input.Keys.S:
-                    if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT)) {
-                        facade.sendNotification(FileMenu.SETTINGS, null, FileMenu.FILE_MENU);
-                    } else if (sandbox.sceneControl.getCurrentSceneVO() != null) {
-                        facade.sendNotification(FileMenu.SAVE_PROJECT, null, FileMenu.FILE_MENU);
-                    }
-                    break;
-                case Input.Keys.E:
-                    if (sandbox.sceneControl.getCurrentSceneVO() != null) {
-                        facade.sendNotification(MsgAPI.ACTION_EXPORT_PROJECT);
-                    }
-                    break;
-            }
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.SYM) && keycode == Input.Keys.Q) {
-            HyperLap2DApp.getInstance().hyperlap2D.closeRequested();
+        switch (KeyBindingsLayout.mapAction(keycode)) {
+            case KeyBindingsLayout.NEW_PROJECT:
+                facade.sendNotification(FileMenu.NEW_PROJECT, null, FileMenu.FILE_MENU);
+                break;
+            case KeyBindingsLayout.OPEN_PROJECT:
+                facade.sendNotification(FileMenu.OPEN_PROJECT, null, FileMenu.FILE_MENU);
+                break;
+            case KeyBindingsLayout.SAVE_PROJECT:
+                if (sandbox.sceneControl.getCurrentSceneVO() != null) {
+                    facade.sendNotification(FileMenu.SAVE_PROJECT, null, FileMenu.FILE_MENU);
+                }
+                break;
+            case KeyBindingsLayout.EXPORT_PROJECT:
+                if (sandbox.sceneControl.getCurrentSceneVO() != null) {
+                    facade.sendNotification(MsgAPI.ACTION_EXPORT_PROJECT);
+                }
+                break;
+            case KeyBindingsLayout.IMPORT_TO_LIBRARY:
+                if (sandbox.sceneControl.getCurrentSceneVO() != null) {
+                    facade.sendNotification(FileMenu.IMPORT_TO_LIBRARY, null, FileMenu.FILE_MENU);
+                }
+                break;
+            case KeyBindingsLayout.OPEN_SETTINGS:
+                facade.sendNotification(FileMenu.SETTINGS, null, FileMenu.FILE_MENU);
+                break;
+            case KeyBindingsLayout.EXIT_APP:
+                HyperLap2DApp.getInstance().hyperlap2D.closeRequested();
+                break;
         }
         return false;
     }

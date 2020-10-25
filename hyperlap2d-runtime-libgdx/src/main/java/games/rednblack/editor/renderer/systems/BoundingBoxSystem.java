@@ -86,6 +86,8 @@ public class BoundingBoxSystem extends IteratingSystem {
 
             while (parentNode != null) {
                 TransformComponent parentTransform = transformMapper.get(parentNode.parentEntity);
+                if (parentTransform == null)
+                    break;
                 if (parentTransform.rotation != 0) {
                     for(int i = 0; i < 4; i++)
                         b.points[i].rotate(parentTransform.rotation);
@@ -111,6 +113,8 @@ public class BoundingBoxSystem extends IteratingSystem {
         checksum = t.rotation + t.scaleX + t.scaleY + t.x + t.y;
         while (parentNode != null) {
             TransformComponent pt = transformMapper.get(parentNode.parentEntity);
+            if (pt == null)
+                break;
             checksum += pt.rotation + pt.scaleX + pt.scaleY + pt.x + pt.y;
             parentNode = parentNodeMapper.get(parentNode.parentEntity);
         }

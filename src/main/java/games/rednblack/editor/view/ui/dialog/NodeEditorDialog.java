@@ -21,10 +21,7 @@ import games.rednblack.editor.graph.data.GraphValidator;
 import games.rednblack.editor.graph.producer.GraphBoxProducer;
 import games.rednblack.editor.graph.actions.ActionFieldType;
 import games.rednblack.editor.graph.producer.GraphBoxProducerImpl;
-import games.rednblack.editor.graph.producer.value.ValueBooleanBoxProducer;
-import games.rednblack.editor.graph.producer.value.ValueColorBoxProducer;
-import games.rednblack.editor.graph.producer.value.ValueFloatBoxProducer;
-import games.rednblack.editor.graph.producer.value.ValueVector2BoxProducer;
+import games.rednblack.editor.graph.producer.value.*;
 import games.rednblack.editor.graph.property.PropertyBox;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -72,6 +69,7 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         graphBoxProducers.add(new ValueBooleanBoxProducer<>(new ValueBooleanNodeConfiguration()));
         graphBoxProducers.add(new ValueVector2BoxProducer<>(new ValueVector2NodeConfiguration()));
         graphBoxProducers.add(new ValueInterpolationBoxProducer(new ValueInterpolationNodeConfiguration()));
+        graphBoxProducers.add(new ValueParamBoxProducer<>(new ValueParamNodeConfiguration()));
 
         try {
             graphBoxProducers.add(new ArrayActionBoxProducer(ParallelActionNodeConfiguration.class));
