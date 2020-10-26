@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
+import games.rednblack.editor.renderer.systems.action.ActionEventListener;
 import games.rednblack.editor.renderer.systems.action.Actions;
 import games.rednblack.editor.renderer.systems.action.data.*;
 import games.rednblack.editor.renderer.utils.ArrayUtils;
@@ -25,11 +26,23 @@ public class ActionFactory {
         return loadFromLibrary(actionName, true, null);
     }
 
+    public ActionData loadFromLibrary(String actionName, ActionEventListener listener) {
+        return loadFromLibrary(actionName, true, null, listener);
+    }
+
     public ActionData loadFromLibrary(String actionName, ObjectMap<String, Object> params) {
         return loadFromLibrary(actionName, true, params);
     }
 
+    public ActionData loadFromLibrary(String actionName, ObjectMap<String, Object> params, ActionEventListener listener) {
+        return loadFromLibrary(actionName, true, params, listener);
+    }
+
     public ActionData loadFromLibrary(String actionName, boolean autoPoolable, ObjectMap<String, Object> params) {
+        return loadFromLibrary(actionName, autoPoolable, params, null);
+    }
+
+    public ActionData loadFromLibrary(String actionName, boolean autoPoolable, ObjectMap<String, Object> params, ActionEventListener listener) {
         if (actionsLibrary.get(actionName) == null)
             throw new IllegalArgumentException("The action '" + actionName + "' does not exists.");
 
@@ -37,32 +50,34 @@ public class ActionFactory {
         ActionData data = null;
         try {
             JSONObject actionGraph = (JSONObject) parser.parse(actionsLibrary.get(actionName));
-            data = parseGraph(actionGraph, autoPoolable, params);
+            data = parseGraph(actionGraph, autoPoolable, params, listener);
         } catch (ParseException e) {
             throw new RuntimeException("The action '" + actionName + "' has not a valid format.");
         }
         return data;
     }
 
-    private ActionData parseGraph(JSONObject actionGraph, boolean autoPoolable, ObjectMap<String, Object> params) {
+    private ActionData parseGraph(JSONObject actionGraph, boolean autoPoolable, ObjectMap<String, Object> params,
+                                  ActionEventListener listener) {
+        Map<String, List<GraphConnection>> toNodeConnections = new HashMap<>();
+
         Map<String, GraphNode> nodes = new HashMap<>();
         for (JSONObject object : (List<JSONObject>) actionGraph.get("nodes")) {
             String type = (String) object.get("type");
             String id = (String) object.get("id");
             JSONObject data = (JSONObject) object.get("data");
 
+            toNodeConnections.put(id, new ArrayList<GraphConnection>());
             nodes.put(id, new GraphNode(id, type, data));
         }
 
         String actionNode = "";
-        Map<String, List<GraphConnection>> toNodeConnections = new HashMap<>();
         for (JSONObject connection : (List<JSONObject>) actionGraph.get("connections")) {
             String toNode = (String) connection.get("toNode");
             String fromNode = (String) connection.get("fromNode");
             String fromField = (String) connection.get("fromField");
             String toField = (String) connection.get("toField");
 
-            toNodeConnections.computeIfAbsent(toNode, k -> new ArrayList<>());
             toNodeConnections.get(toNode).add(new GraphConnection(fromNode, fromField, toField));
             Collections.sort(toNodeConnections.get(toNode));
 
@@ -71,21 +86,25 @@ public class ActionFactory {
             }
         }
 
-        return getActionData(nodes.get(actionNode), toNodeConnections, nodes, autoPoolable, params);
+        return getActionData(nodes.get(actionNode), toNodeConnections, nodes, autoPoolable, params, listener);
     }
 
     private ActionData getActionData(GraphNode node, Map<String, List<GraphConnection>> toNodeConnections,
-                                     Map<String, GraphNode> nodes, boolean autoPoolable, ObjectMap<String, Object> params) {
+                                     Map<String, GraphNode> nodes, boolean autoPoolable, ObjectMap<String, Object> params,
+                                     ActionEventListener listener) {
         ActionData actionData = mapTypeToActionData(node.type, autoPoolable);
 
         for (GraphConnection inConnection : toNodeConnections.get(node.id)) {
             if (inConnection.toField.contains("action")) {
-                ActionData subAction = getActionData(nodes.get(inConnection.fromNode), toNodeConnections, nodes, autoPoolable, params);
+                ActionData subAction = getActionData(nodes.get(inConnection.fromNode), toNodeConnections,
+                        nodes, autoPoolable, params, listener);
                 addSubAction(actionData, subAction);
             }
 
             addActionDataParameter(actionData, nodes, toNodeConnections.get(node.id), params);
         }
+
+        addActionDataValueParameter(node, actionData, listener);
         return actionData;
     }
 
@@ -102,7 +121,8 @@ public class ActionFactory {
         }
     }
 
-    private void addActionDataParameter(ActionData actionData, Map<String, GraphNode> nodes, List<GraphConnection> connections, ObjectMap<String, Object> params) {
+    private void addActionDataParameter(ActionData actionData, Map<String, GraphNode> nodes,
+                                        List<GraphConnection> connections, ObjectMap<String, Object> params) {
         if (actionData instanceof TemporalData) {
             for (GraphConnection connection : connections) {
                 switch (connection.toField) {
@@ -250,6 +270,20 @@ public class ActionFactory {
         }
     }
 
+    private void addActionDataValueParameter(GraphNode node, ActionData actionData, final ActionEventListener listener) {
+        if (actionData instanceof RunnableData) {
+            final String eventName = (String) node.data.get("v");
+            if (listener != null) {
+                ((RunnableData) actionData).setRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onActionEvent(eventName);
+                    }
+                });
+            }
+        }
+    }
+
     private Object getValue(GraphNode node, ObjectMap<String, Object> params) {
         switch (node.type) {
             case "ValueBoolean":
@@ -313,6 +347,8 @@ public class ActionFactory {
                 return Actions.actionData(SizeToData.class, autoPoolable);
             case "ScaleToAction":
                 return Actions.actionData(ScaleToData.class, autoPoolable);
+            case "EventAction":
+                return Actions.actionData(RunnableData.class, autoPoolable);
             default:
                 return null;
         }

@@ -14,6 +14,7 @@ import games.rednblack.editor.graph.*;
 import games.rednblack.editor.graph.actions.config.*;
 import games.rednblack.editor.graph.actions.config.value.*;
 import games.rednblack.editor.graph.actions.producer.ArrayActionBoxProducer;
+import games.rednblack.editor.graph.actions.producer.EventActionBoxProducer;
 import games.rednblack.editor.graph.actions.producer.ValueInterpolationBoxProducer;
 import games.rednblack.editor.graph.data.Graph;
 import games.rednblack.editor.graph.data.GraphConnection;
@@ -93,6 +94,7 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         graphBoxProducers.add(new GraphBoxProducerImpl<>(new DelayActionNodeConfiguration()));
         graphBoxProducers.add(new GraphBoxProducerImpl<>(new ColorActionNodeConfiguration()));
         graphBoxProducers.add(new GraphBoxProducerImpl<>(new AlphaActionNodeConfiguration()));
+        graphBoxProducers.add(new EventActionBoxProducer<>(new EventActionNodeConfiguration()));
 
         graphContainer = new GraphContainer<>(VisUI.getSkin(), new PopupMenuProducer() {
             @Override
