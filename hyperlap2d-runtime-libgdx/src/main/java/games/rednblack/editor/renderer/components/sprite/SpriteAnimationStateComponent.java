@@ -36,7 +36,7 @@ public class SpriteAnimationStateComponent implements BaseComponent {
         for (int r = range.startFrame; r <= range.endFrame; r++) {
             textureRegions.add(allRegions.get(r));
         }
-        currentAnimation =  new Animation<>(1f/fps, textureRegions, playMode);
+        currentAnimation =  new Animation<TextureRegion>(1f/fps, textureRegions, playMode);
         time = 0.0f;
     }
 
