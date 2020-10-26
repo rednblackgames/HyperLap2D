@@ -39,7 +39,6 @@ import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.net.HttpParametersUtils;
 import games.rednblack.editor.utils.AppConfig;
 
-
 public class CustomExceptionHandler implements UncaughtExceptionHandler {
 
     //private UncaughtExceptionHandler defaultUEH;
@@ -57,6 +56,7 @@ public class CustomExceptionHandler implements UncaughtExceptionHandler {
         final Writer result = new StringWriter();
         final PrintWriter printWriter = new PrintWriter(result);
         e.printStackTrace(printWriter);
+        e.printStackTrace();
         String stacktrace = result.toString();
         writeToFile(stacktrace);
         printWriter.close();
@@ -68,9 +68,13 @@ public class CustomExceptionHandler implements UncaughtExceptionHandler {
 
     public static void showErrorDialog(String stacktrace) {
         File localPath = Gdx.files.internal("crash/java-hyperlog.txt").file();
-        new Thread(() -> EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(null,
-                "HyperLap2D just crashed, see stacktrace in " + localPath.getAbsolutePath() + " file\n\n\n" + stacktrace, "Oops! Something went wrong",
-                JOptionPane.ERROR_MESSAGE))).start();
+        new Thread(() -> EventQueue.invokeLater(() -> {
+
+            JOptionPane.showMessageDialog(null,
+                    "HyperLap2D just crashed, stacktrace saved in: \"" + localPath.getAbsolutePath() + "\"\n\n" + stacktrace, "Oops! Something went wrong",
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
+        })).start();
     }
 
     public static void sendError(String stacktrace) {
