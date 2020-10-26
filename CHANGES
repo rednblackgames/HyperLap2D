@@ -5,7 +5,9 @@
 - Improved Tiled plugin with undo\redo commands
 - Improved Plugin APIs
 - Add async texture packing operation
-- Add custom parameters in Node Graph editor
+- Extend Node Graph Editor:
+    * Add custom parameters
+    * Add custom events
 - Add custom key bindings
 - General bug fix
 
