@@ -38,6 +38,7 @@ import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.net.HttpParametersUtils;
 import games.rednblack.editor.utils.AppConfig;
+import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
 public class CustomExceptionHandler implements UncaughtExceptionHandler {
 
@@ -68,13 +69,15 @@ public class CustomExceptionHandler implements UncaughtExceptionHandler {
 
     public static void showErrorDialog(String stacktrace) {
         File localPath = Gdx.files.internal("crash/java-hyperlog.txt").file();
-        new Thread(() -> EventQueue.invokeLater(() -> {
+        stacktrace = stacktrace.replace("<", "");
+        stacktrace = stacktrace.replace(">", "");
+        stacktrace = stacktrace.replace("$", "");
 
-            JOptionPane.showMessageDialog(null,
-                    "HyperLap2D just crashed, stacktrace saved in: \"" + localPath.getAbsolutePath() + "\"\n\n" + stacktrace, "Oops! Something went wrong",
-                    JOptionPane.ERROR_MESSAGE);
-            System.exit(-1);
-        })).start();
+        TinyFileDialogs.tinyfd_messageBox("Oops! Something went wrong",
+                "HyperLap2D just crashed, stacktrace saved in: " + localPath.getAbsolutePath()
+                        + "\n\n" + stacktrace,
+                "ok", "error", true);
+        System.exit(-1);
     }
 
     public static void sendError(String stacktrace) {

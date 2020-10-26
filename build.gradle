@@ -89,6 +89,13 @@ dependencies {
     implementation "com.badlogicgames.ashley:ashley:$ashleyVersion"
 
     implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersionBeta"
+    implementation "org.lwjgl:lwjgl-tinyfd:3.2.3"
+    implementation "org.lwjgl:lwjgl-tinyfd:3.2.3:natives-linux"
+    implementation "org.lwjgl:lwjgl-tinyfd:3.2.3:natives-linux-arm32"
+    implementation "org.lwjgl:lwjgl-tinyfd:3.2.3:natives-linux-arm64"
+    implementation "org.lwjgl:lwjgl-tinyfd:3.2.3:natives-macos"
+    implementation "org.lwjgl:lwjgl-tinyfd:3.2.3:natives-windows"
+    implementation "org.lwjgl:lwjgl-tinyfd:3.2.3:natives-windows-x86"
 
     implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
