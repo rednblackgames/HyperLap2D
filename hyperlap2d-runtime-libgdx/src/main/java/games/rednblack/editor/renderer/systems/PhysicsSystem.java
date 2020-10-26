@@ -48,11 +48,13 @@ public class PhysicsSystem extends IteratingSystem implements ContactListener {
 
         PhysicsBodyComponent physicsBodyComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
         Body body = physicsBodyComponent.body;
-        tmp.set(body.getPosition());
+        if (body != null) {
+            tmp.set(body.getPosition());
 
-        transformComponent.x = tmp.x - transformComponent.originX;
-        transformComponent.y = tmp.y - transformComponent.originY;
-        transformComponent.rotation = body.getAngle() * MathUtils.radiansToDegrees;
+            transformComponent.x = tmp.x - transformComponent.originX;
+            transformComponent.y = tmp.y - transformComponent.originY;
+            transformComponent.rotation = body.getAngle() * MathUtils.radiansToDegrees;
+        }
     }
 
     protected void processBody(Entity entity) {
