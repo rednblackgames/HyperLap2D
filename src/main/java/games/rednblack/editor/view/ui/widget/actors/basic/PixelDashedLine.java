@@ -50,13 +50,13 @@ public class PixelDashedLine extends Actor {
         boolean vertical = getRotation() == 90;
         if (vertical) {
             while (i <= lineLength) {
-                if (i + visibleLength < lineLength)
+                if (i + visibleLength + offset < lineLength)
                     shapeDrawer.filledRectangle(getX(), getY() + i + offset, thickness, visibleLength);
                 i = i + visibleLength + invisibleLength;
             }
         } else {
             while (i <= lineLength) {
-                if (i + visibleLength < lineLength)
+                if (i + visibleLength + offset < lineLength)
                     shapeDrawer.filledRectangle(getX() + i + offset, getY(), visibleLength, thickness);
                 i = i + visibleLength + invisibleLength;
             }
