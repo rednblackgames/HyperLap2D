@@ -18,15 +18,12 @@
 
 package games.rednblack.editor;
 
-import java.awt.EventQueue;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.HashMap;
-
-import javax.swing.JOptionPane;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -75,6 +72,7 @@ public class CustomExceptionHandler implements UncaughtExceptionHandler {
 
         TinyFileDialogs.tinyfd_messageBox("Oops! Something went wrong",
                 "HyperLap2D just crashed, stacktrace saved in: " + localPath.getAbsolutePath()
+                        + "\n\n System: " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " (HyperLap2D v" + AppConfig.getInstance().version + ")"
                         + "\n\n" + stacktrace,
                 "ok", "error", true);
         System.exit(-1);

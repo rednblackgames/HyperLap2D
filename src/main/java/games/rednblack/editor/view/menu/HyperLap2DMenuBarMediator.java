@@ -185,7 +185,7 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
                 FileHandle workspacePath = (settingsManager.getWorkspacePath() == null || !settingsManager.getWorkspacePath().exists()) ?
                         Gdx.files.absolute(System.getProperty("user.home")) : settingsManager.getWorkspacePath();
 
-                String projectPath = TinyFileDialogs.tinyfd_openFileDialog("Open HyperLap2D Project", workspacePath.path(), aFilterPatterns, "HyperLap2D Project (*.h2d)", false);
+                String projectPath = TinyFileDialogs.tinyfd_openFileDialog("Open HyperLap2D Project...", workspacePath.path(), aFilterPatterns, "HyperLap2D Project (*.h2d)", false);
                 Gdx.app.postRunnable(() -> {
                     facade.sendNotification(MsgAPI.HIDE_BLACK_OVERLAY);
                     if (projectPath != null && projectPath.length() > 0) {

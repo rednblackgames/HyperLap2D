@@ -18,7 +18,6 @@
 
 package games.rednblack.h2d.common.view.ui.widget;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
@@ -28,8 +27,11 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
-import com.kotcrab.vis.ui.widget.file.FileChooserListener;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import org.lwjgl.util.tinyfd.TinyFileDialogs;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by sargis on 4/3/15.
@@ -40,8 +42,9 @@ public class InputFileWidget extends VisTable {
     private VisTextField textField;
     private VisTextButton browsBtn;
     private Cell<VisTextField> textFieldCell;
-    private int textFieldWidth;
-    private FileChooser fileChooser;
+    private FileChooser.Mode chooserMode;
+    private FileChooser.SelectionMode chooserSelectionMode;
+    private boolean chooserMultiSelect;
     private FileHandle value;
     private Array<FileHandle> values;
 
@@ -56,10 +59,9 @@ public class InputFileWidget extends VisTable {
     }
 
     private void initFileChooser(FileChooser.Mode mode, FileChooser.SelectionMode selectionMode, boolean multiselectionEnabled) {
-        fileChooser = new HyperLapFileChooser(mode);
-        fileChooser.setSelectionMode(selectionMode);
-        fileChooser.setMultiSelectionEnabled(multiselectionEnabled);
-        fileChooser.setListener(new InputFileWidgetFileChooserListener());
+        chooserMode = mode;
+        chooserSelectionMode = selectionMode;
+        chooserMultiSelect = multiselectionEnabled;
     }
 
     private void initWidget() {
@@ -67,11 +69,43 @@ public class InputFileWidget extends VisTable {
         textFieldCell = add(textField).growX().fillX().padRight(8).height(21);
         browsBtn = new VisTextButton("Browse");
         add(browsBtn);
-        addListener(new InputFileWidgetClickListener());
+        addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.execute(() -> {
+                    String selected;
+                    if (chooserMode == FileChooser.Mode.OPEN) {
+                        //Open
+                        if (chooserSelectionMode == FileChooser.SelectionMode.DIRECTORIES) {
+                            //Select dir
+                            selected = TinyFileDialogs.tinyfd_selectFolderDialog("Choose a folder...", "");
+                        } else {
+                            //Select file
+                            selected = TinyFileDialogs.tinyfd_openFileDialog("Choose a file...", null, null, null, chooserMultiSelect);
+                        }
+                    } else {
+                        //Save
+                        selected = TinyFileDialogs.tinyfd_saveFileDialog("Choose a file...", null, null, null);
+                    }
+
+                    if (selected != null) {
+                        String[] files = selected.split("\\|");
+                        if (files.length == 1) {
+                            setValue(new FileHandle(files[0]));
+                        } else {
+                            //setValues(files);
+                        }
+                    }
+                });
+                executor.shutdown();
+            }
+        });
     }
 
     public FileHandle getValue() {
-        if (fileChooser.isMultiSelectionEnabled()) {
+        if (chooserMultiSelect) {
             throw new IllegalStateException("Multiselection is enabled, use 'getValues' instead of 'getValue'");
         }
         return value;
@@ -83,7 +117,7 @@ public class InputFileWidget extends VisTable {
     }
 
     public Array<FileHandle> getValues() {
-        if (!fileChooser.isMultiSelectionEnabled()) {
+        if (!chooserMultiSelect) {
             throw new IllegalStateException("Multiselection is not enabled, use 'getValue' instead of 'getValues'");
         }
         return values;
@@ -110,34 +144,5 @@ public class InputFileWidget extends VisTable {
         textField.setText("");
         value = null;
         values = null;
-    }
-
-    private class InputFileWidgetClickListener extends ClickListener {
-        @Override
-        public void clicked(InputEvent event, float x, float y) {
-            super.clicked(event, x, y);
-            InputFileWidget.this.getStage().addActor(fileChooser.fadeIn());
-        }
-    }
-
-    private class InputFileWidgetFileChooserListener implements FileChooserListener {
-
-        @Override
-        public void selected(Array<FileHandle> files) {
-            if (files == null || files.size == 0) {
-                Gdx.app.log(TAG, "Error: files array null or empty.");
-                return;
-            }
-            if (files.size == 1) {
-                setValue(files.first());
-            } else {
-                setValues(files);
-            }
-        }
-
-        @Override
-        public void canceled() {
-
-        }
     }
 }

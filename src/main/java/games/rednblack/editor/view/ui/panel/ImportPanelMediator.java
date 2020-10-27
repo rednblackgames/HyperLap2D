@@ -22,8 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.kotcrab.vis.ui.widget.file.FileChooser;
-import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
+import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.AssetImporter;
 import games.rednblack.editor.utils.ImportUtils;
@@ -34,12 +33,16 @@ import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.stage.UIStage;
-import games.rednblack.h2d.common.view.ui.widget.HyperLapFileChooser;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.util.tinyfd.TinyFileDialogs;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ImportPanelMediator extends Mediator<ImportPanel> {
     private static final String TAG = ImportPanelMediator.class.getCanonicalName();
@@ -70,13 +73,13 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
     }
 
     public Vector2 getLocationFromDtde(DropTargetDragEvent dtde) {
-        Vector2 pos = new Vector2((float)(dtde).getLocation().getX(),(float)(dtde).getLocation().getY());
+        Vector2 pos = new Vector2((float) (dtde).getLocation().getX(), (float) (dtde).getLocation().getY());
 
         return pos;
     }
 
     public Vector2 getLocationFromDropEvent(DropTargetDropEvent dtde) {
-        Vector2 pos = new Vector2((float)(dtde).getLocation().getX(),(float)(dtde).getLocation().getY());
+        Vector2 pos = new Vector2((float) (dtde).getLocation().getX(), (float) (dtde).getLocation().getY());
 
         return pos;
     }
@@ -95,7 +98,7 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
                 break;
             case MsgAPI.ACTION_FILES_DROPPED:
                 ImportPanel.DropBundle bundle = notification.getBody();
-                if(viewComponent.checkDropRegionHit(bundle.pos)) {
+                if (viewComponent.checkDropRegionHit(bundle.pos)) {
                     AssetImporter.getInstance().setProgressHandler(new AssetsImportProgressHandler());
                     AssetImporter.getInstance().postPathObtainAction(bundle.paths);
                 }
@@ -113,31 +116,35 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
     }
 
     private void showFileChoose() {
-         Sandbox sandbox = Sandbox.getInstance();
-        FileChooser fileChooser = new HyperLapFileChooser(FileChooser.Mode.OPEN);
-
-        fileChooser.setFileTypeFilter(ImportUtils.getInstance().getFileTypeFilter());
-
-        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
-        FileHandle importPath = (settingsManager.getImportPath() == null || !settingsManager.getImportPath().exists()) ?
-                Gdx.files.absolute(System.getProperty("user.home")) : settingsManager.getImportPath();
-        fileChooser.setDirectory(importPath);
-
-        fileChooser.setMultiSelectionEnabled(true);
-        fileChooser.setListener(new FileChooserAdapter() {
-            @Override
-            public void selected(Array<FileHandle> files) {
-                String[] paths = new String[files.size];
-                for(int i = 0; i < files.size; i++) {
-                    paths[i] = files.get(i).path();
+        facade.sendNotification(MsgAPI.SHOW_BLACK_OVERLAY);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try (MemoryStack stack = MemoryStack.stackPush()) {
+                FileTypeFilter.Rule allSupportedRule = ImportUtils.getInstance().getFileTypeFilter().getRules().get(0);
+                PointerBuffer aFilterPatterns = stack.mallocPointer(allSupportedRule.getExtensions().size);
+                for (String ext : new Array.ArrayIterator<>(allSupportedRule.getExtensions())) {
+                    aFilterPatterns.put(stack.UTF8("*." + ext));
                 }
-                if(paths.length > 0) {
-                    AssetImporter.getInstance().setProgressHandler(new AssetsImportProgressHandler());
-                    AssetImporter.getInstance().postPathObtainAction(paths);
-                }
+                aFilterPatterns.flip();
+
+                SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+                FileHandle importPath = (settingsManager.getImportPath() == null || !settingsManager.getImportPath().exists()) ?
+                        Gdx.files.absolute(System.getProperty("user.home")) : settingsManager.getImportPath();
+
+                String files = TinyFileDialogs.tinyfd_openFileDialog("Import Resources...", importPath.path(), aFilterPatterns, allSupportedRule.getDescription(), true);
+                Gdx.app.postRunnable(() -> {
+                    facade.sendNotification(MsgAPI.HIDE_BLACK_OVERLAY);
+                    if (files != null) {
+                        String[] paths = files.split("\\|");
+                        if(paths.length > 0) {
+                            AssetImporter.getInstance().setProgressHandler(new AssetsImportProgressHandler());
+                            AssetImporter.getInstance().postPathObtainAction(paths);
+                        }
+                    }
+                });
             }
         });
-        sandbox.getUIStage().addActor(fileChooser.fadeIn());
+        executor.shutdown();
     }
 
     public class AssetsImportProgressHandler implements ProgressHandler {

@@ -4,26 +4,26 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
-import com.kotcrab.vis.ui.widget.file.FileChooser;
-import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
-import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import games.rednblack.editor.controller.commands.NonRevertibleCommand;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.ZipUtils;
-import games.rednblack.h2d.common.view.ui.widget.HyperLapFileChooser;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.h2d.common.vo.ExportMapperVO.ExportedAsset;
 import org.apache.commons.io.FileUtils;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ExportLibraryItemCommand extends NonRevertibleCommand {
 
@@ -50,40 +50,47 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
 
         String libraryItemName = notification.getBody();
 
-        FileChooser fileChooser = new HyperLapFileChooser(FileChooser.Mode.SAVE);
-        FileTypeFilter typeFilter = new FileTypeFilter(false);
-        typeFilter.addRule("HyperLap2D Library (*.h2dlib)", "h2dlib");
-        fileChooser.setFileTypeFilter(typeFilter);
+        facade.sendNotification(MsgAPI.SHOW_BLACK_OVERLAY);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try (MemoryStack stack = MemoryStack.stackPush()) {
+                PointerBuffer aFilterPatterns = stack.mallocPointer(1);
+                aFilterPatterns.put(stack.UTF8("*.h2dlib"));
+                aFilterPatterns.flip();
 
-        fileChooser.setMultiSelectionEnabled(false);
+                FileHandle workspacePath = (settingsManager.getWorkspacePath() == null || !settingsManager.getWorkspacePath().exists()) ?
+                        Gdx.files.absolute(System.getProperty("user.home")) : settingsManager.getWorkspacePath();
 
-        FileHandle workspacePath = (settingsManager.getWorkspacePath() == null || !settingsManager.getWorkspacePath().exists()) ?
-                Gdx.files.absolute(System.getProperty("user.home")) : settingsManager.getWorkspacePath();
-        fileChooser.setDirectory(workspacePath);
-        fileChooser.setDefaultFileName(libraryItemName);
+                String fileName = TinyFileDialogs.tinyfd_saveFileDialog("Export Library Item...",
+                        workspacePath.path() + File.separator + libraryItemName, aFilterPatterns,
+                        "HyperLap2D Library (*.h2dlib)");
+                Gdx.app.postRunnable(() -> {
+                    facade.sendNotification(MsgAPI.HIDE_BLACK_OVERLAY);
+                    if (fileName != null) {
+                        String fullFileName = fileName.endsWith(".h2dlib") ? fileName : fileName + ".h2dlib";
 
-        fileChooser.setListener(new FileChooserAdapter() {
-            @Override
-            public void selected(Array<FileHandle> files) {
-                try {
-                    if (files.get(0).exists()) {
-                        FileUtils.forceDelete(files.get(0).file());
+                        FileHandle file = new FileHandle(new File(fullFileName));
+                        try {
+                            if (file.exists()) {
+                                FileUtils.forceDelete(file.file());
+                            }
+                            doExport(libraryItemName, file.pathWithoutExtension());
+
+                            facade.sendNotification(DONE, libraryItemName);
+                            facade.sendNotification(MsgAPI.SHOW_NOTIFICATION, "'" + libraryItemName +"' successfully exported");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            try {
+                                FileUtils.deleteDirectory(new File(file.pathWithoutExtension() + "TMP"));
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                        }
                     }
-                    doExport(libraryItemName, files.get(0).pathWithoutExtension());
-
-                    facade.sendNotification(DONE, libraryItemName);
-					facade.sendNotification(MsgAPI.SHOW_NOTIFICATION, "'" + libraryItemName +"' successfully exported");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    try {
-                        FileUtils.deleteDirectory(new File(files.get(0).pathWithoutExtension() + "TMP"));
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                    }
-                }
+                });
             }
         });
-        sandbox.getUIStage().addActor(fileChooser.fadeIn());
+        executor.shutdown();
     }
 
     private void doExport(String libraryItemName, String destFile) throws IOException  {
