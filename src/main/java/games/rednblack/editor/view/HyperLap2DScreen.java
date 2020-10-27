@@ -26,13 +26,16 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.view.menu.FileMenu;
+import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.view.ui.widget.actors.basic.SandboxBackUI;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -56,6 +59,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
     private final Color defaultBackgroundColor;
     private final Color backgroundColor;
     private final Image bgLogo;
+    private final Image blackOverlay;
     private final Vector2 screenSize;
 
     private boolean isDrawingBgLogo;
@@ -69,6 +73,8 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         bgLogo = new Image(new Texture(Gdx.files.internal("style/bglogo.png")));
         bgLogo.getColor().a = 0.3f;
         screenSize = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        blackOverlay = new Image(WhitePixel.sharedInstance.texture);
+        blackOverlay.setSize(screenSize.x, screenSize.y);
     }
 
     @Override
@@ -152,8 +158,19 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         uiStage.resize(width, height);
         screenSize.set(width, height);
         bgLogo.setPosition(screenSize.x / 2 - bgLogo.getWidth() / 2f, screenSize.y / 2 - bgLogo.getHeight() / 2f);
+        blackOverlay.setSize(screenSize.x, screenSize.y);
 
         updateCameraPosition();
+    }
+
+    public void showBlackOverlay() {
+        blackOverlay.getColor().set(0, 0, 0, 0);
+        uiStage.addActor(blackOverlay);
+        blackOverlay.addAction(Actions.alpha(0.5f, .3f, Interpolation.smooth));
+    }
+
+    public void hideBlackOverlay() {
+        blackOverlay.addAction(Actions.sequence(Actions.alpha(0, .2f, Interpolation.smooth), Actions.removeActor()));
     }
 
     @Override

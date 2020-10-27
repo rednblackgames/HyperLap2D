@@ -20,22 +20,23 @@ package games.rednblack.editor.view.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Array;
-import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.proxy.SettingsManager;
-import games.rednblack.h2d.common.view.ui.widget.HyperLapFileChooser;
 import games.rednblack.h2d.common.MsgAPI;
-import com.kotcrab.vis.ui.widget.file.FileChooser;
-import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.view.stage.Sandbox;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.util.tinyfd.TinyFileDialogs;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by sargis on 3/25/15.
@@ -173,31 +174,27 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
     }
 
     public void showOpenProject() {
-        Sandbox sandbox = Sandbox.getInstance();
-        //chooser creation
-        FileChooser fileChooser = new HyperLapFileChooser("Open HyperLap2D Project", FileChooser.Mode.OPEN);
+        facade.sendNotification(MsgAPI.SHOW_BLACK_OVERLAY);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try (MemoryStack stack = MemoryStack.stackPush()) {
+                PointerBuffer aFilterPatterns = stack.mallocPointer(1);
+                aFilterPatterns.put(stack.UTF8("*.h2d"));
+                aFilterPatterns.flip();
 
+                FileHandle workspacePath = (settingsManager.getWorkspacePath() == null || !settingsManager.getWorkspacePath().exists()) ?
+                        Gdx.files.absolute(System.getProperty("user.home")) : settingsManager.getWorkspacePath();
 
-        FileTypeFilter typeFilter = new FileTypeFilter(false);
-        typeFilter.addRule("HyperLap2D Project (*.h2d)", "h2d");
-        fileChooser.setFileTypeFilter(typeFilter);
-
-        fileChooser.setMultiSelectionEnabled(false);
-
-        FileHandle workspacePath = (settingsManager.getWorkspacePath() == null || !settingsManager.getWorkspacePath().exists()) ?
-                Gdx.files.absolute(System.getProperty("user.home")) : settingsManager.getWorkspacePath();
-        fileChooser.setDirectory(workspacePath);
-
-        fileChooser.setListener(new FileChooserAdapter() {
-            @Override
-            public void selected(Array<FileHandle> files) {
-                String path = files.first().file().getAbsolutePath();
-                if (path.length() > 0) {
-                    facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> projectManager.openProjectFromPath(path));
-                }
+                String projectPath = TinyFileDialogs.tinyfd_openFileDialog("Open HyperLap2D Project", workspacePath.path(), aFilterPatterns, "HyperLap2D Project (*.h2d)", false);
+                Gdx.app.postRunnable(() -> {
+                    facade.sendNotification(MsgAPI.HIDE_BLACK_OVERLAY);
+                    if (projectPath != null && projectPath.length() > 0) {
+                        facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> projectManager.openProjectFromPath(projectPath));
+                    }
+                });
             }
         });
-        sandbox.getUIStage().addActor(fileChooser.fadeIn());
+        executor.shutdown();
     }
 
     public void recentProjectItemClicked(String path) {

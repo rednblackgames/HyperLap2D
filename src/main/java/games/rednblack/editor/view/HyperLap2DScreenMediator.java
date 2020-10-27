@@ -56,7 +56,9 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
                 MsgAPI.RESIZE,
                 MsgAPI.DISPOSE,
                 MsgAPI.SCENE_LOADED,
-                MsgAPI.SAVE_EDITOR_CONFIG
+                MsgAPI.SAVE_EDITOR_CONFIG,
+                MsgAPI.SHOW_BLACK_OVERLAY,
+                MsgAPI.HIDE_BLACK_OVERLAY
         };
     }
 
@@ -103,6 +105,12 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
             case MsgAPI.SAVE_EDITOR_CONFIG:
                 SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
                 settingsManager.saveEditorConfig();
+                break;
+            case MsgAPI.SHOW_BLACK_OVERLAY:
+                viewComponent.showBlackOverlay();
+                break;
+            case MsgAPI.HIDE_BLACK_OVERLAY:
+                viewComponent.hideBlackOverlay();
                 break;
         }
     }

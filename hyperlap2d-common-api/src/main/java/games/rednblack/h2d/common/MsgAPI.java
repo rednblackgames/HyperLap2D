@@ -49,6 +49,9 @@ public class MsgAPI {
     public static final String SHOW_LOADING_DIALOG = GLOBAL_PREFIX + ".SHOW_LOADING_DIALOG";
     public static final String HIDE_LOADING_DIALOG = GLOBAL_PREFIX + ".HIDE_LOADING_DIALOG";
 
+    public static final String SHOW_BLACK_OVERLAY = GLOBAL_PREFIX + ".SHOW_BLACK_OVERLAY";
+    public static final String HIDE_BLACK_OVERLAY = GLOBAL_PREFIX + ".HIDE_BLACK_OVERLAY";
+
     // tmp events
     public static final String ZOOM_CHANGED = GLOBAL_PREFIX + ".ZOOM_CHANGED";
     public static final String GRID_SIZE_CHANGED = GLOBAL_PREFIX + ".GRID_SIZE_CHANGED";
