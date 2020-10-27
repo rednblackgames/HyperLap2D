@@ -18,7 +18,7 @@ public class FileMenu extends H2DMenu {
     public static final String SAVE_PROJECT = HyperLap2DMenuBar.prefix + ".SAVE_PROJECT";
     public static final String IMPORT_TO_LIBRARY = HyperLap2DMenuBar.prefix + ".IMPORT_TO_LIBRARY";
     public static final String RECENT_PROJECTS = HyperLap2DMenuBar.prefix + ".RECENT_PROJECTS";
-    public static final String CLEAR_RECENTS = HyperLap2DMenuBar.prefix + ".CLEAR_RECENTS";
+    public static final String CLEAR_RECENT = HyperLap2DMenuBar.prefix + ".CLEAR_RECENT";
     public static final String EXPORT = HyperLap2DMenuBar.prefix + ".EXPORT";
     public static final String SETTINGS = HyperLap2DMenuBar.prefix + ".SETTINGS";
     public static final String EXIT = HyperLap2DMenuBar.prefix + ".EXIT";
@@ -91,7 +91,7 @@ public class FileMenu extends H2DMenu {
             recentProjectsPopupMenu.addSeparator();
         }
 
-        MenuItem menuItem = new MenuItem("Clear list", new MenuItemListener(CLEAR_RECENTS, null, FILE_MENU));
+        MenuItem menuItem = new MenuItem("Clear history", new MenuItemListener(CLEAR_RECENT, null, FILE_MENU));
         recentProjectsMenuItems.add(menuItem);
         recentProjectsPopupMenu.addItem(menuItem);
 

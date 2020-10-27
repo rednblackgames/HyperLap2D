@@ -69,7 +69,7 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
                 FileMenu.SAVE_PROJECT,
                 FileMenu.EXPORT,
                 FileMenu.RECENT_PROJECTS,
-                FileMenu.CLEAR_RECENTS,
+                FileMenu.CLEAR_RECENT,
                 FileMenu.EXIT,
                 //EDIT
                 EditMenu.CUT,
@@ -157,8 +157,8 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
                 recentProjectItemClicked(notification.getBody());
                 //showDialog("showImportDialog");
                 break;
-            case FileMenu.CLEAR_RECENTS:
-                clearRecents();
+            case FileMenu.CLEAR_RECENT:
+                clearRecent();
                 break;
             case FileMenu.EXPORT:
                 facade.sendNotification(MsgAPI.ACTION_EXPORT_PROJECT);
@@ -205,7 +205,7 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
         facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> projectManager.openProjectFromPath(path));
     }
 
-    public void clearRecents() {
+    public void clearRecent() {
         PreferencesManager prefs = PreferencesManager.getInstance();
         prefs.clearHistory();
         viewComponent.reInitRecent(prefs.getRecentHistory());
