@@ -1,8 +1,6 @@
 package games.rednblack.editor.splash;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -55,7 +53,7 @@ public class SplashStage extends Stage {
         if (isLoading)
             addActor(progress);
 
-        Label companyName = new Label("Red & Black  Games", whiteLabelStyle);
+        Label companyName = new Label("Red & Black Games", whiteLabelStyle);
         companyName.setX(13);
         companyName.setY(55 - companyName.getHeight() - 7);
         addActor(companyName);
@@ -84,7 +82,7 @@ public class SplashStage extends Stage {
 
     public void setProgressStatus(String status) {
         progress.setText(status);
-        progress.setX(logoText.getX() + ((logoText.getWidth() - progress.getWidth()) / 2));
+        progress.setX(logoText.getX() + ((logoText.getWidth() - progress.getPrefWidth()) / 2));
     }
 
     public void loadedData() {

@@ -2,7 +2,9 @@ package games.rednblack.editor.plugin.skincomposer;
 
 import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
+import games.rednblack.h2d.common.network.HttpDownloadUtility;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.common.network.model.GithubReleaseData;
 import org.apache.commons.io.FileUtils;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;

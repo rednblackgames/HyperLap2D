@@ -1,4 +1,4 @@
-package games.rednblack.editor.plugin.skincomposer;
+package games.rednblack.h2d.common.network;
 
 import games.rednblack.h2d.common.ProgressHandler;
 

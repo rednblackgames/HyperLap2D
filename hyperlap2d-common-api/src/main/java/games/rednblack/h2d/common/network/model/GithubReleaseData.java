@@ -1,4 +1,4 @@
-package games.rednblack.editor.plugin.skincomposer;
+package games.rednblack.h2d.common.network.model;
 
 import com.badlogic.gdx.utils.Array;
 
@@ -8,7 +8,7 @@ public class GithubReleaseData {
     public Array<GithubReleaseAssetData> assets;
 
     public static class GithubReleaseAssetData {
-        String name;
-        String browser_download_url;
+        public String name;
+        public String browser_download_url;
     }
 }
