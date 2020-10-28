@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.Main;
 import games.rednblack.editor.utils.HyperLap2DUtils;
+import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -37,6 +38,7 @@ public class SettingsManager extends Proxy {
         super.onRegister();
         facade = HyperLap2DFacade.getInstance();
         initWorkspace();
+        KeyBindingsLayout.init();
     }
 
     private void initWorkspace() {

@@ -115,7 +115,6 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
         VisUI.setDefaultTitleAlign(Align.center);
 
         facade.startup();
-        KeyBindingsLayout.init();
         sendNotification(MsgAPI.CREATE);
         facade.sendNotification(SplashScreenAdapter.CLOSE_SPLASH, "Initializing...");
         Lwjgl3Graphics graphics = (Lwjgl3Graphics)Gdx.graphics;
