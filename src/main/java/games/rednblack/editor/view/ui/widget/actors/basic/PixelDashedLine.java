@@ -28,13 +28,19 @@ public class PixelDashedLine extends Actor {
     }
 
     public void setPosition(float x, float y, float toX, float toY) {
-        this.setX(x);
-        this.setY(y);
+        setX(x);
+        setY(y);
 
         lineLength = Math.sqrt((toX - x) * (toX - x) + (toY - y) * (toY - y));
-        this.setScaleX((float) lineLength);
 
-        this.setRotation(90 - getAngle(x, y, toX, toY));
+        setRotation(90 - getAngle(x, y, toX, toY));
+        if (getRotation() < 0) {
+            if (Math.abs(getRotation()) == 90) {
+                setY((float) (getY() - lineLength));
+            } else {
+                setX((float) (getX() - lineLength));
+            }
+        }
     }
 
     /**
@@ -46,7 +52,7 @@ public class PixelDashedLine extends Actor {
      */
     private void drawDash(int visibleLength, int invisibleLength, int offset) {
         int i = 0;
-        boolean vertical = getRotation() == 90;
+        boolean vertical = Math.abs(getRotation()) == 90;
         float cornerLength = visibleLength * 0.7f;
         if (vertical) {
             while (i <= lineLength) {
