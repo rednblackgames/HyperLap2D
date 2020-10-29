@@ -20,7 +20,6 @@ package games.rednblack.editor.view.ui.panel;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import games.rednblack.editor.proxy.SettingsManager;
@@ -39,8 +38,6 @@ import org.lwjgl.util.tinyfd.TinyFileDialogs;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -70,18 +67,6 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
                 ImportPanel.IMPORT_FAILED,
                 MsgAPI.ACTION_FILES_DROPPED,
         };
-    }
-
-    public Vector2 getLocationFromDtde(DropTargetDragEvent dtde) {
-        Vector2 pos = new Vector2((float) (dtde).getLocation().getX(), (float) (dtde).getLocation().getY());
-
-        return pos;
-    }
-
-    public Vector2 getLocationFromDropEvent(DropTargetDropEvent dtde) {
-        Vector2 pos = new Vector2((float) (dtde).getLocation().getX(), (float) (dtde).getLocation().getY());
-
-        return pos;
     }
 
     @Override
