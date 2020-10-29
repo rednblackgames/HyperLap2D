@@ -125,7 +125,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
                     float x = horizontal[1];
                     float y = horizontal[2];
                     move(entity, -deltaW, 0);
-                    if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                    if (isShiftPressed()) {
                         deltaW *= 2;
                     }
                     newWidth = dimensionsComponent.width - deltaW;
@@ -133,7 +133,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
                     transformComponent.y += y;
                     break;
                 case NormalSelectionFollower.R:
-                    if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                    if (isShiftPressed()) {
                         move(entity, deltaW, 0);
                         deltaW *= 2;
                         transformComponent.x -= horizontal[1];
@@ -145,7 +145,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
                     float x1 = vertical[1];
                     float y1 = vertical[2];
                     move(entity, 0, -deltaH);
-                    if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                    if (isShiftPressed()) {
                         deltaH *= 2;
                     }
                     newHeight = dimensionsComponent.height - deltaH;
@@ -153,7 +153,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
                     transformComponent.y += y1;
                     break;
                 case NormalSelectionFollower.T:
-                    if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                    if (isShiftPressed()) {
                         move(entity, 0, deltaH);
                         deltaH *= 2;
                         transformComponent.x -= vertical[1];
@@ -162,7 +162,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
                     newHeight = dimensionsComponent.height + deltaH;
                     break;
                 case NormalSelectionFollower.LT:
-                    if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                    if (isShiftPressed()) {
                         move(entity, -deltaW, deltaH);
                         deltaW *= 2;
                         deltaH *= 2;
@@ -178,7 +178,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
 
                     break;
                 case NormalSelectionFollower.RT:
-                    if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                    if (isShiftPressed()) {
                         move(entity, deltaW, deltaH);
                         deltaH *= 2;
                         deltaW *= 2;
@@ -191,7 +191,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
                     newHeight = dimensionsComponent.height + deltaH;
                     break;
                 case NormalSelectionFollower.RB:
-                    if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                    if (isShiftPressed()) {
                         move(entity, deltaW, -deltaH);
                         deltaW *= 2;
                         deltaH *= 2;
@@ -207,7 +207,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
                     break;
                 case NormalSelectionFollower.LB:
                     move(entity, -deltaW, -deltaH);
-                    if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                    if (isShiftPressed()) {
                         deltaW *= 2;
                         deltaH *= 2;
                     }
@@ -230,6 +230,11 @@ public class CompositeStrategy extends AbstractTransformStrategy {
 
         // Rotating
         rotating(anchor, transformCommandBuilder, mousePointStage, lastTransformAngle, lastEntityAngle, transformComponent);
+    }
+
+    private boolean isShiftPressed() {
+        return Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)
+                || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
     }
 
     private void move(Entity node, float x, float y) {

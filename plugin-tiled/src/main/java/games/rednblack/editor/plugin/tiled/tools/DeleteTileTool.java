@@ -99,7 +99,7 @@ public class DeleteTileTool implements Tool {
     @Override
     public void keyUp(Entity entity, int keycode) {
         if(isHotswapped) {
-            if(keycode == Input.Keys.SHIFT_LEFT) {
+            if(keycode == Input.Keys.SHIFT_LEFT || keycode == Input.Keys.SHIFT_RIGHT) {
                 isHotswapped = false;
                 tiledPlugin.getAPI().toolHotSwapBack();
             }

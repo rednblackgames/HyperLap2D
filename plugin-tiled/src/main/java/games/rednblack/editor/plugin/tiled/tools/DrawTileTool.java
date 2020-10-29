@@ -125,7 +125,7 @@ public class DrawTileTool implements Tool {
 
     @Override
     public void keyDown(Entity entity, int keycode) {
-        if(keycode == Input.Keys.SHIFT_LEFT) {
+        if(keycode == Input.Keys.SHIFT_LEFT || keycode == Input.Keys.SHIFT_RIGHT) {
             tiledPlugin.getAPI().toolHotSwap(tiledPlugin.deleteTileTool);
             tiledPlugin.deleteTileTool.setHotSwapped();
         }

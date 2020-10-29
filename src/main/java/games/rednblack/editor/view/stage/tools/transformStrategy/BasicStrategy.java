@@ -80,7 +80,8 @@ public class BasicStrategy extends AbstractTransformStrategy {
         rotating(anchor, transformCommandBuilder, mousePointStage, lastTransformAngle, lastEntityAngle, transformComponent);
 
         float newScaleX = newWidth / dimensionsComponent.width;
-        float newScaleY = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) ? newScaleX : newHeight / dimensionsComponent.height;
+        float newScaleY = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)
+                ? newScaleX : newHeight / dimensionsComponent.height;
         transformComponent.scaleX = RoundUtils.round(newScaleX, 2);
         transformComponent.scaleY = RoundUtils.round(newScaleY, 2);
         transformCommandBuilder.setScale(newScaleX, newScaleY);
@@ -89,7 +90,7 @@ public class BasicStrategy extends AbstractTransformStrategy {
     }
 
     private void positionItem(TransformComponent transformComponent, float[] horizontal, float[] vertical) {
-        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
             deltaW *= 2;
             deltaH *= 2;
         } else {
@@ -101,7 +102,7 @@ public class BasicStrategy extends AbstractTransformStrategy {
     }
 
     private void positionHorizontally(TransformComponent transformComponent, float[] horizontal) {
-        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
             deltaW *= 2;
         } else {
             transformComponent.x += horizontal[1] * 0.5f;
@@ -110,7 +111,7 @@ public class BasicStrategy extends AbstractTransformStrategy {
     }
 
     private void positionVertically(TransformComponent transformComponent, float[] vertical) {
-        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
             deltaH *= 2;
         } else {
             transformComponent.x += vertical[1] * 0.5f;

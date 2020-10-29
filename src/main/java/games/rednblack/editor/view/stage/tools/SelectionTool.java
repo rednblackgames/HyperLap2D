@@ -284,7 +284,7 @@ public class SelectionTool extends SimpleTool {
                 float degreeAmount = 1;
                 if (amount < 0) degreeAmount = -1;
                 // And if shift is pressed, the rotation amount is bigger
-                if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                if (isShiftPressed()) {
                     degreeAmount = degreeAmount * 30;
                 }
 
@@ -411,14 +411,14 @@ public class SelectionTool extends SimpleTool {
         // the amount of pixels by which to move item if moving
         float deltaMove = 1f / Sandbox.getInstance().getPixelPerWU();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+        if (isShiftPressed()) {
             // if shift is pressed, move boxes by 20 pixels instead of one
             deltaMove = 20f / Sandbox.getInstance().getPixelPerWU(); //pixels
         }
 
         if (sandbox.getGridSize() > 1) {
             deltaMove = sandbox.getGridSize();
-            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+            if (isShiftPressed()) {
                 // if shift is pressed, move boxes 3 times more then the grid size
                 deltaMove *= 3;
             }
