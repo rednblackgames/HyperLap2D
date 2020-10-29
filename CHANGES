@@ -4,13 +4,16 @@
 - Fixed common crashes with Tiled plugin
 - Improved Tiled plugin with undo\redo commands
 - Improved Plugin APIs
-- Improve normal followers style with animated dashed lines
-- Improve Graph Node Editor output format: replaced JSONObjects with libGDX Json
+- Improved normal followers style with animated dashed lines
+- Improved Graph Node Editor output format: replaced JSONObjects with libGDX Json
+- Improved Open/Save dialogs: replaced VisUI with native dialogs
 - Add async texture packing operation
 - Extend Node Graph Editor:
     * Add custom parameters
     * Add custom events
 - Add custom key bindings
+- Add custom exception handler with stacktrace info
+- Add automatic check for updates
 - General bug fix
 
 [0.0.2]
