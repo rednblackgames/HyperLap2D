@@ -43,23 +43,27 @@ public class PixelDashedLine extends Actor {
      * @param visibleLength   length of visible lines
      * @param invisibleLength length of invisible lines (space between visible lines)
      * @param offset          For animation
-     * @return Return a texture
      */
     private void drawDash(int visibleLength, int invisibleLength, int offset) {
         int i = 0;
         boolean vertical = getRotation() == 90;
+        float cornerLength = visibleLength * 0.7f;
         if (vertical) {
             while (i <= lineLength) {
                 if (i + visibleLength + offset < lineLength)
                     shapeDrawer.filledRectangle(getX(), getY() + i + offset, thickness, visibleLength);
                 i = i + visibleLength + invisibleLength;
             }
+            shapeDrawer.filledRectangle(getX(), getY(), thickness, cornerLength);
+            shapeDrawer.filledRectangle(getX(), (float) (getY() + lineLength - cornerLength), thickness, cornerLength);
         } else {
             while (i <= lineLength) {
                 if (i + visibleLength + offset < lineLength)
                     shapeDrawer.filledRectangle(getX() + i + offset, getY(), visibleLength, thickness);
                 i = i + visibleLength + invisibleLength;
             }
+            shapeDrawer.filledRectangle(getX(), getY(), cornerLength, thickness);
+            shapeDrawer.filledRectangle((float) (getX() + lineLength - cornerLength), getY(), cornerLength, thickness);
         }
     }
 
