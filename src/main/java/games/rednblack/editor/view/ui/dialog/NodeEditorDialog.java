@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
@@ -25,15 +26,15 @@ import games.rednblack.editor.graph.producer.GraphBoxProducerImpl;
 import games.rednblack.editor.graph.producer.value.*;
 import games.rednblack.editor.graph.property.PropertyBox;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.renderer.data.GraphConnectionVO;
+import games.rednblack.editor.renderer.data.GraphGroupVO;
+import games.rednblack.editor.renderer.data.GraphNodeVO;
+import games.rednblack.editor.renderer.data.GraphVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.widget.actors.StaticGrid;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -142,7 +143,9 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Object[] payload = AddToLibraryAction.getPayload(actionName, graphContainer.serializeGraph().toJSONString());
+                Json json = new Json();
+                String data = json.toJson(graphContainer.serializeGraph());
+                Object[] payload = AddToLibraryAction.getPayload(actionName, data);
                 HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_ADD_TO_LIBRARY_ACTION, payload);
                 close();
             }
@@ -254,13 +257,13 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         return null;
     }
 
-    public void loadGraph(JSONObject graph) {
-        for (JSONObject object : (List<JSONObject>) graph.get("nodes")) {
-            String type = (String) object.get("type");
-            String id = (String) object.get("id");
-            float x = ((Number) object.get("x")).floatValue();
-            float y = ((Number) object.get("y")).floatValue();
-            JSONObject data = (JSONObject) object.get("data");
+    public void loadGraph(GraphVO graph) {
+        for (GraphNodeVO node : graph.nodes) {
+            String type = node.type;
+            String id = node.id;
+            float x = node.x;
+            float y = node.y;
+            Map<String, String> data = node.data;
 
             GraphBoxProducer<ActionFieldType> producer = findProducerByType(type);
             if (producer == null)
@@ -268,22 +271,19 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
             GraphBox<ActionFieldType> graphBox = producer.createPipelineGraphBox(skin, id, data);
             graphContainer.addGraphBox(graphBox, producer.getName(), producer.isCloseable(), x, y);
         }
-        for (JSONObject connection : (List<JSONObject>) graph.get("connections")) {
-            String fromNode = (String) connection.get("fromNode");
-            String fromField = (String) connection.get("fromField");
-            String toNode = (String) connection.get("toNode");
-            String toField = (String) connection.get("toField");
+        for (GraphConnectionVO connection : graph.connections) {
+            String fromNode = connection.fromNode;
+            String fromField = connection.fromField;
+            String toNode = connection.toNode;
+            String toField = connection.toField;
 
             graphContainer.addGraphConnection(fromNode, fromField, toNode, toField);
         }
-        List<JSONObject> groups = (List<JSONObject>) graph.get("groups");
-        if (groups != null) {
-            for (JSONObject group : groups) {
-                String name = (String) group.get("name");
-                JSONArray nodes = (JSONArray) group.get("nodes");
-                Set<String> nodeIds = new HashSet<>(nodes);
-                graphContainer.addNodeGroup(name, nodeIds);
-            }
+        ArrayList<GraphGroupVO> groups = graph.groups;
+        for (GraphGroupVO group : groups) {
+            String name = group.name;
+            Set<String> nodeIds = new HashSet<>(group.nodes);
+            graphContainer.addNodeGroup(name, nodeIds);
         }
     }
 
@@ -297,14 +297,9 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         HashMap<String, String> items = projectManager.currentProjectInfoVO.libraryActions;
 
         if (items.get(actionName) != null) {
-            JSONParser parser = new JSONParser();
-            JSONObject test;
-            try {
-                test = (JSONObject) parser.parse(items.get(actionName));
-                loadGraph(test);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            Json json = new Json();
+            GraphVO action = json.fromJson(GraphVO.class, items.get(actionName));
+            loadGraph(action);
         } else {
             String id = UUID.randomUUID().toString().replace("-", "");
             GraphBox<ActionFieldType> graphBox = entityProducer.createDefault(VisUI.getSkin(), id);

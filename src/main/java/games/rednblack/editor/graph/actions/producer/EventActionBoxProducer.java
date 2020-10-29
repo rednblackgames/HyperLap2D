@@ -11,7 +11,8 @@ import games.rednblack.editor.graph.data.FieldType;
 import games.rednblack.editor.graph.data.NodeConfiguration;
 import games.rednblack.editor.graph.producer.ValueGraphBoxProducer;
 import games.rednblack.editor.view.ui.validator.StringNameValidator;
-import org.json.simple.JSONObject;
+
+import java.util.Map;
 
 public class EventActionBoxProducer<T extends FieldType> extends ValueGraphBoxProducer<T> {
     public EventActionBoxProducer(NodeConfiguration<T> configuration) {
@@ -19,8 +20,8 @@ public class EventActionBoxProducer<T extends FieldType> extends ValueGraphBoxPr
     }
 
     @Override
-    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, JSONObject data) {
-        String name = (String) data.get("v");
+    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, Map<String, String> data) {
+        String name = data.get("v");
 
         return createGraphBox(skin, id, name);
     }
@@ -60,7 +61,7 @@ public class EventActionBoxProducer<T extends FieldType> extends ValueGraphBoxPr
         GraphBoxPartImpl<T> colorPart = new GraphBoxPartImpl<T>(horizontalGroup,
                 new GraphBoxPartImpl.Callback() {
                     @Override
-                    public void serialize(JSONObject object) {
+                    public void serialize(Map<String, String> object) {
                         object.put("v", v1Input.getText());
                     }
                 });

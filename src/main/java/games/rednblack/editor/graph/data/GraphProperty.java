@@ -1,11 +1,11 @@
 package games.rednblack.editor.graph.data;
 
-import org.json.simple.JSONObject;
+import java.util.Map;
 
 public interface GraphProperty<T extends FieldType> {
     String getName();
 
     T getType();
 
-    JSONObject getData();
+    Map<String, Object> getData();
 }

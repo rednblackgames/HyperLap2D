@@ -1,7 +1,6 @@
 package games.rednblack.editor.graph.actions.producer;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -13,9 +12,9 @@ import games.rednblack.editor.graph.data.GraphNodeInput;
 import games.rednblack.editor.graph.data.NodeConfiguration;
 import games.rednblack.editor.graph.producer.GraphBoxProducerImpl;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import org.json.simple.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 
 import static games.rednblack.editor.graph.actions.ActionFieldType.Action;
@@ -30,9 +29,9 @@ public class ArrayActionBoxProducer extends GraphBoxProducerImpl<ActionFieldType
     }
 
     @Override
-    public GraphBoxImpl<ActionFieldType> createPipelineGraphBox(Skin skin, String id, JSONObject data) {
+    public GraphBoxImpl<ActionFieldType> createPipelineGraphBox(Skin skin, String id, Map<String, String> data) {
         GraphBoxImpl<ActionFieldType> graphBox = null;
-        int pins = ((Number) data.get("pins")).intValue();
+        int pins = Integer.parseInt(data.get("pins"));
         try {
             graphBox = createPipelineGraphBoxConfig(skin, id, configurationType.getDeclaredConstructor().newInstance());
             if (pins != graphBox.getInputs().size()) {
@@ -49,8 +48,8 @@ public class ArrayActionBoxProducer extends GraphBoxProducerImpl<ActionFieldType
 
     @Override
     public GraphBoxImpl<ActionFieldType> createDefault(Skin skin, String id) {
-        JSONObject data = new JSONObject();
-        data.put("pins", 2);
+        Map<String, String> data = new HashMap<>();
+        data.put("pins", String.valueOf(2));
         return createPipelineGraphBox(skin, id, data);
     }
 
@@ -109,7 +108,7 @@ public class ArrayActionBoxProducer extends GraphBoxProducerImpl<ActionFieldType
         graphBox.addFooterGraphBoxPart(removePart);
 
         graphBox.setSerializeCallback(object -> {
-            object.put("pins", inputs.size());
+            object.put("pins", String.valueOf(inputs.size()));
         });
     }
 

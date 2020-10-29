@@ -30,6 +30,10 @@ import games.rednblack.editor.graph.data.GraphValidator;
 import games.rednblack.editor.graph.data.NodeConnector;
 import games.rednblack.editor.graph.data.NodeGroup;
 import games.rednblack.editor.graph.property.PropertyBox;
+import games.rednblack.editor.renderer.data.GraphConnectionVO;
+import games.rednblack.editor.renderer.data.GraphGroupVO;
+import games.rednblack.editor.renderer.data.GraphNodeVO;
+import games.rednblack.editor.renderer.data.GraphVO;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.editor.graph.ui.preview.NavigableCanvas;
 import com.kotcrab.vis.ui.VisUI;
@@ -41,8 +45,6 @@ import com.kotcrab.vis.ui.widget.PopupMenu;
 import com.kotcrab.vis.ui.widget.VisWindow;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.view.stage.Sandbox;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import space.earlygrey.shapedrawer.JoinType;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
@@ -1121,50 +1123,42 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         }
     }
 
-    public JSONObject serializeGraph() {
-        JSONObject graph = new JSONObject();
-        graph.put("version", 1);
+    public GraphVO serializeGraph() {
+        GraphVO graph = new GraphVO();
+        graph.version = 1;
 
-        JSONArray objects = new JSONArray();
         Vector2 tmp = new Vector2();
         getCanvasPosition(tmp);
         for (GraphBox<T> graphBox : getGraphBoxes()) {
             Window window = getBoxWindow(graphBox.getId());
-            JSONObject object = new JSONObject();
-            object.put("id", graphBox.getId());
-            object.put("type", graphBox.getType());
-            object.put("x", tmp.x + window.getX());
-            object.put("y", tmp.y + window.getY());
+            GraphNodeVO object = new GraphNodeVO();
+            object.id = graphBox.getId();
+            object.type = graphBox.getType();
+            object.x = tmp.x + window.getX();
+            object.y = tmp.y + window.getY();
 
-            JSONObject data = graphBox.getData();
+            HashMap<String, String> data = graphBox.getData();
             if (data != null)
-                object.put("data", data);
+                object.data = data;
 
-            objects.add(object);
+            graph.nodes.add(object);
         }
-        graph.put("nodes", objects);
 
-        JSONArray connections = new JSONArray();
         for (GraphConnection connection : getConnections()) {
-            JSONObject conn = new JSONObject();
-            conn.put("fromNode", connection.getNodeFrom());
-            conn.put("fromField", connection.getFieldFrom());
-            conn.put("toNode", connection.getNodeTo());
-            conn.put("toField", connection.getFieldTo());
-            connections.add(conn);
+            GraphConnectionVO conn = new GraphConnectionVO();
+            conn.fromNode = connection.getNodeFrom();
+            conn.fromField = connection.getFieldFrom();
+            conn.toNode = connection.getNodeTo();
+            conn.toField = connection.getFieldTo();
+            graph.connections.add(conn);
         }
-        graph.put("connections", connections);
 
-        JSONArray groups = new JSONArray();
         for (NodeGroup nodeGroup : getNodeGroups()) {
-            JSONObject group = new JSONObject();
-            group.put("name", nodeGroup.getName());
-            JSONArray nodes = new JSONArray();
-            nodes.addAll(nodeGroup.getNodeIds());
-            group.put("nodes", nodes);
-            groups.add(group);
+            GraphGroupVO group = new GraphGroupVO();
+            group.name = nodeGroup.getName();
+            group.nodes.addAll(nodeGroup.getNodeIds());
+            graph.groups.add(group);
         }
-        graph.put("groups", groups);
 
         return graph;
     }

@@ -3,15 +3,16 @@ package games.rednblack.editor.renderer.factory;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
+import games.rednblack.editor.renderer.data.GraphConnectionVO;
+import games.rednblack.editor.renderer.data.GraphNodeVO;
+import games.rednblack.editor.renderer.data.GraphVO;
 import games.rednblack.editor.renderer.systems.action.ActionEventListener;
 import games.rednblack.editor.renderer.systems.action.Actions;
 import games.rednblack.editor.renderer.systems.action.data.*;
 import games.rednblack.editor.renderer.utils.ArrayUtils;
 import games.rednblack.editor.renderer.utils.InterpolationMap;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.util.*;
 
@@ -46,37 +47,37 @@ public class ActionFactory {
         if (actionsLibrary.get(actionName) == null)
             throw new IllegalArgumentException("The action '" + actionName + "' does not exists.");
 
-        JSONParser parser = new JSONParser();
+        Json json = new Json();
         ActionData data = null;
         try {
-            JSONObject actionGraph = (JSONObject) parser.parse(actionsLibrary.get(actionName));
+            GraphVO actionGraph = json.fromJson(GraphVO.class, actionsLibrary.get(actionName));
             data = parseGraph(actionGraph, autoPoolable, params, listener);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             throw new RuntimeException("The action '" + actionName + "' has not a valid format.");
         }
         return data;
     }
 
-    private ActionData parseGraph(JSONObject actionGraph, boolean autoPoolable, ObjectMap<String, Object> params,
+    private ActionData parseGraph(GraphVO actionGraph, boolean autoPoolable, ObjectMap<String, Object> params,
                                   ActionEventListener listener) {
         Map<String, List<GraphConnection>> toNodeConnections = new HashMap<>();
 
         Map<String, GraphNode> nodes = new HashMap<>();
-        for (JSONObject object : (List<JSONObject>) actionGraph.get("nodes")) {
-            String type = (String) object.get("type");
-            String id = (String) object.get("id");
-            JSONObject data = (JSONObject) object.get("data");
+        for (GraphNodeVO node : actionGraph.nodes) {
+            String type = node.type;
+            String id = node.id;
+            HashMap<String, String> data = node.data;
 
             toNodeConnections.put(id, new ArrayList<GraphConnection>());
             nodes.put(id, new GraphNode(id, type, data));
         }
 
         String actionNode = "";
-        for (JSONObject connection : (List<JSONObject>) actionGraph.get("connections")) {
-            String toNode = (String) connection.get("toNode");
-            String fromNode = (String) connection.get("fromNode");
-            String fromField = (String) connection.get("fromField");
-            String toField = (String) connection.get("toField");
+        for (GraphConnectionVO connection : actionGraph.connections) {
+            String fromNode = connection.fromNode;
+            String fromField = connection.fromField;
+            String toNode = connection.toNode;
+            String toField = connection.toField;
 
             toNodeConnections.get(toNode).add(new GraphConnection(fromNode, fromField, toField));
             Collections.sort(toNodeConnections.get(toNode));
@@ -287,19 +288,19 @@ public class ActionFactory {
     private Object getValue(GraphNode node, ObjectMap<String, Object> params) {
         switch (node.type) {
             case "ValueBoolean":
-                return node.data.get("v");
+                return node.data.get("v") != null;
             case "ValueColor":
-                return Color.valueOf((String) node.data.get("color"));
+                return Color.valueOf(node.data.get("color"));
             case "ValueFloat":
-                return ((Number) node.data.get("v1")).floatValue();
+                return Float.parseFloat(node.data.get("v1"));
             case "ValueVector2":
-                return new Vector2(((Number) node.data.get("v1")).floatValue(), ((Number) node.data.get("v2")).floatValue());
+                return new Vector2(Float.parseFloat(node.data.get("v1")), Float.parseFloat(node.data.get("v2")));
             case "ValueInterpolation":
-                return InterpolationMap.map.get((String) node.data.get("interpolation"));
+                return InterpolationMap.map.get(node.data.get("interpolation"));
             case "ValueParam":
-                if (params == null || params.get((String) node.data.get("v")) == null)
+                if (params == null || params.get(node.data.get("v")) == null)
                     throw new IllegalArgumentException("Custom parameter '" + node.data.get("v") + "' not found.");
-                return params.get((String) node.data.get("v"));
+                return params.get(node.data.get("v"));
             default:
                 return null;
         }
@@ -357,9 +358,9 @@ public class ActionFactory {
     private static class GraphNode {
         String id;
         String type;
-        JSONObject data;
+        HashMap<String, String> data;
 
-        public GraphNode(String id, String type, JSONObject data) {
+        public GraphNode(String id, String type, HashMap<String, String> data) {
             this.id = id;
             this.data = data;
             this.type = type;

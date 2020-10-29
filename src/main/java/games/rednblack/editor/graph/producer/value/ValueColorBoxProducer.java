@@ -17,7 +17,8 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
-import org.json.simple.JSONObject;
+
+import java.util.Map;
 
 public class ValueColorBoxProducer<T extends FieldType> extends ValueGraphBoxProducer<T> {
     public ValueColorBoxProducer(NodeConfiguration<T> configuration) {
@@ -25,8 +26,8 @@ public class ValueColorBoxProducer<T extends FieldType> extends ValueGraphBoxPro
     }
 
     @Override
-    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, JSONObject data) {
-        String value = (String) data.get("color");
+    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, Map<String, String> data) {
+        String value = data.get("color");
 
         return createGraphBox(skin, id, value);
     }
@@ -81,7 +82,7 @@ public class ValueColorBoxProducer<T extends FieldType> extends ValueGraphBoxPro
         GraphBoxPartImpl<T> colorPart = new GraphBoxPartImpl<T>(table,
                 new GraphBoxPartImpl.Callback() {
                     @Override
-                    public void serialize(JSONObject object) {
+                    public void serialize(Map<String, String> object) {
                         object.put("color", tintButton.getColorValue().toString());
                     }
                 }) {

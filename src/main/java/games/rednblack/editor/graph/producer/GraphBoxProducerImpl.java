@@ -7,9 +7,8 @@ import games.rednblack.editor.graph.data.GraphNodeInput;
 import games.rednblack.editor.graph.data.GraphNodeOutput;
 import games.rednblack.editor.graph.data.NodeConfiguration;
 
-import org.json.simple.JSONObject;
-
 import java.util.Iterator;
+import java.util.Map;
 
 public class GraphBoxProducerImpl<T extends FieldType> implements GraphBoxProducer<T> {
     protected NodeConfiguration<T> configuration;
@@ -45,7 +44,7 @@ public class GraphBoxProducerImpl<T extends FieldType> implements GraphBoxProduc
     }
 
     @Override
-    public GraphBoxImpl<T> createPipelineGraphBox(Skin skin, String id, JSONObject data) {
+    public GraphBoxImpl<T> createPipelineGraphBox(Skin skin, String id, Map<String, String> data) {
         return createPipelineGraphBoxConfig(skin, id, configuration);
     }
 

@@ -1,13 +1,13 @@
 package games.rednblack.editor.graph.data;
 
-import org.json.simple.JSONObject;
+import java.util.HashMap;
 
 public interface GraphNode<T extends FieldType> {
     String getId();
 
     String getType();
 
-    JSONObject getData();
+    HashMap<String, String> getData();
 
     boolean isInputField(String fieldId);
 

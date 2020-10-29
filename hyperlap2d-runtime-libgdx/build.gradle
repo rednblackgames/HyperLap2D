@@ -35,7 +35,6 @@ dependencies {
     implementation "com.badlogicgames.ashley:ashley:$ashleyVersion"
     implementation "com.rafaskoberg.gdx:typing-label:$typingLabelVersion"
     implementation group: 'org.json', name: 'json', version: '20200518'
-    implementation "com.googlecode.json-simple:json-simple:1.1.1"
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }

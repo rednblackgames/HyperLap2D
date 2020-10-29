@@ -10,7 +10,8 @@ import games.rednblack.editor.graph.data.NodeConfiguration;
 import games.rednblack.editor.graph.*;
 import games.rednblack.editor.graph.producer.ValueGraphBoxProducer;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import org.json.simple.JSONObject;
+
+import java.util.Map;
 
 public class ValueBooleanBoxProducer<T extends FieldType> extends ValueGraphBoxProducer<T> {
     public ValueBooleanBoxProducer(NodeConfiguration<T> configuration) {
@@ -18,8 +19,8 @@ public class ValueBooleanBoxProducer<T extends FieldType> extends ValueGraphBoxP
     }
 
     @Override
-    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, JSONObject data) {
-        boolean v = (Boolean) data.get("v");
+    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, Map<String, String> data) {
+        boolean v = data.get("v") != null;
 
         return createGraphBox(skin, id, v);
     }
@@ -52,8 +53,11 @@ public class ValueBooleanBoxProducer<T extends FieldType> extends ValueGraphBoxP
         GraphBoxPartImpl<T> colorPart = new GraphBoxPartImpl<T>(horizontalGroup,
                 new GraphBoxPartImpl.Callback() {
                     @Override
-                    public void serialize(JSONObject object) {
-                        object.put("v", checkBox.isChecked());
+                    public void serialize(Map<String, String> object) {
+                        if (checkBox.isChecked())
+                            object.put("v", "t");
+                        else
+                            object.remove("v");
                     }
                 });
         colorPart.setOutputConnector(GraphBoxOutputConnector.Side.Right, configuration.getNodeOutputs().get("value"));

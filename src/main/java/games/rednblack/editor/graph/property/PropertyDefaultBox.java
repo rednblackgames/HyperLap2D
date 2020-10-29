@@ -1,10 +1,11 @@
 package games.rednblack.editor.graph.property;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import org.json.simple.JSONObject;
+
+import java.util.Map;
 
 public interface PropertyDefaultBox {
     Actor getActor();
 
-    JSONObject serializeData();
+    Map<String, Object> serializeData();
 }

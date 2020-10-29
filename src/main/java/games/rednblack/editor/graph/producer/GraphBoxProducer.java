@@ -3,7 +3,8 @@ package games.rednblack.editor.graph.producer;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import games.rednblack.editor.graph.GraphBox;
 import games.rednblack.editor.graph.data.FieldType;
-import org.json.simple.JSONObject;
+
+import java.util.Map;
 
 public interface GraphBoxProducer<T extends FieldType> {
     String getType();
@@ -14,7 +15,7 @@ public interface GraphBoxProducer<T extends FieldType> {
 
     String getMenuLocation();
 
-    GraphBox<T> createPipelineGraphBox(Skin skin, String id, JSONObject data);
+    GraphBox<T> createPipelineGraphBox(Skin skin, String id, Map<String, String> data);
 
     GraphBox<T> createDefault(Skin skin, String id);
 

@@ -12,7 +12,9 @@ import games.rednblack.editor.graph.GraphBox;
 import games.rednblack.editor.graph.GraphBoxImpl;
 import games.rednblack.editor.graph.GraphChangedEvent;
 import games.rednblack.editor.graph.ValueGraphNodeOutput;
-import org.json.simple.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PropertyBoxImpl<T extends FieldType> extends Table implements PropertyBox<T> {
     private T propertyType;
@@ -53,9 +55,9 @@ public class PropertyBoxImpl<T extends FieldType> extends Table implements Prope
     }
 
     @Override
-    public JSONObject getData() {
+    public Map<String, Object> getData() {
         if (propertyDefaultBox != null) {
-            JSONObject data = propertyDefaultBox.serializeData();
+            Map<String, Object> data = propertyDefaultBox.serializeData();
             if (data == null)
                 return null;
             return data;
@@ -74,8 +76,8 @@ public class PropertyBoxImpl<T extends FieldType> extends Table implements Prope
         final String name = getName();
         GraphBoxImpl<T> result = new GraphBoxImpl<T>(id, new PropertyNodeConfiguration<T>(name, propertyType), skin) {
             @Override
-            public JSONObject getData() {
-                JSONObject result = new JSONObject();
+            public HashMap<String, String> getData() {
+                HashMap<String, String> result = new HashMap<>();
                 result.put("name", name);
                 result.put("type", propertyType.name());
                 return result;

@@ -3,7 +3,8 @@ package games.rednblack.editor.graph;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Disposable;
 import games.rednblack.editor.graph.data.FieldType;
-import org.json.simple.JSONObject;
+
+import java.util.Map;
 
 public interface GraphBoxPart<T extends FieldType> extends Disposable {
     Actor getActor();
@@ -12,5 +13,5 @@ public interface GraphBoxPart<T extends FieldType> extends Disposable {
 
     GraphBoxInputConnector<T> getInputConnector();
 
-    void serializePart(JSONObject object);
+    void serializePart(Map<String, String> object);
 }

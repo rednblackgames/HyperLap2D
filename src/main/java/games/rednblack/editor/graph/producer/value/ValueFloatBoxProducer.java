@@ -11,7 +11,8 @@ import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.VisValidatableTextField;
 import games.rednblack.editor.graph.data.NodeConfiguration;
 import games.rednblack.editor.graph.producer.ValueGraphBoxProducer;
-import org.json.simple.JSONObject;
+
+import java.util.Map;
 
 public class ValueFloatBoxProducer<T extends FieldType> extends ValueGraphBoxProducer<T> {
     public ValueFloatBoxProducer(NodeConfiguration<T> configuration) {
@@ -19,8 +20,8 @@ public class ValueFloatBoxProducer<T extends FieldType> extends ValueGraphBoxPro
     }
 
     @Override
-    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, JSONObject data) {
-        float v1 = ((Number) data.get("v1")).floatValue();
+    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, Map<String, String> data) {
+        float v1 = Float.parseFloat(data.get("v1"));
 
         return createGraphBox(skin, id, v1);
     }
@@ -60,8 +61,8 @@ public class ValueFloatBoxProducer<T extends FieldType> extends ValueGraphBoxPro
         GraphBoxPartImpl<T> colorPart = new GraphBoxPartImpl<T>(horizontalGroup,
                 new GraphBoxPartImpl.Callback() {
                     @Override
-                    public void serialize(JSONObject object) {
-                        object.put("v1", Float.parseFloat(v1Input.getText()));
+                    public void serialize(Map<String, String> object) {
+                        object.put("v1", v1Input.getText());
                     }
                 });
         colorPart.setOutputConnector(GraphBoxOutputConnector.Side.Right, configuration.getNodeOutputs().get("value"));

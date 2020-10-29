@@ -1,8 +1,8 @@
 package games.rednblack.editor.graph;
 
-import org.json.simple.JSONObject;
+import java.util.Map;
 
 public interface GraphBoxSerializeCallback {
 
-    void serializeBox(JSONObject object);
+    void serializeBox(Map<String, String> object);
 }

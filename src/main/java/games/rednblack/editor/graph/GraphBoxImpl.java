@@ -15,7 +15,6 @@ import games.rednblack.editor.graph.data.GraphNodeOutput;
 import games.rednblack.editor.graph.data.GraphProperty;
 import games.rednblack.editor.graph.data.NodeConfiguration;
 import com.google.common.base.Supplier;
-import org.json.simple.JSONObject;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -226,8 +225,8 @@ public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
     }
 
     @Override
-    public JSONObject getData() {
-        JSONObject result = new JSONObject();
+    public HashMap<String, String> getData() {
+        HashMap<String, String> result = new HashMap<>();
 
         for (GraphBoxPart<T> graphBoxPart : graphBoxParts)
             graphBoxPart.serializePart(result);

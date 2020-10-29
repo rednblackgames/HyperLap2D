@@ -11,7 +11,8 @@ import games.rednblack.editor.graph.*;
 import games.rednblack.editor.graph.data.FieldType;
 import games.rednblack.editor.graph.data.NodeConfiguration;
 import games.rednblack.editor.graph.producer.ValueGraphBoxProducer;
-import org.json.simple.JSONObject;
+
+import java.util.Map;
 
 public class ValueVector2BoxProducer<T extends FieldType> extends ValueGraphBoxProducer<T> {
     public ValueVector2BoxProducer(NodeConfiguration<T> configuration) {
@@ -19,9 +20,9 @@ public class ValueVector2BoxProducer<T extends FieldType> extends ValueGraphBoxP
     }
 
     @Override
-    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, JSONObject data) {
-        float v1 = ((Number) data.get("v1")).floatValue();
-        float v2 = ((Number) data.get("v2")).floatValue();
+    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, Map<String, String> data) {
+        float v1 = Float.parseFloat(data.get("v1"));
+        float v2 = Float.parseFloat(data.get("v2"));
 
         return createGraphBox(skin, id, v1, v2);
     }
@@ -78,9 +79,9 @@ public class ValueVector2BoxProducer<T extends FieldType> extends ValueGraphBoxP
         GraphBoxPartImpl<T> colorPart = new GraphBoxPartImpl<T>(horizontalGroup,
                 new GraphBoxPartImpl.Callback() {
                     @Override
-                    public void serialize(JSONObject object) {
-                        object.put("v1", Float.parseFloat(v1Input.getText()));
-                        object.put("v2", Float.parseFloat(v2Input.getText()));
+                    public void serialize(Map<String, String> object) {
+                        object.put("v1", v1Input.getText());
+                        object.put("v2", v2Input.getText());
                     }
                 });
         colorPart.setOutputConnector(GraphBoxOutputConnector.Side.Right, configuration.getNodeOutputs().get("value"));

@@ -12,7 +12,8 @@ import games.rednblack.editor.graph.data.NodeConfiguration;
 import games.rednblack.editor.graph.producer.ValueGraphBoxProducer;
 import games.rednblack.editor.renderer.utils.InterpolationMap;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import org.json.simple.JSONObject;
+
+import java.util.Map;
 
 public class ValueInterpolationBoxProducer extends ValueGraphBoxProducer<ActionFieldType> {
 
@@ -21,8 +22,8 @@ public class ValueInterpolationBoxProducer extends ValueGraphBoxProducer<ActionF
     }
 
     @Override
-    public GraphBox<ActionFieldType> createPipelineGraphBox(Skin skin, String id, JSONObject data) {
-        String name = (String) data.get("interpolation");
+    public GraphBox<ActionFieldType> createPipelineGraphBox(Skin skin, String id, Map<String, String> data) {
+        String name = data.get("interpolation");
 
         return createGraphBox(skin, id, name);
     }
@@ -48,7 +49,7 @@ public class ValueInterpolationBoxProducer extends ValueGraphBoxProducer<ActionF
 
         GraphBoxPartImpl<ActionFieldType> addPart = new GraphBoxPartImpl<>(selectBox, new GraphBoxPartImpl.Callback() {
             @Override
-            public void serialize(JSONObject object) {
+            public void serialize(Map<String, String> object) {
                 object.put("interpolation", selectBox.getSelected());
             }
         });
