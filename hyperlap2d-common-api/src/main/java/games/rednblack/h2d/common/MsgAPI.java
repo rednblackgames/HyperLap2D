@@ -83,6 +83,11 @@ public class MsgAPI {
      */
     public static final String SANDBOX_PREFIX = "games.rednblack.editor.commands.Sandbox";
 
+    public static final String ACTION_KEY_DOWN = SANDBOX_PREFIX + ".ACTION_KEY_DOWN";
+    public static final String ACTION_KEY_UP = SANDBOX_PREFIX + ".ACTION_KEY_UP";
+
+    public static final String TOOL_CLICKED = SANDBOX_PREFIX + ".TOOL_CLICKED";
+
     public static final String ACTION_GROUP_ITEMS = SANDBOX_PREFIX + ".ACTION_GROUP_ITEMS";
     public static final String ACTION_CAMERA_CHANGE_COMPOSITE = SANDBOX_PREFIX + ".ACTION_CAMERA_CHANGE_COMPOSITE";
     public static final String ACTION_CONVERT_TO_BUTTON = SANDBOX_PREFIX + ".ACTION_CONVERT_TO_BUTTON";

@@ -20,6 +20,8 @@ package games.rednblack.editor.plugin.tiled;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import games.rednblack.h2d.common.vo.CursorData;
@@ -67,7 +69,8 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 SettingsTab.OK_BTN_CLICKED,
                 TiledPlugin.ACTION_SET_GRID_SIZE_FROM_ITEM,
                 MsgAPI.ACTION_DELETE_IMAGE_RESOURCE,
-                MsgAPI.TOOL_SELECTED
+                MsgAPI.TOOL_SELECTED,
+                MsgAPI.ACTION_KEY_DOWN
         };
     }
 
@@ -192,6 +195,14 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 DimensionsComponent dimensionsComponent = ComponentRetriever.get(observable, DimensionsComponent.class);
                 tiledPlugin.dataToSave.setGrid(dimensionsComponent.width, dimensionsComponent.height);
                 tiledPlugin.facade.sendNotification(TiledPlugin.GRID_CHANGED);
+                break;
+            case MsgAPI.ACTION_KEY_DOWN:
+                int keyCode = notification.getBody();
+                if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
+                    if (keyCode == Input.Keys.B) {
+                        facade.sendNotification(MsgAPI.TOOL_CLICKED, DrawTileTool.NAME);
+                    }
+                }
                 break;
         }
     }

@@ -46,8 +46,6 @@ import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.util.HashMap;
 
-import static games.rednblack.editor.view.ui.box.UIToolBox.TOOL_CLICKED;
-
 /**
  * Created by sargis on 4/20/15.
  */
@@ -258,19 +256,18 @@ public class SandboxMediator extends Mediator<Sandbox> {
                 return false;
             }
 
+            facade.sendNotification(MsgAPI.ACTION_KEY_DOWN, keycode);
+
             if(currentSelectedTool != null) {
                 currentSelectedTool.keyDown(entity, keycode);
             }
 
             switch (KeyBindingsLayout.mapAction(keycode)) {
-                //TODO Shortcuts for tools should be handled better, because custom tools too
                 case KeyBindingsLayout.SELECTION_TOOL:
-                    setCurrentTool(SelectionTool.NAME);
+                    facade.sendNotification(MsgAPI.TOOL_CLICKED, SelectionTool.NAME);
                     break;
                 case KeyBindingsLayout.TRANSFORM_TOOL:
-                    facade.sendNotification(TOOL_CLICKED, TransformTool.NAME);
-                    UIToolBoxMediator toolBoxMediator = facade.retrieveMediator(UIToolBoxMediator.NAME);
-                    toolBoxMediator.setCurrentTool(TransformTool.NAME);
+                    facade.sendNotification(MsgAPI.TOOL_CLICKED, TransformTool.NAME);
                     break;
                 case KeyBindingsLayout.PAN_TOOL:
                     toolHotSwap(sandboxTools.get(PanTool.NAME));
@@ -338,6 +335,8 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
         @Override
         public boolean keyUp(Entity entity, int keycode) {
+            facade.sendNotification(MsgAPI.ACTION_KEY_UP, keycode);
+
             Sandbox sandbox = Sandbox.getInstance();
             switch (KeyBindingsLayout.mapAction(keycode)) {
                 case KeyBindingsLayout.PAN_TOOL:

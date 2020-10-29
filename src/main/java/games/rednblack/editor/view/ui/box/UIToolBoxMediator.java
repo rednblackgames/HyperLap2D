@@ -81,7 +81,7 @@ public class UIToolBoxMediator extends Mediator<UIToolBox> {
     @Override
     public String[] listNotificationInterests() {
         return new String[]{
-                UIToolBox.TOOL_CLICKED,
+                MsgAPI.TOOL_CLICKED,
                 SandboxMediator.SANDBOX_TOOL_CHANGED
         };
     }
@@ -91,7 +91,7 @@ public class UIToolBoxMediator extends Mediator<UIToolBox> {
         super.handleNotification(notification);
 
         switch (notification.getName()) {
-            case UIToolBox.TOOL_CLICKED:
+            case MsgAPI.TOOL_CLICKED:
                 currentTool = notification.getBody();
                 facade.sendNotification(MsgAPI.TOOL_SELECTED, currentTool);
                 break;

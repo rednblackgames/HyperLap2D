@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.kotcrab.vis.ui.util.OsUtils;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
@@ -36,7 +37,7 @@ public class DrawTileTool implements Tool {
 
     @Override
     public String getShortcut() {
-        return null;
+        return OsUtils.getShortcutFor(Input.Keys.CONTROL_LEFT, Input.Keys.B);
     }
 
     @Override

@@ -26,14 +26,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.tools.Tool;
 
 public class UIToolBox extends VisTable {
-
-    private static final String PREFIX = "games.rednblack.editor.view.ui.box.UIToolBox.";
-
-    public static final String TOOL_CLICKED = PREFIX + ".TOOL_CLICKED";
     private final ButtonGroup<VisImageButton> toolsButtonGroup;
 
     private HashMap<String, VisImageButton> buttonMap = new HashMap<>();
@@ -41,7 +38,6 @@ public class UIToolBox extends VisTable {
     public UIToolBox() {
         toolsButtonGroup = new ButtonGroup<>();
     }
-
 
     public void addToolButton(String name, Tool tool) {
         VisImageButton button = createButton("tool-" + name, name);
@@ -88,7 +84,7 @@ public class UIToolBox extends VisTable {
         public void clicked(InputEvent event, float x, float y) {
             super.clicked(event, x, y);
             HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
-            facade.sendNotification(TOOL_CLICKED, toolId);
+            facade.sendNotification(MsgAPI.TOOL_CLICKED, toolId);
         }
     }
 
