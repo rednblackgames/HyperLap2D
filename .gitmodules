@@ -1,3 +1,6 @@
 [submodule "hyperlap2d-runtime-libgdx"]
 	path = hyperlap2d-runtime-libgdx
 	url = https://github.com/rednblackgames/hyperlap2d-runtime-libgdx.git
+[submodule "h2d-libgdx-spine-extension"]
+	path = h2d-libgdx-spine-extension
+	url = https://github.com/rednblackgames/h2d-libgdx-spine-extension.git
