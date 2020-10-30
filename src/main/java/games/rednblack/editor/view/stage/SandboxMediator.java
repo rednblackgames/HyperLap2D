@@ -328,7 +328,11 @@ public class SandboxMediator extends Mediator<Sandbox> {
             }
 
             if (keycode == Input.Keys.ESCAPE) {
-                currentSelectedTool.stageMouseDoubleClick(0, 0);
+                if (sandbox.getSelector().getSelectedItems().size() > 0) {
+                    facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, null);
+                } else {
+                    currentSelectedTool.stageMouseDoubleClick(0, 0);
+                }
             }
             return true;
         }

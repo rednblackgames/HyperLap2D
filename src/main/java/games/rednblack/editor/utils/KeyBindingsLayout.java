@@ -65,7 +65,7 @@ public class KeyBindingsLayout {
         defaultMapper.put(OPEN_SETTINGS, new KeyMapper(OPEN_SETTINGS, true, true, false, Input.Keys.S));
         defaultMapper.put(EXIT_APP, new KeyMapper(EXIT_APP, true, false, false, Input.Keys.Q));
 
-        defaultMapper.put(SELECTION_TOOL, new KeyMapper(SELECTION_TOOL, false, false, false, Input.Keys.V, Input.Keys.ESCAPE));
+        defaultMapper.put(SELECTION_TOOL, new KeyMapper(SELECTION_TOOL, false, false, false, Input.Keys.V));
         defaultMapper.put(TRANSFORM_TOOL, new KeyMapper(TRANSFORM_TOOL, true, false, false, Input.Keys.T));
         defaultMapper.put(PAN_TOOL, new KeyMapper(PAN_TOOL, false, false, false, Input.Keys.SPACE));
 
