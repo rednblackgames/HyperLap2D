@@ -1,0 +1,3 @@
+[submodule "hyperlap2d-runtime-libgdx"]
+	path = hyperlap2d-runtime-libgdx
+	url = https://github.com/rednblackgames/hyperlap2d-runtime-libgdx.git
