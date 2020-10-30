@@ -62,8 +62,6 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
 
     public UIMultiPropertyBoxMediator() {
         super(NAME, new UIMultiPropertyBox());
-
-        // TODO: shouldn't this be initialized by default?
         facade = HyperLap2DFacade.getInstance();
 
         initMap();
@@ -81,53 +79,6 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
 
         classToMediatorMap.put(TextTool.class.getName(), new ArrayList<>());
         classToMediatorMap.get(TextTool.class.getName()).add(UITextToolPropertiesMediator.NAME);
-    }
-
-    private void initEntityProperties(ArrayList<String> mediatorNames, Entity entity) {
-        int entityType = EntityUtils.getType(entity);
-
-        if(entityType == EntityFactory.IMAGE_TYPE) {
-            mediatorNames.add(UIImageItemPropertiesMediator.NAME);
-        }
-
-        if(entityType == EntityFactory.COMPOSITE_TYPE) {
-            mediatorNames.add(UICompositeItemPropertiesMediator.NAME);
-        }
-        if(entityType == EntityFactory.LABEL_TYPE) {
-            mediatorNames.add(UILabelItemPropertiesMediator.NAME);
-        }
-        if(entityType == EntityFactory.SPRITE_TYPE) {
-            mediatorNames.add(UISpriteAnimationItemPropertiesMediator.NAME);
-        }
-        if(entityType == EntityFactory.SPINE_TYPE) {
-            mediatorNames.add(UISpineAnimationItemPropertiesMediator.NAME);
-        }
-        if(entityType == EntityFactory.LIGHT_TYPE) {
-            mediatorNames.add(UILightItemPropertiesMediator.NAME);
-        }
-
-        // optional panels based on components
-        PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
-        PhysicsBodyComponent physicsComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
-        ShaderComponent shaderComponent = ComponentRetriever.get(entity, ShaderComponent.class);
-        LightBodyComponent lightComponent = ComponentRetriever.get(entity, LightBodyComponent.class);
-        TypingLabelComponent typingLabelComponent = ComponentRetriever.get(entity, TypingLabelComponent.class);
-
-        if(polygonComponent != null) {
-            mediatorNames.add(UIPolygonComponentPropertiesMediator.NAME);
-        }
-        if(physicsComponent != null) {
-            mediatorNames.add(UIPhysicsPropertiesMediator.NAME);
-        }
-        if(shaderComponent != null) {
-            mediatorNames.add(UIShaderPropertiesMediator.NAME);
-        }
-        if(lightComponent != null) {
-            mediatorNames.add(UILightBodyPropertiesMediator.NAME);
-        }
-        if (typingLabelComponent != null) {
-            mediatorNames.add(UITypingLabelPropertiesMediator.NAME);
-        }
     }
 
     @Override
@@ -150,28 +101,22 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         super.handleNotification(notification);
         switch (notification.getName()) {
             case MsgAPI.SCENE_LOADED:
-                initAllPropertyBoxes(null);
-                break;
             case MsgAPI.EMPTY_SPACE_CLICKED:
+            case MsgAPI.DELETE_ITEMS_COMMAND_DONE:
                 initAllPropertyBoxes(null);
                 break;
             case MsgAPI.ITEM_SELECTION_CHANGED:
                 Set<Entity> selection = notification.getBody();
-                if(selection.size() == 1) {
+                if (selection.size() == 1) {
                     initAllPropertyBoxes(selection.iterator().next());
+                } else if (selection.size() > 1) {
+                    initMultipleSelectionPropertyBox(selection);
                 }
                 break;
             case RemoveComponentFromItemCommand.DONE:
-                initAllPropertyBoxes(notification.getBody());
-                break;
+            case SandboxMediator.SANDBOX_TOOL_CHANGED:
             case AddComponentToItemCommand.DONE:
                 initAllPropertyBoxes(notification.getBody());
-                break;
-            case SandboxMediator.SANDBOX_TOOL_CHANGED:
-                initAllPropertyBoxes(notification.getBody());
-                break;
-            case MsgAPI.DELETE_ITEMS_COMMAND_DONE:
-                initAllPropertyBoxes(null);
                 break;
             default:
                 break;
@@ -179,31 +124,24 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
     }
 
     private void initAllPropertyBoxes(Object observable) {
-        if(observable == null) {
+        if (observable == null) {
             // if there is nothing to observe, always observe current scene
             observable = Sandbox.getInstance().sceneControl.getCurrentSceneVO();
         }
-        
+
         String mapName = observable.getClass().getName();
 
-        if(classToMediatorMap.get(mapName) == null) return;
+        if (classToMediatorMap.get(mapName) == null) return;
 
         // retrieve a list of property panels to show
         ArrayList<String> mediatorNames = new ArrayList<>(classToMediatorMap.get(mapName));
 
         // TODO: this is not uber cool, gotta think a new way to make this class know nothing about entities
-        if(observable instanceof Entity){
+        if (observable instanceof Entity) {
             initEntityProperties(mediatorNames, (Entity) observable);
         }
 
-        //clear all current enabled panels
-        viewComponent.clearAll();
-
-        //unregister all current mediators
-        for(UIAbstractPropertiesMediator mediator: currentRegisteredPropertyBoxes) {
-            facade.removeMediator(mediator.getMediatorName());
-        }
-        currentRegisteredPropertyBoxes.clear();
+        clearPropertyBoxes();
 
         for (String mediatorName : mediatorNames) {
             try {
@@ -217,5 +155,72 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
                 e.printStackTrace();
             }
         }
+    }
+
+    private void initEntityProperties(ArrayList<String> mediatorNames, Entity entity) {
+        int entityType = EntityUtils.getType(entity);
+
+        if (entityType == EntityFactory.IMAGE_TYPE) {
+            mediatorNames.add(UIImageItemPropertiesMediator.NAME);
+        }
+
+        if (entityType == EntityFactory.COMPOSITE_TYPE) {
+            mediatorNames.add(UICompositeItemPropertiesMediator.NAME);
+        }
+        if (entityType == EntityFactory.LABEL_TYPE) {
+            mediatorNames.add(UILabelItemPropertiesMediator.NAME);
+        }
+        if (entityType == EntityFactory.SPRITE_TYPE) {
+            mediatorNames.add(UISpriteAnimationItemPropertiesMediator.NAME);
+        }
+        if (entityType == EntityFactory.SPINE_TYPE) {
+            mediatorNames.add(UISpineAnimationItemPropertiesMediator.NAME);
+        }
+        if (entityType == EntityFactory.LIGHT_TYPE) {
+            mediatorNames.add(UILightItemPropertiesMediator.NAME);
+        }
+
+        // optional panels based on components
+        PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
+        PhysicsBodyComponent physicsComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
+        ShaderComponent shaderComponent = ComponentRetriever.get(entity, ShaderComponent.class);
+        LightBodyComponent lightComponent = ComponentRetriever.get(entity, LightBodyComponent.class);
+        TypingLabelComponent typingLabelComponent = ComponentRetriever.get(entity, TypingLabelComponent.class);
+
+        if (polygonComponent != null) {
+            mediatorNames.add(UIPolygonComponentPropertiesMediator.NAME);
+        }
+        if (physicsComponent != null) {
+            mediatorNames.add(UIPhysicsPropertiesMediator.NAME);
+        }
+        if (shaderComponent != null) {
+            mediatorNames.add(UIShaderPropertiesMediator.NAME);
+        }
+        if (lightComponent != null) {
+            mediatorNames.add(UILightBodyPropertiesMediator.NAME);
+        }
+        if (typingLabelComponent != null) {
+            mediatorNames.add(UITypingLabelPropertiesMediator.NAME);
+        }
+    }
+
+    private void clearPropertyBoxes() {
+        //clear all current enabled panels
+        viewComponent.clearAll();
+
+        //unregister all current mediators
+        for (UIAbstractPropertiesMediator mediator : currentRegisteredPropertyBoxes) {
+            facade.removeMediator(mediator.getMediatorName());
+        }
+        currentRegisteredPropertyBoxes.clear();
+    }
+
+    private void initMultipleSelectionPropertyBox(Set<Entity> selection) {
+        clearPropertyBoxes();
+        UIMultipleSelectPropertiesMediator mediator = new UIMultipleSelectPropertiesMediator();
+        facade.registerMediator(mediator);
+        currentRegisteredPropertyBoxes.add(mediator);
+        mediator.setItem(selection);
+        viewComponent.addPropertyBox(mediator.getViewComponent());
     }
 }
