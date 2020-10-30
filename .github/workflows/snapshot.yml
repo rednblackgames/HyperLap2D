@@ -9,7 +9,7 @@ on:
 
 jobs:
   linux:
-
+    if: "!contains(github.event.head_commit.message, 'cd skip')"
     runs-on: ubuntu-latest
 
     steps:
@@ -35,7 +35,7 @@ jobs:
         path: HyperLap2D-SNAPSHOT.deb
 
   windows:
-
+    if: "!contains(github.event.head_commit.message, 'cd skip')"
     runs-on: windows-latest
 
     steps:
@@ -59,7 +59,7 @@ jobs:
         path: HyperLap2D-SNAPSHOT.msi
 
   macOS:
-
+    if: "!contains(github.event.head_commit.message, 'cd skip')"
     runs-on: macOS-latest
 
     steps:
