@@ -58,7 +58,7 @@ We need your help! HyperLap2D is a very large and complex project, if you have s
 HyperLap2D is developed using IntelliJ IDEA. Needs `Java 14`.
 
 1. Fork this repository
-2. Clone it
+2. Clone with `--recurse-submodules` flag
 3. Open the main `build.gradle`, which you can find in the root directory
 4. Run `runHyperLap2D` gradle task
 5. If build fails: `File → Invalidate Caches / Restart`
