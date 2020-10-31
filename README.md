@@ -1,6 +1,6 @@
 ![Logo](https://raw.githubusercontent.com/rednblackgames/HyperLap2D/master/icons/HyperLap2D.png)
 
-[![build](https://img.shields.io/github/workflow/status/rednblackgames/HyperLap2D/SNAPSHOT%20Build)](https://github.com/rednblackgames/HyperLap2D/actions?query=workflow%3A%22SNAPSHOT+Build%22)
+[![build](https://img.shields.io/github/workflow/status/rednblackgames/HyperLap2D/SNAPSHOT%20Build?logo=github)](https://github.com/rednblackgames/HyperLap2D/actions?query=workflow%3A%22SNAPSHOT+Build%22)
 [![release](https://img.shields.io/github/v/release/rednblackgames/HyperLap2D)](https://github.com/rednblackgames/HyperLap2D/releases)
 
 [![Discord](https://img.shields.io/discord/740954840259362826?label=Discord&logo=discord)](https://discord.gg/p69rPNF)
@@ -12,9 +12,13 @@ An engine-oriented alternative for building games free from any design constrain
 
 Open Source ❤️
 
+### Project Status
+
+Currently, HyperLap2D is in Alpha stage. Many breaking changes could happen update after update without backwards compatibility. Therefore, please always check our [changelog](https://github.com/rednblackgames/HyperLap2D/tree/master/CHANGES) before updating.
+
 ### Features
 - Images and Sprite Animations
-- Physics World
+- Box2D Physics World
 - Dynamic Lights
 - [Spine support](https://github.com/rednblackgames/HyperLap2D/tree/master/h2d-libgdx-spine-extension)
 - Particle Effects
@@ -23,6 +27,7 @@ Open Source ❤️
 - Live Preview
 - Tiled Maps
 - Built in 9-patch editor
+- Actions Node Editor
 - [Plugins](https://hyperlap2d.rednblack.games/wiki/plugins/)
 - Open JSON output
 
@@ -62,10 +67,6 @@ HyperLap2D is developed using IntelliJ IDEA. Needs `Java 14`.
 3. Open the main `build.gradle`, which you can find in the root directory
 4. Run `runHyperLap2D` gradle task
 5. If build fails: `File → Invalidate Caches / Restart`
-
-### Project Status
-
-Currently, HyperLap2D is in Alpha stage. Many breaking changes could happen update after update without backwards compatibility. Therefore, please always check our [changelog](https://github.com/rednblackgames/HyperLap2D/tree/master/CHANGES) before updating.
 
 ### License
 
