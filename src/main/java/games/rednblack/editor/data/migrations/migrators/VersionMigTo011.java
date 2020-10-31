@@ -59,6 +59,8 @@ public class VersionMigTo011 implements IVersionMigrator {
 
     private void setNewKeyToJson(JsonValue container, String newKey, String oldKey, JsonValue newVal) {
         JsonValue oldVal = container.get(oldKey);
+        if (oldVal == null)
+            return;
         if(oldVal.prev != null) oldVal.prev.setNext(newVal);
         if(oldVal.next != null)  oldVal.next.setPrev(newVal);
         newVal.setPrev(oldVal.prev);
