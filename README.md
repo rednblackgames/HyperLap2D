@@ -20,7 +20,7 @@ Currently, HyperLap2D is in Alpha stage. Many breaking changes could happen upda
 - Images and Sprite Animations
 - Box2D Physics World
 - Dynamic Lights
-- [Spine support](https://github.com/rednblackgames/HyperLap2D/tree/master/h2d-libgdx-spine-extension)
+- [Spine support](https://github.com/rednblackgames/h2d-libgdx-spine-extension)
 - Particle Effects
 - Grouping complex objects into library items
 - Import, Export and Share your compositions
@@ -46,7 +46,7 @@ Snapshot releases can be download using [GitHub Actions](https://github.com/redn
 
 Currently, HyperLap2D is mainly developed for [libGDX](https://github.com/libgdx/libgdx), but it can easily be integrated into any software thanks to its open JSON output format.
 
-Check out the libGDX runtime [README](https://github.com/rednblackgames/HyperLap2D/tree/master/hyperlap2d-runtime-libgdx) to start integrating HyperLap2D's project into your game.
+Check out the libGDX runtime [README](https://github.com/rednblackgames/hyperlap2d-runtime-libgdx) to start integrating HyperLap2D's project into your game.
 
 See our [Wiki](https://hyperlap2d.rednblack.games/wiki/hyperlap2d/14-json-export-format/), if you want to learn more about the output format.
 
@@ -70,7 +70,7 @@ HyperLap2D is developed using IntelliJ IDEA. Needs `Java 14`.
 
 ### License
 
-HyperLap2D Editor is licensed under the GNU Public License, Version 3. You may wish to read [HyperLap2D libGDX Runtime](https://github.com/rednblackgames/HyperLap2D/tree/master/hyperlap2d-runtime-libgdx) License and [Spine Extension](https://github.com/rednblackgames/HyperLap2D/tree/master/h2d-libgdx-spine-extension) License.
+HyperLap2D Editor is licensed under the GNU Public License, Version 3. You may wish to read [HyperLap2D libGDX Runtime](https://github.com/rednblackgames/hyperlap2d-runtime-libgdx) License and [Spine Extension](https://github.com/rednblackgames/h2d-libgdx-spine-extension) License.
 
 ```
 HyperLap2D Editor
