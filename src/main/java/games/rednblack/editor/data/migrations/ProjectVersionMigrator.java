@@ -21,6 +21,7 @@ package games.rednblack.editor.data.migrations;
 import java.io.IOException;
 
 import games.rednblack.editor.data.migrations.migrators.VersionMigTo009;
+import games.rednblack.editor.data.migrations.migrators.VersionMigTo011;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import org.apache.commons.io.FileUtils;
 
@@ -42,7 +43,7 @@ public class ProjectVersionMigrator {
 	/**
 	 * this is the current supported version, change when data format is changed, and add migration script
 	 */
-	public static String dataFormatVersion = "0.1";
+	public static String dataFormatVersion = "0.1.1";
 
 	private Json json = new Json();
 
@@ -85,6 +86,10 @@ public class ProjectVersionMigrator {
 		if (projectVo.projectVersion.equals("0.0.9")) {
 			IVersionMigrator vmt = new DummyMig();
 			doMigration(vmt, "0.1");
+		}
+		if (projectVo.projectVersion.equals("0.1")) {
+			IVersionMigrator vmt = new VersionMigTo011();
+			doMigration(vmt, "0.1.1");
 		}
 	}
 

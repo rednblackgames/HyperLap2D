@@ -143,9 +143,7 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Json json = new Json();
-                String data = json.toJson(graphContainer.serializeGraph());
-                Object[] payload = AddToLibraryAction.getPayload(actionName, data);
+                Object[] payload = AddToLibraryAction.getPayload(actionName, graphContainer.serializeGraph());
                 HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_ADD_TO_LIBRARY_ACTION, payload);
                 close();
             }
@@ -294,12 +292,10 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         getTitleLabel().setText(actionName);
 
         ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
-        HashMap<String, String> items = projectManager.currentProjectInfoVO.libraryActions;
+        HashMap<String, GraphVO> items = projectManager.currentProjectInfoVO.libraryActions;
 
         if (items.get(actionName) != null) {
-            Json json = new Json();
-            GraphVO action = json.fromJson(GraphVO.class, items.get(actionName));
-            loadGraph(action);
+            loadGraph(items.get(actionName));
         } else {
             String id = UUID.randomUUID().toString().replace("-", "");
             GraphBox<ActionFieldType> graphBox = entityProducer.createDefault(VisUI.getSkin(), id);

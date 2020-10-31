@@ -2,6 +2,7 @@ package games.rednblack.editor.controller.commands.resource;
 
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.renderer.data.GraphVO;
 
 import java.util.HashMap;
 
@@ -20,7 +21,7 @@ public class DeleteLibraryAction extends DeleteResourceCommand {
         String libraryActionName = notification.getBody();
 
         ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
-        HashMap<String, String> libraryActions = projectManager.currentProjectInfoVO.libraryActions;
+        HashMap<String, GraphVO> libraryActions = projectManager.currentProjectInfoVO.libraryActions;
 
         libraryActions.remove(libraryActionName);
 

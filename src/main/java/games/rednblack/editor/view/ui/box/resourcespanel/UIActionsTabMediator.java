@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.resource.DeleteLibraryAction;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.renderer.data.GraphVO;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.LibraryActionResource;
 import games.rednblack.h2d.common.MsgAPI;
@@ -48,7 +49,7 @@ public class UIActionsTabMediator extends UIResourcesTabMediator<UIActionsTab> {
     protected void initList(String searchText) {
         searchText = searchText.toLowerCase();
         ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
-        HashMap<String, String> items = projectManager.currentProjectInfoVO.libraryActions;
+        HashMap<String, GraphVO> items = projectManager.currentProjectInfoVO.libraryActions;
 
         Array<DraggableResource> itemArray = new Array<>();
         for (String key : items.keySet()) {

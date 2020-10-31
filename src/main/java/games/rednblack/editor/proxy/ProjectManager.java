@@ -188,7 +188,7 @@ public class ProjectManager extends Proxy {
             FileHandle projectFile = Gdx.files.internal(prjFilePath);
             String projectContents = null;
             try {
-                projectContents = FileUtils.readFileToString(projectFile.file());
+                projectContents = FileUtils.readFileToString(projectFile.file(), "utf-8");
                 Json json = new Json();
                 json.setIgnoreUnknownFields(true);
                 ProjectVO vo = json.fromJson(ProjectVO.class, projectContents);
@@ -196,7 +196,7 @@ public class ProjectManager extends Proxy {
                 currentProjectVO = vo;
                 String prjInfoFilePath = projectPath + "/project.dt";
                 FileHandle projectInfoFile = Gdx.files.internal(prjInfoFilePath);
-                String projectInfoContents = FileUtils.readFileToString(projectInfoFile.file());
+                String projectInfoContents = FileUtils.readFileToString(projectInfoFile.file(), "utf-8");
                 currentProjectInfoVO = json.fromJson(ProjectInfoVO.class, projectInfoContents);
                 projectExportSettings.setSettings(vo);
                 facade.sendNotification(SettingsDialog.ADD_SETTINGS, projectExportSettings);
