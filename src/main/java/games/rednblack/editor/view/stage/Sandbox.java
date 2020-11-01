@@ -68,6 +68,7 @@ public class Sandbox {
     private static Sandbox instance = null;
 
     private static final float CAMERA_ZOOM_DURATION = 0.65f;
+    private static final float CAMERA_PAN_DURATION = 0.45f;
 
     public SceneControlMediator sceneControl;
     public ItemControlMediator itemControl;
@@ -235,7 +236,7 @@ public class Sandbox {
 
         if (timeToCameraPosTarget > 0) {
             timeToCameraPosTarget -= deltaTime;
-            float progress = timeToCameraPosTarget < 0 ? 1 : 1f - timeToCameraPosTarget / CAMERA_ZOOM_DURATION;
+            float progress = timeToCameraPosTarget < 0 ? 1 : 1f - timeToCameraPosTarget / CAMERA_PAN_DURATION;
             float x = Interpolation.smoother.apply(cameraPosOrigin.x, cameraPosTarget.x, progress);
             float y = Interpolation.smoother.apply(cameraPosOrigin.y, cameraPosTarget.y, progress);
             getCamera().position.set(x, y, 0);
@@ -246,13 +247,9 @@ public class Sandbox {
 
     public void adjustCameraInComposites() {
         if (!isViewingRootEntity()) {
-            cameraPosOrigin.set(getCamera().position.x, getCamera().position.y);
-            cameraPosTarget.set(0, 0);
-            timeToCameraPosTarget = CAMERA_ZOOM_DURATION;
+            panSceneTo(0, 0);
         } else {
-            cameraPosOrigin.set(getCamera().position.x, getCamera().position.y);
-            cameraPosTarget.set(sceneConfigVO.cameraPosition[0], sceneConfigVO.cameraPosition[1]);
-            timeToCameraPosTarget = CAMERA_ZOOM_DURATION;
+            panSceneTo(sceneConfigVO.cameraPosition[0], sceneConfigVO.cameraPosition[1]);
         }
     }
 
@@ -261,6 +258,22 @@ public class Sandbox {
             sceneConfigVO.cameraPosition[0] = getCamera().position.x;
             sceneConfigVO.cameraPosition[1] = getCamera().position.y;
         }
+    }
+
+    public void panSceneTo(float x, float y) {
+        cameraPosOrigin.set(getCamera().position.x, getCamera().position.y);
+        cameraPosTarget.set(x, y);
+        timeToCameraPosTarget = CAMERA_PAN_DURATION - timeToCameraPosTarget / 2f;
+    }
+
+    public void panSceneBy(float amountX, float amountY) {
+        cameraPosOrigin.set(getCamera().position.x, getCamera().position.y);
+        cameraPosTarget.set(cameraPosOrigin.x + amountX, cameraPosOrigin.y + amountY);
+        timeToCameraPosTarget = CAMERA_PAN_DURATION - timeToCameraPosTarget / 2f;
+    }
+
+    public Vector2 getCameraPosTarget() {
+        return cameraPosTarget;
     }
 
     /**

@@ -5,12 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.h2d.common.proxy.CursorManager;
-import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.view.ui.Cursors;
-import games.rednblack.h2d.common.vo.SceneConfigVO;
 
 /**
  * Created by CyberJoe on 5/1/2015.
@@ -21,7 +19,7 @@ public class PanTool extends SimpleTool {
 
     public static final String NAME = "PAN_TOOL";
 
-    private Vector2 lastCoordinates;
+    private Vector2 lastCoordinates = new Vector2();
 
     @Override
     public String getName() {
@@ -46,7 +44,9 @@ public class PanTool extends SimpleTool {
 
     @Override
     public boolean stageMouseDown(float x, float y) {
-        lastCoordinates = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        lastCoordinates.set(Gdx.input.getX(), Gdx.input.getY());
+        currX = Sandbox.getInstance().getCamera().position.x;
+        currY = Sandbox.getInstance().getCamera().position.y;
         return false;
     }
 
@@ -72,7 +72,9 @@ public class PanTool extends SimpleTool {
 
     @Override
     public boolean itemMouseDown(Entity entity, float x, float y) {
-        lastCoordinates = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        lastCoordinates.set(Gdx.input.getX(), Gdx.input.getY());
+        currX = Sandbox.getInstance().getCamera().position.x;
+        currY = Sandbox.getInstance().getCamera().position.y;
         return true;
     }
 
@@ -91,21 +93,19 @@ public class PanTool extends SimpleTool {
 
     }
 
+    float currX, currY;
     private void doPanning(float x, float y) {
-        if (lastCoordinates == null)
-            return;
+        ResourceManager resourceManager = HyperLap2DFacade.getInstance().retrieveProxy(ResourceManager.NAME);
 
         Sandbox sandbox = Sandbox.getInstance();
-
-        ResourceManager resourceManager = HyperLap2DFacade.getInstance().retrieveProxy(ResourceManager.NAME);
         OrthographicCamera camera = sandbox.getCamera();
 
-        float currX = camera.position.x + (lastCoordinates.x - Gdx.input.getX()) * camera.zoom / resourceManager.getProjectVO().pixelToWorld;
-        float currY = camera.position.y + (Gdx.input.getY() - lastCoordinates.y) * camera.zoom / resourceManager.getProjectVO().pixelToWorld;
+        currX += (lastCoordinates.x - Gdx.input.getX()) * camera.zoom / resourceManager.getProjectVO().pixelToWorld;
+        currY += (Gdx.input.getY() - lastCoordinates.y) * camera.zoom / resourceManager.getProjectVO().pixelToWorld;
 
-        sandbox.getCamera().position.set(currX, currY, 0);
+        sandbox.panSceneTo(currX, currY);
 
-        lastCoordinates = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        lastCoordinates.set(Gdx.input.getX(), Gdx.input.getY());
 
         HyperLap2DFacade.getInstance().sendNotification(SCENE_PANNED);
     }
