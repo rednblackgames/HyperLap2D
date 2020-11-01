@@ -38,7 +38,7 @@ public class VersionMigTo011 implements IVersionMigrator {
                 if (oldActions != null) {
                     for (JsonValue action : oldActions) {
                         String stringAction = action.prettyPrint(JsonWriter.OutputType.minimal, 0).replace("\"", "");
-                        GraphVO graphVOAction = json.fromJson(GraphVO.class, stringAction);
+                        GraphVO graphVOAction = json.fromJson(GraphVO.class, stringAction.replace("\\", ""));
                         JsonValue newAction = jsonReader.parse(json.toJson(graphVOAction));;
                         newAction.name = action.name;
                         newActions.addChild(newAction);
