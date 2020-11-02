@@ -43,6 +43,8 @@ public class GridView extends Actor {
 	private int gridSize;
 	int gridLinesCount;
 
+	private final Color tmpColor = new Color();
+
 	public GridView() {
 		gridSize = 50;
 		gridLinesCount = 40;
@@ -123,7 +125,7 @@ public class GridView extends Actor {
 		if(offsetTmp < 0) offset = (int) -Math.floor(-offsetTmp);
 		i += offset;
 
-		Color color = new Color(Color.WHITE);
+		Color color = tmpColor.set(Color.WHITE);
 
 		if((gridLinesCount/2 - i - 1) % 4 == 0) {
 			color.a = 0.1f;

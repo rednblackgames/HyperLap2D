@@ -1,3 +1,9 @@
+[0.0.4]
+- Smooth camera pan
+- Update HyperLap2D project version to 0.1.1
+- Performance plugin now shows used memory
+- Some memory optimizations
+
 [0.0.3]
 - Fixed bright lights on some GPUs
 - Fixed undo\redo when creating new objects
