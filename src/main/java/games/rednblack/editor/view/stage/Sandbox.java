@@ -190,7 +190,7 @@ public class Sandbox {
         facade.sendNotification(MsgAPI.LIBRARY_LIST_UPDATED);
         facade.sendNotification(MsgAPI.LIBRARY_ACTIONS_UPDATED);
 
-        currentViewingEntity = getRootEntity();
+        setCurrentViewingEntity(getRootEntity());
 
         sceneConfigVO = projectManager.getCurrentSceneConfigVO();
         getCamera().position.set(sceneConfigVO.cameraPosition[0], sceneConfigVO.cameraPosition[1], 0);
@@ -299,26 +299,21 @@ public class Sandbox {
 //    }
 
     /**
-     * Well... that's a bummer, I cannot remember why this was for. but the name speaks for itself sort of.
-     * TODO: figure this out
+     * When an entity is modified their respective VO in memory are not touched, so to save a scene we have to
+     * recreate all current SceneVO from root entity state
+     *
+     * TODO This does not seems to be much smart
      *
      * @return SceneVO
      */
     public SceneVO sceneVoFromItems() {
-        sceneControl.getCurrentSceneVO().composite = new CompositeVO();
-        sceneControl.getCurrentSceneVO().composite.loadFromEntity(getRootEntity());
+        CompositeVO newVo = new CompositeVO();
+        newVo.loadFromEntity(getRootEntity());
+        newVo.sStickyNotes.putAll(sceneControl.getCurrentSceneVO().composite.sStickyNotes);
+        sceneControl.getCurrentSceneVO().composite = newVo;
 
         return sceneControl.getCurrentSceneVO();
     }
-
-    /**
-     * TODO: what does this do? seems to be saving as checkpoint of Flow? it so it should be renamed
-     */
-    public void saveSceneCurrentSceneData() {
-        //TODO fix and uncomment
-        //sceneControl.getCurrentScene().updateDataVO();
-    }
-
 
     public ItemSelector getSelector() {
         return selector;
@@ -335,7 +330,6 @@ public class Sandbox {
         selectionRec.setX(x);
         selectionRec.setY(y);
     }
-
 
     public int getZoomPercent() {
         return (int) sceneConfigVO.cameraZoom;
@@ -382,7 +376,6 @@ public class Sandbox {
         projectManager.saveCurrentProject();
         facade.sendNotification(MsgAPI.LOCK_LINES_CHANGED, lockLines);
     }
-
 
     public Entity getRootEntity() {
         return sceneControl.getRootEntity();

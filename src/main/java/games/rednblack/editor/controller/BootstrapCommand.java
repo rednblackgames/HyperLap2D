@@ -44,6 +44,10 @@ public class BootstrapCommand extends SimpleCommand {
         facade.registerCommand(MsgAPI.ACTION_CREATE_ITEM, CreateItemCommand::new);
         facade.registerCommand(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, CompositeCameraChangeCommand::new);
         facade.registerCommand(MsgAPI.ACTION_CREATE_PRIMITIVE, CreatePrimitiveCommand::new);
+        facade.registerCommand(MsgAPI.ACTION_CREATE_STICKY_NOTE, CreateStickyNoteCommand::new);
+        facade.registerCommand(MsgAPI.ACTION_CREATE_STICKY_NOTE, CreateStickyNoteCommand::new);
+        facade.registerCommand(MsgAPI.ACTION_REMOVE_STICKY_NOTE, RemoveStickyNoteCommand::new);
+        facade.registerCommand(MsgAPI.ACTION_MODIFY_STICKY_NOTE, ModifyStickyNoteCommand::new);
 
         facade.registerCommand(MsgAPI.ACTION_DELETE_LAYER, DeleteLayerCommand::new);
         facade.registerCommand(MsgAPI.ACTION_NEW_LAYER, NewLayerCommand::new);

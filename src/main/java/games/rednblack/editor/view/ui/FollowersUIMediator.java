@@ -80,7 +80,6 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
         super.handleNotification(notification);
         switch (notification.getName()) {
             case CompositeCameraChangeCommand.DONE:
-                createFollowersForAllVisible();
             case MsgAPI.SCENE_LOADED:
                 createFollowersForAllVisible();
                 break;

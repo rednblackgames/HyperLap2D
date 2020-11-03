@@ -20,7 +20,10 @@ package games.rednblack.editor.proxy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.renderer.data.CompositeItemVO;
+import games.rednblack.editor.renderer.data.CompositeVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import org.apache.commons.io.FileUtils;
 import org.puremvc.java.patterns.proxy.Proxy;
@@ -127,9 +130,14 @@ public class SceneDataManager extends Proxy {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         String srcPath = projectManager.getCurrentProjectPath() + "/scenes";
         FileHandle scenesDirectoryHandle = Gdx.files.absolute(srcPath);
-        File fileTarget = new File(targetPath + "/" + scenesDirectoryHandle.name());
         try {
-            FileUtils.copyDirectory(scenesDirectoryHandle.file(), fileTarget);
+            for (File scene : scenesDirectoryHandle.file().listFiles()) {
+                File fileTarget = new File(targetPath + File.separator + scenesDirectoryHandle.name() + File.separator + scene.getName());
+                Json json = new Json();
+                SceneVO sceneToExport = json.fromJson(SceneVO.class, FileUtils.readFileToString(scene, "utf-8"));
+                clearCompositesForExport(sceneToExport.composite);
+                FileUtils.writeStringToFile(fileTarget, sceneToExport.constructJsonString(), "utf-8");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -141,4 +149,10 @@ public class SceneDataManager extends Proxy {
         }
     }
 
+    private void clearCompositesForExport(CompositeVO compositeVO) {
+        compositeVO.sStickyNotes.clear();
+        for (CompositeItemVO c : compositeVO.sComposites) {
+            clearCompositesForExport(c.composite);
+        }
+    }
 }

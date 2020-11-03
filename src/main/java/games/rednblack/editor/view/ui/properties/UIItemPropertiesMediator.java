@@ -53,6 +53,6 @@ public abstract class UIItemPropertiesMediator<T extends Entity, V extends UIAbs
     }
 
     protected void afterItemDataModified() {
-        Sandbox.getInstance().saveSceneCurrentSceneData();
+
     }
 }

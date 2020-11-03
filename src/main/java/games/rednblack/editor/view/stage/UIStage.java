@@ -26,10 +26,7 @@ import com.kotcrab.vis.ui.util.ToastManager;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.utils.HyperLap2DUtils;
-import games.rednblack.editor.view.ui.FollowersUIMediator;
-import games.rednblack.editor.view.ui.RulersUIMediator;
-import games.rednblack.editor.view.ui.UIBottomMenuBar;
-import games.rednblack.editor.view.ui.UIMainTable;
+import games.rednblack.editor.view.ui.*;
 import games.rednblack.h2d.common.proxy.CursorManager;
 
 public class UIStage extends Stage {
@@ -93,7 +90,11 @@ public class UIStage extends Stage {
         FollowersUIMediator followersUIMediator = facade.retrieveMediator(FollowersUIMediator.NAME);
         Group followersGroup = followersUIMediator.getViewComponent();
 
+        StickyNotesUIMediator stickyNotesUIMediator = facade.retrieveMediator(StickyNotesUIMediator.NAME);
+        Group stickyNotesGroup = stickyNotesUIMediator.getViewComponent();
+
         midUI.addActor(followersGroup);
+        midUI.addActor(stickyNotesGroup);
         midUI.addActor(rulersGroup);
 
         contextMenuContainer = new Group();

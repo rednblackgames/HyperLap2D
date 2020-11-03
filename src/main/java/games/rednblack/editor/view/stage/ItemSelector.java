@@ -526,8 +526,6 @@ public class ItemSelector {
             sandbox.itemControl.moveItemBy(entity, x, y);
             HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
         }
-
-        sandbox.saveSceneCurrentSceneData();
     }
 
     public boolean selectionIsOneItem() {

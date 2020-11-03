@@ -72,6 +72,7 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
         actionSets.put(SCENE_ACTIONS_SET, new Array<>());
         actionSets.get(SCENE_ACTIONS_SET).add(MsgAPI.ACTION_PASTE);
         actionSets.get(SCENE_ACTIONS_SET).add(MsgAPI.ACTION_CREATE_PRIMITIVE);
+        actionSets.get(SCENE_ACTIONS_SET).add(MsgAPI.ACTION_CREATE_STICKY_NOTE);
 
         actionSets.put(IMAGE_RESOURCE_ACTION_SET, new Array<>());
         actionSets.get(IMAGE_RESOURCE_ACTION_SET).add(MsgAPI.ACTION_DELETE_IMAGE_RESOURCE);

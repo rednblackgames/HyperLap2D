@@ -28,8 +28,8 @@ import java.util.HashMap;
 public class RulersUI extends Actor {
 
     private static final String CLASS_NAME = "games.rednblack.editor.view.ui.RulersUI";
-    public static final String ACTION_GUIDES_MODIFIED = CLASS_NAME + "ACTION_GUIDES_MODIFIED";
-    public static final String RIGHT_CLICK_RULER = CLASS_NAME + "RIGHT_CLICK_RULER";
+    public static final String ACTION_GUIDES_MODIFIED = CLASS_NAME + ".ACTION_GUIDES_MODIFIED";
+    public static final String RIGHT_CLICK_RULER = CLASS_NAME + ".RIGHT_CLICK_RULER";
 
     private static final int rulerBoxSize = 14;
 
@@ -235,7 +235,6 @@ public class RulersUI extends Actor {
 
         return tmp;
     }
-
 
     @Override
     public void draw(Batch batch, float parentAlpha) {

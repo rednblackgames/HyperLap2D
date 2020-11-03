@@ -29,7 +29,6 @@ public class RulersUIMediator extends Mediator<RulersUI> {
         viewComponent.setVisible(false);
     }
 
-
     @Override
     public String[] listNotificationInterests() {
         return new String[]{
