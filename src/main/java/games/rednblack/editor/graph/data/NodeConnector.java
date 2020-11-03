@@ -1,8 +1,12 @@
 package games.rednblack.editor.graph.data;
 
 public class NodeConnector {
-    private final String nodeId;
-    private final String fieldId;
+    private String nodeId;
+    private String fieldId;
+
+    public NodeConnector() {
+
+    }
 
     public NodeConnector(String nodeId, String fieldId) {
         this.nodeId = nodeId;
@@ -15,6 +19,14 @@ public class NodeConnector {
 
     public String getFieldId() {
         return fieldId;
+    }
+
+    public void setFieldId(String fieldId) {
+        this.fieldId = fieldId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
     }
 
     @Override

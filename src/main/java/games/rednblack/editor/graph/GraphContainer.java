@@ -100,6 +100,9 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
     private Skin skin;
     private PopupMenuProducer popupMenuProducer;
 
+    private NodeConnector tmpNodeInfo1 = new NodeConnector();
+    private NodeConnector tmpNodeInfo2 = new NodeConnector();
+
     public GraphContainer(Skin skin, final PopupMenuProducer popupMenuProducer) {
         this.skin = skin;
         this.popupMenuProducer = popupMenuProducer;
@@ -705,6 +708,16 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         return null;
     }
 
+    private NodeConnector getNodeInfo(String nodeId, String fieldId, NodeConnector nodeConnector) {
+        GraphBox<T> graphBox = graphBoxes.get(nodeId);
+        if (graphBox.getInputs().get(fieldId) != null || graphBox.getOutputs().get(fieldId) != null) {
+            nodeConnector.setFieldId(fieldId);
+            nodeConnector.setNodeId(nodeId);
+            return nodeConnector;
+        };
+        return null;
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         if (shapeDrawer == null) {
@@ -757,11 +770,11 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
 
         //Connections
         for (GraphConnection graphConnection : graphConnections) {
-            NodeConnector fromNode = getNodeInfo(graphConnection.getNodeFrom(), graphConnection.getFieldFrom());
+            NodeConnector fromNode = getNodeInfo(graphConnection.getNodeFrom(), graphConnection.getFieldFrom(), tmpNodeInfo1);
             Window fromWindow = boxWindows.get(fromNode.getNodeId());
             GraphBoxOutputConnector<T> output = getGraphBoxById(fromNode.getNodeId()).getOutputs().get(fromNode.getFieldId());
             calculateConnection(from, fromWindow, output);
-            NodeConnector toNode = getNodeInfo(graphConnection.getNodeTo(), graphConnection.getFieldTo());
+            NodeConnector toNode = getNodeInfo(graphConnection.getNodeTo(), graphConnection.getFieldTo(), tmpNodeInfo2);
             Window toWindow = boxWindows.get(toNode.getNodeId());
             GraphBoxInputConnector<T> input = getGraphBoxById(toNode.getNodeId()).getInputs().get(toNode.getFieldId());
             calculateConnection(to, toWindow, input);
