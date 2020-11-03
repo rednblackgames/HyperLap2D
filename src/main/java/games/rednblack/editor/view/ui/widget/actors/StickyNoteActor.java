@@ -85,9 +85,10 @@ public class StickyNoteActor extends VisWindow {
 
     public void show(Group parent) {
         parent.addActor(this);
+        float scale = Sandbox.getInstance().getZoomPercent() / 100f;
         addAction(Actions.sequence(
                 Actions.scaleTo(0, 0),
-                Actions.scaleTo(1, 1, .35f, Interpolation.swingOut)
+                Actions.scaleTo(scale > 1 ? 1f : scale, scale > 1 ? 1f : scale, .35f, Interpolation.swingOut)
         ));
     }
 
@@ -141,6 +142,10 @@ public class StickyNoteActor extends VisWindow {
     public void draw(Batch batch, float parentAlpha) {
         tmp.set(worldX, worldY);
         Sandbox.getInstance().worldToScreen(tmp);
+        if (getActions().size == 0) {
+            float scale = Sandbox.getInstance().getZoomPercent() / 100f;
+            setScale(scale > 1 ? 1f : scale);
+        }
         super.setPosition(tmp.x, tmp.y);
         super.draw(batch, parentAlpha);
     }
