@@ -364,8 +364,10 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
     }
 
     private void processLeftClick(float x, float y) {
-        if (containedInWindow(x, y))
+        if (containedInWindow(x, y)) {
+            drawingFromConnector = null;
             return;
+        }
 
         for (Map.Entry<NodeConnector, Shape> nodeEntry : connectionNodeMap.entrySet()) {
             if (nodeEntry.getValue().contains(x, y)) {
