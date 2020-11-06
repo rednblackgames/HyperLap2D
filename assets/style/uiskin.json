@@ -188,6 +188,11 @@
       titleFont: big-font,
       background: panel,
       titleFontColor: white
+    },
+    sticky-note: {
+      titleFont: big-font,
+      background: sticky-note,
+      titleFontColor: black
     }
   },
   com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
@@ -290,6 +295,12 @@
       fontColor: white,
       cursor: cursor
     },
+    sticky-note: {
+      selection: selection,
+      font: default-font,
+      fontColor: black,
+      cursor: cursor
+    }
     code-editor: {
       errorBorder: border-error,
       font: default-mono-font,
@@ -425,6 +436,9 @@
       down: button-red,
       up: button-window-bg,
       imageUp: icon-close-white
+    },
+    sticky-note-pin: {
+      up: pin
     },
     close-node-window: {
       imageDown: close-node-pressed,

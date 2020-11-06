@@ -1,5 +1,7 @@
 package games.rednblack.editor.view.ui.widget.actors;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
@@ -8,9 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.kotcrab.vis.ui.widget.VisImageButton;
-import com.kotcrab.vis.ui.widget.VisTextArea;
-import com.kotcrab.vis.ui.widget.VisWindow;
+import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.ModifyStickyNoteCommand;
 import games.rednblack.editor.renderer.data.StickyNoteVO;
@@ -27,11 +27,17 @@ public class StickyNoteActor extends VisWindow {
     private final Vector2 tmp = new Vector2();
     private final VisTextArea contentArea;
     private final HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+    private final VisImageButton pinButton;
 
     private int resizeBorder = 8;
 
     public StickyNoteActor(String id) {
-        super("", "default");
+        super("", "sticky-note");
+        pinButton = new VisImageButton("sticky-note-pin");
+        pinButton.setX(-pinButton.getWidth() / 2f);
+        pinButton.setY(-pinButton.getHeight() / 2f);
+        this.getTitleTable().addActor(pinButton);
+
         setMoveListener();
 
         this.id = id;
@@ -40,9 +46,9 @@ public class StickyNoteActor extends VisWindow {
         setKeepWithinStage(false);
         setResizable(true);
 
-        addCloseButton();
+        //addCloseButton();
 
-        contentArea = StandardWidgetsFactory.createTextArea();
+        contentArea = StandardWidgetsFactory.createTextArea("sticky-note");
         contentArea.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -50,7 +56,21 @@ public class StickyNoteActor extends VisWindow {
                 facade.sendNotification(MsgAPI.ACTION_MODIFY_STICKY_NOTE, payload);
             }
         });
-        add(contentArea).grow();
+        contentArea.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return button == Input.Buttons.RIGHT || super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (button == Input.Buttons.RIGHT) {
+                    showPopupMenu();
+                }
+            }
+        });
+        add(contentArea).padTop(5).padLeft(5).grow();
+        setOrigin(Align.topLeft);
     }
 
     @Override
@@ -85,11 +105,11 @@ public class StickyNoteActor extends VisWindow {
 
     public void show(Group parent) {
         parent.addActor(this);
-        float scale = Sandbox.getInstance().getZoomPercent() / 100f;
-        addAction(Actions.sequence(
-                Actions.scaleTo(0, 0),
-                Actions.scaleTo(scale > 1 ? 1f : scale, scale > 1 ? 1f : scale, .35f, Interpolation.swingOut)
-        ));
+        Action action = Actions.parallel(Actions.parallel(Actions.alpha(0), Actions.alpha(1, 0.125f)),
+                Actions.sequence(Actions.rotateBy(20),
+                        Actions.rotateBy(-35, .25f, Interpolation.smoother),
+                        Actions.rotateBy(15, .25f, Interpolation.swingOut)));
+        addAction(action);
     }
 
     /**
@@ -196,7 +216,7 @@ public class StickyNoteActor extends VisWindow {
             }
 
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                if (button == 0) {
+                if (button == Input.Buttons.LEFT) {
                     updateEdge(x, y);
                     dragging = edge != 0;
                     startX = x;
@@ -208,9 +228,13 @@ public class StickyNoteActor extends VisWindow {
             }
 
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                dragging = false;
-                StickyNoteVO payload = ModifyStickyNoteCommand.payload(StickyNoteActor.this);
-                facade.sendNotification(MsgAPI.ACTION_MODIFY_STICKY_NOTE, payload);
+                if (button == Input.Buttons.LEFT) {
+                    dragging = false;
+                    StickyNoteVO payload = ModifyStickyNoteCommand.payload(StickyNoteActor.this);
+                    facade.sendNotification(MsgAPI.ACTION_MODIFY_STICKY_NOTE, payload);
+                } else if (button == Input.Buttons.RIGHT) {
+                    showPopupMenu();
+                }
             }
 
             public void touchDragged (InputEvent event, float x, float y, int pointer) {
@@ -272,5 +296,20 @@ public class StickyNoteActor extends VisWindow {
                 return isModal();
             }
         });
+    }
+
+    private void showPopupMenu() {
+        PopupMenu popupMenu = new PopupMenu();
+        MenuItem rename = new MenuItem("Remove note");
+        rename.addListener(
+                new ClickListener(Input.Buttons.LEFT) {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        facade.sendNotification(MsgAPI.ACTION_REMOVE_STICKY_NOTE, id);
+                    }
+                });
+        popupMenu.addItem(rename);
+        popupMenu.setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY() - popupMenu.getHeight());
+        Sandbox.getInstance().getUIStage().addActor(popupMenu);
     }
 }
