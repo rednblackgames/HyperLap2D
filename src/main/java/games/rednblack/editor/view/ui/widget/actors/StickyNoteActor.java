@@ -2,6 +2,7 @@ package games.rednblack.editor.view.ui.widget.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
@@ -11,12 +12,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.*;
+import com.kotcrab.vis.ui.widget.color.ColorPicker;
+import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.ModifyStickyNoteCommand;
 import games.rednblack.editor.renderer.data.StickyNoteVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
 
 public class StickyNoteActor extends VisWindow {
     public String id;
@@ -46,8 +50,6 @@ public class StickyNoteActor extends VisWindow {
         setKeepWithinStage(false);
         setResizable(true);
 
-        //addCloseButton();
-
         contentArea = StandardWidgetsFactory.createTextArea("sticky-note");
         contentArea.addListener(new ChangeListener() {
             @Override
@@ -71,25 +73,6 @@ public class StickyNoteActor extends VisWindow {
         });
         add(contentArea).padTop(5).padLeft(5).grow();
         setOrigin(Align.topLeft);
-    }
-
-    @Override
-    public void addCloseButton() {
-        VisImageButton closeButton = new VisImageButton("close-window");
-        this.getTitleTable().add(closeButton).padRight(0);
-        closeButton.addListener(new ChangeListener() {
-            @Override
-            public void changed (ChangeEvent event, Actor actor) {
-                facade.sendNotification(MsgAPI.ACTION_REMOVE_STICKY_NOTE, id);
-            }
-        });
-        closeButton.addListener(new ClickListener() {
-            @Override
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                event.cancel();
-                return true;
-            }
-        });
     }
 
     @Override
@@ -309,6 +292,33 @@ public class StickyNoteActor extends VisWindow {
                     }
                 });
         popupMenu.addItem(rename);
+        MenuItem changeColor = new MenuItem("Change color");
+        changeColor.addListener(
+                new ClickListener(Input.Buttons.LEFT) {
+                    boolean init = false;
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        ColorPicker picker = new HyperLapColorPicker(new ColorPickerAdapter() {
+                            @Override
+                            public void finished(Color newColor) {
+                                setColor(newColor);
+                                StickyNoteVO payload = ModifyStickyNoteCommand.payload(StickyNoteActor.this);
+                                facade.sendNotification(MsgAPI.ACTION_MODIFY_STICKY_NOTE, payload);
+                            }
+
+                            @Override
+                            public void changed(Color newColor) {
+                                if (init)
+                                    setColor(newColor);
+                            }
+                        });
+                        init = true;
+                        picker.setColor(getColor());
+                        Sandbox.getInstance().getUIStage().addActor(picker.fadeIn());
+                    }
+                });
+        popupMenu.addItem(changeColor);
+
         popupMenu.setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY() - popupMenu.getHeight());
         Sandbox.getInstance().getUIStage().addActor(popupMenu);
     }

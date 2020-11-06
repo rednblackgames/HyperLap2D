@@ -15,6 +15,7 @@ public class StickyNotesUI extends Group {
         note.setPosition(noteVO.x, noteVO.y);
         note.setSize(noteVO.width, noteVO.height);
         note.setContent(noteVO.content);
+        note.setColor(noteVO.tint[0], noteVO.tint[1], noteVO.tint[2], noteVO.tint[3]);
         note.show(this);
     }
 
@@ -24,6 +25,7 @@ public class StickyNotesUI extends Group {
             note.setPosition(noteVO.x, noteVO.y);
             note.setSize(noteVO.width, noteVO.height);
             note.setContent(noteVO.content);
+            note.setColor(noteVO.tint[0], noteVO.tint[1], noteVO.tint[2], noteVO.tint[3]);
         }
     }
 

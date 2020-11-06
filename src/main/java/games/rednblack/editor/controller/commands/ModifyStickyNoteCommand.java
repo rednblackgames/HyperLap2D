@@ -28,6 +28,10 @@ public class ModifyStickyNoteCommand extends RevertibleCommand {
         noteVO.x = payload.x;
         noteVO.y = payload.y;
         noteVO.content = payload.content;
+        noteVO.tint[0] = payload.tint[0];
+        noteVO.tint[1] = payload.tint[1];
+        noteVO.tint[2] = payload.tint[2];
+        noteVO.tint[3] = payload.tint[3];
 
         facade.sendNotification(DONE, noteVO);
     }
@@ -42,6 +46,10 @@ public class ModifyStickyNoteCommand extends RevertibleCommand {
         noteVO.x = backup.x;
         noteVO.y = backup.y;
         noteVO.content = backup.content;
+        noteVO.tint[0] = backup.tint[0];
+        noteVO.tint[1] = backup.tint[1];
+        noteVO.tint[2] = backup.tint[2];
+        noteVO.tint[3] = backup.tint[3];
 
         facade.sendNotification(DONE, noteVO);
     }
@@ -55,6 +63,11 @@ public class ModifyStickyNoteCommand extends RevertibleCommand {
         noteVO.x = noteActor.getWorldX();
         noteVO.y = noteActor.getWorldY();
         noteVO.content = noteActor.getContent();
+        noteVO.tint = new float[4];
+        noteVO.tint[0] = noteActor.getColor().r;
+        noteVO.tint[1] = noteActor.getColor().g;
+        noteVO.tint[2] = noteActor.getColor().b;
+        noteVO.tint[3] = noteActor.getColor().a;
 
         return noteVO;
     }
