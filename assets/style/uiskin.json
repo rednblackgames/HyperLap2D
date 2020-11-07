@@ -437,9 +437,6 @@
       up: button-window-bg,
       imageUp: icon-close-white
     },
-    sticky-note-pin: {
-      up: pin
-    },
     close-node-window: {
       imageDown: close-node-pressed,
       imageOver: close-node-hover,

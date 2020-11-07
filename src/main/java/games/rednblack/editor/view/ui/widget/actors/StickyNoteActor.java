@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.*;
@@ -31,13 +30,13 @@ public class StickyNoteActor extends VisWindow {
     private final Vector2 tmp = new Vector2();
     private final VisTextArea contentArea;
     private final HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
-    private final VisImageButton pinButton;
+    private final VisImage pinButton;
 
     private int resizeBorder = 8;
 
     public StickyNoteActor(String id) {
         super("", "sticky-note");
-        pinButton = new VisImageButton("sticky-note-pin");
+        pinButton = new VisImage("pin");
         pinButton.setX(-pinButton.getWidth() / 2f);
         pinButton.setY(-pinButton.getHeight() / 2f);
         this.getTitleTable().addActor(pinButton);
@@ -49,15 +48,9 @@ public class StickyNoteActor extends VisWindow {
         setKeepWithinParent(false);
         setKeepWithinStage(false);
         setResizable(true);
+        setMovable(false);
 
         contentArea = StandardWidgetsFactory.createTextArea("sticky-note");
-        contentArea.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                StickyNoteVO payload = ModifyStickyNoteCommand.payload(StickyNoteActor.this);
-                facade.sendNotification(MsgAPI.ACTION_MODIFY_STICKY_NOTE, payload);
-            }
-        });
         contentArea.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -142,14 +135,19 @@ public class StickyNoteActor extends VisWindow {
     }
 
     @Override
+    public void setSize(float width, float height) {
+        super.setSize(width, height);
+        setOrigin(Align.topLeft);
+    }
+
+    @Override
     public void draw(Batch batch, float parentAlpha) {
         tmp.set(worldX, worldY);
         Sandbox.getInstance().worldToScreen(tmp);
-        if (getActions().size == 0) {
-            float scale = Sandbox.getInstance().getZoomPercent() / 100f;
-            setScale(scale > 1 ? 1f : scale);
-        }
-        super.setPosition(tmp.x, tmp.y);
+        float scale = Sandbox.getInstance().getZoomPercent() / 100f;
+        setScale(Math.min(Math.max(scale, 0.3f), 1f));
+        super.setX(tmp.x);
+        super.setY(tmp.y - ((1 - getScaleY()) * getHeight())); //Correct y position when scale
         super.draw(batch, parentAlpha);
     }
 
@@ -177,6 +175,38 @@ public class StickyNoteActor extends VisWindow {
 
     private void setMoveListener() {
         clearListeners();
+        pinButton.addListener(new InputListener() {
+            float startX, startY;
+            private final Vector2 tmp = new Vector2();
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                event.stop();
+                dragging = true;
+                startX = x;
+                startY = y;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                dragging = false;
+                StickyNoteVO payload = ModifyStickyNoteCommand.payload(StickyNoteActor.this);
+                facade.sendNotification(MsgAPI.ACTION_MODIFY_STICKY_NOTE, payload);
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                event.stop();
+                float windowX = getX(), windowY = getY();
+                float amountX = x - startX, amountY = y - startY;
+
+                windowX += amountX * getScaleX();
+                windowY += amountY * getScaleY();
+
+                setBounds(Math.round(windowX), Math.round(windowY + ((1 - getScaleY()) * getHeight())), getWidth(), getHeight());
+            }
+        });
         addListener(new InputListener() {
             float startX, startY, lastX, lastY;
 
@@ -230,20 +260,20 @@ public class StickyNoteActor extends VisWindow {
 
                 if ((edge & MOVE) != 0) {
                     float amountX = x - startX, amountY = y - startY;
-                    windowX += amountX;
-                    windowY += amountY;
+                    windowX += amountX * getScaleX();
+                    windowY += amountY * getScaleY();
                 }
                 if ((edge & Align.left) != 0) {
                     float amountX = x - startX;
                     if (width - amountX < minWidth) amountX = -(minWidth - width);
                     width -= amountX;
-                    windowX += amountX;
+                    windowX += amountX * getScaleX();
                 }
                 if ((edge & Align.bottom) != 0) {
                     float amountY = y - startY;
                     if (height - amountY < minHeight) amountY = -(minHeight - height);
                     height -= amountY;
-                    windowY += amountY;
+                    windowY += amountY * getScaleY();
                 }
                 if ((edge & Align.right) != 0) {
                     float amountX = x - lastX - width;
@@ -255,7 +285,7 @@ public class StickyNoteActor extends VisWindow {
                     if (height + amountY < minHeight) amountY = minHeight - height;
                     height += amountY;
                 }
-                setBounds(Math.round(windowX), Math.round(windowY), Math.round(width), Math.round(height));
+                setBounds(Math.round(windowX), Math.round(windowY + ((1 - getScaleY()) * getHeight())), Math.round(width), Math.round(height));
             }
 
             public boolean mouseMoved (InputEvent event, float x, float y) {
