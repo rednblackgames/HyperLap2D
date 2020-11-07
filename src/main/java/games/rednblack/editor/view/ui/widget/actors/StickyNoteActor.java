@@ -70,13 +70,9 @@ public class StickyNoteActor extends VisWindow {
 
     @Override
     public void close() {
-        addAction(Actions.sequence(Actions.scaleTo(0, 0, 0.3f, Interpolation.swingIn), new Action() {
-            @Override
-            public boolean act (float delta) {
-                remove();
-                return true;
-            }
-        }));
+        Action action = Actions.parallel(Actions.rotateBy(-35, .25f, Interpolation.swingIn),
+                Actions.sequence(Actions.alpha(0, .25f), Actions.run(this::remove)));
+        addAction(action);
     }
 
     public void show(Group parent) {
