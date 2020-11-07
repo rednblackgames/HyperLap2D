@@ -13,6 +13,10 @@ public class RemoveStickyNoteCommand extends RevertibleCommand {
     public void doAction() {
         String id = notification.getBody();
         SceneVO sceneVO = sandbox.getSceneControl().getCurrentSceneVO();
+        if (sceneVO.composite.sStickyNotes.get(id) == null) {
+            cancel();
+            return;
+        }
         backup = new StickyNoteVO(sceneVO.composite.sStickyNotes.get(id));
         sceneVO.composite.sStickyNotes.remove(id);
 
