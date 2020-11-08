@@ -16,7 +16,7 @@ public class ModifyStickyNoteCommand extends RevertibleCommand {
         SceneVO sceneVO = sandbox.getSceneControl().getCurrentSceneVO();
         StickyNoteVO noteVO = sceneVO.composite.sStickyNotes.get(payload.id);
 
-        if (payload.equals(noteVO)) {
+        if (noteVO == null || payload.equals(noteVO)) {
             cancel();
             return;
         }
@@ -40,6 +40,11 @@ public class ModifyStickyNoteCommand extends RevertibleCommand {
     public void undoAction() {
         SceneVO sceneVO = sandbox.getSceneControl().getCurrentSceneVO();
         StickyNoteVO noteVO = sceneVO.composite.sStickyNotes.get(backup.id);
+
+        if (noteVO == null || backup.equals(noteVO)) {
+            cancel();
+            return;
+        }
 
         noteVO.width = backup.width;
         noteVO.height = backup.height;
