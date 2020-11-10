@@ -203,7 +203,7 @@ public class Sandbox {
 
         // add additional components
         // TODO: maybe move this somewhere else
-        sceneControl.sceneLoader.addComponentsByTagName("button", ButtonComponent.class);
+        sceneControl.sceneLoader.addComponentByTagName("button", ButtonComponent.class);
 
         CommandManager commandManager = facade.retrieveProxy(CommandManager.NAME);
         commandManager.initHistory();
