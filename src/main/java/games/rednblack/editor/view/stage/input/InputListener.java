@@ -4,20 +4,20 @@ import com.badlogic.ashley.core.Entity;
 
 public interface InputListener {
 	
-	public boolean keyDown(Entity entity, int keycode);
+	boolean keyDown(Entity entity, int keycode);
 	
-	public boolean keyUp(Entity entity, int keycode);
+	boolean keyUp(Entity entity, int keycode);
 	
-	public boolean keyTyped(Entity entity, char character);
+	boolean keyTyped(Entity entity, char character);
 
-	public boolean touchDown(Entity entity, float screenX, float screenY, int pointer, int button);
+	boolean touchDown(Entity entity, float screenX, float screenY, int pointer, int button);
 	
-	public void touchUp(Entity entity, float screenX, float screenY, int pointer, int button);
+	void touchUp(Entity entity, float screenX, float screenY, int pointer, int button);
 	
-	public void touchDragged(Entity entity, float screenX, float screenY, int pointer);
+	void touchDragged(Entity entity, float screenX, float screenY, int pointer);
 	
-	public boolean mouseMoved(Entity entity, float screenX, float screenY);
+	boolean mouseMoved(Entity entity, float screenX, float screenY);
 	
-	public boolean scrolled(Entity entity, float amountX, float amountY);
+	boolean scrolled(Entity entity, float amountX, float amountY);
 
 }

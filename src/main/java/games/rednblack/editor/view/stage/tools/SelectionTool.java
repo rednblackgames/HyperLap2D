@@ -276,7 +276,7 @@ public class SelectionTool extends SimpleTool {
     }
 
     @Override
-    public void stageMouseScrolled(float amountX, float amountY) {
+    public boolean stageMouseScrolled(float amountX, float amountY) {
         if (isItemDown) {
             for (Entity itemInstance : sandbox.getSelector().getCurrentSelection()) {
                 transformComponent = ComponentRetriever.get(itemInstance, TransformComponent.class);
@@ -293,6 +293,8 @@ public class SelectionTool extends SimpleTool {
                 HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, itemInstance);
             }
         }
+
+        return isItemDown;
     }
 
     @Override

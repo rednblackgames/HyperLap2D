@@ -431,19 +431,20 @@ public class SandboxMediator extends Mediator<Sandbox> {
         public boolean scrolled(Entity entity, float amountX, float amountY) {
             Sandbox sandbox = Sandbox.getInstance();
             // well, duh
-            if (amountX == 0) return false;
+            if (amountX == 0 && amountY == 0) return false;
 
             // Control pressed as well
             if (isControlPressed()) {
                 float zoomPercent = sandbox.getZoomPercent();
-                zoomPercent-= amountX *4f;
+                zoomPercent-= amountY * 4f;
                 if(zoomPercent < 5 ) zoomPercent = 5;
 
                 sandbox.setZoomPercent(zoomPercent, true);
-            }
-
-            if (currentSelectedTool != null) {
-                currentSelectedTool.stageMouseScrolled(amountX, amountY);
+            } else {
+                if (currentSelectedTool != null
+                        && !currentSelectedTool.stageMouseScrolled(amountX, amountY)) {
+                    viewComponent.panSceneBy(amountX * 10f, -amountY * 10f);
+                }
             }
 
             return false;

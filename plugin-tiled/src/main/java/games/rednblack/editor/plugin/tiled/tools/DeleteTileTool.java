@@ -56,8 +56,8 @@ public class DeleteTileTool implements Tool {
     }
 
     @Override
-    public void stageMouseScrolled(float amountX, float amountY) {
-
+    public boolean stageMouseScrolled(float amountX, float amountY) {
+        return false;
     }
 
     @Override
