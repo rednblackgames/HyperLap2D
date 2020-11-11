@@ -4,7 +4,7 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
-        classpath 'com.badlogicgames.gdx:gdx-tools:1.9.11'
+        classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         classpath 'com.novoda:bintray-release:0.9.2'
     }
 }
@@ -25,14 +25,6 @@ repositories {
 
 ext {
     appName = 'HyperLap2D'
-    gdxVersion = '1.9.11'
-    gdxVersionBeta = '1.9.11'
-    box2dlightsVersion = '1.6-SNAPSHOT'
-    ashleyVersion = '1.7.3'
-    spineVersion = '3.8.55.1'
-    visuiVersion = '1.4.7-SNAPSHOT'
-    typingLabelVersion = '1.2.0'
-    shapedrawerVersion = '2.3.0'
 
     packMain = ["art/textures", "assets/style/", "uiskin"]
     packSplash = ["art/splash_textures", "assets/splash/", "splash"]

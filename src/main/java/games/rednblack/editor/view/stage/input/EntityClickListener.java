@@ -216,7 +216,7 @@ public class EntityClickListener implements InputListener {
 	}
 
 	@Override
-	public boolean scrolled(Entity entity, int amount) {
+	public boolean scrolled(Entity entity, float amountX, float amountY) {
 		// TODO Auto-generated method stub
 		return false;
 	}

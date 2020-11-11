@@ -233,7 +233,7 @@ public class EditingZone extends Actor {
         batch.setColor(Color.WHITE.r, Color.WHITE.g, Color.WHITE.b, Color.WHITE.a * parentAlpha);
     }
 
-    public void zoomBy(int amount) {
+    public void zoomBy(float amount) {
         float defaultSize = 1.0f - amount*0.12f;
         currZoom*=defaultSize;
     }

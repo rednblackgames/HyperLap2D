@@ -276,13 +276,13 @@ public class SelectionTool extends SimpleTool {
     }
 
     @Override
-    public void stageMouseScrolled(int amount) {
+    public void stageMouseScrolled(float amountX, float amountY) {
         if (isItemDown) {
             for (Entity itemInstance : sandbox.getSelector().getCurrentSelection()) {
                 transformComponent = ComponentRetriever.get(itemInstance, TransformComponent.class);
 
                 float degreeAmount = 1;
-                if (amount < 0) degreeAmount = -1;
+                if (amountX < 0) degreeAmount = -1;
                 // And if shift is pressed, the rotation amount is bigger
                 if (isShiftPressed()) {
                     degreeAmount = degreeAmount * 30;

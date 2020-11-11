@@ -185,7 +185,7 @@ public class SandboxInputAdapter implements InputProcessor {
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(float amountX, float amountY) {
 		rootEntity = sandbox.getCurrentViewingEntity();
 
 		if(rootEntity == null){
@@ -194,7 +194,7 @@ public class SandboxInputAdapter implements InputProcessor {
 
 		Array<InputListener> sandboxListeners = sandbox.getAllListeners();
 		for (int i = 0, s = sandboxListeners.size; i < s; i++) {
-			sandboxListeners.get(i).scrolled(null, amount);
+			sandboxListeners.get(i).scrolled(null, amountX, amountY);
 		}
 
 		//TODO scroll for other Entities don't know how deep tis should go all entities or only hit tested

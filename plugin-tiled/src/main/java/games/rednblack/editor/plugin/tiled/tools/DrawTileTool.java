@@ -67,7 +67,7 @@ public class DrawTileTool implements Tool {
     }
 
     @Override
-    public void stageMouseScrolled(int amount) {
+    public void stageMouseScrolled(float amountX, float amountY) {
 
     }
 

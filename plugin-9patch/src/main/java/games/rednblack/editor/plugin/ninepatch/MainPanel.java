@@ -99,8 +99,8 @@ public class MainPanel extends H2DDialog {
     public void setListeners(Stage stage) {
         stage.addListener(new InputListener() {
             @Override
-            public boolean scrolled(InputEvent event, float x, float y, int amount) {
-                editingZone.zoomBy(amount);
+            public boolean scrolled(InputEvent event, float x, float y, float amountX, float amountY) {
+                editingZone.zoomBy(amountX);
                 return false;
             }
         });

@@ -18,6 +18,6 @@ public interface InputListener {
 	
 	public boolean mouseMoved(Entity entity, float screenX, float screenY);
 	
-	public boolean scrolled(Entity entity, int amount);
+	public boolean scrolled(Entity entity, float amountX, float amountY);
 
 }

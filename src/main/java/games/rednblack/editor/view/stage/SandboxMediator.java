@@ -24,6 +24,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.SnapshotArray;
 import games.rednblack.editor.utils.KeyBindingsLayout;
@@ -170,16 +171,10 @@ public class SandboxMediator extends Mediator<Sandbox> {
     }
 
     public Vector2 getStageCoordinates() {
-        // TODO: remove this shit
-        Engine engine = getViewComponent().getEngine();
-        Family rootFamily = Family.all(ViewPortComponent.class).get();
-        Entity rootEntity = engine.getEntitiesFor(rootFamily).iterator().next();
+        Vector3 vec = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 1);
+        viewComponent.getCamera().unproject(vec);
 
-        ViewPortComponent viewPortComponent = ComponentRetriever.get(rootEntity, ViewPortComponent.class);
-        Vector2 vec = new Vector2(Gdx.input.getX(), Gdx.input.getY());
-        viewPortComponent.viewPort.unproject(vec);
-
-        return vec;
+        return new Vector2(vec.x, vec.y);
     }
 
     public class SandboxItemEventListener extends EntityClickListener {
@@ -238,7 +233,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
         }
 
         @Override
-        public boolean scrolled(Entity entity, int amount) {
+        public boolean scrolled(Entity entity, float amountX, float amountY) {
 
             return false;
         }
@@ -433,22 +428,22 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
 
         @Override
-        public boolean scrolled(Entity entity, int amount) {
+        public boolean scrolled(Entity entity, float amountX, float amountY) {
             Sandbox sandbox = Sandbox.getInstance();
             // well, duh
-            if (amount == 0) return false;
+            if (amountX == 0) return false;
 
             // Control pressed as well
             if (isControlPressed()) {
                 float zoomPercent = sandbox.getZoomPercent();
-                zoomPercent-=amount*4f;
+                zoomPercent-= amountX *4f;
                 if(zoomPercent < 5 ) zoomPercent = 5;
 
                 sandbox.setZoomPercent(zoomPercent, true);
             }
 
             if (currentSelectedTool != null) {
-                currentSelectedTool.stageMouseScrolled(amount);
+                currentSelectedTool.stageMouseScrolled(amountX, amountY);
             }
 
             return false;

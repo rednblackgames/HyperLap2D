@@ -61,7 +61,7 @@ public class PanTool extends SimpleTool {
     }
 
     @Override
-    public void stageMouseScrolled(int amount) {
+    public void stageMouseScrolled(float amountX, float amountY) {
 
     }
 
