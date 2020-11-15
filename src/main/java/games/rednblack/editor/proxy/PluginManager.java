@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.h2d.common.IItemCommand;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.plugins.H2DPlugin;
@@ -50,6 +51,8 @@ import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
 import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
 import games.rednblack.h2d.common.vo.CursorData;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
+import games.rednblack.h2d.common.vo.ProjectVO;
+import games.rednblack.h2d.common.vo.SceneConfigVO;
 import org.puremvc.java.interfaces.IFacade;
 import org.puremvc.java.patterns.proxy.Proxy;
 
@@ -271,5 +274,23 @@ public class PluginManager extends Proxy implements PluginAPI {
     public EditorConfigVO getEditorConfig() {
         SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
         return settingsManager.editorConfigVO;
+    }
+
+    @Override
+    public SceneConfigVO getCurrentSceneConfigVO() {
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        return projectManager.getCurrentSceneConfigVO();
+    }
+
+    @Override
+    public ProjectInfoVO getCurrentProjectInfoVO() {
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        return projectManager.getCurrentProjectInfoVO();
+    }
+
+    @Override
+    public ProjectVO getCurrentProjectVO() {
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        return projectManager.getCurrentProjectVO();
     }
 }
