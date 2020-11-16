@@ -43,7 +43,6 @@ public class HyperLap2DApp extends ApplicationAdapter {
         config2.setDecorated(false);
         config2.useVsync(false);
         config2.setIdleFPS(60);
-        config2.setBackBufferConfig(8,8,8,8,16,8,16);
         config2.setWindowIcon("hyperlap_icon_96.png");
 
         splashWindow = app.newWindow(new SplashScreenAdapter(), config2);
@@ -61,7 +60,6 @@ public class HyperLap2DApp extends ApplicationAdapter {
                 config.setInitialVisible(false);
                 config.setMaximized(true);
                 config.setWindowIcon("hyperlap_icon_96.png");
-                config.setBackBufferConfig(8,8,8,8,16,8,16);
                 config.setWindowSizeLimits(920, 800, -1, -1);
                 if (SystemUtils.IS_OS_WINDOWS)
                     config.setWindowPosition(0, (int) (windowHeight * .04));
