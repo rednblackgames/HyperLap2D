@@ -101,6 +101,8 @@ public class SandboxMediator extends Mediator<Sandbox> {
                 MsgAPI.TOOL_SELECTED,
                 MsgAPI.NEW_ITEM_ADDED,
                 MsgAPI.NEW_TOOL_ADDED,
+                MsgAPI.RESIZE,
+                MsgAPI.DISPOSE,
                 CompositeCameraChangeCommand.DONE,
                 AddComponentToItemCommand.DONE,
                 RemoveComponentFromItemCommand.DONE,
@@ -127,6 +129,13 @@ public class SandboxMediator extends Mediator<Sandbox> {
                 break;
             case PanTool.SCENE_PANNED:
                 viewComponent.scenePanned();
+                break;
+            case MsgAPI.RESIZE:
+                int[] data = notification.getBody();
+                viewComponent.resize(data[0], data[1]);
+                break;
+            case MsgAPI.DISPOSE:
+                viewComponent.dispose();
                 break;
             default:
                 break;

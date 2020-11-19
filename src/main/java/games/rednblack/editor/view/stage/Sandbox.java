@@ -522,4 +522,12 @@ public class Sandbox {
     public int getPixelPerWU() {
         return (int) sceneLoader.getPixelsPerWU();
     }
+
+    public void dispose() {
+        sceneLoader.dispose();
+    }
+
+    public void resize(int width, int height) {
+        sceneLoader.resize(width, height);
+    }
 }

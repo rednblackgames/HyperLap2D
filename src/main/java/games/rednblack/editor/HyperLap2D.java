@@ -154,7 +154,7 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
 
     @Override
     public void dispose() {
-        closeRequested();
+        sendNotification(MsgAPI.DISPOSE);
     }
 
     @Override
@@ -232,7 +232,6 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
     public boolean closeRequested() {
         facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> {
             WhitePixel.disposeShared();
-            sendNotification(MsgAPI.DISPOSE);
             VisUI.dispose();
 
             SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);

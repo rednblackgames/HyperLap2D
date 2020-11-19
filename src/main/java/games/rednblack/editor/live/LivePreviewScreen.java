@@ -71,6 +71,13 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
     @Override
     public void dispose() {
         super.dispose();
+        sceneLoader.dispose();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        sceneLoader.resize(width, height);
     }
 
     @Override
