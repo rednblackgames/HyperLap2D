@@ -80,7 +80,8 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
                 EditMenu.REDO,
                 //General
                 ProjectManager.PROJECT_OPENED,
-                HyperLap2DMenuBar.RECENT_LIST_MODIFIED
+                HyperLap2DMenuBar.RECENT_LIST_MODIFIED,
+                MsgAPI.CREATE
         };
     }
 
@@ -114,6 +115,9 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
         switch (notification.getName()) {
             case ProjectManager.PROJECT_OPENED:
                 onProjectOpened();
+                break;
+            case MsgAPI.CREATE:
+                viewComponent.setProjectOpen(false);
                 break;
         }
     }

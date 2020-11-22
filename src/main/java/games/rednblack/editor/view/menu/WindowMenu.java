@@ -1,5 +1,6 @@
 package games.rednblack.editor.view.menu;
 
+import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import games.rednblack.editor.event.MenuItemListener;
 
@@ -23,8 +24,8 @@ public class WindowMenu extends H2DMenu {
 
     @Override
     public void setProjectOpen(boolean open) {
-        customVars.setDisabled(!open);
-        animations.setDisabled(!open);
+        for (MenuItem menuItem : new Array.ArrayIterator<>(itemsList))
+            menuItem.setDisabled(!open);
     }
 
 }
