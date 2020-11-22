@@ -36,7 +36,7 @@ public class UIResourcesBox extends UICollapsibleBox {
     private ImageTabbedPane tabbedPane;
 
     public UIResourcesBox() {
-        super("Resources", 230);
+        super("Resources");
         facade = HyperLap2DFacade.getInstance();
 
         setMovable(false);
@@ -62,7 +62,7 @@ public class UIResourcesBox extends UICollapsibleBox {
         });
         contentTable.add(tabbedPane.getTable()).expandX().fillX().growX().padTop(8);
         contentTable.row();
-        contentTable.add(tabContent).expandX().width(230);
+        contentTable.add(tabContent).expandX().width(BOX_DEFAULT_WIDTH);
         contentTable.row();
         createCollapsibleWidget(contentTable);
     }

@@ -32,9 +32,15 @@ import com.kotcrab.vis.ui.widget.VisWindow;
  * Created by sargis on 4/29/15.
  */
 public class UICollapsibleBox extends VisWindow {
+    protected static final int BOX_DEFAULT_WIDTH = 240;
+
     private final VisImageButton collapsibleButton;
     private final VisTable mainTable;
     protected CollapsibleWidget collapsibleWidget;
+
+    public UICollapsibleBox(String title) {
+        this(title, BOX_DEFAULT_WIDTH);
+    }
 
     public UICollapsibleBox(String title, int width) {
         super(title);
@@ -61,6 +67,6 @@ public class UICollapsibleBox extends VisWindow {
 
     protected void createCollapsibleWidget(Table table) {
         collapsibleWidget = new CollapsibleWidget(table);
-        mainTable.add(collapsibleWidget).expand().top();
+        mainTable.add(collapsibleWidget).growX().top();
     }
 }

@@ -34,7 +34,7 @@ public class UIMultiPropertyBox extends UICollapsibleBox {
     private VisTable scrollPaneInner;
 
     public UIMultiPropertyBox() {
-        super("Properties", 230);
+        super("Properties");
         setMovable(false);
         propertiesTable = new VisTable();
         scrollPaneInner = new VisTable();
@@ -42,7 +42,7 @@ public class UIMultiPropertyBox extends UICollapsibleBox {
 
         scrollPane.setFadeScrollBars(true);
 
-        propertiesTable.add(scrollPane).maxHeight(Gdx.graphics.getHeight() * 0.38f);
+        propertiesTable.add(scrollPane).maxHeight(Gdx.graphics.getHeight() * 0.38f).width(BOX_DEFAULT_WIDTH);
         createCollapsibleWidget(propertiesTable);
     }
 
@@ -52,7 +52,7 @@ public class UIMultiPropertyBox extends UICollapsibleBox {
     }
 
     public void addPropertyBox(UIAbstractProperties viewComponent) {
-        scrollPaneInner.add(viewComponent).width(220).expandX();
+        scrollPaneInner.add(viewComponent).growX();
         scrollPaneInner.row();
     }
 }

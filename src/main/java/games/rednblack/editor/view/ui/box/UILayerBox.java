@@ -68,7 +68,7 @@ public class UILayerBox extends UICollapsibleBox {
     private Array<UILayerItemSlot> rows = new Array<>();
 
     public UILayerBox() {
-        super("Layers", 230);
+        super("Layers");
 
         facade = HyperLap2DFacade.getInstance();
 
@@ -77,7 +77,7 @@ public class UILayerBox extends UICollapsibleBox {
 
         layersTable = new VisTable();
         scrollPane = StandardWidgetsFactory.createScrollPane(layersTable);
-        contentTable.add(scrollPane).padTop(8).width(222).height(150);
+        contentTable.add(scrollPane).padLeft(4).padTop(8).width(BOX_DEFAULT_WIDTH - 8).height(150);
         layersTable.top();
 
         scrollPane.layout();
