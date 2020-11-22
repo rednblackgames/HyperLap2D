@@ -25,6 +25,7 @@ import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.controller.commands.RevertibleCommand;
 import games.rednblack.editor.controller.commands.TransactiveCommand;
 import games.rednblack.editor.view.menu.FileMenu;
+import games.rednblack.h2d.common.MenuAPI;
 import org.puremvc.java.patterns.proxy.Proxy;
 
 public class CommandManager extends Proxy {
@@ -130,6 +131,6 @@ public class CommandManager extends Proxy {
     private void autoSave() {
         SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
         if (settingsManager.editorConfigVO.autoSave)
-            facade.sendNotification(FileMenu.SAVE_PROJECT, null, FileMenu.FILE_MENU);
+            facade.sendNotification(FileMenu.SAVE_PROJECT, null, MenuAPI.FILE_MENU);
     }
 }

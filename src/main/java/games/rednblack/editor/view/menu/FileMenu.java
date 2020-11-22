@@ -10,9 +10,10 @@ import games.rednblack.editor.utils.KeyBindingsLayout;
 import java.io.File;
 import java.util.ArrayList;
 
+import static games.rednblack.h2d.common.MenuAPI.FILE_MENU;
+
 public class FileMenu extends H2DMenu {
 
-    public static final String FILE_MENU = HyperLap2DMenuBar.prefix + ".FILE_MENU";
     public static final String NEW_PROJECT = HyperLap2DMenuBar.prefix + ".NEW_PROJECT";
     public static final String OPEN_PROJECT = HyperLap2DMenuBar.prefix + ".OPEN_PROJECT";
     public static final String SAVE_PROJECT = HyperLap2DMenuBar.prefix + ".SAVE_PROJECT";

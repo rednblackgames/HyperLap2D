@@ -22,6 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.proxy.SettingsManager;
+import games.rednblack.h2d.common.MenuAPI;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.data.manager.PreferencesManager;
@@ -98,10 +99,10 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
             return;
         }
         switch (type) {
-            case FileMenu.FILE_MENU:
+            case MenuAPI.FILE_MENU:
                 handleFileMenuNotification(notification);
                 break;
-            case EditMenu.EDIT_MENU:
+            case MenuAPI.EDIT_MENU:
                 handleEditMenuNotification(notification);
                 break;
             default:

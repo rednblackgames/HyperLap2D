@@ -36,6 +36,7 @@ import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
+import games.rednblack.h2d.common.MenuAPI;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.view.ui.widget.actors.basic.SandboxBackUI;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -177,14 +178,14 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
     public boolean keyDown(int keycode) {
         switch (KeyBindingsLayout.mapAction(keycode)) {
             case KeyBindingsLayout.NEW_PROJECT:
-                facade.sendNotification(FileMenu.NEW_PROJECT, null, FileMenu.FILE_MENU);
+                facade.sendNotification(FileMenu.NEW_PROJECT, null, MenuAPI.FILE_MENU);
                 break;
             case KeyBindingsLayout.OPEN_PROJECT:
-                facade.sendNotification(FileMenu.OPEN_PROJECT, null, FileMenu.FILE_MENU);
+                facade.sendNotification(FileMenu.OPEN_PROJECT, null, MenuAPI.FILE_MENU);
                 break;
             case KeyBindingsLayout.SAVE_PROJECT:
                 if (sandbox.sceneControl.getCurrentSceneVO() != null) {
-                    facade.sendNotification(FileMenu.SAVE_PROJECT, null, FileMenu.FILE_MENU);
+                    facade.sendNotification(FileMenu.SAVE_PROJECT, null, MenuAPI.FILE_MENU);
                 }
                 break;
             case KeyBindingsLayout.EXPORT_PROJECT:
@@ -194,11 +195,11 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
                 break;
             case KeyBindingsLayout.IMPORT_TO_LIBRARY:
                 if (sandbox.sceneControl.getCurrentSceneVO() != null) {
-                    facade.sendNotification(FileMenu.IMPORT_TO_LIBRARY, null, FileMenu.FILE_MENU);
+                    facade.sendNotification(FileMenu.IMPORT_TO_LIBRARY, null, MenuAPI.FILE_MENU);
                 }
                 break;
             case KeyBindingsLayout.OPEN_SETTINGS:
-                facade.sendNotification(FileMenu.SETTINGS, null, FileMenu.FILE_MENU);
+                facade.sendNotification(FileMenu.SETTINGS, null, MenuAPI.FILE_MENU);
                 break;
             case KeyBindingsLayout.EXIT_APP:
                 HyperLap2DApp.getInstance().hyperlap2D.closeRequested();

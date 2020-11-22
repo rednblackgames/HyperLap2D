@@ -20,9 +20,12 @@ package games.rednblack.editor.view.menu;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import games.rednblack.editor.event.MenuItemListener;
+import games.rednblack.editor.view.ui.widget.CustomMenu;
 import games.rednblack.editor.view.ui.widget.CustomMenuBar;
+import games.rednblack.h2d.common.MenuAPI;
 
 public class HyperLap2DMenuBar extends CustomMenuBar {
 
@@ -35,15 +38,18 @@ public class HyperLap2DMenuBar extends CustomMenuBar {
     private final EditMenu editMenu;
     private final WindowMenu windowMenu;
     private final HelpMenu helpMenu;
+    private final ResourceMenu resourceMenu;
 
     public HyperLap2DMenuBar() {
         fileMenu = new FileMenu();
         editMenu = new EditMenu();
+        resourceMenu = new ResourceMenu();
         windowMenu = new WindowMenu();
         helpMenu = new HelpMenu();
 
         addMenu(fileMenu);
         addMenu(editMenu);
+        addMenu(resourceMenu);
         addMenu(windowMenu);
         addMenu(helpMenu);
         setProjectOpen(false);
@@ -54,23 +60,26 @@ public class HyperLap2DMenuBar extends CustomMenuBar {
     }
 
     public void setProjectOpen(boolean open) {
-        fileMenu.setProjectOpen(open);
-        editMenu.setProjectOpen(open);
-        windowMenu.setProjectOpen(open);
-        helpMenu.setProjectOpen(open);
+        for (CustomMenu m : new Array.ArrayIterator<>(menus)) {
+            H2DMenu menu = (H2DMenu) m;
+            menu.setProjectOpen(open);
+        }
     }
 
     public void addMenuItem(String menu, String subMenuName, String notificationName) {
-        if(menu.equals(FileMenu.FILE_MENU)) {
+        if(menu.equals(MenuAPI.FILE_MENU)) {
             fileMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
         }
-        if(menu.equals(EditMenu.EDIT_MENU)) {
+        if(menu.equals(MenuAPI.EDIT_MENU)) {
             editMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
         }
-        if(menu.equals(WindowMenu.WINDOW_MENU)) {
+        if(menu.equals(MenuAPI.RESOURCE_MENU)) {
+            resourceMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
+        }
+        if(menu.equals(MenuAPI.WINDOW_MENU)) {
             windowMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
         }
-        if(menu.equals(HelpMenu.HELP_MENU)) {
+        if(menu.equals(MenuAPI.HELP_MENU)) {
             helpMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
         }
     }

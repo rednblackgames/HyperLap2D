@@ -15,12 +15,12 @@ public class CustomMenuBar {
     private static final Drawable BUTTTON_DEFAULT = VisUI.getSkin().getDrawable("menu-bg-up");
     public    Drawable defaultStyle = VisUI.getSkin().getDrawable("menu-bg-up");
 
-    private Table mainTable;
-    private Table menuItems;
+    private final Table mainTable;
+    private final Table menuItems;
 
     private CustomMenu currentMenu;
 
-    private Array<CustomMenu> menus = new Array<>();
+    protected final Array<CustomMenu> menus = new Array<>();
 
     public CustomMenuBar () {
         Skin skin = VisUI.getSkin();
@@ -65,7 +65,7 @@ public class CustomMenuBar {
 
     private void rebuild () {
         menuItems.clear();
-        for (CustomMenu menu : menus)
+        for (CustomMenu menu : new Array.ArrayIterator<>(menus))
             menuItems.add(menu.getOpenButton());
     }
 

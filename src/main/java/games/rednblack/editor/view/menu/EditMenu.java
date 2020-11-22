@@ -4,9 +4,10 @@ import com.kotcrab.vis.ui.widget.MenuItem;
 import games.rednblack.editor.event.MenuItemListener;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 
+import static games.rednblack.h2d.common.MenuAPI.EDIT_MENU;
+
 public class EditMenu extends H2DMenu {
 
-    public static final String EDIT_MENU = HyperLap2DMenuBar.prefix + ".EDIT_MENU";
     public static final String CUT = HyperLap2DMenuBar.prefix + ".CUT";
     public static final String COPY = HyperLap2DMenuBar.prefix + ".COPY";
     public static final String PASTE = HyperLap2DMenuBar.prefix + ".PASTE";
