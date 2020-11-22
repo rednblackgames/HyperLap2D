@@ -67,11 +67,11 @@ public class UIShaderProperties extends UIRemovableProperties {
 
         TextButton editButton = StandardWidgetsFactory.createTextButton("Edit");
         editButton.addListener(new ButtonToNotificationListener(EDIT_BUTTON_CLICKED));
-        mainTable.add(editButton).colspan(2).padTop(5).row();
+        mainTable.add(editButton).padTop(5).padRight(3);
 
         TextButton uniformsButton = StandardWidgetsFactory.createTextButton("Uniforms");
         uniformsButton.addListener(new ButtonToNotificationListener(UNIFORMS_BUTTON_CLICKED));
-        mainTable.add(uniformsButton).colspan(2).padTop(5);
+        mainTable.add(uniformsButton).padTop(5);
     }
 
     @Override

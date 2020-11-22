@@ -28,10 +28,7 @@ import games.rednblack.editor.view.stage.UIStageMediator;
 import games.rednblack.editor.view.ui.box.*;
 import games.rednblack.editor.view.ui.box.bottom.*;
 import games.rednblack.editor.view.ui.dialog.*;
-import games.rednblack.editor.view.ui.panel.CustomVariablesPanelMediator;
-import games.rednblack.editor.view.ui.panel.EditSpriteAnimationPanelMediator;
-import games.rednblack.editor.view.ui.panel.ImportPanelMediator;
-import games.rednblack.editor.view.ui.panel.TagsPanelMediator;
+import games.rednblack.editor.view.ui.panel.*;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.command.SimpleCommand;
 
@@ -71,14 +68,17 @@ public class BootstrapViewCommand extends SimpleCommand {
         facade.registerMediator(new SandboxMediator());
         facade.registerMediator(new UIDropDownMenuMediator());
 
-        // Dialogs
-        facade.registerMediator(new LoadingBarDialogMediator());
-        facade.registerMediator(new NewProjectDialogMediator());
+        //Panels
         facade.registerMediator(new ImportPanelMediator());
-        facade.registerMediator(new CreateNewResolutionDialogMediator());
         facade.registerMediator(new CustomVariablesPanelMediator());
         facade.registerMediator(new TagsPanelMediator());
         facade.registerMediator(new EditSpriteAnimationPanelMediator());
+        facade.registerMediator(new ShaderUniformsPanelMediator());
+
+        // Dialogs
+        facade.registerMediator(new LoadingBarDialogMediator());
+        facade.registerMediator(new NewProjectDialogMediator());
+        facade.registerMediator(new CreateNewResolutionDialogMediator());
         facade.registerMediator(new AboutDialogMediator());
         facade.registerMediator(new SettingsDialogMediator());
         facade.registerMediator(new AutoTraceDialogMediator());
