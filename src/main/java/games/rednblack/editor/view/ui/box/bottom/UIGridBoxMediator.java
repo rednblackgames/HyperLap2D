@@ -16,7 +16,7 @@
  *  *****************************************************************************
  */
 
-package games.rednblack.editor.view.ui.box;
+package games.rednblack.editor.view.ui.box.bottom;
 
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.proxy.ProjectManager;

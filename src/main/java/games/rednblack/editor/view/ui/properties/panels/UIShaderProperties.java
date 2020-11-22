@@ -42,6 +42,7 @@ public class UIShaderProperties extends UIRemovableProperties {
 
     public static final String EDIT_BUTTON_CLICKED = prefix + ".EDIT_BUTTON_CLICKED";
     public static final String EDIT_SHADER_DONE = prefix + ".EDIT_SHADER_DONE";
+    public static final String UNIFORMS_BUTTON_CLICKED = prefix + ".UNIFORMS_BUTTON_CLICKED";
 
     private VisSelectBox<String> shadersSelector;
 
@@ -66,7 +67,11 @@ public class UIShaderProperties extends UIRemovableProperties {
 
         TextButton editButton = StandardWidgetsFactory.createTextButton("Edit");
         editButton.addListener(new ButtonToNotificationListener(EDIT_BUTTON_CLICKED));
-        mainTable.add(editButton).colspan(2).padTop(5);
+        mainTable.add(editButton).colspan(2).padTop(5).row();
+
+        TextButton uniformsButton = StandardWidgetsFactory.createTextButton("Uniforms");
+        uniformsButton.addListener(new ButtonToNotificationListener(UNIFORMS_BUTTON_CLICKED));
+        mainTable.add(uniformsButton).colspan(2).padTop(5);
     }
 
     @Override

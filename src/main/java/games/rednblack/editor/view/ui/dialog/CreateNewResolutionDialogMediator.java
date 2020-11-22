@@ -22,7 +22,7 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.view.stage.UIStage;
-import games.rednblack.editor.view.ui.box.UIResolutionBox;
+import games.rednblack.editor.view.ui.box.bottom.UIResolutionBox;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;

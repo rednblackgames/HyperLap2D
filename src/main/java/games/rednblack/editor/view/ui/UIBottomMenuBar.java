@@ -5,8 +5,8 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.view.ui.box.bottom.*;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import games.rednblack.editor.view.ui.box.*;
 
 public class UIBottomMenuBar extends VisTable {
 	private final HyperLap2DFacade facade;
@@ -21,7 +21,7 @@ public class UIBottomMenuBar extends VisTable {
 		VisScrollPane scrollPane = StandardWidgetsFactory.createScrollPane(mainGroup);
 		add(scrollPane).fill().padLeft(5).padRight(5);
 
-		//grid
+		//scene
 		UISceneBoxMediator uiSceneBoxMediator = facade.retrieveMediator(UISceneBoxMediator.NAME);
 		UISceneBox uiSceneBox = uiSceneBoxMediator.getViewComponent();
 		mainGroup.add(uiSceneBox);
@@ -31,7 +31,7 @@ public class UIBottomMenuBar extends VisTable {
 		UIGridBox uiGridBox = uiGridBoxMediator.getViewComponent();
 		mainGroup.add(uiGridBox);
 
-		//grid
+		//zoom
 		UIZoomBoxMediator uiZoomBoxMediator = facade.retrieveMediator(UIZoomBoxMediator.NAME);
 		UIZoomBox uiZoomBox = uiZoomBoxMediator.getViewComponent();
 		mainGroup.add(uiZoomBox);

@@ -1,4 +1,4 @@
-package games.rednblack.editor.view.ui.box;
+package games.rednblack.editor.view.ui.box.bottom;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;

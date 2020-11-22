@@ -16,7 +16,7 @@
  *  *****************************************************************************
  */
 
-package games.rednblack.editor.view.ui.box;
+package games.rednblack.editor.view.ui.box.bottom;
 
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -33,7 +33,7 @@ public class UIZoomBoxMediator extends Mediator<UIZoomBox> {
     private static final String TAG = UIZoomBoxMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
-    private static final String PREFIX = "games.rednblack.editor.view.ui.box.UIZoomBoxMediator.";
+    private static final String PREFIX = "games.rednblack.editor.view.ui.box.bottom.UIZoomBoxMediator.";
 
     public UIZoomBoxMediator() {
         super(NAME, new UIZoomBox());

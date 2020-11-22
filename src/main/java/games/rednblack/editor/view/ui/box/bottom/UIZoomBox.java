@@ -16,7 +16,7 @@
  *  *****************************************************************************
  */
 
-package games.rednblack.editor.view.ui.box;
+package games.rednblack.editor.view.ui.box.bottom;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -27,6 +27,7 @@ import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.KeyboardListener;
+import games.rednblack.editor.view.ui.box.UIBaseBox;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
@@ -34,7 +35,7 @@ import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
  */
 public class UIZoomBox extends UIBaseBox {
 
-    private static final String prefix = "games.rednblack.editor.view.ui.box.UIZoomBox";
+    private static final String prefix = "games.rednblack.editor.view.ui.box.bottom.UIZoomBox";
 
     public static final String ZOOM_SHIFT_REQUESTED = prefix + "ZOOM_SHIFT_REQUESTED";
     public static final String ZOOM_VALUE_CHANGED = prefix + "ZOOM_VALUE_CHANGED";

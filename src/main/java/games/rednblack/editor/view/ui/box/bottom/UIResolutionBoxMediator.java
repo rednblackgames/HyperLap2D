@@ -16,7 +16,7 @@
  *  *****************************************************************************
  */
 
-package games.rednblack.editor.view.ui.box;
+package games.rednblack.editor.view.ui.box.bottom;
 
 import com.badlogic.gdx.math.Vector3;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;

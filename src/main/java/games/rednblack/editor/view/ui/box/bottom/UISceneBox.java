@@ -1,4 +1,4 @@
-package games.rednblack.editor.view.ui.box;
+package games.rednblack.editor.view.ui.box.bottom;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -11,11 +11,12 @@ import com.kotcrab.vis.ui.widget.VisSelectBox;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.SceneVO;
+import games.rednblack.editor.view.ui.box.UIBaseBox;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.stage.Sandbox;
 
 public class UISceneBox extends UIBaseBox {
-    private static final String prefix = "games.rednblack.editor.view.ui.box.UISceneBox";
+    private static final String prefix = "games.rednblack.editor.view.ui.box.bottom.UISceneBox";
 
     public static final String CREATE_NEW_SCENE_BTN_CLICKED = prefix + ".CREATE_NEW_SCENE_BTN_CLICKED";
     public static final String CHANGE_SCENE_BTN_CLICKED = prefix + ".CHANGE_SCENE_BTN_CLICKED";

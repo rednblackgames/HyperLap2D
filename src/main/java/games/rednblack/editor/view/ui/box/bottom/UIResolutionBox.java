@@ -16,7 +16,7 @@
  *  *****************************************************************************
  */
 
-package games.rednblack.editor.view.ui.box;
+package games.rednblack.editor.view.ui.box.bottom;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -31,11 +31,12 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
+import games.rednblack.editor.view.ui.box.UIBaseBox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 public class UIResolutionBox extends UIBaseBox {
-	private static final String prefix = "games.rednblack.editor.view.ui.box.UIResolutionBox";
+	private static final String prefix = "games.rednblack.editor.view.ui.box.bottom.UIResolutionBox";
 
     public static final String CREATE_NEW_RESOLUTION_BTN_CLICKED = prefix + ".CREATE_NEW_RESOLUTION_BTN_CLICKED";
     public static final String CHANGE_RESOLUTION_BTN_CLICKED = prefix + ".CHANGE_RESOLUTION_BTN_CLICKED";

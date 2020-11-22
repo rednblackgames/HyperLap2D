@@ -1,13 +1,14 @@
-package games.rednblack.editor.view.ui.box;
+package games.rednblack.editor.view.ui.box.bottom;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import games.rednblack.editor.view.ui.box.UIBaseBox;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 public class UILivePreviewBox extends UIBaseBox {
 
-	private static final String prefix = "games.rednblack.editor.view.ui.box.UILivePreviewBox";
+	private static final String prefix = "games.rednblack.editor.view.ui.box.bottom.UILivePreviewBox";
 	public static final String LIVE_PREVIEW_CLICKED = prefix + ".LIVE_PREVIEW_CLICKED";
 
 	public UILivePreviewBox() {

@@ -26,6 +26,7 @@ import games.rednblack.editor.view.HyperLap2DScreenMediator;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.stage.UIStageMediator;
 import games.rednblack.editor.view.ui.box.*;
+import games.rednblack.editor.view.ui.box.bottom.*;
 import games.rednblack.editor.view.ui.dialog.*;
 import games.rednblack.editor.view.ui.panel.CustomVariablesPanelMediator;
 import games.rednblack.editor.view.ui.panel.EditSpriteAnimationPanelMediator;

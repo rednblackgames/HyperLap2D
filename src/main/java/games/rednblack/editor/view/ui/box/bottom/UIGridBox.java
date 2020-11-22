@@ -16,7 +16,7 @@
  *  *****************************************************************************
  */
 
-package games.rednblack.editor.view.ui.box;
+package games.rednblack.editor.view.ui.box.bottom;
 
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.util.Validators;
@@ -25,6 +25,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisValidatableTextField;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
+import games.rednblack.editor.view.ui.box.UIBaseBox;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
@@ -33,7 +34,7 @@ import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 public class UIGridBox extends UIBaseBox {
 
     private static final String TAG = "UIGridBox";
-    private static final String GRID_BOX_PREFIX = "games.rednblack.editor.view.ui.box.UIGridBox";
+    private static final String GRID_BOX_PREFIX = "games.rednblack.editor.view.ui.box.bottom.UIGridBox";
     public static final String GRID_SIZE_TEXT_FIELD_UPDATED = GRID_BOX_PREFIX + ".GRID_SIZE_TEXT_FIELD_UPDATED";
     public static final String LOCK_LINES_CHECKBOX_FIELD_UPDATED = GRID_BOX_PREFIX + ".LOCK_LINES_CHECKBOX_FIELD_UPDATED";
 
