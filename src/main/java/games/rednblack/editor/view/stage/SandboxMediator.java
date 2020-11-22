@@ -452,7 +452,8 @@ public class SandboxMediator extends Mediator<Sandbox> {
             } else {
                 if (currentSelectedTool != null
                         && !currentSelectedTool.stageMouseScrolled(amountX, amountY)) {
-                    viewComponent.panSceneBy(amountX * 10f, -amountY * 10f);
+                    float scale = 30f / sandbox.getPixelPerWU();
+                    viewComponent.panSceneBy(amountX * scale, -amountY * scale);
                 }
             }
 
