@@ -57,7 +57,7 @@ public class SplashMediator extends Mediator<Object> {
                         json.setIgnoreUnknownFields(true);
                         GithubReleaseData jsonData = json.fromJson(GithubReleaseData.class, data);
                         int latestVer = Integer.parseInt(jsonData.tag_name.replace("v", "").replace(".", ""));
-                        int currVer = Integer.parseInt(AppConfig.getInstance().version.replace(".", ""));
+                        int currVer = Integer.parseInt(AppConfig.getInstance().version.replaceAll("[^0-9]", ""));
                         if (latestVer > currVer) {
                             boolean result = TinyFileDialogs.tinyfd_messageBox("New update found!",
                                     "A new version of HyperLap2D has found, would you like to download it?",
