@@ -17,7 +17,7 @@ import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 public class AutoTraceDialog extends H2DDialog {
 
     private static final String prefix = "games.rednblack.editor.view.ui.dialog.AutoTraceDialog";
-    public static final String OPEN_DIALOG = prefix + "OPEN_DIALOG";
+    public static final String OPEN_DIALOG = prefix + ".OPEN_DIALOG";
     public static final String AUTO_TRACE_BUTTON_CLICKED = prefix + ".AUTO_TRACE_BUTTON_CLICKED";
 
     private final VisSlider hullSlider;
@@ -29,7 +29,7 @@ public class AutoTraceDialog extends H2DDialog {
     private final VisCheckBox multiPartDetection;
     private final VisCheckBox holeDetection;
 
-    private final VisTextButton autoTraceButton;
+    private final VisTextButton autoTraceButton, resetButton;
 
     public AutoTraceDialog() {
         super("Auto Trace");
@@ -43,6 +43,7 @@ public class AutoTraceDialog extends H2DDialog {
         multiPartDetection = StandardWidgetsFactory.createCheckBox("Multi Part Detection");
         holeDetection = StandardWidgetsFactory.createCheckBox("Hole Detection");
 
+        resetButton = StandardWidgetsFactory.createTextButton("Reset");
         autoTraceButton = StandardWidgetsFactory.createTextButton("Auto Trace");
 
         getContentTable().add("Hull Tolerance : ").left();
@@ -62,12 +63,11 @@ public class AutoTraceDialog extends H2DDialog {
 
         getContentTable().row().padTop(10);
 
-        getButtonsTable().add(autoTraceButton).right();
+        getButtonsTable().add(resetButton).padRight(5);
+        getButtonsTable().add(autoTraceButton);
 
         setListeners();
-
-        hullSlider.setValue(2.5f);
-        alphaSlider.setValue(128);
+        reset();
     }
 
     public float getHullTolerance() {
@@ -102,5 +102,20 @@ public class AutoTraceDialog extends H2DDialog {
         });
 
         autoTraceButton.addListener(new ButtonToNotificationListener(AUTO_TRACE_BUTTON_CLICKED));
+
+        resetButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                reset();
+            }
+        });
+    }
+
+    public void reset() {
+        hullSlider.setValue(2.5f);
+        alphaSlider.setValue(128);
+
+        holeDetection.setChecked(false);
+        multiPartDetection.setChecked(false);
     }
 }
