@@ -528,6 +528,9 @@ public class Sandbox {
     }
 
     public void resize(int width, int height) {
+        if (height == 0 && width == 0)
+            return;
+
         sceneLoader.resize(width, height);
     }
 }
