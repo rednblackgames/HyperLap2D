@@ -1336,6 +1336,10 @@ public class ProjectManager extends Proxy {
         return currentProjectPath;
     }
 
+    public String getCurrentRawImagesPath() {
+        return currentProjectPath + File.separator + "assets" + File.separator + "orig" + File.separator + "images";
+    }
+
     private boolean deleteSingleImage(String resolutionName, String imageName) {
         String imagesPath = currentProjectPath + "/assets/" + resolutionName + "/images" + File.separator;
         String filePath = imagesPath + imageName + ".png";
