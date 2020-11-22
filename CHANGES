@@ -2,7 +2,9 @@
 - Add Sticky Notes feature
 - Add memory status in Performance plugin
 - Add smooth camera pan
+- Add panning camera with scroll gesture
 - Update HyperLap2D project version to 0.1.1
+- Update libGDX to 1.9.13 (SNAPSHOT)
 - Fixed some memory leaks
 
 [0.0.3]
