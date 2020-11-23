@@ -46,7 +46,7 @@ public class UIAnimationsTab extends UIResourcesTab {
         animationsTable.clearChildren();
         for (int i = 0; i < draggableResources.size; i++) {
             DraggableResource draggableResource = draggableResources.get(i);
-            animationsTable.add((Actor) draggableResource.getViewComponent()).pad(3);
+            animationsTable.add((Actor) draggableResource.getViewComponent()).pad(4);
             if ((i - 7) % 4 == 0) {
                 animationsTable.row();
             }

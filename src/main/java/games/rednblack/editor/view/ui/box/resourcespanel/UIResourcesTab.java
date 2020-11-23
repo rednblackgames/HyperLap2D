@@ -46,7 +46,7 @@ public abstract class UIResourcesTab extends ImageTab {
         contentTable.row();
 
         VisScrollPane scrollPane = crateScrollPane();
-        contentTable.add(scrollPane).colspan(2).maxHeight(Gdx.graphics.getHeight() * 0.22f).expandX().fillX();
+        contentTable.add(scrollPane).padLeft(7).colspan(2).maxHeight(Gdx.graphics.getHeight() * 0.22f).expandX().fillX();
         contentTable.padTop(4);
     }
 
