@@ -2,6 +2,8 @@ package games.rednblack.editor.view.ui.panel;
 
 import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.renderer.components.ShaderComponent;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.view.menu.WindowMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -54,7 +56,12 @@ public class ShaderUniformsPanelMediator extends Mediator<ShaderUniformsPanel> {
             case MsgAPI.ITEM_SELECTION_CHANGED:
                 Set<Entity> selection = notification.getBody();
                 if(selection.size() == 1) {
-                    setObservable(selection.iterator().next());
+                    Entity entity = selection.iterator().next();
+                    ShaderComponent shaderComponent = ComponentRetriever.get(entity, ShaderComponent.class);
+                    if (shaderComponent != null)
+                        setObservable(entity);
+                    else
+                        viewComponent.setEmpty("Selected item doesn't have a Shader Component");
                 }
                 break;
             case MsgAPI.EMPTY_SPACE_CLICKED:
@@ -72,7 +79,7 @@ public class ShaderUniformsPanelMediator extends Mediator<ShaderUniformsPanel> {
         if(observable == null) {
             viewComponent.setEmpty();
         } else {
-            //Update view component
+            viewComponent.updateView();
         }
     }
 }

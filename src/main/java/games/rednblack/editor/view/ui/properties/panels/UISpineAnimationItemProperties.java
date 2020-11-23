@@ -34,7 +34,7 @@ public class UISpineAnimationItemProperties extends UIItemCollapsibleProperties 
 
     public UISpineAnimationItemProperties() {
         super("Spine Animations");
-        animationsSelectBox = new VisSelectBox<>();
+        animationsSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
         mainTable.add(StandardWidgetsFactory.createLabel("Animations:", Align.right)).padRight(5).colspan(2).fillX();
         mainTable.add(animationsSelectBox).width(120).colspan(2);
         setListeners();
