@@ -3,18 +3,23 @@ package games.rednblack.editor.view.menu;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import games.rednblack.editor.event.MenuItemListener;
+import games.rednblack.h2d.common.MsgAPI;
 
 import static games.rednblack.h2d.common.MenuAPI.RESOURCE_MENU;
 
-public class ResourceMenu extends H2DMenu {
+public class ResourcesMenu extends H2DMenu {
 
     public static final String CREATE_PLACEHOLDER = HyperLap2DMenuBar.prefix + ".CREATE_PLACEHOLDER";
     public static final String CREATE_NOISE = HyperLap2DMenuBar.prefix + ".CREATE_NOISE";
 
-    public ResourceMenu() {
-        super("Resource");
+    public ResourcesMenu() {
+        super("Resources");
         MenuItem placeholders = new MenuItem("Create Placeholder...", new MenuItemListener(CREATE_PLACEHOLDER, null, RESOURCE_MENU));
-        MenuItem noise = new MenuItem("Create Noise", new MenuItemListener(CREATE_NOISE, null, RESOURCE_MENU));
+        MenuItem noise = new MenuItem("Create Noise...", new MenuItemListener(CREATE_NOISE, null, RESOURCE_MENU));
+        MenuItem repack = new MenuItem("Repack Assets", new MenuItemListener(MsgAPI.ACTION_REPACK, null, RESOURCE_MENU));
+
+        addItem(repack);
+        addSeparator();
         addItem(placeholders);
         addItem(noise);
     }

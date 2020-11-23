@@ -71,11 +71,7 @@ public class UIResolutionBox extends UIBaseBox {
         add("Resolution:").padRight(4);
         add(visSelectBox).padRight(11).width(156);
 
-        add(deleteBtn).padRight(11).height(25);
-
-        VisTextButton repackBtn = StandardWidgetsFactory.createTextButton("Repack", "red");
-        repackBtn.addListener(new UIResolutionBoxButtonClickListener(MsgAPI.ACTION_REPACK));
-        add(repackBtn).width(93);
+        add(deleteBtn).height(25);
     }
 
     @Override
@@ -127,9 +123,6 @@ public class UIResolutionBox extends UIBaseBox {
                 case DELETE_RESOLUTION_BTN_CLICKED:
                 	if (!deleteBtn.isDisabled())
                     	facade.sendNotification(btnClicked, visSelectBox.getSelected());
-                    break;
-                case MsgAPI.ACTION_REPACK:
-                    facade.sendNotification(btnClicked);
                     break;
             }
         }

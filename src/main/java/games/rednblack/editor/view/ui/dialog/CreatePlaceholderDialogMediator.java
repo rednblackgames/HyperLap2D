@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
-import games.rednblack.editor.view.menu.ResourceMenu;
+import games.rednblack.editor.view.menu.ResourcesMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.MsgAPI;
@@ -32,7 +32,7 @@ public class CreatePlaceholderDialogMediator extends Mediator<CreatePlaceholderD
     @Override
     public String[] listNotificationInterests() {
         return new String[]{
-                ResourceMenu.CREATE_PLACEHOLDER,
+                ResourcesMenu.CREATE_PLACEHOLDER,
                 CreatePlaceholderDialog.ADD_NEW_PLACEHOLDER
         };
     }
@@ -44,7 +44,7 @@ public class CreatePlaceholderDialogMediator extends Mediator<CreatePlaceholderD
         UIStage uiStage = sandbox.getUIStage();
 
         switch (notification.getName()) {
-            case ResourceMenu.CREATE_PLACEHOLDER:
+            case ResourcesMenu.CREATE_PLACEHOLDER:
                 viewComponent.show(uiStage);
                 break;
             case CreatePlaceholderDialog.ADD_NEW_PLACEHOLDER:

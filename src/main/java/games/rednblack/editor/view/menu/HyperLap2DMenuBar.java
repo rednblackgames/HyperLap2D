@@ -38,18 +38,18 @@ public class HyperLap2DMenuBar extends CustomMenuBar {
     private final EditMenu editMenu;
     private final WindowMenu windowMenu;
     private final HelpMenu helpMenu;
-    private final ResourceMenu resourceMenu;
+    private final ResourcesMenu resourcesMenu;
 
     public HyperLap2DMenuBar() {
         fileMenu = new FileMenu();
         editMenu = new EditMenu();
-        resourceMenu = new ResourceMenu();
+        resourcesMenu = new ResourcesMenu();
         windowMenu = new WindowMenu();
         helpMenu = new HelpMenu();
 
         addMenu(fileMenu);
         addMenu(editMenu);
-        addMenu(resourceMenu);
+        addMenu(resourcesMenu);
         addMenu(windowMenu);
         addMenu(helpMenu);
         setProjectOpen(false);
@@ -74,7 +74,7 @@ public class HyperLap2DMenuBar extends CustomMenuBar {
             editMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
         }
         if(menu.equals(MenuAPI.RESOURCE_MENU)) {
-            resourceMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
+            resourcesMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
         }
         if(menu.equals(MenuAPI.WINDOW_MENU)) {
             windowMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
