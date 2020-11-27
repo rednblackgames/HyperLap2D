@@ -69,7 +69,7 @@ public class FontManager extends Proxy {
             return result;
         } else if (SystemUtils.IS_OS_LINUX) {
             String[] pathsToCheck = {
-                    System.getProperty("user.home") + File.separator + ".fonts",
+                    System.getProperty("user.home") + File.separator + ".local/share/fonts",
                     "/usr/share/fonts/truetype",
                     "/usr/share/fonts/TTF"
             };
