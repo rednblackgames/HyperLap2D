@@ -6,6 +6,7 @@
 - Add support to custom shader uniforms
 - Add `Resources` menu:
     * Add Create Placeholder
+    * Add Create Perlin Noise textures
 - Update HyperLap2D project version to 0.1.1
 - Update libGDX to 1.9.13 (SNAPSHOT)
 - Fixed some memory leaks

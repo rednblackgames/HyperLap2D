@@ -15,7 +15,7 @@ public class ResourcesMenu extends H2DMenu {
     public ResourcesMenu() {
         super("Resources");
         MenuItem placeholders = new MenuItem("Create Placeholder...", new MenuItemListener(CREATE_PLACEHOLDER, null, RESOURCE_MENU));
-        MenuItem noise = new MenuItem("Create Noise...", new MenuItemListener(CREATE_NOISE, null, RESOURCE_MENU));
+        MenuItem noise = new MenuItem("Create Perlin Noise...", new MenuItemListener(CREATE_NOISE, null, RESOURCE_MENU));
         MenuItem repack = new MenuItem("Repack Assets", new MenuItemListener(MsgAPI.ACTION_REPACK, null, RESOURCE_MENU));
 
         addItem(repack);
