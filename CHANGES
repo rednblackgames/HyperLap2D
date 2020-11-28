@@ -3,9 +3,13 @@
 - Add memory status in Performance plugin
 - Add smooth camera pan
 - Add panning camera with scroll gesture
+- Add support to custom shader uniforms
+- Add `Resources` menu:
+    * Add Create Placeholder
 - Update HyperLap2D project version to 0.1.1
 - Update libGDX to 1.9.13 (SNAPSHOT)
 - Fixed some memory leaks
+- Improved UI
 
 [0.0.3]
 - Fixed bright lights on some GPUs
