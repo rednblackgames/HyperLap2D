@@ -87,6 +87,7 @@ public class ShaderUniformsPanel extends UIDraggablePanel {
     }
 
     public void updateView(HashMap<String, String> uniforms, HashMap<String, ShaderUniformVO> customUniforms) {
+        clearInputs();
         getContentTable().clear();
 
         this.uniforms = uniforms;
@@ -178,13 +179,17 @@ public class ShaderUniformsPanel extends UIDraggablePanel {
 
                 facade.sendNotification(ADD_BUTTON_CLICKED, payload);
 
-                uniformName.setDisabled(false);
-                input1.setText("");
-                input2.setText("");
-                input3.setText("");
-                input4.setText("");
+                clearInputs();
             }
         });
+    }
+
+    private void clearInputs() {
+        uniformName.setDisabled(false);
+        input1.setText("");
+        input2.setText("");
+        input3.setText("");
+        input4.setText("");
     }
 
     private void updateInputFields() {
