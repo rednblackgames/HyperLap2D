@@ -20,8 +20,8 @@ public class CreateStickyNoteCommand extends RevertibleCommand {
         SceneVO sceneVO = sandbox.getSceneControl().getCurrentSceneVO();
         StickyNoteVO noteVO = new StickyNoteVO();
         noteVO.id = id;
-        noteVO.x = position.x - 3;
-        noteVO.y = position.y - 30;
+        noteVO.x = position.x - 9f / sandbox.getPixelPerWU();
+        noteVO.y = position.y - (noteVO.height - 9f) / sandbox.getPixelPerWU();
 
         sceneVO.composite.sStickyNotes.put(id, noteVO);
 
