@@ -18,6 +18,7 @@ public abstract class H2DMenu extends CustomMenu {
 
     @Override
     public void addItem(MenuItem item) {
+        item.getShortcutCell().padLeft(40);
         super.addItem(item);
         itemsList.add(item);
     }

@@ -35,6 +35,7 @@ import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.view.menu.FileMenu;
+import games.rednblack.editor.view.menu.ResourcesMenu;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.h2d.common.MenuAPI;
 import games.rednblack.h2d.common.MsgAPI;
@@ -195,7 +196,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
                 break;
             case KeyBindingsLayout.IMPORT_TO_LIBRARY:
                 if (sandbox.sceneControl.getCurrentSceneVO() != null) {
-                    facade.sendNotification(FileMenu.IMPORT_TO_LIBRARY, null, MenuAPI.FILE_MENU);
+                    facade.sendNotification(ResourcesMenu.IMPORT_TO_LIBRARY, null, MenuAPI.FILE_MENU);
                 }
                 break;
             case KeyBindingsLayout.OPEN_SETTINGS:

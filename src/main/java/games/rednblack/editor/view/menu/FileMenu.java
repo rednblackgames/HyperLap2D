@@ -17,7 +17,6 @@ public class FileMenu extends H2DMenu {
     public static final String NEW_PROJECT = HyperLap2DMenuBar.prefix + ".NEW_PROJECT";
     public static final String OPEN_PROJECT = HyperLap2DMenuBar.prefix + ".OPEN_PROJECT";
     public static final String SAVE_PROJECT = HyperLap2DMenuBar.prefix + ".SAVE_PROJECT";
-    public static final String IMPORT_TO_LIBRARY = HyperLap2DMenuBar.prefix + ".IMPORT_TO_LIBRARY";
     public static final String RECENT_PROJECTS = HyperLap2DMenuBar.prefix + ".RECENT_PROJECTS";
     public static final String CLEAR_RECENT = HyperLap2DMenuBar.prefix + ".CLEAR_RECENT";
     public static final String EXPORT = HyperLap2DMenuBar.prefix + ".EXPORT";
@@ -25,7 +24,6 @@ public class FileMenu extends H2DMenu {
     public static final String EXIT = HyperLap2DMenuBar.prefix + ".EXIT";
 
     private final MenuItem saveProject;
-    private final MenuItem importToLibrary;
     private final MenuItem export;
 
     private final PopupMenu recentProjectsPopupMenu;
@@ -39,9 +37,8 @@ public class FileMenu extends H2DMenu {
         addItem(saveProject);
         //
         addSeparator();
-        importToLibrary = new MenuItem("Import Resources...", new MenuItemListener(IMPORT_TO_LIBRARY, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.IMPORT_TO_LIBRARY));
-        export = new MenuItem("Export", new MenuItemListener(EXPORT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.EXPORT_PROJECT));
-        addItem(importToLibrary);
+
+        export = new MenuItem("Export Project", new MenuItemListener(EXPORT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.EXPORT_PROJECT));
         addItem(export);
         addItem(new MenuItem("Settings...", new MenuItemListener(SETTINGS, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.OPEN_SETTINGS)));
         //
@@ -101,7 +98,6 @@ public class FileMenu extends H2DMenu {
 
     public void setProjectOpen(boolean open) {
         saveProject.setDisabled(!open);
-        importToLibrary.setDisabled(!open);
         export.setDisabled(!open);
     }
 }

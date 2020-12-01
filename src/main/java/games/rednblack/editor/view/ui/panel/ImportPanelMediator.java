@@ -25,7 +25,7 @@ import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.AssetImporter;
 import games.rednblack.editor.utils.ImportUtils;
-import games.rednblack.editor.view.menu.FileMenu;
+import games.rednblack.editor.view.menu.ResourcesMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.ProgressHandler;
@@ -60,7 +60,7 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
     @Override
     public String[] listNotificationInterests() {
         return new String[]{
-                FileMenu.IMPORT_TO_LIBRARY,
+                ResourcesMenu.IMPORT_TO_LIBRARY,
                 ImportPanel.BROWSE_BTN_CLICKED,
                 ImportPanel.CANCEL_BTN_CLICKED,
                 ImportPanel.IMPORT_BTN_CLICKED,
@@ -75,7 +75,7 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
         Sandbox sandbox = Sandbox.getInstance();
         UIStage uiStage = sandbox.getUIStage();
         switch (notification.getName()) {
-            case FileMenu.IMPORT_TO_LIBRARY:
+            case ResourcesMenu.IMPORT_TO_LIBRARY:
                 viewComponent.show(uiStage);
                 break;
             case ImportPanel.BROWSE_BTN_CLICKED:
