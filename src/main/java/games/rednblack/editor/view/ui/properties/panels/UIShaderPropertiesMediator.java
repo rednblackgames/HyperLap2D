@@ -91,7 +91,7 @@ public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<Entity,
                 try {
                     Files.writeString(shader.toPath(), notification.getBody());
                     resourceManager.reloadShader(viewComponent.getShader());
-                    Object payload = UpdateShaderDataCommand.payload(observableReference, viewComponent.getShader());
+                    Object payload = UpdateShaderDataCommand.payload(observableReference, viewComponent.getShader(), viewComponent.getRenderingLayer());
                     facade.sendNotification(MsgAPI.ACTION_UPDATE_SHADER_DATA, payload);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -105,14 +105,18 @@ public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<Entity,
         ShaderComponent shaderComponent = ComponentRetriever.get(item, ShaderComponent.class);
         String currShaderName = shaderComponent.shaderName;
         viewComponent.setSelected(currShaderName);
+        viewComponent.setRenderingLayer(shaderComponent.renderingLayer);
     }
 
     @Override
     protected void translateViewToItemData() {
         ShaderComponent shaderComponent = ComponentRetriever.get(observableReference, ShaderComponent.class);
 
-        if (!shaderComponent.shaderName.equals(viewComponent.getShader())) {
-            Object payload = UpdateShaderDataCommand.payload(observableReference, viewComponent.getShader());
+        if (!shaderComponent.shaderName.equals(viewComponent.getShader())
+                || shaderComponent.renderingLayer != viewComponent.getRenderingLayer()) {
+            Object payload = UpdateShaderDataCommand.payload(observableReference,
+                    viewComponent.getShader(),
+                    viewComponent.getRenderingLayer());
             facade.sendNotification(MsgAPI.ACTION_UPDATE_SHADER_DATA, payload);
         }
     }

@@ -27,10 +27,13 @@ import com.kotcrab.vis.ui.widget.VisSelectBox;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.ButtonToNotificationListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
+import games.rednblack.editor.renderer.data.MainItemVO;
+import games.rednblack.editor.renderer.data.ShaderUniformVO;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by azakhary on 8/12/2015.
@@ -44,23 +47,32 @@ public class UIShaderProperties extends UIRemovableProperties {
     public static final String EDIT_SHADER_DONE = prefix + ".EDIT_SHADER_DONE";
     public static final String UNIFORMS_BUTTON_CLICKED = prefix + ".UNIFORMS_BUTTON_CLICKED";
 
-    private VisSelectBox<String> shadersSelector;
+    private final VisSelectBox<String> shadersSelector, renderingLaterSelector;
+
+    private final HashMap<String, MainItemVO.RenderingLayer> renderingLayerMap = new HashMap<>();
 
     public UIShaderProperties() {
         super("Custom Shader");
+
+        shadersSelector = StandardWidgetsFactory.createSelectBox(String.class);
+        shadersSelector.addListener(new SelectBoxChangeListener(getUpdateEventName()));
+
+        renderingLaterSelector = StandardWidgetsFactory.createSelectBox(String.class);
+        renderingLaterSelector.addListener(new SelectBoxChangeListener(getUpdateEventName()));
+        renderingLayerMap.put("Screen", MainItemVO.RenderingLayer.SCREEN);
+        renderingLayerMap.put("Screen Reading", MainItemVO.RenderingLayer.SCREEN_READING);
+
+        renderingLaterSelector.setItems(renderingLayerMap.keySet().toArray(new String[0]));
     }
 
     public void initView(HashMap<String, ShaderProgram> shaders) {
         mainTable.clear();
 
-        shadersSelector = StandardWidgetsFactory.createSelectBox(String.class);
         Array<String> shaderNames = new Array<>();
         shaderNames.add("Default");
         shaders.keySet().forEach(shaderNames::add);
 
         shadersSelector.setItems(shaderNames);
-
-        shadersSelector.addListener(new SelectBoxChangeListener(getUpdateEventName()));
 
         mainTable.add(new VisLabel("Shader: ", Align.right)).padRight(5).width(75).right();
         mainTable.add(shadersSelector).width(100).left().row();
@@ -71,7 +83,11 @@ public class UIShaderProperties extends UIRemovableProperties {
 
         TextButton uniformsButton = StandardWidgetsFactory.createTextButton("Uniforms");
         uniformsButton.addListener(new ButtonToNotificationListener(UNIFORMS_BUTTON_CLICKED));
-        mainTable.add(uniformsButton).padTop(5);
+        mainTable.add(uniformsButton).padTop(5).row();
+
+        mainTable.addSeparator().padTop(5).padBottom(5).colspan(2);
+        mainTable.add(StandardWidgetsFactory.createLabel("Rendering Layer:")).padRight(5).right();
+        mainTable.add(renderingLaterSelector).width(100).left().row();
     }
 
     @Override
@@ -81,6 +97,17 @@ public class UIShaderProperties extends UIRemovableProperties {
 
     public void setSelected(String currShaderName) {
         shadersSelector.setSelected(currShaderName);
+    }
+
+    public MainItemVO.RenderingLayer getRenderingLayer() {
+        return renderingLayerMap.get(renderingLaterSelector.getSelected());
+    }
+
+    public void setRenderingLayer(MainItemVO.RenderingLayer layer) {
+        for (Map.Entry<String, MainItemVO.RenderingLayer> me : renderingLayerMap.entrySet()) {
+            if (me.getValue() == layer)
+                renderingLaterSelector.setSelected(me.getKey());
+        }
     }
 
     public String getShader() {
