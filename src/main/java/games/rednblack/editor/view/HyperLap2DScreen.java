@@ -205,12 +205,20 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
             case KeyBindingsLayout.EXIT_APP:
                 HyperLap2DApp.getInstance().hyperlap2D.closeRequested();
                 break;
+            case KeyBindingsLayout.HIDE_GUI:
+                uiStage.addAction(Actions.fadeOut(0.1f));
+                break;
         }
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
+        switch (KeyBindingsLayout.mapAction(keycode)) {
+            case KeyBindingsLayout.HIDE_GUI:
+                uiStage.addAction(Actions.fadeIn(0.1f));
+                break;
+        }
         return false;
     }
 

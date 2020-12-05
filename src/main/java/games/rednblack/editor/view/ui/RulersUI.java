@@ -73,6 +73,7 @@ public class RulersUI extends Actor {
     private final Vector2 tmp1 = new Vector2();
     private final Vector2 tmp2 = new Vector2();
     private final Circle tmpCircle = new Circle();
+    private final Color tmpColor = new Color();
 
     private final HashMap<Integer, String> labelTextCache = new HashMap<>();
 
@@ -248,7 +249,7 @@ public class RulersUI extends Actor {
 
         shapeRenderer.setProjectionMatrix(uiCamera.projection);
 
-        drawShapes();
+        drawShapes(parentAlpha);
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
         batch.begin();
@@ -257,25 +258,31 @@ public class RulersUI extends Actor {
         drawBatch(batch, parentAlpha);
     }
 
-    public void drawShapes() {
-        drawBg();
-        drawLines();
+    public void drawShapes(float parentAlpha) {
+        drawBg(parentAlpha);
+        drawLines(parentAlpha);
     }
 
-    public void drawBg() {
+    public void drawBg(float parentAlpha) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        shapeRenderer.setColor(BG_COLOR);
+        tmpColor.set(BG_COLOR);
+        tmpColor.a *= parentAlpha;
+
+        shapeRenderer.setColor(tmpColor);
         shapeRenderer.rect(horizontalRect.x, horizontalRect.y, horizontalRect.width, horizontalRect.height);
         shapeRenderer.rect(verticalRect.x, verticalRect.y, verticalRect.width, verticalRect.height);
 
         shapeRenderer.end();
     }
 
-    public void drawLines() {
+    public void drawLines(float parentAlpha) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
-        shapeRenderer.setColor(LINE_COLOR);
+        tmpColor.set(LINE_COLOR);
+        tmpColor.a *= parentAlpha;
+
+        shapeRenderer.setColor(tmpColor);
 
         // Static Lines for Aesthetics
         shapeRenderer.line(horizontalRect.x + rulerBoxSize, horizontalRect.y, horizontalRect.x + horizontalRect.width, horizontalRect.y);
