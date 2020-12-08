@@ -2,6 +2,7 @@ package games.rednblack.editor.view.ui.dialog;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
+import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
@@ -63,8 +64,7 @@ public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
         if (polygonComponent != null) {
             TextureRegionComponent textureRegionComponent = entity.getComponent(TextureRegionComponent.class);
 
-            if (!textureRegionComponent.regionName.equals("") && textureRegionComponent.region != null) {
-
+            if (textureRegionComponent != null && textureRegionComponent.region != null && !textureRegionComponent.regionName.equals("")) {
                 polygonComponent.vertices = Tracer.trace(textureRegionComponent.region, viewComponent.getHullTolerance(),
                         viewComponent.getAlphaTolerance(), viewComponent.isMultiPartDetection(),
                         viewComponent.isHoleDetection());
@@ -77,6 +77,8 @@ public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
 
                     HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
                 }
+            } else {
+                Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Auto Trace can be performed only for Image type.").padBottom(20).pack();
             }
         }
     }
