@@ -120,14 +120,14 @@ public class NormalSelectionFollower extends BasicFollower {
         miniRects[L].setX(-w);
         miniRects[L].setY((int) (getHeight() / 2) - h);
 
-        miniRects[ROTATION_LT].setX(-w * 4);
-        miniRects[ROTATION_LT].setY(getHeight() - h);
-        miniRects[ROTATION_RT].setX(getWidth() - w);
-        miniRects[ROTATION_RT].setY(getHeight() - h);
-        miniRects[ROTATION_RB].setX(getWidth() - w);
-        miniRects[ROTATION_RB].setY(-h * 4);
-        miniRects[ROTATION_LB].setX(-w * 4);
-        miniRects[ROTATION_LB].setY(-h * 4);
+        miniRects[ROTATION_LT].setX(transformComponent.scaleX > 0 ? -w * 4 : -w);
+        miniRects[ROTATION_LT].setY(transformComponent.scaleY > 0 ? getHeight() - h : getHeight() - h * 4);
+        miniRects[ROTATION_RT].setX(transformComponent.scaleX > 0 ? getWidth() - w : getWidth() - w * 4);
+        miniRects[ROTATION_RT].setY(transformComponent.scaleY > 0 ? getHeight() - h : getHeight() - h * 4);
+        miniRects[ROTATION_RB].setX(transformComponent.scaleX > 0 ? getWidth() - w : getWidth() - w * 4);
+        miniRects[ROTATION_RB].setY(transformComponent.scaleY > 0 ? -h * 4 : -h);
+        miniRects[ROTATION_LB].setX(transformComponent.scaleX > 0 ? -w * 4 : -w);
+        miniRects[ROTATION_LB].setY(transformComponent.scaleY > 0 ? -h * 4 : -h);
 
         w = (int) (miniRects[ORIGIN].getWidth()/2);
         h = (int) (miniRects[ORIGIN].getHeight()/2);
