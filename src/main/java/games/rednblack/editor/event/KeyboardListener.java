@@ -55,7 +55,7 @@ public class KeyboardListener implements EventListener {
     private void handleInputListener(InputEvent event) {
         switch (event.getType()) {
             case keyUp:
-                if (event.getKeyCode() == Input.Keys.ENTER) {
+                if (event.getKeyCode() == Input.Keys.ENTER || event.getKeyCode() == Input.Keys.NUMPAD_ENTER) {
                     keyboardHandler((VisTextField) event.getTarget());
                     VisTextField field = (VisTextField) event.getTarget();
                     lastValue = field.getText();
