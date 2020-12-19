@@ -4,6 +4,7 @@ package games.rednblack.editor.view.stage.tools.transformStrategy;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.components.TransformComponent;
+import games.rednblack.editor.utils.RoundUtils;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 
@@ -35,9 +36,9 @@ public abstract class AbstractTransformStrategy implements ITransformStrategy {
         if (anchor >= NormalSelectionFollower.ROTATION_LT && anchor <= NormalSelectionFollower.ROTATION_LB) {
             Vector2 originPoint = new Vector2(transformComponent.x + transformComponent.originX, transformComponent.y + transformComponent.originY);
             mousePointStage.sub(originPoint);
-            float currentAngle = mousePointStage.angle();
+            float currentAngle = mousePointStage.angleDeg();
             float angleDiff = currentAngle - lastTransformAngle;
-            float newRotation = lastEntityAngle + angleDiff;
+            float newRotation = RoundUtils.round(lastEntityAngle + angleDiff, 2);
             transformComponent.rotation = newRotation;
             transformCommandBuilder.setRotation(newRotation);
         }
@@ -48,8 +49,8 @@ public abstract class AbstractTransformStrategy implements ITransformStrategy {
             float newOriginX = transformComponent.originX;
             float newOriginY = transformComponent.originY;
 
-            newOriginX = newOriginX + mouseDx;
-            newOriginY = newOriginY + mouseDy;
+            newOriginX = RoundUtils.round(newOriginX + mouseDx, 2);
+            newOriginY = RoundUtils.round(newOriginY + mouseDy, 2);
 
             transformComponent.originX = newOriginX;
             transformComponent.originY = newOriginY;
