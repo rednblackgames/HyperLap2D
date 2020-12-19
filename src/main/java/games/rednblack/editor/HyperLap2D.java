@@ -61,8 +61,6 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
         return facade;
     }
 
-    private final Sync sync = new Sync();
-
     private long startTime = 0;
 
     public HyperLap2D() {
@@ -144,7 +142,6 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
     public void render() {
         renderNotification.setBody(Math.min(Gdx.graphics.getDeltaTime(), 0.1f));
         facade.notifyObservers(renderNotification);
-        sync.sync(60);
     }
 
     @Override
