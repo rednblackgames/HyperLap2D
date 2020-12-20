@@ -29,19 +29,22 @@ import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
  */
 public class UICompositeItemProperties extends UIItemCollapsibleProperties {
 
-    private VisCheckBox scissorsEnabledCheckBox;
-    private VisCheckBox automaticResizeCheckBox;
+    private VisCheckBox scissorsEnabledCheckBox, automaticResizeCheckBox, renderToFBOCheckBox;
 
     public UICompositeItemProperties() {
         super("Composite");
         scissorsEnabledCheckBox = StandardWidgetsFactory.createCheckBox();
         automaticResizeCheckBox = StandardWidgetsFactory.createCheckBox();
+        renderToFBOCheckBox = StandardWidgetsFactory.createCheckBox();
 
         mainTable.add(StandardWidgetsFactory.createLabel("Scissors Enabled", Align.right)).padRight(5).width(120).right();
         mainTable.add(scissorsEnabledCheckBox).left().row();
 
         mainTable.add(StandardWidgetsFactory.createLabel("Automatic Resize", Align.right)).padRight(5).width(120).right();
-        mainTable.add(automaticResizeCheckBox).left();
+        mainTable.add(automaticResizeCheckBox).left().row();
+
+        mainTable.add(StandardWidgetsFactory.createLabel("Render to FBO", Align.right)).padRight(5).width(120).right();
+        mainTable.add(renderToFBOCheckBox).left();
         setListeners();
     }
 
@@ -49,8 +52,16 @@ public class UICompositeItemProperties extends UIItemCollapsibleProperties {
         return scissorsEnabledCheckBox.isChecked();
     }
 
+    public boolean isRenderToFBOEnabled() {
+        return renderToFBOCheckBox.isChecked();
+    }
+
     public void setScissorsEnabled(boolean scissorsEnabled) {
         scissorsEnabledCheckBox.setChecked(scissorsEnabled);
+    }
+
+    public void setRenderToFBOEnabled(boolean renderToFBO) {
+        renderToFBOCheckBox.setChecked(renderToFBO);
     }
 
     public boolean isAutomaticResizeIsEnabled(){
@@ -69,5 +80,6 @@ public class UICompositeItemProperties extends UIItemCollapsibleProperties {
     private void setListeners() {
         scissorsEnabledCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         automaticResizeCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
+        renderToFBOCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
     }
 }

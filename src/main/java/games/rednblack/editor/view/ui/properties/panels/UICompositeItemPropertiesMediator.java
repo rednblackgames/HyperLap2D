@@ -48,6 +48,7 @@ public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<
     protected void translateObservableDataToView(Entity item) {
         viewComponent.setAutomaticResize(item.getComponent(CompositeTransformComponent.class).automaticResize);
         viewComponent.setScissorsEnabled(item.getComponent(CompositeTransformComponent.class).scissorsEnabled);
+        viewComponent.setRenderToFBOEnabled(item.getComponent(CompositeTransformComponent.class).renderToFBO);
     }
 
     @Override
@@ -57,6 +58,7 @@ public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<
 
         payloadVo.automaticResize = viewComponent.isAutomaticResizeIsEnabled();
         payloadVo.scissorsEnabled = viewComponent.isScissorsEnabled();
+        payloadVo.renderToFBO = viewComponent.isRenderToFBOEnabled();
 
         Object payload = UpdateCompositeDataCommand.payload(observableReference, payloadVo);
         facade.sendNotification(MsgAPI.ACTION_UPDATE_COMPOSITE_DATA, payload);

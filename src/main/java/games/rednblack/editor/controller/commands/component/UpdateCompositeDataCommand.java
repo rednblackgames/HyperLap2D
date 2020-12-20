@@ -26,6 +26,7 @@ public class UpdateCompositeDataCommand extends EntityModifyRevertibleCommand {
         CompositeTransformComponent transformComponent = ComponentRetriever.get(entity, CompositeTransformComponent.class);
         transformComponent.automaticResize = vo.automaticResize;
         transformComponent.scissorsEnabled = vo.scissorsEnabled;
+        transformComponent.renderToFBO = vo.renderToFBO;
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
@@ -37,6 +38,7 @@ public class UpdateCompositeDataCommand extends EntityModifyRevertibleCommand {
         CompositeTransformComponent transformComponent = ComponentRetriever.get(entity, CompositeTransformComponent.class);
         transformComponent.automaticResize = backup.automaticResize;
         transformComponent.scissorsEnabled = backup.scissorsEnabled;
+        transformComponent.renderToFBO = backup.renderToFBO;
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
