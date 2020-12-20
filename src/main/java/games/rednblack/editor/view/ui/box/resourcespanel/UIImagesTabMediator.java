@@ -72,9 +72,9 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
 
         Array<DraggableResource> thumbnailBoxes = new Array<>();
         Array<TextureAtlas.AtlasRegion> atlasRegions = atlas.getRegions();
-        for (TextureAtlas.AtlasRegion region : atlasRegions) {
+        for (TextureAtlas.AtlasRegion region : new Array.ArrayIterator<>(atlasRegions)) {
             if(!region.name.contains(searchText))continue;
-            boolean is9patch = region.splits != null;
+            boolean is9patch = region.findValue("split") != null;
             DraggableResource draggableResource = new DraggableResource(new ImageResource(region));
             if (is9patch) {
                 draggableResource.setFactoryFunction(ItemFactory.get()::create9Patch);

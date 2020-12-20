@@ -141,10 +141,12 @@ public class EditingZone extends Actor {
     public void setTexture(TextureRegion texture) {
         this.texture = texture;
 
-        splits[0] = ((TextureAtlas.AtlasRegion)texture).splits[0];
-        splits[1] = ((TextureAtlas.AtlasRegion)texture).splits[1];
-        splits[2] = ((TextureAtlas.AtlasRegion)texture).splits[2];
-        splits[3] = ((TextureAtlas.AtlasRegion)texture).splits[3];
+        int[] s = ((TextureAtlas.AtlasRegion)texture).findValue("split");
+
+        splits[0] = s[0];
+        splits[1] = s[1];
+        splits[2] = s[2];
+        splits[3] = s[3];
     }
 
     @Override

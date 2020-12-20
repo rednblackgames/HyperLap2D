@@ -73,7 +73,9 @@ public class MainPanelMediator extends Mediator<MainPanel> {
         ninePatchComponent.textureRegionName = regionName;
         TextureAtlas.AtlasRegion newRegion = (TextureAtlas.AtlasRegion) textureRegionComponent.region;
         int[] splits = {0, 0, 0, 0};
-        newRegion.splits = splits;
+        int[] pad = {0, 0, 0, 0};
+        newRegion.names = new String[] {"split", "pad"};
+        newRegion.values = new int[][] {splits, pad};
         ninePatchComponent.ninePatch = new NinePatch(textureRegionComponent.region, 0, 0, 0, 0);
         entity.add(ninePatchComponent);
 

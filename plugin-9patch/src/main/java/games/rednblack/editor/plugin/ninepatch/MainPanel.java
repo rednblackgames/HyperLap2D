@@ -71,7 +71,7 @@ public class MainPanel extends H2DDialog {
         previewWidget.setHeight(205);
         previewTable.add(previewWidget).width(200).height(205).top();
         previewTable.row();
-        previewWidget.update((TextureAtlas.AtlasRegion) texture, ((TextureAtlas.AtlasRegion) texture).splits);
+        previewWidget.update((TextureAtlas.AtlasRegion) texture, ((TextureAtlas.AtlasRegion) texture).findValue("split"));
 
         VisLabel label = new VisLabel("Note: after saving, your \n scene will reload to \n apply changes.");
         label.setAlignment(Align.center);

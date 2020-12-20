@@ -67,6 +67,7 @@ public class ResourcesManager {
     public NinePatch getPluginNinePatch(String name) {
         TextureAtlas.AtlasRegion region = textureAtlas.findRegion(name);
         if(region == null) return null;
-        return new NinePatch(region, region.splits[0], region.splits[1], region.splits[2], region.splits[3]);
+        int[] splits = region.findValue("split");
+        return new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
     }
 }
