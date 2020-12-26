@@ -44,7 +44,7 @@ public abstract class BasicFollower extends Group {
     protected float pointOriginX;
     protected float pointOriginY;
 
-    private Array<SubFollower> subFollowers = new Array<>();
+    private final Array<SubFollower> subFollowers = new Array<>();
 
     public BasicFollower(Entity entity) {
         setItem(entity);
@@ -102,10 +102,8 @@ public abstract class BasicFollower extends Group {
 
         setRotation(transformComponent.rotation);
 
-        if(subFollowers != null) {
-            for (SubFollower follower : subFollowers) {
-                follower.update();
-            }
+        for (SubFollower follower : subFollowers) {
+            follower.update();
         }
     }
 
@@ -157,8 +155,8 @@ public abstract class BasicFollower extends Group {
         return subFollowers;
     }
 
-    public SubFollower getSubFollower(Class clazz) {
-        for(SubFollower subFollower: subFollowers) {
+    public SubFollower getSubFollower(Class<? extends SubFollower> clazz) {
+        for(SubFollower subFollower: new Array.ArrayIterator<>(subFollowers)) {
             if(subFollower.getClass() == clazz) {
                 return subFollower;
             }
@@ -167,7 +165,7 @@ public abstract class BasicFollower extends Group {
         return null;
     }
 
-    public void removeSubFollower(Class clazz) {
+    public void removeSubFollower(Class<? extends SubFollower> clazz) {
         SubFollower subFollower = getSubFollower(clazz);
         if(subFollower != null) {
             removeSubFollower(subFollower);

@@ -227,11 +227,7 @@ public class NormalSelectionFollower extends BasicFollower {
 
     public void setMode(SelectionMode mode) {
         this.mode = mode;
-        if(mode == SelectionMode.normal) {
-            transformGroup.setVisible(false);
-        } else {
-            transformGroup.setVisible(true);
-        }
+        transformGroup.setVisible(mode != SelectionMode.normal);
     }
 
     public SelectionMode getMode() {

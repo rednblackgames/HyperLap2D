@@ -200,8 +200,8 @@ public class PolygonFollower extends SubFollower {
     }
 
     public void drawPoints() {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         for (int i = 0; i < originalPoints.size(); i++) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(Color.WHITE);
             if(selectedAnchorId == i) {
                 shapeRenderer.setColor(Color.ORANGE);
@@ -211,8 +211,8 @@ public class PolygonFollower extends SubFollower {
             shapeRenderer.rect(originalPoints.get(i).x*transformComponent.scaleX-side/2f, originalPoints.get(i).y*transformComponent.scaleY-side/2f, side, side);
             shapeRenderer.setColor(Color.BLACK);
             shapeRenderer.rect(originalPoints.get(i).x*transformComponent.scaleX-side/2f+onePixel, originalPoints.get(i).y*transformComponent.scaleY-side/2f+onePixel, side-2*onePixel, side-2*onePixel);
-            shapeRenderer.end();
         }
+        shapeRenderer.end();
     }
 
     public void setListener(final PolygonTransformationListener listener) {
