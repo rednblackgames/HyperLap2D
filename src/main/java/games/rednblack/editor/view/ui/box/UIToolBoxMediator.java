@@ -55,6 +55,9 @@ public class UIToolBoxMediator extends Mediator<UIToolBox> {
         viewComponent.addToolButton(SelectionTool.NAME, toolList.get(SelectionTool.NAME));
         toolList.put(TransformTool.NAME, new TransformTool());
         viewComponent.addToolButton(TransformTool.NAME, toolList.get(TransformTool.NAME));
+        toolList.put(PolygonTool.NAME, new PolygonTool());
+        viewComponent.addToolButton(PolygonTool.NAME, toolList.get(PolygonTool.NAME));
+
         viewComponent.addSeparator().width(31);
 
         toolList.put(TextTool.NAME, new TextTool());
@@ -64,8 +67,6 @@ public class UIToolBoxMediator extends Mediator<UIToolBox> {
         toolList.put(ConeLightTool.NAME, new ConeLightTool());
         viewComponent.addToolButton(ConeLightTool.NAME, toolList.get(ConeLightTool.NAME));
         toolList.put(PanTool.NAME, new PanTool());
-        toolList.put(PolygonTool.NAME, new PolygonTool());
-        viewComponent.addToolButton(PolygonTool.NAME, toolList.get(PolygonTool.NAME));
     }
 
     public void addTool(String toolName, VisImageButton.VisImageButtonStyle toolBtnStyle, boolean addSeparator, Tool tool) {
