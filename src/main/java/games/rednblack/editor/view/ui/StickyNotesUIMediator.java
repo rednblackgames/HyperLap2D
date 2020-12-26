@@ -46,6 +46,8 @@ public class StickyNotesUIMediator  extends Mediator<StickyNotesUI> {
 
         switch (notification.getName()) {
             case CompositeCameraChangeCommand.DONE:
+                viewComponent.setVisible(Sandbox.getInstance().isViewingRootEntity());
+                break;
             case MsgAPI.SCENE_LOADED:
                 viewComponent.setVisible(true);
                 createStickyNotes();
