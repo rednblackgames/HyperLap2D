@@ -397,19 +397,26 @@ public class ProjectManager extends Proxy {
                 FileHandle atlasFileSource = new FileHandle(animationDataPath + File.separator + fileNameWithOutExt + ".atlas");
                 if (!atlasFileSource.exists()) {
                     Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
-                            "\nBoth atlas and PNG files needs to have same\nname and location as the json file.").padBottom(20).pack();
+                            "\nCould not find '" + atlasFileSource.name() +"'.\nCheck if the file exists in the same directory.").padBottom(20).pack();
                     return null;
+                }
+                Array<File> imageFiles = getAtlasPages(atlasFileSource);
+                for (File imageFile : new Array.ArrayIterator<>(imageFiles)) {
+                    if (!imageFile.exists()) {
+                        Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                                "\nCould not find " + imageFile.getName() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
+                        return null;
+                    }
                 }
 
                 FileUtils.forceMkdir(new File(targetPath));
                 File jsonFileTarget = new File(targetPath + File.separator + fileNameWithOutExt + ".json");
                 File atlasFileTarget = new File(targetPath + File.separator + fileNameWithOutExt + ".atlas");
-                Array<File> imageFiles = getAtlasPages(atlasFileSource);
 
                 FileUtils.copyFile(animationFileSource.file(), jsonFileTarget);
                 FileUtils.copyFile(atlasFileSource.file(), atlasFileTarget);
 
-                for (File imageFile : imageFiles) {
+                for (File imageFile : new Array.ArrayIterator<>(imageFiles)) {
                     FileHandle imgFileTarget = new FileHandle(targetPath + File.separator + imageFile.getName());
                     FileUtils.copyFile(imageFile, imgFileTarget.file());
                 }
@@ -566,6 +573,7 @@ public class ProjectManager extends Proxy {
             while (true) {
                 String line = reader.readLine();
                 if (line == null) break;
+                //In atlas file format the name of the png is is preceded by an empty line
                 if (line.trim().length() == 0) {
                     line = reader.readLine();
                     imgs.add(new File(FilenameUtils.getFullPath(fileHandle.path()) + line));
