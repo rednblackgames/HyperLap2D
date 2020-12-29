@@ -2,17 +2,17 @@ package games.rednblack.editor.proxy;
 
 import java.awt.Font;
 import java.awt.FontFormatException;
-//import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import games.rednblack.editor.utils.AppConfig;
+import games.rednblack.editor.utils.NativeDialogs;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -50,10 +50,6 @@ public class FontManager extends Proxy {
         generateFontsMap();
     }
 
-    /*public String[] getSystemFontNames() {
-        return GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-    }*/
-
     public String[] getSystemFontsPaths() {
         String[] result;
         if (SystemUtils.IS_OS_WINDOWS) {
@@ -84,7 +80,9 @@ public class FontManager extends Proxy {
             }
 
             if (resultList.isEmpty()) {
-                // TODO: show user warning, TextTool will be crash editor, because system font directories not found
+                NativeDialogs.showError("No Font detected on your System.\n"
+                        + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION
+                        + " (HyperLap2D v" + AppConfig.getInstance().version + ")");
                 result = new String[0];
             }
             else {
@@ -118,17 +116,15 @@ public class FontManager extends Proxy {
         List<File> fontFiles = getSystemFontFiles();
 
         for (File file : fontFiles) {
-            Font f = null;
+            Font f;
             try {
                 if (!systemFontMap.containsValue(file.getAbsolutePath())) {
                     f = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(file.getAbsolutePath()));
                     String name = f.getFamily();
                     systemFontMap.put(name, file.getAbsolutePath());
                 }
-            } catch (FontFormatException e) {
-                //e.printStackTrace();
-            } catch (IOException e) {
-                //e.printStackTrace();
+            } catch (FontFormatException | IOException e) {
+                e.printStackTrace();
             }
         }
 
@@ -140,20 +136,9 @@ public class FontManager extends Proxy {
         systemFontMap = (HashMap<String, String>) prefs.get();
     }
 
-    /*public void invalidateFontMap() {
-        Array<String> names = new Array<>(getSystemFontNames());
-        for (Iterator<Map.Entry<String, String>> it = systemFontMap.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry<String, String> entry = it.next();
-            if (!names.contains(entry.getKey(), false)) {
-                it.remove();
-            }
-        }
-    }*/
-
     public void generateFontsMap() {
         loadCachedSystemFontMap();
         preCacheSystemFontsMap();
-        //invalidateFontMap();
     }
 
     public HashMap<String, String> getFontsMap() {
@@ -186,8 +171,7 @@ public class FontManager extends Proxy {
     }
 
 
-    public class AlphabeticalComparator implements Comparator<String> {
-
+    public static class AlphabeticalComparator implements Comparator<String> {
         @Override
         public int compare(String o1, String o2) {
             return o1.compareTo(o2);
