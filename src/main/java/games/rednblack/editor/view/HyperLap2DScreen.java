@@ -208,6 +208,9 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
             case KeyBindingsLayout.HIDE_GUI:
                 uiStage.addAction(Actions.fadeOut(0.1f));
                 break;
+            case KeyBindingsLayout.OPEN_CONSOLE:
+                facade.sendNotification(MsgAPI.OPEN_CONSOLE);
+                break;
         }
         return false;
     }

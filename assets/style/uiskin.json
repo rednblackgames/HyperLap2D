@@ -193,6 +193,11 @@
       titleFont: big-font,
       background: sticky-note,
       titleFontColor: black
+    },
+    console: {
+      titleFont: big-font,
+      background: console-background,
+      titleFontColor: white
     }
   },
   com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
@@ -318,7 +323,15 @@
       selection: selection,
       background: textfield,
       cursor: cursor
-    }
+    },
+    console: {
+      errorBorder: border-error,
+      font: default-mono-font,
+      fontColor: white,
+      disabledFontColor: white,
+      selection: selection,
+      cursor: cursor
+    },
   },
   com.kotcrab.vis.ui.widget.VisImageTextButton$VisImageTextButtonStyle: {
     hierarchy-item-root: {

@@ -5,6 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import games.rednblack.editor.event.MenuItemListener;
+import games.rednblack.editor.utils.KeyBindingsLayout;
+import games.rednblack.h2d.common.MsgAPI;
 
 import static games.rednblack.h2d.common.MenuAPI.HELP_MENU;
 
@@ -21,6 +23,11 @@ public class HelpMenu extends H2DMenu {
             }
         });
         addItem(docs);
+
+        MenuItem console = new MenuItem("Console", new MenuItemListener(MsgAPI.OPEN_CONSOLE, null, HELP_MENU))
+                .setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.OPEN_CONSOLE));
+        addItem(console);
+        addSeparator();
 
         MenuItem about = new MenuItem("About", new MenuItemListener(ABOUT_DIALOG_OPEN, null, HELP_MENU));
         addItem(about);

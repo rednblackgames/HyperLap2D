@@ -55,6 +55,7 @@ public class KeyBindingsLayout {
     public static final int DELETE = 25;
 
     public static final int HIDE_GUI = 26;
+    public static final int OPEN_CONSOLE = 27;
 
     private static final ObjectMap<Integer, KeyMapper> defaultMapper = new ObjectMap<>();
     static {
@@ -95,6 +96,7 @@ public class KeyBindingsLayout {
         defaultMapper.put(DELETE, new KeyMapper(DELETE, false, false, false, Input.Keys.DEL));
 
         defaultMapper.put(HIDE_GUI, new KeyMapper(HIDE_GUI, false, false, false, Input.Keys.F12));
+        defaultMapper.put(OPEN_CONSOLE, new KeyMapper(OPEN_CONSOLE, false, false, false, Input.Keys.F11));
     }
 
     private static final Array<KeyMapper> mapping = new Array<>();
