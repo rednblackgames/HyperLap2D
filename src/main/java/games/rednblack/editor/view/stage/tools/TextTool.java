@@ -82,7 +82,7 @@ public class TextTool extends ItemDropTool {
         if (getFontFamily() == null || getFontFamily().equals("")) {
             NativeDialogs.showError("No Font detected on your System.\n"
                     + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION
-                    + " (HyperLap2D v" + AppConfig.getInstance().version + ")");
+                    + " (HyperLap2D v" + AppConfig.getInstance().versionString + ")");
             return null;
         }
         return ItemFactory.get().createLabel(this, new Vector2(x, y));

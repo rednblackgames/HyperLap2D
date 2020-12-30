@@ -19,6 +19,7 @@
 package games.rednblack.editor.utils;
 
 import games.rednblack.editor.Main;
+import games.rednblack.editor.renderer.utils.Version;
 
 import java.io.*;
 import java.util.Properties;
@@ -27,7 +28,8 @@ public class AppConfig  {
 
     public static AppConfig instance;
 
-    public String version;
+    public String versionString;
+    public Version version;
 
     public Properties properties;
 
@@ -63,7 +65,8 @@ public class AppConfig  {
         if (propertiesInput != null) {
             try {
                 properties.load(propertiesInput);
-                version = properties.getProperty("version");
+                versionString = properties.getProperty("version");
+                version = new Version(versionString.replaceAll("[^0-9\\\\.]", ""));
             } catch (IOException e) {
                 e.printStackTrace();
             }

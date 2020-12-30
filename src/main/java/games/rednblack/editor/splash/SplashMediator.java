@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.renderer.utils.Version;
 import games.rednblack.editor.utils.AppConfig;
 import games.rednblack.h2d.common.network.HttpDownloadUtility;
 import games.rednblack.h2d.common.network.model.GithubReleaseData;
@@ -56,11 +57,11 @@ public class SplashMediator extends Mediator<Object> {
                         Json json = new Json();
                         json.setIgnoreUnknownFields(true);
                         GithubReleaseData jsonData = json.fromJson(GithubReleaseData.class, data);
-                        int latestVer = Integer.parseInt(jsonData.tag_name.replace("v", "").replace(".", ""));
-                        int currVer = Integer.parseInt(AppConfig.getInstance().version.replaceAll("[^0-9]", ""));
-                        if (latestVer > currVer) {
+                        Version latestVer = new Version(jsonData.tag_name.replace("v", ""));
+                        Version currVer = AppConfig.getInstance().version;
+                        if (latestVer.compareTo(currVer) < 0) {
                             boolean result = TinyFileDialogs.tinyfd_messageBox("New update found!",
-                                    "A new version of HyperLap2D has found, would you like to download it?",
+                                    "A new version of HyperLap2D has found '" + latestVer.get() + "' (current: '" + currVer.get() + "'), would you like to download it?",
                                     "yesno", "info", true);
                             if (result) {
                                 Gdx.net.openURI("https://github.com/rednblackgames/HyperLap2D/releases");

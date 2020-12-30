@@ -48,7 +48,7 @@ public class AboutDialog extends H2DDialog {
 
         leftTable.add(new VisImage(VisUI.getSkin().getDrawable("splash_logo"))).pad(5).row();
         leftTable.add("HyperLap2D").padLeft(5).padRight(5).row();
-        leftTable.add("Release " + AppConfig.getInstance().version).row();
+        leftTable.add("Release " + AppConfig.getInstance().versionString).row();
         leftTable.add("Total Time").padTop(20).row();
         leftTable.add(totalTimeSpent).row();
 

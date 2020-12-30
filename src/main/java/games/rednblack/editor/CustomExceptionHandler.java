@@ -72,7 +72,7 @@ public class CustomExceptionHandler implements UncaughtExceptionHandler {
 
         TinyFileDialogs.tinyfd_messageBox("Oops! Something went wrong",
                 "HyperLap2D just crashed, stacktrace saved in: " + localPath.getAbsolutePath()
-                        + "\n\n System: " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " (HyperLap2D v" + AppConfig.getInstance().version + ")"
+                        + "\n\n System: " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " (HyperLap2D v" + AppConfig.getInstance().versionString + ")"
                         + "\n\n" + stacktrace,
                 "ok", "error", true);
         System.exit(-1);
@@ -82,7 +82,7 @@ public class CustomExceptionHandler implements UncaughtExceptionHandler {
         HashMap<String, String> parameters = new HashMap<String, String>();
         parameters.put("error", stacktrace);
         parameters.put("system", SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION);
-        parameters.put("version", AppConfig.getInstance().version);
+        parameters.put("version", AppConfig.getInstance().versionString);
         HttpRequest httpGet = new HttpRequest(HttpMethods.GET);
         httpGet.setUrl(sendURL);
         httpGet.setContent(HttpParametersUtils.convertHttpParameters(parameters));

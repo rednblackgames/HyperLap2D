@@ -63,7 +63,7 @@ public class SplashStage extends Stage {
         copyright.setY(companyName.getY() - 20);
         addActor(copyright);
 
-        Label version = new Label("v" + AppConfig.getInstance().version, whiteLabelStyle);
+        Label version = new Label("v" + AppConfig.getInstance().versionString, whiteLabelStyle);
         version.setX(getWidth() - 13 - version.getWidth());
         version.setY(companyName.getY());
         addActor(version);

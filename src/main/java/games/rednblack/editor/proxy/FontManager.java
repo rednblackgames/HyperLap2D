@@ -82,7 +82,7 @@ public class FontManager extends Proxy {
             if (resultList.isEmpty()) {
                 NativeDialogs.showError("No Font detected on your System.\n"
                         + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION
-                        + " (HyperLap2D v" + AppConfig.getInstance().version + ")");
+                        + " (HyperLap2D v" + AppConfig.getInstance().versionString + ")");
                 result = new String[0];
             }
             else {
