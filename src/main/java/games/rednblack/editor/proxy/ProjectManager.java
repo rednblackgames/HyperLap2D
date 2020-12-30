@@ -20,16 +20,21 @@ package games.rednblack.editor.proxy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.esotericsoftware.spine.SkeletonData;
+import com.esotericsoftware.spine.SkeletonJson;
+import com.esotericsoftware.spine.utils.SpineUtils;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.data.migrations.ProjectVersionMigrator;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.utils.MySkin;
+import games.rednblack.editor.renderer.utils.Version;
 import games.rednblack.editor.utils.AssetImporter;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.utils.ZipUtils;
@@ -41,6 +46,7 @@ import games.rednblack.editor.view.ui.settings.ProjectExportSettings;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.*;
+import games.rednblack.h2d.extention.spine.SpineItemType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.monitor.FileAlterationListener;
@@ -63,6 +69,8 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ProjectManager extends Proxy {
     private static final String TAG = ProjectManager.class.getCanonicalName();
@@ -409,6 +417,13 @@ public class ProjectManager extends Proxy {
                     }
                 }
 
+                Version spineVersion = getSpineVersion(animationFileSource);
+                if (spineVersion.compareTo(SpineItemType.SUPPORTED_SPINE_VERSION) < 0) {
+                    Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                            "\nCould not import Spine Animation.\nRequired version >=" + SpineItemType.SUPPORTED_SPINE_VERSION.get() + " found " + spineVersion.get()).padBottom(20).pack();
+                    return null;
+                }
+
                 FileUtils.forceMkdir(new File(targetPath));
                 File jsonFileTarget = new File(targetPath + File.separator + fileNameWithOutExt + ".json");
                 File atlasFileTarget = new File(targetPath + File.separator + fileNameWithOutExt + ".atlas");
@@ -613,6 +628,22 @@ public class ProjectManager extends Proxy {
         }
 
         return imgHandles;
+    }
+
+    private Version getSpineVersion(FileHandle fileHandle) {
+        Version version;
+
+        String regex = "\"spine\":\"(\\d+\\.\\d+\\.?\\d*)\"";
+        Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+        Matcher matcher = pattern.matcher(fileHandle.readString());
+
+        if (matcher.find()) {
+            version = new Version(matcher.group(1));
+        } else {
+            version = new Version("0.0.0");
+        }
+
+        return version;
     }
 
     private boolean addParticleEffectImages(FileHandle fileHandle, Array<FileHandle> imgs) {
