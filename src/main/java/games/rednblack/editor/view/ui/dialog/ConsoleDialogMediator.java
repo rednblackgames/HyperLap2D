@@ -43,7 +43,11 @@ public class ConsoleDialogMediator extends Mediator<ConsoleDialog> {
                     viewComponent.close();
                 break;
             case MsgAPI.WRITE_TO_CONSOLE:
-                viewComponent.write(notification.getBody());
+                try {
+                    viewComponent.write(notification.getBody());
+                } catch (Exception e) {
+                    //Ignore any exception
+                }
                 break;
         }
     }

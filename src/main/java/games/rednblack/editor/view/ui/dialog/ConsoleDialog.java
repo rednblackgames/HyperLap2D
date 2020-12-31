@@ -1,6 +1,7 @@
 package games.rednblack.editor.view.ui.dialog;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -8,22 +9,37 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
+import com.kotcrab.vis.ui.util.highlight.Highlight;
+import com.kotcrab.vis.ui.util.highlight.HighlightRule;
+import com.kotcrab.vis.ui.util.highlight.Highlighter;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.view.ui.Cursors;
 import games.rednblack.h2d.common.view.ui.listener.CursorListener;
 import games.rednblack.h2d.common.view.ui.listener.ScrollFocusListener;
+import org.apache.commons.lang3.RegExUtils;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ConsoleDialog extends VisDialog {
 
     private final HighlightTextArea textArea;
+    private final FixedRule fixedRule;
+
+    //RegEx to identify a valid color markup in format [RRGGBB] or [RRGGBBAA]
+    private final String regex = "\\[([^\\]G-Zg-z]{6}|[^\\]G-Zg-z]{8})\\]";
+    private final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
 
     public ConsoleDialog() {
         super("Console", "console");
         setModal(false);
         addCloseButton();
         this.getTitleTable().padTop(-15);
+
+        fixedRule = new FixedRule();
 
         textArea = new HighlightTextArea("", "console") {
             @Override
@@ -59,6 +75,11 @@ public class ConsoleDialog extends VisDialog {
                 }
             }
         };
+
+        Highlighter highlighter = new Highlighter();
+        highlighter.addRule(fixedRule);
+        textArea.setHighlighter(highlighter);
+
         ScrollPane scrollPane = textArea.createCompatibleScrollPane();
         scrollPane.addListener(new ScrollFocusListener());
         textArea.addListener(new CursorListener(Cursors.TEXT, HyperLap2DFacade.getInstance()));
@@ -91,8 +112,37 @@ public class ConsoleDialog extends VisDialog {
 
     public void write(String s) {
         if (s.contains("\t"))
-            s = s.replace("\t", "   ");
-        textArea.appendText(s);
+            s = s.replace("\t", "    ");
+
+        Matcher matcher = pattern.matcher(s);
+
+        int lastIndex = 0;
+        int markupAccumulator = 0;
+        Color lastColor = Color.WHITE;
+
+        int previousLength = textArea.getText().length();
+
+        while (matcher.find()) {
+            String colorHex = matcher.group(1);
+            Color color = Color.valueOf(colorHex);
+
+            int start = matcher.start();
+            int end = matcher.end();
+
+            int ruleStart = lastIndex - markupAccumulator;
+            int ruleEnd = start - markupAccumulator;
+            if (ruleStart < ruleEnd)
+                fixedRule.add(new Highlight(lastColor, ruleStart + previousLength, ruleEnd + previousLength));
+
+            lastIndex = end;
+            lastColor = color;
+            markupAccumulator += end - start;
+        }
+
+        String output = RegExUtils.removeAll(s, pattern);
+
+        textArea.appendText(output);
+        textArea.processHighlighter();
     }
 
     @Override
@@ -103,5 +153,18 @@ public class ConsoleDialog extends VisDialog {
     @Override
     public float getPrefHeight() {
         return Sandbox.getInstance().getUIStage().getHeight() * 0.8f;
+    }
+
+    private static class FixedRule implements HighlightRule {
+        Array<Highlight> highlights = new Array<>();
+
+        @Override
+        public void process(HighlightTextArea textArea, Array<Highlight> highlights) {
+            highlights.addAll(this.highlights);
+        }
+
+        public void add(Highlight highlight) {
+            highlights.add(highlight);
+        }
     }
 }

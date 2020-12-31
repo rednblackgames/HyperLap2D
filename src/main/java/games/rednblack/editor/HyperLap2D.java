@@ -87,7 +87,6 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
         parameter.size = 14;
         BitmapFont bigFont = generator.generateFont(parameter);
         BitmapFont defaultMono = monoGenerator.generateFont(parameter);
-        defaultMono.getData().markupEnabled = true;
         defaultMono.setFixedWidthGlyphs(parameter.characters);
 
         generator.dispose();
@@ -188,7 +187,10 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
 
     @Override
     public void onRegister() {
-        System.setErr(new ConsoleInterceptor(System.err));
+        ConsoleInterceptor errInterceptor = new ConsoleInterceptor(System.err);
+        errInterceptor.setPrefix("[FF0000]");
+        errInterceptor.setSuffix("[FFFFFF]");
+        System.setErr(errInterceptor);
         System.setOut(new ConsoleInterceptor(System.out));
 
         startup();

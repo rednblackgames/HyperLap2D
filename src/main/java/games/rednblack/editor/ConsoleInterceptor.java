@@ -8,72 +8,100 @@ import java.io.PrintStream;
 
 public class ConsoleInterceptor extends PrintStream {
     private final Facade facade;
+    private String prefix = null, suffix = null;
+
+    private final StringBuilder stringBuilder = new StringBuilder();
 
     public ConsoleInterceptor(OutputStream out) {
         super(out, true);
         facade = HyperLap2DFacade.getInstance();
     }
 
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
+
     @Override
     public void print(String s) {
         super.print(s);
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, s);
+
+        sendToConsole(s);
     }
 
     @Override
     public void print(boolean b) {
         super.print(b);
 
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, String.valueOf(b));
+        sendToConsole(String.valueOf(b));
     }
 
     @Override
     public void print(int i) {
         super.print(i);
 
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, String.valueOf(i));
+        sendToConsole(String.valueOf(i));
     }
 
     @Override
     public void print(char c) {
         super.print(c);
 
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, String.valueOf(c));
+        sendToConsole(String.valueOf(c));
     }
 
     @Override
     public void print(long l) {
         super.print(l);
 
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, String.valueOf(l));
+        sendToConsole(String.valueOf(l));
     }
 
     @Override
     public void print(float f) {
         super.print(f);
 
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, String.valueOf(f));
+        sendToConsole(String.valueOf(f));
     }
 
     @Override
     public void print(char[] s) {
         super.print(s);
 
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, String.valueOf(s));
+        sendToConsole(String.valueOf(s));
     }
 
     @Override
     public void print(double d) {
         super.print(d);
 
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, String.valueOf(d));
+        sendToConsole(String.valueOf(d));
     }
 
     @Override
     public void print(Object obj) {
         super.print(obj);
 
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, String.valueOf(obj));
+        sendToConsole(String.valueOf(obj));
+    }
+
+    private void sendToConsole(String s) {
+        stringBuilder.setLength(0);
+
+        if (prefix != null) {
+            stringBuilder.append(prefix);
+        }
+
+        stringBuilder.append(s);
+
+        if (suffix != null) {
+            stringBuilder.append(suffix);
+        }
+
+        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, stringBuilder.toString());
     }
 
     @Override
