@@ -43,8 +43,8 @@ public class ConsoleDialog extends VisDialog {
     public ConsoleDialog() {
         super("Console", "console");
         setModal(false);
+        setResizable(true);
         addCloseButton();
-        this.getTitleTable().padTop(-15);
 
         fixedRule = new FixedRule();
 
@@ -90,13 +90,13 @@ public class ConsoleDialog extends VisDialog {
         ScrollPane scrollPane = textArea.createCompatibleScrollPane();
         scrollPane.addListener(new ScrollFocusListener());
         textArea.addListener(new CursorListener(Cursors.TEXT, HyperLap2DFacade.getInstance()));
-        getContentTable().add(scrollPane).padTop(20).grow().row();
+        getContentTable().add(scrollPane).grow().row();
     }
 
     @Override
     public void addCloseButton() {
-        VisImageButton closeButton = new VisImageButton("close-window");
-        this.getTitleTable().add(closeButton).padRight(0).padTop(40);
+        VisImageButton closeButton = new VisImageButton("close-properties");
+        this.getTitleTable().add(closeButton).padRight(0).padTop(0);
         closeButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
@@ -161,12 +161,12 @@ public class ConsoleDialog extends VisDialog {
 
     @Override
     public float getPrefWidth() {
-        return Sandbox.getInstance().getUIStage().getWidth() * 0.7f;
+        return Sandbox.getInstance().getUIStage().getWidth() * 0.5f;
     }
 
     @Override
     public float getPrefHeight() {
-        return Sandbox.getInstance().getUIStage().getHeight() * 0.8f;
+        return Sandbox.getInstance().getUIStage().getHeight() * 0.5f;
     }
 
     private static class FixedRule implements HighlightRule {
