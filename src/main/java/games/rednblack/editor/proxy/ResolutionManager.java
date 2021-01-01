@@ -50,6 +50,10 @@ import games.rednblack.editor.utils.HyperLap2DUtils;
 import org.puremvc.java.patterns.proxy.Proxy;
 
 public class ResolutionManager extends Proxy {
+    public interface RepackCallback {
+        void onRepack(boolean success);
+    }
+
     private static final String TAG = ResolutionManager.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -60,7 +64,6 @@ public class ResolutionManager extends Proxy {
     private float currentPercent = 0.0f;
 
     private ProgressHandler handler;
-
 
     public ResolutionManager() {
         super(NAME);
@@ -127,18 +130,6 @@ public class ResolutionManager extends Proxy {
                 break;
         }
         return a / b;
-    }
-
-    public static int getMinSquareNum(int num) {
-
-        // if (num < 1024) return 1024;
-
-        // if (num < 2048) return 2048;
-
-        // if (num < 4096) return 4096;
-
-
-        return 4096;
     }
 
     @Override
@@ -448,11 +439,22 @@ public class ResolutionManager extends Proxy {
     }
 
     public void rePackProjectImagesForAllResolutions(boolean reloadProjectData) {
+        rePackProjectImagesForAllResolutions(reloadProjectData, null);
+    }
+
+    public void rePackProjectImagesForAllResolutions(boolean reloadProjectData, RepackCallback callback) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG);
-            rePackProjectImagesForAllResolutionsSync();
-            facade.sendNotification(MsgAPI.HIDE_LOADING_DIALOG);
+            try {
+                rePackProjectImagesForAllResolutionsSync();
+                facade.sendNotification(MsgAPI.HIDE_LOADING_DIALOG);
+                if (callback != null)
+                    callback.onRepack(true);
+            } catch (Exception e) {
+                if (callback != null)
+                    callback.onRepack(false);
+            }
 
             if (reloadProjectData) {
                 Gdx.app.postRunnable(() -> {

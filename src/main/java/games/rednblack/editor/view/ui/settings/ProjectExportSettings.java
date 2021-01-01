@@ -127,14 +127,17 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
 
         if (packerModified) {
             ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-            try {
-                resolutionManager.rePackProjectImagesForAllResolutions(false);
-            } catch (Exception e) {
-                facade.sendNotification(MsgAPI.SHOW_NOTIFICATION, "Invalid properties selected, revert settings");
-                projectManager.setTexturePackerVO(backup);
-                resolutionManager.rePackProjectImagesForAllResolutions(false);
-                translateSettingsToView();
-            }
+            resolutionManager.rePackProjectImagesForAllResolutions(false, new ResolutionManager.RepackCallback() {
+                @Override
+                public void onRepack(boolean success) {
+                    if (!success) {
+                        facade.sendNotification(MsgAPI.SHOW_NOTIFICATION, "Invalid properties selected, revert settings");
+                        projectManager.setTexturePackerVO(backup);
+                        resolutionManager.rePackProjectImagesForAllResolutions(false);
+                        translateSettingsToView();
+                    }
+                }
+            });
         }
 
         facade.sendNotification(MsgAPI.SAVE_EXPORT_PATH, exportSettingsInputFileWidget.getValue().file().getAbsolutePath());
