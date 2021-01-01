@@ -10,8 +10,6 @@ public class ConsoleInterceptor extends PrintStream {
     private final Facade facade;
     private String prefix = null, suffix = null;
 
-    private final StringBuilder stringBuilder = new StringBuilder();
-
     public ConsoleInterceptor(OutputStream out) {
         super(out, true);
         facade = HyperLap2DFacade.getInstance();
@@ -89,19 +87,15 @@ public class ConsoleInterceptor extends PrintStream {
     }
 
     private void sendToConsole(String s) {
-        stringBuilder.setLength(0);
-
         if (prefix != null) {
-            stringBuilder.append(prefix);
+            facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, prefix);
         }
 
-        stringBuilder.append(s);
+        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, s);
 
         if (suffix != null) {
-            stringBuilder.append(suffix);
+            facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, suffix);
         }
-
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, stringBuilder.toString());
     }
 
     @Override
