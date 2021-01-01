@@ -191,7 +191,8 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
         errInterceptor.setPrefix("[FF0000]");
         errInterceptor.setSuffix("[FFFFFF]");
         System.setErr(errInterceptor);
-        System.setOut(new ConsoleInterceptor(System.out));
+        ConsoleInterceptor outInterceptor = new ConsoleInterceptor(System.out);
+        System.setOut(outInterceptor);
 
         startup();
     }

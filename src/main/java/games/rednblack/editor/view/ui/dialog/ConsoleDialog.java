@@ -10,6 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Field;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.kotcrab.vis.ui.util.highlight.Highlight;
 import com.kotcrab.vis.ui.util.highlight.HighlightRule;
 import com.kotcrab.vis.ui.util.highlight.Highlighter;
@@ -21,6 +24,7 @@ import games.rednblack.h2d.common.view.ui.listener.CursorListener;
 import games.rednblack.h2d.common.view.ui.listener.ScrollFocusListener;
 import org.apache.commons.lang3.RegExUtils;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,6 +36,9 @@ public class ConsoleDialog extends VisDialog {
     //RegEx to identify a valid color markup in format [RRGGBB] or [RRGGBBAA]
     private final String regex = "\\[([^\\]G-Zg-z]{6}|[^\\]G-Zg-z]{8})\\]";
     private final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+
+    private final HashMap<String, Color> colorCache = new HashMap<>();
+    private Color lastColor = Color.WHITE;
 
     public ConsoleDialog() {
         super("Console", "console");
@@ -112,19 +119,19 @@ public class ConsoleDialog extends VisDialog {
 
     public void write(String s) {
         if (s.contains("\t"))
-            s = s.replace("\t", "    ");
+            s = s.replaceAll("\t", "    ");
 
         Matcher matcher = pattern.matcher(s);
 
         int lastIndex = 0;
         int markupAccumulator = 0;
-        Color lastColor = Color.WHITE;
 
         int previousLength = textArea.getText().length();
 
         while (matcher.find()) {
             String colorHex = matcher.group(1);
-            Color color = Color.valueOf(colorHex);
+            colorCache.computeIfAbsent(colorHex, Color::valueOf);
+            Color color = colorCache.get(colorHex);
 
             int start = matcher.start();
             int end = matcher.end();
@@ -132,11 +139,18 @@ public class ConsoleDialog extends VisDialog {
             int ruleStart = lastIndex - markupAccumulator;
             int ruleEnd = start - markupAccumulator;
             if (ruleStart < ruleEnd)
-                fixedRule.add(new Highlight(lastColor, ruleStart + previousLength, ruleEnd + previousLength));
+                fixedRule.add(lastColor, ruleStart + previousLength, ruleEnd + previousLength);
 
             lastIndex = end;
             lastColor = color;
             markupAccumulator += end - start;
+        }
+
+        if (!s.equals("\n")) {
+            int ruleStart = lastIndex - markupAccumulator;
+            int ruleEnd = s.length() - markupAccumulator;
+            if (ruleStart < ruleEnd)
+                fixedRule.add(lastColor, ruleStart + previousLength, ruleEnd + previousLength);
         }
 
         String output = RegExUtils.removeAll(s, pattern);
@@ -163,8 +177,22 @@ public class ConsoleDialog extends VisDialog {
             highlights.addAll(this.highlights);
         }
 
-        public void add(Highlight highlight) {
-            highlights.add(highlight);
+        public void add(Color color, int start, int end) {
+            if (highlights.size > 0) {
+                Highlight highlight = highlights.get(highlights.size - 1);
+                //Merge contiguous (or separated with blank newline) rules without create new `Highlight` object
+                if (color.equals(highlight.getColor()) && (highlight.getEnd() + 1 == start || highlight.getEnd() == start)) {
+                    //Using reflection because fields in `Highlight` class are private
+                    try {
+                        Field endField = ClassReflection.getDeclaredField(Highlight.class, "end");
+                        endField.setAccessible(true);
+                        endField.set(highlight, end);
+                        return;
+                    } catch (ReflectionException ignore) {
+                    }
+                }
+            }
+            highlights.add(new Highlight(color, start, end));
         }
     }
 }
