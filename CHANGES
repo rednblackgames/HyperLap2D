@@ -11,9 +11,9 @@
 - Add `Console` to show debug logs
 - Add hide GUI with F12 button
 - Update HyperLap2D project version to 0.1.1
-- Update libGDX to 1.9.13 (SNAPSHOT)
+- Update libGDX to 1.9.13
 - Fixed some memory leaks and NPEs
-- Improved UI
+- Improved UI with tons of new animations
 
 [0.0.3]
 - Fixed bright lights on some GPUs
