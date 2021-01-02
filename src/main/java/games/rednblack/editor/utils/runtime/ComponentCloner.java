@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 /**
  * Created by azakhary on 6/3/2015.
@@ -34,7 +36,7 @@ public class ComponentCloner {
         Class<?> eClass = source.getClass();
         E target = null;
         try {
-            target = (E) eClass.newInstance();
+            target = (E) ClassReflection.newInstance(eClass);
             Field[] sourceFields = source.getClass().getDeclaredFields();
             Field[] targetFields = target.getClass().getDeclaredFields();
             for(int i = 0; i < targetFields.length; i++) {
@@ -42,10 +44,8 @@ public class ComponentCloner {
                     targetFields[i].set(target, sourceFields[i].get(source));
                 }
             }
-        } catch (InstantiationException e) {
-            //e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            //e.printStackTrace();
+        } catch (IllegalAccessException | ReflectionException e) {
+            e.printStackTrace();
         }
 
         return target;

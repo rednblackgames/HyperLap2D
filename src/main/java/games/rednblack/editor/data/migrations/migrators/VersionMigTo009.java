@@ -65,7 +65,7 @@ public class VersionMigTo009 implements IVersionMigrator {
         for (File entry : scenesDir.listFiles()) {
             if (!entry.isDirectory()) {
                 try {
-                    String content = FileUtils.readFileToString(new FileHandle(entry).file());
+                    String content = FileUtils.readFileToString(new FileHandle(entry).file(), "utf-8");
                     JsonValue value = jsonReader.parse(content);
                     fixAnimations(value.get("composite"));
                     if(value.get("libraryItems") != null) {
@@ -105,7 +105,7 @@ public class VersionMigTo009 implements IVersionMigrator {
         String prjInfoFilePath = projectPath + "/project.dt";
         FileHandle projectInfoFile = Gdx.files.internal(prjInfoFilePath);
         try {
-            String projectInfoContents = FileUtils.readFileToString(projectInfoFile.file());
+            String projectInfoContents = FileUtils.readFileToString(projectInfoFile.file(), "utf-8");
             JsonValue value = jsonReader.parse(projectInfoContents);
             JsonValue newVal = jsonReader.parse(libraryArrayJsonString);
             newVal.name = "libraryItems";

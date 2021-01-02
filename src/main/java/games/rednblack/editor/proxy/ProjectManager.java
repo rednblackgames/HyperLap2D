@@ -1259,7 +1259,7 @@ public class ProjectManager extends Proxy {
                 Json json = new Json();
                 String projectInfoContents = null;
                 try {
-                    projectInfoContents = FileUtils.readFileToString(handle.file());
+                    projectInfoContents = FileUtils.readFileToString(handle.file(), "utf-8");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

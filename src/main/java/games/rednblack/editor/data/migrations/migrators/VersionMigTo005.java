@@ -70,7 +70,7 @@ public class VersionMigTo005 implements IVersionMigrator {
         FileHandle projectInfoFile = Gdx.files.internal(prjInfoFilePath);
         String projectInfoContents = null;
         try {
-            projectInfoContents = FileUtils.readFileToString(projectInfoFile.file());
+            projectInfoContents = FileUtils.readFileToString(projectInfoFile.file(), "utf-8");
             ProjectInfoVO currentProjectInfoVO = json.fromJson(ProjectInfoVO.class, projectInfoContents);
             projectManager.currentProjectInfoVO = currentProjectInfoVO;
 
@@ -88,7 +88,7 @@ public class VersionMigTo005 implements IVersionMigrator {
         for (File entry : scenesDir.listFiles()) {
             if (!entry.isDirectory()) {
                 try {
-                    String content = FileUtils.readFileToString(new FileHandle(entry).file());
+                    String content = FileUtils.readFileToString(new FileHandle(entry).file(), "utf-8");
                     content = content.replaceAll("\"slights\":", "\"sLights\":");
                     FileUtils.writeStringToFile(new File(entry.getAbsolutePath()), content, "utf-8");
                 } catch (IOException e) {

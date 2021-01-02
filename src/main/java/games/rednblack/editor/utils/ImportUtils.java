@@ -173,7 +173,7 @@ public class ImportUtils {
         int type = TYPE_UNKNOWN;
 
         try {
-            String contents = FileUtils.readFileToString(file);
+            String contents = FileUtils.readFileToString(file, "utf-8");
 
             // checking for atlas file
             if (contents.contains("format: ") && contents.contains("filter: ") && contents.contains("xy: ")) {

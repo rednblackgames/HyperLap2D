@@ -188,7 +188,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
             Vector2 originPoint = new Vector2(transformComponent.x + transformComponent.originX, transformComponent.y + transformComponent.originY);
             mousePoint.sub(originPoint);
             //origin related
-            lastTransformAngle = mousePoint.angle();
+            lastTransformAngle = mousePoint.angleDeg();
             lastEntityAngle = transformComponent.rotation;
         }
     }
