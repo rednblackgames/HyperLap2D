@@ -19,6 +19,7 @@ import games.rednblack.editor.renderer.data.StickyNoteVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.widget.H2DPopupMenu;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
 
 public class StickyNoteActor extends VisWindow {
@@ -308,7 +309,7 @@ public class StickyNoteActor extends VisWindow {
     }
 
     private void showPopupMenu() {
-        PopupMenu popupMenu = new PopupMenu();
+        H2DPopupMenu popupMenu = new H2DPopupMenu();
         MenuItem rename = new MenuItem("Remove note");
         rename.addListener(
                 new ClickListener(Input.Buttons.LEFT) {
@@ -345,7 +346,6 @@ public class StickyNoteActor extends VisWindow {
                 });
         popupMenu.addItem(changeColor);
 
-        popupMenu.setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY() - popupMenu.getHeight());
-        Sandbox.getInstance().getUIStage().addActor(popupMenu);
+        popupMenu.showMenu(Sandbox.getInstance().getUIStage(), Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
     }
 }

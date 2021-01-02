@@ -41,10 +41,11 @@ import com.kotcrab.vis.ui.util.InputValidator;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import com.kotcrab.vis.ui.widget.MenuItem;
-import com.kotcrab.vis.ui.widget.PopupMenu;
+
 import com.kotcrab.vis.ui.widget.VisWindow;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.view.ui.widget.H2DPopupMenu;
 import space.earlygrey.shapedrawer.JoinType;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
@@ -131,7 +132,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                             if (nodeGroup != null) {
                                 final NodeGroupImpl finalNodeGroup = nodeGroup;
 
-                                PopupMenu popupMenu = new PopupMenu();
+                                H2DPopupMenu popupMenu = new H2DPopupMenu();
                                 MenuItem rename = new MenuItem("Rename group");
                                 rename.addListener(
                                         new ClickListener(Input.Buttons.LEFT) {
@@ -173,7 +174,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
 
                                 showPopupMenu(popupMenu);
                             } else {
-                                PopupMenu popupMenu = popupMenuProducer.createPopupMenu(x, y);
+                                H2DPopupMenu popupMenu = popupMenuProducer.createPopupMenu(x, y);
                                 showPopupMenu(popupMenu);
                             }
                         }
@@ -286,9 +287,8 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
         windowsMoved();
     }
 
-    private void showPopupMenu(PopupMenu popupMenu) {
-        popupMenu.setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY() - popupMenu.getHeight());
-        Sandbox.getInstance().getUIStage().addActor(popupMenu);
+    private void showPopupMenu(H2DPopupMenu popupMenu) {
+        popupMenu.showMenu(Sandbox.getInstance().getUIStage(), Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
     }
 
     @Override

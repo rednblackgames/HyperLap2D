@@ -18,30 +18,25 @@
 
 package games.rednblack.editor.view.ui;
 
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.widget.MenuItem;
-import com.kotcrab.vis.ui.widget.PopupMenu;
 import games.rednblack.editor.event.MenuItemListener;
+import games.rednblack.h2d.common.view.ui.widget.H2DPopupMenu;
 
 import java.util.HashMap;
 
 /**
  * Created by azakhary on 4/20/2015.
  */
-public class UIDropDownMenu extends PopupMenu {
+public class UIDropDownMenu extends H2DPopupMenu {
 
     private static final String CLASS_NAME = "games.rednblack.editor.view.ui.UIDropDownMenu";
 
     public static final String ITEM_CLICKED = CLASS_NAME + ".ACTION_CLICKED";
 
-    private Array<String> currentActionList = new Array<>();
-
-    private HashMap<String, String> actionNames = new HashMap<>();
+    private final Array<String> currentActionList = new Array<>();
+    private final HashMap<String, String> actionNames = new HashMap<>();
 
     public UIDropDownMenu() {
         actionNames.put(MsgAPI.ACTION_GROUP_ITEMS, "Convert into composite");
@@ -95,32 +90,6 @@ public class UIDropDownMenu extends PopupMenu {
             String itemName = actionNames.get(currentActionList.get(i));
             MenuItem menuItem = new MenuItem(itemName, new MenuItemListener(ITEM_CLICKED, currentActionList.get(i)));
             addItem(menuItem);
-        }
-    }
-
-    public void keepWithinStage() {
-        Stage stage = getStage();
-        if (stage == null) return;
-        Camera camera = stage.getCamera();
-        if (camera instanceof OrthographicCamera) {
-            OrthographicCamera orthographicCamera = (OrthographicCamera) camera;
-            float parentWidth = stage.getWidth();
-            float parentHeight = stage.getHeight();
-            if (getX(Align.right) - camera.position.x > parentWidth / 2 / orthographicCamera.zoom)
-                setPosition(camera.position.x + parentWidth / 2 / orthographicCamera.zoom, getY(Align.right), Align.right);
-            if (getX(Align.left) - camera.position.x < -parentWidth / 2 / orthographicCamera.zoom)
-                setPosition(camera.position.x - parentWidth / 2 / orthographicCamera.zoom, getY(Align.left), Align.left);
-            if (getY(Align.top) - camera.position.y > parentHeight / 2 / orthographicCamera.zoom)
-                setPosition(getX(Align.top), camera.position.y + parentHeight / 2 / orthographicCamera.zoom, Align.top);
-            if (getY(Align.bottom) - camera.position.y < -parentHeight / 2 / orthographicCamera.zoom)
-                setPosition(getX(Align.bottom), camera.position.y - parentHeight / 2 / orthographicCamera.zoom, Align.bottom);
-        } else if (getParent() == stage.getRoot()) {
-            float parentWidth = stage.getWidth();
-            float parentHeight = stage.getHeight();
-            if (getX() < 0) setX(0);
-            if (getRight() > parentWidth) setX(parentWidth - getWidth());
-            if (getY() < 0) setY(0);
-            if (getTop() > parentHeight) setY(parentHeight - getHeight());
         }
     }
 }

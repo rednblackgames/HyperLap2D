@@ -213,11 +213,8 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
     private void showPopup(Array<String> actionsSet, Object observable) {
         Vector2 coordinates = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 
-        sandbox.getUIStage().addActor(viewComponent);
         viewComponent.setActionList(actionsSet);
-        viewComponent.setX(coordinates.x);
-        viewComponent.setY(coordinates.y - viewComponent.getHeight());
-        viewComponent.keepWithinStage();
+        viewComponent.showMenu(sandbox.getUIStage(), coordinates.x, coordinates.y);
 
         currentObservable = observable;
     }

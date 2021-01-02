@@ -1,7 +1,7 @@
 package games.rednblack.editor.graph;
 
-import com.kotcrab.vis.ui.widget.PopupMenu;
+import games.rednblack.h2d.common.view.ui.widget.H2DPopupMenu;
 
 public interface PopupMenuProducer {
-    PopupMenu createPopupMenu(float x, float y);
+    H2DPopupMenu createPopupMenu(float x, float y);
 }

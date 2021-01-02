@@ -4,7 +4,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
@@ -35,6 +34,7 @@ import games.rednblack.editor.view.ui.widget.actors.StaticGrid;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.widget.H2DPopupMenu;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -99,7 +99,7 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
 
         graphContainer = new GraphContainer<>(VisUI.getSkin(), new PopupMenuProducer() {
             @Override
-            public PopupMenu createPopupMenu(float x, float y) {
+            public H2DPopupMenu createPopupMenu(float x, float y) {
                 return createGraphPopupMenu(x, y);
             }
         });
@@ -161,8 +161,8 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         graphContainer.setValidationResult(graphValidator.validateGraph(this, "end"));
     }
 
-    private PopupMenu createGraphPopupMenu(final float popupX, final float popupY) {
-        PopupMenu popupMenu = new PopupMenu();
+    private H2DPopupMenu createGraphPopupMenu(final float popupX, final float popupY) {
+        H2DPopupMenu popupMenu = new H2DPopupMenu();
 
         for (final GraphBoxProducer<ActionFieldType> producer : graphBoxProducers) {
             if (producer.isUnique())
@@ -201,7 +201,7 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
             }
         }
 
-        PopupMenu createdPopup = new PopupMenu();
+        PopupMenu createdPopup = new PopupMenu("noborder");
         MenuItem createdMenuItem = new MenuItem(menuSplit[startIndex]);
         createdMenuItem.setSubMenu(createdPopup);
         popupMenu.addItem(createdMenuItem);
