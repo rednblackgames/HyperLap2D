@@ -19,6 +19,7 @@ import com.kotcrab.vis.ui.util.highlight.Highlighter;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.ui.Cursors;
 import games.rednblack.h2d.common.view.ui.listener.CursorListener;
 import games.rednblack.h2d.common.view.ui.listener.ScrollFocusListener;
@@ -28,7 +29,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ConsoleDialog extends VisDialog {
+public class ConsoleDialog extends H2DDialog {
 
     private final HighlightTextArea textArea;
     private final FixedRule fixedRule;
@@ -110,11 +111,6 @@ public class ConsoleDialog extends VisDialog {
                 return true;
             }
         });
-    }
-
-    @Override
-    public void close() {
-        super.close();
     }
 
     public void write(String s) {

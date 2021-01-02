@@ -106,12 +106,6 @@ public class ImportPanel extends UIDraggablePanel {
         typeNames.put(ImportUtils.TYPE_SHADER, "Shader");
     }
 
-    @Override
-    public void hide(Action action) {
-        super.hide(action);
-
-    }
-
     public static class DropBundle {
         public String[] paths;
         public Vector2 pos;
