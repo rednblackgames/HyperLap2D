@@ -3,6 +3,7 @@ package games.rednblack.editor.view.ui.dialog;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -17,6 +18,8 @@ public class SettingsDialog extends H2DDialog {
     public static final String ADD_SETTINGS = prefix + ".ADD_SETTINGS";
 
     private final VisTree<SettingsNode, SettingsNodeValue<?>> settingsTree;
+
+    private static final float TRANSITION_TIME = 0.1f;
 
     SettingsDialog() {
         super("Settings");
@@ -39,9 +42,29 @@ public class SettingsDialog extends H2DDialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 settingsTree.getSelectedNode().setExpanded(true);
-                containerTable.clear();
                 settingsTree.getSelectedValue().translateSettingsToView();
-                containerTable.add(settingsTree.getSelectedValue().getContentTable()).expand().fill().pad(5);
+
+                if (containerTable.getChildren().size > 0) {
+                    Actor oldContent = containerTable.getChild(0);
+                    oldContent.clearActions();
+                    oldContent.addAction(Actions.sequence(
+                            Actions.alpha(0, TRANSITION_TIME),
+                            Actions.run(() -> {
+                                containerTable.clear();
+                                Actor newContent = settingsTree.getSelectedValue().getContentTable();
+                                newContent.clearActions();
+                                newContent.getColor().a = 0;
+                                newContent.addAction(Actions.alpha(1, TRANSITION_TIME));
+                                containerTable.add(newContent).expand().fill().pad(5);
+                            })
+                    ));
+                } else {
+                    Actor newContent = settingsTree.getSelectedValue().getContentTable();
+                    newContent.clearActions();
+                    newContent.getColor().a = 0;
+                    newContent.addAction(Actions.alpha(1, TRANSITION_TIME));
+                    containerTable.add(newContent).expand().fill().pad(5);
+                }
             }
         });
 
