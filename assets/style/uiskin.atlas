@@ -320,7 +320,7 @@ console-background
   xy: 331, 45
   size: 64, 81
   split: 23, 22, 42, 23
-  pad: 21, 19, 37, 19
+  pad: 16, 15, 20, 15
   orig: 64, 81
   offset: 0, 0
   index: -1

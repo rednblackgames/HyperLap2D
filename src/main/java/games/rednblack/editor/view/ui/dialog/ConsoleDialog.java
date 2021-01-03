@@ -91,7 +91,7 @@ public class ConsoleDialog extends H2DDialog {
         ScrollPane scrollPane = textArea.createCompatibleScrollPane();
         scrollPane.addListener(new ScrollFocusListener());
         textArea.addListener(new CursorListener(Cursors.TEXT, HyperLap2DFacade.getInstance()));
-        getContentTable().add(scrollPane).grow().row();
+        getContentTable().add(scrollPane).padTop(5).grow().row();
     }
 
     @Override
