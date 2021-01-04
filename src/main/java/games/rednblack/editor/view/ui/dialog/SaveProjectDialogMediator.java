@@ -42,8 +42,10 @@ public class SaveProjectDialogMediator extends Mediator<SaveProjectDialog> {
         switch (notification.getName()) {
             case MsgAPI.CHECK_EDITS_ACTION:
                 if (HyperLap2DApp.getInstance().hyperlap2D.hasUnsavedStuff() && projectManager.currentProjectVO != null) {
-                    viewComponent.updateDialog(projectManager.currentProjectVO.projectName, notification.getBody());
-                    viewComponent.show(uiStage);
+                    if (viewComponent.getStage() == null) {
+                        viewComponent.updateDialog(projectManager.currentProjectVO.projectName, notification.getBody());
+                        viewComponent.show(uiStage);
+                    }
                 } else {
                     Runnable action = notification.getBody();
                     action.run();

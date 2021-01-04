@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -22,13 +21,13 @@ public class SaveProjectDialog extends H2DDialog {
         messageLabel = new VisLabel();
         getContentTable().pad(10);
         getContentTable().add(messageLabel);
-        VisTextButton yesButton = new VisTextButton("Yes");
-        VisTextButton noButton = new VisTextButton("No");
+        VisTextButton yesButton = new VisTextButton("Save");
+        VisTextButton noButton = new VisTextButton("Don't Save");
         VisTextButton cancelButton = new VisTextButton("Cancel");
 
-        getButtonsTable().add(cancelButton).width(93).pad(8).padLeft(16);
-        getButtonsTable().add(noButton).width(93).pad(8);
-        getButtonsTable().add(yesButton).width(93).pad(8).padRight(16);
+        getButtonsTable().add(noButton).width(95).pad(8).padLeft(16);
+        getButtonsTable().add(cancelButton).width(95).pad(8).padLeft(32).padRight(6);
+        getButtonsTable().add(yesButton).width(95).pad(8).padRight(16).padLeft(6);
 
         yesButton.addListener(new ClickListener() {
             @Override
@@ -63,6 +62,6 @@ public class SaveProjectDialog extends H2DDialog {
     public void updateDialog(String projectTitle, Runnable runnable) {
         if (runnable == null) throw new IllegalArgumentException("Runnable action cannot be null");
         action = runnable;
-        messageLabel.setText("Save changes to '" + projectTitle + "' before exit?");
+        messageLabel.setText("Save changes to '" + projectTitle + "' before closing?");
     }
 }
