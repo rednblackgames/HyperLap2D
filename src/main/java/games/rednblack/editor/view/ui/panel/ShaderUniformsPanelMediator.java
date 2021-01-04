@@ -61,11 +61,9 @@ public class ShaderUniformsPanelMediator extends Mediator<ShaderUniformsPanel> {
                 Set<Entity> selection = notification.getBody();
                 if (selection.size() == 1) {
                     Entity entity = selection.iterator().next();
-                    ShaderComponent shaderComponent = ComponentRetriever.get(entity, ShaderComponent.class);
-                    if (shaderComponent != null)
-                        setObservable(entity);
-                    else
-                        viewComponent.setEmpty("Selected item doesn't have a Shader Component");
+                    setObservable(entity);
+                } else {
+                    setObservable(null);
                 }
                 break;
             case MsgAPI.EMPTY_SPACE_CLICKED:
@@ -92,7 +90,10 @@ public class ShaderUniformsPanelMediator extends Mediator<ShaderUniformsPanel> {
         }
 
         ShaderComponent shaderComponent = ComponentRetriever.get(observable, ShaderComponent.class);
-        viewComponent.updateView(shaderComponent.uniforms, shaderComponent.customUniforms);
+        if (shaderComponent != null)
+            viewComponent.updateView(shaderComponent.uniforms, shaderComponent.customUniforms);
+        else
+            viewComponent.setEmpty("Selected item doesn't have a Shader Component");
     }
 
     private void addNewUniform(Object[] payload) {
