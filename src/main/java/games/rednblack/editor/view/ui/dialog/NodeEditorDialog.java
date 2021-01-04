@@ -201,7 +201,7 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
             }
         }
 
-        PopupMenu createdPopup = new PopupMenu("noborder");
+        PopupMenu createdPopup = new H2DPopupMenu(false);
         MenuItem createdMenuItem = new MenuItem(menuSplit[startIndex]);
         createdMenuItem.setSubMenu(createdPopup);
         popupMenu.addItem(createdMenuItem);

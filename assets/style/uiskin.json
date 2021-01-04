@@ -692,11 +692,7 @@
   },
   com.kotcrab.vis.ui.widget.PopupMenu$PopupMenuStyle: {
     default: {
-      background: popup-menu,
-      border: border
-    },
-    noborder: {
-      background: button
+      background: popup-menu
     }
   },
   com.kotcrab.vis.ui.widget.Separator$SeparatorStyle: {
@@ -710,6 +706,10 @@
     },
     menu: {
       background: separator-menu,
+      thickness: 2
+    },
+    tool: {
+      background: separator-tool,
       thickness: 2
     }
   },
@@ -725,10 +725,9 @@
   },
   com.kotcrab.vis.ui.widget.MenuItem$MenuItemStyle: {
     default: {
-      down: popup-menu-down,
-      up: popup-menu,
-      over: popup-menu-over,
-      disabled: popup-menu,
+      down: menu-item-down,
+      up : menu-item
+      over: menu-item-over,
       font: default-font,
       fontColor: hyperlap2d-menuitem-grey,
       disabledFontColor: hyperlap2d-menuitem-disabled-grey,

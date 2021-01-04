@@ -6,6 +6,7 @@ import com.kotcrab.vis.ui.widget.PopupMenu;
 import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.event.MenuItemListener;
 import games.rednblack.editor.utils.KeyBindingsLayout;
+import games.rednblack.h2d.common.view.ui.widget.H2DPopupMenu;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class FileMenu extends H2DMenu {
         //
         addSeparator();
         MenuItem recentProjectsMenuItem = new MenuItem("Recent Projects");
-        recentProjectsPopupMenu = new PopupMenu();
+        recentProjectsPopupMenu = new H2DPopupMenu(false);
         recentProjectsMenuItem.setSubMenu(recentProjectsPopupMenu);
         recentProjectsMenuItems = new Array<>();
         addItem(recentProjectsMenuItem);
