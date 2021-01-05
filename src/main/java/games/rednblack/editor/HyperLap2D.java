@@ -31,7 +31,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ObjectMap;
-import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.SettingsManager;

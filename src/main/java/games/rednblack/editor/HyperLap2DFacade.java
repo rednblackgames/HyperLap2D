@@ -20,6 +20,7 @@ package games.rednblack.editor;
 
 import games.rednblack.editor.controller.StartupCommand;
 import games.rednblack.editor.splash.SplashMediator;
+import games.rednblack.h2d.common.HyperLog;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import org.puremvc.java.patterns.facade.Facade;
 import org.puremvc.java.patterns.observer.Notification;
@@ -44,6 +45,7 @@ public class HyperLap2DFacade extends Facade {
         if (instance == null) {
             instance = new HyperLap2DFacade();
             instance.registerMediator(new SplashMediator());
+            HyperLog.setFacade(instance);
         }
         return instance;
     }
