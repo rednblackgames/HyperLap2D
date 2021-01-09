@@ -90,9 +90,6 @@ public class AssetImporter {
             case ImportUtils.TYPE_PARTICLE_EFFECT:
                 projectManager.importParticlesIntoProject(files, progressHandler, skipRepack);
                 break;
-            case ImportUtils.TYPE_SPRITER_ANIMATION:
-                projectManager.importSpineAnimationsIntoProject(files, progressHandler);
-                break;
             case ImportUtils.TYPE_SPINE_ANIMATION:
                 projectManager.importSpineAnimationsIntoProject(files, progressHandler);
                 break;

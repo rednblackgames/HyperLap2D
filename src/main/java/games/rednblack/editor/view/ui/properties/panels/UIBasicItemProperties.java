@@ -56,7 +56,6 @@ public class UIBasicItemProperties extends UIItemProperties {
         texture,
         spriteAnimation,
         spineAnimation,
-        spriterAnimation,
         particle,
         text,
         light,
@@ -354,7 +353,6 @@ public class UIBasicItemProperties extends UIItemProperties {
         itemTypeNameMap.put(ItemType.light, "Light");
         itemTypeNameMap.put(ItemType.spineAnimation, "Spine animation");
         itemTypeNameMap.put(ItemType.spriteAnimation, "Sprite Animation");
-        itemTypeNameMap.put(ItemType.spriterAnimation, "Spriter Animation");
         itemTypeNameMap.put(ItemType.primitive, "Primitive");
 
         itemTypeIconMap.put(ItemType.multiple, "icon-multiple");
@@ -366,7 +364,6 @@ public class UIBasicItemProperties extends UIItemProperties {
         itemTypeIconMap.put(ItemType.light, "icon-particle-white");
         itemTypeIconMap.put(ItemType.spineAnimation, "icon-spine");
         itemTypeIconMap.put(ItemType.spriteAnimation, "icon-animation");
-        itemTypeIconMap.put(ItemType.spriterAnimation, "icon-animation");
         itemTypeIconMap.put(ItemType.primitive, "icon-image");
     }
 }

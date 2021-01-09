@@ -47,7 +47,6 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
     public static final Integer RULER_RESOURCE_ACTION_SET = 4;
     public static final Integer SPINE_ANIMATION_ACTION_SET = 5;
     public static final Integer SPRITE_ANIMATION_ACTION_SET = 7;
-    public static final Integer SPRITER_ANIMATION_ACTION_SET = 8;
     public static final Integer PARTICLE_ACTION_SET = 9;
     public static final Integer POLYGON_VERTEX_ACTION_SET = 10;
     public static final Integer ORIGIN_POINT_ACTION_SET = 11;
@@ -90,9 +89,6 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
         actionSets.put(SPRITE_ANIMATION_ACTION_SET, new Array<>());
         actionSets.get(SPRITE_ANIMATION_ACTION_SET).add(MsgAPI.ACTION_DELETE_SPRITE_ANIMATION_RESOURCE);
 
-        actionSets.put(SPRITER_ANIMATION_ACTION_SET, new Array<>());
-        actionSets.get(SPRITER_ANIMATION_ACTION_SET).add(MsgAPI.ACTION_DELETE_SPRITER_ANIMATION_RESOURCE);
-
         actionSets.put(PARTICLE_ACTION_SET, new Array<>());
         actionSets.get(PARTICLE_ACTION_SET).add(MsgAPI.ACTION_DELETE_PARTICLE_EFFECT);
 
@@ -126,7 +122,6 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
                 UIResourcesBoxMediator.IMAGE_RIGHT_CLICK,
                 UIResourcesBoxMediator.SPINE_ANIMATION_RIGHT_CLICK,
                 UIResourcesBoxMediator.SPRITE_ANIMATION_RIGHT_CLICK,
-                UIResourcesBoxMediator.SPRITER_ANIMATION_RIGHT_CLICK,
                 UIResourcesBoxMediator.LIBRARY_ITEM_RIGHT_CLICK,
                 UIResourcesBoxMediator.PARTICLE_EFFECT_RIGHT_CLICK,
                 UIResourcesBoxMediator.LIBRARY_ACTION_RIGHT_CLICK,
@@ -176,9 +171,6 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
                 break;
             case UIResourcesBoxMediator.SPRITE_ANIMATION_RIGHT_CLICK:
                 showPopup(SPRITE_ANIMATION_ACTION_SET, notification.getBody());
-                break;
-            case UIResourcesBoxMediator.SPRITER_ANIMATION_RIGHT_CLICK:
-                showPopup(SPRITER_ANIMATION_ACTION_SET, notification.getBody());
                 break;
             case UIResourcesBoxMediator.LIBRARY_ITEM_RIGHT_CLICK:
                 showPopup(LIBRARY_ITEM_ACTION_SET, notification.getBody());

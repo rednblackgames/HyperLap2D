@@ -137,12 +137,6 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
             exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS, fileSrc.getName() + ".atlas"));
         }
 
-        for (SpriterVO imageVO : compositeVO.sSpriterAnimations) {
-            File fileSrc = new File(currentProjectPath + ProjectManager.SPRITER_DIR_PATH + File.separator + imageVO.animationName);
-            FileUtils.copyDirectory(fileSrc, tmpDir);
-            exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_SPRITER_ANIMATION, fileSrc.getName() + ".scml"));
-        }
-
         for (ParticleEffectVO imageVO : compositeVO.sParticleEffects) {
             File fileSrc = new File(currentProjectPath + ProjectManager.PARTICLE_DIR_PATH + File.separator + imageVO.particleName);
             FileUtils.copyFileToDirectory(fileSrc, tmpDir);

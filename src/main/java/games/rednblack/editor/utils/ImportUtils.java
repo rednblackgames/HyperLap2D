@@ -44,7 +44,6 @@ public class ImportUtils {
     public static final int TYPE_ANIMATION_PNG_SEQUENCE = 2;
     public static final int TYPE_SPRITE_ANIMATION_ATLAS = 3;
     public static final int TYPE_SPINE_ANIMATION = 4;
-    public static final int TYPE_SPRITER_ANIMATION = 5;
     public static final int TYPE_TTF_FONT = 6;
     public static final int TYPE_BITMAP_FONT = 7;
     public static final int TYPE_PARTICLE_EFFECT = 8;
@@ -61,14 +60,11 @@ public class ImportUtils {
         supportedTypes.add(TYPE_ANIMATION_PNG_SEQUENCE);
         supportedTypes.add(TYPE_SPRITE_ANIMATION_ATLAS);
         supportedTypes.add(TYPE_SPINE_ANIMATION);
-        supportedTypes.add(TYPE_SPRITER_ANIMATION);
         supportedTypes.add(TYPE_PARTICLE_EFFECT);
         supportedTypes.add(TYPE_SHADER);
         supportedTypes.add(TYPE_HYPERLAP2D_LIBRARY);
-        // TODO: not yet supported, and probably never because they are useless IMO
+        // TODO: not supported yet
         //supportedTypes.add(TYPE_TEXTURE_ATLAS);
-        //supportedTypes.add(TYPE_TTF_FONT);
-        //supportedTypes.add(TYPE_BITMAP_FONT);
 
         fileTypeFilter = new FileTypeFilter(false);
 
@@ -77,7 +73,6 @@ public class ImportUtils {
         fileTypeFilter.addRule("Sprite Animation Atlas File (*.atlas)", "atlas");
         fileTypeFilter.addRule("Particle Effect (*.p)", "p");
         fileTypeFilter.addRule("Spine Animation (*.json)", "json");
-        //fileTypeFilter.addRule("Spriter Animation (*.scml)", "scml");
         fileTypeFilter.addRule("Shader (*.vert, *.frag)", "vert", "frag");
         fileTypeFilter.addRule("HyperLap2D Library (*.h2dlib)", "h2dlib");
     }
@@ -140,9 +135,6 @@ public class ImportUtils {
 
         if (ext.equals("ttf")) {
             return TYPE_TTF_FONT;
-        }
-        if (ext.equals("scml")) {
-            return TYPE_SPRITER_ANIMATION;
         }
 
         if (ext.equals("vert") || ext.equals("frag")) {
@@ -274,7 +266,6 @@ public class ImportUtils {
                 dir = ProjectManager.PARTICLE_DIR_PATH;
                 ext = "p";
                 break;
-            case ImportUtils.TYPE_SPRITER_ANIMATION:
             case ImportUtils.TYPE_SPINE_ANIMATION:
                 dir = ProjectManager.SPINE_DIR_PATH;
                 ext = "json";

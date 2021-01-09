@@ -134,17 +134,6 @@ public class ItemFactory {
         return true;
     }
 
-    public boolean createSpriterAnimation(String animationName, Vector2 position) {
-        SpriterVO vo = new SpriterVO();
-        vo.animationName = animationName;
-
-        if(!setEssentialData(vo, position)) return false;
-        Entity entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), vo);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
-
-        return true;
-    }
-
     public boolean createPrimitive(Vector2 position, ShapeVO shape) {
         ColorPrimitiveVO vo = new ColorPrimitiveVO();
         vo.shape = shape.clone();

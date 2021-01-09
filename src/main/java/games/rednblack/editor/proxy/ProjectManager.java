@@ -83,7 +83,6 @@ public class ProjectManager extends Proxy {
     public static final String IMAGE_DIR_PATH = "assets/orig/images";
     public static final String SPINE_DIR_PATH = "assets/orig/spine-animations";
     public static final String SPRITE_DIR_PATH = "assets/orig/sprite-animations";
-    public static final String SPRITER_DIR_PATH = "assets/orig/animations";
     public static final String PARTICLE_DIR_PATH = "assets/orig/particles";
     public static final String SHADER_DIR_PATH = "assets/shaders";
 
@@ -365,8 +364,6 @@ public class ProjectManager extends Proxy {
                 if (copiedFile.getName().toLowerCase().endsWith(".atlas")) {
                     ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
                     resolutionManager.resizeSpineAnimationForAllResolutions(copiedFile, currentProjectInfoVO);
-                } else if (copiedFile.getName().toLowerCase().endsWith(".scml")) {
-                    //resizeSpriterAnimationForAllResolutions(copiedFile, currentProjectInfoVO);
                 }
             }
 
@@ -387,9 +384,7 @@ public class ProjectManager extends Proxy {
     public File importExternalAnimationIntoProject(FileHandle animationFileSource) {
         try {
             String fileName = animationFileSource.name();
-            if (!HyperLap2DUtils.JSON_FILTER.accept(null, fileName) &&
-                    !HyperLap2DUtils.SCML_FILTER.accept(null, fileName)) {
-                //showError("Spine animation should be a .json file with atlas in same folder \n Spriter animation should be a .scml file with images in same folder");
+            if (!HyperLap2DUtils.JSON_FILTER.accept(null, fileName)) {
                 return null;
             }
 
@@ -437,19 +432,6 @@ public class ProjectManager extends Proxy {
                 }
 
                 return atlasFileTarget;
-
-
-            } else if (HyperLap2DUtils.SCML_FILTER.accept(null, fileName)) {
-                targetPath = currentProjectPath + "/assets/orig/spriter-animations" + File.separator + fileNameWithOutExt;
-                File scmlFileTarget = new File(targetPath + File.separator + fileNameWithOutExt + ".scml");
-                ArrayList<File> imageFiles = getScmlFileImagesList(animationFileSource);
-
-                FileUtils.copyFile(animationFileSource.file(), scmlFileTarget);
-                for (File imageFile : imageFiles) {
-                    File imgFileTarget = new File(targetPath + File.separator + imageFile.getName());
-                    FileUtils.copyFile(imageFile, imgFileTarget);
-                }
-                return scmlFileTarget;
 
 
             }
@@ -997,7 +979,7 @@ public class ProjectManager extends Proxy {
         try {
             FileUtils.copyDirectory(stylesDirectory.file(), fileTarget);
         } catch (IOException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -1033,7 +1015,7 @@ public class ProjectManager extends Proxy {
         try {
             FileUtils.copyDirectory(fontsDirectory.file(), fileTarget);
         } catch (IOException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -1041,11 +1023,9 @@ public class ProjectManager extends Proxy {
     private void exportAnimations(String targetPath) {
         exportSpineAnimationForResolution("orig", targetPath);
         exportSpriteAnimationForResolution("orig", targetPath);
-        exportSpriterAnimationForResolution("orig", targetPath);
         for (ResolutionEntryVO resolutionEntryVO : currentProjectInfoVO.resolutions) {
             exportSpineAnimationForResolution(resolutionEntryVO.name, targetPath);
             exportSpriteAnimationForResolution(resolutionEntryVO.name, targetPath);
-            exportSpriterAnimationForResolution(resolutionEntryVO.name, targetPath);
         }
     }
 
@@ -1060,7 +1040,7 @@ public class ProjectManager extends Proxy {
 
             FileUtils.copyDirectory(fileSrc, fileTargetSpine);
         } catch (IOException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -1075,20 +1055,7 @@ public class ProjectManager extends Proxy {
 
             FileUtils.copyDirectory(fileSrc, fileTargetSprite);
         } catch (IOException e) {
-            //e.printStackTrace();
-        }
-    }
-
-    private void exportSpriterAnimationForResolution(String res, String targetPath) {
-        String spineSrcPath = currentProjectPath + "/assets/" + res + File.separator + "spriter-animations";
-        try {
-            FileUtils.forceMkdir(new File(targetPath + File.separator + res + File.separator + "spriter_animations"));
-            File fileSrc = new File(spineSrcPath);
-            String finalTarget = targetPath + File.separator + res + File.separator + "spriter_animations";
-            File fileTargetSpriter = new File(finalTarget);
-            FileUtils.copyDirectory(fileSrc, fileTargetSpriter);
-        } catch (IOException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -1429,19 +1396,6 @@ public class ProjectManager extends Proxy {
                 return false;
         }
         return deleteSpriteAnimation("orig", spineName);
-    }
-
-    private boolean deleteSpriterAnimation(String resolutionName, String spineName) {
-        String spriterPath = currentProjectPath + "/assets/" + resolutionName + "/spriter-animations" + File.separator;
-        String filePath = spriterPath + spineName;
-        return deleteDirectory(filePath);
-    }
-
-    public boolean deleteSpriterAnimationForAllResolutions(String spineName) {
-        for (ResolutionEntryVO resolutionEntryVO : currentProjectInfoVO.resolutions) {
-            deleteSpriterAnimation(resolutionEntryVO.name, spineName);
-        }
-        return deleteSpriterAnimation("orig", spineName);
     }
 
     private boolean deleteDirectory(String path) {

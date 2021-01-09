@@ -50,8 +50,6 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     private final HashMap<String, SpineAnimData> spineAnimAtlases = new HashMap<>();
     private final HashMap<String, TextureAtlas> spriteAnimAtlases = new HashMap<>();
-    private final HashMap<String, FileHandle> spriterAnimAtlases = new HashMap<>();
-    private final HashMap<String, FileHandle> spriterAnimFiles = new HashMap<>();
     private final HashMap<FontSizePair, BitmapFont> bitmapFonts = new HashMap<>();
     private final HashMap<String, ShaderProgram> shaderPrograms = new HashMap<>(1);
 
@@ -103,11 +101,6 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return animData.atlas;
     }
 
-    @Override
-    public FileHandle getSCMLAtlas(String name) {
-        return spriterAnimAtlases.get(name);
-    }
-
     /**
      * Sets working resolution, please set before doing any loading
      * @param resolution String resolution name, default is "orig" later use resolution names created in editor
@@ -125,12 +118,6 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         SpineAnimData animData = spineAnimAtlases.get(animationName);
         return animData.jsonFile;
     }
-
-    @Override
-    public FileHandle getSCMLFile(String name) {
-        return spriterAnimFiles.get(name);
-    }
-
 
     @Override
     public TextureAtlas getSpriteAnimation(String animationName) {
@@ -176,7 +163,6 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         loadCurrentProjectParticles(projectPath + "/assets/orig/particles");
         loadCurrentProjectSpineAnimations(projectPath + "/assets/", curResolution);
         loadCurrentProjectSpriteAnimations(projectPath + "/assets/", curResolution);
-        loadCurrentProjectSpriterAnimations(projectPath + "/assets/", curResolution);
         loadCurrentProjectBitmapFonts(projectPath, curResolution);
         loadCurrentProjectShaders(projectPath + "/assets/shaders/");
     }
@@ -227,20 +213,6 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-        }
-    }
-
-    private void loadCurrentProjectSpriterAnimations(String path, String curResolution) {
-        spriterAnimFiles.clear();
-        spriterAnimAtlases.clear();
-        FileHandle sourceDir = new FileHandle(path + "orig" + "/spriter-animations");
-        for (FileHandle entry : sourceDir.list()) {
-            if (entry.file().isDirectory()) {
-                String animName = entry.file().getName();
-                FileHandle scmlFile = new FileHandle(path + "orig" + "/spriter-animations/" + animName + "/" + animName + ".scml");
-                spriterAnimFiles.put(animName, scmlFile);
-                spriterAnimAtlases.put(animName, Gdx.files.internal(path + "orig" + "/spriter-animations" + File.separator + animName + File.separator + animName + ".atlas"));
             }
         }
     }
@@ -421,10 +393,6 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     public HashMap<String, TextureAtlas> getProjectSpriteAnimationsList() {
         return spriteAnimAtlases;
-    }
-
-    public HashMap<String, FileHandle> getProjectSpriterAnimationsList() {
-        return spriterAnimFiles;
     }
 
     public TextureAtlas getProjectAssetsList() {

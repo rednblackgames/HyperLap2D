@@ -56,7 +56,6 @@ public class UIDropDownMenu extends H2DPopupMenu {
         actionNames.put(MsgAPI.ACTION_DELETE_PARTICLE_EFFECT, "Delete");
         actionNames.put(MsgAPI.ACTION_DELETE_LIBRARY_ACTION, "Delete");
         actionNames.put(MsgAPI.ACTION_DELETE_SPRITE_ANIMATION_RESOURCE, "Delete");
-        actionNames.put(MsgAPI.ACTION_DELETE_SPRITER_ANIMATION_RESOURCE, "Delete");
         actionNames.put(MsgAPI.ACTION_DELETE_SPINE_ANIMATION_RESOURCE, "Delete");
 
         actionNames.put(MsgAPI.ACTION_UPDATE_RULER_POSITION, "Change Ruler Position");

@@ -43,7 +43,6 @@ public class HyperLap2DUtils {
     public static final FilenameFilter PNG_FILTER = new SuffixFileFilter(".png");
     public static final FilenameFilter TTF_FILTER = new SuffixFileFilter(".ttf");
     public static final FilenameFilter JSON_FILTER = new SuffixFileFilter(".json");
-    public static final FilenameFilter SCML_FILTER = new SuffixFileFilter(".scml");
     public static final FilenameFilter DT_FILTER = new SuffixFileFilter(".dt");
     public static final String MY_DOCUMENTS_PATH = getMyDocumentsLocation();
 
