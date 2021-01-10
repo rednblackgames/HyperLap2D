@@ -67,5 +67,8 @@ public class LabelStrategy extends AbstractTransformStrategy {
 
         // Origin
         origin(mouseDx, mouseDy, anchor, transformComponent, transformCommandBuilder);
+
+        // Rotating
+        rotating(anchor, transformCommandBuilder, mousePoint, lastTransformAngle, lastEntityAngle, transformComponent);
     }
 }

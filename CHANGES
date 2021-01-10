@@ -13,6 +13,7 @@
 - Update HyperLap2D project version to 0.1.1
 - Update libGDX to 1.9.13
 - Fixed some memory leaks and NPEs
+- Improve overall object transforming and support Labels
 - Improved UI with tons of new animations
 
 [0.0.3]
