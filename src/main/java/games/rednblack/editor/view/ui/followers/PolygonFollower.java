@@ -71,9 +71,8 @@ public class PolygonFollower extends SubFollower {
 
     private int selectedAnchorId = -1;
 
-    private int pixelsPerWU = 1;
-
-    OrthographicCamera runtimeCamera = Sandbox.getInstance().getCamera();
+    private final int pixelsPerWU;
+    private final OrthographicCamera runtimeCamera = Sandbox.getInstance().getCamera();
 
     public PolygonFollower(Entity entity) {
         super(entity);

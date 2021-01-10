@@ -35,6 +35,8 @@ public class FollowerFactory {
                 return new LightFollower(entity);
             case EntityFactory.PARTICLE_TYPE:
                 return new ParticleFollower(entity);
+            case EntityFactory.SPINE_TYPE:
+                return new SpineFollower(entity);
         }
 
         return new NormalSelectionFollower(entity);
