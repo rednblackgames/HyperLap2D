@@ -37,8 +37,14 @@ public class SpriteAnimationActor extends Actor {
         TextureRegion region = (TextureRegion) animation.getKeyFrame(stateTime);
         setWidth(region.getRegionWidth());
         setHeight(region.getRegionHeight());
+
+        float oldAlpha = getColor().a;
+        getColor().a *= parentAlpha;
+
         batch.setColor(getColor());
         batch.draw(region, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+
+        getColor().a = oldAlpha;
     }
 
     @Override
