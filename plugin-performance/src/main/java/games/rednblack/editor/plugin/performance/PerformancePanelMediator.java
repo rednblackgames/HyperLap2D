@@ -21,6 +21,7 @@ public class PerformancePanelMediator extends Mediator<PerformancePanel> {
     @Override
     public String[] listNotificationInterests() {
         return new String[]{
+                MsgAPI.RENDER,
                 MsgAPI.SCENE_LOADED,
                 PerformancePlugin.PANEL_OPEN
         };
@@ -37,6 +38,9 @@ public class PerformancePanelMediator extends Mediator<PerformancePanel> {
                 break;
             case PerformancePlugin.PANEL_OPEN:
                 viewComponent.show(performancePlugin.getAPI().getUIStage());
+                break;
+            case MsgAPI.RENDER:
+                viewComponent.render();
                 break;
         }
     }

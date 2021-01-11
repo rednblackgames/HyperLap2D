@@ -2,25 +2,22 @@ package games.rednblack.editor.plugin.performance;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.h2d.common.UIDraggablePanel;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
-import java.text.DecimalFormat;
 
 public class PerformancePanel extends UIDraggablePanel {
 
-    private VisTable mainTable;
+    private final VisTable mainTable;
 
-    private VisLabel entitiesCount;
-    private VisLabel fpsLbl;
-    private VisLabel memoryLabel;
+    private VisLabel entitiesCount, memoryLabel, fpsLbl, glCalls, drawCalls, shaderSwitch, textureBind, vertexCall;
 
     private Engine engine;
-    private long time;
+    private final GLProfiler profiler;
 
     public PerformancePanel() {
         super("Performance");
@@ -29,6 +26,9 @@ public class PerformancePanel extends UIDraggablePanel {
         mainTable = new VisTable();
 
         getContentTable().add(mainTable).left().width(250).pad(5);
+
+        profiler = new GLProfiler(Gdx.graphics);
+        profiler.enable();
     }
 
     public void initView() {
@@ -37,6 +37,11 @@ public class PerformancePanel extends UIDraggablePanel {
         entitiesCount = new VisLabel();
         fpsLbl = new VisLabel();
         memoryLabel = new VisLabel();
+        glCalls = new VisLabel();
+        drawCalls = new VisLabel();
+        shaderSwitch = new VisLabel();
+        textureBind = new VisLabel();
+        vertexCall = new VisLabel();
 
         mainTable.add(new VisLabel("Entity count: ")).right();
         mainTable.add(entitiesCount).left().padLeft(4);
@@ -49,9 +54,28 @@ public class PerformancePanel extends UIDraggablePanel {
         mainTable.add(new VisLabel("Memory: ")).right();
         mainTable.add(memoryLabel).left().padLeft(4);
         mainTable.row();
-        pack();
 
-        time = TimeUtils.millis();
+        mainTable.add(new VisLabel("GL Calls: ")).right();
+        mainTable.add(glCalls).left().padLeft(4);
+        mainTable.row();
+
+        mainTable.add(new VisLabel("Draw calls: ")).right();
+        mainTable.add(drawCalls).left().padLeft(4);
+        mainTable.row();
+
+        mainTable.add(new VisLabel("Shader switches: ")).right();
+        mainTable.add(shaderSwitch).left().padLeft(4);
+        mainTable.row();
+
+        mainTable.add(new VisLabel("Texture bindings: ")).right();
+        mainTable.add(textureBind).left().padLeft(4);
+        mainTable.row();
+
+        mainTable.add(new VisLabel("Vertex calls: ")).right();
+        mainTable.add(vertexCall).left().padLeft(4);
+        mainTable.row();
+
+        pack();
     }
 
     public void initLockView() {
@@ -63,39 +87,26 @@ public class PerformancePanel extends UIDraggablePanel {
     @Override
     public void act(float delta) {
         super.act(delta);
-        if (TimeUtils.timeSinceMillis(time) > 1000) {
-            entitiesCount.setText(engine.getEntities().size() + "");
-            fpsLbl.setText(Gdx.graphics.getFramesPerSecond() + "");
-            MemoryUsage memoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-            long usedMemory = memoryUsage.getUsed();
-            long allocatedMemory = memoryUsage.getCommitted();
-            memoryLabel.setText(getFileSizeString(usedMemory) + " of " + getFileSizeString(allocatedMemory));
-        }
+        entitiesCount.setText(engine.getEntities().size());
+        fpsLbl.setText(Gdx.graphics.getFramesPerSecond());
+        MemoryUsage memoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+        long usedMemory = memoryUsage.getUsed() / (1024 * 1024);
+        long allocatedMemory = memoryUsage.getCommitted() / (1024 * 1024);
+        memoryLabel.getText().clear();
+        memoryLabel.getText().append(usedMemory);
+        memoryLabel.getText().append(" of ");
+        memoryLabel.getText().append(allocatedMemory);
+        memoryLabel.getText().append(" MB");
+        glCalls.setText(profiler.getCalls());
+        drawCalls.setText(profiler.getDrawCalls());
+        shaderSwitch.setText(profiler.getShaderSwitches());
+        textureBind.setText(profiler.getTextureBindings());
+        vertexCall.setText((int) profiler.getVertexCount().total);
     }
 
-    public static final long KB = 1024;
-    public static final long MB = 1024 * KB;
-    public static final long GB = 1024 * MB;
-    public static final long PB = 1024 * GB;
 
-    DecimalFormat df = new DecimalFormat("#");
-
-    public String getFileSizeString(long size) {
-        int digits = getDigits(size);
-        df.applyPattern(digits == 0 ? "#" : "#." + getDigits(digits));
-        if (size < KB) {
-            return df.format(size) + " " + "KB";
-        } else if (size < MB) {
-            return df.format((float) size / KB) + " " + "KB";
-        } else if (size < GB) {
-            return df.format((float) size / MB) + " " + "MB";
-        } else {
-            return df.format((float) size / GB) + " " + "GB";
-        }
-    }
-
-    private int getDigits(long size) {
-        return size < GB ? 0 : 2;
+    public void render() {
+        profiler.reset();
     }
 
     public void setEngine(Engine engine) {
