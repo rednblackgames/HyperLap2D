@@ -281,11 +281,11 @@ public class SelectionTool extends SimpleTool {
             for (Entity itemInstance : sandbox.getSelector().getCurrentSelection()) {
                 transformComponent = ComponentRetriever.get(itemInstance, TransformComponent.class);
 
-                float degreeAmount = 1;
-                if (amountX < 0) degreeAmount = -1;
+                float degreeAmount = 3;
+                if (amountX < 0 || amountY < 0) degreeAmount = -3;
                 // And if shift is pressed, the rotation amount is bigger
                 if (isShiftPressed()) {
-                    degreeAmount = degreeAmount * 30;
+                    degreeAmount = degreeAmount * 15;
                 }
 
                 transformComponent.rotation = (transformComponent.rotation + degreeAmount) % 360;
