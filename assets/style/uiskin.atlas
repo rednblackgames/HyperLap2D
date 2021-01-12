@@ -90,7 +90,7 @@ animation-up
   index: -1
 border
   rotate: false
-  xy: 712, 32
+  xy: 656, 8
   size: 5, 5
   split: 2, 2, 2, 2
   pad: 1, 1, 1, 1
@@ -296,7 +296,7 @@ color-picker-bar-selector
   index: -1
 color-picker-cross
   rotate: false
-  xy: 674, 3
+  xy: 663, 8
   size: 5, 5
   orig: 5, 5
   offset: 0, 0
@@ -850,7 +850,7 @@ menu-bg-up
   index: -1
 menu-item
   rotate: false
-  xy: 887, 47
+  xy: 674, 54
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -858,7 +858,7 @@ menu-item
   index: -1
 menu-item-disabled
   rotate: false
-  xy: 674, 59
+  xy: 648, 2
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -866,7 +866,7 @@ menu-item-disabled
   index: -1
 menu-item-down
   rotate: false
-  xy: 674, 54
+  xy: 653, 2
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -874,7 +874,7 @@ menu-item-down
   index: -1
 menu-item-over
   rotate: false
-  xy: 442, 9
+  xy: 674, 59
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -889,7 +889,7 @@ origin-anchor
   index: -1
 padded-list-selection
   rotate: false
-  xy: 658, 10
+  xy: 692, 34
   size: 10, 3
   split: 4, 4, 1, 1
   pad: 4, 4, 0, 0
@@ -973,7 +973,7 @@ scroll-horizontal
   index: -1
 scroll-knob-horizontal
   rotate: false
-  xy: 666, 3
+  xy: 929, 57
   size: 6, 5
   split: 2, 2, 0, 5
   pad: -1, -1, 2, 2
@@ -1025,7 +1025,7 @@ selection
   index: -1
 selection-anchor
   rotate: false
-  xy: 880, 52
+  xy: 908, 53
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
@@ -1130,14 +1130,14 @@ splitpane-over
   index: -1
 splitpane-vertical
   rotate: false
-  xy: 681, 4
+  xy: 658, 2
   size: 1, 4
   orig: 1, 4
   offset: 0, 0
   index: -1
 splitpane-vertical-over
   rotate: false
-  xy: 684, 2
+  xy: 661, 2
   size: 1, 4
   orig: 1, 4
   offset: 0, 0
@@ -1239,7 +1239,7 @@ thumbnail-over
   index: -1
 tint-border
   rotate: false
-  xy: 658, 2
+  xy: 648, 7
   size: 6, 6
   split: 2, 2, 2, 2
   orig: 6, 6
@@ -1320,7 +1320,7 @@ toolbar-normal
   index: -1
 toolbar-over
   rotate: false
-  xy: 648, 4
+  xy: 919, 53
   size: 8, 9
   split: 2, 2, 3, 3
   orig: 8, 9
@@ -1328,7 +1328,7 @@ toolbar-over
   index: -1
 tooltip-bg
   rotate: false
-  xy: 684, 8
+  xy: 704, 34
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -1343,21 +1343,21 @@ touchpad-knob
   index: -1
 tree-minus
   rotate: false
-  xy: 692, 29
-  size: 8, 8
-  orig: 8, 8
+  xy: 880, 49
+  size: 12, 12
+  orig: 12, 12
   offset: 0, 0
   index: -1
 tree-plus
   rotate: false
-  xy: 702, 29
-  size: 8, 8
-  orig: 8, 8
+  xy: 894, 50
+  size: 12, 12
+  orig: 12, 12
   offset: 0, 0
   index: -1
 tree-selection
   rotate: false
-  xy: 880, 45
+  xy: 937, 57
   size: 5, 5
   split: 2, 2, 2, 2
   pad: 1, 1, 1, 1
@@ -1450,7 +1450,7 @@ vis-red
   index: -1
 white
   rotate: false
-  xy: 690, 24
+  xy: 944, 59
   size: 3, 3
   orig: 3, 3
   offset: 0, 0

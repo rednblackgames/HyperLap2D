@@ -28,10 +28,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.event.ButtonToNotificationListener;
+import games.rednblack.editor.renderer.factory.EntityFactory;
+import games.rednblack.editor.renderer.factory.EntityFactory.ItemType;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
@@ -49,22 +52,6 @@ public class UIBasicItemProperties extends UIItemProperties {
     public static final String TAGS_BUTTON_CLICKED = prefix + ".TAGS_BUTTON_CLICKED";
     public static final String ADD_COMPONENT_BUTTON_CLICKED = prefix + "ADD_COMPONENT_BUTTON_CLICKED";
     public static final String LINKING_CHANGED = prefix + ".LINKING_CHANGED";
-
-    public enum ItemType {
-        multiple,
-        composite,
-        texture,
-        spriteAnimation,
-        spineAnimation,
-        particle,
-        text,
-        light,
-        patchImage,
-        primitive
-    }
-
-    private HashMap<ItemType, String> itemTypeIconMap = new HashMap<>();
-    private HashMap<ItemType, String> itemTypeNameMap = new HashMap<>();
 
     private Image itemTypeIcon;
     private VisLabel itemType;
@@ -93,10 +80,6 @@ public class UIBasicItemProperties extends UIItemProperties {
     private VisTextButton addComponentButton;
 
     public UIBasicItemProperties() {
-        super();
-
-        initMaps();
-
         Validators.FloatValidator floatValidator = new Validators.FloatValidator();
 
         itemType = new VisLabel("");
@@ -207,8 +190,9 @@ public class UIBasicItemProperties extends UIItemProperties {
     }
 
     public void setItemType(ItemType type, int itemUniqueId) {
-        itemType.setText(itemTypeNameMap.get(type) + " ("+itemUniqueId+")");
-        itemTypeIcon.setDrawable(VisUI.getSkin().getDrawable(itemTypeIconMap.get(type)));
+        itemType.setText(EntityFactory.itemTypeNameMap.get(type) + " ("+itemUniqueId+")");
+        itemTypeIcon.setDrawable(VisUI.getSkin().getDrawable(EntityFactory.itemTypeIconMap.get(type)));
+        itemTypeIcon.setScaling(Scaling.fit);
         itemTypeIcon.setWidth(22);
     }
 
@@ -341,29 +325,5 @@ public class UIBasicItemProperties extends UIItemProperties {
                 facade.sendNotification(LINKING_CHANGED, isLinked);
             }
         });
-    }
-
-    private void initMaps() {
-        itemTypeNameMap.put(ItemType.multiple, "Multiple Selection");
-        itemTypeNameMap.put(ItemType.composite, "Composite item");
-        itemTypeNameMap.put(ItemType.particle, "Particle Effect");
-        itemTypeNameMap.put(ItemType.text, "Text");
-        itemTypeNameMap.put(ItemType.texture, "Texture");
-        itemTypeNameMap.put(ItemType.patchImage, "9Patch");
-        itemTypeNameMap.put(ItemType.light, "Light");
-        itemTypeNameMap.put(ItemType.spineAnimation, "Spine animation");
-        itemTypeNameMap.put(ItemType.spriteAnimation, "Sprite Animation");
-        itemTypeNameMap.put(ItemType.primitive, "Primitive");
-
-        itemTypeIconMap.put(ItemType.multiple, "icon-multiple");
-        itemTypeIconMap.put(ItemType.composite, "icon-composite");
-        itemTypeIconMap.put(ItemType.particle, "icon-particle-white");
-        itemTypeIconMap.put(ItemType.text, "icon-label");
-        itemTypeIconMap.put(ItemType.texture, "icon-image");
-        itemTypeIconMap.put(ItemType.patchImage, "icon-image");
-        itemTypeIconMap.put(ItemType.light, "icon-particle-white");
-        itemTypeIconMap.put(ItemType.spineAnimation, "icon-spine");
-        itemTypeIconMap.put(ItemType.spriteAnimation, "icon-animation");
-        itemTypeIconMap.put(ItemType.primitive, "icon-image");
     }
 }

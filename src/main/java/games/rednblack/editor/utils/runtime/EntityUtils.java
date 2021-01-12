@@ -24,8 +24,10 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.kotcrab.vis.ui.VisUI;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.components.*;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
@@ -53,29 +55,17 @@ public class EntityUtils {
             return mainItemComponent.itemIdentifier;
         } else {
             int type = EntityUtils.getType(entity);
-            switch (type) {
-                case EntityFactory.IMAGE_TYPE:
-                    return "Image";
-                case EntityFactory.NINE_PATCH:
-                    return "9Patch Image";
-                case EntityFactory.LABEL_TYPE:
-                    return "Label";
-                case EntityFactory.COMPOSITE_TYPE:
-                    return "Composite Item";
-                case EntityFactory.PARTICLE_TYPE:
-                    return "Particle Effect";
-                case EntityFactory.LIGHT_TYPE:
-                    return "Light";
-                case EntityFactory.SPINE_TYPE:
-                    return "Spine";
-                case EntityFactory.SPRITE_TYPE:
-                    return "Sprite Animation";
-                case EntityFactory.COLOR_PRIMITIVE:
-                    return "Primitive";
-                default:
-                    return "unknown";
-            }
+            if (EntityFactory.itemTypeMap.get(type) != null)
+                return EntityFactory.itemTypeNameMap.get(EntityFactory.itemTypeMap.get(type));
+            else
+                return EntityFactory.itemTypeNameMap.get(EntityFactory.ItemType.unknown);
         }
+    }
+
+    public static Drawable getItemIcon(Entity entity) {
+        int type = EntityUtils.getType(entity);
+        String icon = EntityFactory.itemTypeIconMap.get(EntityFactory.itemTypeMap.get(type));
+        return VisUI.getSkin().getDrawable(icon);
     }
 
     public static Integer getEntityId(Entity entity) {

@@ -61,8 +61,6 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
     private DimensionsComponent dimensionComponent;
     private TintComponent tintComponent;
 
-    final private HashMap<String, UIBasicItemProperties.ItemType> itemTypeMap = new HashMap<>();
-
     public static final String POLYGON_COMPONENT_KEY = "Polygon";
     public static final String PHYSICS_COMPONENT_KEY = "Physics";
     public static final String SHADER_COMPONENT_KEY = "Shader";
@@ -77,16 +75,6 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
 
     @Override
     public void onRegister() {
-        itemTypeMap.put("ENTITY_"+EntityFactory.COMPOSITE_TYPE, UIBasicItemProperties.ItemType.composite);
-        itemTypeMap.put("ENTITY_"+EntityFactory.IMAGE_TYPE, UIBasicItemProperties.ItemType.texture);
-        itemTypeMap.put("ENTITY_"+EntityFactory.PARTICLE_TYPE, UIBasicItemProperties.ItemType.particle);
-        itemTypeMap.put("ENTITY_"+EntityFactory.LABEL_TYPE, UIBasicItemProperties.ItemType.text);
-        itemTypeMap.put("ENTITY_"+EntityFactory.SPRITE_TYPE, UIBasicItemProperties.ItemType.spriteAnimation);
-        itemTypeMap.put("ENTITY_"+EntityFactory.SPINE_TYPE, UIBasicItemProperties.ItemType.spineAnimation);
-        itemTypeMap.put("ENTITY_"+EntityFactory.LIGHT_TYPE, UIBasicItemProperties.ItemType.light);
-        itemTypeMap.put("ENTITY_"+EntityFactory.NINE_PATCH, UIBasicItemProperties.ItemType.patchImage);
-        itemTypeMap.put("ENTITY_"+EntityFactory.COLOR_PRIMITIVE, UIBasicItemProperties.ItemType.primitive);
-
         componentClassMap.put(POLYGON_COMPONENT_KEY, PolygonComponent.class);
         componentClassMap.put(PHYSICS_COMPONENT_KEY, PhysicsBodyComponent.class);
         componentClassMap.put(SHADER_COMPONENT_KEY, ShaderComponent.class);
@@ -190,7 +178,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
             componentClassMap.remove(TYPING_LABEL_COMPONENT_KEY);
         }
 
-        viewComponent.setItemType(itemTypeMap.get("ENTITY_" + EntityUtils.getType(entity)), mainItemComponent.uniqueId);
+        viewComponent.setItemType(EntityFactory.itemTypeMap.get(EntityUtils.getType(entity)), mainItemComponent.uniqueId);
         viewComponent.setIdBoxValue(mainItemComponent.itemIdentifier);
         viewComponent.setXValue(String.format(Locale.ENGLISH, "%.2f", transformComponent.x));
         viewComponent.setYValue(String.format(Locale.ENGLISH, "%.2f", transformComponent.y));

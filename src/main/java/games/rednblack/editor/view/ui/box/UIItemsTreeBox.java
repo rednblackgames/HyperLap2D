@@ -23,6 +23,7 @@ import java.util.Set;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
@@ -34,6 +35,7 @@ import com.kotcrab.vis.ui.widget.VisTree;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
+import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
@@ -53,7 +55,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     Sandbox sandbox;
 
     public UIItemsTreeBox() {
-        super("Items Tree", 166);
+        super("Items Tree", 180);
         setMovable(false);
         facade = HyperLap2DFacade.getInstance();
         treeTable = new VisTable();
@@ -70,7 +72,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         tree = new VisTree<>();
         VisScrollPane scroller = StandardWidgetsFactory.createScrollPane(tree);
         scroller.setFlickScroll(false);
-        treeTable.add(scroller).width(166).maxHeight(570);
+        treeTable.add(scroller).width(177).maxHeight(570);
         //
         rootTreeNode = addTreeRoot(rootScene, null);
         rootTreeNode.setExpanded(true);
@@ -107,11 +109,39 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     }
 
     private UIItemsTreeNode addTreeNode(Entity item, UIItemsTreeNode parentNode) {
-        UIItemsTreeNode node = new UIItemsTreeNode(new VisLabel(EntityUtils.getItemName(item)));
+        String name, style;
+        ParentNodeComponent parentNodeComponent = ComponentRetriever.get(item, ParentNodeComponent.class);
         MainItemComponent mainItemComponent = ComponentRetriever.get(item, MainItemComponent.class);
+
+        if (parentNodeComponent == null) {
+            name = Sandbox.getInstance().sceneControl.getCurrentSceneVO().sceneName;
+            style = "default";
+        } else if (mainItemComponent.itemIdentifier != null && !mainItemComponent.itemIdentifier.isEmpty()) {
+            name = mainItemComponent.itemIdentifier;
+            style = "default";
+        } else {
+            style = "greyed";
+            int type = EntityUtils.getType(item);
+            if (EntityFactory.itemTypeMap.get(type) != null)
+                name = EntityFactory.itemTypeNameMap.get(EntityFactory.itemTypeMap.get(type));
+            else
+                name = EntityFactory.itemTypeNameMap.get(EntityFactory.ItemType.unknown);
+        }
+
+        VisTable label = new VisTable();
+        Cell<VisLabel> lblCell = label.add(new VisLabel(name, style));
+        UIItemsTreeNode node = new UIItemsTreeNode(label);
         ZIndexComponent zIndexComponent = ComponentRetriever.get(item, ZIndexComponent.class);
 
         node.setValue(new UIItemsTreeValue(mainItemComponent.uniqueId, zIndexComponent.getGlobalZIndex()));
+        if (mainItemComponent.entityType != EntityFactory.COMPOSITE_TYPE)
+            lblCell.padBottom(4);
+        else {
+            lblCell.padTop(4);
+            lblCell.padLeft(3);
+            lblCell.padBottom(4);
+        }
+        node.setIcon(EntityUtils.getItemIcon(item));
         if (parentNode != null) {
             parentNode.add(node);
         } else {

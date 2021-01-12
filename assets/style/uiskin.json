@@ -229,6 +229,10 @@
       font: default-font,
       fontColor: white
     },
+    greyed: {
+      font: default-font,
+      fontColor: menuitem-grey
+    },
     small: {
       font: small-font,
       fontColor: white
