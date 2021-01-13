@@ -20,8 +20,9 @@ public class SpineFollower extends NormalSelectionFollower {
         super(entity);
         spineObjectComponent = ComponentRetriever.get(entity, SpineObjectComponent.class);
         skeletonRendererDebug = new SkeletonRendererDebug();
-        float pixelsPerWU = 1f / Sandbox.getInstance().getPixelPerWU();
-        skeletonRendererDebug.setScale(pixelsPerWU);
+        skeletonRendererDebug.setScale(2f);
+        skeletonRendererDebug.setBoundingBoxes(false);
+        skeletonRendererDebug.setRegionAttachments(false);
     }
 
     @Override
