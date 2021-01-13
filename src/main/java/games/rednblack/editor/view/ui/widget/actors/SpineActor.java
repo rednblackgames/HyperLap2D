@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.FloatArray;
 import com.esotericsoftware.spine.Animation;
 import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.AnimationStateData;
-import com.esotericsoftware.spine.BoneData;
 import com.esotericsoftware.spine.Skeleton;
 import com.esotericsoftware.spine.SkeletonData;
 import com.esotericsoftware.spine.SkeletonJson;
@@ -85,9 +84,8 @@ public class SpineActor extends Actor {
     }
 
     private void initSpine() {
-        BoneData root = skeletonData.getBones().get(0);
-        root.setScale(getScaleX(), getScaleY());
         skeleton = new Skeleton(skeletonData);
+        skeleton.setScale(getScaleX(), getScaleY());
         AnimationStateData stateData = new AnimationStateData(skeletonData);
         state = new AnimationState(stateData);
         computeBoundBox();
