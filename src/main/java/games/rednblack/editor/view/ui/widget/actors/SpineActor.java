@@ -1,6 +1,7 @@
 package games.rednblack.editor.view.ui.widget.actors;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -118,6 +119,8 @@ public class SpineActor extends Actor {
         skeleton.getColor().a *= parentAlpha;
         renderer.draw((PolygonSpriteBatch)batch, skeleton);
         color.a = oldAlpha;
+
+        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         super.draw(batch, parentAlpha);
     }
