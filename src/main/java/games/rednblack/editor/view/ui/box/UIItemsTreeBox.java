@@ -122,10 +122,9 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         } else {
             style = "greyed";
             int type = EntityUtils.getType(item);
-            if (EntityFactory.itemTypeMap.get(type) != null)
-                name = EntityFactory.itemTypeNameMap.get(EntityFactory.itemTypeMap.get(type));
-            else
-                name = EntityFactory.itemTypeNameMap.get(EntityFactory.ItemType.unknown);
+            name = EntityFactory.itemTypeNameMap.get(type);
+            if (name == null)
+                name = EntityFactory.itemTypeNameMap.get(EntityFactory.UNKNOWN_TYPE);
         }
 
         VisTable label = new VisTable();

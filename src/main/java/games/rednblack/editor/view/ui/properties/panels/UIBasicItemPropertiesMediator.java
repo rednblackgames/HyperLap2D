@@ -178,7 +178,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
             componentClassMap.remove(TYPING_LABEL_COMPONENT_KEY);
         }
 
-        viewComponent.setItemType(EntityFactory.itemTypeMap.get(EntityUtils.getType(entity)), mainItemComponent.uniqueId);
+        viewComponent.setItemType(EntityUtils.getType(entity), mainItemComponent.uniqueId);
         viewComponent.setIdBoxValue(mainItemComponent.itemIdentifier);
         viewComponent.setXValue(String.format(Locale.ENGLISH, "%.2f", transformComponent.x));
         viewComponent.setYValue(String.format(Locale.ENGLISH, "%.2f", transformComponent.y));

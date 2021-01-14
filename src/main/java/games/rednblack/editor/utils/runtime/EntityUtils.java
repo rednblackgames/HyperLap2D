@@ -55,16 +55,17 @@ public class EntityUtils {
             return mainItemComponent.itemIdentifier;
         } else {
             int type = EntityUtils.getType(entity);
-            if (EntityFactory.itemTypeMap.get(type) != null)
-                return EntityFactory.itemTypeNameMap.get(EntityFactory.itemTypeMap.get(type));
+            String name = EntityFactory.itemTypeNameMap.get(type);
+            if (name != null)
+                return name;
             else
-                return EntityFactory.itemTypeNameMap.get(EntityFactory.ItemType.unknown);
+                return EntityFactory.itemTypeNameMap.get(EntityFactory.UNKNOWN_TYPE);
         }
     }
 
     public static Drawable getItemIcon(Entity entity) {
         int type = EntityUtils.getType(entity);
-        String icon = EntityFactory.itemTypeIconMap.get(EntityFactory.itemTypeMap.get(type));
+        String icon = EntityFactory.itemTypeIconMap.get(type);
         return VisUI.getSkin().getDrawable(icon);
     }
 

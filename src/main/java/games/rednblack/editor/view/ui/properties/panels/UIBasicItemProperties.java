@@ -18,8 +18,6 @@
 
 package games.rednblack.editor.view.ui.properties.panels;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -34,7 +32,6 @@ import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.event.ButtonToNotificationListener;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.editor.renderer.factory.EntityFactory.ItemType;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
@@ -189,7 +186,7 @@ public class UIBasicItemProperties extends UIItemProperties {
         return positionTable;
     }
 
-    public void setItemType(ItemType type, int itemUniqueId) {
+    public void setItemType(int type, int itemUniqueId) {
         itemType.setText(EntityFactory.itemTypeNameMap.get(type) + " ("+itemUniqueId+")");
         itemTypeIcon.setDrawable(VisUI.getSkin().getDrawable(EntityFactory.itemTypeIconMap.get(type)));
         itemTypeIcon.setScaling(Scaling.fit);
