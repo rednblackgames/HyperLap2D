@@ -54,19 +54,12 @@ public class UpdateImageItemDataCommand extends EntityModifyRevertibleCommand {
         TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
         DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
 
-        if (textureRegionComponent.isPolygon) {
-            PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
-            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
-
-            if (polygonComponent != null && polygonComponent.vertices != null) {
-                float ppwu = dimensionsComponent.width/textureRegionComponent.region.getRegionWidth();
-                textureRegionComponent.setPolygonSprite(polygonComponent,1f/ppwu, transformComponent.scaleX, transformComponent.scaleY);
-                dimensionsComponent.setPolygon(polygonComponent);
-            }
-        } else {
+        if (!textureRegionComponent.isPolygon) {
             textureRegionComponent.polygonSprite = null;
             dimensionsComponent.polygon = null;
         }
+
+        textureRegionComponent.scheduleRefresh();
     }
 
     public static Object payload(Entity entity, SimpleImageVO vo) {
