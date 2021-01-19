@@ -327,15 +327,18 @@
       selection: selection,
       background: textfield,
       cursor: cursor
-    },
-    console: {
+    }
+  },
+  com.kotcrab.vis.ui.widget.ConsoleTextArea$ConsoleStyle: {
+    default: {
       errorBorder: border-error,
       font: default-mono-font,
       fontColor: white,
       disabledFontColor: white,
       selection: selection,
-      cursor: cursor
-    },
+      cursor: cursor,
+      underline : white
+    }
   },
   com.kotcrab.vis.ui.widget.VisImageTextButton$VisImageTextButtonStyle: {
     hierarchy-item-root: {

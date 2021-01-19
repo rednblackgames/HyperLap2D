@@ -1,18 +1,12 @@
 package games.rednblack.editor.view.ui.dialog;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.Field;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.kotcrab.vis.ui.util.highlight.Highlight;
 import com.kotcrab.vis.ui.util.highlight.HighlightRule;
 import com.kotcrab.vis.ui.util.highlight.Highlighter;
@@ -35,11 +29,12 @@ public class ConsoleDialog extends H2DDialog {
     private final FixedRule fixedRule;
 
     //RegEx to identify a valid color markup in format [RRGGBB] or [RRGGBBAA]
-    private final String regex = "\\[([^\\]G-Zg-z]{6}|[^\\]G-Zg-z]{8})\\]";
+    private final String regex = "\\[([^\\]G-Zg-z]{6}|[^\\]G-Zg-z]{8}|NORMAL|UNDERLINE|STRIKE)\\]";
     private final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
 
     private final HashMap<String, Color> colorCache = new HashMap<>();
     private Color lastColor = Color.WHITE;
+    private ConsoleHighlight.TextFormat lastTextFormat = ConsoleHighlight.TextFormat.NORMAL;
 
     public ConsoleDialog() {
         super("Console", "console");
@@ -49,40 +44,7 @@ public class ConsoleDialog extends H2DDialog {
 
         fixedRule = new FixedRule();
 
-        textArea = new HighlightTextArea("", "console") {
-            @Override
-            protected InputListener createInputListener() {
-                return new TextAreaListener() {
-                    @Override
-                    public boolean keyDown(InputEvent event, int keycode) {
-                        if (keycode == Input.Keys.V)
-                            return true;
-                        return super.keyDown(event, keycode);
-                    }
-
-                    @Override
-                    public boolean keyTyped(InputEvent event, char character) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean keyUp(InputEvent event, int keycode) {
-                        if (keycode == Input.Keys.V)
-                            return true;
-                        return super.keyUp(event, keycode);
-                    }
-                };
-            }
-
-            @Override
-            public void draw(Batch batch, float parentAlpha) {
-                try {
-                    super.draw(batch, parentAlpha);
-                } catch (Exception ignore) {
-                    //Ignore any exception that may occurs while drawing this
-                }
-            }
-        };
+        textArea = new ConsoleTextArea("");
 
         Highlighter highlighter = new Highlighter();
         highlighter.addRule(fixedRule);
@@ -126,8 +88,13 @@ public class ConsoleDialog extends H2DDialog {
 
         while (matcher.find()) {
             String colorHex = matcher.group(1);
-            colorCache.computeIfAbsent(colorHex, Color::valueOf);
-            Color color = colorCache.get(colorHex);
+            ConsoleHighlight.TextFormat textFormat = matchTextFormat(colorHex);
+            Color color = lastColor;
+            if (textFormat == null) {
+                textFormat = ConsoleHighlight.TextFormat.NORMAL;
+                colorCache.computeIfAbsent(colorHex, Color::valueOf);
+                color = colorCache.get(colorHex);
+            }
 
             int start = matcher.start();
             int end = matcher.end();
@@ -135,10 +102,11 @@ public class ConsoleDialog extends H2DDialog {
             int ruleStart = lastIndex - markupAccumulator;
             int ruleEnd = start - markupAccumulator;
             if (ruleStart < ruleEnd)
-                fixedRule.add(lastColor, ruleStart + previousLength, ruleEnd + previousLength);
+                fixedRule.add(lastColor, ruleStart + previousLength, ruleEnd + previousLength, lastTextFormat);
 
             lastIndex = end;
             lastColor = color;
+            lastTextFormat = textFormat;
             markupAccumulator += end - start;
         }
 
@@ -146,7 +114,7 @@ public class ConsoleDialog extends H2DDialog {
             int ruleStart = lastIndex - markupAccumulator;
             int ruleEnd = s.length() - markupAccumulator;
             if (ruleStart < ruleEnd)
-                fixedRule.add(lastColor, ruleStart + previousLength, ruleEnd + previousLength);
+                fixedRule.add(lastColor, ruleStart + previousLength, ruleEnd + previousLength, lastTextFormat);
         }
 
         String output = RegExUtils.removeAll(s, pattern);
@@ -166,29 +134,36 @@ public class ConsoleDialog extends H2DDialog {
     }
 
     private static class FixedRule implements HighlightRule {
-        Array<Highlight> highlights = new Array<>();
+        Array<ConsoleHighlight> highlights = new Array<>();
 
         @Override
         public void process(HighlightTextArea textArea, Array<Highlight> highlights) {
             highlights.addAll(this.highlights);
         }
 
-        public void add(Color color, int start, int end) {
+        public void add(Color color, int start, int end, ConsoleHighlight.TextFormat textFormat) {
             if (highlights.size > 0) {
-                Highlight highlight = highlights.get(highlights.size - 1);
+                ConsoleHighlight highlight = highlights.get(highlights.size - 1);
                 //Merge contiguous (or separated with blank newline) rules without create new `Highlight` object
-                if (color.equals(highlight.getColor()) && (highlight.getEnd() + 1 == start || highlight.getEnd() == start)) {
-                    //Using reflection because fields in `Highlight` class are private
-                    try {
-                        Field endField = ClassReflection.getDeclaredField(Highlight.class, "end");
-                        endField.setAccessible(true);
-                        endField.set(highlight, end);
-                        return;
-                    } catch (ReflectionException ignore) {
-                    }
+                if (color.equals(highlight.getColor()) && textFormat.equals(highlight.getTextFormat())
+                        && (highlight.getEnd() + 1 == start || highlight.getEnd() == start)) {
+                    highlight.setEnd(end);
+                    return;
                 }
             }
-            highlights.add(new Highlight(color, start, end));
+            highlights.add(new ConsoleHighlight(color, start, end, textFormat));
         }
+    }
+
+    private ConsoleHighlight.TextFormat matchTextFormat(String str) {
+        switch (str) {
+            case "UNDERLINE":
+                return ConsoleHighlight.TextFormat.UNDERLINE;
+            case "STRIKE":
+                return ConsoleHighlight.TextFormat.STRIKE;
+            case "NORMAL":
+                return ConsoleHighlight.TextFormat.NORMAL;
+        }
+        return null;
     }
 }

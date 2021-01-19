@@ -12,7 +12,7 @@ public class BootstrapInfoCommand extends SimpleCommand {
 
     @Override
     public void execute(INotification notification) {
-        HyperLog.info("HyperLap2D " + AppConfig.getInstance().versionString);
+        HyperLog.infoUnderline("HyperLap2D " + AppConfig.getInstance().versionString);
         HyperLog.info(SystemUtils.OS_NAME + " [" + SystemUtils.OS_VERSION + " - " + SystemUtils.OS_ARCH + "]");
         GL20 gl20 = Gdx.graphics.getGL20();
         HyperLog.info(gl20.glGetString(GL20.GL_VENDOR) + " " + gl20.glGetString(GL20.GL_RENDERER));
