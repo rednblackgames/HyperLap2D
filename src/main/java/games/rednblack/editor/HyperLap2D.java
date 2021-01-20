@@ -71,7 +71,7 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
         WhitePixel.initializeShared();
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf"));
-        FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSansMono.ttf"));
+        FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/FiraCode-Regular.ttf"));
 
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.characters += "⌘⇧⌥\u25CF\u2022";
@@ -89,6 +89,7 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
         defaultMono.setFixedWidthGlyphs(parameter.characters);
 
         generator.dispose();
+        monoGenerator.dispose();
 
         /* Create the ObjectMap and add the fonts to it */
         ObjectMap<String, Object> fontMap = new ObjectMap<>();
