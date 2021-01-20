@@ -28,12 +28,18 @@ public class ConsoleDialog extends H2DDialog {
     private final HighlightTextArea textArea;
     private final FixedRule fixedRule;
 
-    //RegEx to identify a valid color markup in format [RRGGBB] or [RRGGBBAA]
-    private final String regex = "\\[([^\\]G-Zg-z]{6}|[^\\]G-Zg-z]{8}|NORMAL|UNDERLINE|STRIKE)\\]";
+    /*
+        RegEx to identify a valid color markup, format:
+         Text color: [RRGGBB] or [RRGGBBAA]
+         Background color: [@RRGGBB] or [@RRGGBBAA]
+         Text Style : [NORMAL] or [UNDERLINE] or [STRIKE]
+     */
+    private final String regex = "\\[(@?[A-F0-9a-f]{6}|@?[A-F0-9a-f]{8}|NORMAL|UNDERLINE|STRIKE)\\]";
     private final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
 
     private final HashMap<String, Color> colorCache = new HashMap<>();
     private Color lastColor = Color.WHITE;
+    private Color lastBackgroundColor = Color.CLEAR;
     private ConsoleHighlight.TextFormat lastTextFormat = ConsoleHighlight.TextFormat.NORMAL;
 
     public ConsoleDialog() {
@@ -90,8 +96,17 @@ public class ConsoleDialog extends H2DDialog {
             String colorHex = matcher.group(1);
             ConsoleHighlight.TextFormat textFormat = matchTextFormat(colorHex);
             Color color = lastColor;
-            if (textFormat == null) {
-                textFormat = ConsoleHighlight.TextFormat.NORMAL;
+            Color backgroundColor = lastBackgroundColor;
+
+            if (colorHex.startsWith("@")) {
+                textFormat = lastTextFormat;
+
+                colorHex = colorHex.replace("@", "");
+                colorCache.computeIfAbsent(colorHex, Color::valueOf);
+                backgroundColor = colorCache.get(colorHex);
+            } else if (textFormat == null) {
+                textFormat = lastTextFormat;
+
                 colorCache.computeIfAbsent(colorHex, Color::valueOf);
                 color = colorCache.get(colorHex);
             }
@@ -102,10 +117,11 @@ public class ConsoleDialog extends H2DDialog {
             int ruleStart = lastIndex - markupAccumulator;
             int ruleEnd = start - markupAccumulator;
             if (ruleStart < ruleEnd)
-                fixedRule.add(lastColor, ruleStart + previousLength, ruleEnd + previousLength, lastTextFormat);
+                fixedRule.add(lastColor, lastBackgroundColor,ruleStart + previousLength, ruleEnd + previousLength, lastTextFormat);
 
             lastIndex = end;
             lastColor = color;
+            lastBackgroundColor = backgroundColor;
             lastTextFormat = textFormat;
             markupAccumulator += end - start;
         }
@@ -114,7 +130,7 @@ public class ConsoleDialog extends H2DDialog {
             int ruleStart = lastIndex - markupAccumulator;
             int ruleEnd = s.length() - markupAccumulator;
             if (ruleStart < ruleEnd)
-                fixedRule.add(lastColor, ruleStart + previousLength, ruleEnd + previousLength, lastTextFormat);
+                fixedRule.add(lastColor, lastBackgroundColor, ruleStart + previousLength, ruleEnd + previousLength, lastTextFormat);
         }
 
         String output = RegExUtils.removeAll(s, pattern);
@@ -141,7 +157,7 @@ public class ConsoleDialog extends H2DDialog {
             highlights.addAll(this.highlights);
         }
 
-        public void add(Color color, int start, int end, ConsoleHighlight.TextFormat textFormat) {
+        public void add(Color color, Color backgroundColor, int start, int end, ConsoleHighlight.TextFormat textFormat) {
             if (highlights.size > 0) {
                 ConsoleHighlight highlight = highlights.get(highlights.size - 1);
                 //Merge contiguous (or separated with blank newline) rules without create new `Highlight` object
@@ -151,7 +167,7 @@ public class ConsoleDialog extends H2DDialog {
                     return;
                 }
             }
-            highlights.add(new ConsoleHighlight(color, start, end, textFormat));
+            highlights.add(new ConsoleHighlight(color, backgroundColor, start, end, textFormat));
         }
     }
 
