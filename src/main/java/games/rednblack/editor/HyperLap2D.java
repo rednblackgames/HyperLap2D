@@ -25,7 +25,10 @@ import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -70,6 +73,10 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
     public void create() {
         WhitePixel.initializeShared();
 
+        PixmapPacker packer = new PixmapPacker(4096, 4096, Pixmap.Format.RGBA8888, 1, false, new PixmapPacker.SkylineStrategy());
+        packer.setTransparentColor(Color.WHITE);
+        packer.getTransparentColor().a = 0;
+
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf"));
         FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/FiraCode-Regular.ttf"));
 
@@ -77,6 +84,7 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
         parameter.characters += "⌘⇧⌥\u25CF\u2022";
         parameter.kerning = false;
         parameter.renderCount = 3;
+        parameter.packer = packer;
         parameter.hinting = FreeTypeFontGenerator.Hinting.Slight;
 
         parameter.size = 10;

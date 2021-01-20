@@ -229,6 +229,8 @@ public class EntityUtils {
 
     public static int getType(Entity entity) {
         MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+        if (mainItemComponent == null)
+            return EntityFactory.UNKNOWN_TYPE;
         return mainItemComponent.entityType;
     }
 

@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.*;
 import games.rednblack.editor.renderer.data.*;
 
 import org.apache.commons.io.FileUtils;
@@ -21,10 +22,6 @@ import org.apache.commons.io.FilenameUtils;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Json;
@@ -56,6 +53,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private TextureRegion defaultRegion;
 
     private ResolutionManager resolutionManager;
+    private PixmapPacker fontPacker;
 
     public ResourceManager() {
         super(NAME);
@@ -72,6 +70,10 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         pixmap.setColor(new Color(1, 1, 1, 0.4f));
         pixmap.fill();
         defaultRegion = new TextureRegion(new Texture(pixmap));
+
+        fontPacker = new PixmapPacker(4096, 4096, Pixmap.Format.RGBA8888, 1, false, new PixmapPacker.SkylineStrategy());
+        fontPacker.setTransparentColor(Color.WHITE);
+        fontPacker.getTransparentColor().a = 0;
     }
 
     @Override
@@ -257,7 +259,9 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
                 FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
                 parameter.size = Math.round(pair.fontSize * resolutionManager.getCurrentMul());
+                parameter.packer = fontPacker;
                 BitmapFont font = generator.generateFont(parameter);
+                font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
                 font.setUseIntegerPositions(false);
                 bitmapFonts.put(pair, font);
             } catch (IOException e) {
@@ -380,9 +384,10 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = fontSize;
-
+        parameter.packer = fontPacker;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontManager.getTTFByName(fontfamily));
         BitmapFont font = generator.generateFont(parameter);
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setUseIntegerPositions(false);
         addBitmapFont(fontfamily, parameter.size, font);
     }
