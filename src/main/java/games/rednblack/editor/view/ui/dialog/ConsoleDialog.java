@@ -1,6 +1,8 @@
 package games.rednblack.editor.view.ui.dialog;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -14,6 +16,7 @@ import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
+import games.rednblack.h2d.common.util.H2DHighlight;
 import games.rednblack.h2d.common.view.ui.Cursors;
 import games.rednblack.h2d.common.view.ui.listener.CursorListener;
 import games.rednblack.h2d.common.view.ui.listener.ScrollFocusListener;
@@ -40,7 +43,7 @@ public class ConsoleDialog extends H2DDialog {
     private final HashMap<String, Color> colorCache = new HashMap<>();
     private Color lastColor = Color.WHITE;
     private Color lastBackgroundColor = Color.CLEAR;
-    private ConsoleHighlight.TextFormat lastTextFormat = ConsoleHighlight.TextFormat.NORMAL;
+    private H2DHighlight.TextFormat lastTextFormat = H2DHighlight.TextFormat.NORMAL;
 
     public ConsoleDialog() {
         super("Console", "console");
@@ -50,7 +53,35 @@ public class ConsoleDialog extends H2DDialog {
 
         fixedRule = new FixedRule();
 
-        textArea = new ConsoleTextArea("");
+        textArea = new H2DHighlightTextArea("") {
+            @Override
+            protected boolean onKeyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.V)
+                    return true;
+                return super.onKeyDown(event, keycode);
+            }
+
+            @Override
+            protected boolean onKeyTyped(InputEvent event, char character) {
+                return true;
+            }
+
+            @Override
+            protected boolean onKeyUp(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.V)
+                    return true;
+                return super.onKeyUp(event, keycode);
+            }
+
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                try {
+                    super.draw(batch, parentAlpha);
+                } catch (Exception ignore) {
+                    //Ignore any exception that may occurs while drawing this
+                }
+            }
+        };
 
         Highlighter highlighter = new Highlighter();
         highlighter.addRule(fixedRule);
@@ -94,7 +125,7 @@ public class ConsoleDialog extends H2DDialog {
 
         while (matcher.find()) {
             String colorHex = matcher.group(1);
-            ConsoleHighlight.TextFormat textFormat = matchTextFormat(colorHex);
+            H2DHighlight.TextFormat textFormat = matchTextFormat(colorHex);
             Color color = lastColor;
             Color backgroundColor = lastBackgroundColor;
 
@@ -150,16 +181,16 @@ public class ConsoleDialog extends H2DDialog {
     }
 
     private static class FixedRule implements HighlightRule {
-        Array<ConsoleHighlight> highlights = new Array<>();
+        Array<H2DHighlight> highlights = new Array<>();
 
         @Override
         public void process(HighlightTextArea textArea, Array<Highlight> highlights) {
             highlights.addAll(this.highlights);
         }
 
-        public void add(Color color, Color backgroundColor, int start, int end, ConsoleHighlight.TextFormat textFormat) {
+        public void add(Color color, Color backgroundColor, int start, int end, H2DHighlight.TextFormat textFormat) {
             if (highlights.size > 0) {
-                ConsoleHighlight highlight = highlights.get(highlights.size - 1);
+                H2DHighlight highlight = highlights.get(highlights.size - 1);
                 //Merge contiguous (or separated with blank newline) rules without create new `Highlight` object
                 if (color.equals(highlight.getColor()) && textFormat.equals(highlight.getTextFormat())
                         && (highlight.getEnd() + 1 == start || highlight.getEnd() == start)) {
@@ -167,18 +198,18 @@ public class ConsoleDialog extends H2DDialog {
                     return;
                 }
             }
-            highlights.add(new ConsoleHighlight(color, backgroundColor, start, end, textFormat));
+            highlights.add(new H2DHighlight(color, backgroundColor, start, end, textFormat));
         }
     }
 
-    private ConsoleHighlight.TextFormat matchTextFormat(String str) {
+    private H2DHighlight.TextFormat matchTextFormat(String str) {
         switch (str) {
             case "UNDERLINE":
-                return ConsoleHighlight.TextFormat.UNDERLINE;
+                return H2DHighlight.TextFormat.UNDERLINE;
             case "STRIKE":
-                return ConsoleHighlight.TextFormat.STRIKE;
+                return H2DHighlight.TextFormat.STRIKE;
             case "NORMAL":
-                return ConsoleHighlight.TextFormat.NORMAL;
+                return H2DHighlight.TextFormat.NORMAL;
         }
         return null;
     }

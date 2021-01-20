@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.util.highlight.Highlighter;
+import com.kotcrab.vis.ui.widget.H2DHighlightTextArea;
 import com.kotcrab.vis.ui.widget.HighlightTextArea;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -23,7 +24,7 @@ public class CodeEditorDialog extends H2DDialog {
         addCloseButton();
         setResizable(true);
 
-        textArea = new HighlightTextArea("", "code-editor");
+        textArea = new H2DHighlightTextArea("", "code-editor");
         ScrollPane scrollPane = textArea.createCompatibleScrollPane();
         scrollPane.addListener(new ScrollFocusListener());
         getContentTable().add(scrollPane).grow().row();
