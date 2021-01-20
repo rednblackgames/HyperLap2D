@@ -27,6 +27,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -89,11 +90,15 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
 
         parameter.size = 10;
         BitmapFont smallFont = generator.generateFont(parameter);
+        smallFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         parameter.size = 12;
         BitmapFont defaultFont = generator.generateFont(parameter);
+        defaultFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         parameter.size = 14;
         BitmapFont bigFont = generator.generateFont(parameter);
+        bigFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         BitmapFont defaultMono = monoGenerator.generateFont(parameter);
+        defaultMono.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         defaultMono.setFixedWidthGlyphs(parameter.characters);
 
         generator.dispose();
