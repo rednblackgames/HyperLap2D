@@ -87,6 +87,7 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
             sandbox.getEngine().removeEntity(entity);
             facade.sendNotification(MsgAPI.DELETE_ITEMS_COMMAND_DONE);
         }
+        pastedEntityIds.clear();
     }
 
     public static void forceIdChange(CompositeVO compositeVO) {
