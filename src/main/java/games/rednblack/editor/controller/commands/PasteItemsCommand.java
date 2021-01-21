@@ -85,6 +85,7 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
             Entity entity = EntityUtils.getByUniqueId(entityId);
             followersUIMediator.removeFollower(entity);
             sandbox.getEngine().removeEntity(entity);
+            facade.sendNotification(MsgAPI.DELETE_ITEMS_COMMAND_DONE);
         }
     }
 
