@@ -36,8 +36,10 @@ public class ConsoleDialog extends H2DDialog {
          Text color: [RRGGBB] or [RRGGBBAA]
          Background color: [@RRGGBB] or [@RRGGBBAA]
          Text Style : [NORMAL] or [UNDERLINE] or [STRIKE]
+
+         [RESET] : set text color to [FFFFFF], background color to [@00000000] and style to [NORMAL]
      */
-    private final String regex = "\\[(@?[A-F0-9a-f]{6}|@?[A-F0-9a-f]{8}|NORMAL|UNDERLINE|STRIKE)\\]";
+    private final String regex = "\\[(@?[A-F0-9a-f]{6}|@?[A-F0-9a-f]{8}|NORMAL|UNDERLINE|STRIKE|RESET)\\]";
     private final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
 
     private final HashMap<String, Color> colorCache = new HashMap<>();
@@ -140,6 +142,10 @@ public class ConsoleDialog extends H2DDialog {
 
                 colorCache.computeIfAbsent(colorHex, Color::valueOf);
                 color = colorCache.get(colorHex);
+            } else if (textFormat == H2DHighlight.TextFormat.RESET) {
+                color = Color.WHITE;
+                backgroundColor = Color.CLEAR;
+                textFormat = H2DHighlight.TextFormat.NORMAL;
             }
 
             int start = matcher.start();
@@ -192,7 +198,7 @@ public class ConsoleDialog extends H2DDialog {
             if (highlights.size > 0) {
                 H2DHighlight highlight = highlights.get(highlights.size - 1);
                 //Merge contiguous (or separated with blank newline) rules without create new `Highlight` object
-                if (color.equals(highlight.getColor()) && textFormat.equals(highlight.getTextFormat())
+                if (color.equals(highlight.getColor()) && backgroundColor.equals(highlight.getBackgroundColor()) && textFormat.equals(highlight.getTextFormat())
                         && (highlight.getEnd() + 1 == start || highlight.getEnd() == start)) {
                     highlight.setEnd(end);
                     return;
@@ -210,6 +216,8 @@ public class ConsoleDialog extends H2DDialog {
                 return H2DHighlight.TextFormat.STRIKE;
             case "NORMAL":
                 return H2DHighlight.TextFormat.NORMAL;
+            case "RESET":
+                return H2DHighlight.TextFormat.RESET;
         }
         return null;
     }
