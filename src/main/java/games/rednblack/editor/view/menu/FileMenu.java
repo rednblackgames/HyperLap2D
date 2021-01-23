@@ -45,7 +45,7 @@ public class FileMenu extends H2DMenu {
         //
         addSeparator();
         MenuItem recentProjectsMenuItem = new MenuItem("Recent Projects");
-        recentProjectsPopupMenu = new H2DPopupMenu(false);
+        recentProjectsPopupMenu = new H2DPopupMenu();
         recentProjectsMenuItem.setSubMenu(recentProjectsPopupMenu);
         recentProjectsMenuItems = new Array<>();
         addItem(recentProjectsMenuItem);

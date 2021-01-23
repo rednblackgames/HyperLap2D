@@ -18,6 +18,7 @@
 
 package games.rednblack.editor.view.ui.box;
 
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -67,6 +68,7 @@ public class UICollapsibleBox extends VisWindow {
 
     protected void createCollapsibleWidget(Table table) {
         collapsibleWidget = new CollapsibleWidget(table);
+        collapsibleWidget.setCollapseInterpolation(Interpolation.pow5Out);
         mainTable.add(collapsibleWidget).growX().top();
     }
 }
