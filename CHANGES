@@ -1,4 +1,5 @@
 [0.0.4]
+- Add support to Talos Particles VFX
 - Add Sticky Notes feature
 - Add GL Profiler in Performance plugin
 - Add smooth camera pan

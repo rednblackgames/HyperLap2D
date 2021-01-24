@@ -90,6 +90,9 @@ public class AssetImporter {
             case ImportUtils.TYPE_PARTICLE_EFFECT:
                 projectManager.importParticlesIntoProject(files, progressHandler, skipRepack);
                 break;
+            case ImportUtils.TYPE_TALOS_VFX:
+                projectManager.importTalosIntoProject(files, progressHandler, skipRepack);
+                break;
             case ImportUtils.TYPE_SPINE_ANIMATION:
                 projectManager.importSpineAnimationsIntoProject(files, progressHandler);
                 break;

@@ -37,16 +37,17 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
     private static final String TAG = UIResourcesBoxMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
-    private static final String PREFIX = "games.rednblack.editor.view.ui.box";
+    private static final String PREFIX = "games.rednblack.editor.view.ui.box.UIResourcesBoxMediator";
 
-    public static final String IMAGE_RIGHT_CLICK = "IMAGE_RIGHT_CLICK";
-    public static final String SPINE_ANIMATION_RIGHT_CLICK = "SPINE_ANIMATION_RIGHT_CLICK";
-    public static final String SPRITE_ANIMATION_RIGHT_CLICK = "SPRITE_ANIMATION_RIGHT_CLICK";
-    public static final String LIBRARY_ITEM_RIGHT_CLICK = "LIBRARY_ITEM_RIGHT_CLICK";
-    public static final String PARTICLE_EFFECT_RIGHT_CLICK = "PARTICLE_EFFECT_RIGHT_CLICK";
-    public static final String LIBRARY_ACTION_RIGHT_CLICK = "LIBRARY_ACTION_RIGHT_CLICK";
+    public static final String IMAGE_RIGHT_CLICK = PREFIX + ".IMAGE_RIGHT_CLICK";
+    public static final String SPINE_ANIMATION_RIGHT_CLICK = PREFIX + ".SPINE_ANIMATION_RIGHT_CLICK";
+    public static final String SPRITE_ANIMATION_RIGHT_CLICK = PREFIX + ".SPRITE_ANIMATION_RIGHT_CLICK";
+    public static final String LIBRARY_ITEM_RIGHT_CLICK = PREFIX + ".LIBRARY_ITEM_RIGHT_CLICK";
+    public static final String PARTICLE_EFFECT_RIGHT_CLICK = PREFIX + ".PARTICLE_EFFECT_RIGHT_CLICK";
+    public static final String TALOS_VFX_RIGHT_CLICK = PREFIX + ".TALOS_VFX_RIGHT_CLICK";
+    public static final String LIBRARY_ACTION_RIGHT_CLICK = PREFIX + ".LIBRARY_ACTION_RIGHT_CLICK";
 
-    public Array<DragAndDrop.Target> customTargets = new Array<DragAndDrop.Target>();
+    public Array<DragAndDrop.Target> customTargets = new Array<>();
 
     @Override
     public void onRegister() {

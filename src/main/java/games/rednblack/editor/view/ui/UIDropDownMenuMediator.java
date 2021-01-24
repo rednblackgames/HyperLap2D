@@ -51,6 +51,7 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
     public static final Integer POLYGON_VERTEX_ACTION_SET = 10;
     public static final Integer ORIGIN_POINT_ACTION_SET = 11;
     public static final Integer LIBRARY_ACTION_ACTION_SET = 12;
+    public static final Integer TALOS_ACTION_SET = 13;
 
     private Sandbox sandbox;
 
@@ -92,6 +93,9 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
         actionSets.put(PARTICLE_ACTION_SET, new Array<>());
         actionSets.get(PARTICLE_ACTION_SET).add(MsgAPI.ACTION_DELETE_PARTICLE_EFFECT);
 
+        actionSets.put(TALOS_ACTION_SET, new Array<>());
+        actionSets.get(TALOS_ACTION_SET).add(MsgAPI.ACTION_DELETE_TALOS_VFX);
+
         actionSets.put(ITEMS_ACTIONS_SET, new Array<>());
         actionSets.get(ITEMS_ACTIONS_SET).add(MsgAPI.ACTION_CUT);
         actionSets.get(ITEMS_ACTIONS_SET).add(MsgAPI.ACTION_COPY);
@@ -124,6 +128,7 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
                 UIResourcesBoxMediator.SPRITE_ANIMATION_RIGHT_CLICK,
                 UIResourcesBoxMediator.LIBRARY_ITEM_RIGHT_CLICK,
                 UIResourcesBoxMediator.PARTICLE_EFFECT_RIGHT_CLICK,
+                UIResourcesBoxMediator.TALOS_VFX_RIGHT_CLICK,
                 UIResourcesBoxMediator.LIBRARY_ACTION_RIGHT_CLICK,
                 RulersUI.RIGHT_CLICK_RULER,
                 PolygonTool.MANUAL_VERTEX_POSITION,
@@ -180,6 +185,9 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
                 break;
             case UIResourcesBoxMediator.PARTICLE_EFFECT_RIGHT_CLICK:
                 showPopup(PARTICLE_ACTION_SET, notification.getBody());
+                break;
+            case UIResourcesBoxMediator.TALOS_VFX_RIGHT_CLICK:
+                showPopup(TALOS_ACTION_SET, notification.getBody());
                 break;
             case RulersUI.RIGHT_CLICK_RULER:
             	showPopup(RULER_RESOURCE_ACTION_SET, notification.getBody());

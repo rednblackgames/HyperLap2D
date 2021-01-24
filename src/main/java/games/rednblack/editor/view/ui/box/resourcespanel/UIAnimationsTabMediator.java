@@ -77,7 +77,6 @@ public class UIAnimationsTabMediator extends UIResourcesTabMediator<UIAnimations
     @Override
     protected void initList(String searchText) {
         animationBoxes.clear();
-        Sandbox sandbox = Sandbox.getInstance();
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
         if (new SpineItemType().getTypeId() == EntityFactory.SPINE_TYPE) {

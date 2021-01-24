@@ -4,8 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
+import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
+import com.talosvfx.talos.runtime.ParticleEmitterDescriptor;
+import com.talosvfx.talos.runtime.modules.AbstractModule;
+import com.talosvfx.talos.runtime.modules.ShadedSpriteModule;
+import com.talosvfx.talos.runtime.modules.TextureModule;
 import games.rednblack.editor.controller.commands.NonRevertibleCommand;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
@@ -146,6 +152,26 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
                 for (String path : emitter.getImagePaths()) {
                     File f = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + path);
                     FileUtils.copyFileToDirectory(f, tmpDir);
+                }
+            }
+        }
+
+        for (TalosVO imageVO : compositeVO.sTalosVFX) {
+            File fileSrc = new File(currentProjectPath + ProjectManager.TALOS_VFX_DIR_PATH + File.separator + imageVO.particleName);
+            FileUtils.copyFileToDirectory(fileSrc, tmpDir);
+            exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_TALOS_VFX, fileSrc.getName()));
+            ParticleEffectDescriptor particleEffect = resourceManager.getProjectTalosList().get(imageVO.particleName);
+            for (ParticleEmitterDescriptor emitter : new Array.ArrayIterator<>(particleEffect.emitterModuleGraphs)) {
+                for (AbstractModule module : new Array.ArrayIterator<>(emitter.getModules())) {
+                    if (module instanceof TextureModule) {
+                        String path = ((TextureModule) module).regionName + ".png";
+                        File f = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + path);
+                        FileUtils.copyFileToDirectory(f, tmpDir);
+                    } else if (module instanceof ShadedSpriteModule) {
+                        String path = ((ShadedSpriteModule) module).shdrFileName;
+                        File f = new File(currentProjectPath + ProjectManager.TALOS_VFX_DIR_PATH + File.separator + path);
+                        FileUtils.copyFileToDirectory(f, tmpDir);
+                    }
                 }
             }
         }

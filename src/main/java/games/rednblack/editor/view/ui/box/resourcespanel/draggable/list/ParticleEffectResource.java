@@ -32,7 +32,6 @@ public class ParticleEffectResource extends ListItemResource {
     private final Image payloadImg;
     private final ResourcePayloadObject payload;
 
-
     public ParticleEffectResource(String particleName) {
         super(particleName, "particle");
         facade = HyperLap2DFacade.getInstance();
@@ -59,5 +58,4 @@ public class ParticleEffectResource extends ListItemResource {
     public ResourcePayloadObject getPayloadData() {
         return payload;
     }
-
 }

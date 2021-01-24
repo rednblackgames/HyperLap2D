@@ -33,6 +33,7 @@ public class FollowerFactory {
                 return new ImageFollower(entity);
             case EntityFactory.LIGHT_TYPE:
                 return new LightFollower(entity);
+            case EntityFactory.TALOS_TYPE:
             case EntityFactory.PARTICLE_TYPE:
                 return new ParticleFollower(entity);
             case EntityFactory.SPINE_TYPE:

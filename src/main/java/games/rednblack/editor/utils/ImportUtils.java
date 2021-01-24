@@ -51,6 +51,7 @@ public class ImportUtils {
     public static final int TYPE_SHADER = 10;
     public static final int TYPE_HYPERLAP2D_LIBRARY = 11;
     public static final int TYPE_HYPERLAP2D_INTERNAL_LIBRARY = 12;
+    public static final int TYPE_TALOS_VFX = 13;
 
     private final ArrayList<Integer> supportedTypes = new ArrayList<>();
     private final FileTypeFilter fileTypeFilter;
@@ -61,6 +62,7 @@ public class ImportUtils {
         supportedTypes.add(TYPE_SPRITE_ANIMATION_ATLAS);
         supportedTypes.add(TYPE_SPINE_ANIMATION);
         supportedTypes.add(TYPE_PARTICLE_EFFECT);
+        supportedTypes.add(TYPE_TALOS_VFX);
         supportedTypes.add(TYPE_SHADER);
         supportedTypes.add(TYPE_HYPERLAP2D_LIBRARY);
         // TODO: not supported yet
@@ -71,7 +73,7 @@ public class ImportUtils {
         fileTypeFilter.addRule("All Supported (*.png, *.atlas, *.p, *.json, *.vert, *.frag, *.h2dlib)", "png", "atlas", "p", "json", "vert", "frag", "h2dlib");
         fileTypeFilter.addRule("PNG File (*.png)", "png");
         fileTypeFilter.addRule("Sprite Animation Atlas File (*.atlas)", "atlas");
-        fileTypeFilter.addRule("Particle Effect (*.p)", "p");
+        fileTypeFilter.addRule("libGDX/Talos Particle Effect (*.p)", "p");
         fileTypeFilter.addRule("Spine Animation (*.json)", "json");
         fileTypeFilter.addRule("Shader (*.vert, *.frag)", "vert", "frag");
         fileTypeFilter.addRule("HyperLap2D Library (*.h2dlib)", "h2dlib");
@@ -180,12 +182,10 @@ public class ImportUtils {
 
                 return type;
             }
-            System.out.println("is spine?");
 
             // checking for spine animation
             if (contents.contains("\"skeleton\":{") || contents.contains("\"skeleton\": {") || contents.contains("{\"bones\":[")) {
                 type = TYPE_SPINE_ANIMATION;
-                System.out.println("is spine");
                 return type;
             }
 
@@ -195,6 +195,11 @@ public class ImportUtils {
                 return type;
             }
 
+            // checking for particle effect
+            if (contents.contains("emitters")) {
+                type = TYPE_TALOS_VFX;
+                return type;
+            }
         } catch (IOException ignore) {
         }
 
@@ -264,6 +269,10 @@ public class ImportUtils {
                 break;
             case ImportUtils.TYPE_PARTICLE_EFFECT:
                 dir = ProjectManager.PARTICLE_DIR_PATH;
+                ext = "p";
+                break;
+            case ImportUtils.TYPE_TALOS_VFX:
+                dir = ProjectManager.TALOS_VFX_DIR_PATH;
                 ext = "p";
                 break;
             case ImportUtils.TYPE_SPINE_ANIMATION:

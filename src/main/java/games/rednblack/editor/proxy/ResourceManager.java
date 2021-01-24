@@ -14,6 +14,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
+import com.talosvfx.talos.runtime.ParticleEffectInstance;
+import com.talosvfx.talos.runtime.assets.AtlasAssetProvider;
+import com.talosvfx.talos.runtime.utils.ShaderDescriptor;
 import games.rednblack.editor.renderer.data.*;
 
 import org.apache.commons.io.FileUtils;
@@ -43,6 +48,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     public static final String NAME = TAG;
 
     private final HashMap<String, ParticleEffect> particleEffects = new HashMap<>(1);
+    private final HashMap<String, ParticleEffectDescriptor> talosVFXs = new HashMap<>(1);
     private TextureAtlas currentProjectAtlas;
 
     private final HashMap<String, SpineAnimData> spineAnimAtlases = new HashMap<>();
@@ -96,6 +102,10 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return new ParticleEffect(particleEffects.get(name));
     }
 
+    @Override
+    public ParticleEffectDescriptor getTalosVFX(String name) {
+        return talosVFXs.get(name);
+    }
 
     @Override
     public TextureAtlas getSkeletonAtlas(String animationName) {
@@ -163,6 +173,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         loadCurrentProjectAssets(projectPath + "/assets/" + curResolution + "/pack/pack.atlas");
         loadCurrentProjectSkin(projectPath + "/assets/orig/styles");
         loadCurrentProjectParticles(projectPath + "/assets/orig/particles");
+        loadCurrentProjectTalosVFXs(projectPath + "/assets/orig/talos-vfx");
         loadCurrentProjectSpineAnimations(projectPath + "/assets/", curResolution);
         loadCurrentProjectSpriteAnimations(projectPath + "/assets/", curResolution);
         loadCurrentProjectBitmapFonts(projectPath, curResolution);
@@ -181,9 +192,41 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
             particleEffect.load(Gdx.files.internal(file.getAbsolutePath()), currentProjectAtlas, "");
             particleEffects.put(filename, particleEffect);
         }
-
     }
 
+    private void loadCurrentProjectTalosVFXs(String path) {
+        talosVFXs.clear();
+        talosShaderPath = path;
+        FileHandle sourceDir = new FileHandle(path);
+        for (FileHandle entry : sourceDir.list()) {
+            File file = entry.file();
+            String filename = file.getName();
+            if (file.isDirectory() || filename.endsWith(".DS_Store") || filename.endsWith("shdr")) continue;
+
+            AtlasAssetProvider assetProvider = new AtlasAssetProvider(currentProjectAtlas);
+            assetProvider.setAssetHandler(ShaderDescriptor.class, this::findShaderDescriptorOnLoad);
+            ParticleEffectDescriptor effectDescriptor = new ParticleEffectDescriptor();
+            effectDescriptor.setAssetProvider(assetProvider);
+            effectDescriptor.load(Gdx.files.internal(file.getAbsolutePath()));
+            talosVFXs.put(filename, effectDescriptor);
+        }
+    }
+
+    private ObjectMap<String, ShaderDescriptor> shaderDescriptorObjectMap = new ObjectMap<>();
+    private String talosShaderPath;
+    private ShaderDescriptor findShaderDescriptorOnLoad (String assetName) {
+        ShaderDescriptor asset = shaderDescriptorObjectMap.get(assetName);
+        if (asset == null) {
+            //Look in all paths, and hopefully load the requested asset, or fail (crash)
+            final FileHandle file = new FileHandle(talosShaderPath + File.separator + assetName);
+
+            asset = new ShaderDescriptor();
+            if (file.exists()) {
+                asset.setData(file.readString());
+            }
+        }
+        return asset;
+    }
 
     private void loadCurrentProjectSpineAnimations(String path, String curResolution) {
         spineAnimAtlases.clear();
@@ -406,6 +449,10 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     public HashMap<String, ParticleEffect> getProjectParticleList() {
         return particleEffects;
+    }
+
+    public HashMap<String, ParticleEffectDescriptor> getProjectTalosList() {
+        return talosVFXs;
     }
 
     @Override

@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
+import games.rednblack.editor.renderer.components.additional.TalosComponent;
 import games.rednblack.editor.renderer.components.light.LightObjectComponent;
 import games.rednblack.editor.renderer.components.particle.ParticleComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
@@ -80,7 +81,8 @@ public class EntityBounds extends Rectangle {
             height = dimensionsComponent.boundBox.height;
         }
 
-        if (ComponentRetriever.get(entity, ParticleComponent.class) != null) {
+        if (ComponentRetriever.get(entity, ParticleComponent.class) != null
+            || ComponentRetriever.get(entity, TalosComponent.class) != null) {
             width = dimensionsComponent.boundBox.width;
             height = dimensionsComponent.boundBox.height;
             dimensionsComponent.width = width;

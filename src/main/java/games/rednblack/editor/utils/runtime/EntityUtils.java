@@ -338,6 +338,10 @@ public class EntityUtils {
             ParticleEffectVO vo = json.fromJson(ParticleEffectVO.class, jsonString);
             return factory.createEntity(parent, vo);
         }
+        if(entityType == EntityFactory.TALOS_TYPE) {
+            TalosVO vo = json.fromJson(TalosVO.class, jsonString);
+            return factory.createEntity(parent, vo);
+        }
         if(entityType == EntityFactory.SPRITE_TYPE) {
             SpriteAnimationVO vo = json.fromJson(SpriteAnimationVO.class, jsonString);
             return factory.createEntity(parent, vo);
@@ -382,6 +386,11 @@ public class EntityUtils {
         }
         if(entityType == EntityFactory.PARTICLE_TYPE) {
             ParticleEffectVO vo = new ParticleEffectVO();
+            vo.loadFromEntity(entity);
+            return json.toJson(vo);
+        }
+        if(entityType == EntityFactory.TALOS_TYPE) {
+            TalosVO vo = new TalosVO();
             vo.loadFromEntity(entity);
             return json.toJson(vo);
         }
@@ -436,6 +445,11 @@ public class EntityUtils {
                 ParticleEffectVO vo = new ParticleEffectVO();
                 vo.loadFromEntity(entity);
                 holderComposite.sParticleEffects.add(vo);
+            }
+            if(entityType == EntityFactory.TALOS_TYPE) {
+                TalosVO vo = new TalosVO();
+                vo.loadFromEntity(entity);
+                holderComposite.sTalosVFX.add(vo);
             }
             if(entityType == EntityFactory.SPRITE_TYPE) {
                 SpriteAnimationVO vo = new SpriteAnimationVO();

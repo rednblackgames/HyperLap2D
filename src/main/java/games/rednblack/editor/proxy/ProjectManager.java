@@ -20,15 +20,16 @@ package games.rednblack.editor.proxy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import com.esotericsoftware.spine.SkeletonData;
-import com.esotericsoftware.spine.SkeletonJson;
-import com.esotericsoftware.spine.utils.SpineUtils;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
+import com.talosvfx.talos.runtime.ParticleEmitterDescriptor;
+import com.talosvfx.talos.runtime.modules.AbstractModule;
+import com.talosvfx.talos.runtime.modules.ShadedSpriteModule;
+import com.talosvfx.talos.runtime.serialization.ExportData;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.data.migrations.ProjectVersionMigrator;
@@ -38,6 +39,7 @@ import games.rednblack.editor.renderer.utils.Version;
 import games.rednblack.editor.utils.AssetImporter;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.utils.ZipUtils;
+import games.rednblack.editor.utils.runtime.TalosResources;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.SettingsDialog;
@@ -84,6 +86,7 @@ public class ProjectManager extends Proxy {
     public static final String SPINE_DIR_PATH = "assets/orig/spine-animations";
     public static final String SPRITE_DIR_PATH = "assets/orig/sprite-animations";
     public static final String PARTICLE_DIR_PATH = "assets/orig/particles";
+    public static final String TALOS_VFX_DIR_PATH = "assets/orig/talos-vfx";
     public static final String SHADER_DIR_PATH = "assets/shaders";
 
     public ProjectVO currentProjectVO;
@@ -648,6 +651,7 @@ public class ProjectManager extends Proxy {
                                 if (file.exists()) {
                                     imgs.add(new FileHandle(file));
                                 } else {
+                                    imgs.clear();
                                     return false;
                                 }
                             }
@@ -656,6 +660,7 @@ public class ProjectManager extends Proxy {
                             if (file.exists()) {
                                 imgs.add(new FileHandle(file));
                             } else {
+                                imgs.clear();
                                 return false;
                             }
                         }
@@ -703,6 +708,124 @@ public class ProjectManager extends Proxy {
             }
             if (images.size > 0) {
                 copyImageFilesForAllResolutionsIntoProject(images, false, progressHandler);
+            }
+            if (!skipRepack) {
+                ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
+                resolutionManager.rePackProjectImagesForAllResolutionsSync();
+            }
+        });
+        executor.execute(() -> {
+            progressHandler.progressChanged(100);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            progressHandler.progressComplete();
+        });
+        executor.shutdown();
+    }
+
+    private boolean addTalosImages(TalosResources talosResources, FileHandle fileHandle, Array<FileHandle> imgs) {
+        try {
+            Array<String> resources = talosResources.metadata.resources;
+            for (String res : resources) {
+                res += ".png";
+                File file = new File(FilenameUtils.getFullPath(fileHandle.path()) + res);
+                if (file.exists()) {
+                    imgs.add(new FileHandle(file));
+                } else {
+                    Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                            "\nCould not find " + file.getName() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
+                    imgs.clear();
+                    return false;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
+    private boolean addTalosRes(TalosResources talosResources, FileHandle fileHandle, Array<FileHandle> imgs) {
+        try {
+            for (TalosResources.Emitter emitter : talosResources.emitters) {
+                for (TalosResources.Module module : emitter.modules) {
+                    if (module.get("shdrAssetName") != null) {
+                        String assetName = module.get("shdrAssetName").toString();
+                        File file = new File(FilenameUtils.getFullPath(fileHandle.path()) + assetName);
+                        if (file.exists()) {
+                            imgs.add(new FileHandle(file));
+                        } else {
+                            Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                                    "\nCould not find " + file.getName() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
+                            imgs.clear();
+                            return false;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
+    public void importTalosIntoProject(final Array<FileHandle> fileHandles, ProgressHandler progressHandler, boolean skipRepack) {
+        if (fileHandles == null) {
+            return;
+        }
+        Json json = new Json();
+        json.setIgnoreUnknownFields(true);
+        ParticleEmitterDescriptor.registerModules();
+        for (Class clazz: ParticleEmitterDescriptor.registeredModules) {
+            json.addClassTag(clazz.getSimpleName(), TalosResources.Module.class);
+        }
+        final String targetPath = currentProjectPath + "/assets/orig/talos-vfx";
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            Array<FileHandle> images = new Array<>();
+            Array<FileHandle> assetsRes = new Array<>();
+            for (FileHandle fileHandle : new Array.ArrayIterator<>(fileHandles)) {
+                if (!fileHandle.isDirectory() && fileHandle.exists()) {
+                    try {
+                        TalosResources talosResources = json.fromJson(TalosResources.class, fileHandle);
+                        //copy images
+                        boolean allImagesFound = addTalosImages(talosResources, fileHandle, images);
+                        if (allImagesFound) {
+                            boolean allAssetFound = addTalosRes(talosResources, fileHandle, assetsRes);
+                            if (allAssetFound) {
+                                // copy the fileHandle
+                                String newName = fileHandle.name();
+                                File target = new File(targetPath + "/" + newName);
+                                FileUtils.copyFile(fileHandle.file(), target);
+                            }
+                        }
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error importing particles.");
+                        throw e;
+                    } catch (IOException e) {
+                        System.out.println("Error importing particles.");
+                        e.printStackTrace();
+                    }
+                }
+            }
+            if (images.size > 0) {
+                copyImageFilesForAllResolutionsIntoProject(images, false, progressHandler);
+            }
+            if (assetsRes.size > 0) {
+                for (FileHandle fileHandle : assetsRes) {
+                    try {
+                        String newName = fileHandle.name();
+                        File target = new File(targetPath + "/" + newName);
+                        FileUtils.copyFile(fileHandle.file(), target);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             if (!skipRepack) {
                 ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
@@ -955,6 +1078,10 @@ public class ProjectManager extends Proxy {
         if (!currentProjectVO.projectMainExportPath.isEmpty()) {
             exportParticles(currentProjectVO.projectMainExportPath);
         }
+        exportTalosVFX(defaultBuildPath);
+        if (!currentProjectVO.projectMainExportPath.isEmpty()) {
+            exportTalosVFX(currentProjectVO.projectMainExportPath);
+        }
         exportShaders(defaultBuildPath);
         if (!currentProjectVO.projectMainExportPath.isEmpty()) {
             exportShaders(currentProjectVO.projectMainExportPath);
@@ -999,6 +1126,18 @@ public class ProjectManager extends Proxy {
         String srcPath = currentProjectPath + "/assets/orig";
         FileHandle origDirectoryHandle = Gdx.files.absolute(srcPath);
         FileHandle particlesDirectory = origDirectoryHandle.child("particles");
+        File fileTarget = new File(targetPath + "/" + particlesDirectory.name());
+        try {
+            FileUtils.copyDirectory(particlesDirectory.file(), fileTarget);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void exportTalosVFX(String targetPath) {
+        String srcPath = currentProjectPath + "/assets/orig";
+        FileHandle origDirectoryHandle = Gdx.files.absolute(srcPath);
+        FileHandle particlesDirectory = origDirectoryHandle.child("talos-vfx");
         File fileTarget = new File(targetPath + "/" + particlesDirectory.name());
         try {
             FileUtils.copyDirectory(particlesDirectory.file(), fileTarget);
@@ -1366,6 +1505,12 @@ public class ProjectManager extends Proxy {
 
     public boolean deleteParticle(String particleName) {
         String particlePath = currentProjectPath + File.separator + PARTICLE_DIR_PATH + File.separator;
+        String filePath = particlePath + particleName;
+        return (new File(filePath)).delete();
+    }
+
+    public boolean deleteTalosVFX(String particleName) {
+        String particlePath = currentProjectPath + File.separator + TALOS_VFX_DIR_PATH + File.separator;
         String filePath = particlePath + particleName;
         return (new File(filePath)).delete();
     }

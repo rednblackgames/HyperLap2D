@@ -18,18 +18,23 @@
 
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.controller.commands.resource.DeleteParticleEffect;
+import games.rednblack.editor.controller.commands.resource.DeleteTalosVFX;
 import games.rednblack.editor.factory.ItemFactory;
 import games.rednblack.editor.proxy.ResourceManager;
-import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
+import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResourceView;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.ParticleEffectResource;
+import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.TalosResource;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 
-import java.util.HashMap;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
+import java.util.function.BiFunction;
 
 /**
  * Created by azakhary on 4/17/2015.
@@ -39,14 +44,18 @@ public class UIParticleEffectsTabMediator extends UIResourcesTabMediator<UIParti
     private static final String TAG = UIParticleEffectsTabMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
+    private final Array<DraggableResource> particlesList;
+
     public UIParticleEffectsTabMediator() {
         super(NAME, new UIParticleEffectsTab());
+        particlesList = new Array<>();
     }
 
     @Override
     public String[] listNotificationInterests() {
         String[] listNotification = super.listNotificationInterests();
         listNotification = ArrayUtils.add(listNotification, DeleteParticleEffect.DONE);
+        listNotification = ArrayUtils.add(listNotification, DeleteTalosVFX.DONE);
         return listNotification;
     }
 
@@ -54,6 +63,7 @@ public class UIParticleEffectsTabMediator extends UIResourcesTabMediator<UIParti
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
+            case DeleteTalosVFX.DONE:
             case DeleteParticleEffect.DONE:
                 initList(viewComponent.searchString);
                 break;
@@ -64,18 +74,26 @@ public class UIParticleEffectsTabMediator extends UIResourcesTabMediator<UIParti
 
     @Override
     protected void initList(String searchText) {
-        Sandbox sandbox = Sandbox.getInstance();
-        //HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+        particlesList.clear();
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
-        HashMap<String, ParticleEffect> particles = resourceManager.getProjectParticleList();
-        Array<DraggableResource> itemArray = new Array<>();
-        for (String name : particles.keySet()) {
-            if(!name.contains(searchText))continue;
-            DraggableResource draggableResource = new DraggableResource(new ParticleEffectResource(name));
-            draggableResource.setFactoryFunction(ItemFactory.get()::tryCreateParticleItem);
-            itemArray.add(draggableResource);
+        createAnimationResources(resourceManager.getProjectTalosList().keySet(), TalosResource.class, ItemFactory.get()::tryCreateTalosItem, searchText);
+        createAnimationResources(resourceManager.getProjectParticleList().keySet(), ParticleEffectResource.class, ItemFactory.get()::tryCreateParticleItem, searchText);
+        viewComponent.setItems(particlesList);
+    }
+
+
+    private void createAnimationResources(Set<String> strings, Class resourceClass, BiFunction<String, Vector2, Boolean> factoryFunction, String searchText) {
+        for (String animationName : strings) {
+            if (!animationName.contains(searchText)) continue;
+            try {
+                Constructor constructor = resourceClass.getConstructor(String.class);
+                DraggableResource draggableResource = new DraggableResource((DraggableResourceView) constructor.newInstance(animationName));
+                draggableResource.setFactoryFunction(factoryFunction);
+                particlesList.add(draggableResource);
+            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
-        viewComponent.setItems(itemArray);
     }
 }

@@ -36,6 +36,7 @@ public class ParticleFollower extends BasicFollower {
 
     public ParticleFollower(Entity entity) {
         super(entity);
+        setTransform(false);
     }
 
     @Override

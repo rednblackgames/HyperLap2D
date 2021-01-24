@@ -97,6 +97,7 @@ dependencies {
     implementation project(":hyperlap2d-runtime-libgdx")
     implementation project(":h2d-libgdx-spine-extension")
 
+    implementation "com.talosvfx:talos-libgdx:$talosVersion"
     implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
     implementation "com.rafaskoberg.gdx:typing-label:$typingLabelVersion"
     implementation "com.kotcrab.vis:vis-ui:$visuiVersion"

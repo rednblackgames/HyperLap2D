@@ -222,6 +222,29 @@ public class ItemFactory {
         return entity;
     }
 
+    public boolean tryCreateTalosItem(String particleName, Vector2 position) {
+        Entity entity = createTalosItem(particleName, position);
+
+       /* DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
+        float boundBoxSize = 10f;
+        dimensionsComponent.boundBox = new Rectangle(-boundBoxSize / 2f, -boundBoxSize / 2f, boundBoxSize, boundBoxSize);*/
+
+        if(entity == null) return false;
+
+        return true;
+    }
+
+    public Entity createTalosItem(String particleName, Vector2 position) {
+        TalosVO vo = new TalosVO();
+        vo.particleName = particleName;
+
+        if(!setEssentialData(vo, position)) return null;
+        Entity entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), vo);
+        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
+
+        return entity;
+    }
+
     public Entity createLabel(TextTool textSettings, Vector2 position) {
         LabelVO vo = new LabelVO();
         if(!setEssentialData(vo, position)) return null;
