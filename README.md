@@ -16,6 +16,12 @@ Open Source ❤️
 
 Currently, HyperLap2D is in Alpha stage. Many breaking changes could happen update after update without backwards compatibility. Therefore, please always check our [changelog](https://github.com/rednblackgames/HyperLap2D/tree/master/CHANGES) before updating.
 
+### Download
+
+| Release | Snapshot |
+| ------- | -------- |
+| [GitHub Releases](https://github.com/rednblackgames/HyperLap2D/releases) | [GitHub Actions](https://github.com/rednblackgames/HyperLap2D/actions?query=workflow%3A%22SNAPSHOT+Build%22) |
+
 ### Features
 - Images and Sprite Animations
 - Box2D Physics World
@@ -35,12 +41,6 @@ Currently, HyperLap2D is in Alpha stage. Many breaking changes could happen upda
 - [HyperLap2D Website](https://hyperlap2d.rednblack.games)
 - [Official Wiki](https://hyperlap2d.rednblack.games/wiki)
 - [HyperLab](https://hyperlab.rednblack.games)
-
-### Download
-
-You can download the latest stable release using [GitHub Release](https://github.com/rednblackgames/HyperLap2D/releases).
-
-Snapshot releases can be download using [GitHub Actions](https://github.com/rednblackgames/HyperLap2D/actions?query=workflow%3A%22SNAPSHOT+Build%22).
 
 ### Runtime
 
