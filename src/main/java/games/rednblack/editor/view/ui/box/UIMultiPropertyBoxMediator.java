@@ -179,6 +179,12 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         if (entityType == EntityFactory.LIGHT_TYPE) {
             mediatorNames.add(UILightItemPropertiesMediator.NAME);
         }
+        if (entityType == EntityFactory.PARTICLE_TYPE) {
+            mediatorNames.add(UIParticlePropertiesMediator.NAME);
+        }
+        if (entityType == EntityFactory.TALOS_TYPE) {
+            mediatorNames.add(UITalosPropertiesMediator.NAME);
+        }
 
         // optional panels based on components
         PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
