@@ -24,10 +24,13 @@ import games.rednblack.editor.controller.commands.resource.DeleteParticleEffect;
 import games.rednblack.editor.controller.commands.resource.DeleteTalosVFX;
 import games.rednblack.editor.factory.ItemFactory;
 import games.rednblack.editor.proxy.ResourceManager;
+import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResourceView;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.ParticleEffectResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.TalosResource;
+import games.rednblack.h2d.extension.talos.TalosItemType;
+import games.rednblack.h2d.extention.spine.SpineItemType;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 
@@ -77,7 +80,10 @@ public class UIParticleEffectsTabMediator extends UIResourcesTabMediator<UIParti
         particlesList.clear();
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
-        createAnimationResources(resourceManager.getProjectTalosList().keySet(), TalosResource.class, ItemFactory.get()::tryCreateTalosItem, searchText);
+        if (new TalosItemType().getTypeId() == EntityFactory.TALOS_TYPE) {
+            createAnimationResources(resourceManager.getProjectTalosList().keySet(), TalosResource.class, ItemFactory.get()::tryCreateTalosItem, searchText);
+        }
+
         createAnimationResources(resourceManager.getProjectParticleList().keySet(), ParticleEffectResource.class, ItemFactory.get()::tryCreateParticleItem, searchText);
         viewComponent.setItems(particlesList);
     }

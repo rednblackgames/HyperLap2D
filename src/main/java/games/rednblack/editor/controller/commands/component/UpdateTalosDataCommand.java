@@ -3,11 +3,12 @@ package games.rednblack.editor.controller.commands.component;
 import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
-import games.rednblack.editor.renderer.components.additional.TalosComponent;
+import games.rednblack.editor.renderer.components.particle.TalosDataComponent;
 import games.rednblack.editor.renderer.data.TalosVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.extension.talos.TalosComponent;
 
 public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
 
@@ -24,9 +25,10 @@ public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
         backup = new TalosVO();
         backup.loadFromEntity(entity);
 
-        TalosComponent talosComponent = ComponentRetriever.get(entity, TalosComponent.class);
-        talosComponent.transform = vo.transform;
+        TalosDataComponent dataComponent = ComponentRetriever.get(entity, TalosDataComponent.class);
+        dataComponent.transform = vo.transform;
 
+        TalosComponent talosComponent = ComponentRetriever.get(entity, TalosComponent.class);
         talosComponent.effect.setPosition(0, 0);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
@@ -36,8 +38,11 @@ public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
     public void undoAction() {
         Entity entity = EntityUtils.getByUniqueId(entityId);
 
-        TalosComponent particleComponent = ComponentRetriever.get(entity, TalosComponent.class);
+        TalosDataComponent particleComponent = ComponentRetriever.get(entity, TalosDataComponent.class);
         particleComponent.transform = backup.transform;
+
+        TalosComponent talosComponent = ComponentRetriever.get(entity, TalosComponent.class);
+        talosComponent.effect.setPosition(0, 0);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

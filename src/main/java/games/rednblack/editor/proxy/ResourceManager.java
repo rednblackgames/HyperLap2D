@@ -49,6 +49,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     private final HashMap<String, ParticleEffect> particleEffects = new HashMap<>(1);
     private final HashMap<String, ParticleEffectDescriptor> talosVFXs = new HashMap<>(1);
+    private final HashMap<String, FileHandle> talosVFXsFiles = new HashMap<>(1);
     private TextureAtlas currentProjectAtlas;
 
     private final HashMap<String, SpineAnimData> spineAnimAtlases = new HashMap<>();
@@ -103,8 +104,8 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     }
 
     @Override
-    public ParticleEffectDescriptor getTalosVFX(String name) {
-        return talosVFXs.get(name);
+    public FileHandle getTalosVFX(String name) {
+        return talosVFXsFiles.get(name);
     }
 
     @Override
@@ -207,6 +208,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
             assetProvider.setAssetHandler(ShaderDescriptor.class, this::findShaderDescriptorOnLoad);
             ParticleEffectDescriptor effectDescriptor = new ParticleEffectDescriptor();
             effectDescriptor.setAssetProvider(assetProvider);
+            talosVFXsFiles.put(filename, Gdx.files.internal(file.getAbsolutePath()));
             effectDescriptor.load(Gdx.files.internal(file.getAbsolutePath()));
             talosVFXs.put(filename, effectDescriptor);
         }
@@ -470,5 +472,10 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     public HashMap<String, ShaderProgram> getShaders() {
         return shaderPrograms;
+    }
+
+    @Override
+    public TextureAtlas getMainPack() {
+        return currentProjectAtlas;
     }
 }

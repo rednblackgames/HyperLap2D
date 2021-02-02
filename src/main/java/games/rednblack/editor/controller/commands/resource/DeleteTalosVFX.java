@@ -1,7 +1,7 @@
 package games.rednblack.editor.controller.commands.resource;
 
 import com.badlogic.ashley.core.Entity;
-import games.rednblack.editor.renderer.components.additional.TalosComponent;
+import games.rednblack.editor.renderer.components.particle.TalosDataComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.data.TalosVO;
@@ -66,7 +66,7 @@ public class DeleteTalosVFX extends DeleteResourceCommand {
     private void deleteEntitiesWithParticleEffects(Entity rootEntity, String particleName) {
         entityList.clear();
         Consumer<Entity> action = (root) -> {
-            TalosComponent particleComponent = ComponentRetriever.get(root, TalosComponent.class);
+            TalosDataComponent particleComponent = ComponentRetriever.get(root, TalosDataComponent.class);
             if (particleComponent != null && particleComponent.particleName.equals(particleName)) {
                 entityList.add(root);
             }

@@ -96,6 +96,7 @@ dependencies {
     implementation project(":hyperlap2d-common-api")
     implementation project(":hyperlap2d-runtime-libgdx")
     implementation project(":h2d-libgdx-spine-extension")
+    implementation project(":h2d-libgdx-talos-extension")
 
     implementation "com.talosvfx:talos-libgdx:$talosVersion"
     implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"

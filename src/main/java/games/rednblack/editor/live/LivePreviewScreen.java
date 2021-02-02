@@ -17,6 +17,7 @@ import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extention.spine.SpineItemType;
 import org.puremvc.java.interfaces.IFacade;
 
@@ -48,6 +49,7 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
         mCamera = (OrthographicCamera) viewport.getCamera();
         sceneLoader = new SceneLoader(resourceManager);
         sceneLoader.injectExternalItemType(new SpineItemType());
+        sceneLoader.injectExternalItemType(new TalosItemType());
         sceneLoader.loadScene(projectManager.getCurrentSceneConfigVO().sceneName, viewport);
 
         bgColor = projectManager.currentProjectVO.backgroundColor;

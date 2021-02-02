@@ -37,6 +37,7 @@ import games.rednblack.editor.proxy.*;
 import games.rednblack.editor.renderer.systems.LightSystem;
 import games.rednblack.editor.view.stage.tools.PanTool;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extention.spine.SpineItemType;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.SceneLoader;
@@ -125,6 +126,7 @@ public class Sandbox {
         sceneLoader = new SceneLoader(resourceManager);
         // adding spine as external component
         sceneLoader.injectExternalItemType(new SpineItemType());
+        sceneLoader.injectExternalItemType(new TalosItemType());
 
         //Remove Physics System and add Adjusting System for box2d objects to follow items and stop world tick
         sceneLoader.getEngine().removeSystem(sceneLoader.getEngine().getSystem(PhysicsSystem.class));
