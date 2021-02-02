@@ -6,4 +6,5 @@ include 'plugin-performance'
 include 'plugin-9patch'
 include 'plugin-tiled'
 include 'plugin-skin-composer'
+include 'h2d-libgdx-talos-extension'
 
