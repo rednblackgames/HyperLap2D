@@ -40,6 +40,13 @@ jobs:
       with:
         name: h2d-libgdx-spine-extension-SNAPSHOT.jar
         path: h2d-libgdx-spine-extension-SNAPSHOT.jar
+    - name: Fix libgdx-talos-extension file names
+      run: mv h2d-libgdx-talos-extension/build/libs/*.jar h2d-libgdx-talos-extension-SNAPSHOT.jar
+    - name: Upload libgdx-talos-extension artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: h2d-libgdx-talos-extension-SNAPSHOT.jar
+        path: h2d-libgdx-talos-extension-SNAPSHOT.jar
     - name: Fix runtime-libgdx file names
       run: mv hyperlap2d-runtime-libgdx/build/libs/*.jar hyperlap2d-runtime-libgdx-SNAPSHOT.jar
     - name: Upload hyperlap2d-runtime-libgdx artifact
