@@ -7,3 +7,6 @@
 [submodule "hyperlap2d-common-api"]
 	path = hyperlap2d-common-api
 	url = https://github.com/rednblackgames/hyperlap2d-common-api.git
+[submodule "h2d-libgdx-talos-extension"]
+	path = h2d-libgdx-talos-extension
+	url = https://github.com/rednblackgames/h2d-libgdx-talos-extension.git
