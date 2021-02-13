@@ -194,10 +194,9 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
     }
 
     public void removeFollower(Entity entity) {
-//        if (followers.get(entity) != null) {
-            followers.get(entity).remove();
-            followers.remove(entity);
-//        }
+        BasicFollower follower = followers.remove(entity);
+        if (follower != null)
+            follower.remove();
     }
 
     public void clearAllListeners() {
