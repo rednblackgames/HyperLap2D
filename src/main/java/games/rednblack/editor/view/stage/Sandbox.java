@@ -483,13 +483,17 @@ public class Sandbox {
     }
 
 
-    public void copyToClipboard(Object data) {
+    public static void copyToClipboard(Object data) {
+        Object[] payload = new Object[2];
+        payload[0] = new Vector2(Sandbox.getInstance().getCamera().position.x,Sandbox.getInstance().getCamera().position.y);
+        payload[1] = data;
+
         Lwjgl3Application app = (Lwjgl3Application) Gdx.app;
         Json json = new Json();
-        app.getClipboard().setContents(json.toJson(data));
+        app.getClipboard().setContents(json.toJson(payload));
     }
 
-    public Object retrieveFromClipboard() {
+    public static Object retrieveFromClipboard() {
         Lwjgl3Application app = (Lwjgl3Application) Gdx.app;
         Json json = new Json();
         Object[] data = null;

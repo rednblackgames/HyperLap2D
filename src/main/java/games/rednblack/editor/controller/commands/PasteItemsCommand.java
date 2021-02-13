@@ -48,7 +48,7 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void doAction() {
-        Object[] payload = (Object[]) Sandbox.getInstance().retrieveFromClipboard();
+        Object[] payload = (Object[]) Sandbox.retrieveFromClipboard();
 
         UILayerBoxMediator layerBoxMediator = facade.retrieveMediator(UILayerBoxMediator.NAME);
         if(layerBoxMediator.getCurrentSelectedLayerName() == null || payload == null) {

@@ -41,10 +41,7 @@ public class CutItemsCommand extends EntityModifyRevertibleCommand {
         backup = EntityUtils.getJsonStringFromEntities(sandbox.getSelector().getSelectedItems());
         String data = EntityUtils.getJsonStringFromEntities(sandbox.getSelector().getSelectedItems());
 
-        Object[] payload = new Object[2];
-        payload[0] = new Vector2(Sandbox.getInstance().getCamera().position.x,Sandbox.getInstance().getCamera().position.y);
-        payload[1] = data;
-        Sandbox.getInstance().copyToClipboard(payload);
+        Sandbox.copyToClipboard(data);
         sandbox.getSelector().removeCurrentSelectedItems();
 
         facade.sendNotification(MsgAPI.DELETE_ITEMS_COMMAND_DONE);
