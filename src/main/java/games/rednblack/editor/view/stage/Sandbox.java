@@ -35,9 +35,13 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.util.ToastManager;
 import games.rednblack.editor.proxy.*;
 import games.rednblack.editor.renderer.systems.LightSystem;
+import games.rednblack.editor.renderer.systems.ParticleSystem;
+import games.rednblack.editor.system.ParticleContinuousSystem;
+import games.rednblack.editor.system.TalosContinuousSystem;
 import games.rednblack.editor.view.stage.tools.PanTool;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extension.talos.TalosItemType;
+import games.rednblack.h2d.extension.talos.TalosSystem;
 import games.rednblack.h2d.extention.spine.SpineItemType;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.SceneLoader;
@@ -135,6 +139,12 @@ public class Sandbox {
         lightSystem.setRayHandler(sceneLoader.getRayHandler());
         sceneLoader.getEngine().addSystem(new PhysicsAdjustSystem(sceneLoader.getWorld()));
         sceneLoader.getEngine().addSystem(lightSystem);
+
+        //Remove particle system and use a continuous system for preview purpose
+        sceneLoader.getEngine().removeSystem(sceneLoader.getEngine().getSystem(ParticleSystem.class));
+        sceneLoader.getEngine().addSystem(new ParticleContinuousSystem());
+        sceneLoader.getEngine().removeSystem(sceneLoader.getEngine().getSystem(TalosSystem.class));
+        sceneLoader.getEngine().addSystem(new TalosContinuousSystem());
 
         sceneControl = new SceneControlMediator(sceneLoader);
         itemControl = new ItemControlMediator(sceneControl);
@@ -277,28 +287,6 @@ public class Sandbox {
     public Vector2 getCameraPosTarget() {
         return cameraPosTarget;
     }
-
-    /**
-     * Some particle panels might not be continuous, so they will stop after first iteration, which is ok
-     * This method will make sure they look continuous while in editor, so user will find and see them easily.
-     *
-     * @param composite composite on screen with particles to be forced to be continuous
-     */
-    //TODO fix and uncomment
-//    private void forceContinuousParticles(CompositeItem composite) {
-//        ArrayList<IBaseItem> asd = composite.getItems();
-//        for (int i = 0; i < asd.size(); i++) {
-//            IBaseItem item = asd.get(i);
-//            if (item instanceof ParticleItem) {
-//                ((ParticleItem) item).forceContinuous();
-//                continue;
-//            }
-//            if (item instanceof CompositeItem) {
-//                forceContinuousParticles((CompositeItem) item);
-//            }
-//
-//        }
-//    }
 
     /**
      * When an entity is modified their respective VO in memory are not touched, so to save a scene we have to
