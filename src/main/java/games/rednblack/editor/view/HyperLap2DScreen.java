@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import games.rednblack.editor.HyperLap2DApp;
@@ -206,7 +207,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
                 HyperLap2DApp.getInstance().hyperlap2D.closeRequested();
                 break;
             case KeyBindingsLayout.HIDE_GUI:
-                uiStage.addAction(Actions.fadeOut(0.1f));
+                uiStage.addAction(Actions.parallel(Actions.fadeOut(0.1f), Actions.touchable(Touchable.disabled)));
                 break;
             case KeyBindingsLayout.OPEN_CONSOLE:
                 facade.sendNotification(MsgAPI.OPEN_CONSOLE);
@@ -219,7 +220,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
     public boolean keyUp(int keycode) {
         switch (KeyBindingsLayout.mapAction(keycode)) {
             case KeyBindingsLayout.HIDE_GUI:
-                uiStage.addAction(Actions.fadeIn(0.1f));
+                uiStage.addAction(Actions.parallel(Actions.touchable(Touchable.enabled), Actions.fadeIn(0.1f)));
                 break;
         }
         return false;

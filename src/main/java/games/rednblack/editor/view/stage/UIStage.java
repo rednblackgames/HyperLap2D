@@ -18,14 +18,13 @@
 
 package games.rednblack.editor.view.stage;
 
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.util.ToastManager;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.utils.HyperLap2DUtils;
+import games.rednblack.editor.renderer.utils.CpuPolygonSpriteBatch;
 import games.rednblack.editor.view.ui.*;
 import games.rednblack.h2d.common.proxy.CursorManager;
 
@@ -44,7 +43,7 @@ public class UIStage extends Stage {
 	public Group midUI;
 
     public UIStage() {
-        super(new ScreenViewport(), new PolygonSpriteBatch());
+        super(new ScreenViewport(), new CpuPolygonSpriteBatch());
 
         getViewport().getCamera().position.setZero();
 
