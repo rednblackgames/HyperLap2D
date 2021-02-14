@@ -275,13 +275,13 @@ public class Sandbox {
     public void panSceneTo(float x, float y) {
         cameraPosOrigin.set(getCamera().position.x, getCamera().position.y);
         cameraPosTarget.set(x, y);
-        timeToCameraPosTarget = CAMERA_PAN_DURATION - timeToCameraPosTarget / 2f;
+        timeToCameraPosTarget = CAMERA_PAN_DURATION - timeToCameraPosTarget * 0.5f;
     }
 
     public void panSceneBy(float amountX, float amountY) {
         cameraPosOrigin.set(getCamera().position.x, getCamera().position.y);
         cameraPosTarget.set(cameraPosOrigin.x + amountX, cameraPosOrigin.y + amountY);
-        timeToCameraPosTarget = CAMERA_PAN_DURATION - timeToCameraPosTarget / 2f;
+        timeToCameraPosTarget = CAMERA_PAN_DURATION - timeToCameraPosTarget * 0.5f;
     }
 
     public Vector2 getCameraPosTarget() {

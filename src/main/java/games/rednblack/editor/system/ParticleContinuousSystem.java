@@ -20,7 +20,7 @@ public class ParticleContinuousSystem extends ParticleSystem {
         ParticleEffect particleEffect = particleComponent.particleEffect;
 
         if (particleEffect.isComplete()) {
-            particleEffect.reset();
+            particleEffect.reset(false);
         }
     }
 }
