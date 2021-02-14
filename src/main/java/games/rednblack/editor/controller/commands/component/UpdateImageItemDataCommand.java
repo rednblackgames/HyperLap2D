@@ -55,7 +55,6 @@ public class UpdateImageItemDataCommand extends EntityModifyRevertibleCommand {
         DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
 
         if (!textureRegionComponent.isPolygon) {
-            textureRegionComponent.polygonSprite = null;
             dimensionsComponent.polygon = null;
         }
 
