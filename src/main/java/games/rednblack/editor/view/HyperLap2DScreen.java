@@ -31,6 +31,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Align;
 import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
@@ -74,6 +75,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         backgroundColor = settingsManager.editorConfigVO.backgroundColor;
         isDrawingBgLogo = true;
         bgLogo = new Image(new Texture(Gdx.files.internal("style/bglogo.png")));
+        bgLogo.setOrigin(Align.center);
         bgLogo.getColor().a = 0.3f;
         screenSize = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         blackOverlay = new Image(WhitePixel.sharedInstance.texture);
@@ -170,10 +172,27 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         blackOverlay.getColor().set(0, 0, 0, 0);
         uiStage.addActor(blackOverlay);
         blackOverlay.addAction(Actions.alpha(0.5f, .3f, Interpolation.smooth));
+
+        if (!isDrawingBgLogo) {
+            bgLogo.getColor().a = 0;
+            bgLogo.setScale(.5f);
+            bgLogo.addAction(Actions.forever(
+                    Actions.sequence(
+                            Actions.alpha(.5f, 1f, Interpolation.slowFast),
+                            Actions.alpha(.3f, 1f, Interpolation.slowFast)
+                    )
+            ));
+            uiStage.addActor(bgLogo);
+        }
     }
 
     public void hideBlackOverlay() {
         blackOverlay.addAction(Actions.sequence(Actions.alpha(0, .2f, Interpolation.smooth), Actions.removeActor()));
+
+        if (!isDrawingBgLogo) {
+            bgLogo.clearActions();
+            bgLogo.addAction(Actions.sequence(Actions.alpha(0, .2f, Interpolation.smooth), Actions.removeActor()));
+        }
     }
 
     @Override
