@@ -40,10 +40,40 @@ import games.rednblack.editor.view.stage.Sandbox;
 import java.util.*;
 import java.util.function.Consumer;
 
+import static games.rednblack.editor.renderer.factory.EntityFactory.*;
+
 /**
  * Created by azakhary on 6/9/2015.
  */
 public class EntityUtils {
+
+    public static final HashMap<Integer, String> itemTypeIconMap = new HashMap<>();
+    public static final HashMap<Integer, String> itemTypeNameMap = new HashMap<>();
+    static {
+        itemTypeNameMap.put(UNKNOWN_TYPE, "Unknown");
+        itemTypeNameMap.put(COMPOSITE_TYPE, "Composite Item");
+        itemTypeNameMap.put(PARTICLE_TYPE, "Particle Effect");
+        itemTypeNameMap.put(LABEL_TYPE, "Label");
+        itemTypeNameMap.put(IMAGE_TYPE, "Image");
+        itemTypeNameMap.put(NINE_PATCH, "9-Patch Image");
+        itemTypeNameMap.put(LIGHT_TYPE, "Light");
+        itemTypeNameMap.put(SPINE_TYPE, "Spine Animation");
+        itemTypeNameMap.put(SPRITE_TYPE, "Sprite Animation");
+        itemTypeNameMap.put(COLOR_PRIMITIVE, "Primitive");
+        itemTypeNameMap.put(TALOS_TYPE, "Talos VFX");
+
+        itemTypeIconMap.put(UNKNOWN_TYPE, "icon-unknown");
+        itemTypeIconMap.put(COMPOSITE_TYPE, "icon-root");
+        itemTypeIconMap.put(PARTICLE_TYPE, "icon-particle-white");
+        itemTypeIconMap.put(LABEL_TYPE, "icon-label");
+        itemTypeIconMap.put(IMAGE_TYPE, "icon-image");
+        itemTypeIconMap.put(NINE_PATCH, "icon-image");
+        itemTypeIconMap.put(LIGHT_TYPE, "icon-particle-white");
+        itemTypeIconMap.put(SPINE_TYPE, "icon-spine");
+        itemTypeIconMap.put(SPRITE_TYPE, "icon-animation");
+        itemTypeIconMap.put(COLOR_PRIMITIVE, "icon-image");
+        itemTypeIconMap.put(TALOS_TYPE, "icon-particle-white");
+    }
 
     public static String getItemName(Entity entity) {
         ParentNodeComponent parentNodeComponent = ComponentRetriever.get(entity, ParentNodeComponent.class);
@@ -55,17 +85,17 @@ public class EntityUtils {
             return mainItemComponent.itemIdentifier;
         } else {
             int type = EntityUtils.getType(entity);
-            String name = EntityFactory.itemTypeNameMap.get(type);
+            String name = itemTypeNameMap.get(type);
             if (name != null)
                 return name;
             else
-                return EntityFactory.itemTypeNameMap.get(EntityFactory.UNKNOWN_TYPE);
+                return itemTypeNameMap.get(UNKNOWN_TYPE);
         }
     }
 
     public static Drawable getItemIcon(Entity entity) {
         int type = EntityUtils.getType(entity);
-        String icon = EntityFactory.itemTypeIconMap.get(type);
+        String icon = itemTypeIconMap.get(type);
         return VisUI.getSkin().getDrawable(icon);
     }
 
@@ -230,7 +260,7 @@ public class EntityUtils {
     public static int getType(Entity entity) {
         MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
         if (mainItemComponent == null)
-            return EntityFactory.UNKNOWN_TYPE;
+            return UNKNOWN_TYPE;
         return mainItemComponent.entityType;
     }
 

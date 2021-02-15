@@ -31,7 +31,7 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.event.ButtonToNotificationListener;
-import games.rednblack.editor.renderer.factory.EntityFactory;
+import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
@@ -187,8 +187,8 @@ public class UIBasicItemProperties extends UIItemProperties {
     }
 
     public void setItemType(int type, int itemUniqueId) {
-        itemType.setText(EntityFactory.itemTypeNameMap.get(type) + " ("+itemUniqueId+")");
-        itemTypeIcon.setDrawable(VisUI.getSkin().getDrawable(EntityFactory.itemTypeIconMap.get(type)));
+        itemType.setText(EntityUtils.itemTypeNameMap.get(type) + " ("+itemUniqueId+")");
+        itemTypeIcon.setDrawable(VisUI.getSkin().getDrawable(EntityUtils.itemTypeIconMap.get(type)));
         itemTypeIcon.setScaling(Scaling.fit);
         itemTypeIcon.setWidth(22);
     }
