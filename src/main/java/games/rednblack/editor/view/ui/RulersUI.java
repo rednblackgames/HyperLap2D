@@ -255,7 +255,11 @@ public class RulersUI extends Actor {
         batch.begin();
         batch.setColor(Color.WHITE);
 
-        drawBatch(batch, parentAlpha);
+        try {
+            drawBatch(batch, parentAlpha);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void drawShapes(float parentAlpha) {
@@ -409,7 +413,7 @@ public class RulersUI extends Actor {
         if (labelVerticalBuilder.length() != text.length() * 2) {
             labelVerticalBuilder.setLength(text.length() * 2);
         }
-        for (int i = 0, j = 0; i < text.length(); i++, j+=2) {
+        for (int i = 0, j = 0; i < text.length(); i++, j += 2) {
             labelVerticalBuilder.setCharAt(j, text.charAt(i));
             labelVerticalBuilder.setCharAt(j + 1, '\n');
         }

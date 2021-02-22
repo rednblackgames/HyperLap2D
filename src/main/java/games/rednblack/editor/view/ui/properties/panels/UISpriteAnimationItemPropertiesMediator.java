@@ -20,6 +20,7 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.controller.commands.component.UpdateSpriteAnimationDataCommand;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
@@ -84,6 +85,7 @@ public class UISpriteAnimationItemPropertiesMediator extends UIItemPropertiesMed
                 viewComponent.getSelectedAnimation(),
                 viewComponent.getPlayMode());
 
-        facade.sendNotification(MsgAPI.ACTION_UPDATE_SPRITE_ANIMATION_DATA, payload);
+        if (ComponentRetriever.get(observableReference, MainItemComponent.class) != null)
+            facade.sendNotification(MsgAPI.ACTION_UPDATE_SPRITE_ANIMATION_DATA, payload);
     }
 }
