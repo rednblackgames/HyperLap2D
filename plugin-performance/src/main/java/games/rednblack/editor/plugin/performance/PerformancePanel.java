@@ -14,7 +14,7 @@ public class PerformancePanel extends UIDraggablePanel {
 
     private final VisTable mainTable;
 
-    private VisLabel entitiesCount, memoryLabel, fpsLbl, glCalls, drawCalls, shaderSwitch, textureBind, vertexCall;
+    private VisLabel entitiesCount, memoryLabel, fpsLbl, glCalls, drawCalls, shaderSwitch, textureBind, vertexCount;
 
     private Engine engine;
     private final GLProfiler profiler;
@@ -41,7 +41,7 @@ public class PerformancePanel extends UIDraggablePanel {
         drawCalls = new VisLabel();
         shaderSwitch = new VisLabel();
         textureBind = new VisLabel();
-        vertexCall = new VisLabel();
+        vertexCount = new VisLabel();
 
         mainTable.add(new VisLabel("Entity count: ")).right();
         mainTable.add(entitiesCount).left().padLeft(4);
@@ -71,8 +71,8 @@ public class PerformancePanel extends UIDraggablePanel {
         mainTable.add(textureBind).left().padLeft(4);
         mainTable.row();
 
-        mainTable.add(new VisLabel("Vertex calls: ")).right();
-        mainTable.add(vertexCall).left().padLeft(4);
+        mainTable.add(new VisLabel("Vertex count: ")).right();
+        mainTable.add(vertexCount).left().padLeft(4);
         mainTable.row();
 
         pack();
@@ -101,7 +101,7 @@ public class PerformancePanel extends UIDraggablePanel {
         drawCalls.setText(profiler.getDrawCalls());
         shaderSwitch.setText(profiler.getShaderSwitches());
         textureBind.setText(profiler.getTextureBindings());
-        vertexCall.setText((int) profiler.getVertexCount().total);
+        vertexCount.setText((int) profiler.getVertexCount().total);
     }
 
 
