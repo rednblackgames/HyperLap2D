@@ -33,34 +33,11 @@ jobs:
       with:
         name: HyperLap2D-SNAPSHOT.deb
         path: HyperLap2D-SNAPSHOT.deb
-    - name: Fix libgdx-spine-extension file names
-      run: mv h2d-libgdx-spine-extension/build/libs/*.jar h2d-libgdx-spine-extension-SNAPSHOT.jar
-    - name: Upload libgdx-spine-extension artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: h2d-libgdx-spine-extension-SNAPSHOT.jar
-        path: h2d-libgdx-spine-extension-SNAPSHOT.jar
-    - name: Fix libgdx-talos-extension file names
-      run: mv h2d-libgdx-talos-extension/build/libs/*.jar h2d-libgdx-talos-extension-SNAPSHOT.jar
-    - name: Upload libgdx-talos-extension artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: h2d-libgdx-talos-extension-SNAPSHOT.jar
-        path: h2d-libgdx-talos-extension-SNAPSHOT.jar
-    - name: Fix runtime-libgdx file names
-      run: mv hyperlap2d-runtime-libgdx/build/libs/*.jar hyperlap2d-runtime-libgdx-SNAPSHOT.jar
-    - name: Upload hyperlap2d-runtime-libgdx artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: hyperlap2d-runtime-libgdx-SNAPSHOT.jar
-        path: hyperlap2d-runtime-libgdx-SNAPSHOT.jar
-    - name: Fix hyperlap2d-common-api names
-      run: mv hyperlap2d-common-api/build/libs/*.jar hyperlap2d-common-api-SNAPSHOT.jar
-    - name: Upload hyperlap2d-common-api artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: hyperlap2d-common-api-SNAPSHOT.jar
-        path: hyperlap2d-common-api-SNAPSHOT.jar
+    - name: Publish SNAPSHOT artifacts
+      env:
+        NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+        NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      run: ./gradlew uploadArchives -PSNAPSHOT=true
 
   windows:
     if: "!contains(github.event.head_commit.message, 'cd skip')"
