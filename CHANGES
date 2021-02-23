@@ -1,5 +1,8 @@
 [0.0.5]
-- Update libGDX to 1.9.15-SNAPSHOT
+*Release to switch from Bintray/jCenter to Sonatype/Maven Central*
+
+- Runtime performance improvements
+- Update libGDX to 1.9.14
 - Update Ashley to 1.7.4
 
 [0.0.4]
