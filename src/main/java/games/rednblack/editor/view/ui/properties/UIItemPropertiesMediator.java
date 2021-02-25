@@ -19,6 +19,8 @@
 package games.rednblack.editor.view.ui.properties;
 
 import com.badlogic.ashley.core.Entity;
+import games.rednblack.editor.renderer.components.MainItemComponent;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.view.stage.Sandbox;
 import org.puremvc.java.interfaces.INotification;
@@ -34,6 +36,8 @@ public abstract class UIItemPropertiesMediator<T extends Entity, V extends UIAbs
 
     @Override
     public void handleNotification(INotification notification) {
+        if (!validReference())
+            return;
 
         if(notification.getName().equals(viewComponent.getUpdateEventName())) {
             if(!lockUpdates) {
@@ -54,5 +58,12 @@ public abstract class UIItemPropertiesMediator<T extends Entity, V extends UIAbs
 
     protected void afterItemDataModified() {
 
+    }
+
+    private boolean validReference() {
+        return observableReference != null
+                && !observableReference.isScheduledForRemoval()
+                && !observableReference.isRemoving()
+                && ComponentRetriever.get(observableReference, MainItemComponent.class) != null;
     }
 }

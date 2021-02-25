@@ -85,7 +85,6 @@ public class UISpriteAnimationItemPropertiesMediator extends UIItemPropertiesMed
                 viewComponent.getSelectedAnimation(),
                 viewComponent.getPlayMode());
 
-        if (ComponentRetriever.get(observableReference, MainItemComponent.class) != null)
             facade.sendNotification(MsgAPI.ACTION_UPDATE_SPRITE_ANIMATION_DATA, payload);
     }
 }
