@@ -46,7 +46,6 @@ public class Main {
         config.setResizable(false);
         config.setDecorated(false);
         config.setInitialVisible(false);
-        config.useVsync(false);
         config.setIdleFPS(60);
         config.setForegroundFPS(60);
         config.setTitle("HyperLap2D");

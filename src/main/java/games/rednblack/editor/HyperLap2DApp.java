@@ -41,7 +41,6 @@ public class HyperLap2DApp extends ApplicationAdapter {
         config2.setTitle("HyperLap2D");
         config2.setResizable(false);
         config2.setDecorated(false);
-        config2.useVsync(false);
         config2.setIdleFPS(60);
         config2.setForegroundFPS(60);
         config2.setWindowIcon("hyperlap_icon_96.png");
@@ -82,7 +81,6 @@ public class HyperLap2DApp extends ApplicationAdapter {
         config2.setTitle("HyperLap2D");
         config2.setResizable(false);
         config2.setDecorated(false);
-        config2.useVsync(false);
         config2.setIdleFPS(60);
         config2.setForegroundFPS(60);
         config2.setWindowIcon("hyperlap_icon_96.png");
