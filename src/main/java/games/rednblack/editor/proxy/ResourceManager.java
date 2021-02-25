@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
-import com.talosvfx.talos.runtime.ParticleEffectInstance;
 import com.talosvfx.talos.runtime.assets.AtlasAssetProvider;
 import com.talosvfx.talos.runtime.utils.ShaderDescriptor;
 import games.rednblack.editor.renderer.data.*;
@@ -250,12 +249,15 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     private void loadCurrentProjectSpriteAnimations(String path, String curResolution) {
         spriteAnimAtlases.clear();
-        FileHandle sourceDir = new FileHandle(path + curResolution + "/sprite-animations");
+        FileHandle sourceDir = new FileHandle(path + curResolution + File.separator + "sprite-animations");
         for (FileHandle entry : sourceDir.list()) {
             if (entry.file().isDirectory()) {
                 String animName = FilenameUtils.removeExtension(entry.file().getName());
+                FileHandle atlasFile = Gdx.files.internal(entry.file().getAbsolutePath() + File.separator + animName + ".atlas");
+                if (!atlasFile.exists())
+                    continue;
                 try {
-                    TextureAtlas atlas = new TextureAtlas(Gdx.files.internal(entry.file().getAbsolutePath() + File.separator + animName + ".atlas"));
+                    TextureAtlas atlas = new TextureAtlas(atlasFile);
                     spriteAnimAtlases.put(animName, atlas);
                 } catch (Exception e) {
                     e.printStackTrace();

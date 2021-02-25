@@ -162,14 +162,14 @@ public class ImportPanel extends UIDraggablePanel {
         pack();
     }
 
-    public void setImportingView(int type, boolean isMultiple) {
+    public void setImportingView(int type, int count) {
         mainTable.clear();
 
         errorLabel.getColor().a = 0;
         errorLabel.clearActions();
 
         String typeText = typeNames.get(type);
-        if(isMultiple) typeText+="'s";
+        if(count > 1) typeText+=" (" + count + ")";
 
         mainTable.add(new VisLabel("Currently importing: " + typeText)).left();
         mainTable.row().padBottom(5);
@@ -185,9 +185,6 @@ public class ImportPanel extends UIDraggablePanel {
         btnTable.add("").expand().right();
         btnTable.add(cancelBtn).width(50).padRight(5);
         btnTable.add(importBtn).width(50).right().padRight(3);
-
-        //mainTable.add(btnTable).fillX().padTop(5);
-        //mainTable.row().padBottom(5);
 
         pack();
 

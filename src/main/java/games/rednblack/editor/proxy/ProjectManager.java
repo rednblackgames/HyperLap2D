@@ -311,6 +311,7 @@ public class ProjectManager extends Proxy {
         ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
         File pack = new File(currentProjectPath + "/assets/" + resolutionManager.currentResolutionName + "/pack/pack.atlas");
         if (!pack.exists()) {
+            System.err.println("Main Pack not found! Trying to recovery...");
             resolutionManager.rePackProjectImagesForAllResolutionsSync();
         }
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);

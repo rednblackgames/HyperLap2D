@@ -65,9 +65,9 @@ public class AssetImporter {
         SettingsManager settingsManager = HyperLap2DFacade.getInstance().retrieveProxy(SettingsManager.NAME);
         settingsManager.setLastImportedPath(new FileHandle(paths[0]).parent().path());
 
-        boolean isMultiple = paths.length > 1 && type != ImportUtils.TYPE_ANIMATION_PNG_SEQUENCE;
+        int count = (type != ImportUtils.TYPE_ANIMATION_PNG_SEQUENCE) ? paths.length : 1;
 
-        viewComponent.setImportingView(type, isMultiple);
+        viewComponent.setImportingView(type, count);
 
         startImport(type, skipRepack, progressHandler, paths);
     }
