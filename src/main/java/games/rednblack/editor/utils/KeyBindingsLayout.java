@@ -104,7 +104,7 @@ public class KeyBindingsLayout {
     public static void init() {
         SettingsManager settingsManager = HyperLap2DFacade.getInstance().retrieveProxy(SettingsManager.NAME);
         if (!settingsManager.editorConfigVO.keyBindingLayout.equals("default")) {
-            String mapPath = settingsManager.getKeyMapPath() + File.separator + settingsManager.editorConfigVO.keyBindingLayout + ".keymap";
+            String mapPath = HyperLap2DUtils.getKeyMapPath() + File.separator + settingsManager.editorConfigVO.keyBindingLayout + ".keymap";
             File mapFile = new File(mapPath);
             if (mapFile.exists()) {
                 Json json = new Json();

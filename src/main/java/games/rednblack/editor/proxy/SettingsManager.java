@@ -47,12 +47,12 @@ public class SettingsManager extends Proxy {
             String myDocPath = HyperLap2DUtils.MY_DOCUMENTS_PATH;
             defaultWorkspacePath = myDocPath + File.separator + DEFAULT_FOLDER;
             FileUtils.forceMkdir(new File(defaultWorkspacePath));
-            FileUtils.forceMkdir(new File(getKeyMapPath()));
+            FileUtils.forceMkdir(new File(HyperLap2DUtils.getKeyMapPath()));
 
             pluginDirs = new File[]{new File(Main.getJarContainingFolder(Main.class) + File.separator + "plugins"),
-                    new File(getRootPath() + File.separator + "plugins"),
+                    new File(HyperLap2DUtils.getRootPath() + File.separator + "plugins"),
                     new File(System.getProperty("user.dir") + File.separator + "plugins")};
-            cacheDir = new File(getRootPath() + File.separator + "cache");
+            cacheDir = new File(HyperLap2DUtils.getRootPath() + File.separator + "cache");
             FileUtils.forceMkdir(cacheDir);
         } catch (IOException e) {
             e.printStackTrace();
@@ -74,7 +74,7 @@ public class SettingsManager extends Proxy {
     }
 
     public String[] getKeyMappingFiles() {
-        File mappingDir = new File(getKeyMapPath());
+        File mappingDir = new File(HyperLap2DUtils.getKeyMapPath());
         String[] extensions = new String[]{"keymap"};
         List<File> files = (List<File>) FileUtils.listFiles(mappingDir, extensions, true);
         String[] maps = new String[files.size() + 1];
@@ -87,7 +87,7 @@ public class SettingsManager extends Proxy {
 
     private EditorConfigVO getEditorConfig() {
         EditorConfigVO editorConfig = new EditorConfigVO();
-        String configFilePath = getRootPath() + File.separator + "configs" + File.separator + EditorConfigVO.EDITOR_CONFIG_FILE;
+        String configFilePath = HyperLap2DUtils.getRootPath() + File.separator + "configs" + File.separator + EditorConfigVO.EDITOR_CONFIG_FILE;
         File configFile = new File(configFilePath);
         if (!configFile.exists()) {
             try {
@@ -108,21 +108,6 @@ public class SettingsManager extends Proxy {
         return editorConfig;
     }
 
-    public String getKeyMapPath() {
-        return getRootPath() + File.separator + "configs" + File.separator + "keymaps";
-    }
-
-    public String getRootPath() {
-        String appRootDirectory = System.getProperty("user.home");
-        if (SystemUtils.IS_OS_WINDOWS) {
-            appRootDirectory = System.getenv("AppData");
-        } else if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
-            appRootDirectory += "/Library/Application Support";
-        }
-
-        return appRootDirectory + File.separator + ".hyperlap2d";
-    }
-
     public void setLastOpenedPath(String path) {
         editorConfigVO.lastOpenedSystemPath = path;
         saveEditorConfig();
@@ -135,7 +120,7 @@ public class SettingsManager extends Proxy {
 
     public void saveEditorConfig() {
         try {
-            String configFilePath = getRootPath() + File.separator + "configs" + File.separator + EditorConfigVO.EDITOR_CONFIG_FILE;
+            String configFilePath = HyperLap2DUtils.getRootPath() + File.separator + "configs" + File.separator + EditorConfigVO.EDITOR_CONFIG_FILE;
             FileUtils.writeStringToFile(new File(configFilePath), editorConfigVO.constructJsonString(), "utf-8");
         } catch (IOException e) {
             e.printStackTrace();

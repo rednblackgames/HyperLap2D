@@ -46,6 +46,20 @@ public class HyperLap2DUtils {
     public static final FilenameFilter DT_FILTER = new SuffixFileFilter(".dt");
     public static final String MY_DOCUMENTS_PATH = getMyDocumentsLocation();
 
+    public static String getKeyMapPath() {
+        return getRootPath() + File.separator + "configs" + File.separator + "keymaps";
+    }
+
+    public static String getRootPath() {
+        String appRootDirectory = System.getProperty("user.home");
+        if (SystemUtils.IS_OS_WINDOWS) {
+            appRootDirectory = System.getenv("AppData");
+        } else if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
+            appRootDirectory += "/Library/Application Support";
+        }
+
+        return appRootDirectory + File.separator + ".hyperlap2d";
+    }
 
     private static String getMyDocumentsLocation() {
         String myDocuments = null;
