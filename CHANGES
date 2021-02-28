@@ -1,3 +1,11 @@
+[0.0.6]
+- Update libGDX to 1.9.15-SNAPSHOT
+
+= Editor =
+
+= Runtime =
+- Support rendering composites to FBO
+
 [0.0.5]
 *Release to switch from Bintray/jCenter to Sonatype/Maven Central*
 

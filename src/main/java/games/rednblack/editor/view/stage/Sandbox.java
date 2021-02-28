@@ -514,7 +514,7 @@ public class Sandbox {
     }
 
     public int getPixelPerWU() {
-        return (int) sceneLoader.getPixelsPerWU();
+        return sceneLoader.getPixelsPerWU();
     }
 
     public void dispose() {

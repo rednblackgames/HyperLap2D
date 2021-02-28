@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.CompositeTransformComponent;
+import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
@@ -29,6 +30,11 @@ public class UpdateCompositeDataCommand extends EntityModifyRevertibleCommand {
         transformComponent.renderToFBO = vo.renderToFBO;
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+
+        if (!transformComponent.renderToFBO) {
+            String tag = ComponentRetriever.get(entity, MainItemComponent.class).itemIdentifier;
+            sandbox.getSceneControl().sceneLoader.getFrameBufferManager().dispose(tag);
+        }
     }
 
     @Override
@@ -41,6 +47,11 @@ public class UpdateCompositeDataCommand extends EntityModifyRevertibleCommand {
         transformComponent.renderToFBO = backup.renderToFBO;
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+
+        if (!transformComponent.renderToFBO) {
+            String tag = ComponentRetriever.get(entity, MainItemComponent.class).itemIdentifier;
+            sandbox.getSceneControl().sceneLoader.getFrameBufferManager().dispose(tag);
+        }
     }
 
     public static Object payload(Entity entity, CompositeItemVO vo) {
