@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
@@ -29,22 +28,18 @@ import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
  */
 public class UICompositeItemProperties extends UIItemCollapsibleProperties {
 
-    private VisCheckBox scissorsEnabledCheckBox, automaticResizeCheckBox, renderToFBOCheckBox;
+    private final VisCheckBox scissorsEnabledCheckBox, automaticResizeCheckBox, renderToFBOCheckBox;
 
     public UICompositeItemProperties() {
         super("Composite");
-        scissorsEnabledCheckBox = StandardWidgetsFactory.createCheckBox();
-        automaticResizeCheckBox = StandardWidgetsFactory.createCheckBox();
-        renderToFBOCheckBox = StandardWidgetsFactory.createCheckBox();
+        scissorsEnabledCheckBox = StandardWidgetsFactory.createCheckBox("Scissors Enabled");
+        automaticResizeCheckBox = StandardWidgetsFactory.createCheckBox("Automatic Resize");
+        renderToFBOCheckBox = StandardWidgetsFactory.createCheckBox("Render to FBO");
 
-        mainTable.add(StandardWidgetsFactory.createLabel("Scissors Enabled", Align.right)).padRight(5).width(120).right();
         mainTable.add(scissorsEnabledCheckBox).left().row();
-
-        mainTable.add(StandardWidgetsFactory.createLabel("Automatic Resize", Align.right)).padRight(5).width(120).right();
         mainTable.add(automaticResizeCheckBox).left().row();
-
-        mainTable.add(StandardWidgetsFactory.createLabel("Render to FBO", Align.right)).padRight(5).width(120).right();
         mainTable.add(renderToFBOCheckBox).left();
+
         setListeners();
     }
 
@@ -62,6 +57,7 @@ public class UICompositeItemProperties extends UIItemCollapsibleProperties {
 
     public void setRenderToFBOEnabled(boolean renderToFBO) {
         renderToFBOCheckBox.setChecked(renderToFBO);
+        scissorsEnabledCheckBox.setDisabled(renderToFBO);
     }
 
     public boolean isAutomaticResizeIsEnabled(){
