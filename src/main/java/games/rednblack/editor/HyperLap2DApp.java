@@ -43,6 +43,7 @@ public class HyperLap2DApp extends ApplicationAdapter {
         config2.setDecorated(false);
         config2.setIdleFPS(60);
         config2.setForegroundFPS(60);
+        config2.useVsync(false);
         config2.setWindowIcon("hyperlap_icon_96.png");
 
         splashWindow = app.newWindow(new SplashScreenAdapter(), config2);
@@ -58,6 +59,7 @@ public class HyperLap2DApp extends ApplicationAdapter {
                 config.setWindowedMode((int) (windowWidth), (int) (windowHeight));
                 config.setIdleFPS(60);
                 config.setForegroundFPS(60);
+                config.useVsync(false);
                 config.setInitialVisible(false);
                 config.setMaximized(true);
                 config.setWindowIcon("hyperlap_icon_96.png");
@@ -83,6 +85,7 @@ public class HyperLap2DApp extends ApplicationAdapter {
         config2.setDecorated(false);
         config2.setIdleFPS(60);
         config2.setForegroundFPS(60);
+        config2.useVsync(false);
         config2.setWindowIcon("hyperlap_icon_96.png");
 
         SplashScreenAdapter adapter = new SplashScreenAdapter();

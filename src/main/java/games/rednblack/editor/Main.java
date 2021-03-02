@@ -48,6 +48,7 @@ public class Main {
         config.setInitialVisible(false);
         config.setIdleFPS(60);
         config.setForegroundFPS(60);
+        config.useVsync(false);
         config.setTitle("HyperLap2D");
         config.setWindowIcon("hyperlap_icon_96.png");
         config.setBackBufferConfig(8,8,8,8,16,8,16);

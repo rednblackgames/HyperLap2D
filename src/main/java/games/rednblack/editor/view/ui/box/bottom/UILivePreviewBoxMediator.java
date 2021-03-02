@@ -82,6 +82,8 @@ public class UILivePreviewBoxMediator extends Mediator<UILivePreviewBox> {
 		config.setTitle("HyperLap2D - Live Preview");
 		config.setResizable(false);
 		config.setIdleFPS(60);
+		config.setForegroundFPS(60);
+		config.useVsync(false);
 		config.setWindowIcon("hyperlap_icon_96.png");
 
 		Lwjgl3Application app = (Lwjgl3Application) Gdx.app;
