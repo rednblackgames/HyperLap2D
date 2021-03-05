@@ -57,6 +57,7 @@ public class UIActionsTabMediator extends UIResourcesTabMediator<UIActionsTab> {
             DraggableResource draggableResource = new DraggableResource(new LibraryActionResource(key));
             itemArray.add(draggableResource);
         }
+        itemArray.sort();
         viewComponent.setItems(itemArray);
     }
 }

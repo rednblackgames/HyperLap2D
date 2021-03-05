@@ -84,6 +84,7 @@ public class UILibraryItemsTabMediator extends UIResourcesTabMediator<UILibraryI
             draggableResource.initDragDrop();
             itemArray.add(draggableResource);
         }
+        itemArray.sort();
         viewComponent.setItems(itemArray);
     }
 }

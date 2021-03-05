@@ -65,7 +65,6 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
 
     @Override
     protected void initList(String searchText) {
-        Sandbox sandbox = Sandbox.getInstance();
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
         TextureAtlas atlas = resourceManager.getProjectAssetsList();
@@ -85,6 +84,7 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
             thumbnailBoxes.add(draggableResource);
         }
 
+        thumbnailBoxes.sort();
         viewComponent.setThumbnailBoxes(thumbnailBoxes);
     }
 }

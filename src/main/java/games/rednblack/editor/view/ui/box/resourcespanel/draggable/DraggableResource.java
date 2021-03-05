@@ -37,7 +37,7 @@ import java.util.function.BiFunction;
 /**
  * Created by azakhary on 7/3/2014.
  */
-public class DraggableResource extends DragAndDrop {
+public class DraggableResource extends DragAndDrop implements Comparable<DraggableResource> {
 
     protected final Sandbox sandbox;
     private final DraggableResourceView viewComponent;
@@ -110,5 +110,10 @@ public class DraggableResource extends DragAndDrop {
 
     public void setFactoryFunction(BiFunction<String, Vector2, Boolean> factoryFunction) {
         this.factoryFunction = factoryFunction;
+    }
+
+    @Override
+    public int compareTo(DraggableResource o) {
+        return viewComponent.getPayloadData().name.compareTo(o.viewComponent.getPayloadData().name);
     }
 }

@@ -2,6 +2,7 @@
 - Update libGDX to 1.9.15-SNAPSHOT
 
 = Editor =
+- Sort resources alphabetically
 
 = Runtime =
 - Support rendering composites to FBO
