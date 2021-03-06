@@ -15,8 +15,8 @@ public class TransformUtils {
     public static Matrix3 scaleRotMat(TransformComponent transformComponent) {
         float translationX = transformComponent.x + transformComponent.originX;
         float translationY = transformComponent.y + transformComponent.originY;
-        float scaleX = transformComponent.scaleX;
-        float scaleY = transformComponent.scaleY;
+        float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
+        float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
         float angle = transformComponent.rotation;
         tempMat.idt();
         tempMat.translate(translationX, translationY).rotate(angle).scale(scaleX, scaleY).translate(-translationX, -translationY);
@@ -32,8 +32,8 @@ public class TransformUtils {
     public static Matrix3 scalingMat(TransformComponent transformComponent) {
         float translationX = transformComponent.x + transformComponent.originX;
         float translationY = transformComponent.y + transformComponent.originY;
-        float scaleX = transformComponent.scaleX;
-        float scaleY = transformComponent.scaleY;
+        float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
+        float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
         tempMat.idt();
         tempMat.translate(translationX, translationY).scale(scaleX, scaleY).translate(-translationX, -translationY);
         return tempMat;

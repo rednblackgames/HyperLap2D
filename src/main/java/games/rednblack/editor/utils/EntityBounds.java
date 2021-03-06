@@ -67,8 +67,8 @@ public class EntityBounds extends Rectangle {
         DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
         x = transformComponent.x;
         y = transformComponent.y;
-        scaleX = transformComponent.scaleX;
-        scaleY = transformComponent.scaleY;
+        scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
+        scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
         width = dimensionsComponent.width;
         height = dimensionsComponent.height;
 
