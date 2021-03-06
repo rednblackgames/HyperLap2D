@@ -147,7 +147,8 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
 
         // external plugin mutators
         PluginManager pluginManager = facade.retrieveProxy(PluginManager.NAME);
-        pluginManager.dropDownActionSets(sandbox.getSelector().getCurrentSelection(), actionsSet);
+        if (pluginManager != null)
+            pluginManager.dropDownActionSets(sandbox.getSelector().getCurrentSelection(), actionsSet);
     }
 
     @Override
