@@ -1,11 +1,11 @@
 [0.0.6]
 - Update libGDX to 1.9.15-SNAPSHOT
 - Add flipX and flipY flag
-- Add Z-Index controls in `Items Tree`
-- Stability improvements
 
 = Editor =
 - Sort resources alphabetically
+- Add Z-Index controls in `Items Tree`
+- Stability improvements
 
 = Runtime =
 - Support rendering composites to FBO
