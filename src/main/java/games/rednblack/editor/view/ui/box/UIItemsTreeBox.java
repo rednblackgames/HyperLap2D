@@ -27,11 +27,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.kotcrab.vis.ui.widget.VisLabel;
-import com.kotcrab.vis.ui.widget.VisScrollPane;
-import com.kotcrab.vis.ui.widget.VisTable;
-import com.kotcrab.vis.ui.widget.VisTree;
+import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
@@ -39,6 +37,7 @@ import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -52,6 +51,8 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     private UIItemsTreeNode rootNode;
     private Set<Entity> lastSelection;
 
+    private final VisImageButton zUp, zDown;
+
     Sandbox sandbox;
 
     public UIItemsTreeBox() {
@@ -60,7 +61,31 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         facade = HyperLap2DFacade.getInstance();
         treeTable = new VisTable();
         treeTable.left();
+        zUp = StandardWidgetsFactory.createImageButton("arrow-button");
+        StandardWidgetsFactory.addTooltip(zUp, "Move Z-Index Up");
+        zDown = StandardWidgetsFactory.createImageButton("arrow-button");
+        zDown.setTransform(true);
+        zDown.setRotation(180);
+        zDown.setOrigin(zUp.getPrefWidth() / 2, zUp.getPrefHeight() / 2);
+        StandardWidgetsFactory.addTooltip(zDown, "Move Z-Index Down");
+
         createCollapsibleWidget(treeTable);
+
+        zUp.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                sandbox.itemControl.itemZIndexChange(sandbox.getSelector().getCurrentSelection(), true);
+                facade.sendNotification(MsgAPI.ACTION_Z_INDEX_CHANGED, sandbox.getSelector().getCurrentSelection());
+            }
+        });
+
+        zDown.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                sandbox.itemControl.itemZIndexChange(sandbox.getSelector().getCurrentSelection(), false);
+                facade.sendNotification(MsgAPI.ACTION_Z_INDEX_CHANGED, sandbox.getSelector().getCurrentSelection());
+            }
+        });
     }
 
     UIItemsTreeNode rootTreeNode;
@@ -72,7 +97,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         tree = new VisTree<>();
         VisScrollPane scroller = StandardWidgetsFactory.createScrollPane(tree);
         scroller.setFlickScroll(false);
-        treeTable.add(scroller).width(177).maxHeight(570);
+        treeTable.add(scroller).width(177).maxHeight(570).colspan(2);
         //
         rootTreeNode = addTreeRoot(rootScene, null);
         rootTreeNode.setExpanded(true);
@@ -82,6 +107,12 @@ public class UIItemsTreeBox extends UICollapsibleBox {
 
         if (lastSelection != null)
             setSelection(lastSelection);
+
+        treeTable.row().padTop(5);
+        treeTable.add(new Separator("tool")).colspan(2).padTop(2).padBottom(2).fill().expand().row();
+
+        treeTable.add(zUp).padLeft(zUp.getPrefWidth() + 10).left();
+        treeTable.add(zDown).padRight(zDown.getPrefWidth() + 10).right();
     }
 
     public void sortTree() {

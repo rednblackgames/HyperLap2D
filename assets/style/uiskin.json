@@ -476,6 +476,11 @@
       imageOver: icon-trash-over,
       imageUp: icon-trash
     },
+    arrow-button: {
+      imageDown: arrow-down,
+      imageOver: arrow-over,
+      imageUp: arrow
+    },
     image-button: {
       imageUp: image-up
     },
