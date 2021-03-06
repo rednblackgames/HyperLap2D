@@ -106,8 +106,8 @@ public class UIBasicItemProperties extends UIItemProperties {
         heightValue.setDisabled(true);
         scaleXValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
         scaleYValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
-        flipVertical = StandardWidgetsFactory.createCheckBox();
-        flipHorizontal = StandardWidgetsFactory.createCheckBox();
+        flipVertical = StandardWidgetsFactory.createCheckBox("Flip X");
+        flipHorizontal = StandardWidgetsFactory.createCheckBox("Flip Y");
         tintColorComponent = StandardWidgetsFactory.createTintButton();
         rotationValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
         customVarsButton = new VisTextButton("Custom Vars");
@@ -145,6 +145,9 @@ public class UIBasicItemProperties extends UIItemProperties {
         buttonsTable.row();
         buttonsTable.add(tagsButton).right().padTop(2);
         add(buttonsTable).height(45).left().top().padLeft(13);
+        row().padTop(5);
+        add(flipHorizontal);
+        add(flipVertical);
         row();
         addSeparator().padTop(9).padBottom(6).colspan(3);
         add(StandardWidgetsFactory.createLabel("Add additional components:", Align.left)).fillX().colspan(3);

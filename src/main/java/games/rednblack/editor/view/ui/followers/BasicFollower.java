@@ -75,6 +75,8 @@ public abstract class BasicFollower extends Group {
         setX( ( int ) ( position.x ) );
         setY( ( int ) ( position.y ) );
 
+        float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
+        float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
 
         if(dimensionsComponent.boundBox != null ) // if we have a composite item ...
         {   // .. we set the width to be the width of the AABB + the starting point of the AABB
@@ -87,18 +89,18 @@ public abstract class BasicFollower extends Group {
              *       ...........
              */
 
-            setWidth (pixelPerWU * (dimensionsComponent.boundBox.x + dimensionsComponent.boundBox.width) * transformComponent.scaleX / camera.zoom);
-            setHeight(pixelPerWU * (dimensionsComponent.boundBox.y + dimensionsComponent.boundBox.height) * transformComponent.scaleY / camera.zoom);
+            setWidth (pixelPerWU * (dimensionsComponent.boundBox.x + dimensionsComponent.boundBox.width) * scaleX / camera.zoom);
+            setHeight(pixelPerWU * (dimensionsComponent.boundBox.y + dimensionsComponent.boundBox.height) * scaleY / camera.zoom);
         }
         else {
-            setWidth ( pixelPerWU * dimensionsComponent.width * transformComponent.scaleX / camera.zoom );
-            setHeight( pixelPerWU * dimensionsComponent.height * transformComponent.scaleY / camera.zoom );
+            setWidth ( pixelPerWU * dimensionsComponent.width * scaleX / camera.zoom );
+            setHeight( pixelPerWU * dimensionsComponent.height * scaleY / camera.zoom );
         }
 
         Pools.free(position);
 
-        pointOriginX = pixelPerWU * transformComponent.originX * transformComponent.scaleX / camera.zoom;
-        pointOriginY = pixelPerWU * transformComponent.originY * transformComponent.scaleY / camera.zoom;
+        pointOriginX = pixelPerWU * transformComponent.originX * scaleX / camera.zoom;
+        pointOriginY = pixelPerWU * transformComponent.originY * scaleY / camera.zoom;
 
         setRotation(transformComponent.rotation);
 

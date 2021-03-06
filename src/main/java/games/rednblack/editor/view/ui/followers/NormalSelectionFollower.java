@@ -19,7 +19,6 @@
 package games.rednblack.editor.view.ui.followers;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -28,9 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import games.rednblack.editor.view.ui.widget.actors.basic.PixelDashedRectangle;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.VisUI;
-import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
-import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.editor.view.stage.tools.TransformTool;
 import games.rednblack.editor.view.ui.widget.EmptyTarget;
 import org.puremvc.java.interfaces.INotification;
@@ -120,14 +116,17 @@ public class NormalSelectionFollower extends BasicFollower {
         miniRects[L].setX(-w);
         miniRects[L].setY((int) (getHeight() / 2) - h);
 
-        miniRects[ROTATION_LT].setX(transformComponent.scaleX > 0 ? -w * 4 : -w);
-        miniRects[ROTATION_LT].setY(transformComponent.scaleY > 0 ? getHeight() - h : getHeight() - h * 4);
-        miniRects[ROTATION_RT].setX(transformComponent.scaleX > 0 ? getWidth() - w : getWidth() - w * 4);
-        miniRects[ROTATION_RT].setY(transformComponent.scaleY > 0 ? getHeight() - h : getHeight() - h * 4);
-        miniRects[ROTATION_RB].setX(transformComponent.scaleX > 0 ? getWidth() - w : getWidth() - w * 4);
-        miniRects[ROTATION_RB].setY(transformComponent.scaleY > 0 ? -h * 4 : -h);
-        miniRects[ROTATION_LB].setX(transformComponent.scaleX > 0 ? -w * 4 : -w);
-        miniRects[ROTATION_LB].setY(transformComponent.scaleY > 0 ? -h * 4 : -h);
+        float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
+        float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
+
+        miniRects[ROTATION_LT].setX(scaleX > 0 ? -w * 4 : -w);
+        miniRects[ROTATION_LT].setY(scaleY > 0 ? getHeight() - h : getHeight() - h * 4);
+        miniRects[ROTATION_RT].setX(scaleX > 0 ? getWidth() - w : getWidth() - w * 4);
+        miniRects[ROTATION_RT].setY(scaleY > 0 ? getHeight() - h : getHeight() - h * 4);
+        miniRects[ROTATION_RB].setX(scaleX > 0 ? getWidth() - w : getWidth() - w * 4);
+        miniRects[ROTATION_RB].setY(scaleY > 0 ? -h * 4 : -h);
+        miniRects[ROTATION_LB].setX(scaleX > 0 ? -w * 4 : -w);
+        miniRects[ROTATION_LB].setY(scaleY > 0 ? -h * 4 : -h);
 
         w = (int) (miniRects[ORIGIN].getWidth()/2);
         h = (int) (miniRects[ORIGIN].getHeight()/2);

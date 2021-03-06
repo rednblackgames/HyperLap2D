@@ -60,8 +60,11 @@ public class LightFollower extends BasicFollower {
 
         int pixelPerWU = sandbox.sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
 
-        setWidth ( pixelPerWU * dimensionsComponent.width * transformComponent.scaleX / camera.zoom );
-        setHeight( pixelPerWU * dimensionsComponent.height * transformComponent.scaleY / camera.zoom );
+        float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
+        float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
+
+        setWidth ( pixelPerWU * dimensionsComponent.width * scaleX / camera.zoom );
+        setHeight( pixelPerWU * dimensionsComponent.height * scaleY / camera.zoom );
 
         setX(getX() - getWidth() / 2f);
         setY(getY() - getHeight() / 2f);

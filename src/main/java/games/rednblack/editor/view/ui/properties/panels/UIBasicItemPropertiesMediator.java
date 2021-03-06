@@ -189,6 +189,8 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
         viewComponent.setScaleXValue(transformComponent.scaleX + "");
         viewComponent.setScaleYValue(transformComponent.scaleY + "");
         viewComponent.setTintColor(tintComponent.color);
+        viewComponent.setFlipH(transformComponent.flipX);
+        viewComponent.setFlipV(transformComponent.flipY);
 
         // non existent components
         Array<String> componentsToAddList = new Array<>();
@@ -225,8 +227,10 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
         }
 
         transformComponent.rotation = NumberUtils.toFloat(viewComponent.getRotationValue(), transformComponent.rotation);
-    	transformComponent.scaleX = (viewComponent.getFlipH() ? -1 : 1) * NumberUtils.toFloat(viewComponent.getScaleXValue(), transformComponent.scaleX);
-    	transformComponent.scaleY = (viewComponent.getFlipV() ? -1 : 1) * NumberUtils.toFloat(viewComponent.getScaleYValue(), transformComponent.scaleY);
+    	transformComponent.scaleX = NumberUtils.toFloat(viewComponent.getScaleXValue(), transformComponent.scaleX);
+    	transformComponent.scaleY = NumberUtils.toFloat(viewComponent.getScaleYValue(), transformComponent.scaleY);
+    	transformComponent.flipY = viewComponent.getFlipV();
+    	transformComponent.flipX = viewComponent.getFlipH();
         Color color = viewComponent.getTintColor();
         tintComponent.color.set(color);
 

@@ -23,8 +23,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.kotcrab.vis.ui.VisUI;
-import games.rednblack.editor.renderer.components.particle.ParticleComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 
 /**
@@ -60,8 +58,11 @@ public class ParticleFollower extends BasicFollower {
 
         int pixelPerWU = sandbox.sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
 
-        setWidth ( pixelPerWU * dimensionsComponent.width * transformComponent.scaleX / camera.zoom );
-        setHeight( pixelPerWU * dimensionsComponent.height * transformComponent.scaleY / camera.zoom );
+        float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
+        float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
+
+        setWidth ( pixelPerWU * dimensionsComponent.width * scaleX / camera.zoom );
+        setHeight( pixelPerWU * dimensionsComponent.height * scaleY / camera.zoom );
 
         setX(getX() - getWidth() / 2f);
         setY(getY() - getHeight() / 2f);
