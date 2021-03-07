@@ -36,6 +36,9 @@ public class CompositeStrategy extends AbstractTransformStrategy {
     private final Vector2 parentFinalPosition = new Vector2();
     private final Vector2 parentFinalSize = new Vector2();
 
+    private static final float[] tmp1 = new float[3];
+    private static final float[] tmp2 = new float[3];
+
     public void getInitialPositions(Entity entity) {
         getParentState(entity, parentInitialPosition, parentInitialSize);
         childrenInitialPositions.clear();
@@ -109,8 +112,8 @@ public class CompositeStrategy extends AbstractTransformStrategy {
         CompositeTransformComponent component = entity.getComponent(CompositeTransformComponent.class);
         TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
 
-        float[] horizontal = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation);
-        float[] vertical = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation + 90);
+        float[] horizontal = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation, tmp1);
+        float[] vertical = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation + 90, tmp2);
         float deltaW = horizontal[0] / transformComponent.scaleX;
         float deltaH = vertical[0] / transformComponent.scaleY;
 

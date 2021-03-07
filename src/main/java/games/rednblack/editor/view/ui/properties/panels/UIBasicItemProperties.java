@@ -66,8 +66,8 @@ public class UIBasicItemProperties extends UIItemProperties {
     private VisTextField heightValue;
     private VisTextField scaleXValue;
     private VisTextField scaleYValue;
-    private VisCheckBox flipVertical;
-    private VisCheckBox flipHorizontal;
+    private VisCheckBox flipY;
+    private VisCheckBox flipX;
     private TintButton tintColorComponent;
     private VisTextField rotationValue;
     private VisTextButton customVarsButton;
@@ -106,8 +106,8 @@ public class UIBasicItemProperties extends UIItemProperties {
         heightValue.setDisabled(true);
         scaleXValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
         scaleYValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
-        flipVertical = StandardWidgetsFactory.createCheckBox("Flip X");
-        flipHorizontal = StandardWidgetsFactory.createCheckBox("Flip Y");
+        flipY = StandardWidgetsFactory.createCheckBox("Flip Y");
+        flipX = StandardWidgetsFactory.createCheckBox("Flip X");
         tintColorComponent = StandardWidgetsFactory.createTintButton();
         rotationValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
         customVarsButton = new VisTextButton("Custom Vars");
@@ -146,8 +146,8 @@ public class UIBasicItemProperties extends UIItemProperties {
         buttonsTable.add(tagsButton).right().padTop(2);
         add(buttonsTable).height(45).left().top().padLeft(13);
         row().padTop(5);
-        add(flipHorizontal);
-        add(flipVertical);
+        add(flipX);
+        add(flipY);
         row();
         addSeparator().padTop(9).padBottom(6).colspan(3);
         add(StandardWidgetsFactory.createLabel("Add additional components:", Align.left)).fillX().colspan(3);
@@ -267,20 +267,20 @@ public class UIBasicItemProperties extends UIItemProperties {
         this.scaleYValue.setText(scaleYValue);
     }
 
-    public boolean getFlipV() {
-        return flipVertical.isChecked();
+    public boolean getFlipY() {
+        return flipY.isChecked();
     }
 
-    public void setFlipV(boolean flipVertical) {
-        this.flipVertical.setChecked(flipVertical);
+    public void setFlipY(boolean flipY) {
+        this.flipY.setChecked(flipY);
     }
 
-    public boolean getFlipH() {
-        return flipHorizontal.isChecked();
+    public boolean getFlipX() {
+        return flipX.isChecked();
     }
 
-    public void setFlipH(boolean flipHorizontal) {
-        this.flipHorizontal.setChecked(flipHorizontal);
+    public void setFlipX(boolean flipX) {
+        this.flipX.setChecked(flipX);
     }
 
     public Color getTintColor() {
@@ -304,8 +304,8 @@ public class UIBasicItemProperties extends UIItemProperties {
         heightValue.addListener(new KeyboardListener(getUpdateEventName()));
         scaleXValue.addListener(new KeyboardListener(getUpdateEventName()));
         scaleYValue.addListener(new KeyboardListener(getUpdateEventName()));
-        flipVertical.addListener(new CheckBoxChangeListener(getUpdateEventName()));
-        flipHorizontal.addListener(new CheckBoxChangeListener(getUpdateEventName()));
+        flipY.addListener(new CheckBoxChangeListener(getUpdateEventName()));
+        flipX.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         rotationValue.addListener(new KeyboardListener(getUpdateEventName()));
 
         tintColorComponent.addListener(new ClickListener() {

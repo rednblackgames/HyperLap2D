@@ -22,25 +22,28 @@ public abstract class AbstractTransformStrategy implements ITransformStrategy {
      * @param rotation    entity rotation. If you want to find vertical anchors drag value add 90 to {@param rotation}
      * @return array of three floats (new float[]{width/height, xComponent, yComponent};)
      */
-    float[] calculateSizeAndXyAmount(float mouseDeltaX, float mouseDeltaY, float rotation) {
+    float[] calculateSizeAndXyAmount(float mouseDeltaX, float mouseDeltaY, float rotation, float[] result) {
         float mouseDragAngle = MathUtils.atan2(mouseDeltaY, mouseDeltaX) * MathUtils.radDeg;
         float deltaA = rotation - mouseDragAngle;
         float c = (float) Math.sqrt(mouseDeltaX * mouseDeltaX + mouseDeltaY * mouseDeltaY);
         float a = c * MathUtils.cosDeg(deltaA);
         float xComponent = a * MathUtils.cosDeg(rotation);
         float yComponent = a * MathUtils.sinDeg(rotation);
-        return new float[]{a, xComponent, yComponent};
+
+        result[0] = a;
+        result[1] = xComponent;
+        result[2] = yComponent;
+        return  result;
     }
 
     void rotating(int anchor, TransformCommandBuilder transformCommandBuilder, Vector2 mousePointStage, float lastTransformAngle, float lastEntityAngle, TransformComponent transformComponent) {
         if (anchor >= NormalSelectionFollower.ROTATION_LT && anchor <= NormalSelectionFollower.ROTATION_LB) {
-            Vector2 originPoint = new Vector2(transformComponent.x + transformComponent.originX, transformComponent.y + transformComponent.originY);
-            mousePointStage.sub(originPoint);
+            mousePointStage.sub(transformComponent.x + transformComponent.originX, transformComponent.y + transformComponent.originY);
             float currentAngle = mousePointStage.angleDeg();
             float angleDiff = currentAngle - lastTransformAngle;
-            float newRotation = RoundUtils.round(lastEntityAngle + angleDiff, 2);
+            float newRotation = lastEntityAngle + angleDiff;
             transformComponent.rotation = newRotation;
-            transformCommandBuilder.setRotation(newRotation);
+            transformCommandBuilder.setRotation(RoundUtils.round(newRotation, 2));
         }
     }
 
@@ -49,13 +52,13 @@ public abstract class AbstractTransformStrategy implements ITransformStrategy {
             float newOriginX = transformComponent.originX;
             float newOriginY = transformComponent.originY;
 
-            newOriginX = RoundUtils.round(newOriginX + mouseDx, 2);
-            newOriginY = RoundUtils.round(newOriginY + mouseDy, 2);
+            newOriginX = newOriginX + mouseDx;
+            newOriginY = newOriginY + mouseDy;
 
             transformComponent.originX = newOriginX;
             transformComponent.originY = newOriginY;
 
-            transformCommandBuilder.setOrigin(newOriginX, newOriginY);
+            transformCommandBuilder.setOrigin(RoundUtils.round(newOriginX, 2), RoundUtils.round(newOriginY, 2));
         }
     }
 }
