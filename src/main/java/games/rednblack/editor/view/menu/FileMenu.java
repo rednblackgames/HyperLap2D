@@ -18,14 +18,14 @@ public class FileMenu extends H2DMenu {
     public static final String NEW_PROJECT = HyperLap2DMenuBar.prefix + ".NEW_PROJECT";
     public static final String OPEN_PROJECT = HyperLap2DMenuBar.prefix + ".OPEN_PROJECT";
     public static final String SAVE_PROJECT = HyperLap2DMenuBar.prefix + ".SAVE_PROJECT";
+    public static final String SAVE_PROJECT_AS = HyperLap2DMenuBar.prefix + ".SAVE_PROJECT_AS";
     public static final String RECENT_PROJECTS = HyperLap2DMenuBar.prefix + ".RECENT_PROJECTS";
     public static final String CLEAR_RECENT = HyperLap2DMenuBar.prefix + ".CLEAR_RECENT";
     public static final String EXPORT = HyperLap2DMenuBar.prefix + ".EXPORT";
     public static final String SETTINGS = HyperLap2DMenuBar.prefix + ".SETTINGS";
     public static final String EXIT = HyperLap2DMenuBar.prefix + ".EXIT";
 
-    private final MenuItem saveProject;
-    private final MenuItem export;
+    private final MenuItem saveProject, export, saveProjectAs;
 
     private final PopupMenu recentProjectsPopupMenu;
     private final Array<MenuItem> recentProjectsMenuItems;
@@ -33,9 +33,11 @@ public class FileMenu extends H2DMenu {
     public FileMenu() {
         super("File"); //⌘⇧⌥
         saveProject = new MenuItem("Save Project", new MenuItemListener(SAVE_PROJECT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.SAVE_PROJECT));
+        saveProjectAs = new MenuItem("Save Project As...", new MenuItemListener(SAVE_PROJECT_AS, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.SAVE_PROJECT_AS));
         addItem(new MenuItem("New Project...", new MenuItemListener(NEW_PROJECT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.NEW_PROJECT)));
         addItem(new MenuItem("Open Project...", new MenuItemListener(OPEN_PROJECT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.OPEN_PROJECT)));
         addItem(saveProject);
+        addItem(saveProjectAs);
         //
         addSeparator();
 
@@ -98,6 +100,7 @@ public class FileMenu extends H2DMenu {
     }
 
     public void setProjectOpen(boolean open) {
+        saveProjectAs.setDisabled(!open);
         saveProject.setDisabled(!open);
         export.setDisabled(!open);
     }

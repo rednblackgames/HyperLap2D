@@ -55,6 +55,7 @@ import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.lwjgl.util.tinyfd.TinyFileDialogs;
 import org.puremvc.java.patterns.proxy.Proxy;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -331,6 +332,31 @@ public class ProjectManager extends Proxy {
         saveCurrentProject();
         SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
         sceneDataManager.saveScene(vo);
+    }
+
+    public void saveProjectAs() {
+        facade.sendNotification(MsgAPI.SHOW_BLACK_OVERLAY);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            String selected = TinyFileDialogs.tinyfd_selectFolderDialog("Choose destination directory...", currentProjectPath);
+            if (selected != null) {
+                FileHandle fileHandle = new FileHandle(selected);
+                if (fileHandle.isDirectory() && fileHandle.list().length == 0) {
+                    FileHandle source = new FileHandle(currentProjectPath);
+                    try {
+                        FileUtils.copyDirectory(source.file(), fileHandle.file(), null);
+                        Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.SHOW_NOTIFICATION, "Project saved successfully"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.SHOW_NOTIFICATION, "ERROR: Unable to copy files!"));
+                    }
+                } else {
+                    Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.SHOW_NOTIFICATION, "ERROR: Please choose an empty directory!"));
+                }
+            }
+            Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.HIDE_BLACK_OVERLAY));
+        });
+        executor.shutdown();
     }
 
     private ArrayList<File> getScmlFileImagesList(FileHandle fileHandle) {

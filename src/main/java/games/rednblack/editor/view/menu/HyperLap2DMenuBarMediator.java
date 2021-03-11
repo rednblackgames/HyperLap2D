@@ -68,6 +68,7 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
                 FileMenu.NEW_PROJECT,
                 FileMenu.OPEN_PROJECT,
                 FileMenu.SAVE_PROJECT,
+                FileMenu.SAVE_PROJECT_AS,
                 FileMenu.EXPORT,
                 FileMenu.RECENT_PROJECTS,
                 FileMenu.CLEAR_RECENT,
@@ -158,9 +159,11 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
                 projectManager.saveCurrentProject(vo);
                 facade.sendNotification(MsgAPI.SHOW_NOTIFICATION, "Project saved successfully");
                 break;
+            case FileMenu.SAVE_PROJECT_AS:
+                projectManager.saveProjectAs();
+                break;
             case FileMenu.RECENT_PROJECTS:
                 recentProjectItemClicked(notification.getBody());
-                //showDialog("showImportDialog");
                 break;
             case FileMenu.CLEAR_RECENT:
                 clearRecent();

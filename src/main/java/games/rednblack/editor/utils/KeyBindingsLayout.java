@@ -57,11 +57,14 @@ public class KeyBindingsLayout {
     public static final int HIDE_GUI = 26;
     public static final int OPEN_CONSOLE = 27;
 
+    public static final int SAVE_PROJECT_AS = 28;
+
     private static final ObjectMap<Integer, KeyMapper> defaultMapper = new ObjectMap<>();
     static {
         defaultMapper.put(NEW_PROJECT, new KeyMapper(NEW_PROJECT, true, false, false, Input.Keys.N));
         defaultMapper.put(OPEN_PROJECT, new KeyMapper(OPEN_PROJECT, true, false, false, Input.Keys.O));
         defaultMapper.put(SAVE_PROJECT, new KeyMapper(SAVE_PROJECT, true, false, false, Input.Keys.S));
+        defaultMapper.put(SAVE_PROJECT_AS, new KeyMapper(SAVE_PROJECT_AS, true, false, true, Input.Keys.S));
         defaultMapper.put(EXPORT_PROJECT, new KeyMapper(EXPORT_PROJECT, true, false, false, Input.Keys.E));
         defaultMapper.put(IMPORT_TO_LIBRARY, new KeyMapper(IMPORT_TO_LIBRARY, true, false, false, Input.Keys.I));
 
