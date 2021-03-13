@@ -146,6 +146,10 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
         }
     }
 
+    public boolean isXYScaleLinked() {
+        return viewComponent.isXYScaleLinked();
+    }
+
     @Override
     protected void translateObservableDataToView(Entity entity) {
     	transformComponent = ComponentRetriever.get(entity, TransformComponent.class);

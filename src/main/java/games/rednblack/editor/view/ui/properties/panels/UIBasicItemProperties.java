@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -53,7 +54,7 @@ public class UIBasicItemProperties extends UIItemProperties {
     private Image itemTypeIcon;
     private VisLabel itemType;
 
-    private VisImageButton linkImage;
+    private VisImageButton linkImage, linkScaleButton;
     private VisLabel libraryLinkLabel;
 
     private VisTable linkageContainer;
@@ -85,7 +86,7 @@ public class UIBasicItemProperties extends UIItemProperties {
 
         libraryLinkLabel = StandardWidgetsFactory.createLabel("");
         libraryLinkLabel.setAlignment(Align.left);
-        linkImage = new VisImageButton("library-link-button");
+        linkImage = StandardWidgetsFactory.createImageButton("library-link-button");
         linkImage.setWidth(22);
 
         VisTable iconContainer = new VisTable();
@@ -126,7 +127,7 @@ public class UIBasicItemProperties extends UIItemProperties {
         row();
         addSeparator().padTop(5).padBottom(6).colspan(3);
         add(StandardWidgetsFactory.createLabel("Identifier:", Align.left)).fillX();
-        add(idBox).width(151).right().height(21).colspan(2);
+        add(idBox).fillX().height(21).colspan(2);
         row();
         add(linkageContainer).colspan(3).right();
         row().padTop(2);
@@ -136,10 +137,11 @@ public class UIBasicItemProperties extends UIItemProperties {
         row().padTop(6);
         add(StandardWidgetsFactory.createLabel("Rotation:")).padRight(3).left();
         add(rotationValue).width(45).height(21).left().padLeft(13);
-        add(getTintTable()).width(45).height(21).right().padLeft(10);
+        add(getTintTable()).fillX();
         row().padTop(6);
         add(StandardWidgetsFactory.createLabel("Scale:")).padRight(3).left().top();
-        add(getAsTable("X:", scaleXValue, "Y:", scaleYValue)).left();
+        linkScaleButton = StandardWidgetsFactory.createImageButton("library-link-button");
+        add(getAsTable("X:", scaleXValue, "Y:", scaleYValue, linkScaleButton)).left();
         VisTable buttonsTable = new VisTable();
         buttonsTable.add(customVarsButton);
         buttonsTable.row();
@@ -174,16 +176,27 @@ public class UIBasicItemProperties extends UIItemProperties {
 
     private Table getTintTable() {
         VisTable tintTable = new VisTable();
-        tintTable.add(StandardWidgetsFactory.createLabel("Tint:")).padRight(3);
-        tintTable.add(tintColorComponent).padRight(3);
+        tintTable.add(StandardWidgetsFactory.createLabel("Tint:")).growX().padRight(3);
+        tintTable.add(tintColorComponent).width(45).right();
         return tintTable;
     }
 
     private Table getAsTable(String text1, Actor actor1, String text2, Actor actor2) {
+        return getAsTable(text1, actor1, text2, actor2, null);
+    }
+
+    private Table getAsTable(String text1, Actor actor1, String text2, Actor actor2, Actor link) {
         VisTable positionTable = new VisTable();
         positionTable.add(StandardWidgetsFactory.createLabel(text1)).right().padRight(3);
         positionTable.add(actor1).width(45).height(21);
-        positionTable.row().padTop(4);
+        if (link != null) {
+            positionTable.row();
+            positionTable.add();
+            positionTable.add(link);
+            positionTable.row();
+        } else {
+            positionTable.row().padTop(4);
+        }
         positionTable.add(StandardWidgetsFactory.createLabel(text2)).right().padRight(3);
         positionTable.add(actor2).width(45).height(21).left();
         return positionTable;
@@ -227,8 +240,6 @@ public class UIBasicItemProperties extends UIItemProperties {
     public void setYValue(String yValue) {
         this.yValue.setText(yValue);
     }
-
-    //private TextButton customVarsBtn;
 
     public String getWidthValue() {
         return widthValue.getText();
@@ -291,6 +302,10 @@ public class UIBasicItemProperties extends UIItemProperties {
         tintColorComponent.setColorValue(tintColor);
     }
 
+    public boolean isXYScaleLinked() {
+        return linkScaleButton.isChecked();
+    }
+
     @Override
     public String getPrefix() {
         return prefix;
@@ -303,7 +318,9 @@ public class UIBasicItemProperties extends UIItemProperties {
         widthValue.addListener(new KeyboardListener(getUpdateEventName()));
         heightValue.addListener(new KeyboardListener(getUpdateEventName()));
         scaleXValue.addListener(new KeyboardListener(getUpdateEventName()));
+        scaleXValue.addListener(new LinkedScaleChangeListener(scaleYValue));
         scaleYValue.addListener(new KeyboardListener(getUpdateEventName()));
+        scaleYValue.addListener(new LinkedScaleChangeListener(scaleXValue));
         flipY.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         flipX.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         rotationValue.addListener(new KeyboardListener(getUpdateEventName()));
@@ -325,5 +342,22 @@ public class UIBasicItemProperties extends UIItemProperties {
                 facade.sendNotification(LINKING_CHANGED, isLinked);
             }
         });
+    }
+
+    private final class LinkedScaleChangeListener extends ChangeListener {
+        private final VisTextField linkedField;
+
+        LinkedScaleChangeListener(VisTextField linkedField) {
+            this.linkedField = linkedField;
+        }
+
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+            if (isXYScaleLinked() && actor instanceof VisTextField) {
+                VisTextField field = (VisTextField) actor;
+                if (!field.getText().equals(linkedField.getText()))
+                    linkedField.setText(field.getText());
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
+import games.rednblack.editor.view.ui.properties.panels.UIBasicItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.CompositeTransformComponent;
@@ -17,6 +18,7 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
+import org.puremvc.java.patterns.facade.Facade;
 
 import java.util.*;
 
@@ -38,6 +40,8 @@ public class CompositeStrategy extends AbstractTransformStrategy {
 
     private static final float[] tmp1 = new float[3];
     private static final float[] tmp2 = new float[3];
+
+    private final Facade facade = HyperLap2DFacade.getInstance();
 
     public void getInitialPositions(Entity entity) {
         getParentState(entity, parentInitialPosition, parentInitialSize);
@@ -236,8 +240,10 @@ public class CompositeStrategy extends AbstractTransformStrategy {
     }
 
     private boolean isShiftPressed() {
+        UIBasicItemPropertiesMediator mediator = facade.retrieveMediator(UIBasicItemPropertiesMediator.NAME);
         return Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)
-                || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
+                || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)
+                || (mediator != null && mediator.isXYScaleLinked());
     }
 
     private void move(Entity node, float x, float y) {
