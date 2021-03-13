@@ -30,7 +30,7 @@ public class UIImageItemProperties extends UIItemCollapsibleProperties {
         mainTable.add(spriteTypeBox).left().width(90).padRight(5);
         mainTable.row().padTop(5);
 
-        collapse();
+        collapse(header);
 
         renderModeBox.addListener(new SelectBoxChangeListener(getUpdateEventName()));
         spriteTypeBox.addListener(new SelectBoxChangeListener(getUpdateEventName()));
