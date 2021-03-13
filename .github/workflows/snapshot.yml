@@ -34,6 +34,7 @@ jobs:
         name: HyperLap2D-SNAPSHOT.deb
         path: HyperLap2D-SNAPSHOT.deb
     - name: Publish SNAPSHOT artifacts
+      if: "!contains(github.event.head_commit.message, 'editor only')"
       env:
         NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
         NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
