@@ -229,6 +229,13 @@ public class UIItemsTreeBox extends UICollapsibleBox {
             Selection<UIItemsTreeNode> selection = tree.getSelection();
             selection.remove(rootNode);
             facade.sendNotification(ITEMS_SELECTED, selection);
+            if (selection.size() == 1 && getTapCount() == 2) {
+                UIItemsTreeValue selected = selection.first().getValue();
+                Entity item = EntityUtils.getByUniqueId(selected.entityId);
+                if (EntityUtils.getType(item) == EntityFactory.COMPOSITE_TYPE) {
+                    HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, item);
+                }
+            }
         }
     }
 
