@@ -21,6 +21,7 @@ package games.rednblack.editor;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.*;
@@ -51,6 +52,8 @@ public class Main {
         config.useVsync(false);
         config.setTitle("HyperLap2D");
         config.setWindowIcon("hyperlap_icon_96.png");
+        ShaderProgram.prependFragmentCode = "#version 100\n";
+        ShaderProgram.prependVertexCode = "#version 100\n";
         config.useOpenGL3(true, 3, 2);
         config.setBackBufferConfig(8,8,8,8,16,8,16);
 
