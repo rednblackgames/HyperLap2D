@@ -51,6 +51,7 @@ public class Main {
         config.useVsync(false);
         config.setTitle("HyperLap2D");
         config.setWindowIcon("hyperlap_icon_96.png");
+        config.useOpenGL3(true, 3, 2);
         config.setBackBufferConfig(8,8,8,8,16,8,16);
 
         Thread.currentThread().setUncaughtExceptionHandler(new CustomExceptionHandler());

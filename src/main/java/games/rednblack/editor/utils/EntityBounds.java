@@ -72,7 +72,7 @@ public class EntityBounds extends Rectangle {
         width = dimensionsComponent.width;
         height = dimensionsComponent.height;
 
-        if (entity.getComponent(LightObjectComponent.class) != null) {
+        if (ComponentRetriever.get(entity, LightObjectComponent.class) != null) {
             x += dimensionsComponent.boundBox.x;
             y += dimensionsComponent.boundBox.y;
             scaleX = 1;

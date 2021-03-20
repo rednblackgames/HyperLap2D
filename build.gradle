@@ -10,7 +10,7 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'org.beryx.runtime' version '1.11.2'
+    id 'org.beryx.runtime' version '1.12.2'
 }
 
 group 'games.rednblack'
