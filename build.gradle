@@ -72,7 +72,6 @@ jpackage.dependsOn dist
 dependencies {
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-    implementation "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion"
     implementation ("com.badlogicgames.gdx:gdx-tools:$gdxVersion") {
         exclude group: 'com.badlogicgames.gdx', module: 'gdx-backend-lwjgl'
     }
