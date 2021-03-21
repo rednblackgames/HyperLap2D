@@ -27,6 +27,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
+import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.IItemCommand;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.plugins.H2DPlugin;
@@ -249,9 +250,11 @@ public class PluginManager extends Proxy implements PluginAPI {
         actionsSet.keySet().forEach(key -> actions.add(key));
         uiDropDownMenu.setActionList(actions);
 
-        Vector2 coordinates = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
-        uiDropDownMenu.setX(coordinates.x);
-        uiDropDownMenu.setY(coordinates.y - uiDropDownMenu.getHeight());
+        Sandbox sandbox = Sandbox.getInstance();
+        UIStage uiStage = sandbox.getUIStage();
+
+        uiDropDownMenu.setX(sandbox.getInputX());
+        uiDropDownMenu.setY(uiStage.getHeight() - sandbox.getInputY() - uiDropDownMenu.getHeight());
         getUIStage().addActor(uiDropDownMenu);
 
         UIDropDownMenuMediator dropDownMenuMediator = facade.retrieveMediator(UIDropDownMenuMediator.NAME);

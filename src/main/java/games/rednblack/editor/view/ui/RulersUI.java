@@ -102,7 +102,7 @@ public class RulersUI extends Actor {
 
                 Circle touchCircle = tmpCircle;
                 touchCircle.radius = 5;
-                touchCircle.setPosition(x - Gdx.graphics.getWidth() / 2f, y - Gdx.graphics.getHeight() / 2f);
+                touchCircle.setPosition(x - getStage().getWidth() / 2f, y - getStage().getHeight() / 2f);
 
                 isTouchingDownRuler = false;
                 if (verticalRect.contains(touchCircle.x, touchCircle.y)) {
@@ -137,7 +137,7 @@ public class RulersUI extends Actor {
 
                 //Changes the dragging guide's position to the world position
                 if (draggingGuide != null) {
-                    Vector2 worldCoords = hereToWorld(tmp.set(x - Gdx.graphics.getWidth() / 2f, y - Gdx.graphics.getHeight() / 2f));
+                    Vector2 worldCoords = hereToWorld(tmp.set(x - getStage().getWidth() / 2f, y - getStage().getHeight() / 2f));
                     if (draggingGuide.isVertical) {
                         draggingGuide.pos = worldCoords.x;
                         if (!isShowingPixels)
@@ -161,8 +161,8 @@ public class RulersUI extends Actor {
                 }
 
                 if (draggingGuide != null) {
-                    if ((draggingGuide.isVertical && x - Gdx.graphics.getWidth() / 2f < verticalRect.x + verticalRect.getWidth()) ||
-                            (!draggingGuide.isVertical && y - Gdx.graphics.getHeight() / 2f > horizontalRect.y)) {
+                    if ((draggingGuide.isVertical && x - getStage().getWidth() / 2f < verticalRect.x + verticalRect.getWidth()) ||
+                            (!draggingGuide.isVertical && y - getStage().getHeight() / 2f > horizontalRect.y)) {
                         guides.removeValue(draggingGuide, true);
                     } else {
                         if (button == Input.Buttons.RIGHT) {
@@ -190,8 +190,8 @@ public class RulersUI extends Actor {
 
         super.act(delta);
 
-        horizontalRect.set(-Gdx.graphics.getWidth() / 2f + leftOffset, Gdx.graphics.getHeight() / 2f - rulerBoxSize - topOffset, Gdx.graphics.getWidth() - leftOffset, rulerBoxSize);
-        verticalRect.set(-Gdx.graphics.getWidth() / 2f + leftOffset, -Gdx.graphics.getHeight() / 2f, rulerBoxSize, Gdx.graphics.getHeight() - topOffset);
+        horizontalRect.set(-getStage().getWidth() / 2f + leftOffset, getStage().getHeight() / 2f - rulerBoxSize - topOffset, getStage().getWidth() - leftOffset, rulerBoxSize);
+        verticalRect.set(-getStage().getWidth() / 2f + leftOffset, -getStage().getHeight() / 2f, rulerBoxSize, getStage().getHeight() - topOffset);
 
         //calculating sizes
         viewMeasurableWidth = Sandbox.getInstance().getViewport().getWorldWidth() * Sandbox.getInstance().getCamera().zoom;
@@ -202,7 +202,7 @@ public class RulersUI extends Actor {
             viewMeasurableHeight = viewMeasurableHeight * Sandbox.getInstance().getPixelPerWU();
         }
 
-        gridMeasureToDisplayScale = Gdx.graphics.getWidth() / viewMeasurableWidth;
+        gridMeasureToDisplayScale = getStage().getWidth() / viewMeasurableWidth;
 
         gridMeasuringSize = viewMeasurableWidth / separatorsCount;
         if (gridMeasuringSize <= 10) {
@@ -223,15 +223,15 @@ public class RulersUI extends Actor {
 
     private Vector2 worldToHere(Vector2 tmp) {
         tmp = Sandbox.getInstance().worldToScreen(tmp);
-        tmp.x -= Gdx.graphics.getWidth() / 2f;
-        tmp.y -= Gdx.graphics.getHeight() / 2f;
+        tmp.x -= getStage().getWidth() / 2f;
+        tmp.y -= getStage().getHeight() / 2f;
 
         return tmp;
     }
 
     private Vector2 hereToWorld(Vector2 tmp) {
-        tmp.x += Gdx.graphics.getWidth() / 2f;
-        tmp.y += Gdx.graphics.getHeight() / 2f;
+        tmp.x += getStage().getWidth() / 2f;
+        tmp.y += getStage().getHeight() / 2f;
         tmp = Sandbox.getInstance().screenToWorld(tmp);
 
         return tmp;
@@ -316,7 +316,7 @@ public class RulersUI extends Actor {
             shapeRenderer.line(gridCurrPoint.x + gridSize / 2, horizontalRect.y, gridCurrPoint.x + gridSize / 2, horizontalRect.y + rulerBoxSize / 2f);
 
             VisLabel label = Pools.obtain(VisLabel.class);
-            label.setPosition(Gdx.graphics.getWidth() / 2f + gridCurrPoint.x + 2, Gdx.graphics.getHeight() / 2f + horizontalRect.y + 7);
+            label.setPosition(getStage().getWidth() / 2f + gridCurrPoint.x + 2, getStage().getHeight() / 2f + horizontalRect.y + 7);
             label.setColor(TEXT_COLOR);
             label.setText((int) Math.abs(worldStartPointCpy.x + iterator * gridMeasuringSize) + postFix);
             labels.add(label);
@@ -341,7 +341,7 @@ public class RulersUI extends Actor {
 
             label.setText(lblText);
             label.setWrap(true);
-            label.setPosition(Gdx.graphics.getWidth() / 2f + verticalRect.x + 3, Gdx.graphics.getHeight() / 2f + gridCurrPoint.y - label.getPrefHeight() / 2);
+            label.setPosition(getStage().getWidth() / 2f + verticalRect.x + 3, getStage().getHeight() / 2f + gridCurrPoint.y - label.getPrefHeight() / 2);
             labels.add(label);
 
             gridCurrPoint.y += gridSize;
@@ -366,12 +366,12 @@ public class RulersUI extends Actor {
             if (guide.isVertical) {
                 Vector2 localCoords = worldToHere(tmp1.set(guide.pos, 0));
                 if (localCoords.x > verticalRect.x + verticalRect.width) {
-                    shapeRenderer.line(localCoords.x, -Gdx.graphics.getHeight() / 2f, localCoords.x, horizontalRect.y);
+                    shapeRenderer.line(localCoords.x, -getStage().getHeight() / 2f, localCoords.x, horizontalRect.y);
                 }
             } else {
                 Vector2 localCoords = worldToHere(tmp1.set(0, guide.pos));
                 if (localCoords.y < horizontalRect.y) {
-                    shapeRenderer.line(verticalRect.x + verticalRect.getWidth(), localCoords.y, Gdx.graphics.getWidth(), localCoords.y);
+                    shapeRenderer.line(verticalRect.x + verticalRect.getWidth(), localCoords.y, getStage().getWidth(), localCoords.y);
                 }
             }
         }
@@ -402,7 +402,7 @@ public class RulersUI extends Actor {
                 pos = (float) (Math.round(pos * 100) / 100);
 
             guidePosLbl.setText(axis + ": " + positionAsString + postfix);
-            guidePosLbl.setPosition(Gdx.input.getX() + 15, Gdx.graphics.getHeight() - Gdx.input.getY() + 15);
+            guidePosLbl.setPosition(Sandbox.getInstance().getInputX(15), getStage().getHeight() - Sandbox.getInstance().getInputY(15));
             guidePosLbl.draw(batch, parentAlpha);
         }
     }
@@ -423,7 +423,7 @@ public class RulersUI extends Actor {
 
     @Override
     public Actor hit(float x, float y, boolean touchable) {
-        if (verticalRect.contains(x - Gdx.graphics.getWidth() / 2f, y - Gdx.graphics.getHeight() / 2f) || horizontalRect.contains(x - Gdx.graphics.getWidth() / 2f, y - Gdx.graphics.getHeight() / 2f)) {
+        if (verticalRect.contains(x - getStage().getWidth() / 2f, y - getStage().getHeight() / 2f) || horizontalRect.contains(x - getStage().getWidth() / 2f, y - getStage().getHeight() / 2f)) {
             return this;
         }
 
@@ -436,7 +436,7 @@ public class RulersUI extends Actor {
     }
 
     public Guide guideCollision(float x, float y) {
-        Vector2 point = tmp1.set(x - Gdx.graphics.getWidth() / 2f, y - Gdx.graphics.getHeight() / 2f);
+        Vector2 point = tmp1.set(x - getStage().getWidth() / 2f, y - getStage().getHeight() / 2f);
         point = hereToWorld(point);
 
         Circle touchCircle = tmpCircle;

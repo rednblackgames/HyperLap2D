@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui.widget.actors;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -17,6 +16,7 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.ModifyStickyNoteCommand;
 import games.rednblack.editor.renderer.data.StickyNoteVO;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.H2DPopupMenu;
@@ -346,6 +346,9 @@ public class StickyNoteActor extends VisWindow {
                 });
         popupMenu.addItem(changeColor);
 
-        popupMenu.showMenu(Sandbox.getInstance().getUIStage(), Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+        Sandbox sandbox = Sandbox.getInstance();
+        UIStage uiStage = sandbox.getUIStage();
+
+        popupMenu.showMenu(Sandbox.getInstance().getUIStage(), sandbox.getInputX(), uiStage.getHeight() - sandbox.getInputY());
     }
 }

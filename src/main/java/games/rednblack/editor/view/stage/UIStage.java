@@ -46,6 +46,8 @@ public class UIStage extends Stage {
         super(new ScreenViewport(), new CpuPolygonSpriteBatch());
 
         getViewport().getCamera().position.setZero();
+        ScreenViewport screenViewport = (ScreenViewport) getViewport();
+        screenViewport.setUnitsPerPixel(getUIScaleFactor());
 
         facade = HyperLap2DFacade.getInstance();
 
@@ -144,5 +146,9 @@ public class UIStage extends Stage {
     @Override
     public boolean keyDown(int keyCode) {
         return super.keyDown(keyCode);
+    }
+
+    public float getUIScaleFactor() {
+        return 1f;
     }
 }

@@ -18,9 +18,9 @@
 
 package games.rednblack.editor.view.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.stage.tools.PolygonTool;
 import games.rednblack.editor.view.stage.tools.TransformTool;
 import games.rednblack.h2d.common.MsgAPI;
@@ -212,10 +212,11 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
     }
 
     private void showPopup(Array<String> actionsSet, Object observable) {
-        Vector2 coordinates = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+        Sandbox sandbox = Sandbox.getInstance();
+        UIStage uiStage = sandbox.getUIStage();
 
         viewComponent.setActionList(actionsSet);
-        viewComponent.showMenu(sandbox.getUIStage(), coordinates.x, coordinates.y);
+        viewComponent.showMenu(sandbox.getUIStage(), sandbox.getInputX(), uiStage.getHeight() - sandbox.getInputY());
 
         currentObservable = observable;
     }

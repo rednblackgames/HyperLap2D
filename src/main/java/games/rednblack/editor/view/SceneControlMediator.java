@@ -28,6 +28,7 @@ import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.data.SceneVO;
+import games.rednblack.editor.view.stage.Sandbox;
 
 /**
  * Mediates scene communication between editor and current runtime
@@ -74,8 +75,9 @@ public class SceneControlMediator {
 		ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
 		ScreenViewport viewport = new ScreenViewport();
-		// Yey to whoever made this method
-		viewport.setUnitsPerPixel(1f/resourceManager.getProjectVO().pixelToWorld);
+		float sandboxUpp = Sandbox.getInstance().getUIStage().getUIScaleFactor();
+		float upp = 1f / resourceManager.getProjectVO().pixelToWorld * sandboxUpp;
+		viewport.setUnitsPerPixel(upp);
 
 		currentSceneVo = sceneLoader.loadScene(sceneName, viewport);
 

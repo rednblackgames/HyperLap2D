@@ -64,6 +64,9 @@ public class SandboxMediator extends Mediator<Sandbox> {
     private HashMap<String, Tool> sandboxTools;
     private Tool currentSelectedTool;
 
+    private static final Vector3 temp = new Vector3();
+    private static final Vector2 tmp = new Vector2();
+
     public SandboxMediator() {
         super(NAME, Sandbox.getInstance());
     }
@@ -180,10 +183,10 @@ public class SandboxMediator extends Mediator<Sandbox> {
     }
 
     public Vector2 getStageCoordinates() {
-        Vector3 vec = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 1);
+        Vector3 vec = temp.set(Gdx.input.getX(), Gdx.input.getY(), 1);
         viewComponent.getCamera().unproject(vec);
 
-        return new Vector2(vec.x, vec.y);
+        return tmp.set(vec.x, vec.y);
     }
 
     public class SandboxItemEventListener extends EntityClickListener {

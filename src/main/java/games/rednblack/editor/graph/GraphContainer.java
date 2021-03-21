@@ -34,6 +34,7 @@ import games.rednblack.editor.renderer.data.GraphConnectionVO;
 import games.rednblack.editor.renderer.data.GraphGroupVO;
 import games.rednblack.editor.renderer.data.GraphNodeVO;
 import games.rednblack.editor.renderer.data.GraphVO;
+import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.editor.graph.ui.preview.NavigableCanvas;
 import com.kotcrab.vis.ui.VisUI;
@@ -288,7 +289,10 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
     }
 
     private void showPopupMenu(H2DPopupMenu popupMenu) {
-        popupMenu.showMenu(Sandbox.getInstance().getUIStage(), Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+        Sandbox sandbox = Sandbox.getInstance();
+        UIStage uiStage = sandbox.getUIStage();
+
+        popupMenu.showMenu(uiStage, sandbox.getInputX(), uiStage.getHeight() - sandbox.getInputY());
     }
 
     @Override
@@ -806,6 +810,9 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
             PolygonUtils.vector2Pool.free(center2);
         }
 
+        Sandbox sandbox = Sandbox.getInstance();
+        UIStage uiStage = sandbox.getUIStage();
+
         if (drawingFromConnector != null) {
             GraphBox<T> drawingFromNode = getGraphBoxById(drawingFromConnector.getNodeId());
             Window fromWindow = getBoxWindow(drawingFromConnector.getNodeId());
@@ -815,14 +822,15 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                 shapeDrawerColor.set(LINE_COLOR);
                 shapeDrawerColor.a *= parentAlpha;
                 shapeDrawer.setColor(shapeDrawerColor);
-                shapeDrawer.line(x + from.x, y + from.y, Gdx.input.getX() - parentWindow.getX(), Gdx.graphics.getHeight() - Gdx.input.getY() - parentWindow.getY(), LINE_WEIGHT);
+
+                shapeDrawer.line(x + from.x, y + from.y, sandbox.getInputX() - parentWindow.getX(), uiStage.getHeight() - sandbox.getInputY() - parentWindow.getY(), LINE_WEIGHT);
             } else {
                 GraphBoxOutputConnector<T> output = drawingFromNode.getOutputs().get(drawingFromConnector.getFieldId());
                 calculateConnection(from, fromWindow, output);
                 shapeDrawerColor.set(LINE_COLOR);
                 shapeDrawerColor.a *= parentAlpha;
                 shapeDrawer.setColor(shapeDrawerColor);
-                shapeDrawer.line(x + from.x, y + from.y, Gdx.input.getX() - parentWindow.getX(), Gdx.graphics.getHeight() - Gdx.input.getY() - parentWindow.getY(), LINE_WEIGHT);
+                shapeDrawer.line(x + from.x, y + from.y, sandbox.getInputX() - parentWindow.getX(), uiStage.getHeight() - sandbox.getInputY() - parentWindow.getY(), LINE_WEIGHT);
             }
         }
 

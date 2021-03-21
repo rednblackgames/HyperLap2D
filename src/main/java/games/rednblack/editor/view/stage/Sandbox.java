@@ -97,7 +97,8 @@ public class Sandbox {
     private SceneLoader sceneLoader;
     private Array<InputListener> listeners = new Array<>(1);
 
-    Vector3 temp = new Vector3();
+    private static final Vector3 temp = new Vector3();
+    private static final Vector2 tmp = new Vector2();
     private float timeToCameraZoomTarget, cameraZoomTarget, cameraZoomOrigin;
     private boolean moveCameraWithZoom = false;
 
@@ -442,46 +443,49 @@ public class Sandbox {
     }
 
     public Vector2 screenToWorld(Vector2 vector) {
-        // TODO: now unproject doesnot do well too. I am completely lost here. how hard is it to do screen to world, madafakas.
-        //getViewport().unproject(vector);
-        if (sceneControl.sceneLoader.getRm().getProjectVO() == null) {
-            return vector;
+        Viewport viewport = getViewport();
+        if (viewport != null) {
+            vector.scl(1f / getUIStage().getUIScaleFactor());
+            vector.y = Gdx.graphics.getHeight() - vector.y;
+            vector = viewport.unproject(vector);
         }
-        int pixelPerWU = sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
-        OrthographicCamera camera = Sandbox.getInstance().getCamera();
-        Viewport viewport = Sandbox.getInstance().getViewport();
-
-        vector.x = (vector.x - (viewport.getScreenWidth() / 2f - camera.position.x * pixelPerWU / camera.zoom)) * camera.zoom;
-        vector.y = (vector.y - (viewport.getScreenHeight() / 2f - camera.position.y * pixelPerWU / camera.zoom)) * camera.zoom;
-
-        vector.scl(1f / pixelPerWU);
-
 
         return vector;
     }
 
     public Vector2 worldToScreen(Vector2 vector) {
-        // TODO: WTF, project had to work instead I am back to this barbarian methods of unholy land!
-        //vector = getViewport().project(vector);
-        int pixelPerWU = sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
-        OrthographicCamera camera = Sandbox.getInstance().getCamera();
-        Viewport viewport = Sandbox.getInstance().getViewport();
-        vector.x = vector.x / camera.zoom + (viewport.getWorldWidth() / 2 - (camera.position.x) / camera.zoom);
-        vector.y = vector.y / camera.zoom + (viewport.getWorldHeight() / 2 - (camera.position.y) / camera.zoom);
-
-        vector.scl(pixelPerWU);
+        Viewport viewport = getViewport();
+        if (viewport != null) {
+            vector = viewport.project(vector);
+            vector.scl(getUIStage().getUIScaleFactor());
+        }
 
         return vector;
     }
 
     public Vector2 screenToWorld(float x, float y) {
-        return screenToWorld(new Vector2(x, y));
+        return screenToWorld(tmp.set(x, y));
     }
 
     public Vector2 worldToScreen(float x, float y) {
-        return worldToScreen(new Vector2(x, y));
+        return worldToScreen(tmp.set(x, y));
     }
 
+    public float getInputX() {
+        return getInputX(0);
+    }
+
+    public float getInputX(float offset) {
+        return (Gdx.input.getX() + offset) * getUIStage().getUIScaleFactor();
+    }
+
+    public float getInputY() {
+        return getInputY(0);
+    }
+
+    public float getInputY(float offset) {
+        return (Gdx.input.getY() + offset) * getUIStage().getUIScaleFactor();
+    }
 
     public static void copyToClipboard(Object data) {
         Object[] payload = new Object[2];
