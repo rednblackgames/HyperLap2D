@@ -79,6 +79,7 @@ public class UIBasicItemProperties extends UIItemProperties {
 
     public UIBasicItemProperties() {
         Validators.FloatValidator floatValidator = new Validators.FloatValidator();
+        Validators.GreaterThanValidator nonNegativeValidator = new Validators.GreaterThanValidator(0, true);
 
         itemType = new VisLabel("");
         itemType.setAlignment(Align.left);
@@ -101,9 +102,9 @@ public class UIBasicItemProperties extends UIItemProperties {
         idBox = StandardWidgetsFactory.createTextField();
         xValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
         yValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
-        widthValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        widthValue = StandardWidgetsFactory.createValidableTextField(nonNegativeValidator);
         widthValue.setDisabled(true);
-        heightValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        heightValue = StandardWidgetsFactory.createValidableTextField(nonNegativeValidator);
         heightValue.setDisabled(true);
         scaleXValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
         scaleYValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
