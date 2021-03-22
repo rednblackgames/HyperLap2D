@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.util.ToastManager;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.utils.CpuPolygonSpriteBatch;
 import games.rednblack.editor.view.ui.*;
 import games.rednblack.h2d.common.proxy.CursorManager;
@@ -45,11 +46,11 @@ public class UIStage extends Stage {
     public UIStage() {
         super(new ScreenViewport(), new CpuPolygonSpriteBatch());
 
+        facade = HyperLap2DFacade.getInstance();
+
         getViewport().getCamera().position.setZero();
         ScreenViewport screenViewport = (ScreenViewport) getViewport();
-        screenViewport.setUnitsPerPixel(getUIScaleFactor());
-
-        facade = HyperLap2DFacade.getInstance();
+        screenViewport.setUnitsPerPixel(getUIScaleDensity());
 
         //dummy target is basically the target of drop of items from resoruce panel
         dummyTarget = new Group();
@@ -148,7 +149,8 @@ public class UIStage extends Stage {
         return super.keyDown(keyCode);
     }
 
-    public float getUIScaleFactor() {
-        return 1f;
+    public float getUIScaleDensity() {
+        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+        return settingsManager.editorConfigVO.uiScaleDensity;
     }
 }

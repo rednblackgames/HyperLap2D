@@ -445,7 +445,7 @@ public class Sandbox {
     public Vector2 screenToWorld(Vector2 vector) {
         Viewport viewport = getViewport();
         if (viewport != null) {
-            vector.scl(1f / getUIStage().getUIScaleFactor());
+            vector.scl(1f / getUIStage().getUIScaleDensity());
             vector.y = Gdx.graphics.getHeight() - vector.y;
             vector = viewport.unproject(vector);
         }
@@ -457,7 +457,7 @@ public class Sandbox {
         Viewport viewport = getViewport();
         if (viewport != null) {
             vector = viewport.project(vector);
-            vector.scl(getUIStage().getUIScaleFactor());
+            vector.scl(getUIStage().getUIScaleDensity());
         }
 
         return vector;
@@ -476,7 +476,7 @@ public class Sandbox {
     }
 
     public float getInputX(float offset) {
-        return (Gdx.input.getX() + offset) * getUIStage().getUIScaleFactor();
+        return (Gdx.input.getX() + offset) * getUIStage().getUIScaleDensity();
     }
 
     public float getInputY() {
@@ -484,7 +484,7 @@ public class Sandbox {
     }
 
     public float getInputY(float offset) {
-        return (Gdx.input.getY() + offset) * getUIStage().getUIScaleFactor();
+        return (Gdx.input.getY() + offset) * getUIStage().getUIScaleDensity();
     }
 
     public static void copyToClipboard(Object data) {

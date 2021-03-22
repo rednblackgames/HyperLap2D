@@ -75,7 +75,7 @@ public class SceneControlMediator {
 		ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
 		ScreenViewport viewport = new ScreenViewport();
-		float sandboxUpp = Sandbox.getInstance().getUIStage().getUIScaleFactor();
+		float sandboxUpp = Sandbox.getInstance().getUIStage().getUIScaleDensity();
 		float upp = 1f / resourceManager.getProjectVO().pixelToWorld * sandboxUpp;
 		viewport.setUnitsPerPixel(upp);
 

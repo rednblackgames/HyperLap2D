@@ -10,16 +10,22 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.kotcrab.vis.ui.VisUI;
 import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
 import com.talosvfx.talos.runtime.assets.AtlasAssetProvider;
 import com.talosvfx.talos.runtime.utils.ShaderDescriptor;
 import games.rednblack.editor.renderer.data.*;
 
+import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -59,6 +65,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private TextureRegion defaultRegion;
 
     private ResolutionManager resolutionManager;
+    private SettingsManager settingsManager;
     private PixmapPacker fontPacker;
 
     public ResourceManager() {
@@ -70,6 +77,56 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         super.onRegister();
         facade = HyperLap2DFacade.getInstance();
         resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
+        settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+
+        WhitePixel.initializeShared();
+
+        PixmapPacker packer = new PixmapPacker(4096, 4096, Pixmap.Format.RGBA8888, 1, false, new PixmapPacker.SkylineStrategy());
+        packer.setTransparentColor(Color.WHITE);
+        packer.getTransparentColor().a = 0;
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf"));
+        FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/FiraCode-Regular.ttf"));
+
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.characters += "⌘⇧⌥\u25CF\u2022";
+        parameter.kerning = true;
+        parameter.renderCount = 3;
+        parameter.packer = packer;
+        parameter.minFilter = Texture.TextureFilter.Linear;
+        parameter.magFilter = Texture.TextureFilter.Linear;
+
+        parameter.size = 10;
+        BitmapFont smallFont = generator.generateFont(parameter);
+
+        parameter.size = 12;
+        BitmapFont defaultFont = generator.generateFont(parameter);
+
+        parameter.size = 14;
+        BitmapFont bigFont = generator.generateFont(parameter);
+        BitmapFont defaultMono = monoGenerator.generateFont(parameter);
+        defaultMono.setFixedWidthGlyphs(parameter.characters);
+
+        generator.dispose();
+        monoGenerator.dispose();
+
+        /* Create the ObjectMap and add the fonts to it */
+        ObjectMap<String, Object> fontMap = new ObjectMap<>();
+        fontMap.put("small-font", smallFont);
+        fontMap.put("default-font", defaultFont);
+        fontMap.put("big-font", bigFont);
+        fontMap.put("default-mono-font", defaultMono);
+
+        SkinLoader.SkinParameter skinParameter = new SkinLoader.SkinParameter(fontMap);
+
+        AssetManager assetManager = new AssetManager();
+        assetManager.load("style/uiskin.json", Skin.class, skinParameter);
+
+        assetManager.finishLoading();
+        Skin skin = assetManager.get("style/uiskin.json");
+
+        VisUI.load(skin);
+        VisUI.setDefaultTitleAlign(Align.center);
 
         // TODO: substitute this with "NO IMAGE" icon
         Pixmap pixmap = new Pixmap(50, 50, Pixmap.Format.RGBA8888);

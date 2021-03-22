@@ -20,20 +20,10 @@ package games.rednblack.editor;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.PixmapPacker;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.ObjectMap;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.SettingsManager;
@@ -55,7 +45,6 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
 
     private HyperLap2DFacade facade;
     private Object data;
-    private AssetManager assetManager;
 
     private final Notification renderNotification;
 
@@ -71,55 +60,11 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
 
     @Override
     public void create() {
-        WhitePixel.initializeShared();
-
-        PixmapPacker packer = new PixmapPacker(4096, 4096, Pixmap.Format.RGBA8888, 1, false, new PixmapPacker.SkylineStrategy());
-        packer.setTransparentColor(Color.WHITE);
-        packer.getTransparentColor().a = 0;
-
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf"));
-        FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/FiraCode-Regular.ttf"));
-
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.characters += "⌘⇧⌥\u25CF\u2022";
-        parameter.kerning = false;
-        parameter.renderCount = 3;
-        parameter.packer = packer;
-        parameter.hinting = FreeTypeFontGenerator.Hinting.Slight;
-
-        parameter.size = 10;
-        BitmapFont smallFont = generator.generateFont(parameter);
-        parameter.size = 12;
-        BitmapFont defaultFont = generator.generateFont(parameter);
-        parameter.size = 14;
-        BitmapFont bigFont = generator.generateFont(parameter);
-        BitmapFont defaultMono = monoGenerator.generateFont(parameter);
-        defaultMono.setFixedWidthGlyphs(parameter.characters);
-
-        generator.dispose();
-        monoGenerator.dispose();
-
-        /* Create the ObjectMap and add the fonts to it */
-        ObjectMap<String, Object> fontMap = new ObjectMap<>();
-        fontMap.put("small-font", smallFont);
-        fontMap.put("default-font", defaultFont);
-        fontMap.put("big-font", bigFont);
-        fontMap.put("default-mono-font", defaultMono);
-
-        SkinLoader.SkinParameter skinParameter = new SkinLoader.SkinParameter(fontMap);
-
-        assetManager = new AssetManager();
-        assetManager.load("style/uiskin.json", Skin.class, skinParameter);
-
         facade = HyperLap2DFacade.getInstance();
         facade.registerProxy(this);
     }
 
     private void startup() {
-        assetManager.finishLoading();
-        VisUI.load((Skin) assetManager.get("style/uiskin.json"));
-        VisUI.setDefaultTitleAlign(Align.center);
-
         facade.startup();
         sendNotification(MsgAPI.CREATE);
         facade.sendNotification(SplashScreenAdapter.CLOSE_SPLASH, "Initializing...");
