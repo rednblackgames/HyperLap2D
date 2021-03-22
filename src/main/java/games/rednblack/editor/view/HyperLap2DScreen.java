@@ -136,8 +136,9 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         uiStage = sandbox.getUIStage();
 
         if (isDrawingBgLogo) {
+            bgLogo.setScale(uiStage.getUIScaleDensity());
             uiStage.getRoot().addActorAt(0, bgLogo);
-            bgLogo.setPosition(screenSize.x / 2 - bgLogo.getWidth() / 2f, screenSize.y / 2 - bgLogo.getHeight() / 2f);
+            bgLogo.setPosition((uiStage.getWidth() - bgLogo.getWidth()) * 0.5f, (uiStage.getHeight() - bgLogo.getHeight()) * 0.5f);
         }
 
         InputMultiplexer multiplexer = new InputMultiplexer();
@@ -162,8 +163,8 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
         uiStage.resize(width, height);
         screenSize.set(width, height);
-        bgLogo.setPosition(screenSize.x / 2 - bgLogo.getWidth() / 2f, screenSize.y / 2 - bgLogo.getHeight() / 2f);
-        blackOverlay.setSize(screenSize.x, screenSize.y);
+        bgLogo.setPosition((uiStage.getWidth() - bgLogo.getWidth()) * 0.5f, (uiStage.getHeight() - bgLogo.getHeight()) * 0.5f);
+        blackOverlay.setSize(uiStage.getWidth(), uiStage.getHeight());
 
         updateCameraPosition();
     }
@@ -175,7 +176,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
         if (!isDrawingBgLogo) {
             bgLogo.getColor().a = 0;
-            bgLogo.setScale(.5f);
+            bgLogo.setScale(.5f * bgLogo.getScaleX());
             bgLogo.addAction(Actions.forever(
                     Actions.sequence(
                             Actions.alpha(.5f, 1f, Interpolation.slowFast),
