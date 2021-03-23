@@ -150,6 +150,9 @@ public class SceneDataManager extends Proxy {
     }
 
     private void clearCompositesForExport(CompositeVO compositeVO) {
+        if (compositeVO == null)
+            return;
+
         compositeVO.sStickyNotes.clear();
         for (CompositeItemVO c : compositeVO.sComposites) {
             clearCompositesForExport(c.composite);
