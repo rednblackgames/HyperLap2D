@@ -136,7 +136,6 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         uiStage = sandbox.getUIStage();
 
         if (isDrawingBgLogo) {
-            bgLogo.setScale(uiStage.getUIScaleDensity());
             uiStage.getRoot().addActorAt(0, bgLogo);
             bgLogo.setPosition((uiStage.getWidth() - bgLogo.getWidth()) * 0.5f, (uiStage.getHeight() - bgLogo.getHeight()) * 0.5f);
         }
@@ -163,10 +162,14 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
         uiStage.resize(width, height);
         screenSize.set(width, height);
-        bgLogo.setPosition((uiStage.getWidth() - bgLogo.getWidth()) * 0.5f, (uiStage.getHeight() - bgLogo.getHeight()) * 0.5f);
-        blackOverlay.setSize(uiStage.getWidth(), uiStage.getHeight());
 
         updateCameraPosition();
+    }
+
+    public void updateActorSize() {
+        bgLogo.setScale(uiStage.getUIScaleDensity());
+        bgLogo.setPosition((uiStage.getWidth() - bgLogo.getWidth()) * 0.5f, (uiStage.getHeight() - bgLogo.getHeight()) * 0.5f);
+        blackOverlay.setSize(uiStage.getWidth(), uiStage.getHeight());
     }
 
     public void showBlackOverlay() {

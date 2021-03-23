@@ -49,8 +49,7 @@ public class UIStage extends Stage {
         facade = HyperLap2DFacade.getInstance();
 
         getViewport().getCamera().position.setZero();
-        ScreenViewport screenViewport = (ScreenViewport) getViewport();
-        screenViewport.setUnitsPerPixel(getUIScaleDensity());
+        updateViewportDensity();
 
         //dummy target is basically the target of drop of items from resoruce panel
         dummyTarget = new Group();
@@ -147,6 +146,12 @@ public class UIStage extends Stage {
     @Override
     public boolean keyDown(int keyCode) {
         return super.keyDown(keyCode);
+    }
+
+    public void updateViewportDensity() {
+        ScreenViewport screenViewport = (ScreenViewport) getViewport();
+        screenViewport.setUnitsPerPixel(getUIScaleDensity());
+        screenViewport.update(screenViewport.getScreenWidth(), screenViewport.getScreenHeight(), true);
     }
 
     public float getUIScaleDensity() {

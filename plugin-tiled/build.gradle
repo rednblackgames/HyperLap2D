@@ -35,6 +35,7 @@ task packTextures {
     settings.legacyOutput = false
     settings.filterMin = Texture.TextureFilter.Linear
     settings.filterMag = Texture.TextureFilter.Linear
+    settings.duplicatePadding = true
     if (project.ext.has('pack')) {
         logger.info "Calling TexturePacker: " + pack
         TexturePacker.processIfModified(settings, file(pack[0]).absolutePath, file(pack[1]).absolutePath, pack[2] as String)

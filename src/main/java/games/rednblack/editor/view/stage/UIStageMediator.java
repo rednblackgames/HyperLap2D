@@ -46,7 +46,8 @@ public class UIStageMediator extends Mediator<UIStage> {
     @Override
     public String[] listNotificationInterests() {
         return new String[]{
-                MsgAPI.SHOW_ADD_LIBRARY_DIALOG
+                MsgAPI.SHOW_ADD_LIBRARY_DIALOG,
+                MsgAPI.SAVE_EDITOR_CONFIG
         };
     }
 
@@ -72,6 +73,9 @@ public class UIStageMediator extends Mediator<UIStage> {
 
                     }
                 });
+                break;
+            case MsgAPI.SAVE_EDITOR_CONFIG:
+                getViewComponent().updateViewportDensity();
                 break;
         }
     }

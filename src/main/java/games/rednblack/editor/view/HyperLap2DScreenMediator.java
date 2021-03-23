@@ -105,6 +105,7 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
             case MsgAPI.SAVE_EDITOR_CONFIG:
                 SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
                 settingsManager.saveEditorConfig();
+                getViewComponent().updateActorSize();
                 break;
             case MsgAPI.SHOW_BLACK_OVERLAY:
                 viewComponent.showBlackOverlay();
