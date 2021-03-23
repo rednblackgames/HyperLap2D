@@ -27,11 +27,17 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.tools.texturepacker.TexturePacker
+
 task packTextures {
+    TexturePacker.Settings settings = new TexturePacker.Settings()
+    settings.legacyOutput = false
+    settings.filterMin = Texture.TextureFilter.Linear
+    settings.filterMag = Texture.TextureFilter.Linear
     if (project.ext.has('pack')) {
         logger.info "Calling TexturePacker: " + pack
-        TexturePacker.processIfModified(file(pack[0]).absolutePath, file(pack[1]).absolutePath, pack[2] as String)
+        TexturePacker.processIfModified(settings, file(pack[0]).absolutePath, file(pack[1]).absolutePath, pack[2] as String)
     }
 }
 
