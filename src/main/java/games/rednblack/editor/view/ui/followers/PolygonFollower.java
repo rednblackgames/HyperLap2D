@@ -76,6 +76,7 @@ public class PolygonFollower extends SubFollower {
         super(entity);
         pixelsPerWU = Sandbox.getInstance().getPixelPerWU();
         setTouchable(Touchable.enabled);
+        update();
     }
 
     public void create() {
@@ -92,6 +93,7 @@ public class PolygonFollower extends SubFollower {
         }
     }
 
+    @Override
     public void update() {
         if(polygonComponent != null && polygonComponent.vertices != null) {
             computeOriginalPoints();
@@ -109,7 +111,6 @@ public class PolygonFollower extends SubFollower {
         if(polygonComponent == null) return;
 
         originalPoints = new ArrayList<>(Arrays.asList(PolygonUtils.mergeTouchingPolygonsToOne(polygonComponent.vertices)));
-
     }
 
     private void computeDrawPoints() {
@@ -128,6 +129,7 @@ public class PolygonFollower extends SubFollower {
 
             shapeRenderer.setProjectionMatrix(getStage().getCamera().combined);
             Matrix4 matrix = batch.getTransformMatrix();
+            matrix.translate(-parentFollower.polygonOffsetX, -parentFollower.polygonOffsetY, 0);
             matrix.scale(pixelsPerWU / runtimeCamera.zoom, pixelsPerWU / runtimeCamera.zoom, 1f);
             shapeRenderer.setTransformMatrix(matrix);
 
@@ -229,8 +231,8 @@ public class PolygonFollower extends SubFollower {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchDown(event, x, y, pointer, button);
-                x = x / pixelsPerWU;
-                y = y / pixelsPerWU;
+                x = x / pixelsPerWU + parentFollower.polygonOffsetX;
+                y = y / pixelsPerWU + parentFollower.polygonOffsetY;
                 if(button != Input.Buttons.LEFT) return true;
                 int anchorId = anchorHitTest(x, y);
 
@@ -252,8 +254,8 @@ public class PolygonFollower extends SubFollower {
                 float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
                 float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
 
-                x = x / pixelsPerWU;
-                y = y / pixelsPerWU;
+                x = x / pixelsPerWU + parentFollower.polygonOffsetX;
+                y = y / pixelsPerWU + parentFollower.polygonOffsetY;
                 int anchorId = draggingAnchorId;
                 if (anchorId >= 0) {
                     listener.anchorDragged(PolygonFollower.this, anchorId, x*runtimeCamera.zoom/scaleX, y*runtimeCamera.zoom/scaleY);
@@ -267,8 +269,8 @@ public class PolygonFollower extends SubFollower {
                 float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
                 float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
 
-                x = x / pixelsPerWU;
-                y = y / pixelsPerWU;
+                x = x / pixelsPerWU + parentFollower.polygonOffsetX;
+                y = y / pixelsPerWU + parentFollower.polygonOffsetY;
 
                 int anchorId = anchorHitTest(x, y);
 
@@ -283,8 +285,8 @@ public class PolygonFollower extends SubFollower {
 
             @Override
             public boolean mouseMoved(InputEvent event, float x, float y) {
-                x = x / pixelsPerWU;
-                y = y / pixelsPerWU;
+                x = x / pixelsPerWU + parentFollower.polygonOffsetX;
+                y = y / pixelsPerWU + parentFollower.polygonOffsetY;
                 int anchorId = anchorHitTest(x, y);
                 lineIndex = vertexHitTest(x, y);
                 if(anchorId >= 0) {
@@ -303,8 +305,8 @@ public class PolygonFollower extends SubFollower {
     public Actor hit (float x, float y, boolean touchable) {
         if(originalPoints == null || originalPoints.size() == 0) return null;
 
-        x = x / pixelsPerWU;
-        y = y / pixelsPerWU;
+        x = x / pixelsPerWU + parentFollower.polygonOffsetX;
+        y = y / pixelsPerWU + parentFollower.polygonOffsetY;
 
         int anchorId = anchorHitTest(x, y);
         if(anchorId > -1) {

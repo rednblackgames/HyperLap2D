@@ -91,6 +91,16 @@ public class EntityBounds extends Rectangle {
             y += dimensionsComponent.boundBox.y;
         }
 
+        if (dimensionsComponent.polygon != null) {
+            Rectangle bound = dimensionsComponent.polygon.getBoundingRectangle();
+            width = bound.width;
+            height = bound.height;
+            dimensionsComponent.width = width;
+            dimensionsComponent.height = height;
+            x += bound.x;
+            y += bound.y;
+        }
+
         Matrix3 transMat = TransformUtils.identity();
 
         if ((scaleX != 1 || scaleY != 1) && transformComponent.rotation != 0) {

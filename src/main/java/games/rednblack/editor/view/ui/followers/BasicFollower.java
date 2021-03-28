@@ -20,6 +20,7 @@ package games.rednblack.editor.view.ui.followers;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -43,6 +44,9 @@ public abstract class BasicFollower extends Group {
 
     protected float pointOriginX;
     protected float pointOriginY;
+
+    protected float polygonOffsetX;
+    protected float polygonOffsetY;
 
     private final Array<SubFollower> subFollowers = new Array<>();
 
@@ -75,6 +79,9 @@ public abstract class BasicFollower extends Group {
         setX( ( int ) ( position.x ) );
         setY( ( int ) ( position.y ) );
 
+        polygonOffsetX = 0;
+        polygonOffsetY = 0;
+
         float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
         float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
 
@@ -91,8 +98,17 @@ public abstract class BasicFollower extends Group {
 
             setWidth (pixelPerWU * (dimensionsComponent.boundBox.x + dimensionsComponent.boundBox.width) * scaleX / camera.zoom);
             setHeight(pixelPerWU * (dimensionsComponent.boundBox.y + dimensionsComponent.boundBox.height) * scaleY / camera.zoom);
-        }
-        else {
+        } else if (dimensionsComponent.polygon != null) {
+            Rectangle b = dimensionsComponent.polygon.getBoundingRectangle();
+            setWidth (pixelPerWU * (b.width) * scaleX / camera.zoom);
+            setHeight(pixelPerWU * (b.height) * scaleY / camera.zoom);
+
+            polygonOffsetX = pixelPerWU * (b.x) * scaleX / camera.zoom;
+            polygonOffsetY = pixelPerWU * (b.y) * scaleY / camera.zoom;
+
+            setX(getX() + polygonOffsetX);
+            setY(getY() + polygonOffsetY);
+        } else {
             setWidth ( pixelPerWU * dimensionsComponent.width * scaleX / camera.zoom );
             setHeight( pixelPerWU * dimensionsComponent.height * scaleY / camera.zoom );
         }
@@ -150,6 +166,7 @@ public abstract class BasicFollower extends Group {
 
     public void addSubfollower(SubFollower subFollower) {
         subFollowers.add(subFollower);
+        subFollower.setParentFollower(this);
         addActor(subFollower);
     }
 

@@ -37,11 +37,11 @@ import games.rednblack.editor.view.ui.followers.PolygonTransformationListener;
 import org.puremvc.java.interfaces.INotification;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by azakhary on 7/2/2015.
+ *
  */
 public class PolygonTool extends SelectionTool implements PolygonTransformationListener {
 
@@ -51,7 +51,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
 
     private FollowersUIMediator followersUIMediator;
 
-    private Vector2 dragLastPoint;
+    private final Vector2 dragLastPoint = new Vector2();
 
     private Object[] currentCommandPayload;
 
@@ -86,14 +86,8 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
     public void handleNotification(INotification notification) {
         switch (notification.getName()) {
             case AddComponentToItemCommand.DONE:
-                updateSubFollowerList();
-                break;
             case RemoveComponentFromItemCommand.DONE:
-                updateSubFollowerList();
-                break;
             case MsgAPI.ITEM_SELECTION_CHANGED:
-                updateSubFollowerList();
-                break;
             case MsgAPI.SCENE_LOADED:
                 updateSubFollowerList();
                 break;
@@ -115,6 +109,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
         Set<Entity> selectedEntities = sandbox.getSelector().getSelectedItems();
         for(Entity entity: selectedEntities) {
             BasicFollower follower = followersUIMediator.getFollower(entity);
+            follower.update();
             follower.removeSubFollower(PolygonFollower.class);
             PolygonFollower meshFollower = new PolygonFollower(entity);
             follower.addSubfollower(meshFollower);
@@ -140,7 +135,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
         follower.updateDraw();
 
         follower.draggingAnchorId = vertexIndex;
-        dragLastPoint = new Vector2(x, y);
+        dragLastPoint.set(x, y);
         follower.setSelectedAnchor(vertexIndex);
         lastSelectedMeshFollower = follower;
 
@@ -156,7 +151,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
 
     @Override
     public void anchorDown(PolygonFollower follower, int anchor, float x, float y) {
-        dragLastPoint = new Vector2(x, y);
+        dragLastPoint.set(x, y);
         currentCommandPayload = UpdatePolygonDataCommand.payloadInitialState(follower.getEntity());
         follower.setSelectedAnchor(anchor);
         lastSelectedMeshFollower = follower;
@@ -172,7 +167,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
         Vector2[] points = follower.getOriginalPoints().toArray(new Vector2[0]);
         Vector2 diff = dragLastPoint.sub(x, y);
         points[anchor].sub(diff);
-        dragLastPoint = new Vector2(x, y);
+        dragLastPoint.set(x, y);
 
         // check if any of near lines intersect
         int[] intersections = PolygonUtils.checkForIntersection(anchor, points);
