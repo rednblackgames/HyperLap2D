@@ -7,10 +7,14 @@
 - Add Z-Index controls in `Items Tree`
 - Add `Save Project as`
 - Add link scale X/Y properties
+- Add option to scale GUI (`Settings -> General -> UI Scale Density`)
+- Set minimum OpenGL version to 3.2
 - Stability improvements
 
 = Runtime =
-- Support rendering composites to FBO
+- Support rendering composites to FBO + FBOs stacking
+- Fix Hdpi/Retina rendering
+- Included updated box2dLights dependence into runtime code
 
 [0.0.5]
 *Release to switch from Bintray/jCenter to Sonatype/Maven Central*
