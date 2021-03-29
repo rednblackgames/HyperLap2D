@@ -55,7 +55,6 @@ public class UIDropDownMenu extends H2DPopupMenu {
         actionNames.put(MsgAPI.ACTION_DELETE_LIBRARY_ITEM, "Delete");
         actionNames.put(MsgAPI.ACTION_DELETE_PARTICLE_EFFECT, "Delete");
         actionNames.put(MsgAPI.ACTION_DELETE_TALOS_VFX, "Delete");
-        actionNames.put(MsgAPI.ACTION_DELETE_LIBRARY_ACTION, "Delete");
         actionNames.put(MsgAPI.ACTION_DELETE_SPRITE_ANIMATION_RESOURCE, "Delete");
         actionNames.put(MsgAPI.ACTION_DELETE_SPINE_ANIMATION_RESOURCE, "Delete");
 
@@ -65,6 +64,9 @@ public class UIDropDownMenu extends H2DPopupMenu {
         actionNames.put(MsgAPI.ACTION_DELETE_POLYGON_VERTEX, "Delete Vertex");
 
         actionNames.put(MsgAPI.ACTION_CHANGE_ORIGIN_POSITION, "Change Origin Position");
+
+        actionNames.put(MsgAPI.ACTION_DUPLICATE_LIBRARY_ACTION, "Duplicate");
+        actionNames.put(MsgAPI.ACTION_DELETE_LIBRARY_ACTION, "Delete");
     }
 
     public void setActionName(String action, String name) {
