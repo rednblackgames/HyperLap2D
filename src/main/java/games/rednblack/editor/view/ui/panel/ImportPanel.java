@@ -44,8 +44,6 @@ public class ImportPanel extends UIDraggablePanel {
 
     public static final String BROWSE_BTN_CLICKED = CLASS_NAME + ".BROWSE_BTN_CLICKED";
 
-    public static final String CANCEL_BTN_CLICKED = CLASS_NAME + ".CANCEL_BTN_CLICKED";
-    public static final String IMPORT_BTN_CLICKED = CLASS_NAME + ".IMPORT_BTN_CLICKED";
     public static final String IMPORT_FAILED = CLASS_NAME + ".IMPORT_FAILED";
 
     private HyperLap2DFacade facade;
@@ -179,36 +177,13 @@ public class ImportPanel extends UIDraggablePanel {
         mainTable.add(progressBar).fillX().padTop(5).width(250);
         mainTable.row().padBottom(5);
 
-        VisTextButton cancelBtn = new VisTextButton("Cancel");
-        VisTextButton importBtn = new VisTextButton("Import");
-
-        VisTable btnTable = new VisTable();
-        btnTable.add("").expand().right();
-        btnTable.add(cancelBtn).width(50).padRight(5);
-        btnTable.add(importBtn).width(50).right().padRight(3);
-
         pack();
-
-        initImportListeners(cancelBtn, importBtn);
     }
 
     private void initDropListeners(VisTextButton browseBtn) {
         browseBtn.addListener(new ClickListener() {
             public void clicked (InputEvent event, float x, float y) {
                 facade.sendNotification(BROWSE_BTN_CLICKED);
-            }
-        });
-    }
-
-    private void initImportListeners(VisTextButton cancelBtn, VisTextButton importBtn) {
-        cancelBtn.addListener(new ClickListener() {
-            public void clicked (InputEvent event, float x, float y) {
-                facade.sendNotification(CANCEL_BTN_CLICKED);
-            }
-        });
-        importBtn.addListener(new ClickListener() {
-            public void clicked (InputEvent event, float x, float y) {
-                facade.sendNotification(IMPORT_BTN_CLICKED);
             }
         });
     }

@@ -22,13 +22,12 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
-import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.proxy.ProjectManager;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -91,121 +90,6 @@ public class ImportUtils {
         return fileTypeFilter;
     }
 
-    public static int getImportType(String[] paths) {
-        int mainType = TYPE_MIXED;
-        String[] names = new String[paths.length];
-        for (int i = 0; i < paths.length; i++) {
-            String path = paths[i];
-            int type = getFileType(path);
-            if (i == 0) mainType = type;
-            if (mainType != type) {
-                return TYPE_MIXED;
-            }
-            names[i] = FilenameUtils.getBaseName(path);
-        }
-
-        if (mainType == TYPE_IMAGE) {
-            // check they are a PNG sequence;
-            boolean isSequence = isAnimationSequence(names);
-            if (isSequence) {
-                mainType = TYPE_ANIMATION_PNG_SEQUENCE;
-            }
-        }
-
-        if (mainType > 0 && !ImportUtils.getInstance().supportedTypes.contains(mainType)) {
-            mainType = TYPE_UNSUPPORTED;
-        }
-
-        return mainType;
-    }
-
-    public static int getFileType(String path) {
-        int type = checkFileTypeByExtension(path);
-        if (type == TYPE_UNKNOWN) {
-            // we have to check by getting into the file
-            type = checkFileTypeByContent(path);
-        }
-
-        return type;
-    }
-
-    public static int checkFileTypeByExtension(String path) {
-        String ext = FilenameUtils.getExtension(path).toLowerCase();
-        if (ext.equals("png")) {
-            return TYPE_IMAGE;
-        }
-
-        if (ext.equals("ttf")) {
-            return TYPE_TTF_FONT;
-        }
-
-        if (ext.equals("vert") || ext.equals("frag")) {
-            return TYPE_SHADER;
-        }
-
-        if (ext.equals("h2dlib")) {
-            return TYPE_HYPERLAP2D_LIBRARY;
-        }
-
-        if (ext.equals("lib")) {
-            return TYPE_HYPERLAP2D_INTERNAL_LIBRARY;
-        }
-
-        return TYPE_UNKNOWN;
-    }
-
-    public static int checkFileTypeByContent(String path) {
-        File file = new File(path);
-        long fileSizeInBytes = file.length();
-        // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
-        long fileSizeInKB = fileSizeInBytes / 1024;
-
-        if (fileSizeInKB > 1000) {
-            return TYPE_UNKNOWN;
-        }
-
-        int type = TYPE_UNKNOWN;
-
-        try {
-            String contents = FileUtils.readFileToString(file, "utf-8");
-
-            // checking for atlas file
-            if (contents.contains("format: ") && contents.contains("filter: ") && contents.contains("xy: ")) {
-                type = TYPE_TEXTURE_ATLAS;
-                // need to figure out if atlas is animation or just files.
-                TextureAtlas atlas = new TextureAtlas(new FileHandle(file));
-
-                boolean isSequence = isAtlasAnimationSequence(atlas.getRegions());
-                if (isSequence) {
-                    type = TYPE_SPRITE_ANIMATION_ATLAS;
-                }
-
-                return type;
-            }
-
-            // checking for spine animation
-            if (contents.contains("\"skeleton\":{") || contents.contains("\"skeleton\": {") || contents.contains("{\"bones\":[")) {
-                type = TYPE_SPINE_ANIMATION;
-                return type;
-            }
-
-            // checking for particle effect
-            if (contents.contains("- Options - ") && contents.contains("- Image Paths -") && contents.contains("- Duration -")) {
-                type = TYPE_PARTICLE_EFFECT;
-                return type;
-            }
-
-            // checking for particle effect
-            if (contents.contains("emitters")) {
-                type = TYPE_TALOS_VFX;
-                return type;
-            }
-        } catch (IOException ignore) {
-        }
-
-        return type;
-    }
-
     public static boolean isAnimationSequence(String[] names) {
         if (names.length < 2) return false;
         int[] sequenceArray = new int[names.length];
@@ -228,7 +112,7 @@ public class ImportUtils {
         return sequenceArray[0] == 1 && sequenceArray[sequenceArray.length - 1] == sequenceArray.length;
     }
 
-    public static boolean isAtlasAnimationSequence(Array<TextureAtlas.AtlasRegion> regions) {
+    public static boolean isAtlasAnimationSequence(Array<TextureAtlas.TextureAtlasData.Region> regions) {
         if (regions.size < 2) return false;
 
         //Check old .atlas format
@@ -251,65 +135,52 @@ public class ImportUtils {
         return regions.get(regions.size - 1).index == regions.size - 1;
     }
 
-    public boolean checkAssetExistence(int type, Array<FileHandle> fileHandles) {
-        if (type == ImportUtils.TYPE_HYPERLAP2D_LIBRARY) {
-            return checkLibraryItemExistence(fileHandles);
+    public static Array<File> getAtlasPages(FileHandle fileHandle) {
+        Array<File> imgs = new Array<>();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(fileHandle.read()), 64);
+            while (true) {
+                String line = reader.readLine();
+                if (line == null) break;
+                //In atlas file format the name of the png is is preceded by an empty line
+                if (line.trim().length() == 0) {
+                    line = reader.readLine();
+                    imgs.add(new File(FilenameUtils.getFullPath(fileHandle.path()) + line));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        boolean exists = false;
-        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
-
-        String dir = ProjectManager.IMAGE_DIR_PATH;
-        String ext = "png";
-        switch (type) {
-            case ImportUtils.TYPE_IMAGE:
-            case ImportUtils.TYPE_TEXTURE_ATLAS:
-                dir = ProjectManager.IMAGE_DIR_PATH;
-                ext = "png";
-                break;
-            case ImportUtils.TYPE_PARTICLE_EFFECT:
-                dir = ProjectManager.PARTICLE_DIR_PATH;
-                ext = "p";
-                break;
-            case ImportUtils.TYPE_TALOS_VFX:
-                dir = ProjectManager.TALOS_VFX_DIR_PATH;
-                ext = "p";
-                break;
-            case ImportUtils.TYPE_SPINE_ANIMATION:
-                dir = ProjectManager.SPINE_DIR_PATH;
-                ext = "json";
-                break;
-            case ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS:
-            case ImportUtils.TYPE_ANIMATION_PNG_SEQUENCE:
-                dir = ProjectManager.SPRITE_DIR_PATH;
-                ext = "atlas";
-                break;
-            case ImportUtils.TYPE_SHADER:
-                dir = ProjectManager.SHADER_DIR_PATH;
-                ext = "frag";
-                break;
-        }
-
-        for (FileHandle file : fileHandles) {
-            File f = new File(projectManager.getCurrentProjectPath() + File.separator + dir + File.separator + file.nameWithoutExtension() + "." + ext);
-            exists = f.exists();
-            if (exists)
-                break;
-        }
-
-        return exists;
+        return imgs;
     }
 
-    //TODO too weak, all assets inside the package should be checked for possible duplicate
-    private boolean checkLibraryItemExistence(Array<FileHandle> fileHandles) {
-        boolean exists = false;
-        for (FileHandle file : fileHandles) {
-            String itemName = ZipUtils.getZipContent(file.file(), "lib").get(0).replace(".lib", "");
-            ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
-            if (projectManager.getCurrentProjectInfoVO().libraryItems.get(itemName) != null) {
-                exists = true;
+    public static String getAtlasName(FileHandle fileHandle) {
+        String name = "atlas";
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(fileHandle.read()), 64);
+            while (true) {
+                String line = reader.readLine();
+                if (line == null) break;
+                if (line.trim().contains("repeat:")) {
+                    line = reader.readLine();
+                    name = line;
+                    break;
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return exists;
+        return name;
+    }
+
+    public static Array<FileHandle> getAtlasPageHandles(FileHandle fileHandle) {
+        Array<File> imgs = getAtlasPages(fileHandle);
+
+        Array<FileHandle> imgHandles = new Array<>();
+        for (int i = 0; i < imgs.size; i++) {
+            imgHandles.add(new FileHandle(imgs.get(i)));
+        }
+
+        return imgHandles;
     }
 }

@@ -249,7 +249,11 @@ public class RulersUI extends Actor {
 
         shapeRenderer.setProjectionMatrix(uiCamera.projection);
 
-        drawShapes(parentAlpha);
+        try {
+            drawShapes(parentAlpha);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
         batch.begin();

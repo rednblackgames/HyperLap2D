@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
+import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
@@ -63,6 +64,9 @@ public abstract class BasicFollower extends Group {
     }
 
     public void update() {
+        if (ComponentRetriever.get(entity, MainItemComponent.class) == null)
+            return;
+
         Sandbox sandbox = Sandbox.getInstance();
         OrthographicCamera camera = Sandbox.getInstance().getCamera();
 

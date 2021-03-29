@@ -62,8 +62,6 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
         return new String[]{
                 ResourcesMenu.IMPORT_TO_LIBRARY,
                 ImportPanel.BROWSE_BTN_CLICKED,
-                ImportPanel.CANCEL_BTN_CLICKED,
-                ImportPanel.IMPORT_BTN_CLICKED,
                 ImportPanel.IMPORT_FAILED,
                 MsgAPI.ACTION_FILES_DROPPED,
         };
@@ -87,12 +85,6 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
                     AssetImporter.getInstance().setProgressHandler(new AssetsImportProgressHandler());
                     AssetImporter.getInstance().postPathObtainAction(bundle.paths);
                 }
-                break;
-            case ImportPanel.CANCEL_BTN_CLICKED:
-                viewComponent.setDroppingView();
-                break;
-            case ImportPanel.IMPORT_BTN_CLICKED:
-                //startImport();
                 break;
             case ImportPanel.IMPORT_FAILED:
                 viewComponent.showError(ImportUtils.TYPE_FAILED);
