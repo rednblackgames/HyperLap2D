@@ -43,8 +43,9 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
                 MsgAPI.ITEM_SELECTION_CHANGED,
                 MsgAPI.EMPTY_SPACE_CLICKED,
                 UIBasicItemProperties.TAGS_BUTTON_CLICKED,
-                TagsPanel.LIST_CHANGED,
-                WindowMenu.TAGS_EDITOR_OPEN
+                WindowMenu.TAGS_EDITOR_OPEN,
+                TagsPanel.ITEM_ADD,
+                TagsPanel.ITEM_REMOVED
         };
     }
 
@@ -67,11 +68,20 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
             case MsgAPI.EMPTY_SPACE_CLICKED:
                 setObservable(null);
                 break;
-            case TagsPanel.LIST_CHANGED:
+            case TagsPanel.ITEM_REMOVED:
                 viewComponent.updateView();
+                String tagToRemove = notification.getBody();
                 for (Entity observable : observables) {
                     MainItemComponent mainItemComponent = observable.getComponent(MainItemComponent.class);
-                    mainItemComponent.tags.addAll(viewComponent.getTags());
+                    mainItemComponent.tags.remove(tagToRemove);
+                }
+                break;
+            case TagsPanel.ITEM_ADD:
+                viewComponent.updateView();
+                String tagToAdd = notification.getBody();
+                for (Entity observable : observables) {
+                    MainItemComponent mainItemComponent = observable.getComponent(MainItemComponent.class);
+                    mainItemComponent.tags.add(tagToAdd);
                 }
                 break;
         }

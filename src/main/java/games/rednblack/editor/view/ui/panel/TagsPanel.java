@@ -8,8 +8,7 @@ import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by azakhary on 8/1/2015.
@@ -17,7 +16,8 @@ import java.util.Set;
 public class TagsPanel extends UIDraggablePanel {
 
     public static final String prefix = "games.rednblack.editor.view.ui.dialog.panels.TagsDialog";
-    public static final String LIST_CHANGED = prefix + ".LIST_CHANGED";
+    public static final String ITEM_ADD = prefix + ".ITEM_ADD";
+    public static final String ITEM_REMOVED = prefix + ".ITEM_REMOVED";
 
     private HyperLap2DFacade facade;
 
@@ -41,7 +41,7 @@ public class TagsPanel extends UIDraggablePanel {
             @Override
             public void removed(String tag) {
                 tags.remove(tag);
-                facade.sendNotification(LIST_CHANGED);
+                facade.sendNotification(ITEM_REMOVED, tag);
             }
         };
     }
@@ -68,7 +68,9 @@ public class TagsPanel extends UIDraggablePanel {
         tagTable = new VisTable();
         VisTable inputTable = new VisTable();
 
-        for(String tag: tags) {
+        List<String> sorted = new LinkedList<>(tags);
+        Collections.sort(sorted);
+        for(String tag: sorted) {
             tagTable.add(new TagItem(tag, tagItemListener)).pad(5).left().expandX().fillX();
             tagTable.row();
         }
@@ -85,7 +87,7 @@ public class TagsPanel extends UIDraggablePanel {
                 if(!tagExists(tag)) {
                     newTagField.setText("");
                     addTag(tag);
-                    facade.sendNotification(LIST_CHANGED);
+                    facade.sendNotification(ITEM_ADD, tag);
                 }
             }
         });
