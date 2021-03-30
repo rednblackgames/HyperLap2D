@@ -82,9 +82,9 @@ public class CustomVariablesPanel extends UIDraggablePanel {
         initListeners();
     }
 
-    public void setEmpty() {
+    public void setEmptyMsg(String msg) {
         variablesList.clear();
-        VisLabel label = StandardWidgetsFactory.createLabel("No item selected");
+        VisLabel label = StandardWidgetsFactory.createLabel(msg);
         label.setAlignment(Align.center);
         variablesList.add(label).pad(10).width(278).center();
         addVariableTable.clear();

@@ -1,6 +1,7 @@
 package games.rednblack.editor.view.ui.panel;
 
 import com.badlogic.ashley.core.Entity;
+import games.rednblack.editor.view.menu.WindowMenu;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.MainItemComponent;
@@ -11,6 +12,9 @@ import games.rednblack.editor.view.ui.properties.panels.UIBasicItemProperties;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -20,7 +24,7 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
     private static final String TAG = TagsPanelMediator.class.getCanonicalName();
     private static final String NAME = TAG;
 
-    private Entity observable = null;
+    private final Set<Entity> observables = new HashSet<>();
 
     public TagsPanelMediator() {
         super(NAME, new TagsPanel());
@@ -39,7 +43,8 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
                 MsgAPI.ITEM_SELECTION_CHANGED,
                 MsgAPI.EMPTY_SPACE_CLICKED,
                 UIBasicItemProperties.TAGS_BUTTON_CLICKED,
-                TagsPanel.LIST_CHANGED
+                TagsPanel.LIST_CHANGED,
+                WindowMenu.TAGS_EDITOR_OPEN
         };
     }
 
@@ -51,37 +56,51 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
         UIStage uiStage = sandbox.getUIStage();
 
         switch (notification.getName()) {
+            case WindowMenu.TAGS_EDITOR_OPEN:
             case UIBasicItemProperties.TAGS_BUTTON_CLICKED:
                 viewComponent.show(uiStage);
                 break;
             case MsgAPI.ITEM_SELECTION_CHANGED:
                 Set<Entity> selection = notification.getBody();
-                if(selection.size() == 1) {
-                    setObservable(selection.iterator().next());
-                }
+                setObservable(selection);
                 break;
             case MsgAPI.EMPTY_SPACE_CLICKED:
                 setObservable(null);
                 break;
             case TagsPanel.LIST_CHANGED:
                 viewComponent.updateView();
-                MainItemComponent mainItemComponent = observable.getComponent(MainItemComponent.class);
-                mainItemComponent.tags = viewComponent.getTags();
+                for (Entity observable : observables) {
+                    MainItemComponent mainItemComponent = observable.getComponent(MainItemComponent.class);
+                    mainItemComponent.tags.addAll(viewComponent.getTags());
+                }
                 break;
         }
     }
 
-    private void setObservable(Entity item) {
-        observable = item;
+    private void setObservable(Set<Entity> items) {
+        observables.clear();
+        if (items != null)
+            observables.addAll(items);
         updateView();
     }
 
     private void updateView() {
-        if(observable == null) {
+        if(observables.size() == 0) {
             viewComponent.setEmpty();
         } else {
-            MainItemComponent mainItemComponent = ComponentRetriever.get(observable, MainItemComponent.class);
-            viewComponent.setTags(mainItemComponent.tags);
+            Iterator<Entity> iterator = observables.iterator();
+
+            Entity entity = iterator.next();
+            MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+            Set<String> common = new LinkedHashSet<>(mainItemComponent.tags);
+
+            while (iterator.hasNext()) {
+                entity = iterator.next();
+                mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+                common.retainAll(mainItemComponent.tags);
+            }
+
+            viewComponent.setTags(common);
             viewComponent.updateView();
         }
     }

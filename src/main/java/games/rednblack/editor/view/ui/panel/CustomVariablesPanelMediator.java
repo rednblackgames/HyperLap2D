@@ -50,7 +50,7 @@ public class CustomVariablesPanelMediator extends Mediator<CustomVariablesPanel>
     public void onRegister() {
         super.onRegister();
         facade = HyperLap2DFacade.getInstance();
-        viewComponent.setEmpty();
+        viewComponent.setEmptyMsg("No item selected.");
     }
 
     @Override
@@ -75,15 +75,15 @@ public class CustomVariablesPanelMediator extends Mediator<CustomVariablesPanel>
 
         switch (notification.getName()) {
             case WindowMenu.CUSTOM_VARIABLES_EDITOR_OPEN:
-                viewComponent.show(uiStage);
-                break;
             case UIBasicItemProperties.CUSTOM_VARS_BUTTON_CLICKED:
                 viewComponent.show(uiStage);
                 break;
             case MsgAPI.ITEM_SELECTION_CHANGED:
                 Set<Entity> selection = notification.getBody();
-                if(selection.size() == 1) {
+                if (selection.size() == 1) {
                     setObservable(selection.iterator().next());
+                } else {
+                    viewComponent.setEmptyMsg(selection.size() == 0 ? "No item selected." : "Multiple items selected.");
                 }
                 break;
             case MsgAPI.EMPTY_SPACE_CLICKED:
@@ -120,8 +120,8 @@ public class CustomVariablesPanelMediator extends Mediator<CustomVariablesPanel>
     }
 
     private void updateView() {
-        if(observable == null) {
-            viewComponent.setEmpty();
+        if (observable == null) {
+            viewComponent.setEmptyMsg("No item selected.");
         } else {
             MainItemComponent mainItemComponent = ComponentRetriever.get(observable, MainItemComponent.class);
             viewComponent.updateView(mainItemComponent.customVariables);
