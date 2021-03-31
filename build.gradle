@@ -118,7 +118,7 @@ dependencies {
 
 def getBuildVersion = {
     if (project.hasProperty('SNAPSHOT')) {
-        return getVersion() + "-" + (project.hasProperty('COMMIT_SHA') ? COMMIT_SHA : "$System.env.COMMIT_SHA")
+        return getVersion() + (project.hasProperty('WORKFLOW_RUN') ? WORKFLOW_RUN : "$System.env.WORKFLOW_RUN")
     } else {
         return getVersion()
     }
