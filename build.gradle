@@ -118,7 +118,7 @@ dependencies {
 
 def getBuildVersion = {
     if (project.hasProperty('SNAPSHOT')) {
-        return getVersion() + project.hasProperty('COMMIT_SHA') ? COMMIT_SHA : "$System.env.COMMIT_SHA"
+        return getVersion() + "-" + (project.hasProperty('COMMIT_SHA') ? COMMIT_SHA : "$System.env.COMMIT_SHA")
     } else {
         return getVersion()
     }
