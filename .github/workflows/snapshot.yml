@@ -20,12 +20,17 @@ jobs:
       uses: joschi/setup-jdk@v2.3.0
       with:
         java-version: 14
+    - name: Compute vars
+      id: vars
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build JAR dist files
       run: ./gradlew dist
     - name: Build deb package
-      run: ./gradlew jpackage
+      env:
+        COMMIT_SHA: ${{ steps.vars.outputs.sha_short }}
+      run: ./gradlew jpackage -PSNAPSHOT=true
     - name: Fix deb file names
       run: mv build/jpackage/*.deb HyperLap2D-SNAPSHOT.deb
     - name: Upload deb artifact
@@ -52,10 +57,15 @@ jobs:
       uses: joschi/setup-jdk@v2.3.0
       with:
         java-version: 14
+    - name: Compute vars
+      id: vars
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
     - name: Build JAR dist files
       run: ./gradlew.bat dist
     - name: Build msi package
-      run: ./gradlew.bat jpackage
+      env:
+        COMMIT_SHA: ${{ steps.vars.outputs.sha_short }}
+      run: ./gradlew.bat jpackage -PSNAPSHOT=true
     - name: Fix file names
       run: mv build/jpackage/*.msi HyperLap2D-SNAPSHOT.msi
     - name: Upload msi artifact
@@ -76,12 +86,17 @@ jobs:
       uses: joschi/setup-jdk@v2.3.0
       with:
         java-version: 14
+    - name: Compute vars
+      id: vars
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build JAR dist files
       run: ./gradlew dist
     - name: Build dmg package
-      run: ./gradlew jpackage
+      env:
+        COMMIT_SHA: ${{ steps.vars.outputs.sha_short }}
+      run: ./gradlew jpackage -PSNAPSHOT=true
     - name: Fix file names
       run: mv build/jpackage/*.dmg HyperLap2D-SNAPSHOT.dmg
     - name: Upload dmg artifact

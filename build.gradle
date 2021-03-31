@@ -116,6 +116,14 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
+def getBuildVersion = {
+    if (project.hasProperty('SNAPSHOT')) {
+        return getVersion() + project.hasProperty('COMMIT_SHA') ? COMMIT_SHA : "$System.env.COMMIT_SHA"
+    } else {
+        return getVersion()
+    }
+}
+
 runtime {
     javaHome.set(System.getProperty("java.home"))
     options = ['--strip-debug',
@@ -136,7 +144,7 @@ runtime {
 
     jpackage {
         mainJar = dist.archiveFileName.get()
-        imageOptions += ['--app-version', getVersion(), '--vendor', 'Red & Black Games', '--description', 'HyperLap2D Editor', '--name', 'HyperLap2D']
+        imageOptions += ['--app-version', getBuildVersion(), '--vendor', 'Red & Black Games', '--description', 'HyperLap2D Editor', '--name', 'HyperLap2D']
         installerOptions += ['--license-file', 'LICENSE']
         if (osName.contains('windows')) {
             imageOptions += ["--icon", file("icons/icon.ico")]
@@ -158,7 +166,7 @@ runtime {
             imageOptions += ['--copyright', '(c) 2020, Red &amp; Black Games', "--icon", file("icons/icon.icns")
                              , '--resource-dir', "${projectDir}/resources-macos"]
             jvmArgs = ['-XstartOnFirstThread', '-Djava.awt.headless=true']
-            installerOptions += ['--verbose','--app-version', getVersion(), '--vendor', 'Red & Black Games', '--resource-dir', "${projectDir}/resources-macos" ]
+            installerOptions += ['--verbose','--app-version', getBuildVersion(), '--vendor', 'Red & Black Games', '--resource-dir', "${projectDir}/resources-macos" ]
             installerType = 'dmg'
             resourceDir = file("resources-macos")
         }
