@@ -66,7 +66,7 @@ public class UIGridBoxMediator extends Mediator<UIGridBox> {
                 break;
             case UIGridBox.GRID_SIZE_TEXT_FIELD_UPDATED:
                 String body = notification.getBody();
-                sandbox.setGridSize(Integer.parseInt(body));
+                sandbox.setGridSize(Float.parseFloat(body));
                 break;
             case UIGridBox.LOCK_LINES_CHECKBOX_FIELD_UPDATED:
                 Boolean lockLines = notification.getBody();

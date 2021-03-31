@@ -344,15 +344,11 @@ public class Sandbox {
         setZoomPercent(zoomPercent, false);
     }
 
-    public float getWorldGridSize() {
-        return (float) getGridSize() / sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
-    }
-
-    public int getGridSize() {
+    public float getGridSize() {
         return projectManager.currentProjectVO.gridSize;
     }
 
-    public void setGridSize(int gridSize) {
+    public void setGridSize(float gridSize) {
         projectManager.currentProjectVO.gridSize = gridSize;
         projectManager.saveCurrentProject();
         facade.sendNotification(MsgAPI.GRID_SIZE_CHANGED, gridSize);

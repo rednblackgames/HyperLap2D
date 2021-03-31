@@ -61,13 +61,13 @@ public class UIGridBox extends UIBaseBox {
 
         VisLabel lbl = new VisLabel("Grid Size:");
         add(lbl).padRight(4);
-        gridSizeTextField = StandardWidgetsFactory.createValidableTextField("light", new Validators.IntegerValidator());
+        gridSizeTextField = StandardWidgetsFactory.createValidableTextField("light", new Validators.GreaterThanValidator(0));
         gridSizeTextField.addListener(new KeyboardListener(GRID_SIZE_TEXT_FIELD_UPDATED));
 		gridSizeTextField.setAlignment(Align.center);
         add(gridSizeTextField).width(30);
     }
 
-    public void setGridSize(int gridSize) {
+    public void setGridSize(float gridSize) {
         gridSizeTextField.setText(gridSize + "");
     }
 

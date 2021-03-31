@@ -76,8 +76,8 @@ public class ItemFactory {
         vo.layerName = layerName;
 
         // This is for grid
-        position.x = MathUtils.floor(position.x / sandbox.getWorldGridSize()) * sandbox.getWorldGridSize();
-        position.y = MathUtils.floor(position.y / sandbox.getWorldGridSize()) * sandbox.getWorldGridSize();
+        position.x = MathUtils.floor(position.x / sandbox.getGridSize()) * sandbox.getGridSize();
+        position.y = MathUtils.floor(position.y / sandbox.getGridSize()) * sandbox.getGridSize();
 
         vo.x = position.x;
         vo.y = position.y;

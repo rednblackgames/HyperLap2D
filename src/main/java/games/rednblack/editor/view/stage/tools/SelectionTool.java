@@ -220,7 +220,7 @@ public class SelectionTool extends SimpleTool {
 
         isDragging = true;
 
-        float gridSize = Sandbox.getInstance().getWorldGridSize();
+        float gridSize = Sandbox.getInstance().getGridSize();
 
         if (isShiftPressed()) {
             // check if we have a direction vector
