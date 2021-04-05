@@ -19,10 +19,7 @@
 package games.rednblack.editor.view;
 
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -231,6 +228,13 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
                 break;
             case KeyBindingsLayout.HIDE_GUI:
                 uiStage.addAction(Actions.parallel(Actions.fadeOut(0.1f), Actions.touchable(Touchable.disabled)));
+            case KeyBindingsLayout.TOGGLE_FULL_SCREEN:
+                boolean fullScreen = Gdx.graphics.isFullscreen();
+                Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
+                if (fullScreen)
+                    Gdx.graphics.setWindowedMode(currentMode.width, currentMode.height);
+                else
+                    Gdx.graphics.setFullscreenMode(currentMode);
                 break;
             case KeyBindingsLayout.OPEN_CONSOLE:
                 facade.sendNotification(MsgAPI.OPEN_CONSOLE);
