@@ -20,6 +20,7 @@ package games.rednblack.editor.controller.commands;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ViewPortComponent;
@@ -65,7 +66,9 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
 
         TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
         TransformComponent previousTransformComponent = ComponentRetriever.get(oldEntity, TransformComponent.class);
-        previousTransformComponent.enableTransform();
+        ParentNodeComponent parentNodeComponent = ComponentRetriever.get(entity, ParentNodeComponent.class);
+        if (parentNodeComponent == null || oldEntity != parentNodeComponent.parentEntity)
+            previousTransformComponent.enableTransform();
         transformComponent.disableTransform();
 
         facade.sendNotification(DONE, enteringInto);
