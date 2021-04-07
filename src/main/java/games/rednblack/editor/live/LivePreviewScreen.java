@@ -22,6 +22,9 @@ import games.rednblack.h2d.extention.spine.SpineItemType;
 import org.puremvc.java.interfaces.IFacade;
 
 public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.GestureListener {
+    private static final Vector3 vec3Zero = new Vector3(0, 0, 0);
+    private static final Vector3 cameraTargetPos = new Vector3();
+
     private Viewport viewport;
     private SceneLoader sceneLoader;
 
@@ -55,6 +58,8 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
         bgColor = projectManager.currentProjectVO.backgroundColor;
 
         Gdx.input.setInputProcessor(new GestureDetector(this));
+
+        cameraTargetPos.set(mCamera.position);
     }
 
     @Override
@@ -62,6 +67,8 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
         super.render(delta);
         Gdx.gl.glClearColor(bgColor.r,bgColor.g,bgColor.b,bgColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        mCamera.position.lerp(cameraTargetPos, 0.5f);
 
         viewport.apply();
         sceneLoader.getEngine().update(delta);
@@ -114,11 +121,11 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        mCamera.position.add(
-                mCamera.unproject(new Vector3(0, 0, 0))
-                        .add(mCamera.unproject(new Vector3(deltaX, deltaY, 0)).scl(-1f))
-        );
-        mCamera.update();
+        cameraTargetPos.set(deltaX, deltaY, 0);
+
+        cameraTargetPos.set(mCamera.unproject(vec3Zero).add(mCamera.unproject(cameraTargetPos).scl(-1f)));
+
+        cameraTargetPos.add(mCamera.position);
         return true;
     }
 
