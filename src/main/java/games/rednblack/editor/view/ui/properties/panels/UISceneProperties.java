@@ -49,6 +49,7 @@ public class UISceneProperties extends UIAbstractProperties {
     final private VisTextField sleepVelocityTextField;
     final private VisTextField blurNumTextField;
     final private VisCheckBox enableLightsCheckBox;
+    final private VisCheckBox enablePseudo3DLightsCheckBox;
     final private TintButton ambientColorComponent;
     final private VisSelectBox<String> lightTypeBox;
     final private Spinner directionalRays;
@@ -69,6 +70,7 @@ public class UISceneProperties extends UIAbstractProperties {
         sleepVelocityTextField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         blurNumTextField = StandardWidgetsFactory.createValidableTextField(integerValidator);
         enableLightsCheckBox = StandardWidgetsFactory.createCheckBox();
+        enablePseudo3DLightsCheckBox = StandardWidgetsFactory.createCheckBox();
         ambientColorComponent = StandardWidgetsFactory.createTintButton();
         lightTypeBox = StandardWidgetsFactory.createSelectBox(String.class);
         directionalRays = StandardWidgetsFactory.createNumberSelector(4, 4, 5000);
@@ -100,6 +102,9 @@ public class UISceneProperties extends UIAbstractProperties {
         addSeparator().colspan(2).padTop(5).padBottom(5);
         add(new VisLabel("Enable Lights:", Align.right)).padRight(5).width(115);
         add(enableLightsCheckBox).padLeft(1).left();
+        row().padTop(5);
+        add(new VisLabel("Enable Pseudo3D:", Align.right)).padRight(5).width(115);
+        add(enablePseudo3DLightsCheckBox).padLeft(1).left();
         row().padTop(5);
         add(new VisLabel("Lights Blur:", Align.right)).padRight(5).width(115);
         add(blurNumTextField).width(100);
@@ -211,6 +216,14 @@ public class UISceneProperties extends UIAbstractProperties {
         this.enableLightsCheckBox.setChecked(isLightsEnabled);
     }
 
+    public boolean isPseudo3DLightsEnabled() {
+        return enablePseudo3DLightsCheckBox.isChecked();
+    }
+
+    public void setPseudo3DLightsEnabled(boolean isLightsEnabled) {
+        this.enablePseudo3DLightsCheckBox.setChecked(isLightsEnabled);
+    }
+
     public Color getAmbientColor() {
         return ambientColorComponent.getColorValue();
     }
@@ -247,6 +260,7 @@ public class UISceneProperties extends UIAbstractProperties {
         gravityYTextField.addListener(new KeyboardListener(getUpdateEventName()));
         sleepVelocityTextField.addListener(new KeyboardListener(getUpdateEventName()));
         enableLightsCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
+        enablePseudo3DLightsCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         blurNumTextField.addListener(new KeyboardListener(getUpdateEventName()));
         directionalRays.addListener(new NumberSelectorOverlapListener(getUpdateEventName()));
         directionalDegreeTextField.addListener(new KeyboardListener(getUpdateEventName()));

@@ -43,6 +43,7 @@ public class UpdateSceneDataCommand extends EntityModifyRevertibleCommand {
         lightsVO.directionalColor[3] = lightsPropertiesVO.directionalColor[3];
 
         lightsVO.enabled = lightsPropertiesVO.enabled;
+        lightsVO.pseudo3d = lightsPropertiesVO.pseudo3d;
 
         Sandbox.getInstance().sceneControl.updateAmbientLights();
 
@@ -72,6 +73,7 @@ public class UpdateSceneDataCommand extends EntityModifyRevertibleCommand {
         lightsVO.directionalColor[3] = lightsBackup.directionalColor[3];
 
         lightsVO.enabled = lightsBackup.enabled;
+        lightsVO.pseudo3d = lightsBackup.pseudo3d;
 
         Sandbox.getInstance().sceneControl.updateAmbientLights();
 

@@ -51,6 +51,7 @@ public class UILightItemPropertiesMediator extends UIItemPropertiesMediator<Enti
         viewComponent.setAngle(lightObjectComponent.coneDegree + "");
         viewComponent.setDistance(lightObjectComponent.distance + "");
         viewComponent.setDirection(lightObjectComponent.directionDegree + "");
+        viewComponent.setLightHeight(lightObjectComponent.height + "");
         viewComponent.setSoftnessLength(lightObjectComponent.softnessLength + "");
         viewComponent.setActive(lightObjectComponent.isActive);
         viewComponent.setSoft(lightObjectComponent.isSoft);
@@ -69,6 +70,7 @@ public class UILightItemPropertiesMediator extends UIItemPropertiesMediator<Enti
         payloadVo.isXRay = viewComponent.isXRay();
         payloadVo.coneDegree = NumberUtils.toFloat(viewComponent.getAngle());
         payloadVo.softnessLength = NumberUtils.toFloat(viewComponent.getSoftnessLength());
+        payloadVo.height = NumberUtils.toFloat(viewComponent.getLightHeight());
         payloadVo.isActive = viewComponent.isActive();
         payloadVo.isSoft = viewComponent.isSoft();
         

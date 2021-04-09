@@ -129,6 +129,7 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
         viewComponent.setDirectionalColor(new Color(lightsVO.directionalColor[0], lightsVO.directionalColor[1], lightsVO.directionalColor[2], lightsVO.directionalColor[3]));
 
         viewComponent.setLightsEnabled(lightsVO.enabled);
+        viewComponent.setPseudo3DLightsEnabled(lightsVO.pseudo3d);
         viewComponent.setLightType(lightsVO.lightType);
     }
 
@@ -157,6 +158,7 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
         lightsVO.directionalColor[3] = color.a;
 
         lightsVO.enabled = viewComponent.isLightsEnabled();
+        lightsVO.pseudo3d = viewComponent.isPseudo3DLightsEnabled();
 
         Object payload = UpdateSceneDataCommand.payload(observableReference, physicsVO, lightsVO);
         facade.sendNotification(MsgAPI.ACTION_UPDATE_SCENE_DATA, payload);
