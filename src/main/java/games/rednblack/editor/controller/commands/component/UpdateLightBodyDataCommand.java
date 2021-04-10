@@ -39,6 +39,8 @@ public class UpdateLightBodyDataCommand extends EntityModifyRevertibleCommand {
         lightComponent.color[3] = vo.color[3];
         lightComponent.isActive = vo.isActive;
 
+        lightComponent.scheduleRefresh();
+
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
@@ -59,6 +61,8 @@ public class UpdateLightBodyDataCommand extends EntityModifyRevertibleCommand {
         lightComponent.color[2] = backup.color[2];
         lightComponent.color[3] = backup.color[3];
         lightComponent.isActive = backup.isActive;
+
+        lightComponent.scheduleRefresh();
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

@@ -9,6 +9,7 @@ import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand
 import games.rednblack.editor.controller.commands.component.UpdateLightBodyDataCommand;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.data.LightBodyDataVO;
+import games.rednblack.editor.renderer.data.LightVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
@@ -97,6 +98,8 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<Enti
     @Override
     protected void translateViewToItemData() {
         lightComponent = observableReference.getComponent(LightBodyComponent.class);
+        LightBodyDataVO oldPayloadVo = new LightBodyDataVO();
+        oldPayloadVo.loadFromComponent(lightComponent);
 
         LightBodyDataVO payloadVo = new LightBodyDataVO();
         payloadVo.loadFromComponent(lightComponent);
@@ -115,7 +118,9 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<Enti
         payloadVo.color[3] = color.a;
         payloadVo.isActive = viewComponent.isActive();
 
-        Object payload = UpdateLightBodyDataCommand.payload(observableReference, payloadVo);
-        facade.sendNotification(MsgAPI.ACTION_UPDATE_BODY_LIGHT_DATA, payload);
+        if (!oldPayloadVo.equals(payloadVo)) {
+            Object payload = UpdateLightBodyDataCommand.payload(observableReference, payloadVo);
+            facade.sendNotification(MsgAPI.ACTION_UPDATE_BODY_LIGHT_DATA, payload);
+        }
     }
 }
