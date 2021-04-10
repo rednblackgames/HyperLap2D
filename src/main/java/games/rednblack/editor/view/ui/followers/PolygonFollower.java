@@ -231,8 +231,8 @@ public class PolygonFollower extends SubFollower {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchDown(event, x, y, pointer, button);
-                x = x / pixelsPerWU + parentFollower.polygonOffsetX;
-                y = y / pixelsPerWU + parentFollower.polygonOffsetY;
+                x = (x + parentFollower.polygonOffsetX) / pixelsPerWU;
+                y = (y + parentFollower.polygonOffsetY) / pixelsPerWU;
                 if(button != Input.Buttons.LEFT) return true;
                 int anchorId = anchorHitTest(x, y);
 
@@ -254,8 +254,8 @@ public class PolygonFollower extends SubFollower {
                 float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
                 float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
 
-                x = x / pixelsPerWU + parentFollower.polygonOffsetX;
-                y = y / pixelsPerWU + parentFollower.polygonOffsetY;
+                x = (x + parentFollower.polygonOffsetX) / pixelsPerWU;
+                y = (y + parentFollower.polygonOffsetY) / pixelsPerWU;
                 int anchorId = draggingAnchorId;
                 if (anchorId >= 0) {
                     listener.anchorDragged(PolygonFollower.this, anchorId, x*runtimeCamera.zoom/scaleX, y*runtimeCamera.zoom/scaleY);
@@ -269,8 +269,8 @@ public class PolygonFollower extends SubFollower {
                 float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
                 float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
 
-                x = x / pixelsPerWU + parentFollower.polygonOffsetX;
-                y = y / pixelsPerWU + parentFollower.polygonOffsetY;
+                x = (x + parentFollower.polygonOffsetX) / pixelsPerWU;
+                y = (y + parentFollower.polygonOffsetY) / pixelsPerWU;
 
                 int anchorId = anchorHitTest(x, y);
 
@@ -285,8 +285,8 @@ public class PolygonFollower extends SubFollower {
 
             @Override
             public boolean mouseMoved(InputEvent event, float x, float y) {
-                x = x / pixelsPerWU + parentFollower.polygonOffsetX;
-                y = y / pixelsPerWU + parentFollower.polygonOffsetY;
+                x = (x + parentFollower.polygonOffsetX) / pixelsPerWU;
+                y = (y + parentFollower.polygonOffsetY) / pixelsPerWU;
                 int anchorId = anchorHitTest(x, y);
                 lineIndex = vertexHitTest(x, y);
                 if(anchorId >= 0) {
@@ -305,8 +305,8 @@ public class PolygonFollower extends SubFollower {
     public Actor hit (float x, float y, boolean touchable) {
         if(originalPoints == null || originalPoints.size() == 0) return null;
 
-        x = x / pixelsPerWU + parentFollower.polygonOffsetX;
-        y = y / pixelsPerWU + parentFollower.polygonOffsetY;
+        x = (x + parentFollower.polygonOffsetX) / pixelsPerWU;
+        y = (y + parentFollower.polygonOffsetY) / pixelsPerWU;
 
         int anchorId = anchorHitTest(x, y);
         if(anchorId > -1) {
