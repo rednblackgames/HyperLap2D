@@ -101,6 +101,7 @@ public class ImportPanel extends UIDraggablePanel {
         typeNames.put(ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS, "Animation Atlas Pack");
         typeNames.put(ImportUtils.TYPE_TTF_FONT, "TTF Font");
         typeNames.put(ImportUtils.TYPE_HYPERLAP2D_LIBRARY, "HyperLap2D Library");
+        typeNames.put(ImportUtils.TYPE_HYPERLAP2D_ACTION, "HyperLap2D Action");
         typeNames.put(ImportUtils.TYPE_SHADER, "Shader");
         typeNames.put(ImportUtils.TYPE_TALOS_VFX, "Talos VFX");
     }

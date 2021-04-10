@@ -35,6 +35,7 @@ public class AssetImporter {
             sInstance.assetDescriptors.add(new ShaderAsset());
             sInstance.assetDescriptors.add(new HyperLap2DInternalLibraryAsset());
             sInstance.assetDescriptors.add(new HyperLap2DLibraryAsset());
+            sInstance.assetDescriptors.add(new HyperLap2DActionAsset());
         }
         return sInstance;
     }

@@ -38,7 +38,6 @@ public class HyperLap2DLibraryAsset extends Asset {
         boolean exists = false;
         for (FileHandle file : new Array.ArrayIterator<>(files)) {
             String itemName = ZipUtils.getZipContent(file.file(), "lib").get(0).replace(".lib", "");
-            ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
             if (projectManager.getCurrentProjectInfoVO().libraryItems.get(itemName) != null) {
                 exists = true;
             }

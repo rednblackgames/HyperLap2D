@@ -51,6 +51,7 @@ public class UIDropDownMenu extends H2DPopupMenu {
         actionNames.put(MsgAPI.ACTION_CREATE_STICKY_NOTE, "Create Sticky Note");
 
         actionNames.put(MsgAPI.ACTION_EXPORT_LIBRARY_ITEM, "Export");
+        actionNames.put(MsgAPI.ACTION_EXPORT_ACTION_ITEM, "Export");
         actionNames.put(MsgAPI.ACTION_DELETE_IMAGE_RESOURCE, "Delete");
         actionNames.put(MsgAPI.ACTION_DELETE_LIBRARY_ITEM, "Delete");
         actionNames.put(MsgAPI.ACTION_DELETE_PARTICLE_EFFECT, "Delete");

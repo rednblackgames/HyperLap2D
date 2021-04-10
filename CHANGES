@@ -10,6 +10,7 @@
 - Add link scale X/Y properties
 - Add option to scale GUI (`Settings -> General -> UI Scale Density`)
 - Add multiple selection to `Tags` panel
+- Add Import/Export Library Actions
 - Use F10 key to open Console and F11 key to toggle full screen
 - Set minimum OpenGL version to 3.2
 - Stability improvements
