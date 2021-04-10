@@ -45,6 +45,10 @@ public class UpdatePhysicsDataCommand extends EntityModifyRevertibleCommand {
         physicsComponent.sensor = vo.sensor;
         physicsComponent.fixedRotation = vo.fixedRotation;
 
+        physicsComponent.height = vo.height;
+
+        physicsComponent.scheduleRefresh();
+
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
@@ -71,6 +75,10 @@ public class UpdatePhysicsDataCommand extends EntityModifyRevertibleCommand {
         physicsComponent.bullet = backup.bullet;
         physicsComponent.sensor = backup.sensor;
         physicsComponent.fixedRotation = backup.fixedRotation;
+
+        physicsComponent.height = backup.height;
+
+        physicsComponent.scheduleRefresh();
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

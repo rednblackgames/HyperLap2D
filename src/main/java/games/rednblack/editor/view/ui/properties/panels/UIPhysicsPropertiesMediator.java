@@ -58,6 +58,7 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<Entity
         viewComponent.getDensityField().setText(physicsComponent.density + "");
         viewComponent.getFrictionField().setText(physicsComponent.friction + "");
         viewComponent.getRestitutionField().setText(physicsComponent.restitution + "");
+        viewComponent.getHeightField().setText(physicsComponent.height + "");
         viewComponent.getAllowSleepBox().setChecked(physicsComponent.allowSleep);
         viewComponent.getAwakeBox().setChecked(physicsComponent.awake);
         viewComponent.getBulletBox().setChecked(physicsComponent.bullet);
@@ -86,6 +87,7 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<Entity
         payloadVo.density = NumberUtils.toFloat(viewComponent.getDensityField().getText());
         payloadVo.friction = NumberUtils.toFloat(viewComponent.getFrictionField().getText());
         payloadVo.restitution = NumberUtils.toFloat(viewComponent.getRestitutionField().getText());
+        payloadVo.height = NumberUtils.toFloat(viewComponent.getHeightField().getText());
 
         payloadVo.allowSleep = viewComponent.getAllowSleepBox().isChecked();
         payloadVo.awake = viewComponent.getAwakeBox().isChecked();

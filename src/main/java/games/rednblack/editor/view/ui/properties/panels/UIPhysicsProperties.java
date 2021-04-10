@@ -34,6 +34,7 @@ public class UIPhysicsProperties extends UIRemovableProperties {
     private VisValidatableTextField densityField;
     private VisValidatableTextField frictionField;
     private VisValidatableTextField restitutionField;
+    private VisValidatableTextField heightField;
     private VisCheckBox allowSleepBox;
     private VisCheckBox awakeBox;
     private VisCheckBox bulletBox;
@@ -69,6 +70,7 @@ public class UIPhysicsProperties extends UIRemovableProperties {
         densityField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         frictionField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         restitutionField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        heightField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         allowSleepBox = StandardWidgetsFactory.createCheckBox("Allow Sleep");
         awakeBox = StandardWidgetsFactory.createCheckBox("Awake");
         bulletBox = StandardWidgetsFactory.createCheckBox("Bullet");
@@ -116,6 +118,10 @@ public class UIPhysicsProperties extends UIRemovableProperties {
         mainTable.add(restitutionField).width(100).colspan(2);
         mainTable.row().padTop(5);
 
+        mainTable.add(new VisLabel("Height:", Align.right)).padRight(5).colspan(2).fillX();
+        mainTable.add(heightField).width(100).colspan(2);
+        mainTable.row().padTop(5);
+
         VisTable bottomTable = new VisTable();
         bottomTable.add(allowSleepBox).padRight(5);
         bottomTable.add(awakeBox).padRight(5);
@@ -143,6 +149,7 @@ public class UIPhysicsProperties extends UIRemovableProperties {
         densityField.addListener(new KeyboardListener(getUpdateEventName()));
         frictionField.addListener(new KeyboardListener(getUpdateEventName()));
         restitutionField.addListener(new KeyboardListener(getUpdateEventName()));
+        heightField.addListener(new KeyboardListener(getUpdateEventName()));
 
         allowSleepBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         awakeBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
@@ -199,6 +206,10 @@ public class UIPhysicsProperties extends UIRemovableProperties {
 
     public VisValidatableTextField getRestitutionField() {
         return restitutionField;
+    }
+
+    public VisValidatableTextField getHeightField() {
+        return heightField;
     }
 
     public VisValidatableTextField getAngularDampingField() { return angularDumpingField; }
