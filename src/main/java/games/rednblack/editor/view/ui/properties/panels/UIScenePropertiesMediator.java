@@ -125,6 +125,7 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
         viewComponent.setAmbientColor(new Color(lightsVO.ambientColor[0], lightsVO.ambientColor[1], lightsVO.ambientColor[2], lightsVO.ambientColor[3]));
         viewComponent.setBlurNum(lightsVO.blurNum + "");
         viewComponent.setDirectionalDegree(lightsVO.directionalDegree + "");
+        viewComponent.setDirectionalHeight(lightsVO.directionalHeight + "");
         viewComponent.setDirectionalRays(lightsVO.directionalRays + "");
         viewComponent.setDirectionalColor(new Color(lightsVO.directionalColor[0], lightsVO.directionalColor[1], lightsVO.directionalColor[2], lightsVO.directionalColor[3]));
 
@@ -150,6 +151,7 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
         lightsVO.blurNum = NumberUtils.toInt(viewComponent.getBlurNumValue(), lightsVO.blurNum);
         lightsVO.lightType = viewComponent.getLightType();
         lightsVO.directionalDegree = NumberUtils.toFloat(viewComponent.getDirectionalDegree(), lightsVO.directionalDegree);
+        lightsVO.directionalHeight = NumberUtils.toFloat(viewComponent.getDirectionalHeight(), lightsVO.directionalHeight);
         lightsVO.directionalRays = NumberUtils.toInt(viewComponent.getDirectionalRays(), lightsVO.directionalRays);
         color = viewComponent.getDirectionalColor();
         lightsVO.directionalColor[0] = color.r;

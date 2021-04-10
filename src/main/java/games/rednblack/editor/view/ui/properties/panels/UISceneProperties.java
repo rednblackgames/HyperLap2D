@@ -54,6 +54,7 @@ public class UISceneProperties extends UIAbstractProperties {
     final private VisSelectBox<String> lightTypeBox;
     final private Spinner directionalRays;
     final private VisTextField directionalDegreeTextField;
+    final private VisTextField directionalHeightTextField;
     final private TintButton directionalLightColor;
 
     VisTable directionalTable = new VisTable();
@@ -75,6 +76,7 @@ public class UISceneProperties extends UIAbstractProperties {
         lightTypeBox = StandardWidgetsFactory.createSelectBox(String.class);
         directionalRays = StandardWidgetsFactory.createNumberSelector(4, 4, 5000);
         directionalDegreeTextField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        directionalHeightTextField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         directionalLightColor = StandardWidgetsFactory.createTintButton();
 
         lightTypeBox.setItems("DIFFUSE", "DIRECTIONAL", "BRIGHT");
@@ -127,6 +129,9 @@ public class UISceneProperties extends UIAbstractProperties {
         directionalTable.add(new VisLabel("Degree:", Align.right)).padRight(5).width(115);
         directionalTable.add(directionalDegreeTextField).width(100);
         directionalTable.row().padTop(5);
+        directionalTable.add(new VisLabel("Height:", Align.right)).padRight(5).width(115);
+        directionalTable.add(directionalHeightTextField).width(100);
+        directionalTable.row().padTop(5);
 
         setListeners();
     }
@@ -134,14 +139,20 @@ public class UISceneProperties extends UIAbstractProperties {
     public void setDirectionalDegree(String degree) {
         this.directionalDegreeTextField.setText(degree);
     }
-
     public String getDirectionalDegree() {
         return directionalDegreeTextField.getText();
     }
+
+    public void setDirectionalHeight(String degree) {
+        this.directionalHeightTextField.setText(degree);
+    }
+    public String getDirectionalHeight() {
+        return directionalHeightTextField.getText();
+    }
+
     public String getDirectionalRays() {
         return directionalRays.getTextField().getText();
     }
-
     public void setDirectionalRays(String rays) {
         this.directionalRays.getTextField().setText(rays);
     }
@@ -264,6 +275,7 @@ public class UISceneProperties extends UIAbstractProperties {
         blurNumTextField.addListener(new KeyboardListener(getUpdateEventName()));
         directionalRays.addListener(new NumberSelectorOverlapListener(getUpdateEventName()));
         directionalDegreeTextField.addListener(new KeyboardListener(getUpdateEventName()));
+        directionalHeightTextField.addListener(new KeyboardListener(getUpdateEventName()));
         lightTypeBox.addListener(new SelectBoxChangeListener(getUpdateEventName()));
         lightTypeBox.addListener(new ChangeListener() {
             @Override
