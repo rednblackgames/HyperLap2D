@@ -228,6 +228,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
                 break;
             case KeyBindingsLayout.HIDE_GUI:
                 uiStage.addAction(Actions.parallel(Actions.fadeOut(0.1f), Actions.touchable(Touchable.disabled)));
+                break;
             case KeyBindingsLayout.TOGGLE_FULL_SCREEN:
                 boolean fullScreen = Gdx.graphics.isFullscreen();
                 Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
