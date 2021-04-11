@@ -112,8 +112,11 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
         //get the entity
         Entity entity = EntityUtils.getByUniqueId(entityId);
         Entity oldParentEntity = EntityUtils.getByUniqueId(parentEntityId);
+        if (entity == null || oldParentEntity == null)
+            return;
         HashSet<Entity> children = EntityUtils.getChildren(entity);
-
+        if (children == null)
+            return;
         // what will be the position diff of children?
         Vector2 positionDiff = EntityUtils.getPosition(entity);
 

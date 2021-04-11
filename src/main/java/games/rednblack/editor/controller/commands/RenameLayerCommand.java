@@ -61,6 +61,11 @@ public class RenameLayerCommand extends EntityModifyRevertibleCommand {
         NodeComponent nodeComponent = ComponentRetriever.get(viewEntity, NodeComponent.class);
         LayerMapComponent layerMapComponent = ComponentRetriever.get(viewEntity, LayerMapComponent.class);
 
+        if (layerMapComponent.getLayer(toName) != null) {
+            cancel();
+            return;
+        }
+
         layerMapComponent.rename(fromName, toName);
 
         for(Entity childEntity: nodeComponent.children) {

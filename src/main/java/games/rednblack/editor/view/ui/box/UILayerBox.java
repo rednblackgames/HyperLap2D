@@ -188,7 +188,7 @@ public class UILayerBox extends UICollapsibleBox {
                 facade.sendNotification(LAYER_ROW_CLICKED, itemSlot.getUiLayerItem());
 
                 // Change name mode on double click.
-                if(getTapCount() == 2 && !itemSlot.getUiLayerItem().getData().isLocked) {
+                if(getTapCount() == 2 && !itemSlot.getUiLayerItem().getData().isLocked && sourceInEdition == null) {
                     sourceInEdition = sourceItem;
                     textField.setDisabled(false);
                     textField.focusField();

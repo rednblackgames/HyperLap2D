@@ -251,6 +251,8 @@ public class EntityUtils {
     public static HashSet<Entity> getChildren(Entity entity) {
         HashSet<Entity> entities;
         NodeComponent nodeComponent = ComponentRetriever.get(entity, NodeComponent.class);
+        if (nodeComponent == null)
+            return null;
         Entity[] children = nodeComponent.children.toArray();
         entities = new HashSet<>(Arrays.asList(children));
 

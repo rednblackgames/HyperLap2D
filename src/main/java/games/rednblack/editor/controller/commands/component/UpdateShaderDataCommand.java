@@ -24,6 +24,10 @@ public class UpdateShaderDataCommand extends EntityModifyRevertibleCommand {
         entityId = EntityUtils.getEntityId(entity);
 
         ShaderComponent shaderComponent = ComponentRetriever.get(entity, ShaderComponent.class);
+        if (shaderComponent == null) {
+            cancel();
+            return;
+        }
 
         backupName = shaderComponent.shaderName;
         backupLayer = shaderComponent.renderingLayer;
@@ -43,6 +47,7 @@ public class UpdateShaderDataCommand extends EntityModifyRevertibleCommand {
     public void undoAction() {
         Entity entity = EntityUtils.getByUniqueId(entityId);
         ShaderComponent shaderComponent = ComponentRetriever.get(entity, ShaderComponent.class);
+        if (shaderComponent == null) return;
 
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
         if(backupName.equals("Default")) {
