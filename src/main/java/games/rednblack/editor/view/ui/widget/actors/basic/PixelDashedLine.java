@@ -54,7 +54,12 @@ public class PixelDashedLine extends Actor {
         int i = 0;
         boolean vertical = Math.abs(getRotation()) == 90;
         float cornerLength = visibleLength * 0.7f;
+        shapeDrawer.setColor(Color.BLACK);
+
         if (vertical) {
+            shapeDrawer.filledRectangle(getX(), getY(), thickness, (float) lineLength);
+            shapeDrawer.setColor(Color.WHITE);
+
             while (i <= lineLength) {
                 if (i + visibleLength + offset < lineLength)
                     shapeDrawer.filledRectangle(getX(), getY() + i + offset, thickness, visibleLength);
@@ -63,6 +68,9 @@ public class PixelDashedLine extends Actor {
             shapeDrawer.filledRectangle(getX(), getY(), thickness, cornerLength);
             shapeDrawer.filledRectangle(getX(), (float) (getY() + lineLength - cornerLength), thickness, cornerLength);
         } else {
+            shapeDrawer.filledRectangle(getX(), getY(), (float) lineLength, thickness);
+            shapeDrawer.setColor(Color.WHITE);
+
             while (i <= lineLength) {
                 if (i + visibleLength + offset < lineLength)
                     shapeDrawer.filledRectangle(getX() + i + offset, getY(), visibleLength, thickness);
