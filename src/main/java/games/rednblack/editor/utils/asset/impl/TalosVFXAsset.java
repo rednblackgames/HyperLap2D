@@ -106,6 +106,9 @@ public class TalosVFXAsset extends Asset {
         try {
             Array<String> resources = talosResources.metadata.resources;
             for (String res : resources) {
+                if (res.endsWith(".fga"))
+                    continue;
+
                 res += ".png";
                 File file = new File(FilenameUtils.getFullPath(fileHandle.path()) + res);
                 if (file.exists()) {
@@ -127,6 +130,21 @@ public class TalosVFXAsset extends Asset {
 
     private boolean addTalosRes(TalosResources talosResources, FileHandle fileHandle, Array<FileHandle> imgs) {
         try {
+            Array<String> resources = talosResources.metadata.resources;
+            for (String res : resources) {
+                if (res.endsWith(".fga")) {
+                    File file = new File(FilenameUtils.getFullPath(fileHandle.path()) + res);
+                    if (file.exists()) {
+                        imgs.add(new FileHandle(file));
+                    } else {
+                        Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                                "\nCould not find " + file.getName() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
+                        imgs.clear();
+                        return false;
+                    }
+                }
+            }
+
             for (TalosResources.Emitter emitter : talosResources.emitters) {
                 for (TalosResources.Module module : emitter.modules) {
                     if (module.get("shdrAssetName") != null) {

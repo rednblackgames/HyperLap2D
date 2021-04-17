@@ -23,6 +23,7 @@ import com.kotcrab.vis.ui.VisUI;
 import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
 import com.talosvfx.talos.runtime.assets.AtlasAssetProvider;
 import com.talosvfx.talos.runtime.utils.ShaderDescriptor;
+import com.talosvfx.talos.runtime.utils.VectorField;
 import games.rednblack.editor.renderer.data.*;
 
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
@@ -253,15 +254,16 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     private void loadCurrentProjectTalosVFXs(String path) {
         talosVFXs.clear();
-        talosShaderPath = path;
+        talosResPath = path;
         FileHandle sourceDir = new FileHandle(path);
         for (FileHandle entry : sourceDir.list()) {
             File file = entry.file();
             String filename = file.getName();
-            if (file.isDirectory() || filename.endsWith(".DS_Store") || filename.endsWith("shdr")) continue;
+            if (file.isDirectory() || filename.endsWith(".DS_Store") || filename.endsWith("shdr") || filename.endsWith(".fga")) continue;
 
             AtlasAssetProvider assetProvider = new AtlasAssetProvider(currentProjectAtlas);
             assetProvider.setAssetHandler(ShaderDescriptor.class, this::findShaderDescriptorOnLoad);
+            assetProvider.setAssetHandler(VectorField.class, this::findVectorFieldDescriptorOnLoad);
             ParticleEffectDescriptor effectDescriptor = new ParticleEffectDescriptor();
             effectDescriptor.setAssetProvider(assetProvider);
             talosVFXsFiles.put(filename, Gdx.files.internal(file.getAbsolutePath()));
@@ -271,16 +273,31 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     }
 
     private ObjectMap<String, ShaderDescriptor> shaderDescriptorObjectMap = new ObjectMap<>();
-    private String talosShaderPath;
+    private String talosResPath;
     private ShaderDescriptor findShaderDescriptorOnLoad (String assetName) {
         ShaderDescriptor asset = shaderDescriptorObjectMap.get(assetName);
         if (asset == null) {
             //Look in all paths, and hopefully load the requested asset, or fail (crash)
-            final FileHandle file = new FileHandle(talosShaderPath + File.separator + assetName);
+            final FileHandle file = new FileHandle(talosResPath + File.separator + assetName);
 
             asset = new ShaderDescriptor();
             if (file.exists()) {
                 asset.setData(file.readString());
+            }
+        }
+        return asset;
+    }
+
+    private ObjectMap<String, VectorField> vectorFieldDescriptorObjectMap = new ObjectMap<>();
+    private VectorField findVectorFieldDescriptorOnLoad (String assetName) {
+        VectorField asset = vectorFieldDescriptorObjectMap.get(assetName);
+        if (asset == null) {
+            final FileHandle file = new FileHandle(talosResPath + File.separator + assetName + ".fga");
+
+            if (file.exists()) {
+                asset = new VectorField(file);
+            } else {
+                asset = new VectorField();
             }
         }
         return asset;
