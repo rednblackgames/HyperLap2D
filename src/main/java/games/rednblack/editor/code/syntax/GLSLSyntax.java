@@ -1,13 +1,12 @@
 package games.rednblack.editor.code.syntax;
 
 import com.badlogic.gdx.graphics.Color;
-import com.kotcrab.vis.ui.util.highlight.Highlighter;
 import games.rednblack.editor.code.MultilineRegexHighlightRule;
 
 /*
 GLSL syntax highlight rules: https://github.com/euler0/sublime-glsl
  */
-public class GLSLSyntax extends Highlighter {
+public class GLSLSyntax extends ProgrammingSyntax {
 
     public GLSLSyntax() {
         //Precision

@@ -8,6 +8,7 @@ import com.kotcrab.vis.ui.widget.H2DHighlightTextArea;
 import com.kotcrab.vis.ui.widget.HighlightTextArea;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.code.syntax.ProgrammingSyntax;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
@@ -18,13 +19,40 @@ public class CodeEditorDialog extends H2DDialog {
     private final HighlightTextArea textArea;
     private String notificationCallback;
 
+    private boolean smartIndent = false;
+
     public CodeEditorDialog() {
         super("Code Editor");
 
         addCloseButton();
         setResizable(true);
 
-        textArea = new H2DHighlightTextArea("", "code-editor");
+        textArea = new H2DHighlightTextArea("", "code-editor") {
+            @Override
+            protected boolean onKeyTyped(InputEvent event, char character) {
+                if (smartIndent && character == '\n' && getLinesBreak().size > (getCursorLine() + 1) * 2 - 1) {
+                    int start = getLinesBreak().get((getCursorLine()) * 2);
+                    int end = getLinesBreak().get((getCursorLine() + 1) * 2 - 1);
+                    if (start >= end)
+                        return false;
+
+                    String prevLines = text.substring(start, end);
+
+                    insertText("\n");
+
+                    for(int i = 0; i < prevLines.length(); i++) {
+                        if(Character.isWhitespace(prevLines.charAt(i)))
+                            insertText(" ");
+                        else
+                            break;
+                    }
+
+                    return true;
+                }
+
+                return false;
+            }
+        };
         ScrollPane scrollPane = textArea.createCompatibleScrollPane();
         scrollPane.addListener(new ScrollFocusListener());
         getContentTable().add(scrollPane).grow().row();
@@ -55,8 +83,10 @@ public class CodeEditorDialog extends H2DDialog {
     }
 
     public void setSyntax(Highlighter syntax) {
-        if (syntax != null)
+        if (syntax != null){
             textArea.setHighlighter(syntax);
+            smartIndent = syntax instanceof ProgrammingSyntax;
+        }
     }
 
     public void setText(String text) {
