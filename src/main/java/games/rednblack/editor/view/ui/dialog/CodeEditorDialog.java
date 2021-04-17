@@ -30,6 +30,11 @@ public class CodeEditorDialog extends H2DDialog {
         textArea = new H2DHighlightTextArea("", "code-editor") {
             @Override
             protected boolean onKeyTyped(InputEvent event, char character) {
+                if (character == '\t') {
+                    insertText("    ");
+                    return true;
+                }
+
                 if (smartIndent && character == '\n' && getLinesBreak().size > (getCursorLine() + 1) * 2 - 1) {
                     int start = getLinesBreak().get((getCursorLine()) * 2);
                     int end = getLinesBreak().get((getCursorLine() + 1) * 2 - 1);
