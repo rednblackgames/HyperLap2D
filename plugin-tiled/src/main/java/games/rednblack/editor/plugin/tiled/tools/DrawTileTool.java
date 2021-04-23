@@ -12,6 +12,7 @@ import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.h2d.common.command.UpdateRegionCommandBuilder;
+import games.rednblack.h2d.common.factory.IFactory;
 import games.rednblack.h2d.common.view.tools.Tool;
 import org.puremvc.java.interfaces.INotification;
 
@@ -156,12 +157,15 @@ public class DrawTileTool implements Tool {
             return;
         }
 
-        Entity imageEntity = tiledPlugin.getAPI().drawImage(tiledPlugin.getSelectedTileName(), new Vector2(newX, newY));
-        MainItemComponent mainItemComponent = ComponentRetriever.get(imageEntity, MainItemComponent.class);
-        mainItemComponent.tags.add(TiledPlugin.TILE_TAG);
+        IFactory itemFactory =  tiledPlugin.getAPI().getItemFactory();
+        if (itemFactory.createSimpleImage(tiledPlugin.getSelectedTileName(), new Vector2(newX, newY))) {
+            Entity imageEntity = itemFactory.getCreatedEntity();
+            MainItemComponent mainItemComponent = ComponentRetriever.get(imageEntity, MainItemComponent.class);
+            mainItemComponent.tags.add(TiledPlugin.TILE_TAG);
 
-        mainItemComponent.setCustomVars(TiledPlugin.ROW, Integer.toString(row));
-        mainItemComponent.setCustomVars(TiledPlugin.COLUMN, Integer.toString(column));
+            mainItemComponent.setCustomVars(TiledPlugin.ROW, Integer.toString(row));
+            mainItemComponent.setCustomVars(TiledPlugin.COLUMN, Integer.toString(column));
+        }
     }
 
     private void drawOnEntity(Entity entity, float x, float y) {

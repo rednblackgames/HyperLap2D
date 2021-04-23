@@ -882,6 +882,7 @@
       vertical: false,
       tabPadding: 20,
       singleLine: true,
+      font: default-font,
       buttonStyle: {
         down: tab-active,
         up: tab-inactive,

@@ -2,13 +2,13 @@ package games.rednblack.editor.plugin.tiled.view.tabs;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.kotcrab.vis.ui.widget.VisLabel;
-import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
 import games.rednblack.editor.plugin.tiled.TiledPanel;
+import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
 
 /**
  * Created by mariam on 10/30/15.
  */
-public class DefaultTab extends Tab {
+public class DefaultTab extends ImageTab {
 
     protected TiledPanel panel;
     protected int tabIndex;
@@ -29,6 +29,11 @@ public class DefaultTab extends Tab {
     @Override
     public String getTabTitle () {
         return tabTitle;
+    }
+
+    @Override
+    public String getTabIconStyle() {
+        return null;
     }
 
     @Override

@@ -16,6 +16,7 @@ import games.rednblack.editor.plugin.tiled.TiledPanel;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.plugin.tiled.data.TileVO;
 import games.rednblack.editor.plugin.tiled.manager.ResourcesManager;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by mariam on 2/11/16.
@@ -118,7 +119,8 @@ public class GridTilesTab extends DefaultTab {
         tiles.clear();
 
         VisTable listTable = new VisTable();
-        pane = new VisScrollPane(listTable);
+        pane = StandardWidgetsFactory.createScrollPane(listTable);
+        pane.setScrollingDisabled(true, false);
         content.add(pane)
                 .padTop(10);
         listTable.top();
@@ -127,7 +129,7 @@ public class GridTilesTab extends DefaultTab {
             tilesCount = tileIndex + 1;
         }
 
-        for (int i=0; i<tilesCount; i++) {
+        for (int i = 0; i < tilesCount + 1; i++) {
             VisImageButton ct;
             VisImageButton.VisImageButtonStyle imageBoxStyle = new VisImageButton.VisImageButtonStyle();
             NinePatchDrawable inactive = new NinePatchDrawable(new NinePatch(resourcesManager.getPluginNinePatch("image-Box-inactive")));

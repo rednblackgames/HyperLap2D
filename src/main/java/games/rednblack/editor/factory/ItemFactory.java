@@ -21,7 +21,6 @@ package games.rednblack.editor.factory;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -29,7 +28,6 @@ import games.rednblack.editor.controller.commands.PasteItemsCommand;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.SceneLoader;
-import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.factory.EntityFactory;
@@ -37,6 +35,7 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.tools.TextTool;
 import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
+import games.rednblack.h2d.common.factory.IFactory;
 
 import java.util.HashMap;
 
@@ -44,12 +43,12 @@ import java.util.HashMap;
  * Created by azakhary on 6/5/2015.
  *
  */
-public class ItemFactory {
+public class ItemFactory implements IFactory {
 
-    private EntityFactory entityFactory;
-    private SceneLoader sceneLoader;
-    private Sandbox sandbox;
-    private Entity imageEntity;
+    private final EntityFactory entityFactory;
+    private final SceneLoader sceneLoader;
+    private final Sandbox sandbox;
+    private Entity createdEntity;
 
     private static ItemFactory instance;
 
@@ -85,19 +84,21 @@ public class ItemFactory {
         return true;
     }
 
+    @Override
     public boolean createSimpleImage(String regionName, Vector2 position) {
         SimpleImageVO vo = new SimpleImageVO();
         vo.imageName = regionName;
 
         if(!setEssentialData(vo, position)) return false;
-        imageEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), vo);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, imageEntity);
+        createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), vo);
+        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         return true;
     }
 
-    public Entity getImageEntity() {
-        return imageEntity;
+    @Override
+    public Entity getCreatedEntity() {
+        return createdEntity;
     }
 
     public boolean create9Patch(String regionName, Vector2 position) {
@@ -105,31 +106,33 @@ public class ItemFactory {
         vo.imageName = regionName;
 
         if(!setEssentialData(vo, position)) return false;
-        Entity entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), vo);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
+        createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), vo);
+        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         return true;
     }
 
+    @Override
     public boolean createSpriteAnimation(String animationName, Vector2 position) {
         SpriteAnimationVO vo = new SpriteAnimationVO();
         vo.animationName = animationName;
         vo.playMode = 2;
 
         if(!setEssentialData(vo, position)) return false;
-        Entity entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), vo);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
+        createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), vo);
+        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         return true;
     }
 
+    @Override
     public boolean createSpineAnimation(String animationName, Vector2 position) {
         SpineVO vo = new SpineVO();
         vo.animationName = animationName;
 
         if(!setEssentialData(vo, position)) return false;
-        Entity entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), vo);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
+        createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), vo);
+        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         return true;
     }
@@ -148,6 +151,7 @@ public class ItemFactory {
         return true;
     }
 
+    @Override
     public boolean createItemFromLibrary(String libraryName, Vector2 position) {
         ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
         HashMap<String, CompositeItemVO> libraryItems = projectManager.currentProjectInfoVO.libraryItems;
@@ -155,15 +159,15 @@ public class ItemFactory {
         CompositeItemVO itemVO = libraryItems.get(libraryName);
         itemVO.uniqueId = -1;
         PasteItemsCommand.forceIdChange(itemVO.composite);
-        Entity entity = createCompositeItem(itemVO, position);
+        createdEntity = createCompositeItem(itemVO, position);
 
-        if (entity == null) return false;
+        if (createdEntity == null) return false;
 
         //adding library name
-        MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+        MainItemComponent mainItemComponent = ComponentRetriever.get(createdEntity, MainItemComponent.class);
         mainItemComponent.libraryLink = libraryName;
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
+        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         return true;
     }

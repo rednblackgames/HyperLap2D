@@ -19,21 +19,20 @@
 package games.rednblack.editor.plugin.tiled;
 
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
-import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane;
-import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneListener;
 import games.rednblack.editor.plugin.tiled.data.TileVO;
 import games.rednblack.editor.plugin.tiled.manager.ResourcesManager;
 import games.rednblack.editor.plugin.tiled.view.tabs.GridTilesTab;
 import games.rednblack.editor.plugin.tiled.view.tabs.SettingsTab;
 import games.rednblack.h2d.common.UIDraggablePanel;
+import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
+import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPane;
+import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPaneListener;
 import org.puremvc.java.interfaces.IFacade;
 
 /**
@@ -47,19 +46,16 @@ public class TiledPanel extends UIDraggablePanel {
     public static final float DROP_HEIGHT = 140f;
     public static final float SETTINGS_WIDTH = 200f;
     public static final float SETTINGS_HEIGHT = 150f;
-    public static final float BOTTOM_BAR_X = 177f;
-    public static final float BOTTOM_BAR_DELTA_Y = 6f;
 
     public TiledPlugin tiledPlugin;
     private IFacade facade;
 
-    protected TabbedPane tabbedPane;
+    protected ImageTabbedPane tabbedPane;
     protected VisTable tabTable; //table inside of each tab
     protected Table paneTable; //table for 'tabs' row
 
     private GridTilesTab tilesTab;
     private SettingsTab settingsTab;
-    private Image bottomBar;
     private VisTable mainTable;
     private Engine engine;
     private ResourcesManager resourcesManager;
@@ -79,30 +75,20 @@ public class TiledPanel extends UIDraggablePanel {
     }
 
     public void initView() {
-        if (bottomBar == null) {
+        if (resourcesManager == null)
             this.resourcesManager = tiledPlugin.pluginRM;
-            bottomBar = new Image(resourcesManager.getTextureRegion("tab-back-line"));
-            bottomBar.setWidth(80);
-            addActorBefore(mainTable, bottomBar);
-        }
-
         mainTable.clear();
 
-        TabbedPane.TabbedPaneStyle style = new TabbedPane.TabbedPaneStyle();
         VisTextButton.VisTextButtonStyle btnStyle = new VisTextButton.VisTextButtonStyle();
         btnStyle.up = new TextureRegionDrawable(resourcesManager.getTextureRegion("plugin-tab-inactive"));
         btnStyle.checked = new TextureRegionDrawable(resourcesManager.getTextureRegion("plugin-tab-active"));
         btnStyle.font = VisUI.getSkin().getFont("default-font");
         btnStyle.fontColor = VisUI.getSkin().getColor("white");
-        style.buttonStyle = btnStyle;
-        tabbedPane = new TabbedPane(style);
+        tabbedPane = new ImageTabbedPane();
         paneTable = tabbedPane.getTable();
 
-        mainTable.add(paneTable)
-                .left()
-                .top()
-                .expandX()
-                .row();
+        mainTable.add(paneTable).growX();
+        mainTable.row();
 
         tabTable.clear();
         paneTable.row();
@@ -111,10 +97,10 @@ public class TiledPanel extends UIDraggablePanel {
                 .top()
                 .row();
 
-        tabbedPane.addListener(new TabbedPaneListener() {
+        tabbedPane.addListener(new ImageTabbedPaneListener() {
 
             @Override
-            public void switchedTab (Tab tab) {
+            public void switchedTab (ImageTab tab) {
                 if (tab == null) {
                     return;
                 }
@@ -143,12 +129,11 @@ public class TiledPanel extends UIDraggablePanel {
                         .row();
                 pack();
 
-                setBottomBarPosition(HEIGHT);
                 setFixedPosition();
             }
 
             @Override
-            public void removedTab(Tab tab) {
+            public void removedTab(ImageTab tab) {
 
             }
 
@@ -162,11 +147,6 @@ public class TiledPanel extends UIDraggablePanel {
         initTabs();
 
         pack();
-    }
-
-    public void setBottomBarPosition(float panelHeight) {
-        bottomBar.setX(BOTTOM_BAR_X);
-        bottomBar.setY(panelHeight + BOTTOM_BAR_DELTA_Y);
     }
 
     public void setFixedPosition() {
@@ -216,7 +196,6 @@ public class TiledPanel extends UIDraggablePanel {
                 .width(width)
                 .height(height);
         tabTable.pack();
-        setBottomBarPosition(height);
         pack();
     }
 

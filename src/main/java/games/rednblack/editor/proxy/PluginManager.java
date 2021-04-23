@@ -30,6 +30,7 @@ import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.IItemCommand;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.common.factory.IFactory;
 import games.rednblack.h2d.common.plugins.H2DPlugin;
 import games.rednblack.h2d.common.plugins.PluginAPI;
 import games.rednblack.h2d.common.proxy.CursorManager;
@@ -224,10 +225,8 @@ public class PluginManager extends Proxy implements PluginAPI {
     }
 
     @Override
-    public Entity drawImage(String regionName, Vector2 position) {
-        ItemFactory itemFactory = ItemFactory.get();
-        itemFactory.createSimpleImage(regionName, position);
-        return itemFactory.getImageEntity();
+    public IFactory getItemFactory() {
+        return ItemFactory.get();
     }
 
     public boolean isEntityVisible(Entity e) {
