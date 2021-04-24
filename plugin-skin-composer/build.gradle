@@ -30,4 +30,12 @@ task dist(type: Jar) {
     from files(sourceSets.main.output.resourcesDir)
 
     destinationDirectory = file("../build/lib/plugins")
+
+    doLast {
+        def jarToCopy = archiveFileName.get()
+        copy {
+            from "../build/lib/plugins/$jarToCopy"
+            into "../assets/plugins"
+        }
+    }
 }
