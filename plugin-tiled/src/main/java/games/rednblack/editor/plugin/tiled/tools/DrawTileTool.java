@@ -143,6 +143,8 @@ public class DrawTileTool implements Tool {
         gridHeight = tiledPlugin.dataToSave.getParameterVO().gridHeight;
     }
 
+    private final Vector2 temp = new Vector2();
+
     private void drawImage(float x, float y) {
         if (tiledPlugin.getSelectedTileName().equals("")) return;
 
@@ -158,13 +160,18 @@ public class DrawTileTool implements Tool {
         }
 
         IFactory itemFactory =  tiledPlugin.getAPI().getItemFactory();
-        if (itemFactory.createSimpleImage(tiledPlugin.getSelectedTileName(), new Vector2(newX, newY))) {
+        temp.set(newX, newY);
+        if (itemFactory.createSimpleImage(tiledPlugin.getSelectedTileName(), temp)) {
             Entity imageEntity = itemFactory.getCreatedEntity();
             MainItemComponent mainItemComponent = ComponentRetriever.get(imageEntity, MainItemComponent.class);
             mainItemComponent.tags.add(TiledPlugin.TILE_TAG);
 
             mainItemComponent.setCustomVars(TiledPlugin.ROW, Integer.toString(row));
             mainItemComponent.setCustomVars(TiledPlugin.COLUMN, Integer.toString(column));
+
+            TransformComponent transformComponent = ComponentRetriever.get(imageEntity, TransformComponent.class);
+            transformComponent.x = newX;
+            transformComponent.y = newY;
         }
     }
 
