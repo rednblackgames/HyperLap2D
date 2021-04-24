@@ -120,8 +120,7 @@ public class FontManager extends Proxy {
             try {
                 if (!systemFontMap.containsValue(file.getAbsolutePath())) {
                     f = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(file.getAbsolutePath()));
-                    String name = f.getFamily();
-                    systemFontMap.put(name, file.getAbsolutePath());
+                    systemFontMap.put(f.getName(), file.getAbsolutePath());
                 }
             } catch (FontFormatException | IOException e) {
                 e.printStackTrace();
