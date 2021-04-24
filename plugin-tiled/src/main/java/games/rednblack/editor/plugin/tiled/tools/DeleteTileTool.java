@@ -7,6 +7,9 @@ import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.tools.Tool;
 import org.puremvc.java.interfaces.INotification;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by mariam on 4/5/16.
  */
@@ -106,11 +109,13 @@ public class DeleteTileTool implements Tool {
         }
     }
 
+    Set<Entity> items = new HashSet<>();
     private void deleteEntity(Entity entity) {
         if (tiledPlugin.isTile(entity) && tiledPlugin.isOnCurrentSelectedLayer(entity)) {
-            tiledPlugin.getAPI().removeFollower(entity);
-            tiledPlugin.getAPI().getEngine().removeEntity(entity);
-            tiledPlugin.facade.sendNotification(MsgAPI.DELETE_ITEMS_COMMAND_DONE);
+            items.clear();
+            items.add(entity);
+            tiledPlugin.facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, items);
+            tiledPlugin.facade.sendNotification(MsgAPI.ACTION_DELETE);
         }
     }
 
