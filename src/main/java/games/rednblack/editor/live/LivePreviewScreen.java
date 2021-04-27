@@ -16,6 +16,7 @@ import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.SceneLoader;
+import games.rednblack.editor.renderer.components.additional.ButtonComponent;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extention.spine.SpineItemType;
@@ -60,6 +61,8 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
         Gdx.input.setInputProcessor(new GestureDetector(this));
 
         cameraTargetPos.set(mCamera.position);
+
+        sceneLoader.addComponentByTagName("button", ButtonComponent.class);
     }
 
     @Override
