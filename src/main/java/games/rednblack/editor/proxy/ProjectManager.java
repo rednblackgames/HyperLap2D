@@ -149,12 +149,36 @@ public class ProjectManager extends Proxy {
         FileUtils.writeStringToFile(new File(projPath + "/project.dt"), projInfoVo.constructJsonString(), "utf-8");
     }
 
+    public void openProjectFromPath(String path) {
+        FileHandle projectFile = new FileHandle(path);
+        if (!projectFile.exists() || !projectFile.extension().equals("h2d")
+                || !projectFile.file().canRead() || !projectFile.file().canWrite())
+            return;
+        FileHandle projectFolder = projectFile.parent();
+        String projectName = projectFolder.name();
+        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+        settingsManager.setLastOpenedPath(projectFolder.parent().path());
+
+        // here we load all data
+        openProjectAndLoadAllData(projectFolder.path());
+        Sandbox.getInstance().loadCurrentProject();
+
+        facade.sendNotification(ProjectManager.PROJECT_OPENED);
+
+        //Set title with opened file path
+        setWindowTitle(getFormattedTitle(path));
+    }
+
     public void openProjectAndLoadAllData(String projectPath) {
         openProjectAndLoadAllData(projectPath, null);
     }
 
     public void openProjectAndLoadAllData(String projectPath, String resolution) {
         String prjFilePath = projectPath + "/project.h2d";
+        FileHandle projectFile = Gdx.files.internal(prjFilePath);
+        if (!projectFile.exists() || !projectFile.extension().equals("h2d")
+                || !projectFile.file().canRead() || !projectFile.file().canWrite())
+            return;
 
         PreferencesManager prefs = PreferencesManager.getInstance();
         prefs.buildRecentHistory();
@@ -175,7 +199,7 @@ public class ProjectManager extends Proxy {
                     e.printStackTrace();
                 }
             }
-            FileHandle projectFile = Gdx.files.internal(prjFilePath);
+
             String projectContents = null;
             try {
                 projectContents = FileUtils.readFileToString(projectFile.file(), "utf-8");
@@ -615,24 +639,6 @@ public class ProjectManager extends Proxy {
             e.printStackTrace();
         }
     }
-
-    public void openProjectFromPath(String path) {
-        File projectFile = new File(path);
-        File projectFolder = projectFile.getParentFile();
-        String projectName = projectFolder.getName();
-        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
-        settingsManager.setLastOpenedPath(projectFolder.getParentFile().getPath());
-
-        // here we load all data
-        openProjectAndLoadAllData(projectFolder.getPath());
-        Sandbox.getInstance().loadCurrentProject();
-
-        facade.sendNotification(ProjectManager.PROJECT_OPENED);
-
-        //Set title with opened file path
-        setWindowTitle(getFormattedTitle(path));
-    }
-
 
     private String getFormattedTitle(String path) {
         //App Name + path to opened file
