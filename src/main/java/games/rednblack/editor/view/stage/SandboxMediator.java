@@ -151,7 +151,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
     private void handleSceneLoaded(INotification notification) {
         initItemListeners();
 
-        setCurrentTool(SelectionTool.NAME);
+        facade.sendNotification(MsgAPI.TOOL_CLICKED, SelectionTool.NAME);
     }
 
     private void initItemListeners() {
