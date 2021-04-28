@@ -1,3 +1,9 @@
+[0.0.7]
+= Editor =
+- Huge improvements to Tiled Plugin:
+    * Sprite and Spine animated Tiles
+    * UI improvements and general refactoring
+
 [0.0.6]
 - Update libGDX to 1.10.0
 - Add flipX and flipY flag

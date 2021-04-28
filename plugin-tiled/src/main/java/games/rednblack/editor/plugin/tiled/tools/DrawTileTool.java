@@ -2,38 +2,51 @@ package games.rednblack.editor.plugin.tiled.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.kotcrab.vis.ui.util.OsUtils;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
-import games.rednblack.editor.renderer.components.MainItemComponent;
+import games.rednblack.editor.plugin.tiled.tools.drawStrategy.IDrawStrategy;
+import games.rednblack.editor.plugin.tiled.tools.drawStrategy.ImageDrawStrategy;
+import games.rednblack.editor.plugin.tiled.tools.drawStrategy.SpineDrawStrategy;
+import games.rednblack.editor.plugin.tiled.tools.drawStrategy.SpriteDrawStrategy;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
+import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
-import games.rednblack.h2d.common.command.UpdateRegionCommandBuilder;
-import games.rednblack.h2d.common.factory.IFactory;
 import games.rednblack.h2d.common.view.tools.Tool;
+import games.rednblack.h2d.common.vo.CursorData;
 import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by mariam on 3/29/16.
  */
 public class DrawTileTool implements Tool {
-
+    private static final CursorData CURSOR = new CursorData("tile-cursor", 14, 14);
     public static final String NAME = "TILE_ADD_TOOL";
 
     private TiledPlugin tiledPlugin;
     private float gridWidth;
     private float gridHeight;
 
+    private final ImageDrawStrategy imageDrawStrategy;
+    private final SpriteDrawStrategy spriteDrawStrategy;
+    private final SpineDrawStrategy spineDrawStrategy;
+    private IDrawStrategy currentDrawStrategy;
+
     public DrawTileTool(TiledPlugin tiledPlugin) {
         this.tiledPlugin = tiledPlugin;
+        imageDrawStrategy = new ImageDrawStrategy(tiledPlugin);
+        spriteDrawStrategy = new SpriteDrawStrategy(tiledPlugin);
+        spineDrawStrategy = new SpineDrawStrategy(tiledPlugin);
     }
 
     @Override
     public void initTool() {
-
+        Texture cursorTexture = tiledPlugin.pluginRM.getTexture(CURSOR.region);
+        tiledPlugin.getAPI().setCursor(CURSOR, new TextureRegion(cursorTexture));
     }
 
     @Override
@@ -49,7 +62,7 @@ public class DrawTileTool implements Tool {
     @Override
     public boolean stageMouseDown(float x, float y) {
         initGridThings();
-        drawImage(x, y);
+        drawTile(x, y);
         return true;
     }
 
@@ -59,7 +72,7 @@ public class DrawTileTool implements Tool {
 
     @Override
     public void stageMouseDragged(float x, float y) {
-        drawImage(x, y);
+        drawTile(x, y);
     }
 
     @Override
@@ -75,7 +88,10 @@ public class DrawTileTool implements Tool {
     @Override
     public boolean itemMouseDown(Entity entity, float x, float y) {
         initGridThings();
-        drawOnEntity(entity, x, y);
+        if (entity == null)
+            drawTile(x, y);
+        else
+            drawOnEntity(entity);
         return true;
     }
 
@@ -85,33 +101,27 @@ public class DrawTileTool implements Tool {
 
     @Override
     public void itemMouseDragged(Entity entity, float x, float y) {
-        drawImage(x, y);
+        drawTile(x, y);
     }
 
     @Override
     public void itemMouseDoubleClick(Entity entity, float x, float y) {
         if (!tiledPlugin.isOnCurrentSelectedLayer(entity)) return;
-        if (entity != null) {
-            TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
-            if (textureRegionComponent != null && tiledPlugin.isTile(entity)) {
-                // there is already other tile under this one
-                if (textureRegionComponent.regionName.equals(tiledPlugin.getSelectedTileName())) {
-                    //rotate
-                    TransformCommandBuilder commandBuilder = new TransformCommandBuilder();
-                    commandBuilder.begin(entity);
-                    TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
-                    if (transformComponent.scaleX > 0 && transformComponent.scaleY > 0) {
-                        commandBuilder.setScale(transformComponent.scaleX * -1f, transformComponent.scaleY);
-                    } else if (transformComponent.scaleX < 0 && transformComponent.scaleY > 0) {
-                        commandBuilder.setScale(transformComponent.scaleX, transformComponent.scaleY * -1f);
-                    } else if (transformComponent.scaleX < 0 && transformComponent.scaleY < 0) {
-                        commandBuilder.setScale(transformComponent.scaleX * -1f, transformComponent.scaleY);
-                    } else if (transformComponent.scaleX > 0 && transformComponent.scaleY < 0) {
-                        commandBuilder.setScale(transformComponent.scaleX, transformComponent.scaleY * -1f);
-                    }
-                    commandBuilder.execute(tiledPlugin.facade);
-                }
+        if (entity != null && tiledPlugin.isTile(entity)) {
+            //rotate
+            TransformCommandBuilder commandBuilder = new TransformCommandBuilder();
+            commandBuilder.begin(entity);
+            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+            if (transformComponent.scaleX > 0 && transformComponent.scaleY > 0) {
+                commandBuilder.setScale(transformComponent.scaleX * -1f, transformComponent.scaleY);
+            } else if (transformComponent.scaleX < 0 && transformComponent.scaleY > 0) {
+                commandBuilder.setScale(transformComponent.scaleX, transformComponent.scaleY * -1f);
+            } else if (transformComponent.scaleX < 0 && transformComponent.scaleY < 0) {
+                commandBuilder.setScale(transformComponent.scaleX * -1f, transformComponent.scaleY);
+            } else if (transformComponent.scaleX > 0 && transformComponent.scaleY < 0) {
+                commandBuilder.setScale(transformComponent.scaleX, transformComponent.scaleY * -1f);
             }
+            commandBuilder.execute(tiledPlugin.facade);
         }
     }
 
@@ -143,9 +153,23 @@ public class DrawTileTool implements Tool {
         gridHeight = tiledPlugin.dataToSave.getParameterVO().gridHeight;
     }
 
-    private final Vector2 temp = new Vector2();
+    private void chooseDrawStrategy() {
+        switch (tiledPlugin.getSelectedTileType()) {
+            case EntityFactory.IMAGE_TYPE:
+                currentDrawStrategy = imageDrawStrategy;
+                break;
+            case EntityFactory.SPRITE_TYPE:
+                currentDrawStrategy = spriteDrawStrategy;
+                break;
+            case EntityFactory.SPINE_TYPE:
+                currentDrawStrategy = spineDrawStrategy;
+                break;
+            default:
+                currentDrawStrategy = null;
+        }
+    }
 
-    private void drawImage(float x, float y) {
+    private void drawTile(float x, float y) {
         if (tiledPlugin.getSelectedTileName().equals("")) return;
 
         float newX = MathUtils.floor(x / gridWidth) * gridWidth + tiledPlugin.getSelectedTileGridOffset().x;
@@ -153,53 +177,12 @@ public class DrawTileTool implements Tool {
         int row = MathUtils.floor(newY / gridHeight);
         int column = MathUtils.round(newX / gridWidth);
 
-        Entity underneathTile = tiledPlugin.getPluginEntityWithParams(row, column);
-        if (underneathTile != null) {
-            drawOnEntity(underneathTile, x, y);
-            return;
-        }
-
-        IFactory itemFactory =  tiledPlugin.getAPI().getItemFactory();
-        temp.set(newX, newY);
-        if (itemFactory.createSimpleImage(tiledPlugin.getSelectedTileName(), temp)) {
-            Entity imageEntity = itemFactory.getCreatedEntity();
-            MainItemComponent mainItemComponent = ComponentRetriever.get(imageEntity, MainItemComponent.class);
-            mainItemComponent.tags.add(TiledPlugin.TILE_TAG);
-
-            mainItemComponent.setCustomVars(TiledPlugin.ROW, Integer.toString(row));
-            mainItemComponent.setCustomVars(TiledPlugin.COLUMN, Integer.toString(column));
-
-            TransformComponent transformComponent = ComponentRetriever.get(imageEntity, TransformComponent.class);
-            transformComponent.x = newX;
-            transformComponent.y = newY;
-        }
+        chooseDrawStrategy();
+        currentDrawStrategy.drawTile(newX, newY, row, column);
     }
 
-    private void drawOnEntity(Entity entity, float x, float y) {
-        if (!tiledPlugin.isOnCurrentSelectedLayer(entity)) return;
-        if (entity != null) {
-            TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
-            if (textureRegionComponent != null && textureRegionComponent.regionName != null
-                    && tiledPlugin.isTile(entity)) {
-                // there is already other tile under this one
-                if(textureRegionComponent.regionName.equals(tiledPlugin.getSelectedTileName())) {
-                    return;
-                } else {
-                    //replace
-                    updateRegion(entity, tiledPlugin.getSelectedTileName());
-                }
-            }
-            return;
-        }
-        drawImage(x, y);
+    private void drawOnEntity(Entity entity) {
+        chooseDrawStrategy();
+        currentDrawStrategy.updateTile(entity);
     }
-
-    private void updateRegion(Entity entity, String region) {
-        UpdateRegionCommandBuilder builder = new UpdateRegionCommandBuilder();
-        builder.begin(entity);
-        builder.setRegion(tiledPlugin.getAPI().getSceneLoader().getRm().getTextureRegion(region));
-        builder.setRegionName(tiledPlugin.getSelectedTileName());
-        builder.execute(tiledPlugin.facade);
-    }
-
 }

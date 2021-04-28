@@ -2,6 +2,7 @@ package games.rednblack.editor.plugin.tiled.view.tabs;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -16,6 +17,8 @@ import games.rednblack.editor.plugin.tiled.TiledPanel;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.plugin.tiled.data.TileVO;
 import games.rednblack.editor.plugin.tiled.manager.ResourcesManager;
+import games.rednblack.editor.plugin.tiled.view.SpineDrawable;
+import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
@@ -49,8 +52,8 @@ public class GridTilesTab extends DefaultTab {
     public void initView() {
         if (isDrop = savedTiles.size == 0) {
             VisImageButton.VisImageButtonStyle dropBoxStyle = new VisImageButton.VisImageButtonStyle();
-            dropBoxStyle.up = new TextureRegionDrawable(resourcesManager.getTextureRegion("tiles-drop-here-normal"));
-            dropBoxStyle.imageOver = new TextureRegionDrawable(resourcesManager.getTextureRegion("tiles-drop-here-over"));
+            dropBoxStyle.up = new TextureRegionDrawable(resourcesManager.getTextureRegion("tiles-drop-here-normal", -1));
+            dropBoxStyle.imageOver = new TextureRegionDrawable(resourcesManager.getTextureRegion("tiles-drop-here-over", -1));
             VisImageButton dropRegion = new VisImageButton(dropBoxStyle);
             content.clear();
             content.add(dropRegion)
@@ -72,14 +75,14 @@ public class GridTilesTab extends DefaultTab {
         }
     }
 
-    public void addTile(String tileName) {
+    public void addTile(String tileName, int type) {
         if (pane != null) isBottomEdge = pane.isBottomEdge();
         if (tileIndex == 0) {
-            setGridSizeToFirstTileSize(tileName);
+            setGridSizeToFirstTileSize(tileName, type);
             isDrop = false;
             panel.reInitTabTable();
         }
-        initTiles(tileName);
+        initTiles(tileName, type);
         panel.pack();
         scrollTiles();
         tiles.get(tileIndex).setChecked(true);
@@ -107,14 +110,25 @@ public class GridTilesTab extends DefaultTab {
         }
     }
 
-    private void setGridSizeToFirstTileSize(String tileName) {
-        float gridWidth = resourcesManager.getTextureRegion(tileName).getRegionWidth() / tiledPlugin.getPixelToWorld();
-        float gridHeight = resourcesManager.getTextureRegion(tileName).getRegionHeight() / tiledPlugin.getPixelToWorld();
+    private void setGridSizeToFirstTileSize(String tileName, int type) {
+        float width = 0;
+        float height = 0;
+        if (type == EntityFactory.SPINE_TYPE) {
+            SpineDrawable spineDrawable = tiledPlugin.pluginRM.getSpineDrawable(tileName);
+            width = spineDrawable.width;
+            height = spineDrawable.height;
+        } else {
+            TextureRegion r = tiledPlugin.pluginRM.getTextureRegion(tileName, type);
+            width = r.getRegionWidth();
+            height = r.getRegionHeight();
+        }
+        float gridWidth = width / tiledPlugin.getPixelToWorld();
+        float gridHeight = height / tiledPlugin.getPixelToWorld();
         tiledPlugin.dataToSave.setGrid(gridWidth, gridHeight);
         tiledPlugin.facade.sendNotification(TiledPlugin.GRID_CHANGED);
     }
 
-    private void initTiles(String tileName) {
+    private void initTiles(String tileName, int type) {
         content.clear();
         tiles.clear();
 
@@ -140,10 +154,19 @@ public class GridTilesTab extends DefaultTab {
             imageBoxStyle.over = active;
             Drawable tileDrawable = null;
             if (i < savedTiles.size) {
-                tileDrawable = new TextureRegionDrawable(resourcesManager.getTextureRegion(savedTiles.get(i).regionName));
+                int t =  savedTiles.get(i).entityType;
+                if (t == EntityFactory.SPINE_TYPE) {
+                    tileDrawable = resourcesManager.getSpineDrawable(savedTiles.get(i).regionName);
+                } else {
+                    tileDrawable = new TextureRegionDrawable(resourcesManager.getTextureRegion(savedTiles.get(i).regionName, t));
+                }
             } else if (!tileName.equals("")) {
                 if (i == tileIndex) {
-                    tileDrawable = new TextureRegionDrawable(resourcesManager.getTextureRegion(tileName));
+                    if (type == EntityFactory.SPINE_TYPE) {
+                        tileDrawable = resourcesManager.getSpineDrawable(tileName);
+                    } else {
+                        tileDrawable = new TextureRegionDrawable(resourcesManager.getTextureRegion(tileName, type));
+                    }
                 }
             }
             imageBoxStyle.imageUp = tileDrawable;
@@ -198,6 +221,6 @@ public class GridTilesTab extends DefaultTab {
     }
 
     private void initTiles() {
-        initTiles("");
+        initTiles("", -1);
     }
 }

@@ -1,6 +1,7 @@
 package games.rednblack.editor.plugin.tiled.data;
 
 import com.badlogic.gdx.math.Vector2;
+import games.rednblack.editor.renderer.factory.EntityFactory;
 
 /**
  * Created by mariam on 5/13/16.
@@ -9,6 +10,7 @@ public class TileVO {
 
     public String regionName = "";
     public Vector2 gridOffset;
+    public int entityType = EntityFactory.IMAGE_TYPE;
 
     public TileVO() {
         gridOffset = new Vector2();

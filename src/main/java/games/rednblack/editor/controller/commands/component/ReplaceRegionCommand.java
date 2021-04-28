@@ -1,17 +1,19 @@
-package games.rednblack.editor.controller.commands;
+package games.rednblack.editor.controller.commands.component;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
+import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 
-public class UpdateRegionCommand extends EntityModifyRevertibleCommand {
+public class ReplaceRegionCommand extends EntityModifyRevertibleCommand {
 
     private Integer entityId;
     private String backupRegionName;
@@ -28,6 +30,7 @@ public class UpdateRegionCommand extends EntityModifyRevertibleCommand {
 
         TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
         DimensionsComponent size = ComponentRetriever.get(entity, DimensionsComponent.class);
+        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
 
         backupRegionName = textureRegionComponent.regionName;
         backupRegion = textureRegionComponent.region;
@@ -39,6 +42,9 @@ public class UpdateRegionCommand extends EntityModifyRevertibleCommand {
         size.width = textureRegionComponent.region.getRegionWidth() / ppwu;
         size.height = textureRegionComponent.region.getRegionHeight() / ppwu;
 
+        transformComponent.originX = size.width / 2;
+        transformComponent.originY = size.height / 2;
+
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
@@ -48,6 +54,7 @@ public class UpdateRegionCommand extends EntityModifyRevertibleCommand {
 
         TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
         DimensionsComponent size = ComponentRetriever.get(entity, DimensionsComponent.class);
+        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
 
         textureRegionComponent.regionName = backupRegionName;
         textureRegionComponent.region = backupRegion;
@@ -55,6 +62,9 @@ public class UpdateRegionCommand extends EntityModifyRevertibleCommand {
         float ppwu = projectInfoVO.pixelToWorld;
         size.width = textureRegionComponent.region.getRegionWidth() / ppwu;
         size.height = textureRegionComponent.region.getRegionHeight() / ppwu;
+
+        transformComponent.originX = size.width / 2;
+        transformComponent.originY = size.height / 2;
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

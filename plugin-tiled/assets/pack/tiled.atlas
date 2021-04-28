@@ -2,29 +2,16 @@ tiled.png
 	size: 512, 128
 	filter: Linear, Linear
 image-Box-active
-	bounds: 87, 22, 4, 4
+	bounds: 25, 20, 4, 4
 	split: 1, 1, 1, 1
 image-Box-inactive
-	bounds: 436, 31, 4, 4
+	bounds: 435, 95, 4, 4
 	split: 1, 1, 1, 1
-plugin-tab-active
-	bounds: 436, 105, 73, 21
-	split: 4, 4, 3, 0
-plugin-tab-inactive
-	bounds: 2, 5, 83, 21
-	split: 3, 3, 2, 1
-tab-back-line
-	bounds: 2, 2, 2, 1
-	split: 0, 0, 0, 0
-tile
-	bounds: 436, 71, 32, 32
-tile-eraser
-	bounds: 436, 37, 32, 32
 tiles-drop-here-normal
-	bounds: 2, 28, 215, 98
+	bounds: 1, 26, 215, 98
 tiles-drop-here-over
-	bounds: 219, 28, 215, 98
+	bounds: 218, 26, 215, 98
 tool-tilebrush
-	bounds: 470, 80, 22, 23
+	bounds: 1, 1, 22, 23
 tool-tileeraser
-	bounds: 470, 55, 22, 23
+	bounds: 435, 101, 22, 23

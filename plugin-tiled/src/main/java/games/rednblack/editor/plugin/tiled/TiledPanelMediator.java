@@ -22,8 +22,11 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import games.rednblack.editor.plugin.tiled.view.SpineDrawable;
+import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.h2d.common.vo.CursorData;
 import games.rednblack.editor.plugin.tiled.data.TileVO;
 import games.rednblack.editor.plugin.tiled.tools.DeleteTileTool;
@@ -46,6 +49,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
     public static final String NAME = TAG;
 
     private TiledPlugin tiledPlugin;
+    private DragAndDrop.Target target;
 
     public TiledPanelMediator(TiledPlugin tiledPlugin) {
         super(NAME, new TiledPanel(tiledPlugin));
@@ -63,7 +67,6 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 TiledPlugin.ACTION_DELETE_TILE,
                 TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST,
                 TiledPlugin.ACTION_SET_OFFSET,
-                TiledPlugin.PANEL_OPEN,
                 TiledPlugin.OPEN_DROP_DOWN,
                 TiledPlugin.GRID_CHANGED,
                 SettingsTab.OK_BTN_CLICKED,
@@ -87,7 +90,9 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 tiledPlugin.initSaveData();
                 viewComponent.initView();
 
-                DragAndDrop.Target target = new DragAndDrop.Target(viewComponent.getDropTable()) {
+                if (target != null)
+                    tiledPlugin.facade.sendNotification(MsgAPI.REMOVE_TARGET, target);
+                target = new DragAndDrop.Target(viewComponent.getDropTable()) {
                     @Override
                     public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
                         return true;
@@ -95,14 +100,14 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
 
                     @Override
                     public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-
                         ResourcePayloadObject resourcePayloadObject = (ResourcePayloadObject) payload.getObject();
-                        if (!resourcePayloadObject.className.endsWith(".ImageResource")) return; //only image resource can become a tile!
+                        int type = mapClassNameToEntityType(resourcePayloadObject.className);
+                        if (type == EntityFactory.UNKNOWN_TYPE) return; //only some resources can become a tile!
 
                         String tileName = resourcePayloadObject.name;
                         if (tiledPlugin.dataToSave.containsTile(tileName)) return;
 
-                        tiledPlugin.facade.sendNotification(TiledPlugin.TILE_ADDED, tileName);
+                        tiledPlugin.facade.sendNotification(TiledPlugin.TILE_ADDED, new Object[]{tileName, type});
 
                     }
                 };
@@ -112,11 +117,12 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 viewComponent.setFixedPosition();
                 break;
             case TiledPlugin.TILE_ADDED:
-                tileName = notification.getBody();
-                viewComponent.addTile(tileName);
-                viewComponent.setFixedPosition();
+                Object[] payload = notification.getBody();
+                tileName = (String) payload[0];
+                int type = (int) payload[1];
+                viewComponent.addTile(tileName, type);
 
-                tiledPlugin.dataToSave.addTile(tileName);
+                tiledPlugin.dataToSave.addTile(tileName, type);
                 tiledPlugin.saveDataManager.save();
                 break;
             case TiledPlugin.TILE_SELECTED:
@@ -136,8 +142,20 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 tiledPlugin.facade.sendNotification(TiledPlugin.ACTION_DELETE_TILE, tileName);
                 break;
             case TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST:
-                TextureRegion r = tiledPlugin.pluginRM.getTextureRegion(notification.getBody());
-                tiledPlugin.dataToSave.setGrid(r.getRegionWidth() / tiledPlugin.getPixelToWorld(), r.getRegionHeight() / tiledPlugin.getPixelToWorld());
+                float width = 0;
+                float height = 0;
+                TileVO t = tiledPlugin.dataToSave.getTile(notification.getBody());
+                if (t.entityType == EntityFactory.SPINE_TYPE) {
+                    SpineDrawable spineDrawable = tiledPlugin.pluginRM.getSpineDrawable(t.regionName);
+                    width = spineDrawable.width;
+                    height = spineDrawable.height;
+                } else {
+                    TextureRegion r = tiledPlugin.pluginRM.getTextureRegion(t.regionName, t.entityType);
+                    width = r.getRegionWidth();
+                    height = r.getRegionHeight();
+                }
+
+                tiledPlugin.dataToSave.setGrid(width / tiledPlugin.getPixelToWorld(), height / tiledPlugin.getPixelToWorld());
                 tiledPlugin.facade.sendNotification(TiledPlugin.GRID_CHANGED);
                 break;
             case TiledPlugin.ACTION_DELETE_TILE:
@@ -149,37 +167,24 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
 
                 viewComponent.removeTile();
                 break;
-            case TiledPlugin.PANEL_OPEN:
-                if(viewComponent.isOpen) {
-                    break;
-                }
-
-                viewComponent.show(tiledPlugin.getAPI().getUIStage());
-
-                if(tiledPlugin.isSceneLoaded) {
-                    viewComponent.setFixedPosition();
-                }
-                break;
             case MsgAPI.TOOL_SELECTED:
                 String body = notification.getBody();
-                String cursorName = null;
                 switch (body) {
-                    case DrawTileTool.NAME:
-                        cursorName = "tile";
-                        tiledPlugin.facade.sendNotification(TiledPlugin.PANEL_OPEN);
-                        break;
                     case DeleteTileTool.NAME:
-                        cursorName = "tile-eraser";
+                    case DrawTileTool.NAME:
+                        if(viewComponent.isOpen) {
+                            break;
+                        }
+
+                        viewComponent.show(tiledPlugin.getAPI().getUIStage());
+                        if(tiledPlugin.isSceneLoaded) {
+                            viewComponent.setFixedPosition();
+                        }
+
                         break;
                     default:
                         viewComponent.hide();
                         break;
-                }
-                if (cursorName != null) {
-                    CursorData cursorData = new CursorData(cursorName, 14, 14);
-                    TextureRegion region = tiledPlugin.pluginRM.getTextureRegion(cursorName);
-                    //TODO A custom cursor has to be a Texture not a region of an atlas
-                    //tiledPlugin.getAPI().setCursor(cursorData, region);
                 }
                 break;
             case SettingsTab.OK_BTN_CLICKED:
@@ -207,5 +212,14 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
         }
     }
 
+    private int mapClassNameToEntityType(String className) {
+        if (className.endsWith(".ImageResource"))
+            return EntityFactory.IMAGE_TYPE;
+        else if (className.endsWith(".SpriteResource"))
+            return EntityFactory.SPRITE_TYPE;
+        else if (className.endsWith(".SpineResource"))
+            return EntityFactory.SPINE_TYPE;
 
+        return EntityFactory.UNKNOWN_TYPE;
+    }
 }

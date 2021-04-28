@@ -20,8 +20,9 @@ public class DataToSave {
         parameterVO = new ParameterVO();
     }
 
-    public void addTile(String tileDrawableName) {
+    public void addTile(String tileDrawableName, int type) {
         TileVO newTile = new TileVO(tileDrawableName);
+        newTile.entityType = type;
         if (!tiles.contains(newTile, false)) {
             tiles.add(newTile);
         }

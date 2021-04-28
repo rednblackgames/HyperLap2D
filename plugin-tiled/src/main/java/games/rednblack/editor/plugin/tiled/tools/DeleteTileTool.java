@@ -2,9 +2,12 @@ package games.rednblack.editor.plugin.tiled.tools;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.tools.Tool;
+import games.rednblack.h2d.common.vo.CursorData;
 import org.puremvc.java.interfaces.INotification;
 
 import java.util.HashSet;
@@ -14,7 +17,7 @@ import java.util.Set;
  * Created by mariam on 4/5/16.
  */
 public class DeleteTileTool implements Tool {
-
+    private static final CursorData CURSOR = new CursorData("tile-eraser-cursor", 14, 14);
     public static final String NAME = "TILE_DELETE_TOOL";
 
     private TiledPlugin tiledPlugin;
@@ -27,6 +30,8 @@ public class DeleteTileTool implements Tool {
 
     @Override
     public void initTool() {
+        Texture cursorTexture = tiledPlugin.pluginRM.getTexture(CURSOR.region);
+        tiledPlugin.getAPI().setCursor(CURSOR, new TextureRegion(cursorTexture));
     }
 
     @Override

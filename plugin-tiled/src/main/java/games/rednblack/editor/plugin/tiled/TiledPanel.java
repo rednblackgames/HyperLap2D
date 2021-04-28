@@ -21,6 +21,7 @@ package games.rednblack.editor.plugin.tiled;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -40,11 +41,11 @@ import org.puremvc.java.interfaces.IFacade;
  */
 public class TiledPanel extends UIDraggablePanel {
 
-    public static final float GRID_WIDTH = 200f;
+    public static final float GRID_WIDTH = 220f;
     public static final float GRID_HEIGHT = 250f;
-    public static final float DROP_WIDTH = 210f;
+    public static final float DROP_WIDTH = 220f;
     public static final float DROP_HEIGHT = 140f;
-    public static final float SETTINGS_WIDTH = 200f;
+    public static final float SETTINGS_WIDTH = 220f;
     public static final float SETTINGS_HEIGHT = 150f;
 
     public TiledPlugin tiledPlugin;
@@ -79,11 +80,6 @@ public class TiledPanel extends UIDraggablePanel {
             this.resourcesManager = tiledPlugin.pluginRM;
         mainTable.clear();
 
-        VisTextButton.VisTextButtonStyle btnStyle = new VisTextButton.VisTextButtonStyle();
-        btnStyle.up = new TextureRegionDrawable(resourcesManager.getTextureRegion("plugin-tab-inactive"));
-        btnStyle.checked = new TextureRegionDrawable(resourcesManager.getTextureRegion("plugin-tab-active"));
-        btnStyle.font = VisUI.getSkin().getFont("default-font");
-        btnStyle.fontColor = VisUI.getSkin().getColor("white");
         tabbedPane = new ImageTabbedPane();
         paneTable = tabbedPane.getTable();
 
@@ -127,9 +123,10 @@ public class TiledPanel extends UIDraggablePanel {
                         .width(WIDTH)
                         .height(HEIGHT)
                         .row();
+                float prevHeight = getHeight();
                 pack();
-
-                setFixedPosition();
+                float heightDiff = getHeight() - prevHeight;
+                setY(getY() - heightDiff);
             }
 
             @Override
@@ -161,8 +158,8 @@ public class TiledPanel extends UIDraggablePanel {
         settingsTab.resetGridCategory();
     }
 
-    public void addTile(String tileName) {
-        tilesTab.addTile(tileName);
+    public void addTile(String tileName, int type) {
+        tilesTab.addTile(tileName, type);
     }
 
     public void selectTile(TileVO tileVO) {
@@ -172,7 +169,6 @@ public class TiledPanel extends UIDraggablePanel {
     public void removeTile() {
         tilesTab.removeTile();
         reInitTabTable();
-        setFixedPosition();
         tilesTab.scrollTiles();
     }
 

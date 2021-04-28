@@ -45,7 +45,6 @@ import net.mountainblade.modular.annotations.Implementation;
 
 import java.util.Set;
 
-
 /**
  * Created by mariam on 2/2/2016.
  */
@@ -56,7 +55,6 @@ public class TiledPlugin extends H2DPluginAdapter {
     public static final String CLASS_NAME = "games.rednblack.editor.plugin.tiled";
     public static final String TILE_ADDED                     = CLASS_NAME + ".TILE_ADDED";
     public static final String TILE_SELECTED                  = CLASS_NAME + ".TILE_SELECTED";
-    public static final String PANEL_OPEN                     = CLASS_NAME + ".PANEL_OPEN";
     public static final String OPEN_DROP_DOWN                 = CLASS_NAME + ".OPEN_DROP_DOWN";
     public static final String GRID_CHANGED                   = CLASS_NAME + ".GRID_CHANGED";
     public static final String ACTION_DELETE_TILE             = CLASS_NAME + ".ACTION_DELETE_TILE";
@@ -107,7 +105,7 @@ public class TiledPlugin extends H2DPluginAdapter {
         tileAddButtonStyle.down = skin.getDrawable("toolbar-down");
         tileAddButtonStyle.checked = skin.getDrawable("toolbar-down");
         tileAddButtonStyle.over = skin.getDrawable("toolbar-over");
-        tileAddButtonStyle.imageUp = new TextureRegionDrawable(pluginRM.getTextureRegion("tool-tilebrush"));
+        tileAddButtonStyle.imageUp = new TextureRegionDrawable(pluginRM.getTextureRegion("tool-tilebrush", -1));
         pluginAPI.addTool(DrawTileTool.NAME, tileAddButtonStyle, true, drawTileTool);
 
         VisImageButton.VisImageButtonStyle tileDeleteButtonStyle = new VisImageButton.VisImageButtonStyle();
@@ -115,7 +113,7 @@ public class TiledPlugin extends H2DPluginAdapter {
         tileDeleteButtonStyle.down = skin.getDrawable("toolbar-down");
         tileDeleteButtonStyle.checked = skin.getDrawable("toolbar-down");
         tileDeleteButtonStyle.over = skin.getDrawable("toolbar-over");
-        tileDeleteButtonStyle.imageUp = new TextureRegionDrawable(pluginRM.getTextureRegion("tool-tileeraser"));
+        tileDeleteButtonStyle.imageUp = new TextureRegionDrawable(pluginRM.getTextureRegion("tool-tileeraser", -1));
         pluginAPI.addTool(DeleteTileTool.NAME, tileDeleteButtonStyle, false, deleteTileTool);
 
         pluginAPI.setDropDownItemName(ACTION_SET_GRID_SIZE_FROM_ITEM, "Set tile grid size");
@@ -195,6 +193,10 @@ public class TiledPlugin extends H2DPluginAdapter {
 
     public String getSelectedTileName() {
         return selectedTileVO.regionName;
+    }
+
+    public int getSelectedTileType() {
+        return selectedTileVO.entityType;
     }
 
     public Vector2 getSelectedTileGridOffset() {
