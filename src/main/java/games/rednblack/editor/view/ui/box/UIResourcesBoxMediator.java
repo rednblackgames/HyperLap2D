@@ -68,6 +68,7 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
                 ProjectManager.PROJECT_OPENED,
                 ProjectManager.PROJECT_DATA_UPDATED,
                 MsgAPI.ADD_TARGET,
+                MsgAPI.REMOVE_TARGET
             }).flatMap(Stream::of).toArray(String[]::new);
     }
 
@@ -79,6 +80,9 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
 
                 break;
             case ProjectManager.PROJECT_DATA_UPDATED:
+                break;
+            case MsgAPI.REMOVE_TARGET:
+                customTargets.removeValue(notification.getBody(), true);
                 break;
             case MsgAPI.ADD_TARGET:
                 customTargets.add(notification.getBody());
