@@ -102,6 +102,8 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
 
             Entity entity = iterator.next();
             MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+            if (mainItemComponent == null)
+                return;
             Set<String> common = new LinkedHashSet<>(mainItemComponent.tags);
 
             while (iterator.hasNext()) {
