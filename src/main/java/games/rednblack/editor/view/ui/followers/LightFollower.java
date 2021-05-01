@@ -71,6 +71,7 @@ public class LightFollower extends BasicFollower {
 
         icon.setX((getWidth() - icon.getWidth()) / 2);
         icon.setY((getHeight() - icon.getHeight()) / 2);
+        setRotation(0);
     }
 
     @Override
