@@ -791,7 +791,6 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
             to.add(x, y);
 
             float xDiff = Math.min(150, Math.abs(from.x - to.x));
-            to.y = from.y - to.y == 0 ? to.y + 1 : to.y;
 
             shapeDrawerColor.set(error ? INVALID_CONNECTOR_COLOR : LINE_COLOR);
             shapeDrawerColor.a *= parentAlpha;
@@ -803,7 +802,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
             center2.set(to.x - xDiff, to.y);
 
             Array<Vector2> path = PolygonUtils.getCurvedLine(from, to, center1, center2, 50);
-            shapeDrawer.path(path, LINE_WEIGHT, JoinType.SMOOTH,true);
+            shapeDrawer.path(path, LINE_WEIGHT, JoinType.NONE,true);
 
             PolygonUtils.vector2Pool.freeAll(path);
             PolygonUtils.vector2Pool.free(center1);
