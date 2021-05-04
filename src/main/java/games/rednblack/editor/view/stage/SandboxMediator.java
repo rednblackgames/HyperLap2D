@@ -27,6 +27,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.SnapshotArray;
+import com.kotcrab.vis.ui.FocusManager;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.tools.Tool;
@@ -198,6 +199,8 @@ public class SandboxMediator extends Mediator<Sandbox> {
         @Override
         public boolean touchDown(Entity entity, float x, float y, int pointer, int button) {
             super.touchDown(entity, x, y, pointer, button);
+
+            setSandboxFocus();
 
             switch (button) {
                 case Input.Buttons.MIDDLE:
@@ -372,13 +375,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
         public boolean touchDown(Entity entity, float x, float y, int pointer, int button) {
             super.touchDown(entity, x, y, pointer, button);
 
-            Sandbox sandbox = Sandbox.getInstance();
-
-            // setting key and scroll focus on main area
-            sandbox.getUIStage().setKeyboardFocus();
-            sandbox.getUIStage().setScrollFocus(sandbox.getUIStage().midUI);
-            sandbox.setKeyboardFocus();
-
+            setSandboxFocus();
 
             switch (button) {
                 case Input.Buttons.MIDDLE:
@@ -490,5 +487,15 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
     public String getCurrentSelectedToolName() {
         return currentSelectedTool != null ? currentSelectedTool.getName() : "";
+    }
+
+    private void setSandboxFocus() {
+       Sandbox sandbox = Sandbox.getInstance();
+        FocusManager.resetFocus(sandbox.getUIStage());
+
+        // setting key and scroll focus on main area
+        sandbox.getUIStage().setKeyboardFocus();
+        sandbox.getUIStage().setScrollFocus(sandbox.getUIStage().midUI);
+        sandbox.setKeyboardFocus();
     }
 }

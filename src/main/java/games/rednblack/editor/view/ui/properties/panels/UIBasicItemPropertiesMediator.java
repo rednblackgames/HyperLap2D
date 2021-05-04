@@ -151,6 +151,22 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
     }
 
     @Override
+    public void setItem(Entity item) {
+        super.setItem(item);
+        lockUpdates = true;
+        int entityType = EntityUtils.getType(observableReference);
+        if (entityType == EntityFactory.COLOR_PRIMITIVE
+                || entityType == EntityFactory.LABEL_TYPE
+                || entityType == EntityFactory.COMPOSITE_TYPE
+                || entityType == EntityFactory.NINE_PATCH) {
+            viewComponent.setWidthHeightDisabled(false);
+        } else {
+            viewComponent.setWidthHeightDisabled(true);
+        }
+        lockUpdates = false;
+    }
+
+    @Override
     protected void translateObservableDataToView(Entity entity) {
     	transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
     	mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
@@ -166,14 +182,6 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
             }
         }
 
-        if (entityType == EntityFactory.COLOR_PRIMITIVE
-                || entityType == EntityFactory.LABEL_TYPE
-                || entityType == EntityFactory.COMPOSITE_TYPE
-				|| entityType == EntityFactory.NINE_PATCH) {
-            viewComponent.setWidthHeightDisabled(false);
-        } else {
-            viewComponent.setWidthHeightDisabled(true);
-        }
         if (entityType == EntityFactory.LIGHT_TYPE) {
             componentClassMap.remove(LIGHT_COMPONENT_KEY);
             componentClassMap.remove(SHADER_COMPONENT_KEY);

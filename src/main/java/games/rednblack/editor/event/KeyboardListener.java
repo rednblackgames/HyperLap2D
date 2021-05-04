@@ -32,19 +32,26 @@ import games.rednblack.editor.HyperLap2DFacade;
 public class KeyboardListener implements EventListener {
 
     private final String eventName;
+    private final boolean handleFocus;
 
     private String lastValue;
 
     public KeyboardListener(String eventName) {
+        this(eventName, true);
+    }
+
+    public KeyboardListener(String eventName, boolean focus) {
         this.eventName = eventName;
+        this.handleFocus = focus;
     }
 
     @Override
     public boolean handle(Event event) {
-        if (event instanceof FocusListener.FocusEvent) {
+        if (handleFocus && event instanceof FocusListener.FocusEvent) {
             handleFocusListener((FocusListener.FocusEvent) event);
             return true;
         }
+
         if (event instanceof InputEvent) {
             handleInputListener((InputEvent) event);
             return true;
@@ -57,8 +64,6 @@ public class KeyboardListener implements EventListener {
             case keyUp:
                 if (event.getKeyCode() == Input.Keys.ENTER || event.getKeyCode() == Input.Keys.NUMPAD_ENTER) {
                     keyboardHandler((VisTextField) event.getTarget());
-                    VisTextField field = (VisTextField) event.getTarget();
-                    lastValue = field.getText();
                 }
                 break;
         }
@@ -68,9 +73,9 @@ public class KeyboardListener implements EventListener {
         VisTextField field = (VisTextField) event.getTarget();
         if(event.isFocused()) {
             //it was a focus in event, which is no change
-            lastValue = field.getText();
             return;
         }
+
         switch (event.getType()) {
             case keyboard:
                 keyboardHandler(field);
@@ -78,18 +83,20 @@ public class KeyboardListener implements EventListener {
             case scroll:
                 break;
         }
-
     }
 
     private void keyboardHandler(VisTextField target) {
         if(!target.isInputValid()) {
             return;
         }
+
         // check for change
-        if(lastValue.equals(target.getText())) {
+        if(lastValue != null && lastValue.equals(target.getText())) {
             // no change = no event;
             return;
         }
+
+        lastValue = target.getText();
 
         HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
         facade.sendNotification(eventName, target.getText());
