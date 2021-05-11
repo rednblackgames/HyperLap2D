@@ -54,13 +54,17 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
 
     private long startTime = 0;
 
-    public HyperLap2D() {
+    private final SettingsManager settingsManager;
+
+    public HyperLap2D(SettingsManager settingsManager) {
         renderNotification = new Notification(MsgAPI.RENDER, null, null);
+        this.settingsManager = settingsManager;
     }
 
     @Override
     public void create() {
         facade = HyperLap2DFacade.getInstance();
+        facade.registerProxy(settingsManager);
         facade.registerProxy(this);
     }
 

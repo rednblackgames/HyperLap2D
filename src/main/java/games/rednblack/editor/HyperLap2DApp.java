@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
+import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.utils.AppConfig;
 import org.apache.commons.lang3.SystemUtils;
@@ -12,9 +13,9 @@ import org.apache.commons.lang3.SystemUtils;
 public class HyperLap2DApp extends ApplicationAdapter {
     private static HyperLap2DApp sInstance = null;
 
-    public static HyperLap2DApp initInstance(double width, double height) {
+    public static HyperLap2DApp initInstance(double width, double height, SettingsManager settingsManager) {
         if (sInstance == null) {
-            sInstance = new HyperLap2DApp(width, height);
+            sInstance = new HyperLap2DApp(width, height, settingsManager);
         }
         return sInstance;
     }
@@ -26,10 +27,12 @@ public class HyperLap2DApp extends ApplicationAdapter {
     public HyperLap2D hyperlap2D;
     public Lwjgl3Window splashWindow, mainWindow;
     final private double windowWidth, windowHeight;
+    private final SettingsManager settingsManager;
 
-    private HyperLap2DApp(double width, double height) {
+    private HyperLap2DApp(double width, double height, SettingsManager settingsManager) {
         windowWidth = width;
         windowHeight = height;
+        this.settingsManager = settingsManager;
     }
 
     @Override
@@ -51,7 +54,7 @@ public class HyperLap2DApp extends ApplicationAdapter {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                hyperlap2D = new HyperLap2D();
+                hyperlap2D = new HyperLap2D(settingsManager);
 
                 Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
                 config.setTitle("HyperLap2D - Public Alpha v" + AppConfig.getInstance().versionString);

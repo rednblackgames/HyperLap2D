@@ -22,6 +22,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import games.rednblack.editor.proxy.SettingsManager;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.*;
@@ -39,8 +40,11 @@ public class Main {
         if (restartStartOnFirstThread()) {
             return;
         }
+        HyperLap2DFacade.getInstance();
 
         Graphics.DisplayMode dm = Lwjgl3ApplicationConfiguration.getDisplayMode();
+
+        SettingsManager settingsManager = new SettingsManager();
 
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setWindowedMode(467,415);
@@ -55,11 +59,11 @@ public class Main {
         ShaderProgram.prependFragmentCode = "#version 100\n";
         ShaderProgram.prependVertexCode = "#version 100\n";
         config.useOpenGL3(true, 3, 2);
-        config.setBackBufferConfig(8,8,8,8,16,8,16);
+        config.setBackBufferConfig(8,8,8,8,16,8, settingsManager.editorConfigVO.msaaSamples);
 
         Thread.currentThread().setUncaughtExceptionHandler(new CustomExceptionHandler());
 
-        new Lwjgl3Application(HyperLap2DApp.initInstance(dm.width, dm.height), config);
+        new Lwjgl3Application(HyperLap2DApp.initInstance(dm.width, dm.height, settingsManager), config);
     }
 
     public static String getJarContainingFolder(Class aclass) {

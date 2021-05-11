@@ -10,7 +10,6 @@ import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.puremvc.java.patterns.proxy.Proxy;
 
 import java.io.File;
@@ -31,13 +30,13 @@ public class SettingsManager extends Proxy {
 
     public SettingsManager() {
         super(NAME);
+        initWorkspace();
     }
 
     @Override
     public void onRegister() {
         super.onRegister();
         facade = HyperLap2DFacade.getInstance();
-        initWorkspace();
         KeyBindingsLayout.init();
     }
 
@@ -99,7 +98,7 @@ public class SettingsManager extends Proxy {
             Json gson = new Json();
             String editorConfigJson;
             try {
-                editorConfigJson = FileUtils.readFileToString(Gdx.files.absolute(configFilePath).file(), "utf-8");
+                editorConfigJson = FileUtils.readFileToString(configFile, "utf-8");
                 editorConfig = gson.fromJson(EditorConfigVO.class, editorConfigJson);
             } catch (IOException e) {
                 e.printStackTrace();

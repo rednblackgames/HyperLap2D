@@ -17,7 +17,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
     private final VisCheckBox autoSaving;
     private final VisCheckBox enablePlugins;
     private VisSelectBox<String> filterKeyMapping;
-    private VisSlider uiScaleDensity;
+    private VisSlider uiScaleDensity, msaaSamples;
 
     public GeneralSettings() {
         super("General", HyperLap2DFacade.getInstance());
@@ -30,6 +30,8 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         getContentTable().add(getKeyMappingTable()).left().padTop(5).row();
 
         getContentTable().add(getUiScaleDensityTable()).left().padTop(5).row();
+
+        getContentTable().add(getMassSamplesTable()).left().padTop(5).row();
 
         getContentTable().add("Plugins").left().padTop(10).row();
         getContentTable().addSeparator();
@@ -68,8 +70,30 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         return scaleTable;
     }
 
+    private Actor getMassSamplesTable() {
+        VisTable msaaTable = new VisTable();
+
+        msaaTable.add("MSAA Samples:").padLeft(8);
+        msaaSamples = StandardWidgetsFactory.createSlider(0, 16, 1);
+        msaaTable.add(msaaSamples).padLeft(8);
+        VisLabel labelFactor = StandardWidgetsFactory.createLabel("", "default", Align.left);
+        msaaTable.add(labelFactor).padLeft(8);
+        msaaSamples.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                labelFactor.setText(getMsaaSamples() + " [Require restart]");
+            }
+        });
+
+        return msaaTable;
+    }
+
     private float getUIScaleDensity() {
         return RoundUtils.round(uiScaleDensity.getValue(), 2);
+    }
+
+    private int getMsaaSamples() {
+        return (int) msaaSamples.getValue();
     }
 
     @Override
@@ -78,6 +102,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         enablePlugins.setChecked(getSettings().enablePlugins);
         filterKeyMapping.setSelected(getSettings().keyBindingLayout);
         uiScaleDensity.setValue(getSettings().uiScaleDensity);
+        msaaSamples.setValue(getSettings().msaaSamples);
     }
 
     @Override
@@ -86,6 +111,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         getSettings().enablePlugins = enablePlugins.isChecked();
         getSettings().keyBindingLayout = filterKeyMapping.getSelected();
         getSettings().uiScaleDensity = getUIScaleDensity();
+        getSettings().msaaSamples = getMsaaSamples();
         facade.sendNotification(MsgAPI.SAVE_EDITOR_CONFIG);
     }
 
@@ -94,6 +120,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         return getSettings().autoSave != autoSaving.isChecked()
                 || getSettings().enablePlugins != enablePlugins.isChecked()
                 || !getSettings().keyBindingLayout.equals(filterKeyMapping.getSelected())
-                || getSettings().uiScaleDensity != getUIScaleDensity();
+                || getSettings().uiScaleDensity != getUIScaleDensity()
+                || getSettings().msaaSamples != getMsaaSamples();
     }
 }

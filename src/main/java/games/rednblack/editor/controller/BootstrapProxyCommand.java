@@ -36,7 +36,6 @@ public class BootstrapProxyCommand extends SimpleCommand {
         facade.sendNotification(SplashScreenAdapter.UPDATE_SPLASH, "Loading Proxies...");
 
         facade.registerProxy(new WindowTitleManager());
-        facade.registerProxy(new SettingsManager());
         facade.registerProxy(new FontManager());
         facade.registerProxy(new CommandManager());
         facade.registerProxy(new CursorManager());
