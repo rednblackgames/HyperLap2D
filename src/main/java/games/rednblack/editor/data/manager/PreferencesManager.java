@@ -19,7 +19,6 @@
 package games.rednblack.editor.data.manager;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;

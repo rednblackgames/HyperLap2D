@@ -26,6 +26,8 @@ import com.talosvfx.talos.runtime.utils.ShaderDescriptor;
 import com.talosvfx.talos.runtime.utils.VectorField;
 import games.rednblack.editor.renderer.data.*;
 
+import games.rednblack.editor.renderer.utils.H2DSkinLoader;
+import games.rednblack.editor.renderer.utils.ShadedDistanceFieldFont;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -40,7 +42,6 @@ import games.rednblack.editor.data.SpineAnimData;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.resources.FontSizePair;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
-import games.rednblack.editor.renderer.utils.MySkin;
 import org.puremvc.java.patterns.proxy.Proxy;
 
 /**
@@ -111,16 +112,27 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         generator.dispose();
         monoGenerator.dispose();
 
+        //DistanceFieldFont smallDistanceField = new DistanceFieldFont();
+        ShadedDistanceFieldFont smallDistanceField = new ShadedDistanceFieldFont(Gdx.files.internal("style/default-font-32.fnt"));
+        smallDistanceField.setDistanceFieldSmoothing(6);
+        smallDistanceField.getData().setScale(0.4f);
+        ShadedDistanceFieldFont defaultDistanceField = new ShadedDistanceFieldFont(Gdx.files.internal("style/default-font-32.fnt"));
+        defaultDistanceField.setDistanceFieldSmoothing(6);
+        defaultDistanceField.getData().setScale(0.45f);
+        ShadedDistanceFieldFont bigDistanceField = new ShadedDistanceFieldFont(Gdx.files.internal("style/default-font-32.fnt"));
+        bigDistanceField.setDistanceFieldSmoothing(6);
+        bigDistanceField.getData().setScale(0.5f);
         /* Create the ObjectMap and add the fonts to it */
         ObjectMap<String, Object> fontMap = new ObjectMap<>();
-        fontMap.put("small-font", smallFont);
-        fontMap.put("default-font", defaultFont);
-        fontMap.put("big-font", bigFont);
+        fontMap.put("small-font", smallDistanceField);
+        fontMap.put("default-font", defaultDistanceField);
+        fontMap.put("big-font", bigDistanceField);
         fontMap.put("default-mono-font", defaultMono);
 
         SkinLoader.SkinParameter skinParameter = new SkinLoader.SkinParameter(fontMap);
 
         AssetManager assetManager = new AssetManager();
+        assetManager.setLoader(Skin.class, new H2DSkinLoader(assetManager.getFileHandleResolver()));
         assetManager.load("style/uiskin.json", Skin.class, skinParameter);
 
         assetManager.finishLoading();
@@ -203,10 +215,8 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
 
     @Override
-    public MySkin getSkin() {
-        //return textureManager.projectSkin;
-        // not sure if we are going to use skins for labels
-        return null;
+    public boolean hasTextureRegion(String regionName) {
+        return currentProjectAtlas.findRegion(regionName) != null;
     }
 
     @Override
