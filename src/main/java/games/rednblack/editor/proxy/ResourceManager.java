@@ -112,13 +112,12 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         generator.dispose();
         monoGenerator.dispose();
 
-        //DistanceFieldFont smallDistanceField = new DistanceFieldFont();
         ShadedDistanceFieldFont smallDistanceField = new ShadedDistanceFieldFont(Gdx.files.internal("style/default-font-32.fnt"));
         smallDistanceField.setDistanceFieldSmoothing(6);
-        smallDistanceField.getData().setScale(0.4f);
+        smallDistanceField.getData().setScale(0.35f);
         ShadedDistanceFieldFont defaultDistanceField = new ShadedDistanceFieldFont(Gdx.files.internal("style/default-font-32.fnt"));
         defaultDistanceField.setDistanceFieldSmoothing(6);
-        defaultDistanceField.getData().setScale(0.45f);
+        defaultDistanceField.getData().setScale(0.4f);
         ShadedDistanceFieldFont bigDistanceField = new ShadedDistanceFieldFont(Gdx.files.internal("style/default-font-32.fnt"));
         bigDistanceField.setDistanceFieldSmoothing(6);
         bigDistanceField.getData().setScale(0.5f);
