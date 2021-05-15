@@ -87,7 +87,6 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         packer.setTransparentColor(Color.WHITE);
         packer.getTransparentColor().a = 0;
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf"));
         FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/FiraCode-Regular.ttf"));
 
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -98,27 +97,19 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         parameter.minFilter = Texture.TextureFilter.Linear;
         parameter.magFilter = Texture.TextureFilter.Linear;
 
-        parameter.size = 10;
-        BitmapFont smallFont = generator.generateFont(parameter);
-
-        parameter.size = 12;
-        BitmapFont defaultFont = generator.generateFont(parameter);
-
-        parameter.size = 14;
-        BitmapFont bigFont = generator.generateFont(parameter);
         BitmapFont defaultMono = monoGenerator.generateFont(parameter);
         defaultMono.setFixedWidthGlyphs(parameter.characters);
 
-        generator.dispose();
         monoGenerator.dispose();
 
-        ShadedDistanceFieldFont smallDistanceField = new ShadedDistanceFieldFont(Gdx.files.internal("style/default-font-32.fnt"));
+        TextureRegion dejavuRegion = new TextureRegion(new Texture(Gdx.files.internal("style/default-font-32.png")));
+        ShadedDistanceFieldFont smallDistanceField = new ShadedDistanceFieldFont(Gdx.files.internal("style/default-font-32.fnt"), dejavuRegion);
         smallDistanceField.setDistanceFieldSmoothing(6);
         smallDistanceField.getData().setScale(0.35f);
-        ShadedDistanceFieldFont defaultDistanceField = new ShadedDistanceFieldFont(Gdx.files.internal("style/default-font-32.fnt"));
+        ShadedDistanceFieldFont defaultDistanceField = new ShadedDistanceFieldFont(Gdx.files.internal("style/default-font-32.fnt"), dejavuRegion);
         defaultDistanceField.setDistanceFieldSmoothing(6);
         defaultDistanceField.getData().setScale(0.4f);
-        ShadedDistanceFieldFont bigDistanceField = new ShadedDistanceFieldFont(Gdx.files.internal("style/default-font-32.fnt"));
+        ShadedDistanceFieldFont bigDistanceField = new ShadedDistanceFieldFont(Gdx.files.internal("style/default-font-32.fnt"), dejavuRegion);
         bigDistanceField.setDistanceFieldSmoothing(6);
         bigDistanceField.getData().setScale(0.5f);
         /* Create the ObjectMap and add the fonts to it */

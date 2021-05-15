@@ -34,12 +34,14 @@ import games.rednblack.editor.plugin.tiled.save.DataToSave;
 import games.rednblack.editor.plugin.tiled.save.SaveDataManager;
 import games.rednblack.editor.plugin.tiled.tools.DeleteTileTool;
 import games.rednblack.editor.plugin.tiled.tools.DrawTileTool;
+import games.rednblack.editor.plugin.tiled.view.dialog.ImportTileSetDialogMediator;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.renderer.utils.CustomVariables;
+import games.rednblack.h2d.common.MenuAPI;
 import games.rednblack.h2d.common.plugins.H2DPluginAdapter;
 import net.mountainblade.modular.annotations.Implementation;
 
@@ -57,6 +59,7 @@ public class TiledPlugin extends H2DPluginAdapter {
     public static final String TILE_SELECTED                  = CLASS_NAME + ".TILE_SELECTED";
     public static final String OPEN_DROP_DOWN                 = CLASS_NAME + ".OPEN_DROP_DOWN";
     public static final String GRID_CHANGED                   = CLASS_NAME + ".GRID_CHANGED";
+    public static final String IMPORT_TILESET_PANEL_OPEN      = CLASS_NAME + ".IMPORT_TILESET_PANEL_OPEN";
     public static final String ACTION_DELETE_TILE             = CLASS_NAME + ".ACTION_DELETE_TILE";
     public static final String ACTION_SET_OFFSET              = CLASS_NAME + ".ACTION_SET_OFFSET";
     public static final String ACTION_OPEN_OFFSET_PANEL       = CLASS_NAME + ".ACTION_OPEN_OFFSET_PANEL";
@@ -91,6 +94,7 @@ public class TiledPlugin extends H2DPluginAdapter {
     @Override
     public void initPlugin() {
         facade.registerMediator(new TiledPanelMediator(this));
+        facade.registerMediator(new ImportTileSetDialogMediator(pluginAPI, facade));
 
         pluginRM = new ResourcesManager(this);
         offsetPanel = new OffsetPanel(this);
@@ -117,6 +121,8 @@ public class TiledPlugin extends H2DPluginAdapter {
         pluginAPI.addTool(DeleteTileTool.NAME, tileDeleteButtonStyle, false, deleteTileTool);
 
         pluginAPI.setDropDownItemName(ACTION_SET_GRID_SIZE_FROM_ITEM, "Set tile grid size");
+
+        pluginAPI.addMenuItem(MenuAPI.RESOURCE_MENU, "Import Tile Set...", IMPORT_TILESET_PANEL_OPEN);
     }
 
     @Override

@@ -68,18 +68,23 @@ public class HyperLap2DMenuBar extends CustomMenuBar {
 
     public void addMenuItem(String menu, String subMenuName, String notificationName) {
         if(menu.equals(MenuAPI.FILE_MENU)) {
+            fileMenu.addSeparator();
             fileMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
         }
         if(menu.equals(MenuAPI.EDIT_MENU)) {
+            editMenu.addSeparator();
             editMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
         }
         if(menu.equals(MenuAPI.RESOURCE_MENU)) {
+            resourcesMenu.addSeparator();
             resourcesMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
         }
         if(menu.equals(MenuAPI.WINDOW_MENU)) {
+            windowMenu.addSeparator();
             windowMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
         }
         if(menu.equals(MenuAPI.HELP_MENU)) {
+            helpMenu.addSeparator();
             helpMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
         }
     }
