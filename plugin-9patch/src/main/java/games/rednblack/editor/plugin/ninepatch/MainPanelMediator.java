@@ -149,8 +149,34 @@ public class MainPanelMediator extends Mediator<MainPanel> {
 
     private void loadRegion(String name) {
         TextureAtlas atlas = plugin.getAPI().getProjectTextureAtlas();
+        validateNinePatchTextureRegion(atlas.findRegion(name));
         viewComponent.setTexture(atlas.findRegion(name));
 
         viewComponent.setListeners(plugin.getAPI().getUIStage());
+    }
+
+    private void validateNinePatchTextureRegion(TextureAtlas.AtlasRegion texture) {
+        int[] s = texture.findValue("split");
+        if (s == null) {
+            // Add splits to the atlasRegion if they are missing
+            fixNinePatch(texture);
+        }
+    }
+
+    private void fixNinePatch(TextureAtlas.AtlasRegion texture) {
+        int[] splits = {0, 0, 0, 0};
+        int[] pad = {0, 0, 0, 0};
+        texture.names = new String[] {"split", "pad"};
+        texture.values = new int[][] {splits, pad};
+
+        //remove original image
+        File originalImg = new File(plugin.getAPI().getProjectPath() + "/assets/orig/images/"+texture.name+".png");
+        originalImg.delete();
+
+        //save project
+        plugin.getAPI().saveProject();
+
+        //save split data
+        addSplitsToImageInAtlas(texture.name, splits);
     }
 }
