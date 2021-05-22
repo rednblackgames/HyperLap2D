@@ -1,8 +1,18 @@
 [0.0.7]
+- Experimental support to Normal Mapping in lights:
+    * Simple Images
+- Add light `intensity`
+
 = Editor =
+- Use Distance Field fonts for GUI
 - Huge improvements to Tiled Plugin:
     * Sprite and Spine animated Tiles
     * UI improvements and general refactoring
+    * Import Tile Set (`Resources -> Import Tile Set`)
+
+= Runtime =
+- Fix Lights positioning issues
+- Cone Lights direction can be changed with `TransformComponent#rotation`
 
 [0.0.6]
 - Update libGDX to 1.10.0

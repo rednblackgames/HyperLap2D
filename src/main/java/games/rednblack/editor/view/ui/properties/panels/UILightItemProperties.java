@@ -42,6 +42,7 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
     private VisValidatableTextField pointLightRadiusField;
     private VisValidatableTextField coneInnerAngleField;
     private VisValidatableTextField heightField;
+    private VisValidatableTextField intensityField;
     private VisValidatableTextField coneDistanceField;
     private VisValidatableTextField coneDirectionField;
     private VisValidatableTextField softnessLengthField;
@@ -68,6 +69,7 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
         softnessLengthField = new VisValidatableTextField(floatValidator);
         coneDirectionField =  new VisValidatableTextField(floatValidator);
         heightField = new VisValidatableTextField(floatValidator);
+        intensityField = new VisValidatableTextField(floatValidator);
 
         secondaryTable = new VisTable();
 
@@ -82,6 +84,9 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
         mainTable.row().padTop(5);
         mainTable.add(new VisLabel("Height: ", Align.right)).padRight(5).width(110).right();
         mainTable.add(heightField).width(70).left();
+        mainTable.row().padTop(5);
+        mainTable.add(new VisLabel("Intensity: ", Align.right)).padRight(5).width(110).right();
+        mainTable.add(intensityField).width(70).left();
         mainTable.row().padTop(5);
 
         mainTable.add(secondaryTable).colspan(2);
@@ -191,6 +196,14 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
         return heightField.getText();
     }
 
+    public void setLightIntensity(String intensity) {
+        intensityField.setText(intensity);
+    }
+
+    public String getLightIntensity() {
+        return intensityField.getText();
+    }
+
     public void setLightHeight(String distance) {
         heightField.setText(distance);
     }
@@ -233,6 +246,7 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
         coneDistanceField.addListener(new KeyboardListener(getUpdateEventName()));
         softnessLengthField.addListener(new KeyboardListener(getUpdateEventName()));
         heightField.addListener(new KeyboardListener(getUpdateEventName()));
+        intensityField.addListener(new KeyboardListener(getUpdateEventName()));
         coneDirectionField.addListener(new KeyboardListener(getUpdateEventName()));
         isSoftCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         isActiveCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));

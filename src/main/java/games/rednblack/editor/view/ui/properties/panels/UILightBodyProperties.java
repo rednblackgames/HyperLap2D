@@ -28,7 +28,7 @@ public class UILightBodyProperties extends UIRemovableProperties {
     private HashMap<Integer, String> directionTypes = new HashMap<>();
 
     private Spinner raysTextSelector;
-    private VisTextField distanceTextField;
+    private VisTextField distanceTextField, intensityField;
     private TintButton lightColor;
     private VisValidatableTextField softnessLengthField;
     private VisCheckBox isStaticCheckBox;
@@ -59,6 +59,7 @@ public class UILightBodyProperties extends UIRemovableProperties {
         lightColor = StandardWidgetsFactory.createTintButton();
         raysTextSelector = StandardWidgetsFactory.createNumberSelector(4, 4, 5000);
         distanceTextField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        intensityField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         softnessLengthField = new VisValidatableTextField(floatValidator);
         isStaticCheckBox = StandardWidgetsFactory.createCheckBox("Static");
         isXRayCheckBox = StandardWidgetsFactory.createCheckBox("X-Ray");
@@ -77,6 +78,9 @@ public class UILightBodyProperties extends UIRemovableProperties {
         mainTable.row().padTop(5);
         mainTable.add(new VisLabel("Distance:", Align.right)).padRight(5).colspan(2).fillX();
         mainTable.add(distanceTextField).width(100).colspan(2);
+        mainTable.row().padTop(5);
+        mainTable.add(new VisLabel("Intensity:", Align.right)).padRight(5).colspan(2).fillX();
+        mainTable.add(intensityField).width(100).colspan(2);
         mainTable.row().padTop(5);
         mainTable.add(new VisLabel("Softness length: ", Align.right)).padRight(5).colspan(2).fillX();
         mainTable.add(softnessLengthField).width(100).colspan(2);
@@ -106,6 +110,14 @@ public class UILightBodyProperties extends UIRemovableProperties {
 
     public String getDistance() {
         return distanceTextField.getText();
+    }
+
+    public void setLightIntensity(String intensity) {
+        intensityField.setText(intensity);
+    }
+
+    public String getLightIntensity() {
+        return intensityField.getText();
     }
 
     public void setSoftnessLength(String rays) {
@@ -173,6 +185,7 @@ public class UILightBodyProperties extends UIRemovableProperties {
 
         raysTextSelector.addListener(new NumberSelectorOverlapListener(getUpdateEventName()));
         distanceTextField.addListener(new KeyboardListener(getUpdateEventName()));
+        intensityField.addListener(new KeyboardListener(getUpdateEventName()));
         softnessLengthField.addListener(new KeyboardListener(getUpdateEventName()));
 
         lightColor.addListener(new ClickListener() {

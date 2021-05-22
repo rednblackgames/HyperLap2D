@@ -30,6 +30,7 @@ public class UpdateLightBodyDataCommand extends EntityModifyRevertibleCommand {
         lightComponent.distance = vo.distance;
         lightComponent.softnessLength = vo.softnessLength;
         lightComponent.rays = vo.rays;
+        lightComponent.intensity = vo.intensity;
         lightComponent.isSoft = vo.isSoft;
         lightComponent.isStatic = vo.isStatic;
         lightComponent.isXRay = vo.isXRay;
@@ -52,6 +53,7 @@ public class UpdateLightBodyDataCommand extends EntityModifyRevertibleCommand {
         lightComponent.rayDirection = backup.rayDirection;
         lightComponent.distance = backup.distance;
         lightComponent.softnessLength = backup.softnessLength;
+        lightComponent.intensity = backup.intensity;
         lightComponent.rays = backup.rays;
         lightComponent.isSoft = backup.isSoft;
         lightComponent.isStatic = backup.isStatic;

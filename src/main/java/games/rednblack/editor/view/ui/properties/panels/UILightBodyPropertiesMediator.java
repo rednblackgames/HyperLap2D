@@ -86,6 +86,7 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<Enti
         lightComponent = item.getComponent(LightBodyComponent.class);
         viewComponent.setDirection(lightComponent.rayDirection);
         viewComponent.setDistance(lightComponent.distance + "");
+        viewComponent.setLightIntensity(lightComponent.intensity + "");
         viewComponent.setRays(lightComponent.rays + "");
         viewComponent.setSoft(lightComponent.isSoft);
         viewComponent.setSoftnessLength(lightComponent.softnessLength + "");
@@ -106,6 +107,7 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<Enti
 
         payloadVo.rayDirection = viewComponent.getDirection();
         payloadVo.distance = NumberUtils.toFloat(viewComponent.getDistance());
+        payloadVo.intensity = NumberUtils.toFloat(viewComponent.getLightIntensity());
         payloadVo.softnessLength = NumberUtils.toFloat(viewComponent.getSoftnessLength());
         payloadVo.rays = NumberUtils.toInt(viewComponent.getRays());
         payloadVo.isSoft = viewComponent.isSoft();
