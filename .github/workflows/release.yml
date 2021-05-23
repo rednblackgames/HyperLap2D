@@ -15,10 +15,10 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
-      - name: Setup AdoptOpenJDK 16
+      - name: Setup AdoptOpenJDK 14
         uses: joschi/setup-jdk@v2.3.0
         with:
-          java-version: 16
+          java-version: 14
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build JAR dist files
