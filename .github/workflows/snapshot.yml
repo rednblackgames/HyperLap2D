@@ -16,10 +16,10 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
-    - name: Setup AdoptOpenJDK 14
+    - name: Setup AdoptOpenJDK 16
       uses: joschi/setup-jdk@v2.3.0
       with:
-        java-version: 14
+        java-version: 16
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build JAR dist files
@@ -29,12 +29,12 @@ jobs:
         WORKFLOW_RUN: ${{ github.run_number }}
       run: ./gradlew jpackage -PSNAPSHOT=true
     - name: Fix deb file names
-      run: mv build/jpackage/*.deb HyperLap2D-SNAPSHOT.deb
+      run: mv build/jpackage/*.deb Linux.HyperLap2D-SNAPSHOT.deb
     - name: Upload deb artifact
       uses: actions/upload-artifact@v2
       with:
-        name: HyperLap2D-SNAPSHOT.deb
-        path: HyperLap2D-SNAPSHOT.deb
+        name: Linux.HyperLap2D-SNAPSHOT.deb
+        path: Linux.HyperLap2D-SNAPSHOT.deb
     - name: Publish SNAPSHOT artifacts
       if: "!contains(github.event.head_commit.message, 'editor only')"
       env:
@@ -50,10 +50,10 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
-    - name: Setup AdoptOpenJDK 14
+    - name: Setup AdoptOpenJDK 16
       uses: joschi/setup-jdk@v2.3.0
       with:
-        java-version: 14
+        java-version: 16
     - name: Build JAR dist files
       run: ./gradlew.bat dist
     - name: Build msi package
@@ -61,12 +61,12 @@ jobs:
         WORKFLOW_RUN: ${{ github.run_number }}
       run: ./gradlew.bat jpackage -PSNAPSHOT=true
     - name: Fix file names
-      run: mv build/jpackage/*.msi HyperLap2D-SNAPSHOT.msi
+      run: mv build/jpackage/*.msi Windows.HyperLap2D-SNAPSHOT.msi
     - name: Upload msi artifact
       uses: actions/upload-artifact@v2
       with:
-        name: HyperLap2D-SNAPSHOT.msi
-        path: HyperLap2D-SNAPSHOT.msi
+        name: Windows.HyperLap2D-SNAPSHOT.msi
+        path: Windows.HyperLap2D-SNAPSHOT.msi
 
   macOS:
     if: "!contains(github.event.head_commit.message, 'cd skip')"
@@ -76,10 +76,10 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
-    - name: Setup AdoptOpenJDK 14
+    - name: Setup AdoptOpenJDK 16
       uses: joschi/setup-jdk@v2.3.0
       with:
-        java-version: 14
+        java-version: 16
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build JAR dist files
@@ -89,9 +89,9 @@ jobs:
         WORKFLOW_RUN: ${{ github.run_number }}
       run: ./gradlew jpackage -PSNAPSHOT=true
     - name: Fix file names
-      run: mv build/jpackage/*.dmg HyperLap2D-SNAPSHOT.dmg
+      run: mv build/jpackage/*.dmg macOS.HyperLap2D-SNAPSHOT.dmg
     - name: Upload dmg artifact
       uses: actions/upload-artifact@v2
       with:
-        name: HyperLap2D-SNAPSHOT.dmg
-        path: HyperLap2D-SNAPSHOT.dmg
+        name: macOS.HyperLap2D-SNAPSHOT.dmg
+        path: macOS.HyperLap2D-SNAPSHOT.dmg
