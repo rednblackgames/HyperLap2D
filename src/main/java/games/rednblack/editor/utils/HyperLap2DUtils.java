@@ -20,7 +20,6 @@ package games.rednblack.editor.utils;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.InputStream;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 
@@ -62,35 +61,8 @@ public class HyperLap2DUtils {
     }
 
     private static String getMyDocumentsLocation() {
-        String myDocuments = null;
-        try {
-            if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
-                myDocuments = System.getProperty("user.home") + File.separator + "Documents";
-            }
-            if (SystemUtils.IS_OS_WINDOWS) {
-                Process p = Runtime.getRuntime().exec("reg query \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders\" /v personal");
-                p.waitFor();
-
-                InputStream in = p.getInputStream();
-                byte[] b = new byte[in.available()];
-                in.read(b);
-                in.close();
-
-                myDocuments = new String(b);
-                myDocuments = myDocuments.split("\\s\\s+")[4];
-            }
-            if (SystemUtils.IS_OS_LINUX) {
-                myDocuments = System.getProperty("user.home") + File.separator + "Documents";
-            }
-
-
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-
-        return myDocuments;
+        return System.getProperty("user.home") + File.separator + "Documents";
     }
-
 
     public static void setWindowDragListener(Actor actor) {
         actor.addListener(new InputListener() {

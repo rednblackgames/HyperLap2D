@@ -1,8 +1,8 @@
 package games.rednblack.editor.proxy;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
+import games.rednblack.editor.CustomExceptionHandler;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.Main;
 import games.rednblack.editor.utils.HyperLap2DUtils;
@@ -12,8 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.puremvc.java.patterns.proxy.Proxy;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 public class SettingsManager extends Proxy {
@@ -54,7 +53,12 @@ public class SettingsManager extends Proxy {
             cacheDir = new File(HyperLap2DUtils.getRootPath() + File.separator + "cache");
             FileUtils.forceMkdir(cacheDir);
         } catch (IOException e) {
+            final Writer result = new StringWriter();
+            final PrintWriter printWriter = new PrintWriter(result);
+            e.printStackTrace(printWriter);
             e.printStackTrace();
+            String stacktrace = result.toString();
+            CustomExceptionHandler.showErrorDialog(stacktrace);
         }
     }
 
