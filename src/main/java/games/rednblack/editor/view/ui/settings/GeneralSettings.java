@@ -14,7 +14,7 @@ import games.rednblack.h2d.common.vo.EditorConfigVO;
 
 public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
 
-    private final VisCheckBox autoSaving;
+    private final VisCheckBox autoSaving, useOpenGL3;
     private final VisCheckBox enablePlugins;
     private VisSelectBox<String> filterKeyMapping;
     private VisSlider uiScaleDensity, msaaSamples;
@@ -31,12 +31,17 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
 
         getContentTable().add(getUiScaleDensityTable()).left().padTop(5).row();
 
-        getContentTable().add(getMassSamplesTable()).left().padTop(5).row();
-
         getContentTable().add("Plugins").left().padTop(10).row();
         getContentTable().addSeparator();
         enablePlugins = StandardWidgetsFactory.createCheckBox("Enable plugins [Require restart]");
         getContentTable().add(enablePlugins).left().padTop(5).padLeft(8).row();
+
+        getContentTable().add("Performance").left().padTop(10).row();
+        getContentTable().addSeparator();
+        getContentTable().add(getMassSamplesTable()).left().padTop(5).row();
+
+        useOpenGL3 = StandardWidgetsFactory.createCheckBox("Use OpenGL 3 API [Require restart]");
+        getContentTable().add(useOpenGL3).left().padTop(5).padLeft(8).row();
     }
 
     private Actor getKeyMappingTable() {
@@ -99,6 +104,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
     @Override
     public void translateSettingsToView() {
         autoSaving.setChecked(getSettings().autoSave);
+        useOpenGL3.setChecked(getSettings().useOpenGL3);
         enablePlugins.setChecked(getSettings().enablePlugins);
         filterKeyMapping.setSelected(getSettings().keyBindingLayout);
         uiScaleDensity.setValue(getSettings().uiScaleDensity);
@@ -108,6 +114,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
     @Override
     public void translateViewToSettings() {
         getSettings().autoSave = autoSaving.isChecked();
+        getSettings().useOpenGL3 = useOpenGL3.isChecked();
         getSettings().enablePlugins = enablePlugins.isChecked();
         getSettings().keyBindingLayout = filterKeyMapping.getSelected();
         getSettings().uiScaleDensity = getUIScaleDensity();
@@ -118,6 +125,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
     @Override
     public boolean validateSettings() {
         return getSettings().autoSave != autoSaving.isChecked()
+                || getSettings().useOpenGL3 != useOpenGL3.isChecked()
                 || getSettings().enablePlugins != enablePlugins.isChecked()
                 || !getSettings().keyBindingLayout.equals(filterKeyMapping.getSelected())
                 || getSettings().uiScaleDensity != getUIScaleDensity()

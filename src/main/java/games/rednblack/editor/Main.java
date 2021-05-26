@@ -58,7 +58,8 @@ public class Main {
         config.setWindowIcon("hyperlap_icon_96.png");
         ShaderProgram.prependFragmentCode = "#version 100\n";
         ShaderProgram.prependVertexCode = "#version 100\n";
-        config.useOpenGL3(true, 3, 2);
+        if (settingsManager.editorConfigVO.useOpenGL3)
+            config.useOpenGL3(true, 3, 2);
         config.setBackBufferConfig(8,8,8,8,16,8, settingsManager.editorConfigVO.msaaSamples);
 
         Thread.currentThread().setUncaughtExceptionHandler(new CustomExceptionHandler());
