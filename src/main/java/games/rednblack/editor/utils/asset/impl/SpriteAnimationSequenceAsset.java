@@ -1,10 +1,8 @@
 package games.rednblack.editor.utils.asset.impl;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.proxy.ProjectManager;
-import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.h2d.common.ProgressHandler;
@@ -49,7 +47,6 @@ public class SpriteAnimationSequenceAsset extends Asset {
         String newAnimName;
 
         String rawFileName = files.get(0).name();
-        TexturePacker texturePacker = new TexturePacker(projectManager.getTexturePackerSettings());
 
         String fileNameWithoutExt = FilenameUtils.removeExtension(rawFileName);
         String fileNameWithoutFrame = fileNameWithoutExt.replaceAll("\\d*$", "").replace("_", "");
@@ -61,15 +58,24 @@ public class SpriteAnimationSequenceAsset extends Asset {
         }
 
         String targetPath = projectManager.getCurrentProjectPath() + "/assets/orig/sprite-animations" + File.separator + fileNameWithoutFrame;
+        try {
+            FileUtils.writeStringToFile(new File(targetPath + File.separator + fileNameWithoutFrame + ".atlas"), fileNameWithoutFrame, "utf-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+            progressHandler.progressFailed();
+            return;
+        }
+
+        String imagesPath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.IMAGE_DIR_PATH;
 
         for (FileHandle file : new Array.ArrayIterator<>(files)) {
             File src = file.file();
 
             String destName;
             if (noFileNameWithoutFrame) {
-                destName = targetPath + "Tmp" + File.separator + fileNameWithoutFrame + src.getName().replaceAll("[_](?=.*[_])", "");
+                destName = imagesPath + File.separator + fileNameWithoutFrame + src.getName().replaceAll("[_](?=.*[_])", "");
             } else {
-                destName = targetPath + "Tmp" + File.separator + src.getName().replaceAll("[_](?=.*[_])", "");
+                destName = imagesPath + File.separator + src.getName().replaceAll("[_](?=.*[_])", "");
             }
 
             File dest = new File(destName);
@@ -82,42 +88,11 @@ public class SpriteAnimationSequenceAsset extends Asset {
             }
         }
 
-        FileHandle pngsDir = new FileHandle(targetPath + "Tmp");
-        for (FileHandle entry : pngsDir.list(HyperLap2DUtils.PNG_FILTER)) {
-            texturePacker.addImage(entry.file());
-        }
-
-        File targetDir = new File(targetPath);
-        if (targetDir.exists()) {
-            try {
-                FileUtils.deleteDirectory(targetDir);
-            } catch (IOException e) {
-                e.printStackTrace();
-                progressHandler.progressFailed();
-                return;
-            }
-        }
-
-        try {
-            texturePacker.pack(targetDir, fileNameWithoutFrame);
-        } catch (Exception e) {
-            progressHandler.progressFailed();
-            return;
-        }
-
-        //delete newly created directory and images
-        try {
-            FileUtils.deleteDirectory(pngsDir.file());
-        } catch (IOException e) {
-            e.printStackTrace();
-            progressHandler.progressFailed();
-            return;
-        }
-
         newAnimName = fileNameWithoutFrame;
 
         if (newAnimName != null) {
-            resolutionManager.resizeSpriteAnimationForAllResolutions(newAnimName, projectManager.getCurrentProjectInfoVO());
+            projectManager.getCurrentProjectVO().animationsPacks.get("main").regions.add(newAnimName);
+            resolutionManager.rePackProjectImagesForAllResolutionsSync();
         }
     }
 }

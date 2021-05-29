@@ -131,6 +131,12 @@ public class ProjectManager extends Proxy {
         ProjectVO projVo = new ProjectVO();
         projVo.projectName = projectName;
         projVo.projectVersion = ProjectVersionMigrator.dataFormatVersion;
+        TexturePackVO mainPack = new TexturePackVO();
+        mainPack.name = "main";
+        projVo.imagesPacks.put("main", mainPack);
+        TexturePackVO mainAnimPack = new TexturePackVO();
+        mainAnimPack.name = "main";
+        projVo.animationsPacks.put("main", mainAnimPack);
 
         // create project info file
         ProjectInfoVO projInfoVo = new ProjectInfoVO();
@@ -187,19 +193,6 @@ public class ProjectManager extends Proxy {
 
         File prjFile = new File(prjFilePath);
         if (!prjFile.isDirectory()) {
-            if (!prjFile.exists()) {
-
-                ProjectVO projVoEmpty = new ProjectVO();
-                projVoEmpty.projectName = prjFile.getName();
-                projVoEmpty.projectVersion = ProjectVersionMigrator.dataFormatVersion;
-
-                try {
-                    FileUtils.writeStringToFile(prjFile, projVoEmpty.constructJsonString(), "utf-8");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
             String projectContents = null;
             try {
                 projectContents = FileUtils.readFileToString(projectFile.file(), "utf-8");
@@ -526,10 +519,8 @@ public class ProjectManager extends Proxy {
 
     private void exportAnimations(String targetPath) {
         exportSpineAnimationForResolution("orig", targetPath);
-        exportSpriteAnimationForResolution("orig", targetPath);
         for (ResolutionEntryVO resolutionEntryVO : currentProjectInfoVO.resolutions) {
             exportSpineAnimationForResolution(resolutionEntryVO.name, targetPath);
-            exportSpriteAnimationForResolution(resolutionEntryVO.name, targetPath);
         }
     }
 
@@ -543,21 +534,6 @@ public class ProjectManager extends Proxy {
             File fileTargetSpine = new File(finalTarget);
 
             FileUtils.copyDirectory(fileSrc, fileTargetSpine);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void exportSpriteAnimationForResolution(String res, String targetPath) {
-        String spineSrcPath = currentProjectPath + "/assets/" + res + File.separator + "sprite-animations";
-        try {
-            FileUtils.forceMkdir(new File(targetPath + File.separator + res + File.separator + "sprite_animations"));
-            File fileSrc = new File(spineSrcPath);
-            String finalTarget = targetPath + File.separator + res + File.separator + "sprite_animations";
-
-            File fileTargetSprite = new File(finalTarget);
-
-            FileUtils.copyDirectory(fileSrc, fileTargetSprite);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -21,11 +21,12 @@ package games.rednblack.editor.view.ui.box.resourcespanel;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.controller.commands.resource.DeleteImageResource;
-import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.factory.ItemFactory;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.ImageResource;
+import games.rednblack.h2d.common.vo.ProjectVO;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 
@@ -66,13 +67,18 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
     @Override
     protected void initList(String searchText) {
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        ProjectVO projectVO = projectManager.getCurrentProjectVO();
 
         TextureAtlas atlas = resourceManager.getProjectAssetsList();
 
         Array<DraggableResource> thumbnailBoxes = new Array<>();
         Array<TextureAtlas.AtlasRegion> atlasRegions = atlas.getRegions();
+
         for (TextureAtlas.AtlasRegion region : new Array.ArrayIterator<>(atlasRegions)) {
-            if(!region.name.contains(searchText))continue;
+            if(!projectVO.imagesPacks.get("main").regions.contains(region.name)
+                || !region.name.contains(searchText)) continue;
+
             boolean is9patch = region.findValue("split") != null;
             DraggableResource draggableResource = new DraggableResource(new ImageResource(region));
             if (is9patch) {

@@ -80,7 +80,7 @@ public class SpineActor extends Actor {
     }
 
     private void initSkeletonData() {
-        skeletonJson = new SkeletonJson(irr.getSkeletonAtlas(animationName));
+        skeletonJson = new SkeletonJson(irr.getMainPack());
         skeletonData = skeletonJson.readSkeletonData((irr.getSkeletonJSON(animationName)));
     }
 

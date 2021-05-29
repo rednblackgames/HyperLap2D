@@ -51,5 +51,9 @@ public class ImageAsset extends Asset {
             ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
             resolutionManager.rePackProjectImagesForAllResolutionsSync();
         }
+
+        for (FileHandle handle : new Array.ArrayIterator<>(files)) {
+            projectManager.getCurrentProjectVO().imagesPacks.get("main").regions.add(handle.nameWithoutExtension());
+        }
     }
 }

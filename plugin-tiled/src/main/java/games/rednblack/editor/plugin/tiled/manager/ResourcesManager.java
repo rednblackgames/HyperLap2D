@@ -86,7 +86,7 @@ public class ResourcesManager {
                     region = tiledPlugin.getAPI().getSceneLoader().getRm().getTextureRegion(name);
                     break;
                 case EntityFactory.SPRITE_TYPE:
-                    region = tiledPlugin.getAPI().getSceneLoader().getRm().getSpriteAnimation(name).getRegions().get(0);
+                    region = tiledPlugin.getAPI().getSceneLoader().getRm().getSpriteAnimation(name).get(0);
                     break;
             }
         }
@@ -95,7 +95,7 @@ public class ResourcesManager {
 
     public SpineDrawable getSpineDrawable(String name) {
         if (spineDrawableCache.get(name) == null) {
-            SkeletonJson skeletonJson = new SkeletonJson(tiledPlugin.getAPI().getSceneLoader().getRm().getSkeletonAtlas(name));
+            SkeletonJson skeletonJson = new SkeletonJson(tiledPlugin.getAPI().getSceneLoader().getRm().getMainPack());
             SkeletonData skeletonData = skeletonJson.readSkeletonData(tiledPlugin.getAPI().getSceneLoader().getRm().getSkeletonJSON(name));
             Skeleton skeleton = new Skeleton(skeletonData);
 

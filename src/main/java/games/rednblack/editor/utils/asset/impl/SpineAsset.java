@@ -1,6 +1,7 @@
 package games.rednblack.editor.utils.asset.impl;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -57,8 +58,8 @@ public class SpineAsset extends Asset {
             if (copiedFile == null)
                 continue;
 
-            if (copiedFile.getName().toLowerCase().endsWith(".atlas")) {
-                resolutionManager.resizeSpineAnimationForAllResolutions(copiedFile, projectManager.getCurrentProjectInfoVO());
+            if (copiedFile.getName().toLowerCase().endsWith(".json")) {
+                resolutionManager.rePackProjectImagesForAllResolutionsSync();
             }
         }
     }
@@ -85,11 +86,12 @@ public class SpineAsset extends Asset {
                             "\nCould not find '" + atlasFileSource.name() +"'.\nCheck if the file exists in the same directory.").padBottom(20).pack();
                     return null;
                 }
-                Array<File> imageFiles = ImportUtils.getAtlasPages(atlasFileSource);
-                for (File imageFile : new Array.ArrayIterator<>(imageFiles)) {
-                    if (!imageFile.exists()) {
+
+                TextureAtlas.TextureAtlasData atlas = new TextureAtlas.TextureAtlasData(atlasFileSource, atlasFileSource.parent(), false);
+                for (TextureAtlas.TextureAtlasData.Page imageFile : new Array.ArrayIterator<>(atlas.getPages())) {
+                    if (!imageFile.textureFile.exists()) {
                         Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
-                                "\nCould not find " + imageFile.getName() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
+                                "\nCould not find " + imageFile.textureFile.name() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
                         return null;
                     }
                 }
@@ -103,19 +105,16 @@ public class SpineAsset extends Asset {
 
                 FileUtils.forceMkdir(new File(targetPath));
                 File jsonFileTarget = new File(targetPath + File.separator + fileNameWithOutExt + ".json");
-                File atlasFileTarget = new File(targetPath + File.separator + fileNameWithOutExt + ".atlas");
 
                 FileUtils.copyFile(animationFileSource.file(), jsonFileTarget);
-                FileUtils.copyFile(atlasFileSource.file(), atlasFileTarget);
+                ImportUtils.unpackAtlasIntoTmpFolder(atlasFileSource.file(), projectManager.getCurrentProjectPath() + File.separator
+                        + ProjectManager.IMAGE_DIR_PATH);
 
-                for (File imageFile : new Array.ArrayIterator<>(imageFiles)) {
-                    FileHandle imgFileTarget = new FileHandle(targetPath + File.separator + imageFile.getName());
-                    FileUtils.copyFile(imageFile, imgFileTarget.file());
+                for (TextureAtlas.TextureAtlasData.Region region : new Array.ArrayIterator<>(atlas.getRegions())) {
+                    projectManager.getCurrentProjectVO().animationsPacks.get("main").regions.add(region.name);
                 }
 
-                return atlasFileTarget;
-
-
+                return jsonFileTarget;
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -44,10 +44,9 @@ public class SpriteAnimationAtlasAsset extends Asset {
     @Override
     public void importAsset(Array<FileHandle> files, ProgressHandler progressHandler, boolean skipRepack) {
         for (FileHandle fileHandle : new Array.ArrayIterator<>(files)) {
-            String newAnimName = null;
+            String newAnimName;
 
             try {
-                Array<File> imgs = ImportUtils.getAtlasPages(fileHandle);
                 String fileNameWithoutExt = ImportUtils.getAtlasName(fileHandle);
 
                 String targetPath = projectManager.getCurrentProjectPath() + "/assets/orig/sprite-animations" + File.separator + fileNameWithoutExt;
@@ -55,9 +54,10 @@ public class SpriteAnimationAtlasAsset extends Asset {
                 if (targetDir.exists()) {
                     FileUtils.deleteDirectory(targetDir);
                 }
-                for (File img : imgs) {
-                    FileUtils.copyFileToDirectory(img, targetDir);
-                }
+
+                ImportUtils.unpackAtlasIntoTmpFolder(fileHandle.file(), projectManager.getCurrentProjectPath() + File.separator
+                        + ProjectManager.IMAGE_DIR_PATH);
+
                 File atlasTargetPath = new File(targetPath + File.separator + fileNameWithoutExt + ".atlas");
                 FileUtils.copyFile(fileHandle.file(), atlasTargetPath);
                 newAnimName = fileNameWithoutExt;
@@ -68,7 +68,13 @@ public class SpriteAnimationAtlasAsset extends Asset {
             }
 
             if (newAnimName != null) {
-                resolutionManager.resizeSpriteAnimationForAllResolutions(newAnimName, projectManager.getCurrentProjectInfoVO());
+                TextureAtlas.TextureAtlasData atlas = new TextureAtlas.TextureAtlasData(fileHandle, fileHandle.parent(), false);
+
+                for (TextureAtlas.TextureAtlasData.Region region : new Array.ArrayIterator<>(atlas.getRegions())) {
+                    projectManager.getCurrentProjectVO().animationsPacks.get("main").regions.add(region.name);
+                }
+
+                resolutionManager.rePackProjectImagesForAllResolutionsSync();
             }
         }
     }

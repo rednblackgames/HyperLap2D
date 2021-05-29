@@ -43,9 +43,9 @@ public class ProjectVersionMigrator {
 	/**
 	 * this is the current supported version, change when data format is changed, and add migration script
 	 */
-	public static String dataFormatVersion = "0.1.1";
+	public static String dataFormatVersion = "0.2.0";
 
-	private Json json = new Json();
+	private final Json json = new Json();
 
 	public ProjectVersionMigrator (String projectPath, ProjectVO projectVo) {
 		this.projectPath = projectPath;

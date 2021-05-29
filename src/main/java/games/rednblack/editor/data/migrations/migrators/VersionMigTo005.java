@@ -57,7 +57,6 @@ public class VersionMigTo005 implements IVersionMigrator {
 
     @Override
     public boolean doMigration() {
-
         // Rename folder animations to spine-animations in orig (if exist);
         File animationsDir = new File(projectPath + File.separator + "assets" + File.separator + "orig" + File.separator + "animations");
         if (animationsDir.exists() && animationsDir.isDirectory()) {
@@ -73,12 +72,6 @@ public class VersionMigTo005 implements IVersionMigrator {
             projectInfoContents = FileUtils.readFileToString(projectInfoFile.file(), "utf-8");
             ProjectInfoVO currentProjectInfoVO = json.fromJson(ProjectInfoVO.class, projectInfoContents);
             projectManager.currentProjectInfoVO = currentProjectInfoVO;
-
-            // run through all resolutions and remake animations for all
-            for (ResolutionEntryVO resolutionEntryVO : currentProjectInfoVO.resolutions) {
-                ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-                resolutionManager.createResizedAnimations(resolutionEntryVO);
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }

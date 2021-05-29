@@ -47,7 +47,7 @@ public class SpineDrawStrategy extends BasicDrawStrategy {
             replaceSpineCommandBuilder.begin(entity);
             String animName = tiledPlugin.getSelectedTileName();
             replaceSpineCommandBuilder.setAnimationName(animName);
-            SkeletonJson skeletonJson = new SkeletonJson(tiledPlugin.getAPI().getSceneLoader().getRm().getSkeletonAtlas(animName));
+            SkeletonJson skeletonJson = new SkeletonJson(tiledPlugin.getAPI().getSceneLoader().getRm().getMainPack());
             replaceSpineCommandBuilder.setSkeletonJson(skeletonJson);
             SkeletonData skeletonData = skeletonJson.readSkeletonData((tiledPlugin.getAPI().getSceneLoader().getRm().getSkeletonJSON(animName)));
             replaceSpineCommandBuilder.setSkeleton(new Skeleton(skeletonData));
