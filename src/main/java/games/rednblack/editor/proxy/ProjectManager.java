@@ -20,6 +20,9 @@ package games.rednblack.editor.proxy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -105,14 +108,6 @@ public class ProjectManager extends Proxy {
     }
 
     public void createEmptyProject(String projectPath, int width, int height, int pixelPerWorldUnit) throws IOException {
-
-        /*
-        if (workspacePath.endsWith(File.separator)) {
-            workspacePath = workspacePath.substring(0, workspacePath.length() - 1);
-        }
-
-        String projPath = workspacePath + File.separator + projectName;
-        */
         String projectName = new File(projectPath).getName();
         String projPath = FilenameUtils.normalize(projectPath);
 
@@ -123,9 +118,13 @@ public class ProjectManager extends Proxy {
         FileUtils.forceMkdir(new File(projPath + File.separator + "assets/orig"));
         FileUtils.forceMkdir(new File(projPath + File.separator + "assets/orig/images"));
         FileUtils.forceMkdir(new File(projPath + File.separator + "assets/orig/particles"));
-        FileUtils.forceMkdir(new File(projPath + File.separator + "assets/orig/animations"));
         FileUtils.forceMkdir(new File(projPath + File.separator + "assets/orig/pack"));
 
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        FileHandle whitePixel = new FileHandle(projPath + File.separator + "assets/orig/images" + File.separator + "white-pixel.png");
+        PixmapIO.writePNG(whitePixel, pixmap);
 
         // create project file
         ProjectVO projVo = new ProjectVO();
@@ -133,6 +132,7 @@ public class ProjectManager extends Proxy {
         projVo.projectVersion = ProjectVersionMigrator.dataFormatVersion;
         TexturePackVO mainPack = new TexturePackVO();
         mainPack.name = "main";
+        mainPack.regions.add("white-pixel");
         projVo.imagesPacks.put("main", mainPack);
         TexturePackVO mainAnimPack = new TexturePackVO();
         mainAnimPack.name = "main";
