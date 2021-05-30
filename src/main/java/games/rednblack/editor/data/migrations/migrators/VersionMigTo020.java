@@ -36,6 +36,14 @@ public class VersionMigTo020 implements IVersionMigrator {
         mainPack.name = "main";
         projectVO.imagesPacks.put("main", mainPack);
 
+        String res = projectVO.lastOpenResolution.isEmpty() ? "orig" : projectVO.lastOpenResolution;
+        FileHandle pack = new FileHandle(projectPath + "/assets/" + res + "/pack/pack.atlas");
+        TextureAtlas.TextureAtlasData mainAtlas = new TextureAtlas.TextureAtlasData(pack, pack.parent(), false);
+
+        for (TextureAtlas.TextureAtlasData.Region region : new Array.ArrayIterator<>(mainAtlas.getRegions())) {
+            projectVO.imagesPacks.get("main").regions.add(region.name);
+        }
+
         TexturePackVO mainAnimPack = new TexturePackVO();
         mainAnimPack.name = "main";
         projectVO.animationsPacks.put("main", mainAnimPack);
@@ -87,6 +95,7 @@ public class VersionMigTo020 implements IVersionMigrator {
                     if (page.textureFile != null)
                         page.textureFile.delete();
                 }
+                atlasTargetPath.delete();
             }
         }
 
@@ -98,8 +107,6 @@ public class VersionMigTo020 implements IVersionMigrator {
 
         projectVO.imagesPacks.get("main").regions.add("white-pixel");
 
-        String res = projectVO.lastOpenResolution.isEmpty() ? "orig" : projectVO.lastOpenResolution;
-        File pack = new File(projectPath + "/assets/" + res + "/pack/pack.atlas");
         pack.delete();
 
         return true;
