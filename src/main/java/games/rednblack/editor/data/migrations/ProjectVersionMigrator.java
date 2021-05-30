@@ -20,15 +20,12 @@ package games.rednblack.editor.data.migrations;
 
 import java.io.IOException;
 
-import games.rednblack.editor.data.migrations.migrators.VersionMigTo009;
-import games.rednblack.editor.data.migrations.migrators.VersionMigTo011;
+import games.rednblack.editor.data.migrations.migrators.*;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import org.apache.commons.io.FileUtils;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
-import games.rednblack.editor.data.migrations.migrators.DummyMig;
-import games.rednblack.editor.data.migrations.migrators.VersionMigTo005;
 
 /**
  * Created by azakhary on 9/28/2014.
@@ -91,10 +88,14 @@ public class ProjectVersionMigrator {
 			IVersionMigrator vmt = new VersionMigTo011();
 			doMigration(vmt, "0.1.1");
 		}
+		if (projectVo.projectVersion.equals("0.1.1")) {
+			IVersionMigrator vmt = new VersionMigTo020();
+			doMigration(vmt, "0.2.0");
+		}
 	}
 
 	private void doMigration (IVersionMigrator vmt, String nextVersion) {
-		vmt.setProject(projectPath);
+		vmt.setProject(projectPath, projectVo);
 
 		if (vmt.doMigration()) {
 			setVersion(nextVersion);

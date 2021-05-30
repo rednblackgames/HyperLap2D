@@ -6,12 +6,10 @@ import com.esotericsoftware.spine.SkeletonData;
 import com.esotericsoftware.spine.SkeletonJson;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.renderer.components.SpineDataComponent;
-import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
-import games.rednblack.editor.renderer.components.sprite.SpriteAnimationStateComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.command.ReplaceSpineCommandBuilder;
 import games.rednblack.h2d.common.factory.IFactory;
-import games.rednblack.h2d.extention.spine.SpineObjectComponent;
+import games.rednblack.h2d.extention.spine.PrefixAtlasAttachmentLoader;
 
 public class SpineDrawStrategy extends BasicDrawStrategy {
 
@@ -47,7 +45,8 @@ public class SpineDrawStrategy extends BasicDrawStrategy {
             replaceSpineCommandBuilder.begin(entity);
             String animName = tiledPlugin.getSelectedTileName();
             replaceSpineCommandBuilder.setAnimationName(animName);
-            SkeletonJson skeletonJson = new SkeletonJson(tiledPlugin.getAPI().getSceneLoader().getRm().getMainPack());
+            PrefixAtlasAttachmentLoader atlasAttachmentLoader = new PrefixAtlasAttachmentLoader(animName, tiledPlugin.getAPI().getSceneLoader().getRm().getMainPack());
+            SkeletonJson skeletonJson = new SkeletonJson(atlasAttachmentLoader);
             replaceSpineCommandBuilder.setSkeletonJson(skeletonJson);
             SkeletonData skeletonData = skeletonJson.readSkeletonData((tiledPlugin.getAPI().getSceneLoader().getRm().getSkeletonJSON(animName)));
             replaceSpineCommandBuilder.setSkeleton(new Skeleton(skeletonData));

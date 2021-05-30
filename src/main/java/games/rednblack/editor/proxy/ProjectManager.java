@@ -218,9 +218,8 @@ public class ProjectManager extends Proxy {
             } else {
                 resolutionManager.currentResolutionName = resolution;
                 currentProjectVO.lastOpenResolution = resolutionManager.currentResolutionName;
-                saveCurrentProject();
-
             }
+            saveCurrentProject();
             currentProjectPath = projectPath;
             checkForConsistency(projectPath);
             loadProjectData(projectPath);

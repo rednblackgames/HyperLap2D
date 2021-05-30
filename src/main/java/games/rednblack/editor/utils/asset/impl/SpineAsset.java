@@ -107,11 +107,11 @@ public class SpineAsset extends Asset {
                 File jsonFileTarget = new File(targetPath + File.separator + fileNameWithOutExt + ".json");
 
                 FileUtils.copyFile(animationFileSource.file(), jsonFileTarget);
-                ImportUtils.unpackAtlasIntoTmpFolder(atlasFileSource.file(), projectManager.getCurrentProjectPath() + File.separator
+                ImportUtils.unpackAtlasIntoTmpFolder(atlasFileSource.file(), fileNameWithOutExt,projectManager.getCurrentProjectPath() + File.separator
                         + ProjectManager.IMAGE_DIR_PATH);
 
                 for (TextureAtlas.TextureAtlasData.Region region : new Array.ArrayIterator<>(atlas.getRegions())) {
-                    projectManager.getCurrentProjectVO().animationsPacks.get("main").regions.add(region.name);
+                    projectManager.getCurrentProjectVO().animationsPacks.get("main").regions.add(fileNameWithOutExt+region.name);
                 }
 
                 return jsonFileTarget;

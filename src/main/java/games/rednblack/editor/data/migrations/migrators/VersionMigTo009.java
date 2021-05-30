@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.JsonWriter;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.data.migrations.IVersionMigrator;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.h2d.common.vo.ProjectVO;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -46,7 +47,7 @@ public class VersionMigTo009 implements IVersionMigrator {
     private ProjectManager projectManager;
 
     @Override
-    public void setProject(String path) {
+    public void setProject(String path, ProjectVO vo) {
         facade = HyperLap2DFacade.getInstance();
         projectManager = facade.retrieveProxy(ProjectManager.NAME);
         projectPath = path;

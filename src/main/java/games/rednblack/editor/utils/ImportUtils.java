@@ -20,7 +20,6 @@ package games.rednblack.editor.utils;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.tools.texturepacker.TextureUnpacker;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 
@@ -138,11 +137,11 @@ public class ImportUtils {
         return regions.get(regions.size - 1).index == regions.size - 1;
     }
 
-    public static void unpackAtlasIntoTmpFolder(File atlasFile, String tmpDir) {
+    public static void unpackAtlasIntoTmpFolder(File atlasFile, String prefix, String tmpDir) {
         FileHandle atlasFileHandle = new FileHandle(atlasFile);
         TextureAtlas.TextureAtlasData atlasData = new TextureAtlas.TextureAtlasData(atlasFileHandle, atlasFileHandle.parent(), false);
         TextureUnpacker unpacker = new TextureUnpacker();
-        unpacker.splitAtlas(atlasData, tmpDir);
+        unpacker.splitAtlas(atlasData, prefix, tmpDir);
     }
 
     public static String getAtlasName(FileHandle fileHandle) {
