@@ -316,7 +316,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     private void loadCurrentProjectSpriteAnimations(String path, String curResolution) {
         spriteAnimAtlases.clear();
-        FileHandle sourceDir = new FileHandle(path + curResolution + File.separator + "sprite-animations");
+        FileHandle sourceDir = new FileHandle(path + "orig" + File.separator + "sprite-animations");
         for (FileHandle entry : sourceDir.list()) {
             if (entry.file().isDirectory()) {
                 String animName = FilenameUtils.removeExtension(entry.file().getName());
