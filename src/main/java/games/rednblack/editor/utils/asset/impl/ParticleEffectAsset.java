@@ -75,6 +75,10 @@ public class ParticleEffectAsset extends Asset {
         }
         if (images.size > 0) {
             projectManager.copyImageFilesForAllResolutionsIntoProject(images, false, progressHandler);
+
+            for (FileHandle handle : new Array.ArrayIterator<>(images)) {
+                projectManager.getCurrentProjectVO().imagesPacks.get("main").regions.add(handle.nameWithoutExtension());
+            }
         }
         if (!skipRepack) {
             ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
