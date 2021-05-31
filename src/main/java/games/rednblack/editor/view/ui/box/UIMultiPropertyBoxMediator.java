@@ -18,18 +18,27 @@
 
 package games.rednblack.editor.view.ui.box;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import org.puremvc.java.interfaces.IMediator;
+import org.puremvc.java.interfaces.INotification;
+
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import games.rednblack.editor.renderer.components.label.TypingLabelComponent;
-import games.rednblack.editor.renderer.components.light.LightBodyComponent;
-import games.rednblack.h2d.common.MsgAPI;
+
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.ShaderComponent;
+import games.rednblack.editor.renderer.components.label.TypingLabelComponent;
+import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
+import games.rednblack.editor.renderer.components.physics.SensorComponent;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
@@ -39,14 +48,25 @@ import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.stage.tools.TextTool;
 import games.rednblack.editor.view.ui.properties.UIAbstractProperties;
 import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.*;
-import org.puremvc.java.interfaces.IMediator;
-import org.puremvc.java.interfaces.INotification;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.stream.Stream;
+import games.rednblack.editor.view.ui.properties.panels.UIBasicItemPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UICompositeItemPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UIImageItemPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UILabelItemPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UILightBodyPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UILightItemPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UIMultipleSelectPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UIParticlePropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UIPhysicsPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UIPolygonComponentPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UIScenePropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UISensorPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UIShaderPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UISpineAnimationItemPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UISpriteAnimationItemPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UITalosPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UITextToolPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UITypingLabelPropertiesMediator;
+import games.rednblack.h2d.common.MsgAPI;
 
 /**
  * Created by azakhary on 4/15/2015.
@@ -189,6 +209,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         // optional panels based on components
         PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
         PhysicsBodyComponent physicsComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
+        SensorComponent sensorComponent = ComponentRetriever.get(entity, SensorComponent.class);
         ShaderComponent shaderComponent = ComponentRetriever.get(entity, ShaderComponent.class);
         LightBodyComponent lightComponent = ComponentRetriever.get(entity, LightBodyComponent.class);
         TypingLabelComponent typingLabelComponent = ComponentRetriever.get(entity, TypingLabelComponent.class);
@@ -198,6 +219,9 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         }
         if (physicsComponent != null) {
             mediatorNames.add(UIPhysicsPropertiesMediator.NAME);
+        }
+        if (sensorComponent != null) {
+            mediatorNames.add(UISensorPropertiesMediator.NAME);
         }
         if (shaderComponent != null) {
             mediatorNames.add(UIShaderPropertiesMediator.NAME);

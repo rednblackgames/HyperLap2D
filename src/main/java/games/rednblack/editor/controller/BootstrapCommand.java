@@ -18,21 +18,83 @@
 
 package games.rednblack.editor.controller;
 
-import games.rednblack.editor.controller.commands.component.*;
-import games.rednblack.editor.splash.SplashScreenAdapter;
-import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.controller.commands.*;
-import games.rednblack.editor.controller.commands.resource.*;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.command.SimpleCommand;
+
+import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
+import games.rednblack.editor.controller.commands.AddSelectionCommand;
+import games.rednblack.editor.controller.commands.AddToLibraryAction;
+import games.rednblack.editor.controller.commands.AddToLibraryCommand;
+import games.rednblack.editor.controller.commands.ChangeOriginPointPosition;
+import games.rednblack.editor.controller.commands.ChangePolygonVertexPositionCommand;
+import games.rednblack.editor.controller.commands.ChangeRulerPositionCommand;
+import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
+import games.rednblack.editor.controller.commands.ConvertToButtonCommand;
+import games.rednblack.editor.controller.commands.ConvertToCompositeCommand;
+import games.rednblack.editor.controller.commands.CopyItemsCommand;
+import games.rednblack.editor.controller.commands.CreateItemCommand;
+import games.rednblack.editor.controller.commands.CreatePrimitiveCommand;
+import games.rednblack.editor.controller.commands.CreateStickyNoteCommand;
+import games.rednblack.editor.controller.commands.CustomVariableModifyCommand;
+import games.rednblack.editor.controller.commands.CutItemsCommand;
+import games.rednblack.editor.controller.commands.DeleteItemsCommand;
+import games.rednblack.editor.controller.commands.DeleteLayerCommand;
+import games.rednblack.editor.controller.commands.DeletePolygonVertexCommand;
+import games.rednblack.editor.controller.commands.ExportProjectCommand;
+import games.rednblack.editor.controller.commands.ItemChildrenTransformCommand;
+import games.rednblack.editor.controller.commands.ItemTransformCommand;
+import games.rednblack.editor.controller.commands.ItemsMoveCommand;
+import games.rednblack.editor.controller.commands.LayerSwapCommand;
+import games.rednblack.editor.controller.commands.ModifyStickyNoteCommand;
+import games.rednblack.editor.controller.commands.NewLayerCommand;
+import games.rednblack.editor.controller.commands.PasteItemsCommand;
+import games.rednblack.editor.controller.commands.PluginItemCommand;
+import games.rednblack.editor.controller.commands.ReleaseSelectionCommand;
+import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
+import games.rednblack.editor.controller.commands.RemoveStickyNoteCommand;
+import games.rednblack.editor.controller.commands.RenameLayerCommand;
+import games.rednblack.editor.controller.commands.SaveExportPathCommand;
+import games.rednblack.editor.controller.commands.SetSelectionCommand;
+import games.rednblack.editor.controller.commands.ShowNotificationCommand;
+import games.rednblack.editor.controller.commands.UpdateEntityComponentsCommand;
+import games.rednblack.editor.controller.commands.UpdateSceneDataCommand;
+import games.rednblack.editor.controller.commands.component.ReplaceRegionCommand;
+import games.rednblack.editor.controller.commands.component.ReplaceSpineCommand;
+import games.rednblack.editor.controller.commands.component.ReplaceSpriteAnimationCommand;
+import games.rednblack.editor.controller.commands.component.UpdateCompositeDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdateImageItemDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdateLabelDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdateLightBodyDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdateLightDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdateParticleDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdatePhysicsDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdateSensorDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdateShaderDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdateSpineDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdateSpriteAnimationDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdateTalosDataCommand;
+import games.rednblack.editor.controller.commands.resource.DeleteImageResource;
+import games.rednblack.editor.controller.commands.resource.DeleteLibraryAction;
+import games.rednblack.editor.controller.commands.resource.DeleteLibraryItem;
+import games.rednblack.editor.controller.commands.resource.DeleteParticleEffect;
+import games.rednblack.editor.controller.commands.resource.DeleteSpineAnimation;
+import games.rednblack.editor.controller.commands.resource.DeleteSpriteAnimation;
+import games.rednblack.editor.controller.commands.resource.DeleteTalosVFX;
+import games.rednblack.editor.controller.commands.resource.DuplicateLibraryAction;
+import games.rednblack.editor.controller.commands.resource.ExportActionCommand;
+import games.rednblack.editor.controller.commands.resource.ExportLibraryItemCommand;
+import games.rednblack.editor.splash.SplashScreenAdapter;
+import games.rednblack.h2d.common.MsgAPI;
 
 /**
  * Created by azakhary on 4/28/2015.
  */
 public class BootstrapCommand extends SimpleCommand {
 
-    public void execute(INotification notification) {
+    @Override
+	public void execute(INotification notification) {
         super.execute(notification);
         facade = HyperLap2DFacade.getInstance();
         facade.sendNotification(SplashScreenAdapter.UPDATE_SPLASH, "Loading Commands...");
@@ -90,6 +152,7 @@ public class BootstrapCommand extends SimpleCommand {
         facade.registerCommand(MsgAPI.ACTION_UPDATE_TALOS_DATA, UpdateTalosDataCommand::new);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_BODY_LIGHT_DATA, UpdateLightBodyDataCommand::new);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_PHYSICS_BODY_DATA, UpdatePhysicsDataCommand::new);
+        facade.registerCommand(MsgAPI.ACTION_UPDATE_SENSOR_DATA, UpdateSensorDataCommand::new);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_SHADER_DATA, UpdateShaderDataCommand::new);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_IMAGE_ITEM_DATA, UpdateImageItemDataCommand::new);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_SPRITE_ANIMATION_DATA, UpdateSpriteAnimationDataCommand::new);
