@@ -54,7 +54,7 @@ public class SpineAsset extends Asset {
     @Override
     public void importAsset(Array<FileHandle> files, ProgressHandler progressHandler, boolean skipRepack) {
         for (FileHandle handle : new Array.ArrayIterator<>(files)) {
-            File copiedFile = importExternalAnimationIntoProject(handle);
+            File copiedFile = importExternalAnimationIntoProject(handle, progressHandler);
             if (copiedFile == null)
                 continue;
 
@@ -64,7 +64,7 @@ public class SpineAsset extends Asset {
         }
     }
 
-    private File importExternalAnimationIntoProject(FileHandle animationFileSource) {
+    private File importExternalAnimationIntoProject(FileHandle animationFileSource, ProgressHandler progressHandler) {
         try {
             String fileName = animationFileSource.name();
             if (!HyperLap2DUtils.JSON_FILTER.accept(null, fileName)) {
@@ -107,8 +107,14 @@ public class SpineAsset extends Asset {
                 File jsonFileTarget = new File(targetPath + File.separator + fileNameWithOutExt + ".json");
 
                 FileUtils.copyFile(animationFileSource.file(), jsonFileTarget);
-                ImportUtils.unpackAtlasIntoTmpFolder(atlasFileSource.file(), fileNameWithOutExt,projectManager.getCurrentProjectPath() + File.separator
-                        + ProjectManager.IMAGE_DIR_PATH);
+                FileHandle tmpDir = new FileHandle(projectManager.getCurrentProjectPath() + File.separator + "tmp");
+                if (tmpDir.exists())
+                    FileUtils.forceDelete(tmpDir.file());
+                FileUtils.forceMkdir(tmpDir.file());
+                ImportUtils.unpackAtlasIntoTmpFolder(atlasFileSource.file(), fileNameWithOutExt, tmpDir.path());
+                Array<FileHandle> images = new Array<>(tmpDir.list());
+                projectManager.copyImageFilesForAllResolutionsIntoProject(images, true, progressHandler);
+                FileUtils.forceDelete(tmpDir.file());
 
                 for (TextureAtlas.TextureAtlasData.Region region : new Array.ArrayIterator<>(atlas.getRegions())) {
                     projectManager.getCurrentProjectVO().animationsPacks.get("main").regions.add(fileNameWithOutExt+region.name);

@@ -55,8 +55,14 @@ public class SpriteAnimationAtlasAsset extends Asset {
                     FileUtils.deleteDirectory(targetDir);
                 }
 
-                ImportUtils.unpackAtlasIntoTmpFolder(fileHandle.file(), null, projectManager.getCurrentProjectPath() + File.separator
-                        + ProjectManager.IMAGE_DIR_PATH);
+                FileHandle tmpDir = new FileHandle(projectManager.getCurrentProjectPath() + File.separator + "tmp");
+                if (tmpDir.exists())
+                    FileUtils.forceDelete(tmpDir.file());
+                FileUtils.forceMkdir(tmpDir.file());
+                ImportUtils.unpackAtlasIntoTmpFolder(fileHandle.file(), null, tmpDir.path());
+                Array<FileHandle> images = new Array<>(tmpDir.list());
+                projectManager.copyImageFilesForAllResolutionsIntoProject(images, true, progressHandler);
+                FileUtils.forceDelete(tmpDir.file());
 
                 File atlasTargetPath = new File(targetPath + File.separator + fileNameWithoutExt + ".atlas");
                 FileUtils.copyFile(fileHandle.file(), atlasTargetPath);
