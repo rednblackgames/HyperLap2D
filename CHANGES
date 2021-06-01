@@ -1,10 +1,14 @@
 [0.0.7]
+- [BREAK CHANGE] Spine and Sprite animations are now packed into same main atlas pack
+- [BREAK CHANGE] Update Project version to `0.2.0`
 - Experimental support to Normal Mapping in lights:
     * Simple Images
 - Add light `intensity`
+- Add Box2D Body Sensors
 
 = Editor =
 - Use Distance Field fonts for GUI
+- Add Editor performance settings (MSAA, OpenGL 3)
 - Huge improvements to Tiled Plugin:
     * Sprite and Spine animated Tiles
     * UI improvements and general refactoring
