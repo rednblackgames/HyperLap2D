@@ -26,6 +26,8 @@ import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.data.manager.PreferencesManager;
@@ -657,6 +659,7 @@ public class ProjectManager extends Proxy {
     private boolean deleteSingleImage(String resolutionName, String imageName) {
         String imagesPath = currentProjectPath + "/assets/" + resolutionName + "/images" + File.separator;
         String filePath = imagesPath + imageName + ".png";
+        currentProjectVO.imagesPacks.get("main").regions.remove(imageName);
         if (!(new File(filePath)).delete()) {
             filePath = imagesPath + imageName + ".9.png";
             return (new File(filePath)).delete();
@@ -687,6 +690,18 @@ public class ProjectManager extends Proxy {
     private boolean deleteSpineAnimation(String resolutionName, String spineName) {
         String spinePath = currentProjectPath + "/assets/" + resolutionName + "/spine-animations" + File.separator;
         String filePath = spinePath + spineName;
+        FileHandle jsonPath = new FileHandle(filePath + File.separator + spineName + ".json");
+
+        JsonValue root = new JsonReader().parse(jsonPath);
+        for (JsonValue skinMap = root.getChild("skins"); skinMap != null; skinMap = skinMap.next) {
+            for (JsonValue slotEntry = skinMap.getChild("attachments"); slotEntry != null; slotEntry = slotEntry.next) {
+                for (JsonValue entry = slotEntry.child; entry != null; entry = entry.next) {
+                    String name = spineName + entry.getString("name", entry.name);
+                    deleteSingleImage(resolutionName, name);
+                    currentProjectVO.animationsPacks.get("main").regions.remove(name);
+                }
+            }
+        }
         return deleteDirectory(filePath);
     }
 
@@ -698,9 +713,17 @@ public class ProjectManager extends Proxy {
         return deleteSpineAnimation("orig", spineName);
     }
 
-    private boolean deleteSpriteAnimation(String resolutionName, String spineName) {
+    private boolean deleteSpriteAnimation(String resolutionName, String spriteName) {
         String spritePath = currentProjectPath + "/assets/" + resolutionName + "/sprite-animations" + File.separator;
-        String filePath = spritePath + spineName;
+        String filePath = spritePath + spriteName;
+        FileHandle imagesPath = new FileHandle(currentProjectPath + "/assets/" + resolutionName + "/images" + File.separator);
+        String prefix = spriteName + "_";
+        for (FileHandle f : imagesPath.list()) {
+            if (f.nameWithoutExtension().startsWith(prefix)) {
+                f.delete();
+            }
+        }
+        currentProjectVO.animationsPacks.get("main").regions.remove(spriteName);
         return deleteDirectory(filePath);
     }
 
