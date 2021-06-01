@@ -250,7 +250,7 @@ public class SelectionTool extends SimpleTool {
                     newX = (sandbox.getGridSize() > 1) ? dragMouseStartPosition.x: MathUtils.round(dragMouseStartPosition.x);
                 }
                 if (directionVector.y == 0) {
-                    newY = (sandbox.getGridSize() > 1) ? dragMouseStartPosition.x: MathUtils.round(dragMouseStartPosition.y);
+                    newY = (sandbox.getGridSize() > 1) ? dragMouseStartPosition.y: MathUtils.round(dragMouseStartPosition.y);
                 }
             }
 
