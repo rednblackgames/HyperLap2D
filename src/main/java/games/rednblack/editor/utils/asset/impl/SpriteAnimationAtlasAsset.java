@@ -77,7 +77,7 @@ public class SpriteAnimationAtlasAsset extends Asset {
                 TextureAtlas.TextureAtlasData atlas = new TextureAtlas.TextureAtlasData(fileHandle, fileHandle.parent(), false);
 
                 for (TextureAtlas.TextureAtlasData.Region region : new Array.ArrayIterator<>(atlas.getRegions())) {
-                    projectManager.getCurrentProjectVO().animationsPacks.get("main").regions.add(region.name);
+                    projectManager.getCurrentProjectInfoVO().animationsPacks.get("main").regions.add(region.name);
                 }
 
                 resolutionManager.rePackProjectImagesForAllResolutionsSync();

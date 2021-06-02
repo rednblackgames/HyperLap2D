@@ -117,7 +117,7 @@ public class SpineAsset extends Asset {
                 FileUtils.forceDelete(tmpDir.file());
 
                 for (TextureAtlas.TextureAtlasData.Region region : new Array.ArrayIterator<>(atlas.getRegions())) {
-                    projectManager.getCurrentProjectVO().animationsPacks.get("main").regions.add(fileNameWithOutExt+region.name);
+                    projectManager.getCurrentProjectInfoVO().animationsPacks.get("main").regions.add(fileNameWithOutExt+region.name);
                 }
 
                 return jsonFileTarget;

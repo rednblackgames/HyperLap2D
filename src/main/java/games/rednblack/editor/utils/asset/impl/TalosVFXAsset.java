@@ -86,7 +86,7 @@ public class TalosVFXAsset extends Asset {
             projectManager.copyImageFilesForAllResolutionsIntoProject(images, false, progressHandler);
 
             for (FileHandle handle : new Array.ArrayIterator<>(images)) {
-                projectManager.getCurrentProjectVO().imagesPacks.get("main").regions.add(handle.nameWithoutExtension());
+                projectManager.getCurrentProjectInfoVO().imagesPacks.get("main").regions.add(handle.nameWithoutExtension());
             }
         }
         if (assetsRes.size > 0) {

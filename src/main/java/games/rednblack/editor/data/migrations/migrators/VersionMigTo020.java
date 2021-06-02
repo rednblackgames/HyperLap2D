@@ -10,23 +10,28 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
 import games.rednblack.editor.data.migrations.IVersionMigrator;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.h2d.common.vo.ProjectVO;
-import games.rednblack.h2d.common.vo.TexturePackVO;
+import games.rednblack.editor.renderer.data.TexturePackVO;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 public class VersionMigTo020 implements IVersionMigrator {
     private final Json json = new Json();
 
     private String projectPath;
     private ProjectVO projectVO;
+    private ProjectInfoVO projectInfoVO;
 
     @Override
-    public void setProject(String path, ProjectVO vo) {
+    public void setProject(String path, ProjectVO vo, ProjectInfoVO projectInfoVO) {
         projectPath = path;
         projectVO = vo;
+        this.projectInfoVO = projectInfoVO;
         json.setOutputType(JsonWriter.OutputType.json);
     }
 
@@ -34,19 +39,19 @@ public class VersionMigTo020 implements IVersionMigrator {
     public boolean doMigration() {
         TexturePackVO mainPack = new TexturePackVO();
         mainPack.name = "main";
-        projectVO.imagesPacks.put("main", mainPack);
+        projectInfoVO.imagesPacks.put("main", mainPack);
 
         String res = projectVO.lastOpenResolution.isEmpty() ? "orig" : projectVO.lastOpenResolution;
         FileHandle pack = new FileHandle(projectPath + "/assets/" + res + "/pack/pack.atlas");
         TextureAtlas.TextureAtlasData mainAtlas = new TextureAtlas.TextureAtlasData(pack, pack.parent(), false);
 
         for (TextureAtlas.TextureAtlasData.Region region : new Array.ArrayIterator<>(mainAtlas.getRegions())) {
-            projectVO.imagesPacks.get("main").regions.add(region.name);
+            projectInfoVO.imagesPacks.get("main").regions.add(region.name);
         }
 
         TexturePackVO mainAnimPack = new TexturePackVO();
         mainAnimPack.name = "main";
-        projectVO.animationsPacks.put("main", mainAnimPack);
+        projectInfoVO.animationsPacks.put("main", mainAnimPack);
 
         String spriteAnimationsPath = projectPath + File.separator + "assets/orig" + File.separator + "sprite-animations";
         FileHandle sourceDir = new FileHandle(spriteAnimationsPath);
@@ -58,7 +63,7 @@ public class VersionMigTo020 implements IVersionMigrator {
                 TextureAtlas.TextureAtlasData atlas = new TextureAtlas.TextureAtlasData(atlasTargetPath, atlasTargetPath.parent(), false);
 
                 for (TextureAtlas.TextureAtlasData.Region region : new Array.ArrayIterator<>(atlas.getRegions())) {
-                    projectVO.animationsPacks.get("main").regions.add(region.name);
+                    projectInfoVO.animationsPacks.get("main").regions.add(region.name);
                 }
 
                 try {
@@ -83,7 +88,7 @@ public class VersionMigTo020 implements IVersionMigrator {
                 TextureAtlas.TextureAtlasData atlas = new TextureAtlas.TextureAtlasData(atlasTargetPath, atlasTargetPath.parent(), false);
 
                 for (TextureAtlas.TextureAtlasData.Region region : new Array.ArrayIterator<>(atlas.getRegions())) {
-                    projectVO.animationsPacks.get("main").regions.add(animName+region.name);
+                    projectInfoVO.animationsPacks.get("main").regions.add(animName+region.name);
                 }
 
                 try {
@@ -105,7 +110,12 @@ public class VersionMigTo020 implements IVersionMigrator {
         FileHandle whitePixel = new FileHandle(projectPath + File.separator + "assets/orig/images" + File.separator + "white-pixel.png");
         PixmapIO.writePNG(whitePixel, pixmap);
 
-        projectVO.imagesPacks.get("main").regions.add("white-pixel");
+        projectInfoVO.imagesPacks.get("main").regions.add("white-pixel");
+        try {
+            FileUtils.writeStringToFile(new File(projectPath + "/project.dt"), projectInfoVO.constructJsonString(), "utf-8");
+        } catch (IOException e) {
+            return false;
+        }
 
         pack.delete();
 

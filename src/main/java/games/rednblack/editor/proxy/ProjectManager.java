@@ -132,13 +132,6 @@ public class ProjectManager extends Proxy {
         ProjectVO projVo = new ProjectVO();
         projVo.projectName = projectName;
         projVo.projectVersion = ProjectVersionMigrator.dataFormatVersion;
-        TexturePackVO mainPack = new TexturePackVO();
-        mainPack.name = "main";
-        mainPack.regions.add("white-pixel");
-        projVo.imagesPacks.put("main", mainPack);
-        TexturePackVO mainAnimPack = new TexturePackVO();
-        mainAnimPack.name = "main";
-        projVo.animationsPacks.put("main", mainAnimPack);
 
         // create project info file
         ProjectInfoVO projInfoVo = new ProjectInfoVO();
@@ -146,6 +139,13 @@ public class ProjectManager extends Proxy {
         projInfoVo.originalResolution.width = width;
         projInfoVo.originalResolution.height = height;
         projInfoVo.pixelToWorld = pixelPerWorldUnit;
+        TexturePackVO mainPack = new TexturePackVO();
+        mainPack.name = "main";
+        mainPack.regions.add("white-pixel");
+        projInfoVo.imagesPacks.put("main", mainPack);
+        TexturePackVO mainAnimPack = new TexturePackVO();
+        mainAnimPack.name = "main";
+        projInfoVo.animationsPacks.put("main", mainAnimPack);
 
         //TODO: add project orig resolution setting
         currentProjectVO = projVo;
@@ -659,7 +659,7 @@ public class ProjectManager extends Proxy {
     private boolean deleteSingleImage(String resolutionName, String imageName) {
         String imagesPath = currentProjectPath + "/assets/" + resolutionName + "/images" + File.separator;
         String filePath = imagesPath + imageName + ".png";
-        currentProjectVO.imagesPacks.get("main").regions.remove(imageName);
+        currentProjectInfoVO.imagesPacks.get("main").regions.remove(imageName);
         if (!(new File(filePath)).delete()) {
             filePath = imagesPath + imageName + ".9.png";
             return (new File(filePath)).delete();
@@ -698,7 +698,7 @@ public class ProjectManager extends Proxy {
                 for (JsonValue entry = slotEntry.child; entry != null; entry = entry.next) {
                     String name = spineName + entry.getString("name", entry.name);
                     deleteSingleImage(resolutionName, name);
-                    currentProjectVO.animationsPacks.get("main").regions.remove(name);
+                    currentProjectInfoVO.animationsPacks.get("main").regions.remove(name);
                 }
             }
         }
@@ -723,7 +723,7 @@ public class ProjectManager extends Proxy {
                 f.delete();
             }
         }
-        currentProjectVO.animationsPacks.get("main").regions.remove(spriteName);
+        currentProjectInfoVO.animationsPacks.get("main").regions.remove(spriteName);
         return deleteDirectory(filePath);
     }
 

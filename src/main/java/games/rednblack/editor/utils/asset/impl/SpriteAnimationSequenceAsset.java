@@ -91,7 +91,7 @@ public class SpriteAnimationSequenceAsset extends Asset {
         newAnimName = fileNameWithoutFrame;
 
         if (newAnimName != null) {
-            projectManager.getCurrentProjectVO().animationsPacks.get("main").regions.add(newAnimName);
+            projectManager.getCurrentProjectInfoVO().animationsPacks.get("main").regions.add(newAnimName);
             resolutionManager.rePackProjectImagesForAllResolutionsSync();
         }
     }

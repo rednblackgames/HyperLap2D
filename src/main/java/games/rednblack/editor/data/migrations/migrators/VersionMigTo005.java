@@ -47,7 +47,7 @@ public class VersionMigTo005 implements IVersionMigrator {
     private ProjectManager projectManager;
 
     @Override
-    public void setProject(String path, ProjectVO vo) {
+    public void setProject(String path, ProjectVO vo, ProjectInfoVO projectInfoVO) {
         facade = HyperLap2DFacade.getInstance();
         projectManager = facade.retrieveProxy(ProjectManager.NAME);
         projectPath = path;

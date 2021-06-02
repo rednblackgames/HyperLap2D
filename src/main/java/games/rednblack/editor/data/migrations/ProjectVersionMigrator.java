@@ -20,7 +20,10 @@ package games.rednblack.editor.data.migrations;
 
 import java.io.IOException;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import games.rednblack.editor.data.migrations.migrators.*;
+import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import org.apache.commons.io.FileUtils;
 
@@ -34,6 +37,7 @@ public class ProjectVersionMigrator {
 
 	private String projectPath;
 	private ProjectVO projectVo;
+	private ProjectInfoVO projectInfoVO;
 
 	private int safetyIterator = 0;
 
@@ -47,6 +51,15 @@ public class ProjectVersionMigrator {
 	public ProjectVersionMigrator (String projectPath, ProjectVO projectVo) {
 		this.projectPath = projectPath;
 		this.projectVo = projectVo;
+		String prjInfoFilePath = projectPath + "/project.dt";
+		FileHandle projectInfoFile = Gdx.files.internal(prjInfoFilePath);
+		String projectInfoContents = "{}";
+		try {
+			projectInfoContents = FileUtils.readFileToString(projectInfoFile.file(), "utf-8");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		projectInfoVO = json.fromJson(ProjectInfoVO.class, projectInfoContents);
 
 		json.setOutputType(JsonWriter.OutputType.json);
 	}
@@ -95,7 +108,7 @@ public class ProjectVersionMigrator {
 	}
 
 	private void doMigration (IVersionMigrator vmt, String nextVersion) {
-		vmt.setProject(projectPath, projectVo);
+		vmt.setProject(projectPath, projectVo, projectInfoVO);
 
 		if (vmt.doMigration()) {
 			setVersion(nextVersion);

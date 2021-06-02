@@ -24,6 +24,7 @@ import games.rednblack.editor.controller.commands.resource.DeleteImageResource;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.factory.ItemFactory;
 import games.rednblack.editor.proxy.ResourceManager;
+import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.ImageResource;
 import games.rednblack.h2d.common.vo.ProjectVO;
@@ -68,7 +69,7 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
     protected void initList(String searchText) {
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        ProjectVO projectVO = projectManager.getCurrentProjectVO();
+        ProjectInfoVO projectInfoVO = projectManager.getCurrentProjectInfoVO();
 
         TextureAtlas atlas = resourceManager.getProjectAssetsList();
 
@@ -76,7 +77,7 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
         Array<TextureAtlas.AtlasRegion> atlasRegions = atlas.getRegions();
 
         for (TextureAtlas.AtlasRegion region : new Array.ArrayIterator<>(atlasRegions)) {
-            if(!projectVO.imagesPacks.get("main").regions.contains(region.name)
+            if(!projectInfoVO.imagesPacks.get("main").regions.contains(region.name)
                 || !region.name.contains(searchText)) continue;
 
             boolean is9patch = region.findValue("split") != null;
