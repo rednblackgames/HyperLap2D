@@ -504,10 +504,6 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return spriteAnimAtlases;
     }
 
-    public TextureAtlas getProjectAssetsList(String atlas) {
-        return currentProjectAtlas.get(atlas);
-    }
-
     public HashMap<String, ParticleEffect> getProjectParticleList() {
         return particleEffects;
     }

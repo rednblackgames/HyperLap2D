@@ -71,24 +71,26 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         ProjectInfoVO projectInfoVO = projectManager.getCurrentProjectInfoVO();
 
-        TextureAtlas atlas = resourceManager.getProjectAssetsList("main");
-
         Array<DraggableResource> thumbnailBoxes = new Array<>();
-        Array<TextureAtlas.AtlasRegion> atlasRegions = atlas.getRegions();
 
-        for (TextureAtlas.AtlasRegion region : new Array.ArrayIterator<>(atlasRegions)) {
-            if(!projectInfoVO.imagesPacks.get("main").regions.contains(region.name)
-                || !region.name.contains(searchText)) continue;
+        for (String atlasName : projectInfoVO.imagesPacks.keySet()) {
+            TextureAtlas atlas = resourceManager.getTextureAtlas(atlasName);
+            Array<TextureAtlas.AtlasRegion> atlasRegions = atlas.getRegions();
 
-            boolean is9patch = region.findValue("split") != null;
-            DraggableResource draggableResource = new DraggableResource(new ImageResource(region));
-            if (is9patch) {
-                draggableResource.setFactoryFunction(ItemFactory.get()::create9Patch);
-            } else {
-                draggableResource.setFactoryFunction(ItemFactory.get()::createSimpleImage);
+            for (TextureAtlas.AtlasRegion region : new Array.ArrayIterator<>(atlasRegions)) {
+                if(!projectInfoVO.imagesPacks.get(atlasName).regions.contains(region.name)
+                        || !region.name.contains(searchText)) continue;
+
+                boolean is9patch = region.findValue("split") != null;
+                DraggableResource draggableResource = new DraggableResource(new ImageResource(region));
+                if (is9patch) {
+                    draggableResource.setFactoryFunction(ItemFactory.get()::create9Patch);
+                } else {
+                    draggableResource.setFactoryFunction(ItemFactory.get()::createSimpleImage);
+                }
+                draggableResource.initDragDrop();
+                thumbnailBoxes.add(draggableResource);
             }
-            draggableResource.initDragDrop();
-            thumbnailBoxes.add(draggableResource);
         }
 
         thumbnailBoxes.sort();
