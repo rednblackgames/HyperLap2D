@@ -29,7 +29,9 @@ import java.util.concurrent.Executors;
 import javax.imageio.ImageIO;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
+import games.rednblack.editor.renderer.data.TexturePackVO;
 import games.rednblack.h2d.common.MsgAPI;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -178,8 +180,6 @@ public class ResolutionManager extends Proxy {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         TexturePacker.Settings settings = projectManager.getTexturePackerSettings();
 
-        TexturePacker tp = new TexturePacker(settings);
-
         String sourcePath = projectManager.getCurrentProjectPath() + "/assets/" + resEntry.name + "/images";
         String outputPath = projectManager.getCurrentProjectPath() + "/assets/" + resEntry.name + "/pack";
 
@@ -193,15 +193,36 @@ public class ResolutionManager extends Proxy {
             e.printStackTrace();
         }
 
+        ObjectMap<String, TexturePacker> packerMap = new ObjectMap<>();
+        ObjectMap<String, String> regionsReverse = new ObjectMap<>();
+        for (TexturePackVO packVO : projectManager.currentProjectInfoVO.imagesPacks.values()) {
+            String name = packVO.name.equals("main") ? "pack" : packVO.name;
+            packerMap.put(name, new TexturePacker(settings));
+            for (String region : packVO.regions)
+                regionsReverse.put(region, name);
+        }
+        for (TexturePackVO packVO : projectManager.currentProjectInfoVO.animationsPacks.values()) {
+            String name = packVO.name.equals("main") ? "pack" : packVO.name;
+            if (packerMap.get(name) == null)
+                packerMap.put(name, new TexturePacker(settings));
+            for (String region : packVO.regions)
+                regionsReverse.put(region, name);
+        }
+
+
         for (FileHandle entry : sourceDir.list()) {
-            String filename = entry.file().getName();
-            String extension = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
-            if (extension.equals("png")) {
+            if (entry.extension().equals("png")) {
+                String name = regionsReverse.get(entry.nameWithoutExtension().replace(".9", "").replaceAll("_.*", ""));
+                name = name == null ? "pack" : name;
+                TexturePacker tp = packerMap.get(name);
                 tp.addImage(entry.file());
             }
         }
 
-        tp.pack(outputDir, "pack");
+        for (String name : packerMap.keys()) {
+            TexturePacker tp = packerMap.get(name);
+            tp.pack(outputDir, name);
+        }
     }
 
     private int resizeTextures(String path, ResolutionEntryVO resolution) {

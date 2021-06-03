@@ -19,7 +19,7 @@ import com.esotericsoftware.spine.attachments.Attachment;
 import com.esotericsoftware.spine.attachments.MeshAttachment;
 import com.esotericsoftware.spine.attachments.RegionAttachment;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
-import games.rednblack.h2d.extention.spine.PrefixAtlasAttachmentLoader;
+import games.rednblack.h2d.extention.spine.ResourceRetrieverAttachmentLoader;
 
 public class SpineActor extends Actor {
 
@@ -81,7 +81,7 @@ public class SpineActor extends Actor {
     }
 
     private void initSkeletonData() {
-        skeletonJson = new SkeletonJson(new PrefixAtlasAttachmentLoader(animationName, irr.getMainPack()));
+        skeletonJson = new SkeletonJson(new ResourceRetrieverAttachmentLoader(animationName, irr));
         skeletonData = skeletonJson.readSkeletonData((irr.getSkeletonJSON(animationName)));
     }
 

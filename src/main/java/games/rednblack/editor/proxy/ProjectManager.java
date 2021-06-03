@@ -299,12 +299,6 @@ public class ProjectManager extends Proxy {
         }
     }
 
-    public void reLoadProjectAssets() {
-        ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-        ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
-        resourceManager.loadCurrentProjectAssets(currentProjectPath + "/assets/" + resolutionManager.currentResolutionName + "/pack/pack.atlas");
-    }
-
     public void loadProjectData(String projectPath) {
         // All legit loading assets
         ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
@@ -405,12 +399,7 @@ public class ProjectManager extends Proxy {
                     newFile.mkdir();
                 }
 
-                // The filename should not be changed because the particle effects contain the name in their
-                // configuration. Unfortunately though, the texture packer does not support the underscore because
-                // any underscore in the texture packer is considered an image index. More info here:
-                // https://github.com/libgdx/libgdx/wiki/Texture-packer#image-indexes
-                // So, long story short, we MUST remove the underscore.
-                ImageIO.write(bufferedImage, "png", new File(targetPath + "/" + handle.name().replace("_", "")));
+                ImageIO.write(bufferedImage, "png", new File(targetPath + "/" + handle.name()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -450,23 +439,10 @@ public class ProjectManager extends Proxy {
         if (!currentProjectVO.projectMainExportPath.isEmpty()) {
             exportFonts(currentProjectVO.projectMainExportPath);
         }
-        exportStyles(defaultBuildPath);
         SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
         sceneDataManager.buildScenes(defaultBuildPath);
         if (!currentProjectVO.projectMainExportPath.isEmpty()) {
             sceneDataManager.buildScenes(currentProjectVO.projectMainExportPath);
-        }
-    }
-
-    private void exportStyles(String targetPath) {
-        String srcPath = currentProjectPath + "/assets/orig";
-        FileHandle origDirectoryHandle = Gdx.files.absolute(srcPath);
-        FileHandle stylesDirectory = origDirectoryHandle.child("styles");
-        File fileTarget = new File(targetPath + "/" + stylesDirectory.name());
-        try {
-            FileUtils.copyDirectory(stylesDirectory.file(), fileTarget);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -477,8 +453,7 @@ public class ProjectManager extends Proxy {
         File fileTarget = new File(targetPath + "/" + shadersDirectory.name());
         try {
             FileUtils.copyDirectory(shadersDirectory.file(), fileTarget);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignore) {
         }
     }
 
@@ -489,8 +464,7 @@ public class ProjectManager extends Proxy {
         File fileTarget = new File(targetPath + "/" + particlesDirectory.name());
         try {
             FileUtils.copyDirectory(particlesDirectory.file(), fileTarget);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignore) {
         }
     }
 
@@ -501,8 +475,7 @@ public class ProjectManager extends Proxy {
         File fileTarget = new File(targetPath + "/" + particlesDirectory.name());
         try {
             FileUtils.copyDirectory(particlesDirectory.file(), fileTarget);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignore) {
         }
     }
 
@@ -513,8 +486,7 @@ public class ProjectManager extends Proxy {
         File fileTarget = new File(targetPath + "/" + fontsDirectory.name());
         try {
             FileUtils.copyDirectory(fontsDirectory.file(), fileTarget);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignore) {
         }
     }
 

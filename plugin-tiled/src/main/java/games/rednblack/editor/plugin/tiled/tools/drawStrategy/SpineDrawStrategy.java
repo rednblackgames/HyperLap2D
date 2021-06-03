@@ -9,7 +9,7 @@ import games.rednblack.editor.renderer.components.SpineDataComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.command.ReplaceSpineCommandBuilder;
 import games.rednblack.h2d.common.factory.IFactory;
-import games.rednblack.h2d.extention.spine.PrefixAtlasAttachmentLoader;
+import games.rednblack.h2d.extention.spine.ResourceRetrieverAttachmentLoader;
 
 public class SpineDrawStrategy extends BasicDrawStrategy {
 
@@ -45,7 +45,7 @@ public class SpineDrawStrategy extends BasicDrawStrategy {
             replaceSpineCommandBuilder.begin(entity);
             String animName = tiledPlugin.getSelectedTileName();
             replaceSpineCommandBuilder.setAnimationName(animName);
-            PrefixAtlasAttachmentLoader atlasAttachmentLoader = new PrefixAtlasAttachmentLoader(animName, tiledPlugin.getAPI().getSceneLoader().getRm().getMainPack());
+            ResourceRetrieverAttachmentLoader atlasAttachmentLoader = new ResourceRetrieverAttachmentLoader(animName, tiledPlugin.getAPI().getSceneLoader().getRm());
             SkeletonJson skeletonJson = new SkeletonJson(atlasAttachmentLoader);
             replaceSpineCommandBuilder.setSkeletonJson(skeletonJson);
             SkeletonData skeletonData = skeletonJson.readSkeletonData((tiledPlugin.getAPI().getSceneLoader().getRm().getSkeletonJSON(animName)));

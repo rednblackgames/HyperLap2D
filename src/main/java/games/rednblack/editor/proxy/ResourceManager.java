@@ -30,6 +30,7 @@ import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.utils.H2DSkinLoader;
 import games.rednblack.editor.renderer.utils.ShadedDistanceFieldFont;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
+import games.rednblack.h2d.extension.talos.ResourceRetrieverAssetProvider;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -58,7 +59,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private final HashMap<String, ParticleEffect> particleEffects = new HashMap<>(1);
     private final HashMap<String, ParticleEffectDescriptor> talosVFXs = new HashMap<>(1);
     private final HashMap<String, FileHandle> talosVFXsFiles = new HashMap<>(1);
-    private TextureAtlas currentProjectAtlas;
+    private HashMap<String, TextureAtlas> currentProjectAtlas = new HashMap<>(1);
 
     private final HashMap<String, SpineAnimData> spineAnimAtlases = new HashMap<>();
     private final HashMap<String, Array<TextureAtlas.AtlasRegion>> spriteAnimAtlases = new HashMap<>();
@@ -145,17 +146,17 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     @Override
     public TextureRegion getTextureRegion(String name) {
-        TextureRegion reg = currentProjectAtlas.findRegion(name);
-
-        if(reg == null) {
-            reg = defaultRegion;
+        for (TextureAtlas atlas : currentProjectAtlas.values()) {
+            TextureRegion region = atlas.findRegion(name);
+            if (region != null)
+                return region;
         }
-
-        return reg;
+        return defaultRegion;
     }
 
-    public TextureAtlas getTextureAtlas() {
-        return currentProjectAtlas;
+    @Override
+    public TextureAtlas getTextureAtlas(String atlasName) {
+        return currentProjectAtlas.get(atlasName);
     }
 
     @Override
@@ -201,7 +202,11 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     @Override
     public boolean hasTextureRegion(String regionName) {
-        return currentProjectAtlas.findRegion(regionName) != null;
+        for (TextureAtlas atlas : currentProjectAtlas.values()) {
+            if (atlas.findRegion(regionName) != null)
+                return true;
+        }
+        return false;
     }
 
     @Override
@@ -223,7 +228,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     public void loadCurrentProjectData(String projectPath, String curResolution) {
         packResolutionName = curResolution;
-        loadCurrentProjectAssets(projectPath + "/assets/" + curResolution + "/pack/pack.atlas");
+        loadCurrentProjectAssets(projectPath + "/assets/" + curResolution + "/pack");
         loadCurrentProjectParticles(projectPath + "/assets/orig/particles");
         loadCurrentProjectTalosVFXs(projectPath + "/assets/orig/talos-vfx");
         loadCurrentProjectSpineAnimations(projectPath + "/assets/", curResolution);
@@ -241,7 +246,13 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
             if (file.isDirectory() || filename.endsWith(".DS_Store")) continue;
 
             ParticleEffect particleEffect = new ParticleEffect();
-            particleEffect.load(Gdx.files.internal(file.getAbsolutePath()), currentProjectAtlas, "");
+            particleEffect.loadEmitters(Gdx.files.internal(file.getAbsolutePath()));
+            for (TextureAtlas atlas : currentProjectAtlas.values()) {
+                try {
+                    particleEffect.loadEmitterImages(atlas, "");
+                    break;
+                } catch (Exception ignore) { }
+            }
             particleEffects.put(filename, particleEffect);
         }
     }
@@ -255,7 +266,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
             String filename = file.getName();
             if (file.isDirectory() || filename.endsWith(".DS_Store") || filename.endsWith("shdr") || filename.endsWith(".fga")) continue;
 
-            AtlasAssetProvider assetProvider = new AtlasAssetProvider(currentProjectAtlas);
+            ResourceRetrieverAssetProvider assetProvider = new ResourceRetrieverAssetProvider(this);
             assetProvider.setAssetHandler(ShaderDescriptor.class, this::findShaderDescriptorOnLoad);
             assetProvider.setAssetHandler(VectorField.class, this::findVectorFieldDescriptorOnLoad);
             ParticleEffectDescriptor effectDescriptor = new ParticleEffectDescriptor();
@@ -305,7 +316,6 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 String animName = FilenameUtils.removeExtension(entry.file().getName());
                 FileHandle animJsonFile = Gdx.files.internal(entry.file().getAbsolutePath() + File.separator + animName + ".json");
                 SpineAnimData data = new SpineAnimData();
-                data.atlas = currentProjectAtlas;
                 data.jsonFile = animJsonFile;
                 data.animName = animName;
                 spineAnimAtlases.put(animName, data);
@@ -320,16 +330,25 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         for (FileHandle entry : sourceDir.list()) {
             if (entry.file().isDirectory()) {
                 String animName = FilenameUtils.removeExtension(entry.file().getName());
-                spriteAnimAtlases.put(animName, currentProjectAtlas.findRegions(animName));
+                Array<TextureAtlas.AtlasRegion> regions = null;
+                for (TextureAtlas atlas : currentProjectAtlas.values()) {
+                    regions = atlas.findRegions(animName);
+                    if (regions.size > 0)
+                        break;
+                }
+                if (regions != null)
+                    spriteAnimAtlases.put(animName, regions);
             }
         }
     }
 
-    public void loadCurrentProjectAssets(String packPath) {
-        try {
-            currentProjectAtlas = new TextureAtlas(Gdx.files.getFileHandle(packPath, Files.FileType.Internal));
-        } catch (Exception e) {
-            currentProjectAtlas = new TextureAtlas();
+    public void loadCurrentProjectAssets(String packFolderPath) {
+        FileHandle folder = new FileHandle(packFolderPath);
+        for (FileHandle file : folder.list()) {
+            if (file.extension().equals("atlas")) {
+                String name = file.nameWithoutExtension().equals("pack") ? "main" : file.nameWithoutExtension();
+                currentProjectAtlas.put(name, new TextureAtlas(file));
+            }
         }
     }
 
@@ -485,8 +504,8 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return spriteAnimAtlases;
     }
 
-    public TextureAtlas getProjectAssetsList() {
-        return currentProjectAtlas;
+    public TextureAtlas getProjectAssetsList(String atlas) {
+        return currentProjectAtlas.get(atlas);
     }
 
     public HashMap<String, ParticleEffect> getProjectParticleList() {
@@ -512,10 +531,5 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     public HashMap<String, ShaderProgram> getShaders() {
         return shaderPrograms;
-    }
-
-    @Override
-    public TextureAtlas getMainPack() {
-        return currentProjectAtlas;
     }
 }

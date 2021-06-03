@@ -71,7 +71,7 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         ProjectInfoVO projectInfoVO = projectManager.getCurrentProjectInfoVO();
 
-        TextureAtlas atlas = resourceManager.getProjectAssetsList();
+        TextureAtlas atlas = resourceManager.getProjectAssetsList("main");
 
         Array<DraggableResource> thumbnailBoxes = new Array<>();
         Array<TextureAtlas.AtlasRegion> atlasRegions = atlas.getRegions();
