@@ -18,16 +18,22 @@
 
 package games.rednblack.editor.view.ui.box;
 
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.view.ui.box.resourcespanel.*;
-import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.proxy.ProjectManager;
-import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
+import java.util.stream.Stream;
+
 import org.puremvc.java.interfaces.INotification;
 
-import java.util.stream.Stream;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.utils.Array;
+
+import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.view.ui.box.resourcespanel.UIActionsTabMediator;
+import games.rednblack.editor.view.ui.box.resourcespanel.UIAnimationsTabMediator;
+import games.rednblack.editor.view.ui.box.resourcespanel.UIImagesTabMediator;
+import games.rednblack.editor.view.ui.box.resourcespanel.UILibraryItemsTabMediator;
+import games.rednblack.editor.view.ui.box.resourcespanel.UIParticleEffectsTabMediator;
+import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
 
 /**
  * Created by azakhary on 4/17/2015.
@@ -38,6 +44,15 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
     public static final String NAME = TAG;
 
     private static final String PREFIX = "games.rednblack.editor.view.ui.box.UIResourcesBoxMediator";
+
+    public static final String IMAGE_LEFT_CLICK = PREFIX + ".IMAGE_LEFT_CLICK";
+    public static final String IMAGE_BUNDLE_DROP = PREFIX + ".IMAGE_BUNDLE_DROP";
+	public static final String IMAGE_BUNDLE_DROP_SINGLE = PREFIX + ".IMAGE_BUNDLE_DROP_SINGLE";
+	
+
+    public static final String SHIFT_EVENT_TYPE = PREFIX + ".SHIFT_EVENT_TYPE";
+
+	public static final String IMAGE_TABLE_UPDATED = PREFIX + ".IMAGE_TABLE_UPDATED";
 
     public static final String IMAGE_RIGHT_CLICK = PREFIX + ".IMAGE_RIGHT_CLICK";
     public static final String SPINE_ANIMATION_RIGHT_CLICK = PREFIX + ".SPINE_ANIMATION_RIGHT_CLICK";

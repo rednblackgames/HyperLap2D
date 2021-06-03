@@ -18,28 +18,28 @@
 
 package games.rednblack.editor.plugin.tiled;
 
+import java.util.HashMap;
+
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
+
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import games.rednblack.editor.plugin.tiled.view.SpineDrawable;
-import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.h2d.common.vo.CursorData;
+
 import games.rednblack.editor.plugin.tiled.data.TileVO;
 import games.rednblack.editor.plugin.tiled.tools.DeleteTileTool;
 import games.rednblack.editor.plugin.tiled.tools.DrawTileTool;
+import games.rednblack.editor.plugin.tiled.view.SpineDrawable;
 import games.rednblack.editor.plugin.tiled.view.tabs.SettingsTab;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
+import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.ResourcePayloadObject;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
-
-import java.util.HashMap;
 
 /**
  * Created by mariam on 2/2/2016.
@@ -63,6 +63,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
         return new String[]{
                 MsgAPI.SCENE_LOADED,
                 TiledPlugin.TILE_ADDED,
+                TiledPlugin.IMAGE_BUNDLE_DROP_SINGLE,
                 TiledPlugin.TILE_SELECTED,
                 TiledPlugin.ACTION_DELETE_TILE,
                 TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST,
@@ -105,10 +106,13 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                         if (type == EntityFactory.UNKNOWN_TYPE) return; //only some resources can become a tile!
 
                         String tileName = resourcePayloadObject.name;
-                        if (tiledPlugin.dataToSave.containsTile(tileName)) return;
-
+                        // we send a notifier even in the case when the tile is not already added
                         tiledPlugin.facade.sendNotification(TiledPlugin.TILE_ADDED, new Object[]{tileName, type});
-
+                        if (type == EntityFactory.IMAGE_TYPE) {
+                        	// ensure that all selected images are dropped
+                        	// the respective listener is responsible for dropping one-by-one, since he tracks the selected ones
+                        	tiledPlugin.facade.sendNotification(TiledPlugin.IMAGE_BUNDLE_DROP, new Object[]{tileName, type});
+                        }
                     }
                 };
                 tiledPlugin.facade.sendNotification(MsgAPI.ADD_TARGET, target);
@@ -116,10 +120,15 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 viewComponent.setEngine(engine);
                 viewComponent.setFixedPosition();
                 break;
+            case TiledPlugin.IMAGE_BUNDLE_DROP_SINGLE:
+            	// aliasing the drop from the main project
             case TiledPlugin.TILE_ADDED:
                 Object[] payload = notification.getBody();
                 tileName = (String) payload[0];
                 int type = (int) payload[1];
+                // we only add tiles that have not been added previously
+                if (tiledPlugin.dataToSave.containsTile(tileName)) return;
+                
                 viewComponent.addTile(tileName, type);
 
                 tiledPlugin.dataToSave.addTile(tileName, type);

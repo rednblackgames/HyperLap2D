@@ -20,13 +20,18 @@ package games.rednblack.editor.view.ui.box.resourcespanel.draggable.box;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.utils.Null;
+
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.view.stage.input.MetaKeyInputProcessor;
+import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResourceView;
+import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
 
 /**
  * Created by sargis on 5/6/15.
@@ -36,27 +41,134 @@ public abstract class BoxItemResource extends Group implements DraggableResource
     protected float thumbnailSize = 50;
     protected PixelRect rc;
 
+    /**
+     * The color to fill the background of the image. Also the color of the background when the mouse is not over the image.
+     */
+    private final Color fillColor;
+    /**
+     * The standard color of the border. Also the color of the border when the mouse is not over the image.
+     */
+    private final Color borderColor;
+    /**
+     * The color of the border when the mouse hovers over the image.
+     */
+    private final Color borderMouseOverColor;
+    /**
+     * The color to fill the background of the image when the mouse hovers over the image.
+     */
+    private final Color fillMouseOverColor;
+    /**
+     * Whether to change the border color when the mouse hovers over the image.
+     */
+    private boolean highlightWhenMouseOver;
+    
     public BoxItemResource() {
+    	this(new Color(1, 1, 1, 0.2f), new Color(1, 1, 1, 0.4f), Color.BLACK, Color.BLACK, false);
+    }
+    
+    /**
+     * Creates a new box item resource with the given colors.
+     * 
+     * @param region The atlas region for the image resource.
+     * @param fillColor The color to fill the background of the image.
+     * @param borderColor The standard color of the border. Also used when the mouse is not hovering over the image.
+     * @param fillMouseOverColor The color to fill the background of the image when the mouse hovers over the image. Only used if the the parameter <code>highlightWhenMouseOver</code> is set to <code>true</code>.
+     * @param borderMouseOverColor The color of the border when the mouse hovers over the image. Only used if the the parameter <code>highlightWhenMouseOver</code> is set to <code>true</code>.
+     * @param highlightWhenMouseOver Whether to change the border color when the mouse hovers over the image.
+     */
+    public BoxItemResource(Color fillColor, Color borderColor, Color fillMouseOverColor, Color borderMouseOverColor, boolean highlightWhenMouseOver) {
         sandbox = Sandbox.getInstance();
         rc = new PixelRect(thumbnailSize, thumbnailSize);
-        rc.setFillColor(new Color(1, 1, 1, 0.2f));
-        rc.setBorderColor(new Color(1, 1, 1, 0.4f));
+        rc.setFillColor(fillColor);
+        rc.setBorderColor(borderColor);
         addActor(rc);
         setWidth(thumbnailSize);
         setHeight(thumbnailSize);
+        
+        this.fillColor = fillColor;
+        this.borderColor = borderColor;
+        this.fillMouseOverColor = fillMouseOverColor;
+        this.borderMouseOverColor = borderMouseOverColor;
+        this.highlightWhenMouseOver = highlightWhenMouseOver;
     }
 
+    /**
+     * Sets the right-click event. Should not be used with {@link #setClickEvent(String, String, String)}.
+     * 
+     * @param eventName The event name in case of a right-click.
+     * @param payload The payload for the right-click.
+     */
     public void setRightClickEvent(String eventName, String payload) {
+    	setClickEvent(null, eventName, null, payload);
+    }
+
+    /**
+     * Sets the left/right-click event. Should not be used with {@link #setRightClickEvent(String, String)}.
+     * 
+     * @param leftClickEventName The event name in case of a left-click.
+     * @param leftClickPayload The payload for the left-click.
+     * @param rightClickEventName The event name in case of a right-click.
+     * @param rightClickPayload The payload for the right-click.
+     */
+    public void setClickEvent(String leftClickEventName, String rightClickEventName, Object leftClickPayload, Object rightClickPayload) {
         addListener(new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+        	private boolean isOver;
+            @Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 super.touchDown(event, x, y, pointer, button);
                 return true;
             }
-            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                if(button == Input.Buttons.RIGHT) {
-                    HyperLap2DFacade.getInstance().sendNotification(eventName, payload);
-                }
+            @Override
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+            	// we only care for the event if the mouse is still in this resource
+            	if (isOver && !event.isTouchFocusCancel()) {
+	            	if(button == Input.Buttons.LEFT && leftClickEventName != null) {
+	            		String shiftEventType = MetaKeyInputProcessor.getInstance().isShiftDown() ? UIResourcesBoxMediator.SHIFT_EVENT_TYPE : null;
+	            		HyperLap2DFacade.getInstance().sendNotification(leftClickEventName, leftClickPayload, shiftEventType);
+	            	}
+	                if(button == Input.Buttons.RIGHT && rightClickEventName != null) {
+	                    HyperLap2DFacade.getInstance().sendNotification(rightClickEventName, rightClickPayload);
+	                }
+            	}
+            }
+            @Override
+            public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+            	// mouse is in the resource
+            	isOver = true;
+            	// check if we have to change the color
+            	if (highlightWhenMouseOver) {
+            		switchToMouseOverColor();
+            	}
+            }
+            @Override
+            public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+            	// mouse no longer in the resource
+            	isOver = false;
+            	// check if we have to revert the color
+            	if (highlightWhenMouseOver) {
+            		rc.setFillColor(fillColor);
+            		rc.setBorderColor(borderColor);
+            	}
             }
         });
     }
+    
+    public void setHighlightWhenMouseOver(boolean highlightWhenMouseOver) {
+    	this.highlightWhenMouseOver = highlightWhenMouseOver;
+    }
+    
+    public void switchToMouseOverColor() {
+    	if (fillMouseOverColor != null && borderMouseOverColor != null) {
+			rc.setFillColor(fillMouseOverColor);
+			rc.setBorderColor(borderMouseOverColor);
+    	}
+    }
+    
+    public void switchToStandardColor() {
+    	if (fillColor != null && borderColor != null) {
+			rc.setFillColor(fillColor);
+			rc.setBorderColor(borderColor);
+    	}
+    }
+    
 }
