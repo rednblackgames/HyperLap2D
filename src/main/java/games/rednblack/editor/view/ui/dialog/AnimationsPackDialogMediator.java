@@ -19,9 +19,10 @@ public class AnimationsPackDialogMediator extends Mediator<AtlasesPackDialog> {
     private static final String NEW_IMAGES_PACK = "games.rednblack.editor.view.ui.dialog.AnimationsPackDialogMediator.NEW_IMAGES_PACK";
     private static final String MOVE_REGION_TO_PACK = "games.rednblack.editor.view.ui.dialog.AnimationsPackDialogMediator.MOVE_REGION_TO_PACK";
     private static final String UPDATE_CURRENT_LIST = "games.rednblack.editor.view.ui.dialog.AnimationsPackDialogMediator.UPDATE_CURRENT_LIST";
+    private static final String REMOVE_PACK = "games.rednblack.editor.view.ui.dialog.AnimationsPackDialogMediator.REMOVE_PACK";
 
     public AnimationsPackDialogMediator() {
-        super(NAME, new AtlasesPackDialog("Animations Atlases", NEW_IMAGES_PACK, MOVE_REGION_TO_PACK, UPDATE_CURRENT_LIST));
+        super(NAME, new AtlasesPackDialog("Animations Atlases", NEW_IMAGES_PACK, MOVE_REGION_TO_PACK, UPDATE_CURRENT_LIST, REMOVE_PACK));
     }
 
     @Override
@@ -38,6 +39,7 @@ public class AnimationsPackDialogMediator extends Mediator<AtlasesPackDialog> {
                 NEW_IMAGES_PACK,
                 MOVE_REGION_TO_PACK,
                 UPDATE_CURRENT_LIST,
+                REMOVE_PACK,
                 ProjectManager.PROJECT_DATA_UPDATED,
                 DeleteImageResource.DONE,
                 DeleteSpineAnimation.DONE,
@@ -75,6 +77,7 @@ public class AnimationsPackDialogMediator extends Mediator<AtlasesPackDialog> {
                 projectManager.currentProjectInfoVO.animationsPacks.put(newVo.name, newVo);
 
                 viewComponent.addNewPack(newVo.name);
+                projectManager.saveCurrentProject();
                 break;
             case UPDATE_CURRENT_LIST:
                 currentTab = viewComponent.getSelectedTab();
@@ -92,6 +95,17 @@ public class AnimationsPackDialogMediator extends Mediator<AtlasesPackDialog> {
 
                 viewComponent.updateCurrentPack(projectManager.currentProjectInfoVO.animationsPacks.get(viewComponent.getSelectedTab()).regions);
                 viewComponent.updateMainPack(projectManager.currentProjectInfoVO.animationsPacks.get("main").regions);
+                projectManager.saveCurrentProject();
+                break;
+            case REMOVE_PACK:
+                String packToRemove = notification.getBody();
+                projectManager.currentProjectInfoVO.animationsPacks.get("main").regions.addAll(
+                        projectManager.currentProjectInfoVO.animationsPacks.get(packToRemove).regions
+                );
+                projectManager.currentProjectInfoVO.animationsPacks.remove(packToRemove);
+                viewComponent.updateMainPack(projectManager.currentProjectInfoVO.animationsPacks.get("main").regions);
+                viewComponent.clearCurrentPack();
+                projectManager.saveCurrentProject();
                 break;
         }
     }

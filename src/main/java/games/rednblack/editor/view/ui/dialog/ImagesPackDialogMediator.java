@@ -19,9 +19,10 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
     private static final String NEW_IMAGES_PACK = "games.rednblack.editor.view.ui.dialog.ImagesPackDialogMediator.NEW_IMAGES_PACK";
     private static final String MOVE_REGION_TO_PACK = "games.rednblack.editor.view.ui.dialog.ImagesPackDialogMediator.MOVE_REGION_TO_PACK";
     private static final String UPDATE_CURRENT_LIST = "games.rednblack.editor.view.ui.dialog.ImagesPackDialogMediator.UPDATE_CURRENT_LIST";
+    private static final String REMOVE_PACK = "games.rednblack.editor.view.ui.dialog.ImagesPackDialogMediator.REMOVE_PACK";
 
     public ImagesPackDialogMediator() {
-        super(NAME, new AtlasesPackDialog("Images Atlases", NEW_IMAGES_PACK, MOVE_REGION_TO_PACK, UPDATE_CURRENT_LIST));
+        super(NAME, new AtlasesPackDialog("Images Atlases", NEW_IMAGES_PACK, MOVE_REGION_TO_PACK, UPDATE_CURRENT_LIST, REMOVE_PACK));
     }
 
     @Override
@@ -38,6 +39,7 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
                 NEW_IMAGES_PACK,
                 MOVE_REGION_TO_PACK,
                 UPDATE_CURRENT_LIST,
+                REMOVE_PACK,
                 ProjectManager.PROJECT_DATA_UPDATED,
                 DeleteImageResource.DONE,
                 DeleteSpineAnimation.DONE,
@@ -75,6 +77,7 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
                 projectManager.currentProjectInfoVO.imagesPacks.put(newVo.name, newVo);
 
                 viewComponent.addNewPack(newVo.name);
+                projectManager.saveCurrentProject();
                 break;
             case UPDATE_CURRENT_LIST:
                 currentTab = viewComponent.getSelectedTab();
@@ -91,6 +94,18 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
 
                 viewComponent.updateCurrentPack(projectManager.currentProjectInfoVO.imagesPacks.get(viewComponent.getSelectedTab()).regions);
                 viewComponent.updateMainPack(projectManager.currentProjectInfoVO.imagesPacks.get("main").regions);
+                projectManager.saveCurrentProject();
+                break;
+            case REMOVE_PACK:
+                String packToRemove = notification.getBody();
+                projectManager.currentProjectInfoVO.imagesPacks.get("main").regions.addAll(
+                        projectManager.currentProjectInfoVO.imagesPacks.get(packToRemove).regions
+                );
+                projectManager.currentProjectInfoVO.imagesPacks.remove(packToRemove);
+                viewComponent.updateMainPack(projectManager.currentProjectInfoVO.imagesPacks.get("main").regions);
+                viewComponent.updateCurrentPack(projectManager.currentProjectInfoVO.imagesPacks.get(viewComponent.getSelectedTab()).regions);
+                viewComponent.clearCurrentPack();
+                projectManager.saveCurrentProject();
                 break;
         }
     }

@@ -7,6 +7,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.adapter.AbstractListAdapter;
 import com.kotcrab.vis.ui.util.adapter.SimpleListAdapter;
+import com.kotcrab.vis.ui.util.dialog.Dialogs;
+import com.kotcrab.vis.ui.util.dialog.OptionDialogAdapter;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane;
@@ -23,7 +25,7 @@ public class AtlasesPackDialog extends H2DDialog {
 
     private final TabbedPane tabbedPane;
     private final String addNewNotification;
-    private final String moveRegionNotification, updateCurrentNotification;
+    private final String moveRegionNotification, updateCurrentNotification, removeNotification;
     private final SimpleListAdapter<String> mainPackAdapter, currentPackAdapter;
     private final VisTextButton insertButton, removeButton;
     private final VisLabel currentSelectedPackLabel;
@@ -35,16 +37,39 @@ public class AtlasesPackDialog extends H2DDialog {
 
     private String mainSelected = null, currentSelected = null;
 
-    public AtlasesPackDialog(String title, String add, String move, String updateList) {
+    public AtlasesPackDialog(String title, String add, String move, String updateList, String removeNotification) {
         super(title);
         addNewNotification = add;
         moveRegionNotification = move;
         updateCurrentNotification = updateList;
+        this.removeNotification = removeNotification;
 
         addCloseButton();
         getContentTable().top().left();
 
-        tabbedPane = new TabbedPane();
+        tabbedPane = new TabbedPane() {
+            @Override
+            public boolean remove(Tab tab, boolean ignoreTabDirty) {
+                Dialogs.showOptionDialog(Sandbox.getInstance().getUIStage(), "Remove Pack", "Are you sure to remove this pack?",
+                        Dialogs.OptionDialogType.YES_NO_CANCEL, new OptionDialogAdapter() {
+                            @Override
+                            public void yes () {
+                                facade.sendNotification(removeNotification, tab.getTabTitle());
+                                packRemove(tab, ignoreTabDirty);
+                            }
+
+                            @Override
+                            public void no () {
+
+                            }
+                        });
+                return false;
+            }
+
+            private boolean packRemove(Tab tab, boolean ignoreTabDirty) {
+                return super.remove(tab, ignoreTabDirty);
+            }
+        };
         tabbedPane.addListener(new TabbedPaneAdapter() {
             @Override
             public void switchedTab(Tab tab) {
@@ -153,6 +178,11 @@ public class AtlasesPackDialog extends H2DDialog {
         if (tabbedPane.getTabs().size > 0) tabbedPane.switchTab(0);
     }
 
+    public void clearCurrentPack() {
+        currentList.clear();
+        currentPackAdapter.itemsChanged();
+    }
+
     public void updateCurrentPack(Set<String> regions) {
         String toSelect = null;
         if (currentPackAdapter.getSelection().size > 0) {
@@ -233,7 +263,7 @@ public class AtlasesPackDialog extends H2DDialog {
     public static class PackTab extends Tab {
         String name;
         public PackTab (String name) {
-            super(false, false);
+            super(false, true);
             this.name = name;
         }
 
