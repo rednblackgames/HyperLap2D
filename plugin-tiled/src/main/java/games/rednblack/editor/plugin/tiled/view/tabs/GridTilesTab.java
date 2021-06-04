@@ -3,8 +3,10 @@ package games.rednblack.editor.plugin.tiled.view.tabs;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -13,6 +15,7 @@ import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
+
 import games.rednblack.editor.plugin.tiled.TiledPanel;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.plugin.tiled.data.TileVO;
@@ -174,11 +177,20 @@ public class GridTilesTab extends DefaultTab {
             imageBoxStyle.imageChecked = tileDrawable;
             imageBoxStyle.imageOver = tileDrawable;
             ct = new VisImageButton(imageBoxStyle);
+            if (i < savedTiles.size) {
+            	ct.setUserObject(savedTiles.get(i).regionName);
+            }
 
             int index = i;
             ct.addListener(new InputListener() {
+            	private boolean isDragging = false;
+            	private Actor draggingSource;
+
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                	if (button == Input.Buttons.LEFT) {
+                		draggingSource = event.getListenerActor();
+                	}
 
                     if (index >= savedTiles.size) return true;
 
@@ -194,18 +206,75 @@ public class GridTilesTab extends DefaultTab {
                 @Override
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                     super.touchUp(event, x, y, pointer, button);
-                    if(button == Input.Buttons.RIGHT && index < savedTiles.size) {
-                        tiledPlugin.facade.sendNotification(TiledPlugin.OPEN_DROP_DOWN, savedTiles.get(index).regionName);
-                        return;
-                    }
+                    if (isDragging && button == Input.Buttons.LEFT && draggingSource != null) {
+                    	// finished dragging
+                    	isDragging = false;
+                    	
+                    	handleDrop(x, y);
+                    } else {
+                    	if(button == Input.Buttons.RIGHT && index < savedTiles.size) {
+                    		tiledPlugin.facade.sendNotification(TiledPlugin.OPEN_DROP_DOWN, savedTiles.get(index).regionName);
+                    		return;
+                    	}
 
-                    if (index >= savedTiles.size) {
-                        tiles.get(index).setChecked(false);
-                        return;
-                    }
+                    	if (index >= savedTiles.size) {
+                    		tiles.get(index).setChecked(false);
+                    		return;
+                    	}
 
-                    tiledPlugin.facade.sendNotification(TiledPlugin.TILE_SELECTED, savedTiles.get(index));
+                    	tiledPlugin.facade.sendNotification(TiledPlugin.TILE_SELECTED, savedTiles.get(index));
+                    }
                 }
+                
+                @Override
+				public void touchDragged (InputEvent event, float x, float y, int pointer) {
+                	isDragging = true;
+            	}
+                
+                /**
+                 * Handles the drop of a VisImageButton.
+                 * 
+                 * @param x The coordinates relative to the source. Comes from the touchUp event.
+                 * @param y The coordinates relative to the source. Comes from the touchUp event.
+                 */
+                private void handleDrop(float x, float y) {
+                	VisTable t = (VisTable) pane.getActor();
+                	Actor draggingTarget = t.hit(draggingSource.getX() + x, draggingSource.getY() + y, false);
+                	if (draggingTarget instanceof Image) {
+                		for (VisImageButton imgButton : tiles) {
+                			if (imgButton.getImage() == draggingTarget) {
+                				draggingTarget = imgButton;
+                				break;
+                			}
+                		}
+                	}
+                	if (draggingTarget != null && !draggingTarget.equals(draggingSource)) {
+                		String sourceRegionName = String.valueOf(draggingSource.getUserObject());
+                		String targetRegionName = String.valueOf(draggingTarget.getUserObject());
+                		int sourceIndex = -1;
+                		int targetIndex = -1;
+                		for (int i = 0; i < savedTiles.size; i++) {
+                			if (sourceRegionName.equals(savedTiles.get(i).regionName)) {
+                				sourceIndex = i;
+                			}
+                			if (targetRegionName.equals(savedTiles.get(i).regionName)) {
+                				targetIndex = i;
+                			}
+                		}
+                		// if targetIndex < 0 we dropped at the end
+                		// we already know that we hit another VisImageButton but could not find the name
+                		// thus, an empty button, which are always after the ones with an image
+                		if (targetIndex < 0) {
+                			targetIndex = savedTiles.size - 1;
+                		}
+                		if (sourceIndex >= 0) {
+                			TileVO sourceTileVO = savedTiles.removeIndex(sourceIndex);
+                			savedTiles.insert(targetIndex, sourceTileVO);
+                			initTiles();
+                		}
+                	}
+                }
+                
             });
             listTable.add(ct)
                     .width(40)
