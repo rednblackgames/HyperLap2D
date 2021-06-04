@@ -245,15 +245,6 @@ public class SelectionTool extends SimpleTool {
             newX = MathUtils.floor(x / gridSize) * gridSize;
             newY = MathUtils.floor(y / gridSize) * gridSize;
 
-            if (isShiftPressed()) {
-                if (directionVector.x == 0) {
-                    newX = dragMouseStartPosition.x;
-                }
-                if (directionVector.y == 0) {
-                    newY = dragMouseStartPosition.y;
-                }
-            }
-
             // Selection rectangles should move and follow along
             for (Entity itemInstance : sandbox.getSelector().getCurrentSelection()) {
                 transformComponent = ComponentRetriever.get(itemInstance, TransformComponent.class);
@@ -264,8 +255,16 @@ public class SelectionTool extends SimpleTool {
                 diff.x = MathUtils.floor(diff.x / gridSize) * gridSize;
                 diff.y = MathUtils.floor(diff.y / gridSize) * gridSize;
 
-                transformComponent.x = (newX - diff.x);
-                transformComponent.y = (newY - diff.y);
+                if (isShiftPressed()) {
+                    if (directionVector.x == 0) {
+                        transformComponent.y = (newY - diff.y);
+                    } else if (directionVector.y == 0) {
+                        transformComponent.x = (newX - diff.x);
+                    }
+                } else {
+                    transformComponent.x = (newX - diff.x);
+                    transformComponent.y = (newY - diff.y);
+                }
                 //value.hide();
 
                 // pining UI to update current item properties tools
@@ -332,7 +331,7 @@ public class SelectionTool extends SimpleTool {
         }
 
         isDragging = false;
-
+        directionVector = null;
     }
 
     @Override

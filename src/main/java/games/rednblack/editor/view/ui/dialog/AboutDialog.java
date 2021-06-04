@@ -44,7 +44,7 @@ public class AboutDialog extends H2DDialog {
         scrollPane.setFadeScrollBars(false);
 
         mainTable.add(leftTable).top().padLeft(10).left();
-        mainTable.add(scrollPane).maxHeight(300).top().width(550).padLeft(28).expand().left();
+        mainTable.add(scrollPane).maxHeight(300).top().width(580).padLeft(28).expand().left();
 
         leftTable.add(new VisImage(VisUI.getSkin().getDrawable("splash_logo"))).pad(5).row();
         leftTable.add("HyperLap2D").padLeft(5).padRight(5).row();

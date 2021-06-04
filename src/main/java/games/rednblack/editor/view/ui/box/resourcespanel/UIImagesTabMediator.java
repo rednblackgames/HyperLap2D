@@ -27,7 +27,9 @@ import com.badlogic.gdx.utils.Array;
 
 import games.rednblack.editor.controller.commands.resource.DeleteImageResource;
 import games.rednblack.editor.factory.ItemFactory;
+import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
+import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.ImageResource;
 
@@ -68,24 +70,31 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
     @Override
     protected void initList(String searchText) {
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
-
-        TextureAtlas atlas = resourceManager.getProjectAssetsList();
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        ProjectInfoVO projectInfoVO = projectManager.getCurrentProjectInfoVO();
 
         Array<DraggableResource> thumbnailBoxes = new Array<>();
-        Array<TextureAtlas.AtlasRegion> atlasRegions = atlas.getRegions();
-        for (TextureAtlas.AtlasRegion region : new Array.ArrayIterator<>(atlasRegions)) {
-            if(!region.name.contains(searchText))continue;
-            boolean is9patch = region.findValue("split") != null;
-            ImageResource imageResource = new ImageResource(region, new Color(1, 1, 1, 0.2f), new Color(1, 1, 1, 0.4f),
-            		new Color(200f / 255f, 200f / 255f, 200f / 255f, 0.2f), new Color(255f / 255f, 94f / 255f, 0f / 255f, 1f), true);
-            DraggableResource draggableResource = new DraggableResource(imageResource);
-            if (is9patch) {
-                draggableResource.setFactoryFunction(ItemFactory.get()::create9Patch);
-            } else {
-                draggableResource.setFactoryFunction(ItemFactory.get()::createSimpleImage);
+
+        for (String atlasName : projectInfoVO.imagesPacks.keySet()) {
+            TextureAtlas atlas = resourceManager.getTextureAtlas(atlasName);
+            Array<TextureAtlas.AtlasRegion> atlasRegions = atlas.getRegions();
+
+            for (TextureAtlas.AtlasRegion region : new Array.ArrayIterator<>(atlasRegions)) {
+                if(!projectInfoVO.imagesPacks.get(atlasName).regions.contains(region.name)
+                        || !region.name.contains(searchText)) continue;
+
+                boolean is9patch = region.findValue("split") != null;
+                ImageResource imageResource = new ImageResource(region, new Color(1, 1, 1, 0.2f), new Color(1, 1, 1, 0.4f),
+                		new Color(200f / 255f, 200f / 255f, 200f / 255f, 0.2f), new Color(255f / 255f, 94f / 255f, 0f / 255f, 1f), true);
+                DraggableResource draggableResource = new DraggableResource(imageResource);
+                if (is9patch) {
+                    draggableResource.setFactoryFunction(ItemFactory.get()::create9Patch);
+                } else {
+                    draggableResource.setFactoryFunction(ItemFactory.get()::createSimpleImage);
+                }
+                draggableResource.initDragDrop();
+                thumbnailBoxes.add(draggableResource);
             }
-            draggableResource.initDragDrop();
-            thumbnailBoxes.add(draggableResource);
         }
 
         thumbnailBoxes.sort();

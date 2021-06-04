@@ -20,9 +20,14 @@ package games.rednblack.editor.proxy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.data.manager.PreferencesManager;
@@ -105,14 +110,6 @@ public class ProjectManager extends Proxy {
     }
 
     public void createEmptyProject(String projectPath, int width, int height, int pixelPerWorldUnit) throws IOException {
-
-        /*
-        if (workspacePath.endsWith(File.separator)) {
-            workspacePath = workspacePath.substring(0, workspacePath.length() - 1);
-        }
-
-        String projPath = workspacePath + File.separator + projectName;
-        */
         String projectName = new File(projectPath).getName();
         String projPath = FilenameUtils.normalize(projectPath);
 
@@ -123,9 +120,13 @@ public class ProjectManager extends Proxy {
         FileUtils.forceMkdir(new File(projPath + File.separator + "assets/orig"));
         FileUtils.forceMkdir(new File(projPath + File.separator + "assets/orig/images"));
         FileUtils.forceMkdir(new File(projPath + File.separator + "assets/orig/particles"));
-        FileUtils.forceMkdir(new File(projPath + File.separator + "assets/orig/animations"));
         FileUtils.forceMkdir(new File(projPath + File.separator + "assets/orig/pack"));
 
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        FileHandle whitePixel = new FileHandle(projPath + File.separator + "assets/orig/images" + File.separator + "white-pixel.png");
+        PixmapIO.writePNG(whitePixel, pixmap);
 
         // create project file
         ProjectVO projVo = new ProjectVO();
@@ -138,6 +139,13 @@ public class ProjectManager extends Proxy {
         projInfoVo.originalResolution.width = width;
         projInfoVo.originalResolution.height = height;
         projInfoVo.pixelToWorld = pixelPerWorldUnit;
+        TexturePackVO mainPack = new TexturePackVO();
+        mainPack.name = "main";
+        mainPack.regions.add("white-pixel");
+        projInfoVo.imagesPacks.put("main", mainPack);
+        TexturePackVO mainAnimPack = new TexturePackVO();
+        mainAnimPack.name = "main";
+        projInfoVo.animationsPacks.put("main", mainAnimPack);
 
         //TODO: add project orig resolution setting
         currentProjectVO = projVo;
@@ -187,19 +195,6 @@ public class ProjectManager extends Proxy {
 
         File prjFile = new File(prjFilePath);
         if (!prjFile.isDirectory()) {
-            if (!prjFile.exists()) {
-
-                ProjectVO projVoEmpty = new ProjectVO();
-                projVoEmpty.projectName = prjFile.getName();
-                projVoEmpty.projectVersion = ProjectVersionMigrator.dataFormatVersion;
-
-                try {
-                    FileUtils.writeStringToFile(prjFile, projVoEmpty.constructJsonString(), "utf-8");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
             String projectContents = null;
             try {
                 projectContents = FileUtils.readFileToString(projectFile.file(), "utf-8");
@@ -225,10 +220,10 @@ public class ProjectManager extends Proxy {
             } else {
                 resolutionManager.currentResolutionName = resolution;
                 currentProjectVO.lastOpenResolution = resolutionManager.currentResolutionName;
-                saveCurrentProject();
-
             }
             currentProjectPath = projectPath;
+            saveCurrentProject();
+
             checkForConsistency(projectPath);
             loadProjectData(projectPath);
 
@@ -302,12 +297,6 @@ public class ProjectManager extends Proxy {
                 }
             }
         }
-    }
-
-    public void reLoadProjectAssets() {
-        ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-        ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
-        resourceManager.loadCurrentProjectAssets(currentProjectPath + "/assets/" + resolutionManager.currentResolutionName + "/pack/pack.atlas");
     }
 
     public void loadProjectData(String projectPath) {
@@ -410,12 +399,7 @@ public class ProjectManager extends Proxy {
                     newFile.mkdir();
                 }
 
-                // The filename should not be changed because the particle effects contain the name in their
-                // configuration. Unfortunately though, the texture packer does not support the underscore because
-                // any underscore in the texture packer is considered an image index. More info here:
-                // https://github.com/libgdx/libgdx/wiki/Texture-packer#image-indexes
-                // So, long story short, we MUST remove the underscore.
-                ImageIO.write(bufferedImage, "png", new File(targetPath + "/" + handle.name().replace("_", "")));
+                ImageIO.write(bufferedImage, "png", new File(targetPath + "/" + handle.name()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -455,23 +439,10 @@ public class ProjectManager extends Proxy {
         if (!currentProjectVO.projectMainExportPath.isEmpty()) {
             exportFonts(currentProjectVO.projectMainExportPath);
         }
-        exportStyles(defaultBuildPath);
         SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
         sceneDataManager.buildScenes(defaultBuildPath);
         if (!currentProjectVO.projectMainExportPath.isEmpty()) {
             sceneDataManager.buildScenes(currentProjectVO.projectMainExportPath);
-        }
-    }
-
-    private void exportStyles(String targetPath) {
-        String srcPath = currentProjectPath + "/assets/orig";
-        FileHandle origDirectoryHandle = Gdx.files.absolute(srcPath);
-        FileHandle stylesDirectory = origDirectoryHandle.child("styles");
-        File fileTarget = new File(targetPath + "/" + stylesDirectory.name());
-        try {
-            FileUtils.copyDirectory(stylesDirectory.file(), fileTarget);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -482,8 +453,7 @@ public class ProjectManager extends Proxy {
         File fileTarget = new File(targetPath + "/" + shadersDirectory.name());
         try {
             FileUtils.copyDirectory(shadersDirectory.file(), fileTarget);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignore) {
         }
     }
 
@@ -494,8 +464,7 @@ public class ProjectManager extends Proxy {
         File fileTarget = new File(targetPath + "/" + particlesDirectory.name());
         try {
             FileUtils.copyDirectory(particlesDirectory.file(), fileTarget);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignore) {
         }
     }
 
@@ -506,8 +475,7 @@ public class ProjectManager extends Proxy {
         File fileTarget = new File(targetPath + "/" + particlesDirectory.name());
         try {
             FileUtils.copyDirectory(particlesDirectory.file(), fileTarget);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignore) {
         }
     }
 
@@ -518,18 +486,15 @@ public class ProjectManager extends Proxy {
         File fileTarget = new File(targetPath + "/" + fontsDirectory.name());
         try {
             FileUtils.copyDirectory(fontsDirectory.file(), fileTarget);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignore) {
         }
     }
 
 
     private void exportAnimations(String targetPath) {
         exportSpineAnimationForResolution("orig", targetPath);
-        exportSpriteAnimationForResolution("orig", targetPath);
         for (ResolutionEntryVO resolutionEntryVO : currentProjectInfoVO.resolutions) {
             exportSpineAnimationForResolution(resolutionEntryVO.name, targetPath);
-            exportSpriteAnimationForResolution(resolutionEntryVO.name, targetPath);
         }
     }
 
@@ -543,21 +508,6 @@ public class ProjectManager extends Proxy {
             File fileTargetSpine = new File(finalTarget);
 
             FileUtils.copyDirectory(fileSrc, fileTargetSpine);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void exportSpriteAnimationForResolution(String res, String targetPath) {
-        String spineSrcPath = currentProjectPath + "/assets/" + res + File.separator + "sprite-animations";
-        try {
-            FileUtils.forceMkdir(new File(targetPath + File.separator + res + File.separator + "sprite_animations"));
-            File fileSrc = new File(spineSrcPath);
-            String finalTarget = targetPath + File.separator + res + File.separator + "sprite_animations";
-
-            File fileTargetSprite = new File(finalTarget);
-
-            FileUtils.copyDirectory(fileSrc, fileTargetSprite);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -681,6 +631,7 @@ public class ProjectManager extends Proxy {
     private boolean deleteSingleImage(String resolutionName, String imageName) {
         String imagesPath = currentProjectPath + "/assets/" + resolutionName + "/images" + File.separator;
         String filePath = imagesPath + imageName + ".png";
+        deleteRegionFromPack(currentProjectInfoVO.imagesPacks, imageName);
         if (!(new File(filePath)).delete()) {
             filePath = imagesPath + imageName + ".9.png";
             return (new File(filePath)).delete();
@@ -711,6 +662,18 @@ public class ProjectManager extends Proxy {
     private boolean deleteSpineAnimation(String resolutionName, String spineName) {
         String spinePath = currentProjectPath + "/assets/" + resolutionName + "/spine-animations" + File.separator;
         String filePath = spinePath + spineName;
+        FileHandle jsonPath = new FileHandle(filePath + File.separator + spineName + ".json");
+
+        JsonValue root = new JsonReader().parse(jsonPath);
+        for (JsonValue skinMap = root.getChild("skins"); skinMap != null; skinMap = skinMap.next) {
+            for (JsonValue slotEntry = skinMap.getChild("attachments"); slotEntry != null; slotEntry = slotEntry.next) {
+                for (JsonValue entry = slotEntry.child; entry != null; entry = entry.next) {
+                    String name = spineName + entry.getString("name", entry.name);
+                    deleteSingleImage(resolutionName, name);
+                    deleteRegionFromPack(currentProjectInfoVO.animationsPacks, name);
+                }
+            }
+        }
         return deleteDirectory(filePath);
     }
 
@@ -722,10 +685,23 @@ public class ProjectManager extends Proxy {
         return deleteSpineAnimation("orig", spineName);
     }
 
-    private boolean deleteSpriteAnimation(String resolutionName, String spineName) {
+    private boolean deleteSpriteAnimation(String resolutionName, String spriteName) {
         String spritePath = currentProjectPath + "/assets/" + resolutionName + "/sprite-animations" + File.separator;
-        String filePath = spritePath + spineName;
+        String filePath = spritePath + spriteName;
+        FileHandle imagesPath = new FileHandle(currentProjectPath + "/assets/" + resolutionName + "/images" + File.separator);
+        String prefix = spriteName + "_";
+        for (FileHandle f : imagesPath.list()) {
+            if (f.nameWithoutExtension().startsWith(prefix)) {
+                f.delete();
+            }
+        }
+        deleteRegionFromPack(currentProjectInfoVO.animationsPacks, spriteName);
         return deleteDirectory(filePath);
+    }
+
+    public void deleteRegionFromPack(HashMap<String, TexturePackVO> map, String region) {
+        for (TexturePackVO vo : map.values())
+            vo.regions.remove(region);
     }
 
     public boolean deleteSpriteAnimationForAllResolutions(String spineName) {

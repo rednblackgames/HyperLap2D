@@ -135,6 +135,9 @@
       hScrollKnob: scroll-knob-horizontal
     }
   },
+  com.kotcrab.vis.ui.util.adapter.SimpleListAdapter$SimpleListAdapterStyle: {
+    default: {selection: list-selection }
+  }
   com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
     default: {
       font: default-font,

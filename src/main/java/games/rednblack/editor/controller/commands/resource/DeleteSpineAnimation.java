@@ -1,6 +1,7 @@
 package games.rednblack.editor.controller.commands.resource;
 
 import com.badlogic.ashley.core.Entity;
+import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.components.SpineDataComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
@@ -34,7 +35,8 @@ public class DeleteSpineAnimation extends DeleteResourceCommand {
         if (projectManager.deleteSpineForAllResolutions(spineItemName)) {
             deleteEntitiesWithParticleEffects(sandbox.getRootEntity(), spineItemName);
             deleteAllItemsSpineAnimations(spineItemName);
-            projectManager.loadProjectData(projectManager.getCurrentProjectPath());
+            ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
+            resolutionManager.rePackProjectImagesForAllResolutions(true);
             sendNotification(DONE, spineItemName);
             SceneVO vo = sandbox.sceneVoFromItems();
             projectManager.saveCurrentProject(vo);

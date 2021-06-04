@@ -6,10 +6,11 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
 import games.rednblack.editor.data.migrations.IVersionMigrator;
 import games.rednblack.editor.renderer.data.GraphVO;
+import games.rednblack.editor.renderer.data.ProjectInfoVO;
+import games.rednblack.h2d.common.vo.ProjectVO;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 
 public class VersionMigTo011 implements IVersionMigrator {
 
@@ -19,7 +20,7 @@ public class VersionMigTo011 implements IVersionMigrator {
     private String projectPath;
 
     @Override
-    public void setProject(String path) {
+    public void setProject(String path, ProjectVO vo, ProjectInfoVO projectInfoVO) {
         projectPath = path;
         json.setOutputType(JsonWriter.OutputType.json);
     }

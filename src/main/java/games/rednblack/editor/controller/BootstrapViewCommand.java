@@ -47,12 +47,14 @@ import games.rednblack.editor.view.ui.box.bottom.UIResolutionBoxMediator;
 import games.rednblack.editor.view.ui.box.bottom.UISceneBoxMediator;
 import games.rednblack.editor.view.ui.box.bottom.UIZoomBoxMediator;
 import games.rednblack.editor.view.ui.dialog.AboutDialogMediator;
+import games.rednblack.editor.view.ui.dialog.AnimationsPackDialogMediator;
 import games.rednblack.editor.view.ui.dialog.AutoTraceDialogMediator;
 import games.rednblack.editor.view.ui.dialog.CodeEditorDialogMediator;
 import games.rednblack.editor.view.ui.dialog.ConsoleDialogMediator;
 import games.rednblack.editor.view.ui.dialog.CreateNewResolutionDialogMediator;
 import games.rednblack.editor.view.ui.dialog.CreateNoiseDialogMediator;
 import games.rednblack.editor.view.ui.dialog.CreatePlaceholderDialogMediator;
+import games.rednblack.editor.view.ui.dialog.ImagesPackDialogMediator;
 import games.rednblack.editor.view.ui.dialog.LoadingBarDialogMediator;
 import games.rednblack.editor.view.ui.dialog.NewProjectDialogMediator;
 import games.rednblack.editor.view.ui.dialog.NodeEditorDialogMediator;
@@ -122,6 +124,8 @@ public class BootstrapViewCommand extends SimpleCommand {
         facade.registerMediator(new CreatePlaceholderDialogMediator());
         facade.registerMediator(new CreateNoiseDialogMediator());
         facade.registerMediator(new ConsoleDialogMediator());
+        facade.registerMediator(new ImagesPackDialogMediator());
+        facade.registerMediator(new AnimationsPackDialogMediator());
 
         facade.registerMediator(new SaveProjectDialogMediator());
     }

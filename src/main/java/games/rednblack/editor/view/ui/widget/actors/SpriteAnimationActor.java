@@ -2,6 +2,7 @@ package games.rednblack.editor.view.ui.widget.actors;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
@@ -11,10 +12,10 @@ import games.rednblack.editor.renderer.resources.IResourceRetriever;
  */
 public class SpriteAnimationActor extends Actor {
 
-    private String animationName;
-    private IResourceRetriever rm;
+    private final String animationName;
+    private final IResourceRetriever rm;
 
-    private Animation animation;
+    private final Animation<TextureAtlas.AtlasRegion> animation;
 
     private float stateTime = 0;
     private int fps;
@@ -24,17 +25,17 @@ public class SpriteAnimationActor extends Actor {
     public SpriteAnimationActor(String animationName, IResourceRetriever rm) {
         this.animationName = animationName;
         this.rm = rm;
-        animation = new Animation(1/24f, rm.getSpriteAnimation(animationName).getRegions());
+        animation = new Animation<>(1/24f, rm.getSpriteAnimation(animationName));
         animation.setPlayMode(Animation.PlayMode.LOOP);
 
-        TextureRegion region = (TextureRegion) animation.getKeyFrame(stateTime);
+        TextureRegion region = animation.getKeyFrame(stateTime);
         setWidth(region.getRegionWidth());
         setHeight(region.getRegionHeight());
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        TextureRegion region = (TextureRegion) animation.getKeyFrame(stateTime);
+        TextureRegion region = animation.getKeyFrame(stateTime);
         setWidth(region.getRegionWidth());
         setHeight(region.getRegionHeight());
 

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NinePatchComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
@@ -148,9 +149,9 @@ public class MainPanelMediator extends Mediator<MainPanel> {
     }
 
     private void loadRegion(String name) {
-        TextureAtlas atlas = plugin.getAPI().getProjectTextureAtlas();
-        validateNinePatchTextureRegion(atlas.findRegion(name));
-        viewComponent.setTexture(atlas.findRegion(name));
+        TextureAtlas.AtlasRegion region = plugin.getAPI().getProjectTextureRegion(name);
+        validateNinePatchTextureRegion(region);
+        viewComponent.setTexture(region);
 
         viewComponent.setListeners(plugin.getAPI().getUIStage());
     }

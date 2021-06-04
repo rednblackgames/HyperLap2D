@@ -1,6 +1,7 @@
 package games.rednblack.editor.controller.commands.resource;
 
 import com.badlogic.ashley.core.Entity;
+import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
@@ -34,7 +35,8 @@ public class DeleteSpriteAnimation extends DeleteResourceCommand {
         if (projectManager.deleteSpriteAnimationForAllResolutions(spriteAnimationName)) {
             deleteEntitiesWithSpriteAnimation(sandbox.getRootEntity(), spriteAnimationName);
             deleteAllItemsSpriteAnimations(spriteAnimationName);
-            projectManager.loadProjectData(projectManager.getCurrentProjectPath());
+            ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
+            resolutionManager.rePackProjectImagesForAllResolutions(true);
             facade.sendNotification(DONE, spriteAnimationName);
             SceneVO vo = sandbox.sceneVoFromItems();
             projectManager.saveCurrentProject(vo);
