@@ -57,6 +57,7 @@ public abstract class Asset implements IAsset {
         executor.execute(() -> importAsset(files, progressHandler, skipRepack));
         executor.execute(() -> {
             progressHandler.progressChanged(100);
+            projectManager.saveCurrentProject();
             try {
                 Thread.sleep(300);
             } catch (InterruptedException e) {

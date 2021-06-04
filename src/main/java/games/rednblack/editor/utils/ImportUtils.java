@@ -22,7 +22,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -138,23 +137,11 @@ public class ImportUtils {
         return regions.get(regions.size - 1).index == regions.size - 1;
     }
 
-    public static Array<File> getAtlasPages(FileHandle fileHandle) {
-        Array<File> imgs = new Array<>();
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(fileHandle.read()), 64);
-            while (true) {
-                String line = reader.readLine();
-                if (line == null) break;
-                //In atlas file format the name of the png is is preceded by an empty line
-                if (line.trim().length() == 0) {
-                    line = reader.readLine();
-                    imgs.add(new File(FilenameUtils.getFullPath(fileHandle.path()) + line));
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return imgs;
+    public static void unpackAtlasIntoTmpFolder(File atlasFile, String prefix, String tmpDir) {
+        FileHandle atlasFileHandle = new FileHandle(atlasFile);
+        TextureAtlas.TextureAtlasData atlasData = new TextureAtlas.TextureAtlasData(atlasFileHandle, atlasFileHandle.parent(), false);
+        TextureUnpacker unpacker = new TextureUnpacker();
+        unpacker.splitAtlas(atlasData, prefix, tmpDir);
     }
 
     public static String getAtlasName(FileHandle fileHandle) {
@@ -174,16 +161,5 @@ public class ImportUtils {
             e.printStackTrace();
         }
         return name;
-    }
-
-    public static Array<FileHandle> getAtlasPageHandles(FileHandle fileHandle) {
-        Array<File> imgs = getAtlasPages(fileHandle);
-
-        Array<FileHandle> imgHandles = new Array<>();
-        for (int i = 0; i < imgs.size; i++) {
-            imgHandles.add(new FileHandle(imgs.get(i)));
-        }
-
-        return imgHandles;
     }
 }

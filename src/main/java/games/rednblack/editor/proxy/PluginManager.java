@@ -109,9 +109,9 @@ public class PluginManager extends Proxy implements PluginAPI {
     }
 
     @Override
-    public TextureAtlas getProjectTextureAtlas() {
+    public TextureAtlas.AtlasRegion getProjectTextureRegion(String regionName) {
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
-        return resourceManager.getTextureAtlas();
+        return (TextureAtlas.AtlasRegion) resourceManager.getTextureRegion(regionName);
     }
 
     @Override

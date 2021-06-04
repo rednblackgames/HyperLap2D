@@ -44,10 +44,9 @@ public class SpriteAnimationAtlasAsset extends Asset {
     @Override
     public void importAsset(Array<FileHandle> files, ProgressHandler progressHandler, boolean skipRepack) {
         for (FileHandle fileHandle : new Array.ArrayIterator<>(files)) {
-            String newAnimName = null;
+            String newAnimName;
 
             try {
-                Array<File> imgs = ImportUtils.getAtlasPages(fileHandle);
                 String fileNameWithoutExt = ImportUtils.getAtlasName(fileHandle);
 
                 String targetPath = projectManager.getCurrentProjectPath() + "/assets/orig/sprite-animations" + File.separator + fileNameWithoutExt;
@@ -55,9 +54,16 @@ public class SpriteAnimationAtlasAsset extends Asset {
                 if (targetDir.exists()) {
                     FileUtils.deleteDirectory(targetDir);
                 }
-                for (File img : imgs) {
-                    FileUtils.copyFileToDirectory(img, targetDir);
-                }
+
+                FileHandle tmpDir = new FileHandle(projectManager.getCurrentProjectPath() + File.separator + "tmp");
+                if (tmpDir.exists())
+                    FileUtils.forceDelete(tmpDir.file());
+                FileUtils.forceMkdir(tmpDir.file());
+                ImportUtils.unpackAtlasIntoTmpFolder(fileHandle.file(), null, tmpDir.path());
+                Array<FileHandle> images = new Array<>(tmpDir.list());
+                projectManager.copyImageFilesForAllResolutionsIntoProject(images, true, progressHandler);
+                FileUtils.forceDelete(tmpDir.file());
+
                 File atlasTargetPath = new File(targetPath + File.separator + fileNameWithoutExt + ".atlas");
                 FileUtils.copyFile(fileHandle.file(), atlasTargetPath);
                 newAnimName = fileNameWithoutExt;
@@ -68,7 +74,13 @@ public class SpriteAnimationAtlasAsset extends Asset {
             }
 
             if (newAnimName != null) {
-                resolutionManager.resizeSpriteAnimationForAllResolutions(newAnimName, projectManager.getCurrentProjectInfoVO());
+                TextureAtlas.TextureAtlasData atlas = new TextureAtlas.TextureAtlasData(fileHandle, fileHandle.parent(), false);
+
+                for (TextureAtlas.TextureAtlasData.Region region : new Array.ArrayIterator<>(atlas.getRegions())) {
+                    projectManager.getCurrentProjectInfoVO().animationsPacks.get("main").regions.add(region.name);
+                }
+
+                resolutionManager.rePackProjectImagesForAllResolutionsSync();
             }
         }
     }

@@ -51,7 +51,7 @@ public class SpriteDrawStrategy extends BasicDrawStrategy {
 
     private Array<TextureAtlas.AtlasRegion> getRegions(String filter) {
         // filtering regions by name
-        Array<TextureAtlas.AtlasRegion> allRegions = tiledPlugin.getAPI().getSceneLoader().getRm().getSpriteAnimation(filter).getRegions();
+        Array<TextureAtlas.AtlasRegion> allRegions = tiledPlugin.getAPI().getSceneLoader().getRm().getSpriteAnimation(filter);
         Array<TextureAtlas.AtlasRegion> regions = new Array<>();
         for(TextureAtlas.AtlasRegion region: allRegions) {
             if(region.name.contains(filter)) {

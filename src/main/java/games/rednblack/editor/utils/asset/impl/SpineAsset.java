@@ -1,6 +1,7 @@
 package games.rednblack.editor.utils.asset.impl;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -53,17 +54,17 @@ public class SpineAsset extends Asset {
     @Override
     public void importAsset(Array<FileHandle> files, ProgressHandler progressHandler, boolean skipRepack) {
         for (FileHandle handle : new Array.ArrayIterator<>(files)) {
-            File copiedFile = importExternalAnimationIntoProject(handle);
+            File copiedFile = importExternalAnimationIntoProject(handle, progressHandler);
             if (copiedFile == null)
                 continue;
 
-            if (copiedFile.getName().toLowerCase().endsWith(".atlas")) {
-                resolutionManager.resizeSpineAnimationForAllResolutions(copiedFile, projectManager.getCurrentProjectInfoVO());
+            if (copiedFile.getName().toLowerCase().endsWith(".json")) {
+                resolutionManager.rePackProjectImagesForAllResolutionsSync();
             }
         }
     }
 
-    private File importExternalAnimationIntoProject(FileHandle animationFileSource) {
+    private File importExternalAnimationIntoProject(FileHandle animationFileSource, ProgressHandler progressHandler) {
         try {
             String fileName = animationFileSource.name();
             if (!HyperLap2DUtils.JSON_FILTER.accept(null, fileName)) {
@@ -85,11 +86,12 @@ public class SpineAsset extends Asset {
                             "\nCould not find '" + atlasFileSource.name() +"'.\nCheck if the file exists in the same directory.").padBottom(20).pack();
                     return null;
                 }
-                Array<File> imageFiles = ImportUtils.getAtlasPages(atlasFileSource);
-                for (File imageFile : new Array.ArrayIterator<>(imageFiles)) {
-                    if (!imageFile.exists()) {
+
+                TextureAtlas.TextureAtlasData atlas = new TextureAtlas.TextureAtlasData(atlasFileSource, atlasFileSource.parent(), false);
+                for (TextureAtlas.TextureAtlasData.Page imageFile : new Array.ArrayIterator<>(atlas.getPages())) {
+                    if (!imageFile.textureFile.exists()) {
                         Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
-                                "\nCould not find " + imageFile.getName() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
+                                "\nCould not find " + imageFile.textureFile.name() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
                         return null;
                     }
                 }
@@ -103,19 +105,22 @@ public class SpineAsset extends Asset {
 
                 FileUtils.forceMkdir(new File(targetPath));
                 File jsonFileTarget = new File(targetPath + File.separator + fileNameWithOutExt + ".json");
-                File atlasFileTarget = new File(targetPath + File.separator + fileNameWithOutExt + ".atlas");
 
                 FileUtils.copyFile(animationFileSource.file(), jsonFileTarget);
-                FileUtils.copyFile(atlasFileSource.file(), atlasFileTarget);
+                FileHandle tmpDir = new FileHandle(projectManager.getCurrentProjectPath() + File.separator + "tmp");
+                if (tmpDir.exists())
+                    FileUtils.forceDelete(tmpDir.file());
+                FileUtils.forceMkdir(tmpDir.file());
+                ImportUtils.unpackAtlasIntoTmpFolder(atlasFileSource.file(), fileNameWithOutExt, tmpDir.path());
+                Array<FileHandle> images = new Array<>(tmpDir.list());
+                projectManager.copyImageFilesForAllResolutionsIntoProject(images, true, progressHandler);
+                FileUtils.forceDelete(tmpDir.file());
 
-                for (File imageFile : new Array.ArrayIterator<>(imageFiles)) {
-                    FileHandle imgFileTarget = new FileHandle(targetPath + File.separator + imageFile.getName());
-                    FileUtils.copyFile(imageFile, imgFileTarget.file());
+                for (TextureAtlas.TextureAtlasData.Region region : new Array.ArrayIterator<>(atlas.getRegions())) {
+                    projectManager.getCurrentProjectInfoVO().animationsPacks.get("main").regions.add(fileNameWithOutExt+region.name);
                 }
 
-                return atlasFileTarget;
-
-
+                return jsonFileTarget;
             }
         } catch (IOException e) {
             e.printStackTrace();
