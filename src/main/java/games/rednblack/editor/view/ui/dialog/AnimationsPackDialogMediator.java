@@ -1,6 +1,9 @@
 package games.rednblack.editor.view.ui.dialog;
 
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.controller.commands.resource.DeleteImageResource;
+import games.rednblack.editor.controller.commands.resource.DeleteSpineAnimation;
+import games.rednblack.editor.controller.commands.resource.DeleteSpriteAnimation;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.TexturePackVO;
 import games.rednblack.editor.view.menu.ResourcesMenu;
@@ -34,7 +37,11 @@ public class AnimationsPackDialogMediator extends Mediator<AtlasesPackDialog> {
                 ProjectManager.PROJECT_OPENED,
                 NEW_IMAGES_PACK,
                 MOVE_REGION_TO_PACK,
-                UPDATE_CURRENT_LIST
+                UPDATE_CURRENT_LIST,
+                ProjectManager.PROJECT_DATA_UPDATED,
+                DeleteImageResource.DONE,
+                DeleteSpineAnimation.DONE,
+                DeleteSpriteAnimation.DONE
         };
     }
 
@@ -43,10 +50,19 @@ public class AnimationsPackDialogMediator extends Mediator<AtlasesPackDialog> {
         Sandbox sandbox = Sandbox.getInstance();
         UIStage uiStage = sandbox.getUIStage();
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-
+        String currentTab;
         switch (notification.getName()) {
             case ResourcesMenu.OPEN_ANIMATIONS_PACK:
                 viewComponent.show(uiStage);
+                break;
+            case ProjectManager.PROJECT_DATA_UPDATED:
+            case DeleteImageResource.DONE:
+            case DeleteSpineAnimation.DONE:
+            case DeleteSpriteAnimation.DONE:
+                viewComponent.updateMainPack(projectManager.currentProjectInfoVO.animationsPacks.get("main").regions);
+                currentTab = viewComponent.getSelectedTab();
+                if (currentTab != null)
+                    viewComponent.updateCurrentPack(projectManager.currentProjectInfoVO.animationsPacks.get(currentTab).regions);
                 break;
             case ProjectManager.PROJECT_OPENED:
                 viewComponent.initPacks(projectManager.currentProjectInfoVO.animationsPacks.keySet());
@@ -61,8 +77,10 @@ public class AnimationsPackDialogMediator extends Mediator<AtlasesPackDialog> {
                 viewComponent.addNewPack(newVo.name);
                 break;
             case UPDATE_CURRENT_LIST:
-                String currentTab = viewComponent.getSelectedTab();
-                viewComponent.updateCurrentPack(projectManager.currentProjectInfoVO.animationsPacks.get(currentTab).regions);
+                currentTab = viewComponent.getSelectedTab();
+                System.out.println(currentTab);
+                if (currentTab != null)
+                    viewComponent.updateCurrentPack(projectManager.currentProjectInfoVO.animationsPacks.get(currentTab).regions);
                 break;
             case MOVE_REGION_TO_PACK:
                 String toPack = viewComponent.getMainSelected() != null ? viewComponent.getSelectedTab() : "main";

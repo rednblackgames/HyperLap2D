@@ -202,6 +202,8 @@ public class AtlasesPackDialog extends H2DDialog {
     }
 
     public String getSelectedTab() {
+        if (tabbedPane.getActiveTab() == null)
+            return null;
         return tabbedPane.getActiveTab().getTabTitle();
     }
 

@@ -212,7 +212,7 @@ public class ResolutionManager extends Proxy {
 
         for (FileHandle entry : sourceDir.list()) {
             if (entry.extension().equals("png")) {
-                String name = regionsReverse.get(entry.nameWithoutExtension().replace(".9", "").replaceAll("_.*", ""));
+                String name = regionsReverse.get(entry.nameWithoutExtension().replace(".9", "").replaceAll("_[0-9]+", ""));
                 name = name == null ? "pack" : name;
                 TexturePacker tp = packerMap.get(name);
                 tp.addImage(entry.file());

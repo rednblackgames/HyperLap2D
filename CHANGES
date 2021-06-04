@@ -9,6 +9,8 @@
 = Editor =
 - Use Distance Field fonts for GUI
 - Add Editor performance settings (MSAA, OpenGL 3)
+- Add multiple atlas packing settings
+- Add Import libGDX atlas format
 - Huge improvements to Tiled Plugin:
     * Sprite and Spine animated Tiles
     * UI improvements and general refactoring

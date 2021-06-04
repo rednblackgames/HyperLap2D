@@ -631,7 +631,7 @@ public class ProjectManager extends Proxy {
     private boolean deleteSingleImage(String resolutionName, String imageName) {
         String imagesPath = currentProjectPath + "/assets/" + resolutionName + "/images" + File.separator;
         String filePath = imagesPath + imageName + ".png";
-        currentProjectInfoVO.imagesPacks.get("main").regions.remove(imageName);
+        deleteRegionFromPack(currentProjectInfoVO.imagesPacks, imageName);
         if (!(new File(filePath)).delete()) {
             filePath = imagesPath + imageName + ".9.png";
             return (new File(filePath)).delete();
@@ -670,7 +670,7 @@ public class ProjectManager extends Proxy {
                 for (JsonValue entry = slotEntry.child; entry != null; entry = entry.next) {
                     String name = spineName + entry.getString("name", entry.name);
                     deleteSingleImage(resolutionName, name);
-                    currentProjectInfoVO.animationsPacks.get("main").regions.remove(name);
+                    deleteRegionFromPack(currentProjectInfoVO.animationsPacks, name);
                 }
             }
         }
@@ -695,8 +695,13 @@ public class ProjectManager extends Proxy {
                 f.delete();
             }
         }
-        currentProjectInfoVO.animationsPacks.get("main").regions.remove(spriteName);
+        deleteRegionFromPack(currentProjectInfoVO.animationsPacks, spriteName);
         return deleteDirectory(filePath);
+    }
+
+    public void deleteRegionFromPack(HashMap<String, TexturePackVO> map, String region) {
+        for (TexturePackVO vo : map.values())
+            vo.regions.remove(region);
     }
 
     public boolean deleteSpriteAnimationForAllResolutions(String spineName) {
