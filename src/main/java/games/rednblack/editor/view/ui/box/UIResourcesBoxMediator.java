@@ -50,7 +50,10 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
 	public static final String IMAGE_BUNDLE_DROP_SINGLE = PREFIX + ".IMAGE_BUNDLE_DROP_SINGLE";
 	
 
+    public static final String SHIFT_CTRL_EVENT_TYPE = PREFIX + ".SHIFT_CTRL_EVENT_TYPE";
     public static final String SHIFT_EVENT_TYPE = PREFIX + ".SHIFT_EVENT_TYPE";
+    public static final String CTRL_EVENT_TYPE = PREFIX + ".CTRL_EVENT_TYPE";
+    public static final String NORMAL_CLICK_EVENT_TYPE = PREFIX + ".NORMAL_CLICK_EVENT_TYPE";
 
 	public static final String IMAGE_TABLE_UPDATED = PREFIX + ".IMAGE_TABLE_UPDATED";
 

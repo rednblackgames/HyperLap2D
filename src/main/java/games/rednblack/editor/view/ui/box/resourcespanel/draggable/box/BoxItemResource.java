@@ -24,11 +24,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Null;
 
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.editor.view.stage.input.MetaKeyInputProcessor;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResourceView;
 import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
@@ -123,8 +123,15 @@ public abstract class BoxItemResource extends Group implements DraggableResource
             	// we only care for the event if the mouse is still in this resource
             	if (isOver && !event.isTouchFocusCancel()) {
 	            	if(button == Input.Buttons.LEFT && leftClickEventName != null) {
-	            		String shiftEventType = MetaKeyInputProcessor.getInstance().isShiftDown() ? UIResourcesBoxMediator.SHIFT_EVENT_TYPE : null;
-	            		HyperLap2DFacade.getInstance().sendNotification(leftClickEventName, leftClickPayload, shiftEventType);
+	            		String eventType = UIResourcesBoxMediator.NORMAL_CLICK_EVENT_TYPE;
+	            		if (UIUtils.shift() && UIUtils.ctrl()) {
+	            			 eventType = UIResourcesBoxMediator.SHIFT_CTRL_EVENT_TYPE;
+	            		} else if (UIUtils.shift()) {
+	            			eventType = UIResourcesBoxMediator.SHIFT_EVENT_TYPE;
+	            		} else if (UIUtils.ctrl()) {
+	            			eventType = UIResourcesBoxMediator.CTRL_EVENT_TYPE;
+	            		}
+	            		HyperLap2DFacade.getInstance().sendNotification(leftClickEventName, leftClickPayload, eventType);
 	            	}
 	                if(button == Input.Buttons.RIGHT && rightClickEventName != null) {
 	                    HyperLap2DFacade.getInstance().sendNotification(rightClickEventName, rightClickPayload);

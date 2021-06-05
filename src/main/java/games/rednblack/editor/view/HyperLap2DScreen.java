@@ -43,7 +43,6 @@ import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.editor.view.menu.ResourcesMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
-import games.rednblack.editor.view.stage.input.MetaKeyInputProcessor;
 import games.rednblack.editor.view.stage.input.SandboxInputAdapter;
 import games.rednblack.editor.view.ui.widget.actors.basic.SandboxBackUI;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
@@ -147,7 +146,6 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         multiplexer.addProcessor(this);
         multiplexer.addProcessor(uiStage);
         multiplexer.addProcessor(new SandboxInputAdapter());
-        multiplexer.addProcessor(MetaKeyInputProcessor.getInstance());
         Gdx.input.setInputProcessor(multiplexer);
     }
 

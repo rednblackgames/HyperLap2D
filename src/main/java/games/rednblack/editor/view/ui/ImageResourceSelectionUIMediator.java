@@ -59,17 +59,21 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
         switch (notification.getName()) {
 	        case UIResourcesBoxMediator.IMAGE_LEFT_CLICK:
 	        	ImageResource imageResource = notification.getBody();
-	        	if (imageResourceSelectedSet.remove(imageResource.getPayloadData().name)) {
-	        		setSelected(imageResource, false);
-	        		if (UIResourcesBoxMediator.SHIFT_EVENT_TYPE.equals(notification.getType())) {
-	        			removeBetween(imageResourcePreviousClick, imageResource);
-	        		}
-	        	} else {
-	        		setSelected(imageResource, true);
-	        		if (UIResourcesBoxMediator.SHIFT_EVENT_TYPE.equals(notification.getType())) {
-	        			addSelectionBetween(imageResourcePreviousClick, imageResource);
-	        		}
+	        	switch (notification.getType()) {
+		        	case UIResourcesBoxMediator.NORMAL_CLICK_EVENT_TYPE:
+		        		handleNormalClick(imageResource);
+		        		break;
+		        	case UIResourcesBoxMediator.SHIFT_CTRL_EVENT_TYPE:
+		        		handleShiftCtrlClick(imageResource);
+		        		break;
+		        	case UIResourcesBoxMediator.SHIFT_EVENT_TYPE:
+		        		handleShiftClick(imageResource);
+		        		break;
+		        	case UIResourcesBoxMediator.CTRL_EVENT_TYPE:
+		        		handleCtrlClick(imageResource);
+		        		break;
 	        	}
+	        	
 	        	imageResourcePreviousClick = imageResource;
 	        	break;
 	        case UIResourcesBoxMediator.IMAGE_BUNDLE_DROP:
@@ -89,7 +93,72 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
         }
     	
     }
-    
+
+    /**
+     * Handles a shift-click on the panel. This means that the selection is cleared, and all resources between the
+     * previously clicked and currently clicked resources are selected / unselected.
+     * 
+     * @param imageResource The clicked image resource.
+     */
+    private void handleShiftClick(ImageResource imageResource) {
+    	boolean removed = imageResourceSelectedSet.remove(imageResource.getPayloadData().name);
+
+		clearSelection();
+		
+    	if (removed) {
+    		setSelectionBetween(imageResourcePreviousClick, imageResource, false);
+    	} else {
+    		setSelectionBetween(imageResourcePreviousClick, imageResource, true);
+    	}
+    }
+
+    /**
+     * Handles a shift-ctrl-click on the panel. This means that the selection is kept, and all resources between the
+     * previously clicked and currently clicked resources are selected / unselected.
+     * 
+     * @param imageResource The clicked image resource.
+     */
+    private void handleShiftCtrlClick(ImageResource imageResource) {
+    	if (imageResourceSelectedSet.remove(imageResource.getPayloadData().name)) {
+    		setSelectionBetween(imageResourcePreviousClick, imageResource, false);
+    	} else {
+    		setSelectionBetween(imageResourcePreviousClick, imageResource, true);
+    	}
+    }
+
+    /**
+     * Handles a ctrl-click on the panel. This means that the selection is kept, and the currently clicked resource is selected / unselected.
+     * 
+     * @param imageResource The clicked image resource.
+     */
+	private void handleCtrlClick(ImageResource imageResource) {
+    	if (imageResourceSelectedSet.remove(imageResource.getPayloadData().name)) {
+    		// we unselected the cell
+    		setSelected(imageResource, false);
+    	} else {
+    		// we selected the cell
+    		setSelected(imageResource, true);
+    	}
+    }
+
+    /**
+     * Handles a click on the panel. This means that the selection is cleared, and the resource currently clicked resources are selected.
+     * 
+     * @param imageResource The clicked image resource.
+     */
+    private void handleNormalClick(ImageResource imageResource) {
+		clearSelection();
+		
+		// we selected the cell
+		setSelected(imageResource, true);
+    }
+
+    /**
+     * Selects or unselets the given image resource.
+     * 
+     * @param imageResource The clicked image resource.
+     * @param isSelected Whether to select (true) or unselect (false) the given resource.
+     */
     private void setSelected(ImageResource imageResource, boolean isSelected) {
     	if (isSelected) {
 			imageResource.switchToMouseOverColor();
@@ -100,6 +169,16 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
     		imageResource.setHighlightWhenMouseOver(true);
 			imageResourceSelectedSet.remove(imageResource.getPayloadData().name);
     	}
+    }
+
+    /**
+     * Clears the selection.
+     */
+    private void clearSelection() {
+    	for (Cell<ImageResource> cell : imagesTable.getCells()) {
+			ImageResource imgResource = cell.getActor();
+			setSelected(imgResource, false);
+		}
     }
     
     private int getCellIndex(ImageResource imageResource, int defaultIndex) {
@@ -112,44 +191,22 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
     	return index;
     }
 
-	private void addSelectionBetween(ImageResource imageResourceStart, ImageResource imageResourceEnd) {
-		int startIndex = getCellIndex(imageResourceStart, 0);
-		int endIndex = getCellIndex(imageResourceEnd, imagesTable.getCells().size - 1);
-		
-		// we want to start with start :)
-		if (endIndex < startIndex) {
-			int tmp = startIndex;
-			startIndex = endIndex;
-			// add one to include the previously clicked image
-			endIndex = tmp;
-		}
-		
-		for (int i = startIndex; i <= endIndex; i++) {
-			Cell<ImageResource> cell = imagesTable.getCells().get(i);
-			ImageResource imageResource = cell.getActor();
-			setSelected(imageResource, true);
-		}
-	}
+    private void setSelectionBetween(ImageResource imageResourceStart, ImageResource imageResourceEnd, boolean selected) {
+    	int startIndex = getCellIndex(imageResourceStart, 0);
+    	int endIndex = getCellIndex(imageResourceEnd, imagesTable.getCells().size - 1);
 
-	private void removeBetween(ImageResource imageResourceStart, ImageResource imageResourceEnd) {
-		int startIndex = getCellIndex(imageResourceStart, 0);
-		int endIndex = getCellIndex(imageResourceEnd, imagesTable.getCells().size - 1);
-		
-		// we want to start with start :)
-		if (endIndex < startIndex) {
-			int tmp = startIndex;
-			startIndex = endIndex;
-			// add one to include the previously clicked image
-			endIndex = tmp;
-		}
-		
-		for (int i = startIndex; i <= endIndex; i++) {
-			Cell<ImageResource> cell = imagesTable.getCells().get(i);
-			ImageResource imageResource = cell.getActor();
-			setSelected(imageResource, false);
-		}
-	}
-    
-    
+    	// we want to start with start :)
+    	if (endIndex < startIndex) {
+    		int tmp = startIndex;
+    		startIndex = endIndex;
+    		endIndex = tmp;
+    	}
+
+    	for (int i = startIndex; i <= endIndex; i++) {
+    		Cell<ImageResource> cell = imagesTable.getCells().get(i);
+    		ImageResource imageResource = cell.getActor();
+    		setSelected(imageResource, selected);
+    	}
+    }
     
 }
