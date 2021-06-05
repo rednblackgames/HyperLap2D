@@ -15,6 +15,7 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.UIImagesTab;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.ImageResource;
+import games.rednblack.h2d.common.MsgAPI;
 
 /**
  * This mediator is part of the behavior that allows multiple images to be selected and dropped to other panels (like the GridTilesTab from the tiles plugin).
@@ -47,7 +48,7 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
     public String[] listNotificationInterests() {
         return new String[]{
         		UIResourcesBoxMediator.IMAGE_LEFT_CLICK,
-        		UIResourcesBoxMediator.IMAGE_BUNDLE_DROP,
+        		MsgAPI.IMAGE_BUNDLE_DROP,
         		UIResourcesBoxMediator.IMAGE_TABLE_UPDATED
         };
     }
@@ -76,13 +77,13 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
 	        	
 	        	imageResourcePreviousClick = imageResource;
 	        	break;
-	        case UIResourcesBoxMediator.IMAGE_BUNDLE_DROP:
+	        case MsgAPI.IMAGE_BUNDLE_DROP:
 	        	Set<String> nameSet = new HashSet<>(imageResourceSelectedSet);
 	        	// remove the dropped one, so that it is not added twice
 	        	Object[] payloadBody = notification.getBody();
 	        	nameSet.remove(payloadBody[0]);
 	        	for (String name : nameSet) {
-	        		HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.IMAGE_BUNDLE_DROP_SINGLE, new Object[] {name, payloadBody[1]});
+	        		HyperLap2DFacade.getInstance().sendNotification(MsgAPI.IMAGE_BUNDLE_DROP_SINGLE, new Object[] {name, payloadBody[1]});
 	        	}
 	        	break;
 	        case UIResourcesBoxMediator.IMAGE_TABLE_UPDATED:

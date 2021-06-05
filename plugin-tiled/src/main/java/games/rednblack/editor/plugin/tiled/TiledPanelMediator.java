@@ -63,7 +63,6 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
         return new String[]{
                 MsgAPI.SCENE_LOADED,
                 TiledPlugin.TILE_ADDED,
-                TiledPlugin.IMAGE_BUNDLE_DROP_SINGLE,
                 TiledPlugin.TILE_SELECTED,
                 TiledPlugin.ACTION_DELETE_TILE,
                 TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST,
@@ -72,6 +71,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 TiledPlugin.GRID_CHANGED,
                 SettingsTab.OK_BTN_CLICKED,
                 TiledPlugin.ACTION_SET_GRID_SIZE_FROM_ITEM,
+                MsgAPI.IMAGE_BUNDLE_DROP_SINGLE,
                 MsgAPI.ACTION_DELETE_IMAGE_RESOURCE,
                 MsgAPI.TOOL_SELECTED,
                 MsgAPI.ACTION_KEY_DOWN
@@ -111,7 +111,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                         if (type == EntityFactory.IMAGE_TYPE) {
                         	// ensure that all selected images are dropped
                         	// the respective listener is responsible for dropping one-by-one, since he tracks the selected ones
-                        	tiledPlugin.facade.sendNotification(TiledPlugin.IMAGE_BUNDLE_DROP, new Object[]{tileName, type});
+                        	tiledPlugin.facade.sendNotification(MsgAPI.IMAGE_BUNDLE_DROP, new Object[]{tileName, type});
                         }
                     }
                 };
@@ -120,7 +120,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 viewComponent.setEngine(engine);
                 viewComponent.setFixedPosition();
                 break;
-            case TiledPlugin.IMAGE_BUNDLE_DROP_SINGLE:
+            case MsgAPI.IMAGE_BUNDLE_DROP_SINGLE:
             	// aliasing the drop from the main project
             case TiledPlugin.TILE_ADDED:
                 Object[] payload = notification.getBody();

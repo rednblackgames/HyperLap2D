@@ -67,9 +67,6 @@ public class TiledPlugin extends H2DPluginAdapter {
     public static final String TILE_GRID_OFFSET_ADDED         = CLASS_NAME + ".TILE_GRID_OFFSET_ADDED";
     public static final String ACTION_SET_GRID_SIZE_FROM_ITEM = CLASS_NAME + ".ACTION_SET_GRID_SIZE_FROM_ITEM";
     public static final String ACTION_SET_GRID_SIZE_FROM_LIST = CLASS_NAME + ".ACTION_SET_GRID_SIZE_FROM_LIST";
-    // notification from the main project
-    public static final String IMAGE_BUNDLE_DROP_SINGLE       = "games.rednblack.editor.view.ui.box.UIResourcesBoxMediator.IMAGE_BUNDLE_DROP_SINGLE";
-    public static final String IMAGE_BUNDLE_DROP			  = "games.rednblack.editor.view.ui.box.UIResourcesBoxMediator.IMAGE_BUNDLE_DROP";
     //-------end--------//
 
     public static final String TILE_TAG = "TILE";
