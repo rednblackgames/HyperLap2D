@@ -62,6 +62,9 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
     public static final String TALOS_VFX_RIGHT_CLICK = PREFIX + ".TALOS_VFX_RIGHT_CLICK";
     public static final String LIBRARY_ACTION_RIGHT_CLICK = PREFIX + ".LIBRARY_ACTION_RIGHT_CLICK";
 
+    public static final String SANDBOX_DRAG_IMAGE_ENTER = PREFIX + ".SANDBOX_DRAG_IMAGE_ENTER";
+    public static final String SANDBOX_DRAG_IMAGE_EXIT = PREFIX + ".SANDBOX_DRAG_IMAGE_EXIT";
+
     public Array<DragAndDrop.Target> customTargets = new Array<>();
 
     @Override

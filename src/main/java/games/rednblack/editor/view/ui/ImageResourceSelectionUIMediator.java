@@ -8,7 +8,10 @@ import java.util.TreeSet;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.kotcrab.vis.ui.widget.VisTable;
 
 import games.rednblack.editor.HyperLap2DFacade;
@@ -49,7 +52,9 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
         return new String[]{
         		UIResourcesBoxMediator.IMAGE_LEFT_CLICK,
         		MsgAPI.IMAGE_BUNDLE_DROP,
-        		UIResourcesBoxMediator.IMAGE_TABLE_UPDATED
+        		UIResourcesBoxMediator.IMAGE_TABLE_UPDATED,
+        		UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_ENTER,
+        		UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_EXIT
         };
     }
 
@@ -89,10 +94,32 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
 	        case UIResourcesBoxMediator.IMAGE_TABLE_UPDATED:
 	        	imagesTable = notification.getBody();
 	        	break;
+	        case UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_ENTER:
+	        	Source sourceEnter = notification.getBody();
+	        	setColorExcept(new Color(0f, 0f, 0f, 0.3f), sourceEnter.getActor());
+	        	break;
+	        case UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_EXIT:
+	        	setColorExcept(new Color(0f, 0f, 0f, 1f), null);
+	        	break;
 	        default:
 	        	System.err.println("Unknown notification: " + notification);
         }
     	
+    }
+    
+    /**
+     * Darkens all the resources except the given one.
+     * 
+     * @param imageResource The dragged image resource.
+     * @param color The color to set to all other resources.
+     */
+    private void setColorExcept(Color color, Actor imageResource) {
+    	for (Cell<ImageResource> cell : imagesTable.getCells()) {
+			Actor imgResource = cell.getActor();
+			if (!imgResource.equals(imageResource)) {
+				imgResource.setColor(color);
+			}
+		}
     }
 
     /**
