@@ -18,6 +18,8 @@
 
 package games.rednblack.editor.plugin.tiled;
 
+import java.util.Set;
+
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -26,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageButton;
+
 import games.rednblack.editor.plugin.tiled.data.TileVO;
 import games.rednblack.editor.plugin.tiled.manager.ResourcesManager;
 import games.rednblack.editor.plugin.tiled.offset.OffsetPanel;
@@ -44,8 +47,6 @@ import games.rednblack.editor.renderer.utils.CustomVariables;
 import games.rednblack.h2d.common.MenuAPI;
 import games.rednblack.h2d.common.plugins.H2DPluginAdapter;
 import net.mountainblade.modular.annotations.Implementation;
-
-import java.util.Set;
 
 /**
  * Created by mariam on 2/2/2016.

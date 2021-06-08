@@ -18,21 +18,22 @@
 
 package games.rednblack.editor.view.ui.box.resourcespanel.draggable;
 
+import java.util.function.BiFunction;
+
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import games.rednblack.editor.view.stage.UIStage;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.BoxItemResource;
-import games.rednblack.h2d.common.ResourcePayloadObject;
+
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
-
-import java.util.function.BiFunction;
+import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.BoxItemResource;
+import games.rednblack.h2d.common.ResourcePayloadObject;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by azakhary on 7/3/2014.
@@ -52,7 +53,8 @@ public class DraggableResource extends DragAndDrop implements Comparable<Draggab
         setKeepWithinStage(false);
 
         addSource(new Source((Actor) viewComponent) {
-            public Payload dragStart(InputEvent event, float x, float y, int pointer) {
+            @Override
+			public Payload dragStart(InputEvent event, float x, float y, int pointer) {
                 Payload payload = new Payload();
                 Actor dragActor = viewComponent.getDragActor();
                 OrthographicCamera runtimeCamera = Sandbox.getInstance().getCamera();
@@ -72,8 +74,15 @@ public class DraggableResource extends DragAndDrop implements Comparable<Draggab
         });
 
         addTarget(new Target(sandbox.getUIStage().dummyTarget) {
+        	boolean dragging = false;
+        	
             @Override
             public boolean drag(Source source, Payload payload, float x, float y, int pointer) {
+            	if (!dragging) {
+            		// we only want to send the notification once and not every tick
+            		dragging = true;
+            		HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_ENTER, source, null);
+            	}
                 return true;
             }
 
@@ -82,6 +91,15 @@ public class DraggableResource extends DragAndDrop implements Comparable<Draggab
                 Vector2 vector = sandbox.screenToWorld(x + UIStage.SANDBOX_BOTTOM_MARGIN, y + UIStage.SANDBOX_LEFT_MARGIN);
                 DraggableResource.this.drop(payload, vector);
             }
+            
+            @Override
+			public void reset(Source source, Payload payload) {
+            	// this method is called when we exit the sandbox, and this is also called when we drop the image into the sandbox
+            	// so we only need to look here :)
+        		dragging = false;
+        		HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_EXIT, source, null);
+            }
+            
         });
 
 

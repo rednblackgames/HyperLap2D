@@ -18,19 +18,53 @@
 
 package games.rednblack.editor.controller;
 
-import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.splash.SplashScreenAdapter;
-import games.rednblack.editor.view.ui.*;
-import games.rednblack.editor.view.menu.HyperLap2DMenuBarMediator;
-import games.rednblack.editor.view.HyperLap2DScreenMediator;
-import games.rednblack.editor.view.stage.SandboxMediator;
-import games.rednblack.editor.view.stage.UIStageMediator;
-import games.rednblack.editor.view.ui.box.*;
-import games.rednblack.editor.view.ui.box.bottom.*;
-import games.rednblack.editor.view.ui.dialog.*;
-import games.rednblack.editor.view.ui.panel.*;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.command.SimpleCommand;
+
+import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.splash.SplashScreenAdapter;
+import games.rednblack.editor.view.HyperLap2DScreenMediator;
+import games.rednblack.editor.view.menu.HyperLap2DMenuBarMediator;
+import games.rednblack.editor.view.stage.SandboxMediator;
+import games.rednblack.editor.view.stage.UIStageMediator;
+import games.rednblack.editor.view.ui.FollowersUIMediator;
+import games.rednblack.editor.view.ui.ImageResourceSelectionUIMediator;
+import games.rednblack.editor.view.ui.RulersUIMediator;
+import games.rednblack.editor.view.ui.StickyNotesUIMediator;
+import games.rednblack.editor.view.ui.UIDropDownMenuMediator;
+import games.rednblack.editor.view.ui.UIWindowActionMediator;
+import games.rednblack.editor.view.ui.UIWindowTitleMediator;
+import games.rednblack.editor.view.ui.box.UIAlignBoxMediator;
+import games.rednblack.editor.view.ui.box.UICompositeHierarchyMediator;
+import games.rednblack.editor.view.ui.box.UIItemsTreeBoxMediator;
+import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
+import games.rednblack.editor.view.ui.box.UIMultiPropertyBoxMediator;
+import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
+import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
+import games.rednblack.editor.view.ui.box.bottom.UIGridBoxMediator;
+import games.rednblack.editor.view.ui.box.bottom.UILivePreviewBoxMediator;
+import games.rednblack.editor.view.ui.box.bottom.UIResolutionBoxMediator;
+import games.rednblack.editor.view.ui.box.bottom.UISceneBoxMediator;
+import games.rednblack.editor.view.ui.box.bottom.UIZoomBoxMediator;
+import games.rednblack.editor.view.ui.dialog.AboutDialogMediator;
+import games.rednblack.editor.view.ui.dialog.AnimationsPackDialogMediator;
+import games.rednblack.editor.view.ui.dialog.AutoTraceDialogMediator;
+import games.rednblack.editor.view.ui.dialog.CodeEditorDialogMediator;
+import games.rednblack.editor.view.ui.dialog.ConsoleDialogMediator;
+import games.rednblack.editor.view.ui.dialog.CreateNewResolutionDialogMediator;
+import games.rednblack.editor.view.ui.dialog.CreateNoiseDialogMediator;
+import games.rednblack.editor.view.ui.dialog.CreatePlaceholderDialogMediator;
+import games.rednblack.editor.view.ui.dialog.ImagesPackDialogMediator;
+import games.rednblack.editor.view.ui.dialog.LoadingBarDialogMediator;
+import games.rednblack.editor.view.ui.dialog.NewProjectDialogMediator;
+import games.rednblack.editor.view.ui.dialog.NodeEditorDialogMediator;
+import games.rednblack.editor.view.ui.dialog.SaveProjectDialogMediator;
+import games.rednblack.editor.view.ui.dialog.SettingsDialogMediator;
+import games.rednblack.editor.view.ui.panel.CustomVariablesPanelMediator;
+import games.rednblack.editor.view.ui.panel.EditSpriteAnimationPanelMediator;
+import games.rednblack.editor.view.ui.panel.ImportPanelMediator;
+import games.rednblack.editor.view.ui.panel.ShaderUniformsPanelMediator;
+import games.rednblack.editor.view.ui.panel.TagsPanelMediator;
 
 /**
  * Created by sargis on 4/1/15.
@@ -67,6 +101,9 @@ public class BootstrapViewCommand extends SimpleCommand {
         facade.registerMediator(new UIStageMediator());
         facade.registerMediator(new SandboxMediator());
         facade.registerMediator(new UIDropDownMenuMediator());
+        
+        // improved selection behavior for the image panel
+        facade.registerMediator(new ImageResourceSelectionUIMediator());
 
         //Panels
         facade.registerMediator(new ImportPanelMediator());

@@ -18,18 +18,20 @@
 
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.puremvc.java.interfaces.INotification;
+
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
+
 import games.rednblack.editor.controller.commands.resource.DeleteImageResource;
-import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.factory.ItemFactory;
+import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.ImageResource;
-import games.rednblack.h2d.common.vo.ProjectVO;
-import org.apache.commons.lang3.ArrayUtils;
-import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by azakhary on 4/17/2015.
@@ -82,7 +84,9 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
                         || !region.name.contains(searchText)) continue;
 
                 boolean is9patch = region.findValue("split") != null;
-                DraggableResource draggableResource = new DraggableResource(new ImageResource(region));
+                ImageResource imageResource = new ImageResource(region, new Color(1, 1, 1, 0.2f), new Color(1, 1, 1, 0.4f),
+                		new Color(200f / 255f, 200f / 255f, 200f / 255f, 0.2f), new Color(255f / 255f, 94f / 255f, 0f / 255f, 1f), true);
+                DraggableResource draggableResource = new DraggableResource(imageResource);
                 if (is9patch) {
                     draggableResource.setFactoryFunction(ItemFactory.get()::create9Patch);
                 } else {

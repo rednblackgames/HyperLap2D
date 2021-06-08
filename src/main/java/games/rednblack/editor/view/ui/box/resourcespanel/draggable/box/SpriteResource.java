@@ -18,14 +18,16 @@
 
 package games.rednblack.editor.view.ui.box.resourcespanel.draggable.box;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import games.rednblack.h2d.common.ResourcePayloadObject;
+
 import games.rednblack.editor.renderer.data.SpriteAnimationVO;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.editor.view.ui.widget.actors.SpriteAnimationActor;
+import games.rednblack.h2d.common.ResourcePayloadObject;
 
 /**
  * Created by azakhary on 7/3/2014.
@@ -40,7 +42,23 @@ public class SpriteResource extends BoxItemResource {
     private boolean isMouseInside = false;
 
     public SpriteResource(String animationName) {
-        super();
+    	// this is not changing the behavior of the former constructor
+    	// as long as the colors of the super class are not changed
+    	this(animationName, new Color(1, 1, 1, 0.2f), new Color(1, 1, 1, 0.4f), Color.BLACK, Color.BLACK, false);
+    }
+
+    /**
+     * Creates a new sprite resource from the given animation name.
+     * 
+     * @param animationName The of the animation for the sprite resource.
+     * @param fillColor The color to fill the background of the image.
+     * @param borderColor The standard color of the border. Also used when the mouse is not hovering over the image.
+     * @param fillMouseOverColor The color to fill the background of the image when the mouse hovers over the image. Only used if the the parameter <code>highlightWhenMouseOver</code> is set to <code>true</code>.
+     * @param borderMouseOverColor The color of the border when the mouse hovers over the image. Only used if the the parameter <code>highlightWhenMouseOver</code> is set to <code>true</code>.
+     * @param highlightWhenMouseOver Whether to change the border color when the mouse hovers over the image.
+     */
+    public SpriteResource(String animationName, Color fillColor, Color borderColor, Color fillMouseOverColor, Color borderMouseOverColor, boolean highlightWhenMouseOver) {
+    	super(fillColor, borderColor, fillMouseOverColor, borderMouseOverColor, highlightWhenMouseOver);
         SpriteAnimationVO vo = new SpriteAnimationVO();
         vo.animationName = animationName;
 
@@ -68,11 +86,13 @@ public class SpriteResource extends BoxItemResource {
 
 
         addListener(new ClickListener() {
+            @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                 isMouseInside = true;
                 super.enter(event, x, y, pointer, fromActor);
             }
 
+            @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                 isMouseInside = false;
                 super.enter(event, x, y, pointer, toActor);

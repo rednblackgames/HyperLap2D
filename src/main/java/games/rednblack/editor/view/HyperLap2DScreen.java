@@ -19,7 +19,11 @@
 package games.rednblack.editor.view;
 
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.gdx.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -29,20 +33,21 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
+
 import games.rednblack.editor.HyperLap2DApp;
+import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.editor.view.menu.ResourcesMenu;
+import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.view.stage.UIStage;
+import games.rednblack.editor.view.stage.input.SandboxInputAdapter;
+import games.rednblack.editor.view.ui.widget.actors.basic.SandboxBackUI;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.h2d.common.MenuAPI;
 import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.editor.view.ui.widget.actors.basic.SandboxBackUI;
-import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.view.stage.UIStage;
-import games.rednblack.editor.view.stage.input.SandboxInputAdapter;
 import games.rednblack.h2d.common.vo.SceneConfigVO;
 
 public class HyperLap2DScreen implements Screen, InputProcessor {

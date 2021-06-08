@@ -1,12 +1,16 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.utils.Align;
+import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextField;
+import com.kotcrab.vis.ui.widget.VisValidatableTextField;
 
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.CheckBoxChangeListener;
+import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
@@ -24,11 +28,17 @@ public class UISensorProperties extends UIRemovableProperties {
     private VisCheckBox sensorLeft;
     private VisCheckBox sensorRight;
     private VisCheckBox sensorTop;
+
+    private VisValidatableTextField sensorSpanPercentBottom;
+    private VisValidatableTextField sensorSpanPercentLeft;
+    private VisValidatableTextField sensorSpanPercentRight;
+    private VisValidatableTextField sensorSpanPercentTop;
     
     public UISensorProperties() {
         super("Sensors");
 
         initView();
+        initTooltip();
         initListeners();
     }
 
@@ -39,21 +49,41 @@ public class UISensorProperties extends UIRemovableProperties {
         sensorRight = StandardWidgetsFactory.createCheckBox("Right");
         sensorTop = StandardWidgetsFactory.createCheckBox("Top");
 
-        mainTable.add(new VisLabel("Add sensors to body:", Align.right)).padRight(5).colspan(3).fillX();
+        Validators.FloatValidator floatValidator = new Validators.FloatValidator();
+        sensorSpanPercentBottom = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        sensorSpanPercentLeft = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        sensorSpanPercentRight = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        sensorSpanPercentTop = StandardWidgetsFactory.createValidableTextField(floatValidator);
+
+        mainTable.add(new VisLabel("Add sensors to body:", Align.left)).padRight(5).colspan(2).fillX();
         mainTable.row().padTop(5);
         
         // table
         VisTable sensorTable = new VisTable();
-        sensorTable.add(sensorTop).padRight(5).colspan(3).fillX();
+        sensorTable.add(sensorTop).padRight(5).fillX();
+        sensorTable.add(sensorSpanPercentTop).width(50).padRight(5);
         sensorTable.row();
-        sensorTable.add(sensorLeft).padRight(5);
-        sensorTable.add(new VisLabel(""));
-        sensorTable.add(sensorRight).padRight(5);
+        sensorTable.add(sensorLeft).padRight(5).fillX();
+        sensorTable.add(sensorSpanPercentLeft).width(50).padRight(5);
         sensorTable.row();
-        sensorTable.add(sensorBottom).padRight(5).colspan(3).fillX();
+        sensorTable.add(sensorRight).padRight(5).fillX();
+        sensorTable.add(sensorSpanPercentRight).width(50).padRight(5);
+        sensorTable.row();
+        sensorTable.add(sensorBottom).padRight(5).fillX();
+        sensorTable.add(sensorSpanPercentBottom).width(50).padRight(5);
         
-        mainTable.add(sensorTable).padBottom(5).colspan(4);
+        mainTable.add(sensorTable).padBottom(5).colspan(2);
         mainTable.row().padTop(5);
+    }
+    
+    /**
+     * Initializes the tooltips.
+     */
+    private void initTooltip() {
+        StandardWidgetsFactory.addVisTooltip(sensorBottom, "Adds a sensor to the bottom of the body. The value gives the percentage of the body width where 1.0 equals 100 %.");
+        StandardWidgetsFactory.addVisTooltip(sensorLeft, "Adds a sensor to the left of the body. The value gives the percentage of the body height where 1.0 equals 100 %.");
+        StandardWidgetsFactory.addVisTooltip(sensorRight, "Adds a sensor to the bottom of the body. The value gives the percentage of the body height where 1.0 equals 100 %.");
+        StandardWidgetsFactory.addVisTooltip(sensorTop, "Adds a sensor to the bottom of the body. The value gives the percentage of the body width where 1.0 equals 100 %.");
     }
     
     private void initListeners() {
@@ -61,6 +91,11 @@ public class UISensorProperties extends UIRemovableProperties {
         sensorLeft.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         sensorRight.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         sensorTop.addListener(new CheckBoxChangeListener(getUpdateEventName()));
+
+        sensorSpanPercentBottom.addListener(new KeyboardListener(getUpdateEventName()));
+        sensorSpanPercentLeft.addListener(new KeyboardListener(getUpdateEventName()));
+        sensorSpanPercentRight.addListener(new KeyboardListener(getUpdateEventName()));
+        sensorSpanPercentTop.addListener(new KeyboardListener(getUpdateEventName()));
     }
 
     public VisCheckBox getSensorBottomBox() {
@@ -77,6 +112,22 @@ public class UISensorProperties extends UIRemovableProperties {
     
     public VisCheckBox getSensorTopBox() {
     	return sensorTop;
+    }
+    
+    public VisTextField getSensorSpanPercentBottomTextfield() {
+    	return sensorSpanPercentBottom;
+    }
+    
+    public VisTextField getSensorSpanPercentLeftTextfield() {
+    	return sensorSpanPercentLeft;
+    }
+    
+    public VisTextField getSensorSpanPercentRightTextfield() {
+    	return sensorSpanPercentRight;
+    }
+    
+    public VisTextField getSensorSpanPercentTopTextfield() {
+    	return sensorSpanPercentTop;
     }
 
 	@Override

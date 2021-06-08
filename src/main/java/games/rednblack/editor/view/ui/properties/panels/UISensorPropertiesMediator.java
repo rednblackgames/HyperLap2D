@@ -1,6 +1,7 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.puremvc.java.interfaces.INotification;
 
 import com.badlogic.ashley.core.Entity;
@@ -58,6 +59,11 @@ public class UISensorPropertiesMediator extends UIItemPropertiesMediator<Entity,
         viewComponent.getSensorLeftBox().setChecked(sensorComponent.left);
         viewComponent.getSensorRightBox().setChecked(sensorComponent.right);
         viewComponent.getSensorTopBox().setChecked(sensorComponent.top);
+
+        viewComponent.getSensorSpanPercentBottomTextfield().setText(Float.toString(sensorComponent.bottomSpanPercent));
+        viewComponent.getSensorSpanPercentLeftTextfield().setText(Float.toString(sensorComponent.leftSpanPercent));
+        viewComponent.getSensorSpanPercentRightTextfield().setText(Float.toString(sensorComponent.rightSpanPercent));
+        viewComponent.getSensorSpanPercentTopTextfield().setText(Float.toString(sensorComponent.topSpanPercent));
 	}
 
 	@Override
@@ -73,6 +79,11 @@ public class UISensorPropertiesMediator extends UIItemPropertiesMediator<Entity,
         payloadVo.left = viewComponent.getSensorLeftBox().isChecked();
         payloadVo.right = viewComponent.getSensorRightBox().isChecked();
         payloadVo.top = viewComponent.getSensorTopBox().isChecked();
+
+        payloadVo.bottomSpanPercent = NumberUtils.toFloat(viewComponent.getSensorSpanPercentBottomTextfield().getText());
+        payloadVo.leftSpanPercent = NumberUtils.toFloat(viewComponent.getSensorSpanPercentLeftTextfield().getText());
+        payloadVo.rightSpanPercent = NumberUtils.toFloat(viewComponent.getSensorSpanPercentRightTextfield().getText());
+        payloadVo.topSpanPercent = NumberUtils.toFloat(viewComponent.getSensorSpanPercentTopTextfield().getText());
 
         if (!oldPayloadVo.equals(payloadVo)) {
             Object payload = UpdateSensorDataCommand.payload(observableReference, payloadVo);
