@@ -33,7 +33,7 @@ import com.kotcrab.vis.ui.widget.VisWindow;
  * Created by sargis on 4/29/15.
  */
 public class UICollapsibleBox extends VisWindow {
-    protected static final int BOX_DEFAULT_WIDTH = 240;
+    protected static final int BOX_DEFAULT_WIDTH = 250;
 
     private final VisImageButton collapsibleButton;
     private final VisTable mainTable;
