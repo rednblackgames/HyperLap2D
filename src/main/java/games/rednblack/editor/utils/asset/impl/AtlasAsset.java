@@ -21,6 +21,7 @@ public class AtlasAsset extends Asset {
 
     @Override
     protected boolean matchMimeType(FileHandle file) {
+        if (!file.extension().equals("atlas")) return false;
         try {
             TextureAtlas.TextureAtlasData atlas = new TextureAtlas.TextureAtlasData(file, file.parent(), false);
             return !ImportUtils.isAtlasAnimationSequence(atlas.getRegions());

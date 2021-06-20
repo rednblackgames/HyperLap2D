@@ -35,7 +35,7 @@ public class UISensorProperties extends UIRemovableProperties {
     private VisValidatableTextField sensorSpanPercentTop;
     
     public UISensorProperties() {
-        super("Sensors");
+        super("Physics Sensors");
 
         initView();
         initTooltip();
@@ -80,10 +80,10 @@ public class UISensorProperties extends UIRemovableProperties {
      * Initializes the tooltips.
      */
     private void initTooltip() {
-        StandardWidgetsFactory.addVisTooltip(sensorBottom, "Adds a sensor to the bottom of the body. The value gives the percentage of the body width where 1.0 equals 100 %.");
-        StandardWidgetsFactory.addVisTooltip(sensorLeft, "Adds a sensor to the left of the body. The value gives the percentage of the body height where 1.0 equals 100 %.");
-        StandardWidgetsFactory.addVisTooltip(sensorRight, "Adds a sensor to the bottom of the body. The value gives the percentage of the body height where 1.0 equals 100 %.");
-        StandardWidgetsFactory.addVisTooltip(sensorTop, "Adds a sensor to the bottom of the body. The value gives the percentage of the body width where 1.0 equals 100 %.");
+        StandardWidgetsFactory.addVisTooltip(sensorBottom, "Adds a sensor to the bottom of the body.\nThe value gives the percentage of\nthe body width where 1.0 equals 100%.");
+        StandardWidgetsFactory.addVisTooltip(sensorLeft, "Adds a sensor to the left of the body.\nThe value gives the percentage of\nthe body height where 1.0 equals 100%.");
+        StandardWidgetsFactory.addVisTooltip(sensorRight, "Adds a sensor to the right of the body.\nThe value gives the percentage of\nthe body height where 1.0 equals 100%.");
+        StandardWidgetsFactory.addVisTooltip(sensorTop, "Adds a sensor to the top of the body.\nThe value gives the percentage of\nthe body width where 1.0 equals 100%.");
     }
     
     private void initListeners() {

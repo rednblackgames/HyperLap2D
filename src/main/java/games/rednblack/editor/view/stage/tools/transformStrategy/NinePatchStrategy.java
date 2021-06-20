@@ -120,6 +120,12 @@ public class NinePatchStrategy extends AbstractTransformStrategy {
         transformComponent.y = newY;
         dimensionsComponent.width = newWidth;
         dimensionsComponent.height = newHeight;
+
+        // Origin
+        origin(mouseDx, mouseDy, anchor, transformComponent, transformCommandBuilder);
+
+        // Rotating
+        rotating(anchor, transformCommandBuilder, mousePointStage, lastTransformAngle, lastEntityAngle, transformComponent);
     }
 
 }

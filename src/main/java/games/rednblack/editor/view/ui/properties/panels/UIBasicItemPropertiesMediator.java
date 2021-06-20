@@ -71,7 +71,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
 
     public static final String POLYGON_COMPONENT_KEY = "Polygon";
     public static final String PHYSICS_COMPONENT_KEY = "Physics";
-    public static final String SENSOR_COMPONENT_KEY = "Sensors";
+    public static final String SENSOR_COMPONENT_KEY = "Physics Sensors";
     public static final String SHADER_COMPONENT_KEY = "Shader";
     public static final String LIGHT_COMPONENT_KEY = "Light";
     public static final String TYPING_LABEL_COMPONENT_KEY = "Typing Label";
@@ -224,6 +224,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<Enti
                 componentsToAddList.add(componentName);
             }
         }
+        componentsToAddList.sort();
         viewComponent.setNonExistentComponents(componentsToAddList);
     }
 
