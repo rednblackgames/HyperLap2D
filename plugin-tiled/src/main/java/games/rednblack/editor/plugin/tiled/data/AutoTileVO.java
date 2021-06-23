@@ -4,25 +4,22 @@ import com.badlogic.gdx.math.Vector2;
 
 import games.rednblack.editor.renderer.factory.EntityFactory;
 
-/**
- * Created by mariam on 5/13/16.
- */
-public class TileVO implements TextureRegionVO {
+public class AutoTileVO implements TextureRegionVO {
 
 	public String regionName = "";
 	public Vector2 gridOffset;
 	public int entityType = EntityFactory.IMAGE_TYPE;
 
-	public TileVO() {
+	public AutoTileVO() {
 		gridOffset = new Vector2();
 	}
 
-	public TileVO(String regionName) {
+	public AutoTileVO(String regionName) {
 		this.regionName = regionName;
 		gridOffset = new Vector2();
 	}
 
-	public TileVO(String regionName, Vector2 offset) {
+	public AutoTileVO(String regionName, Vector2 offset) {
 		this.regionName = regionName;
 		this.gridOffset = offset;
 	}

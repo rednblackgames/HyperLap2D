@@ -1,17 +1,19 @@
 package games.rednblack.editor.plugin.tiled.tools;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.puremvc.java.interfaces.INotification;
+
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.tools.Tool;
 import games.rednblack.h2d.common.vo.CursorData;
-import org.puremvc.java.interfaces.INotification;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by mariam on 4/5/16.
@@ -51,6 +53,7 @@ public class DeleteTileTool implements Tool {
 
     @Override
     public void stageMouseUp(float x, float y) {
+    	tiledPlugin.facade.sendNotification(TiledPlugin.AUTO_FILL_TILES);
     }
 
     @Override
@@ -76,7 +79,7 @@ public class DeleteTileTool implements Tool {
 
     @Override
     public void itemMouseUp(Entity entity, float x, float y) {
-
+    	tiledPlugin.facade.sendNotification(TiledPlugin.AUTO_FILL_TILES);
     }
 
     @Override
