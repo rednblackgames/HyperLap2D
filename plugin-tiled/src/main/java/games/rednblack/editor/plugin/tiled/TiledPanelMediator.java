@@ -164,7 +164,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
             case TiledPlugin.AUTO_OPEN_DROP_DOWN:
                 tileName = notification.getBody();
                 HashMap<String, String> autoActionsSet = new HashMap<>();
-//                autoActionsSet.put(TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST, "Set grid size");
+                autoActionsSet.put(TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST, "Set grid size");
                 autoActionsSet.put(TiledPlugin.ACTION_DELETE_AUTO_TILE, "Delete");
 //                autoActionsSet.put(TiledPlugin.ACTION_OPEN_OFFSET_PANEL, "Set offset");
                 tiledPlugin.facade.sendNotification(TiledPlugin.AUTO_TILE_SELECTED, tiledPlugin.dataToSave.getAutoTile(tileName));
@@ -178,17 +178,23 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
             case TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST:
                 float width = 0;
                 float height = 0;
-                TileVO t = tiledPlugin.dataToSave.getTile(notification.getBody());
-                if (t.entityType == EntityFactory.SPINE_TYPE) {
-                    SpineDrawable spineDrawable = tiledPlugin.pluginRM.getSpineDrawable(t.regionName);
-                    width = spineDrawable.width;
-                    height = spineDrawable.height;
-                } else {
+                if (tiledPlugin.isAutoGridTilesTabSelected()) {
+                	AutoTileVO t = tiledPlugin.dataToSave.getAutoTile(notification.getBody());
                     TextureRegion r = tiledPlugin.pluginRM.getTextureRegion(t.regionName, t.entityType);
-                    width = r.getRegionWidth();
-                    height = r.getRegionHeight();
+                    width = r.getRegionWidth() / TiledPlugin.AUTO_TILE_COLS;
+                    height = r.getRegionHeight() / TiledPlugin.AUTO_TILE_ROWS;
+                } else {
+                    TileVO t = tiledPlugin.dataToSave.getTile(notification.getBody());
+	                if (t.entityType == EntityFactory.SPINE_TYPE) {
+	                    SpineDrawable spineDrawable = tiledPlugin.pluginRM.getSpineDrawable(t.regionName);
+	                    width = spineDrawable.width;
+	                    height = spineDrawable.height;
+	                } else {
+	                    TextureRegion r = tiledPlugin.pluginRM.getTextureRegion(t.regionName, t.entityType);
+	                    width = r.getRegionWidth();
+	                    height = r.getRegionHeight();
+	                }
                 }
-
                 tiledPlugin.dataToSave.setGrid(width / tiledPlugin.getPixelToWorld(), height / tiledPlugin.getPixelToWorld());
                 tiledPlugin.facade.sendNotification(TiledPlugin.GRID_CHANGED);
                 break;
@@ -261,8 +267,8 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
     	Pixmap pixmap = tr.getTexture().getTextureData().consumePixmap();
     	String name = tileName;
 
-    	int tileW = tr.getRegionWidth() / 7;
-    	int tileH = tr.getRegionHeight() / 4;
+    	int tileW = tr.getRegionWidth() / TiledPlugin.AUTO_TILE_COLS;
+    	int tileH = tr.getRegionHeight() / TiledPlugin.AUTO_TILE_ROWS;
     	int maxX = tr.getRegionWidth() + tr.getRegionX();
     	int maxY = tr.getRegionHeight() + tr.getRegionY();
 

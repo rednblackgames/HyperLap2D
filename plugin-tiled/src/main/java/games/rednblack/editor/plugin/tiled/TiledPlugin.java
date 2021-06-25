@@ -83,6 +83,9 @@ public class TiledPlugin extends H2DPluginAdapter {
     public static final String AUTO_TILE_TAG = "AUTO_TILE";
 	public static final String AUTO_TILE_MINI_SUFFIX = "-mini";
 
+	public static final int AUTO_TILE_ROWS = 4;
+	public static final int AUTO_TILE_COLS = 7;
+
     public DataToSave dataToSave;
     public SaveDataManager saveDataManager;
     public boolean isSceneLoaded = false;
