@@ -109,7 +109,7 @@ public class GridTabInputListener<T extends TextureRegionVO> extends InputListen
 				}
 			}
 		}
-		if (draggingTarget != null && !draggingTarget.equals(draggingSource)) {
+		if (draggingTarget != null) {
 			String sourceRegionName = String.valueOf(draggingSource.getUserObject());
 			String targetRegionName = String.valueOf(draggingTarget.getUserObject());
 			int sourceIndex = -1;
@@ -132,7 +132,11 @@ public class GridTabInputListener<T extends TextureRegionVO> extends InputListen
 				T sourceTileVO = savedTiles.removeIndex(sourceIndex);
 				savedTiles.insert(targetIndex, sourceTileVO);
 				tab.initTiles();
+				// select the dropped button
+				tiledPlugin.facade.sendNotification(TiledPlugin.TILE_SELECTED, sourceTileVO);
+				tiles.get(targetIndex).setChecked(true);
 			}
+			
 		}
 	}
 

@@ -144,10 +144,12 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 tiledPlugin.saveDataManager.save();
                 break;
             case TiledPlugin.TILE_SELECTED:
-                viewComponent.selectTile(notification.getBody());
-                break;
             case TiledPlugin.AUTO_TILE_SELECTED:
-            	viewComponent.selectAutoTile(notification.getBody());
+            	if (viewComponent.isAutoGridTilesTabSelected()) {
+            		viewComponent.selectAutoTile(notification.getBody());
+            	} else {
+            		viewComponent.selectTile(notification.getBody());
+            	}
                 break;
             case TiledPlugin.AUTO_FILL_TILES:
             	autoGridTileManager.autoFill();
