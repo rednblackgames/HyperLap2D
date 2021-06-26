@@ -44,6 +44,8 @@ import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
@@ -490,7 +492,6 @@ public class ProjectManager extends Proxy {
         }
     }
 
-
     private void exportAnimations(String targetPath) {
         exportSpineAnimationForResolution("orig", targetPath);
         for (ResolutionEntryVO resolutionEntryVO : currentProjectInfoVO.resolutions) {
@@ -507,7 +508,8 @@ public class ProjectManager extends Proxy {
 
             File fileTargetSpine = new File(finalTarget);
 
-            FileUtils.copyDirectory(fileSrc, fileTargetSpine);
+            IOFileFilter jsonSuffixFilter = FileFilterUtils.suffixFileFilter(".json");
+            FileUtils.copyDirectory(fileSrc, fileTargetSpine, jsonSuffixFilter);
         } catch (IOException e) {
             e.printStackTrace();
         }

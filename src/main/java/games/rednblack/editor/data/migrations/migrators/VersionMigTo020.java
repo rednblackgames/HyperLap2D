@@ -70,11 +70,6 @@ public class VersionMigTo020 implements IVersionMigrator {
                     ImportUtils.unpackAtlasIntoTmpFolder(atlasTargetPath.file(), null,projectPath + File.separator + ProjectManager.IMAGE_DIR_PATH);
                 } catch (Exception ignore) {
                 }
-
-                for (TextureAtlas.TextureAtlasData.Page page : new Array.ArrayIterator<>(atlas.getPages())) {
-                    if (page.textureFile != null)
-                        page.textureFile.delete();
-                }
             }
         }
 
@@ -95,12 +90,6 @@ public class VersionMigTo020 implements IVersionMigrator {
                     ImportUtils.unpackAtlasIntoTmpFolder(atlasTargetPath.file(), animName, projectPath + File.separator + ProjectManager.IMAGE_DIR_PATH);
                 } catch (Exception ignore) {
                 }
-
-                for (TextureAtlas.TextureAtlasData.Page page : new Array.ArrayIterator<>(atlas.getPages())) {
-                    if (page.textureFile != null)
-                        page.textureFile.delete();
-                }
-                atlasTargetPath.delete();
             }
         }
 

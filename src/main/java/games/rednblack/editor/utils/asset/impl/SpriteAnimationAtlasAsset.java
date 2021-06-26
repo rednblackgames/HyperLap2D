@@ -64,8 +64,13 @@ public class SpriteAnimationAtlasAsset extends Asset {
                 projectManager.copyImageFilesForAllResolutionsIntoProject(images, true, progressHandler);
                 FileUtils.forceDelete(tmpDir.file());
 
-                File atlasTargetPath = new File(targetPath + File.separator + fileNameWithoutExt + ".atlas");
-                FileUtils.copyFile(fileHandle.file(), atlasTargetPath);
+                FileUtils.copyFileToDirectory(fileHandle.file(), targetDir);
+
+                TextureAtlas.TextureAtlasData atlas = new TextureAtlas.TextureAtlasData(fileHandle, fileHandle.parent(), false);
+                for (TextureAtlas.TextureAtlasData.Page imageFile : new Array.ArrayIterator<>(atlas.getPages())) {
+                    FileUtils.copyFileToDirectory(imageFile.textureFile.file(), targetDir);
+                }
+
                 newAnimName = fileNameWithoutExt;
             } catch (IOException e) {
                 e.printStackTrace();
