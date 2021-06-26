@@ -230,8 +230,8 @@ public class GridTilesTab extends DefaultTab {
                 @Override
 				public void touchDragged (InputEvent event, float x, float y, int pointer) {
                 	isDragging = true;
-                	//draggingSource.setColor(new Color(255f / 255f, 94f / 255f, 0f / 255f, 0.5f));
-                	draggingSource.setColor(new Color(0 / 255f, 0 / 255f, 0f / 255f, 0.5f));
+                	if (draggingSource != null)
+                	    draggingSource.setColor(new Color(0 / 255f, 0 / 255f, 0f / 255f, 0.5f));
             	}
                 
                 /**
