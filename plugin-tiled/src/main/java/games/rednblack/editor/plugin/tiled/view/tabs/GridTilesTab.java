@@ -42,4 +42,9 @@ public class GridTilesTab extends AbstractGridTilesTab<TileVO> {
         tiledPlugin.setSelectedTileVO(tileVO);
     }
 
+	@Override
+	protected TileVO getTextureRegionVO(String tileName) {
+		return new TileVO(tileName);
+	}
+
 }

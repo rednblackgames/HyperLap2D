@@ -14,7 +14,6 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.plugin.tiled.TiledPanel;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.plugin.tiled.data.TextureRegionVO;
-import games.rednblack.editor.plugin.tiled.data.TileVO;
 import games.rednblack.editor.plugin.tiled.manager.ResourcesManager;
 import games.rednblack.editor.plugin.tiled.view.SpineDrawable;
 import games.rednblack.editor.plugin.tiled.view.tabs.listener.GridTabInputListener;
@@ -85,11 +84,11 @@ public abstract class AbstractGridTilesTab<T extends TextureRegionVO> extends De
         panel.pack();
         scrollTiles();
         tiles.get(tileIndex).setChecked(true);
-        tiledPlugin.facade.sendNotification(TiledPlugin.TILE_SELECTED, new TileVO(tileName));
+        tiledPlugin.facade.sendNotification(TiledPlugin.TILE_SELECTED, getTextureRegionVO(tileName));
         tileIndex++;
     }
 
-    public void removeTile() {
+	public void removeTile() {
         if (pane != null) isBottomEdge = pane.isBottomEdge();
         tileIndex = --tileIndex < 0 ? 0 : tileIndex;
         tilesCount = --tilesCount < 19 ? 19 : tilesCount;
@@ -221,5 +220,14 @@ public abstract class AbstractGridTilesTab<T extends TextureRegionVO> extends De
      * @param tileVO The tile to select
      */
     public abstract void selectTile(T tileVO);
+
+    /**
+     * Returns the corresponding {@link TextureRegionVO} for the given tile name.
+     * 
+     * @param tileName The tilename for the texture region.
+     * 
+     * @return The texture region.
+     */
+    protected abstract T getTextureRegionVO(String tileName);
 
 }

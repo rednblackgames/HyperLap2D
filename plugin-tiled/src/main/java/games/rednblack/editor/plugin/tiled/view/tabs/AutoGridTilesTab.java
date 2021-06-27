@@ -44,4 +44,9 @@ public class AutoGridTilesTab extends AbstractGridTilesTab<AutoTileVO> {
     	super.setGridSizeToFirstTileSize(tileName + TiledPlugin.AUTO_TILE_MINI_SUFFIX, type);
     }
 
+	@Override
+	protected AutoTileVO getTextureRegionVO(String tileName) {
+		return new AutoTileVO(tileName);
+	}
+
 }
