@@ -9,6 +9,15 @@ import games.rednblack.h2d.common.command.ReplaceRegionCommandBuilder;
 
 public class AutoGridTileManager {
 
+	private static final int UL = 1;
+	private static final int U = 2;
+	private static final int UR = 4;
+	private static final int R = 8;
+	private static final int DR = 16;
+	private static final int D = 32;
+	private static final int DL = 64;
+	private static final int L = 128;
+
     private final ReplaceRegionCommandBuilder replaceRegionCommandBuilder = new ReplaceRegionCommandBuilder();
 
     private TiledPlugin tiledPlugin;
@@ -27,40 +36,49 @@ public class AutoGridTileManager {
     		int row = mainItemComponent.customVariables.getIntegerVariable(TiledPlugin.ROW);
 
     		int c = 0;
+    		int val = 0;
     		Entity ul = tiledPlugin.getPluginEntityWithParams(row + 1, col - 1);
     		if (ul != null) {
     			c++;
+    			val += UL;
     		}
     		Entity u = tiledPlugin.getPluginEntityWithParams(row + 1, col);
     		if (u != null) {
     			c++;
+    			val += U;
     		}
     		Entity ur = tiledPlugin.getPluginEntityWithParams(row + 1, col + 1);
     		if (ur != null) {
     			c++;
+    			val += UR;
     		}
     		Entity r = tiledPlugin.getPluginEntityWithParams(row, col + 1);
     		if (r != null) {
     			c++;
+    			val += R;
     		}
     		Entity dr = tiledPlugin.getPluginEntityWithParams(row - 1, col + 1);
     		if (dr != null) {
     			c++;
+    			val += DR;
     		}
     		Entity d = tiledPlugin.getPluginEntityWithParams(row - 1, col);
     		if (d != null) {
     			c++;
+    			val += D;
     		}
     		Entity dl = tiledPlugin.getPluginEntityWithParams(row - 1, col - 1);
     		if (dl != null) {
     			c++;
+    			val += DL;
     		}
     		Entity l = tiledPlugin.getPluginEntityWithParams(row, col - 1);
     		if (l != null) {
     			c++;
+    			val += L;
     		}
     		
-    		int index = getIndex(c, ul, u, ur, r, dr, d, dl, l);
+    		int index = getIndex(c, val);
 
             String region = mainItemComponent.customVariables.getStringVariable(TiledPlugin.REGION) + index;
             replaceRegionCommandBuilder.begin(entity);
@@ -69,137 +87,155 @@ public class AutoGridTileManager {
             replaceRegionCommandBuilder.execute(tiledPlugin.facade);
     	}
     }
+
+    /**
+     * Test whether the tiles in the given direction ({@link #UL} to {@link #L}) are all occupied.
+     * 
+     * @param tiles The tiles ({@link #UL} to {@link #L}).
+     * @param val The value for the surroundings.
+     * 
+     * @return true, if the tiles are all occupied by another tile, false otherwise.
+     */
+    private boolean isOccupied(int val, int ... tiles) {
+    	for (int t : tiles) {
+    		if ((t & val) == 0) {
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+
+    /**
+     * Test whether the tiles in the given direction ({@link #UL} to {@link #L}) are all empty.
+     * 
+     * @param tiles The tiles ({@link #UL} to {@link #L}).
+     * @param val The value for the surroundings.
+     * 
+     * @return true, if the tiles are all empty, false otherwise.
+     */
+    private boolean isEmpty(int val, int ... tiles) {
+    	for (int t : tiles) {
+    		if ((t & val) > 0) {
+    			return false;
+    		}
+    	}
+    	return true;
+    }
     
-    private int getIndex(int c, Entity ul, Entity u, Entity ur, Entity r, Entity dr, Entity d, Entity dl, Entity l) {
-		// default
-		int index = 15;
+    // 24
+    private int getIndex(int c, int val) {
 		switch (c) {
     		case 8:
-    			index = 5;
-    			break;
+    			return 6;
     		case 7:
-    			if (dr == null) {
-    				index = 16;
-    			} else if (dl == null) {
-    				index = 24;
-    			} else if (ul == null) {
-    				index = 26;
-    			} else if (ur == null) {
-    				index = 18;
-    			} else if (u == null) {
-    				index = 4;
-    			} else if (r == null) {
-    				index = 9;
-    			} else if (d == null) {
-    				index = 6;
-    			} else if (l == null) {
-    				index = 1;
-    			}
-    			break;
+    			if (isEmpty(val, DR)) {
+      				return 26;
+      			} else if (isEmpty(val, UR)) {
+     				return 27;
+     			} else if (isEmpty(val, DL)) {
+     				return 31;
+     			} else if (isEmpty(val, UR)) {
+     				return 32;
+     			}
     		case 6:
-    			// 1, 4, 6, 9
-    			if (u == null) {
-    				index = 4;
-    			} else if (r == null) {
-    				index = 9;
-    			} else if (d == null) {
-    				index = 6;
-    			} else if (l == null) {
-    				index = 1;
-    			}
-    			break;
+    			if (isOccupied(val, L, DL, D, R, U, UL) && isEmpty(val, DR, UR)) {
+      				return 29;
+      			} else if (isOccupied(val, L, U, UR, R, DR, D) && isEmpty(val, UL, DL)) {
+     				return 34;
+     			} else if (isOccupied(val, L, UL, U, UR, R, D) && isEmpty(val, DR, DL)) {
+     				return 41;
+     			} else if (isOccupied(val, L, U, R, DR, D, DL) && isEmpty(val, UR, UL)) {
+     				return 42;
+     			} else if (isOccupied(val, L, UL, U, R, DR, D) && isEmpty(val, DL, UR)) {
+     				return 45;
+     			} else if (isOccupied(val, D, DL, L, U, UR, R) && isEmpty(val, UL, DR)) {
+     				return 46;
+     			}
     		case 5:
-    			// 0, 1, 2, 4, 6, 8, 9, 10
-    			if (ul == null && u == null && l == null) {
-    				index = 0;
-    			} else if (u == null && ur == null && r == null) {
-    				index = 8;
-    			} else if (l == null && dl == null && d == null) {
-    				index = 2;
-    			} else if (r == null && dr == null && d == null) {
-    				index = 10;
-    			} else if (u == null) {
-    				index = 4;
-    			} else if (r == null) {
-    				index = 9;
-    			} else if (d == null) {
-    				index = 6;
-    			} else if (l == null) {
-    				index = 1;
-    			}
-    			break;
+    			if (isOccupied(val, U, UR, R, DR, D) && isEmpty(val, L)) {
+    				return 1;
+    			} else if (isOccupied(val, R, DR, D, DL, L) && isEmpty(val, U)) {
+    				return 5;
+    			} else if (isOccupied(val, L, UL, U, UR, R) && isEmpty(val, D)) {
+    				return 7;
+    			} else if (isOccupied(val, U, D, DL, L, UL) && isEmpty(val, R)) {
+    				return 11;
+    			} else if (isOccupied(val, L, U, R, DR, D) && isEmpty(val, DL, UL, UR)) {
+     				return 47;
+     			} else if (isOccupied(val, L, U, UR, R, D) && isEmpty(val, UL, DR, DL)) {
+     				return 48;
+     			} else if (isOccupied(val, L, U, R, D, DL) && isEmpty(val, UL, UR, DR)) {
+     				return 52;
+     			} else if (isOccupied(val, L, UL, U, R, D) && isEmpty(val, DL, UR, DR)) {
+     				return 53;
+     			}
     		case 4:
-    			if (u != null && r != null && d != null && l != null) {
-    				// ul
-    				index = 21;
-    			} else if (u == null && ul == null && l == null) {
-    				index = 0;
-    			} else if (u == null && ur == null && r == null) {
-    				index = 8;
-    			} else if (r == null && dr == null && d == null) {
-    				index = 10;
-    			} else if (l == null && dl == null && d == null) {
-    				index = 2;
-    			} else if (u == null && ur == null && d == null && dr == null) {
-    				index = 7;
-    			} else if (u == null && ul == null && d == null && dl == null) {
-    				index = 7;
-    			} else if (l == null && r == null && dr == null && dl == null) {
-    				index = 13;
-    			} else if (l == null && r == null && ur == null && ul == null) {
-    				index = 13;
-    			}
-    			break;
+    			if (isOccupied(val, U, UR, R, D) && isEmpty(val, DR, L)) {
+     				return 21;
+     			} else if (isOccupied(val, U, R, DR, D) && isEmpty(val, UR, L)) {
+     				return 22;
+     			} else if (isOccupied(val, L, DL, D, R) && isEmpty(val, DR, U)) {
+     				return 25;
+     			} else if (isOccupied(val, L, UL, U, R) && isEmpty(val, UR, D)) {
+     				return 28;
+     			} else if (isOccupied(val, L, D, DR, R) && isEmpty(val, U, DL)) {
+     				return 30;
+     			} else if (isOccupied(val, L, U, UR, R) && isEmpty(val, UL, D)) {
+     				return 33;
+     			} else if (isOccupied(val, L, UL, U, D) && isEmpty(val, R, DL)) {
+     				return 36;
+     			} else if (isOccupied(val, U, D, DL, L) && isEmpty(val, UL, R)) {
+     				return 37;
+     			} else if (isOccupied(val, L, U, R, D) && isEmpty(val, DR, DL, UR, UL)) {
+     				return 44;
+     			}
     		case 3:
-    			// 0, 2, 8, 10
-    			if (dl == null && l == null && ul == null && u == null && ur == null) {
-    				// ul
-    				index = 0;
-    			} else if (ul == null && u == null && ur == null && r == null && dr == null) {
-    				// ur
-    				index = 8;
-    			} else if (ur == null && r == null && dr == null && d == null && dl == null) {
-    				// dr
-    				index = 10;
-    			} else if (dr == null && d == null && dl == null && l == null && ul == null) {
-    				// dl
-    				index = 2;
-    			} else if (ur != null && r != null && dr != null) {
-    				index = 17;
-    			} else if (dl != null && d != null && dr != null) {
-    				index = 20;
-    			} else if (ul != null && l != null && dl != null) {
-    				index = 25;
-    			} else if (ul != null && u != null && ur != null) {
-    				index = 22;
-    			}
-    			break;
+    			if (isOccupied(val, R, DR, D) && isEmpty(val, L, U)) {
+    				return 0;
+    			} else if (isOccupied(val, U, UR, R) && isEmpty(val, L, D)) {
+    				return 2;
+    			} else if (isOccupied(val, L, DL, D) && isEmpty(val, U, R)) {
+    				return 10;
+    			} else if (isOccupied(val, L, UL, U) && isEmpty(val, R, D)) {
+    				return 12;
+    			} else if (isOccupied(val, U, R, D) && isEmpty(val, L, UR, DR)) {
+     				return 24;
+     			} else if (isOccupied(val, U, D, L) && isEmpty(val, UL, R, DL)) {
+     				return 39;
+     			} else if (isOccupied(val, L, D, R) && isEmpty(val, DL, DR, U)) {
+     				return 40;
+     			} else if (isOccupied(val, L, U, R) && isEmpty(val, UL, UR, D)) {
+     				return 43;
+     			}
     		case 2:
-    			// 7, 13
-    			if (l != null && r != null) {
-    				index = 7;
-    			} else if (u != null && d != null) {
-    				index = 13;
-    			}
-    			break;
+    			if (isOccupied(val, L, R) && isEmpty(val, U, D)) {
+     				return 8;
+     			} else if (isOccupied(val, U, D) && isEmpty(val, L, R)) {
+    				return 16;
+    			} else if (isOccupied(val, R, D) && isEmpty(val, DR, U, L)) {
+    				return 20;
+    			} else if (isOccupied(val, U, R) && isEmpty(val, UR, D, L)) {
+     				return 23;
+     			} else if (isOccupied(val, L, U) && isEmpty(val, UL, R, DR, D)) {
+     				return 38;
+     			}
     		case 1:
-    			// 3, 11, 12, 14
-    			if (r != null) {
-    				index = 3;
-    			} else if (l != null) {
-    				index = 11;
-    			} else if (d != null) {
-    				index = 12;
-    			} else if (u != null) {
-    				index = 14;
-    			}
-    			break;
+    			if (isOccupied(val, R) && isEmpty(val, U, D, L)) {
+    				return 3;
+    			} else if (isOccupied(val, L) && isEmpty(val, U, R, D)) {
+    				return 13;
+    			} else if (isOccupied(val, D) && isEmpty(val, L, U, R)) {
+    				return 15;
+    			} else if (isOccupied(val, U) && isEmpty(val, L, D, R)) {
+    				return 17;
+    			} else if (isOccupied(val, L, D) && isEmpty(val, DL, U, R)) {
+     				return 35;
+     			}
     		case 0:
-    			index = 15;
-    			break;
+    			return 18;
 		}
-		
-		return index;
+		// default
+		return 54;
     }
 
 }

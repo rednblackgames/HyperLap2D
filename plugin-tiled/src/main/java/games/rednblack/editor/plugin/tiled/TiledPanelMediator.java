@@ -169,6 +169,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 autoActionsSet.put(TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST, "Set grid size");
                 autoActionsSet.put(TiledPlugin.ACTION_DELETE_AUTO_TILE, "Delete");
 //                autoActionsSet.put(TiledPlugin.ACTION_OPEN_OFFSET_PANEL, "Set offset");
+//                autoActionsSet.put(TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE, "Setup alternatives");
                 tiledPlugin.facade.sendNotification(TiledPlugin.AUTO_TILE_SELECTED, tiledPlugin.dataToSave.getAutoTile(tileName));
                 tiledPlugin.getAPI().showPopup(autoActionsSet, tileName);
             	break;
@@ -260,6 +261,8 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                     }
                 }
                 break;
+            case TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE:
+            	break;
         }
     }
 
@@ -278,7 +281,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
     	for (int x = tr.getRegionX(); x < maxX; x += tileW) {
     		for (int y = tr.getRegionY(); y < maxY; y += tileH) {
     			// skip non used
-    			if (i != 19 && i != 23 && i != 27) {
+    			if (i != 4 && i != 9 && i != 14 && i != 19 && i != 49 && i != 50 && i != 51) {
 	    			int w = x + tileW <= pixmap.getWidth() ? tileW : pixmap.getWidth() - x;
 	    			int h = y + tileH <= pixmap.getHeight() ? tileH : pixmap.getHeight() - y;
 	    			Pixmap tilePixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);

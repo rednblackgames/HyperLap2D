@@ -73,6 +73,7 @@ public class TiledPlugin extends H2DPluginAdapter {
     public static final String TILE_GRID_OFFSET_ADDED         = CLASS_NAME + ".TILE_GRID_OFFSET_ADDED";
     public static final String ACTION_SET_GRID_SIZE_FROM_ITEM = CLASS_NAME + ".ACTION_SET_GRID_SIZE_FROM_ITEM";
     public static final String ACTION_SET_GRID_SIZE_FROM_LIST = CLASS_NAME + ".ACTION_SET_GRID_SIZE_FROM_LIST";
+    public static final String ACTION_SETUP_ALTERNATIVES_AUTO_TILE = CLASS_NAME + ".ACTION_SETUP_ALTERNATIVES_AUTO_TILE";
     //-------end--------//
 
     public static final String TILE_TAG = "TILE";
@@ -83,8 +84,8 @@ public class TiledPlugin extends H2DPluginAdapter {
     public static final String AUTO_TILE_TAG = "AUTO_TILE";
 	public static final String AUTO_TILE_MINI_SUFFIX = "-mini";
 
-	public static final int AUTO_TILE_ROWS = 4;
-	public static final int AUTO_TILE_COLS = 7;
+	public static final int AUTO_TILE_ROWS = 5;
+	public static final int AUTO_TILE_COLS = 11;
 
     public DataToSave dataToSave;
     public SaveDataManager saveDataManager;
