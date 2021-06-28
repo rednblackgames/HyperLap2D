@@ -1,6 +1,7 @@
 package games.rednblack.editor.utils.asset.impl;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.utils.ImportUtils;
@@ -58,8 +59,9 @@ public class SpriteAnimationSequenceAsset extends Asset {
         }
 
         String targetPath = projectManager.getCurrentProjectPath() + "/assets/orig/sprite-animations" + File.separator + fileNameWithoutFrame;
+        File targetDir = new File(targetPath);
         try {
-            FileUtils.writeStringToFile(new File(targetPath + File.separator + fileNameWithoutFrame + ".atlas"), fileNameWithoutFrame, "utf-8");
+            FileUtils.forceMkdir(targetDir);
         } catch (IOException e) {
             e.printStackTrace();
             progressHandler.progressFailed();
@@ -67,6 +69,9 @@ public class SpriteAnimationSequenceAsset extends Asset {
         }
 
         String imagesPath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.IMAGE_DIR_PATH;
+
+        TexturePacker.Settings settings = projectManager.getTexturePackerSettings();
+        TexturePacker tp = new TexturePacker(settings);
 
         for (FileHandle file : new Array.ArrayIterator<>(files)) {
             File src = file.file();
@@ -86,7 +91,10 @@ public class SpriteAnimationSequenceAsset extends Asset {
                 progressHandler.progressFailed();
                 return;
             }
+            tp.addImage(dest);
         }
+
+        tp.pack(targetDir, fileNameWithoutFrame);
 
         newAnimName = fileNameWithoutFrame;
 

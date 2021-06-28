@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.badlogic.gdx.utils.Array;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 
@@ -87,7 +88,10 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
 	        	// remove the dropped one, so that it is not added twice
 	        	Object[] payloadBody = notification.getBody();
 	        	nameSet.remove(payloadBody[0]);
-	        	for (String name : nameSet) {
+				Array<String> namesOrdered = new Array<>();
+				namesOrdered.addAll(nameSet.toArray(String[]::new));
+				namesOrdered.sort();
+	        	for (String name : namesOrdered) {
 	        		HyperLap2DFacade.getInstance().sendNotification(MsgAPI.IMAGE_BUNDLE_DROP_SINGLE, new Object[] {name, payloadBody[1]});
 	        	}
 	        	break;

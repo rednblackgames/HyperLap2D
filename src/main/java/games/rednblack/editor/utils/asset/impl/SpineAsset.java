@@ -103,7 +103,12 @@ public class SpineAsset extends Asset {
                     return null;
                 }
 
-                FileUtils.forceMkdir(new File(targetPath));
+                File targetDir = new File(targetPath);
+                FileUtils.forceMkdir(targetDir);
+                FileUtils.copyFileToDirectory(atlasFileSource.file(), targetDir);
+                for (TextureAtlas.TextureAtlasData.Page imageFile : new Array.ArrayIterator<>(atlas.getPages())) {
+                    FileUtils.copyFileToDirectory(imageFile.textureFile.file(), targetDir);
+                }
                 File jsonFileTarget = new File(targetPath + File.separator + fileNameWithOutExt + ".json");
 
                 FileUtils.copyFile(animationFileSource.file(), jsonFileTarget);
