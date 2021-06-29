@@ -134,7 +134,7 @@ public class AutoGridTileManager {
      				return 27;
      			} else if (isEmpty(val, DL)) {
      				return 31;
-     			} else if (isEmpty(val, UR)) {
+     			} else if (isEmpty(val, UL)) {
      				return 32;
      			}
     		case 6:
@@ -216,8 +216,10 @@ public class AutoGridTileManager {
     				return 20;
     			} else if (isOccupied(val, U, R) && isEmpty(val, UR, D, L)) {
      				return 23;
-     			} else if (isOccupied(val, L, U) && isEmpty(val, UL, R, DR, D)) {
+     			} else if (isOccupied(val, L, U) && isEmpty(val, UL, R, D)) {
      				return 38;
+     			} else if (isOccupied(val, L, D) && isEmpty(val, DL, U, R)) {
+     				return 35;
      			}
     		case 1:
     			if (isOccupied(val, R) && isEmpty(val, U, D, L)) {
@@ -228,9 +230,7 @@ public class AutoGridTileManager {
     				return 15;
     			} else if (isOccupied(val, U) && isEmpty(val, L, D, R)) {
     				return 17;
-    			} else if (isOccupied(val, L, D) && isEmpty(val, DL, U, R)) {
-     				return 35;
-     			}
+    			}
     		case 0:
     			return 18;
 		}
