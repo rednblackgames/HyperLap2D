@@ -74,6 +74,7 @@ public class DeleteTileTool implements Tool {
     @Override
     public boolean itemMouseDown(Entity entity, float x, float y) {
         deleteEntityWithCoordinate(x, y);
+        tiledPlugin.facade.sendNotification(TiledPlugin.AUTO_FILL_TILES);
         return true;
     }
 
