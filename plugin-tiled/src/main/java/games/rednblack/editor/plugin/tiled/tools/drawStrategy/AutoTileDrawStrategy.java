@@ -27,7 +27,7 @@ public class AutoTileDrawStrategy extends BasicDrawStrategy {
 
         IFactory itemFactory =  tiledPlugin.getAPI().getItemFactory();
         temp.set(x, y);
-        if (itemFactory.createSimpleImage(tiledPlugin.getSelectedTileName() + TiledPlugin.AUTO_TILE_MINI_SUFFIX, temp)) {
+        if (itemFactory.createSimpleImage(tiledPlugin.getSelectedTileName() + TiledPlugin.AUTO_TILE_DRAW_SUFFIX, temp)) {
             Entity imageEntity = itemFactory.getCreatedEntity();
             postProcessEntity(imageEntity, x, y, row, column);
         }
@@ -41,7 +41,7 @@ public class AutoTileDrawStrategy extends BasicDrawStrategy {
         if (textureRegionComponent != null && textureRegionComponent.regionName != null) {
             // there is already other tile under this one
         	String selectedAutoTileName = tiledPlugin.getSelectedTileName();
-        	String region = selectedAutoTileName + TiledPlugin.AUTO_TILE_MINI_SUFFIX;
+        	String region = selectedAutoTileName + TiledPlugin.AUTO_TILE_DRAW_SUFFIX;
             if (!textureRegionComponent.regionName.equals(region)) {
                 replaceRegionCommandBuilder.begin(entity);
                 replaceRegionCommandBuilder.setRegion(tiledPlugin.getAPI().getSceneLoader().getRm().getTextureRegion(region));
