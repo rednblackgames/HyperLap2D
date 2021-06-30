@@ -18,14 +18,13 @@
 
 package games.rednblack.editor.plugin.tiled;
 
+import org.puremvc.java.interfaces.IFacade;
+
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
-import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
-import com.kotcrab.vis.ui.widget.VisTextButton;
+
 import games.rednblack.editor.plugin.tiled.data.TileVO;
 import games.rednblack.editor.plugin.tiled.manager.ResourcesManager;
 import games.rednblack.editor.plugin.tiled.view.tabs.GridTilesTab;
@@ -34,7 +33,6 @@ import games.rednblack.h2d.common.UIDraggablePanel;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPane;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPaneListener;
-import org.puremvc.java.interfaces.IFacade;
 
 /**
  * Created by mariam on 2/2/2016.
@@ -170,6 +168,12 @@ public class TiledPanel extends UIDraggablePanel {
         tilesTab.removeTile();
         reInitTabTable();
         tilesTab.scrollTiles();
+    }
+    
+    public void removeAllTiles() {
+    	tilesTab.removeAllTiles();
+    	reInitTabTable();
+    	tilesTab.scrollTiles();
     }
 
     private void initTabs() {

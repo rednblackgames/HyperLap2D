@@ -29,6 +29,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.kotcrab.vis.ui.util.dialog.Dialogs;
+import com.kotcrab.vis.ui.util.dialog.OptionDialogAdapter;
 
 import games.rednblack.editor.plugin.tiled.data.TileVO;
 import games.rednblack.editor.plugin.tiled.tools.DeleteTileTool;
@@ -65,6 +67,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 TiledPlugin.TILE_ADDED,
                 TiledPlugin.TILE_SELECTED,
                 TiledPlugin.ACTION_DELETE_TILE,
+                TiledPlugin.ACTION_DELETE_TILE_ALL,
                 TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST,
                 TiledPlugin.ACTION_SET_OFFSET,
                 TiledPlugin.OPEN_DROP_DOWN,
@@ -142,6 +145,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 HashMap<String, String> actionsSet = new HashMap<>();
                 actionsSet.put(TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST, "Set grid size");
                 actionsSet.put(TiledPlugin.ACTION_DELETE_TILE, "Delete");
+                actionsSet.put(TiledPlugin.ACTION_DELETE_TILE_ALL, "Delete all...");
                 actionsSet.put(TiledPlugin.ACTION_OPEN_OFFSET_PANEL, "Set offset");
                 tiledPlugin.facade.sendNotification(TiledPlugin.TILE_SELECTED, tiledPlugin.dataToSave.getTile(tileName));
                 tiledPlugin.getAPI().showPopup(actionsSet, tileName);
@@ -176,6 +180,23 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
 
                 viewComponent.removeTile();
                 break;
+            case TiledPlugin.ACTION_DELETE_TILE_ALL:
+                Dialogs.showOptionDialog(tiledPlugin.getAPI().getUIStage(), "Delete all...", "Do you really want to delete all tiles?",
+                        Dialogs.OptionDialogType.YES_NO, new OptionDialogAdapter() {
+                            @Override
+                            public void yes () {
+                            	tiledPlugin.dataToSave.removeAllTiles();
+                            	tiledPlugin.saveDataManager.save();
+                                tiledPlugin.setSelectedTileVO(new TileVO());
+
+                                viewComponent.removeAllTiles();
+                            }
+
+                            @Override
+                            public void no () {
+                            }
+                        });
+            	break;
             case MsgAPI.TOOL_SELECTED:
                 String body = notification.getBody();
                 switch (body) {
@@ -221,7 +242,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
         }
     }
 
-    private int mapClassNameToEntityType(String className) {
+	private int mapClassNameToEntityType(String className) {
         if (className.endsWith(".ImageResource"))
             return EntityFactory.IMAGE_TYPE;
         else if (className.endsWith(".SpriteResource"))
