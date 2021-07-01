@@ -34,6 +34,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.util.ToastManager;
 import games.rednblack.editor.proxy.*;
+import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
 import games.rednblack.editor.renderer.systems.LightSystem;
 import games.rednblack.editor.renderer.systems.ParticleSystem;
 import games.rednblack.editor.system.ParticleContinuousSystem;
@@ -523,6 +524,7 @@ public class Sandbox {
 
     public void dispose() {
         sceneLoader.dispose();
+        PhysicsBodyLoader.getInstance().tmpShape.dispose();
     }
 
     public void resize(int width, int height) {
