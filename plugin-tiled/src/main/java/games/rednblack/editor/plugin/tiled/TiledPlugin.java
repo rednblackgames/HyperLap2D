@@ -62,6 +62,7 @@ public class TiledPlugin extends H2DPluginAdapter {
     public static final String GRID_CHANGED                   = CLASS_NAME + ".GRID_CHANGED";
     public static final String IMPORT_TILESET_PANEL_OPEN      = CLASS_NAME + ".IMPORT_TILESET_PANEL_OPEN";
     public static final String ACTION_DELETE_TILE             = CLASS_NAME + ".ACTION_DELETE_TILE";
+    public static final String ACTION_DELETE_TILE_ALL         = CLASS_NAME + ".ACTION_DELETE_TILE_ALL";
     public static final String ACTION_SET_OFFSET              = CLASS_NAME + ".ACTION_SET_OFFSET";
     public static final String ACTION_OPEN_OFFSET_PANEL       = CLASS_NAME + ".ACTION_OPEN_OFFSET_PANEL";
     public static final String TILE_GRID_OFFSET_ADDED         = CLASS_NAME + ".TILE_GRID_OFFSET_ADDED";
