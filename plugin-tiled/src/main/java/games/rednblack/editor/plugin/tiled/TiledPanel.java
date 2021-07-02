@@ -166,7 +166,7 @@ public class TiledPanel extends UIDraggablePanel {
     public Table getAutoGridDropTable() {
     	return autoGridTilesTab.getContentTable();
     }
-    
+
     public void reInitGridSettings() {
         settingsTab.resetGridCategory();
     }
@@ -213,7 +213,11 @@ public class TiledPanel extends UIDraggablePanel {
         tabbedPane.insert(autoGridTilesTab.getTabIndex(), autoGridTilesTab);
 
         // reinit the currently visible tab
-        reInitTabTable(tilesTab);
+        if (isAutoGridTabSelected) {
+        	reInitTabTable(autoGridTilesTab);
+        } else {
+        	reInitTabTable(tilesTab);
+        }
     }
 
     public void reInitTabTable(AbstractGridTilesTab<?> tab) {

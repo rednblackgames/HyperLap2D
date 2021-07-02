@@ -10,6 +10,8 @@ public class AutoTileVO implements TextureRegionVO {
 	public Vector2 gridOffset;
 	public int entityType = EntityFactory.IMAGE_TYPE;
 
+	public final DefaultValueList<AlternativeAutoTileVO> alternativeAutoTileList = new DefaultValueList<>();
+
 	public AutoTileVO() {
 		gridOffset = new Vector2();
 	}

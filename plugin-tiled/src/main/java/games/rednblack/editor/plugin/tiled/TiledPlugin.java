@@ -39,6 +39,7 @@ import games.rednblack.editor.plugin.tiled.save.DataToSave;
 import games.rednblack.editor.plugin.tiled.save.SaveDataManager;
 import games.rednblack.editor.plugin.tiled.tools.DeleteTileTool;
 import games.rednblack.editor.plugin.tiled.tools.DrawTileTool;
+import games.rednblack.editor.plugin.tiled.view.dialog.AlternativeAutoTileDialogMediator;
 import games.rednblack.editor.plugin.tiled.view.dialog.ImportTileSetDialogMediator;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
@@ -73,7 +74,9 @@ public class TiledPlugin extends H2DPluginAdapter {
     public static final String TILE_GRID_OFFSET_ADDED         = CLASS_NAME + ".TILE_GRID_OFFSET_ADDED";
     public static final String ACTION_SET_GRID_SIZE_FROM_ITEM = CLASS_NAME + ".ACTION_SET_GRID_SIZE_FROM_ITEM";
     public static final String ACTION_SET_GRID_SIZE_FROM_LIST = CLASS_NAME + ".ACTION_SET_GRID_SIZE_FROM_LIST";
+    public static final String ACTION_SAVE_ALTERNATIVES_AUTO_TILE = CLASS_NAME + ".ACTION_SAVE_ALTERNATIVES_AUTO_TILE";
     public static final String ACTION_SETUP_ALTERNATIVES_AUTO_TILE = CLASS_NAME + ".ACTION_SETUP_ALTERNATIVES_AUTO_TILE";
+    public static final String ACTION_RECALC_PERCENT_ALTERNATIVES_AUTO_TILE = CLASS_NAME + ".ACTION_RECALC_PERCENT_ALTERNATIVES_AUTO_TILE";
     //-------end--------//
 
     public static final String TILE_TAG = "TILE";
@@ -115,6 +118,7 @@ public class TiledPlugin extends H2DPluginAdapter {
     public void initPlugin() {
         facade.registerMediator(new TiledPanelMediator(this));
         facade.registerMediator(new ImportTileSetDialogMediator(pluginAPI, facade));
+        facade.registerMediator(new AlternativeAutoTileDialogMediator(this));
 
         pluginRM = new ResourcesManager(this);
         offsetPanel = new OffsetPanel(this);

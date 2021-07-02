@@ -20,6 +20,7 @@ package games.rednblack.editor.plugin.tiled;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
@@ -36,6 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 
+import games.rednblack.editor.plugin.tiled.data.AlternativeAutoTileVO;
 import games.rednblack.editor.plugin.tiled.data.AutoTileVO;
 import games.rednblack.editor.plugin.tiled.data.TileVO;
 import games.rednblack.editor.plugin.tiled.manager.AutoGridTileManager;
@@ -85,6 +87,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 TiledPlugin.ACTION_DELETE_AUTO_TILE,
                 TiledPlugin.AUTO_OPEN_DROP_DOWN,
                 TiledPlugin.AUTO_FILL_TILES,
+                TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE,
                 TiledPlugin.GRID_CHANGED,
                 SettingsTab.OK_BTN_CLICKED,
                 TiledPlugin.ACTION_SET_GRID_SIZE_FROM_ITEM,
@@ -169,7 +172,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 autoActionsSet.put(TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST, "Set grid size");
                 autoActionsSet.put(TiledPlugin.ACTION_DELETE_AUTO_TILE, "Delete");
 //                autoActionsSet.put(TiledPlugin.ACTION_OPEN_OFFSET_PANEL, "Set offset");
-//                autoActionsSet.put(TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE, "Setup alternatives");
+                autoActionsSet.put(TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE, "Setup alternatives");
                 tiledPlugin.facade.sendNotification(TiledPlugin.AUTO_TILE_SELECTED, tiledPlugin.dataToSave.getAutoTile(tileName));
                 tiledPlugin.getAPI().showPopup(autoActionsSet, tileName);
             	break;
@@ -216,8 +219,19 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 tiledPlugin.dataToSave.removeAutoTile(tn2);
                 tiledPlugin.saveDataManager.save();
                 tiledPlugin.setSelectedAutoTileVO(new AutoTileVO());
+                
+                for (AutoTileVO autoTile : tiledPlugin.dataToSave.getAutoTiles()) {
+                	Iterator<AlternativeAutoTileVO> iter = autoTile.alternativeAutoTileList.iterator();
+                	while (iter.hasNext()) {
+                		AlternativeAutoTileVO alternativeAutoTileVO = iter.next();
+                		if (alternativeAutoTileVO.region.equals(tn2)) {
+                			iter.remove();
+                		}
+                	}
+                }
 
                 viewComponent.removeAutoTile();
+				tiledPlugin.facade.sendNotification(TiledPlugin.ACTION_RECALC_PERCENT_ALTERNATIVES_AUTO_TILE);
             	break;
             case MsgAPI.TOOL_SELECTED:
                 String body = notification.getBody();
@@ -261,8 +275,6 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                     }
                 }
                 break;
-            case TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE:
-            	break;
         }
     }
 

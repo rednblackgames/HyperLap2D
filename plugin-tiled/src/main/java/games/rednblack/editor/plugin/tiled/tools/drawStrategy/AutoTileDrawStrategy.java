@@ -3,6 +3,7 @@ package games.rednblack.editor.plugin.tiled.tools.drawStrategy;
 import com.badlogic.ashley.core.Entity;
 
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
+import games.rednblack.editor.plugin.tiled.data.AutoTileVO;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
@@ -13,6 +14,8 @@ public class AutoTileDrawStrategy extends BasicDrawStrategy {
 
     private final ReplaceRegionCommandBuilder replaceRegionCommandBuilder = new ReplaceRegionCommandBuilder();
 
+    private String tileToDraw;
+    
 	public AutoTileDrawStrategy(TiledPlugin plugin) {
 		super(plugin);
 	}
@@ -27,10 +30,37 @@ public class AutoTileDrawStrategy extends BasicDrawStrategy {
 
         IFactory itemFactory =  tiledPlugin.getAPI().getItemFactory();
         temp.set(x, y);
-        if (itemFactory.createSimpleImage(tiledPlugin.getSelectedTileName() + TiledPlugin.AUTO_TILE_DRAW_SUFFIX, temp)) {
+        tileToDraw = selectTileToDraw();
+        if (itemFactory.createSimpleImage(tileToDraw + TiledPlugin.AUTO_TILE_DRAW_SUFFIX, temp)) {
             Entity imageEntity = itemFactory.getCreatedEntity();
             postProcessEntity(imageEntity, x, y, row, column);
         }
+	}
+
+	private String selectTileToDraw() {
+		String retval;
+		
+		AutoTileVO selectedAutoTileVO = tiledPlugin.getSelectedAutoTileVO();
+		if (selectedAutoTileVO.alternativeAutoTileList.isEmpty()) {
+			retval = selectedAutoTileVO.regionName;
+		} else {
+			retval = null;
+			double d = 0d;
+			double rnd = Math.random();
+			int i = 0;
+			while (i < selectedAutoTileVO.alternativeAutoTileList.size() && retval == null) {
+				d += selectedAutoTileVO.alternativeAutoTileList.get(i).percent;
+				if (rnd < d) {
+					retval = selectedAutoTileVO.alternativeAutoTileList.get(i).region;
+				}
+				i++;
+			}
+			
+			if (retval == null) {
+				retval = selectedAutoTileVO.alternativeAutoTileList.get(i - 1).region;
+			}
+		}
+		return retval;
 	}
 
 	@Override
@@ -40,7 +70,7 @@ public class AutoTileDrawStrategy extends BasicDrawStrategy {
         TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
         if (textureRegionComponent != null && textureRegionComponent.regionName != null) {
             // there is already other tile under this one
-        	String selectedAutoTileName = tiledPlugin.getSelectedTileName();
+        	String selectedAutoTileName = selectTileToDraw();
         	String region = selectedAutoTileName + TiledPlugin.AUTO_TILE_DRAW_SUFFIX;
             if (!textureRegionComponent.regionName.equals(region)) {
                 replaceRegionCommandBuilder.begin(entity);
@@ -61,7 +91,7 @@ public class AutoTileDrawStrategy extends BasicDrawStrategy {
 
         MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
         mainItemComponent.tags.add(TiledPlugin.AUTO_TILE_TAG);
-        mainItemComponent.setCustomVars(TiledPlugin.REGION, tiledPlugin.getSelectedTileName());
+        mainItemComponent.setCustomVars(TiledPlugin.REGION, tileToDraw);
     }
 
 }
