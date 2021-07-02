@@ -22,6 +22,11 @@ import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.h2d.common.UIDraggablePanel;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
+/**
+ * The dialog that handles the alternatives.
+ * 
+ * @author Jan-Thierry Wegener
+ */
 public class AlternativeAutoTileDialog extends UIDraggablePanel {
 
 	public AutoTileVO openingAutoTileVO;
@@ -37,6 +42,9 @@ public class AlternativeAutoTileDialog extends UIDraggablePanel {
 		this.tiledPlugin = tiledPlugin;
 	}
 	
+	/**
+	 * Initiates the view of the dialog.
+	 */
 	public void initView() {
 		clear();
 		
@@ -116,6 +124,13 @@ public class AlternativeAutoTileDialog extends UIDraggablePanel {
         pack();
     }
 
+	/**
+	 * Returns a button with the given region as image.
+	 * 
+	 * @param regionName The name of the image.
+	 * 
+	 * @return An image button.
+	 */
 	private VisImageButton getVisImageButton(String regionName) {
 		VisImageButton.VisImageButtonStyle imageBoxStyle = new VisImageButton.VisImageButtonStyle();
 		Drawable tileDrawable = null;
@@ -130,7 +145,13 @@ public class AlternativeAutoTileDialog extends UIDraggablePanel {
         VisImageButton ct = new VisImageButton(imageBoxStyle);
 		return ct;
 	}
-	
+
+	/**
+	 * Updates the given button with the given image.
+	 * 
+	 * @param button The button to update.
+	 * @param regionName The name of the new image.
+	 */
 	private void updateVisImageButton(VisImageButton button, String regionName) {
 		VisImageButton.VisImageButtonStyle imageBoxStyle = button.getStyle();
 		Drawable tileDrawable = null;
@@ -145,10 +166,20 @@ public class AlternativeAutoTileDialog extends UIDraggablePanel {
         button.setStyle(imageBoxStyle);
 	}
 
+	/**
+	 * Returns the currently set auto-tile.
+	 * 
+	 * @return The currently set auto-tile.
+	 */
 	public AutoTileVO getOpeningAutoTileVO() {
 		return openingAutoTileVO;
 	}
 
+	/**
+	 * Sets the current auto-tile.
+	 * 
+	 * @param openingAutoTileVO The new auto-tile.
+	 */
 	public void setOpeningAutoTileVO(AutoTileVO openingAutoTileVO) {
 		this.openingAutoTileVO = openingAutoTileVO;
 	}

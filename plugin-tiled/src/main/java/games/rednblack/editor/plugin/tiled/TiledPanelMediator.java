@@ -130,7 +130,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 	if (tiledPlugin.dataToSave.containsAutoTile(tileName)) return;
 
                     // retract the images for the auto-tiles
-                    retractAutoTiles(tileName, type);
+                    retractAutoTiles(tileName);
 
                     viewComponent.addAutoTile(tileName, type);
 
@@ -278,7 +278,12 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
         }
     }
 
-    private void retractAutoTiles(String tileName, int type) {
+    /**
+     * Retracts all auto-tiles from the given auto-tile-template.
+     * 
+     * @param tileName The name of the tile from that the auto-tiles are retracted from.
+     */
+    private void retractAutoTiles(String tileName) {
     	TextureRegion tr = tiledPlugin.getAPI().getSceneLoader().getRm().getTextureRegion(tileName);
     	tr.getTexture().getTextureData().prepare();
     	Pixmap pixmap = tr.getTexture().getTextureData().consumePixmap();

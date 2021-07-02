@@ -7,6 +7,11 @@ import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.plugin.tiled.data.AlternativeAutoTileVO;
 import games.rednblack.editor.plugin.tiled.data.AutoTileVO;
 
+/**
+ * The mediator for messages for the alternatives.
+ * 
+ * @author Jan-Thierry Wegener
+ */
 public class AlternativeAutoTileDialogMediator extends Mediator<AlternativeAutoTileDialog> {
 
 	public static final String NAME = AlternativeAutoTileDialogMediator.class.getName();
@@ -63,22 +68,32 @@ public class AlternativeAutoTileDialogMediator extends Mediator<AlternativeAutoT
             	break;
         }
     }
-    
+
+    /**
+     * Recalculates the probabilities of the alternatives of all or the given auto-tile.
+     * 
+     * @param at The auto-tile to recalculate, or if <code>null</code> then all auto-tiles.
+     */
     private void recalculatePercent(AutoTileVO at) {
     	float total = 0;
     	for (AlternativeAutoTileVO aat : at.alternativeAutoTileList) {
 			if (!"".equals(aat.region)) {
-				total += aat.percent;
+				total += Math.abs(aat.percent);
 			}
     	}
     	
-		for (AlternativeAutoTileVO aat : at.alternativeAutoTileList) {
-			if ("".equals(aat.region)) {
-				aat.percent = 0f;
-			} else {
-				aat.percent = aat.percent / total;
+    	if (total < 0.00001f) {
+    		// kind of 0
+    		at.alternativeAutoTileList.get(0).percent = 1f;
+    	} else {
+			for (AlternativeAutoTileVO aat : at.alternativeAutoTileList) {
+				if ("".equals(aat.region)) {
+					aat.percent = 0f;
+				} else {
+					aat.percent = Math.abs(aat.percent) / total;
+				}
 			}
-		}
+    	}
     }
 
 }

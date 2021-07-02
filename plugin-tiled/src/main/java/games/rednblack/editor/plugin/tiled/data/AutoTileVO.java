@@ -10,6 +10,9 @@ public class AutoTileVO implements TextureRegionVO {
 	public Vector2 gridOffset;
 	public int entityType = EntityFactory.IMAGE_TYPE;
 
+	/**
+	 * The list of alternative auto-tiles.
+	 */
 	public final DefaultValueList<AlternativeAutoTileVO> alternativeAutoTileList = new DefaultValueList<>();
 
 	public AutoTileVO() {
