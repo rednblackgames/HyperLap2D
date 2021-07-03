@@ -83,6 +83,7 @@ public class TiledPlugin extends H2DPluginAdapter {
     public static final String ROW = "ROW";
     public static final String COLUMN = "COLUMN";
     public static final String REGION = "REGION";
+    public static final String ORIG_AUTO_TILE = "ORIG_AUTO_TILE";
 
     public static final String AUTO_TILE_TAG = "AUTO_TILE";
 	public static final String AUTO_TILE_MINI_SUFFIX = "-mini";

@@ -66,6 +66,14 @@ public class AutoTileDrawStrategy extends BasicDrawStrategy {
 	@Override
 	public void updateTile(Entity entity) {
         if (!checkValidTile(entity)) return;
+        
+        MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+        if (tiledPlugin.getSelectedAutoTileName().equals(mainItemComponent.customVariables.getStringVariable(TiledPlugin.ORIG_AUTO_TILE))) {
+        	// we only allow an update when the auto-tiles is different
+        	// firstly, it does not make any sense to randomly reselect another alternative tile
+        	// secondly, when dragging it constantly reselects between the alternative, making rare tiles even rarer
+        	return;
+        }
 
         TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
         if (textureRegionComponent != null && textureRegionComponent.regionName != null) {
@@ -78,9 +86,9 @@ public class AutoTileDrawStrategy extends BasicDrawStrategy {
                 replaceRegionCommandBuilder.setRegionName(region);
                 replaceRegionCommandBuilder.execute(tiledPlugin.facade);
 
-                MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
                 mainItemComponent.tags.add(TiledPlugin.AUTO_TILE_TAG);
                 mainItemComponent.setCustomVars(TiledPlugin.REGION, selectedAutoTileName);
+                mainItemComponent.setCustomVars(TiledPlugin.ORIG_AUTO_TILE, tiledPlugin.getSelectedAutoTileName());
             }
         }
 	}
@@ -92,6 +100,7 @@ public class AutoTileDrawStrategy extends BasicDrawStrategy {
         MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
         mainItemComponent.tags.add(TiledPlugin.AUTO_TILE_TAG);
         mainItemComponent.setCustomVars(TiledPlugin.REGION, tileToDraw);
+        mainItemComponent.setCustomVars(TiledPlugin.ORIG_AUTO_TILE, tiledPlugin.getSelectedAutoTileName());
     }
 
 }
