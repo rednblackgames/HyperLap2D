@@ -1,5 +1,6 @@
 package games.rednblack.editor.utils.asset.impl;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -22,7 +23,7 @@ public class HyperLap2DInternalLibraryAsset extends Asset {
     }
 
     @Override
-    protected int getType() {
+    public int getType() {
         return ImportUtils.TYPE_HYPERLAP2D_INTERNAL_LIBRARY;
     }
 
@@ -49,6 +50,11 @@ public class HyperLap2DInternalLibraryAsset extends Asset {
             projectManager.getCurrentProjectInfoVO().libraryItems.put(fileName, voInfo);
             projectManager.saveCurrentProject();
         }
+    }
+
+    @Override
+    public boolean deleteAsset(Entity root, String name) {
+        return false;
     }
 
     private void adjustPPWCoordinates(CompositeItemVO compositeItemVO) {

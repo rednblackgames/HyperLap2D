@@ -1,14 +1,23 @@
 package games.rednblack.editor.utils.asset.impl;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.renderer.components.SpineDataComponent;
+import games.rednblack.editor.renderer.data.CompositeItemVO;
+import games.rednblack.editor.renderer.data.ResolutionEntryVO;
+import games.rednblack.editor.renderer.data.SpineVO;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.renderer.utils.Version;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
+import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.extention.spine.SpineItemType;
@@ -17,8 +26,11 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class SpineAsset extends Asset {
     @Override
@@ -35,7 +47,7 @@ public class SpineAsset extends Asset {
     }
 
     @Override
-    protected int getType() {
+    public int getType() {
         return ImportUtils.TYPE_SPINE_ANIMATION;
     }
 
@@ -62,6 +74,21 @@ public class SpineAsset extends Asset {
                 resolutionManager.rePackProjectImagesForAllResolutionsSync();
             }
         }
+    }
+
+    @Override
+    public boolean deleteAsset(Entity root, String spineName) {
+        for (ResolutionEntryVO resolutionEntryVO : projectManager.getCurrentProjectInfoVO().resolutions) {
+            if(!deleteSpineAnimation(resolutionEntryVO.name, spineName))
+                return false;
+        }
+
+        if (deleteSpineAnimation("orig", spineName)) {
+            postDeleteSpineAnimation(root, spineName);
+            return true;
+        }
+
+        return false;
     }
 
     private File importExternalAnimationIntoProject(FileHandle animationFileSource, ProgressHandler progressHandler) {
@@ -147,5 +174,74 @@ public class SpineAsset extends Asset {
         }
 
         return version;
+    }
+
+    private boolean deleteSpineAnimation(String resolutionName, String spineName) {
+        String spinePath = projectManager.getCurrentProjectPath() + "/assets/" + resolutionName + "/spine-animations" + File.separator;
+        String filePath = spinePath + spineName;
+        FileHandle jsonPath = new FileHandle(filePath + File.separator + spineName + ".json");
+
+        JsonValue root = new JsonReader().parse(jsonPath);
+        for (JsonValue skinMap = root.getChild("skins"); skinMap != null; skinMap = skinMap.next) {
+            for (JsonValue slotEntry = skinMap.getChild("attachments"); slotEntry != null; slotEntry = slotEntry.next) {
+                for (JsonValue entry = slotEntry.child; entry != null; entry = entry.next) {
+                    String name = spineName + entry.getString("name", entry.name);
+                    deleteSingleImage(resolutionName, name);
+                    projectManager.deleteRegionFromPack(projectManager.getCurrentProjectInfoVO().animationsPacks, name);
+                }
+            }
+        }
+        return ImportUtils.deleteDirectory(filePath);
+    }
+
+    private boolean deleteSingleImage(String resolutionName, String imageName) {
+        String imagesPath = projectManager.getCurrentProjectPath() + "/assets/" + resolutionName + "/images" + File.separator;
+        String filePath = imagesPath + imageName + ".png";
+        projectManager.deleteRegionFromPack(projectManager.getCurrentProjectInfoVO().imagesPacks, imageName);
+        if (!(new File(filePath)).delete()) {
+            filePath = imagesPath + imageName + ".9.png";
+            return (new File(filePath)).delete();
+        }
+        return true;
+    }
+
+    protected void postDeleteSpineAnimation(Entity root, String spineAnimationName) {
+        deleteEntitiesWithSpineAnimation(root, spineAnimationName);
+        deleteAllItemsSpineAnimations(spineAnimationName);
+    }
+
+    private void deleteAllItemsSpineAnimations(String spineAnimationName) {
+        for (CompositeItemVO compositeItemVO : projectManager.getCurrentProjectInfoVO().libraryItems.values()) {
+            deleteAllSpineAnimationsOfItem(compositeItemVO, spineAnimationName);
+        }
+    }
+
+    private void deleteAllSpineAnimationsOfItem(CompositeItemVO compositeItemVO, String spineAnimationName) {
+        Consumer<CompositeItemVO> action = (rootItemVo) -> deleteCurrentItemSpineAnimations(rootItemVo, spineAnimationName);
+        EntityUtils.applyActionRecursivelyOnLibraryItems(compositeItemVO, action);
+    }
+
+    private void deleteCurrentItemSpineAnimations(CompositeItemVO compositeItemVO, String spineAnimationName) {
+        tmpImageList.clear();
+        if (compositeItemVO.composite != null && compositeItemVO.composite.sSpineAnimations.size() != 0) {
+            ArrayList<SpineVO> spineAnimations = compositeItemVO.composite.sSpineAnimations;
+            tmpImageList.addAll(spineAnimations
+                    .stream()
+                    .filter(spineVO -> spineVO.animationName.equals(spineAnimationName))
+                    .collect(Collectors.toList()));
+            spineAnimations.removeAll(tmpImageList);
+        }
+    }
+
+    private void deleteEntitiesWithSpineAnimation(Entity rootEntity, String spineName) {
+        tmpEntityList.clear();
+        Consumer<Entity> action = (root) -> {
+            SpineDataComponent spineDataComponent = ComponentRetriever.get(root, SpineDataComponent.class);
+            if (spineDataComponent != null && spineDataComponent.animationName.equals(spineName)) {
+                tmpEntityList.add(root);
+            }
+        };
+        EntityUtils.applyActionRecursivelyOnEntities(rootEntity, action);
+        EntityUtils.removeEntities(tmpEntityList);
     }
 }

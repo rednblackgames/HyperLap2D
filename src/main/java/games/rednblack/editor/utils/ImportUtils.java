@@ -22,6 +22,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
+import org.apache.commons.io.FileUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -161,5 +162,20 @@ public class ImportUtils {
             e.printStackTrace();
         }
         return name;
+    }
+
+    public static boolean deleteDirectory(String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            try {
+                FileUtils.deleteDirectory(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (!file.exists()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

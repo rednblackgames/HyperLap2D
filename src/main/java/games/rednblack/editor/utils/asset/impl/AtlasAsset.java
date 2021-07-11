@@ -1,5 +1,6 @@
 package games.rednblack.editor.utils.asset.impl;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
@@ -15,7 +16,7 @@ import java.io.IOException;
 public class AtlasAsset extends Asset {
 
     @Override
-    protected int getType() {
+    public int getType() {
         return ImportUtils.TYPE_TEXTURE_ATLAS;
     }
 
@@ -67,5 +68,10 @@ public class AtlasAsset extends Asset {
             e.printStackTrace();
             progressHandler.progressFailed();
         }
+    }
+
+    @Override
+    public boolean deleteAsset(Entity root, String name) {
+        return false;
     }
 }

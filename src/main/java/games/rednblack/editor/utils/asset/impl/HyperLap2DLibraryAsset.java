@@ -1,17 +1,21 @@
 package games.rednblack.editor.utils.asset.impl;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
+import games.rednblack.editor.renderer.components.MainItemComponent;
+import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.AssetImporter;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.ZipUtils;
 import games.rednblack.editor.utils.asset.Asset;
+import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
@@ -19,6 +23,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,7 +34,7 @@ public class HyperLap2DLibraryAsset extends Asset {
     }
 
     @Override
-    protected int getType() {
+    public int getType() {
         return ImportUtils.TYPE_HYPERLAP2D_LIBRARY;
     }
 
@@ -126,5 +131,20 @@ public class HyperLap2DLibraryAsset extends Asset {
     @Override
     public void importAsset(Array<FileHandle> files, ProgressHandler progressHandler, boolean skipRepack) {
         throw new GdxRuntimeException("Use asyncImport()");
+    }
+
+    @Override
+    public boolean deleteAsset(Entity root, String name) {
+        HashMap<String, CompositeItemVO> libraryItems = projectManager.currentProjectInfoVO.libraryItems;
+
+        libraryItems.remove(name);
+
+        Array<Entity> linkedEntities = EntityUtils.getByLibraryLink(name);
+        for (Entity entity : linkedEntities) {
+            MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+            mainItemComponent.libraryLink = "";
+        }
+
+        return true;
     }
 }

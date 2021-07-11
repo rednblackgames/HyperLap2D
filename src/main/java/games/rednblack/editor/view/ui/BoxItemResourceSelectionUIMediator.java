@@ -31,7 +31,7 @@ public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource
 	
 	public static final String NAME = BoxItemResourceSelectionUIMediator.class.getCanonicalName();
 	
-	private final SortedSet<String> boxResourceSelectedSet = new TreeSet<>();
+	public final SortedSet<String> boxResourceSelectedSet = new TreeSet<>();
 
 	/**
 	 * The image table from {@link UIImagesTab}. This is the table we add our selection behavior to.
@@ -216,6 +216,7 @@ public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource
 				setSelected(imgResource, false);
 			}
 		}
+		boxResourceSelectedSet.clear();
     }
     
     private int getCellIndex(BoxItemResource boxResource, int defaultIndex, VisTable boxesTable) {

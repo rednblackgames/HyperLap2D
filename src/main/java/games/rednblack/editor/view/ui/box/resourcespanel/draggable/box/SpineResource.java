@@ -24,7 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.SpineVO;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.editor.view.ui.widget.actors.SpineActor;
@@ -37,7 +36,6 @@ public class SpineResource extends BoxItemResource {
 
     private final SpineActor payloadActor;
     private final ResourcePayloadObject payload;
-    private HyperLap2DFacade facade;
 
     private boolean isMouseInside = false;
 
@@ -59,7 +57,6 @@ public class SpineResource extends BoxItemResource {
      */
     public SpineResource(String animationName, Color fillColor, Color borderColor, Color fillMouseOverColor, Color borderMouseOverColor, boolean highlightWhenMouseOver) {
     	super(fillColor, borderColor, fillMouseOverColor, borderMouseOverColor, highlightWhenMouseOver);
-        facade = HyperLap2DFacade.getInstance();
         SpineVO vo = new SpineVO();
         vo.animationName = animationName;
 

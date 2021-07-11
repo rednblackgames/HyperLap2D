@@ -27,8 +27,6 @@ import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.h2d.common.ResourcePayloadObject;
 
 public class ImageResource extends BoxItemResource {
-
-
     private final Image payloadImg;
     private final ResourcePayloadObject payload;
     

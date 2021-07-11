@@ -1,15 +1,7 @@
 package games.rednblack.editor.controller.commands.resource;
 
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.proxy.ProjectManager;
-import games.rednblack.editor.renderer.components.MainItemComponent;
-import games.rednblack.editor.renderer.data.CompositeItemVO;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
-import games.rednblack.editor.utils.runtime.EntityUtils;
-
-import java.util.HashMap;
+import games.rednblack.editor.utils.AssetImporter;
+import games.rednblack.editor.utils.ImportUtils;
 
 /**
  * Created by azakhary on 11/29/2015.
@@ -28,16 +20,8 @@ public class DeleteLibraryItem extends DeleteResourceCommand {
     public void doAction() {
         String libraryItemName = notification.getBody();
 
-        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
-        HashMap<String, CompositeItemVO> libraryItems = projectManager.currentProjectInfoVO.libraryItems;
+        AssetImporter.getInstance().deleteAsset(ImportUtils.TYPE_HYPERLAP2D_LIBRARY, sandbox.getRootEntity(), libraryItemName);
 
-        libraryItems.remove(libraryItemName);
-
-        Array<Entity> linkedEntities = EntityUtils.getByLibraryLink(libraryItemName);
-        for (Entity entity : linkedEntities) {
-            MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
-            mainItemComponent.libraryLink = "";
-        }
         facade.sendNotification(DONE, libraryItemName);
     }
 }

@@ -1,12 +1,18 @@
 package games.rednblack.editor.utils.asset.impl;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
+import games.rednblack.editor.renderer.components.particle.ParticleComponent;
+import games.rednblack.editor.renderer.data.CompositeItemVO;
+import games.rednblack.editor.renderer.data.ParticleEffectVO;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
+import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
 import org.apache.commons.io.FileUtils;
@@ -16,11 +22,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class ParticleEffectAsset extends Asset {
 
     @Override
-    protected int getType() {
+    public int getType() {
         return ImportUtils.TYPE_PARTICLE_EFFECT;
     }
 
@@ -86,6 +94,19 @@ public class ParticleEffectAsset extends Asset {
         }
     }
 
+    @Override
+    public boolean deleteAsset(Entity root, String name) {
+        String particlePath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.PARTICLE_DIR_PATH + File.separator;
+        String filePath = particlePath + name;
+
+        if ((new File(filePath)).delete()) {
+            deleteEntitiesWithParticleEffects(root, name); // delete entities from scene
+            deleteAllItemsWithParticleName(name);
+            return true;
+        }
+        return false;
+    }
+
     private boolean addParticleEffectImages(FileHandle fileHandle, Array<FileHandle> imgs) {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(fileHandle.read()), 64);
@@ -128,5 +149,41 @@ public class ParticleEffectAsset extends Asset {
         }
 
         return true;
+    }
+
+    private void deleteAllItemsWithParticleName(String name) {
+        for (CompositeItemVO compositeItemVO : projectManager.getCurrentProjectInfoVO().libraryItems.values()) {
+            deleteAllParticles(compositeItemVO, name);
+        }
+    }
+
+    private void deleteAllParticles(CompositeItemVO compositeItemVO, String name) {
+        Consumer<CompositeItemVO> action = (rootItemVo) -> getParticles(rootItemVo, name);
+        EntityUtils.applyActionRecursivelyOnLibraryItems(compositeItemVO, action);
+    }
+
+    private void getParticles(CompositeItemVO compositeItemVO, String name) {
+        tmpImageList.clear();
+        if (compositeItemVO.composite != null && compositeItemVO.composite.sParticleEffects.size() != 0) {
+            ArrayList<ParticleEffectVO> particleEffectList = compositeItemVO.composite.sParticleEffects;
+            for (ParticleEffectVO particleEffectVO : particleEffectList) {
+                if (particleEffectVO.particleName.equals(name)) {
+                    tmpImageList.add(particleEffectVO);
+                }
+            }
+            particleEffectList.removeAll(tmpImageList);
+        }
+    }
+
+    private void deleteEntitiesWithParticleEffects(Entity rootEntity, String particleName) {
+        tmpEntityList.clear();
+        Consumer<Entity> action = (root) -> {
+            ParticleComponent particleComponent = ComponentRetriever.get(root, ParticleComponent.class);
+            if (particleComponent != null && particleComponent.particleName.equals(particleName)) {
+                tmpEntityList.add(root);
+            }
+        };
+        EntityUtils.applyActionRecursivelyOnEntities(rootEntity, action);
+        EntityUtils.removeEntities(tmpEntityList);
     }
 }

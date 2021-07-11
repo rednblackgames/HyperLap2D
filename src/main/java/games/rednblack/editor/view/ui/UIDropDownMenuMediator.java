@@ -52,12 +52,14 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
     public static final Integer ORIGIN_POINT_ACTION_SET = 11;
     public static final Integer LIBRARY_ACTION_ACTION_SET = 12;
     public static final Integer TALOS_ACTION_SET = 13;
+    public static final Integer MIX_RESOURCE_BOX_ACTION_SET = 14;
 
     private Sandbox sandbox;
 
     private Object currentObservable;
 
     public HashMap<Integer, Array<String>> actionSets = new HashMap<>();
+    private final Array<String> tmpActionSet = new Array<>();
 
     public UIDropDownMenuMediator() {
         super(NAME, new UIDropDownMenu());
@@ -74,8 +76,17 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
         actionSets.get(SCENE_ACTIONS_SET).add(MsgAPI.ACTION_CREATE_PRIMITIVE);
         actionSets.get(SCENE_ACTIONS_SET).add(MsgAPI.ACTION_CREATE_STICKY_NOTE);
 
+        actionSets.put(MIX_RESOURCE_BOX_ACTION_SET, new Array<>());
+        actionSets.get(MIX_RESOURCE_BOX_ACTION_SET).add(MsgAPI.ACTION_DELETE_MULTIPLE_RESOURCE);
+
         actionSets.put(IMAGE_RESOURCE_ACTION_SET, new Array<>());
         actionSets.get(IMAGE_RESOURCE_ACTION_SET).add(MsgAPI.ACTION_DELETE_IMAGE_RESOURCE);
+
+        actionSets.put(SPINE_ANIMATION_ACTION_SET, new Array<>());
+        actionSets.get(SPINE_ANIMATION_ACTION_SET).add(MsgAPI.ACTION_DELETE_SPINE_ANIMATION_RESOURCE);
+
+        actionSets.put(SPRITE_ANIMATION_ACTION_SET, new Array<>());
+        actionSets.get(SPRITE_ANIMATION_ACTION_SET).add(MsgAPI.ACTION_DELETE_SPRITE_ANIMATION_RESOURCE);
 
         actionSets.put(LIBRARY_ITEM_ACTION_SET, new Array<>());
         actionSets.get(LIBRARY_ITEM_ACTION_SET).add(MsgAPI.ACTION_DELETE_LIBRARY_ITEM);
@@ -85,12 +96,6 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
         actionSets.get(LIBRARY_ACTION_ACTION_SET).add(MsgAPI.ACTION_DUPLICATE_LIBRARY_ACTION);
         actionSets.get(LIBRARY_ACTION_ACTION_SET).add(MsgAPI.ACTION_DELETE_LIBRARY_ACTION);
         actionSets.get(LIBRARY_ACTION_ACTION_SET).add(MsgAPI.ACTION_EXPORT_ACTION_ITEM);
-
-        actionSets.put(SPINE_ANIMATION_ACTION_SET, new Array<>());
-        actionSets.get(SPINE_ANIMATION_ACTION_SET).add(MsgAPI.ACTION_DELETE_SPINE_ANIMATION_RESOURCE);
-
-        actionSets.put(SPRITE_ANIMATION_ACTION_SET, new Array<>());
-        actionSets.get(SPRITE_ANIMATION_ACTION_SET).add(MsgAPI.ACTION_DELETE_SPRITE_ANIMATION_RESOURCE);
 
         actionSets.put(PARTICLE_ACTION_SET, new Array<>());
         actionSets.get(PARTICLE_ACTION_SET).add(MsgAPI.ACTION_DELETE_PARTICLE_EFFECT);
@@ -153,32 +158,45 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
             pluginManager.dropDownActionSets(sandbox.getSelector().getCurrentSelection(), actionsSet);
     }
 
+    private void applyResourceBoxMutators(Array<String> actionsSet) {
+        BoxItemResourceSelectionUIMediator boxSelection = facade.retrieveMediator(BoxItemResourceSelectionUIMediator.NAME);
+        if (boxSelection.boxResourceSelectedSet.size() > 1) {
+            actionsSet.addAll(actionSets.get(MIX_RESOURCE_BOX_ACTION_SET));
+        }
+    }
+
     @Override
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
-        Array<String> actionsSet;
+        tmpActionSet.clear();
 
         switch (notification.getName()) {
             case MsgAPI.SCENE_RIGHT_CLICK:
                 Vector2 stageCoords = notification.getBody();
-                actionsSet = new Array<>(actionSets.get(SCENE_ACTIONS_SET));
-                applyItemTypeMutators(actionsSet);
-                showPopup(actionsSet, stageCoords);
+                tmpActionSet.addAll(actionSets.get(SCENE_ACTIONS_SET));
+                applyItemTypeMutators(tmpActionSet);
+                showPopup(tmpActionSet, stageCoords);
                 break;
             case MsgAPI.ITEM_RIGHT_CLICK:
-                actionsSet = new Array<>(actionSets.get(ITEMS_ACTIONS_SET));
-                applyItemTypeMutators(actionsSet);
-                showPopup(actionsSet, sandbox.getSelector().getSelectedItem());
+                tmpActionSet.addAll(actionSets.get(ITEMS_ACTIONS_SET));
+                applyItemTypeMutators(tmpActionSet);
+                showPopup(tmpActionSet, sandbox.getSelector().getSelectedItem());
                 break;
             case UIResourcesBoxMediator.IMAGE_RIGHT_CLICK:
-                showPopup(IMAGE_RESOURCE_ACTION_SET, notification.getBody());
+                tmpActionSet.addAll(actionSets.get(IMAGE_RESOURCE_ACTION_SET));
+                applyResourceBoxMutators(tmpActionSet);
+                showPopup(tmpActionSet, notification.getBody());
                 break;
             case UIResourcesBoxMediator.SPINE_ANIMATION_RIGHT_CLICK:
-                showPopup(SPINE_ANIMATION_ACTION_SET, notification.getBody());
+                tmpActionSet.addAll(actionSets.get(SPINE_ANIMATION_ACTION_SET));
+                applyResourceBoxMutators(tmpActionSet);
+                showPopup(tmpActionSet, notification.getBody());
                 break;
             case UIResourcesBoxMediator.SPRITE_ANIMATION_RIGHT_CLICK:
-                showPopup(SPRITE_ANIMATION_ACTION_SET, notification.getBody());
+                tmpActionSet.addAll(actionSets.get(SPRITE_ANIMATION_ACTION_SET));
+                applyResourceBoxMutators(tmpActionSet);
+                showPopup(tmpActionSet, notification.getBody());
                 break;
             case UIResourcesBoxMediator.LIBRARY_ITEM_RIGHT_CLICK:
                 showPopup(LIBRARY_ITEM_ACTION_SET, notification.getBody());
