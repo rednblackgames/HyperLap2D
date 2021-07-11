@@ -42,6 +42,7 @@ public class UIImagesTab extends UIResourcesTab {
     @Override
     protected VisScrollPane crateScrollPane() {
         imagesTable = new VisTable();
+        HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT, imagesTable);
         return StandardWidgetsFactory.createScrollPane(imagesTable);
     }
 
@@ -65,6 +66,5 @@ public class UIImagesTab extends UIResourcesTab {
                 imagesTable.row();
             }
         }
-        HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.IMAGE_TABLE_UPDATED, imagesTable);
     }
 }

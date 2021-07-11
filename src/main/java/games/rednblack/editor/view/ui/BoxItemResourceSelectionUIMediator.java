@@ -6,6 +6,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectSet;
+import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.BoxItemResource;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 
@@ -18,7 +20,6 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.UIImagesTab;
-import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.ImageResource;
 import games.rednblack.h2d.common.MsgAPI;
 
 /**
@@ -26,20 +27,20 @@ import games.rednblack.h2d.common.MsgAPI;
  * 
  * @author Jan-Thierry Wegener
  */
-public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
+public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource>  {
 	
-	public static final String NAME = ImageResourceSelectionUIMediator.class.getCanonicalName();
+	public static final String NAME = BoxItemResourceSelectionUIMediator.class.getCanonicalName();
 	
-	private final SortedSet<String> imageResourceSelectedSet = new TreeSet<>();
+	private final SortedSet<String> boxResourceSelectedSet = new TreeSet<>();
 
 	/**
 	 * The image table from {@link UIImagesTab}. This is the table we add our selection behavior to.
 	 */
-    private VisTable imagesTable;
+    private ObjectSet<VisTable> boxesTableSet = new ObjectSet<>();
     
-    private ImageResource imageResourcePreviousClick;
+    private BoxItemResource boxResourcePreviousClick;
 
-    public ImageResourceSelectionUIMediator() {
+    public BoxItemResourceSelectionUIMediator() {
         super(NAME);
     }
     
@@ -51,9 +52,9 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
     @Override
     public String[] listNotificationInterests() {
         return new String[]{
-        		UIResourcesBoxMediator.IMAGE_LEFT_CLICK,
+        		UIResourcesBoxMediator.RESOURCE_BOX_LEFT_CLICK,
         		MsgAPI.IMAGE_BUNDLE_DROP,
-        		UIResourcesBoxMediator.IMAGE_TABLE_UPDATED,
+        		UIResourcesBoxMediator.ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT,
         		UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_ENTER,
         		UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_EXIT
         };
@@ -64,8 +65,8 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
     	super.handleNotification(notification);
     	
         switch (notification.getName()) {
-	        case UIResourcesBoxMediator.IMAGE_LEFT_CLICK:
-	        	ImageResource imageResource = notification.getBody();
+	        case UIResourcesBoxMediator.RESOURCE_BOX_LEFT_CLICK:
+				BoxItemResource imageResource = notification.getBody();
 	        	switch (notification.getType()) {
 		        	case UIResourcesBoxMediator.NORMAL_CLICK_EVENT_TYPE:
 		        		handleNormalClick(imageResource);
@@ -81,10 +82,10 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
 		        		break;
 	        	}
 	        	
-	        	imageResourcePreviousClick = imageResource;
+	        	boxResourcePreviousClick = imageResource;
 	        	break;
 	        case MsgAPI.IMAGE_BUNDLE_DROP:
-	        	Set<String> nameSet = new HashSet<>(imageResourceSelectedSet);
+	        	Set<String> nameSet = new HashSet<>(boxResourceSelectedSet);
 	        	// remove the dropped one, so that it is not added twice
 	        	Object[] payloadBody = notification.getBody();
 	        	nameSet.remove(payloadBody[0]);
@@ -95,8 +96,8 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
 	        		HyperLap2DFacade.getInstance().sendNotification(MsgAPI.IMAGE_BUNDLE_DROP_SINGLE, new Object[] {name, payloadBody[1]});
 	        	}
 	        	break;
-	        case UIResourcesBoxMediator.IMAGE_TABLE_UPDATED:
-	        	imagesTable = notification.getBody();
+	        case UIResourcesBoxMediator.ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT:
+				boxesTableSet.add(notification.getBody());
 	        	break;
 	        case UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_ENTER:
 	        	Source sourceEnter = notification.getBody();
@@ -114,14 +115,16 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
     /**
      * Darkens all the resources except the given one.
      * 
-     * @param imageResource The dragged image resource.
+     * @param boxResource The dragged image resource.
      * @param color The color to set to all other resources.
      */
-    private void setColorExcept(Color color, Actor imageResource) {
-    	for (Cell<ImageResource> cell : imagesTable.getCells()) {
-			Actor imgResource = cell.getActor();
-			if (!imgResource.equals(imageResource)) {
-				imgResource.setColor(color);
+    private void setColorExcept(Color color, Actor boxResource) {
+    	for (VisTable boxesTable : boxesTableSet) {
+			for (Cell<BoxItemResource> cell : boxesTable.getCells()) {
+				Actor imgResource = cell.getActor();
+				if (!imgResource.equals(boxResource)) {
+					imgResource.setColor(color);
+				}
 			}
 		}
     }
@@ -130,17 +133,17 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
      * Handles a shift-click on the panel. This means that the selection is cleared, and all resources between the
      * previously clicked and currently clicked resources are selected / unselected.
      * 
-     * @param imageResource The clicked image resource.
+     * @param boxResource The clicked image resource.
      */
-    private void handleShiftClick(ImageResource imageResource) {
-    	boolean removed = imageResourceSelectedSet.remove(imageResource.getPayloadData().name);
+    private void handleShiftClick(BoxItemResource boxResource) {
+    	boolean removed = boxResourceSelectedSet.remove(boxResource.getPayloadData().name);
 
 		clearSelection();
 		
     	if (removed) {
-    		setSelectionBetween(imageResourcePreviousClick, imageResource, false);
+    		setSelectionBetween(boxResourcePreviousClick, boxResource, false);
     	} else {
-    		setSelectionBetween(imageResourcePreviousClick, imageResource, true);
+    		setSelectionBetween(boxResourcePreviousClick, boxResource, true);
     	}
     }
 
@@ -148,58 +151,58 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
      * Handles a shift-ctrl-click on the panel. This means that the selection is kept, and all resources between the
      * previously clicked and currently clicked resources are selected / unselected.
      * 
-     * @param imageResource The clicked image resource.
+     * @param boxResource The clicked image resource.
      */
-    private void handleShiftCtrlClick(ImageResource imageResource) {
-    	if (imageResourceSelectedSet.remove(imageResource.getPayloadData().name)) {
-    		setSelectionBetween(imageResourcePreviousClick, imageResource, false);
+    private void handleShiftCtrlClick(BoxItemResource boxResource) {
+    	if (boxResourceSelectedSet.remove(boxResource.getPayloadData().name)) {
+    		setSelectionBetween(boxResourcePreviousClick, boxResource, false);
     	} else {
-    		setSelectionBetween(imageResourcePreviousClick, imageResource, true);
+    		setSelectionBetween(boxResourcePreviousClick, boxResource, true);
     	}
     }
 
     /**
      * Handles a ctrl-click on the panel. This means that the selection is kept, and the currently clicked resource is selected / unselected.
      * 
-     * @param imageResource The clicked image resource.
+     * @param boxResource The clicked image resource.
      */
-	private void handleCtrlClick(ImageResource imageResource) {
-    	if (imageResourceSelectedSet.remove(imageResource.getPayloadData().name)) {
+	private void handleCtrlClick(BoxItemResource boxResource) {
+    	if (boxResourceSelectedSet.remove(boxResource.getPayloadData().name)) {
     		// we unselected the cell
-    		setSelected(imageResource, false);
+    		setSelected(boxResource, false);
     	} else {
     		// we selected the cell
-    		setSelected(imageResource, true);
+    		setSelected(boxResource, true);
     	}
     }
 
     /**
      * Handles a click on the panel. This means that the selection is cleared, and the resource currently clicked resources are selected.
      * 
-     * @param imageResource The clicked image resource.
+     * @param boxResource The clicked image resource.
      */
-    private void handleNormalClick(ImageResource imageResource) {
+    private void handleNormalClick(BoxItemResource boxResource) {
 		clearSelection();
 		
 		// we selected the cell
-		setSelected(imageResource, true);
+		setSelected(boxResource, true);
     }
 
     /**
      * Selects or unselets the given image resource.
      * 
-     * @param imageResource The clicked image resource.
+     * @param boxResource The clicked image resource.
      * @param isSelected Whether to select (true) or unselect (false) the given resource.
      */
-    private void setSelected(ImageResource imageResource, boolean isSelected) {
+    private void setSelected(BoxItemResource boxResource, boolean isSelected) {
     	if (isSelected) {
-			imageResource.switchToMouseOverColor();
-    		imageResource.setHighlightWhenMouseOver(false);
-			imageResourceSelectedSet.add(imageResource.getPayloadData().name);
+			boxResource.switchToMouseOverColor();
+			boxResource.setHighlightWhenMouseOver(false);
+			boxResourceSelectedSet.add(boxResource.getPayloadData().name);
     	} else {
-    		imageResource.switchToStandardColor();
-    		imageResource.setHighlightWhenMouseOver(true);
-			imageResourceSelectedSet.remove(imageResource.getPayloadData().name);
+			boxResource.switchToStandardColor();
+			boxResource.setHighlightWhenMouseOver(true);
+			boxResourceSelectedSet.remove(boxResource.getPayloadData().name);
     	}
     }
 
@@ -207,38 +210,52 @@ public class ImageResourceSelectionUIMediator extends Mediator<ImageResource>  {
      * Clears the selection.
      */
     private void clearSelection() {
-    	for (Cell<ImageResource> cell : imagesTable.getCells()) {
-			ImageResource imgResource = cell.getActor();
-			setSelected(imgResource, false);
+		for (VisTable boxesTable : boxesTableSet) {
+			for (Cell<BoxItemResource> cell : boxesTable.getCells()) {
+				BoxItemResource imgResource = cell.getActor();
+				setSelected(imgResource, false);
+			}
 		}
     }
     
-    private int getCellIndex(ImageResource imageResource, int defaultIndex) {
-    	Cell<ImageResource> cell = imagesTable.getCell(imageResource);
+    private int getCellIndex(BoxItemResource boxResource, int defaultIndex, VisTable boxesTable) {
+    	Cell<BoxItemResource> cell = boxesTable.getCell(boxResource);
     	int index = defaultIndex;
     	if (cell != null) {
     		// compute the indixes, should be faster than iterating over the array of cells
-    		index = cell.getRow() * imagesTable.getColumns() + cell.getColumn();
+    		index = cell.getRow() * boxesTable.getColumns() + cell.getColumn();
     	}
     	return index;
     }
 
-    private void setSelectionBetween(ImageResource imageResourceStart, ImageResource imageResourceEnd, boolean selected) {
-    	int startIndex = getCellIndex(imageResourceStart, 0);
-    	int endIndex = getCellIndex(imageResourceEnd, imagesTable.getCells().size - 1);
+    private VisTable getBoxResourceTable(BoxItemResource boxResource) {
+		for (VisTable boxesTable : boxesTableSet) {
+			Cell<BoxItemResource> cell = boxesTable.getCell(boxResource);
+			if (cell != null)
+				return boxesTable;
+		}
+		return null;
+	}
 
-    	// we want to start with start :)
-    	if (endIndex < startIndex) {
-    		int tmp = startIndex;
-    		startIndex = endIndex;
-    		endIndex = tmp;
-    	}
+    private void setSelectionBetween(BoxItemResource boxResourceStart, BoxItemResource boxResourceEnd, boolean selected) {
+		VisTable boxesTable = getBoxResourceTable(boxResourceStart);
+		if (boxesTable == null) return;
 
-    	for (int i = startIndex; i <= endIndex; i++) {
-    		Cell<ImageResource> cell = imagesTable.getCells().get(i);
-    		ImageResource imageResource = cell.getActor();
-    		setSelected(imageResource, selected);
-    	}
+		int startIndex = getCellIndex(boxResourceStart, 0, boxesTable);
+		int endIndex = getCellIndex(boxResourceEnd, boxesTable.getCells().size - 1, boxesTable);
+
+		// we want to start with start :)
+		if (endIndex < startIndex) {
+			int tmp = startIndex;
+			startIndex = endIndex;
+			endIndex = tmp;
+		}
+
+		for (int i = startIndex; i <= endIndex; i++) {
+			Cell<BoxItemResource> cell = boxesTable.getCells().get(i);
+			BoxItemResource boxResource = cell.getActor();
+			setSelected(boxResource, selected);
+		}
     }
     
 }

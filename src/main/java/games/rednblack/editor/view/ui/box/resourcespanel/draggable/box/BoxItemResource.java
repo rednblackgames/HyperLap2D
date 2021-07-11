@@ -68,8 +68,7 @@ public abstract class BoxItemResource extends Group implements DraggableResource
     
     /**
      * Creates a new box item resource with the given colors.
-     * 
-     * @param region The atlas region for the image resource.
+     *
      * @param fillColor The color to fill the background of the image.
      * @param borderColor The standard color of the border. Also used when the mouse is not hovering over the image.
      * @param fillMouseOverColor The color to fill the background of the image when the mouse hovers over the image. Only used if the the parameter <code>highlightWhenMouseOver</code> is set to <code>true</code>.
@@ -93,7 +92,7 @@ public abstract class BoxItemResource extends Group implements DraggableResource
     }
 
     /**
-     * Sets the right-click event. Should not be used with {@link #setClickEvent(String, String, String)}.
+     * Sets the right-click event. Should not be used with {@link #setClickEvent(String, String, Object, Object)}.
      * 
      * @param eventName The event name in case of a right-click.
      * @param payload The payload for the right-click.

@@ -107,7 +107,7 @@ public class SpriteResource extends BoxItemResource {
         payload.className = getClass().getName();
 
         setHeight(thumbnailSize);
-        setRightClickEvent(UIResourcesBoxMediator.SPRITE_ANIMATION_RIGHT_CLICK, payload.name);
+        setClickEvent(UIResourcesBoxMediator.RESOURCE_BOX_LEFT_CLICK, UIResourcesBoxMediator.SPRITE_ANIMATION_RIGHT_CLICK, this, payload.name);
     }
 
 

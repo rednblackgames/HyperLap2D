@@ -73,7 +73,7 @@ public class ImageResource extends BoxItemResource {
 
         addActor(img);
         
-        setClickEvent(UIResourcesBoxMediator.IMAGE_LEFT_CLICK, UIResourcesBoxMediator.IMAGE_RIGHT_CLICK, this, region.name);
+        setClickEvent(UIResourcesBoxMediator.RESOURCE_BOX_LEFT_CLICK, UIResourcesBoxMediator.IMAGE_RIGHT_CLICK, this, region.name);
 
         payloadImg = new Image(region);
         payload = new ResourcePayloadObject();

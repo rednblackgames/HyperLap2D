@@ -19,10 +19,11 @@
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
+import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 
@@ -56,6 +57,7 @@ public class UIAnimationsTab extends UIResourcesTab {
     @Override
     protected VisScrollPane crateScrollPane() {
         animationsTable = new VisTable();
+        HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT, animationsTable);
         VisScrollPane scrollPane = StandardWidgetsFactory.createScrollPane(animationsTable);
         scrollPane.setScrollingDisabled(true, false);
         return scrollPane;
