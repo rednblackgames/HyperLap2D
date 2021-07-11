@@ -92,48 +92,57 @@ public abstract class BoxItemResource extends Group implements DraggableResource
     }
 
     /**
-     * Sets the right-click event. Should not be used with {@link #setClickEvent(String, String, Object, Object)}.
+     * Sets the right-click event. Should not be used with {@link #setClickEvent(String, Object, String, Object)}.
      * 
      * @param eventName The event name in case of a right-click.
      * @param payload The payload for the right-click.
      */
     public void setRightClickEvent(String eventName, String payload) {
-    	setClickEvent(null, eventName, null, payload);
+    	setClickEvent(null, null, eventName, payload);
     }
 
     /**
      * Sets the left/right-click event. Should not be used with {@link #setRightClickEvent(String, String)}.
+     *
+     * Will be fired {@link UIResourcesBoxMediator#RESOURCE_BOX_LEFT_CLICK} and {@link UIResourcesBoxMediator#RESOURCE_BOX_RIGHT_CLICK}.
      * 
      * @param leftClickEventName The event name in case of a left-click.
      * @param leftClickPayload The payload for the left-click.
      * @param rightClickEventName The event name in case of a right-click.
      * @param rightClickPayload The payload for the right-click.
      */
-    public void setClickEvent(String leftClickEventName, String rightClickEventName, Object leftClickPayload, Object rightClickPayload) {
+    public void setClickEvent(String leftClickEventName, Object leftClickPayload, String rightClickEventName, Object rightClickPayload) {
         addListener(new InputListener() {
         	private boolean isOver;
             @Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                super.touchDown(event, x, y, pointer, button);
                 return true;
             }
             @Override
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
             	// we only care for the event if the mouse is still in this resource
             	if (isOver && !event.isTouchFocusCancel()) {
-	            	if(button == Input.Buttons.LEFT && leftClickEventName != null) {
-	            		String eventType = UIResourcesBoxMediator.NORMAL_CLICK_EVENT_TYPE;
-	            		if (UIUtils.shift() && UIUtils.ctrl()) {
-	            			 eventType = UIResourcesBoxMediator.SHIFT_CTRL_EVENT_TYPE;
-	            		} else if (UIUtils.shift()) {
-	            			eventType = UIResourcesBoxMediator.SHIFT_EVENT_TYPE;
-	            		} else if (UIUtils.ctrl()) {
-	            			eventType = UIResourcesBoxMediator.CTRL_EVENT_TYPE;
-	            		}
-	            		HyperLap2DFacade.getInstance().sendNotification(leftClickEventName, leftClickPayload, eventType);
+                    String eventType = UIResourcesBoxMediator.NORMAL_CLICK_EVENT_TYPE;
+                    if (UIUtils.shift() && UIUtils.ctrl()) {
+                        eventType = UIResourcesBoxMediator.SHIFT_CTRL_EVENT_TYPE;
+                    } else if (UIUtils.shift()) {
+                        eventType = UIResourcesBoxMediator.SHIFT_EVENT_TYPE;
+                    } else if (UIUtils.ctrl()) {
+                        eventType = UIResourcesBoxMediator.CTRL_EVENT_TYPE;
+                    }
+
+	            	if(button == Input.Buttons.LEFT) {
+	            		HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.RESOURCE_BOX_LEFT_CLICK, BoxItemResource.this, eventType);
+
+	            		if (leftClickEventName != null)
+                            HyperLap2DFacade.getInstance().sendNotification(leftClickEventName, leftClickPayload, eventType);
 	            	}
-	                if(button == Input.Buttons.RIGHT && rightClickEventName != null) {
-	                    HyperLap2DFacade.getInstance().sendNotification(rightClickEventName, rightClickPayload);
+
+	                if(button == Input.Buttons.RIGHT) {
+	                    HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.RESOURCE_BOX_RIGHT_CLICK, BoxItemResource.this, eventType);
+
+                        if (rightClickEventName != null)
+                            HyperLap2DFacade.getInstance().sendNotification(rightClickEventName, rightClickPayload, eventType);
 	                }
             	}
             }

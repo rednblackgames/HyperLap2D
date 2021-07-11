@@ -52,7 +52,9 @@ public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource
     @Override
     public String[] listNotificationInterests() {
         return new String[]{
+				UIResourcesBoxMediator.RESOURCE_BOX_RIGHT_CLICK,
         		UIResourcesBoxMediator.RESOURCE_BOX_LEFT_CLICK,
+				UIResourcesBoxMediator.RESOURCE_BOX_DRAG_START,
         		MsgAPI.IMAGE_BUNDLE_DROP,
         		UIResourcesBoxMediator.ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT,
         		UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_ENTER,
@@ -63,27 +65,27 @@ public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource
     @Override
     public void handleNotification(INotification notification) {
     	super.handleNotification(notification);
-    	
-        switch (notification.getName()) {
+
+		BoxItemResource imageResource;
+
+		switch (notification.getName()) {
 	        case UIResourcesBoxMediator.RESOURCE_BOX_LEFT_CLICK:
-				BoxItemResource imageResource = notification.getBody();
-	        	switch (notification.getType()) {
-		        	case UIResourcesBoxMediator.NORMAL_CLICK_EVENT_TYPE:
-		        		handleNormalClick(imageResource);
-		        		break;
-		        	case UIResourcesBoxMediator.SHIFT_CTRL_EVENT_TYPE:
-		        		handleShiftCtrlClick(imageResource);
-		        		break;
-		        	case UIResourcesBoxMediator.SHIFT_EVENT_TYPE:
-		        		handleShiftClick(imageResource);
-		        		break;
-		        	case UIResourcesBoxMediator.CTRL_EVENT_TYPE:
-		        		handleCtrlClick(imageResource);
-		        		break;
-	        	}
-	        	
-	        	boxResourcePreviousClick = imageResource;
+				handleClickType(notification.getType(), notification.getBody());
 	        	break;
+			case UIResourcesBoxMediator.RESOURCE_BOX_RIGHT_CLICK:
+				imageResource = notification.getBody();
+				//Act as left-click when item is not already selected
+				if (!boxResourceSelectedSet.contains(imageResource.getPayloadData().name)) {
+					handleClickType(notification.getType(), imageResource);
+				}
+				break;
+			case UIResourcesBoxMediator.RESOURCE_BOX_DRAG_START:
+				imageResource = notification.getBody();
+				//If the dragged resource hasn't been selected previously reset selection
+				if (!boxResourceSelectedSet.contains(imageResource.getPayloadData().name)) {
+					handleNormalClick(imageResource);
+				}
+				break;
 	        case MsgAPI.IMAGE_BUNDLE_DROP:
 	        	Set<String> nameSet = new HashSet<>(boxResourceSelectedSet);
 	        	// remove the dropped one, so that it is not added twice
@@ -111,6 +113,25 @@ public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource
         }
     	
     }
+
+    private void handleClickType(String type, BoxItemResource imageResource) {
+		switch (type) {
+			case UIResourcesBoxMediator.NORMAL_CLICK_EVENT_TYPE:
+				handleNormalClick(imageResource);
+				break;
+			case UIResourcesBoxMediator.SHIFT_CTRL_EVENT_TYPE:
+				handleShiftCtrlClick(imageResource);
+				break;
+			case UIResourcesBoxMediator.SHIFT_EVENT_TYPE:
+				handleShiftClick(imageResource);
+				break;
+			case UIResourcesBoxMediator.CTRL_EVENT_TYPE:
+				handleCtrlClick(imageResource);
+				break;
+		}
+
+		boxResourcePreviousClick = imageResource;
+	}
     
     /**
      * Darkens all the resources except the given one.

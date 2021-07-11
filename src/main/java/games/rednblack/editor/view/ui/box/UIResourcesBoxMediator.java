@@ -46,6 +46,9 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
     private static final String PREFIX = "games.rednblack.editor.view.ui.box.UIResourcesBoxMediator";
 
     public static final String RESOURCE_BOX_LEFT_CLICK = PREFIX + ".RESOURCE_BOX_LEFT_CLICK";
+    public static final String RESOURCE_BOX_RIGHT_CLICK = PREFIX + ".RESOURCE_BOX_RIGHT_CLICK";
+
+    public static final String RESOURCE_BOX_DRAG_START = PREFIX + ".RESOURCE_BOX_DRAG_START";
 
     public static final String SHIFT_CTRL_EVENT_TYPE = PREFIX + ".SHIFT_CTRL_EVENT_TYPE";
     public static final String SHIFT_EVENT_TYPE = PREFIX + ".SHIFT_EVENT_TYPE";

@@ -112,7 +112,7 @@ public class SpineResource extends BoxItemResource {
         super.act(1f);
         super.act(Gdx.graphics.getDeltaTime());
 
-        setClickEvent(UIResourcesBoxMediator.RESOURCE_BOX_LEFT_CLICK, UIResourcesBoxMediator.SPINE_ANIMATION_RIGHT_CLICK, this, payload.name);
+        setRightClickEvent(UIResourcesBoxMediator.SPINE_ANIMATION_RIGHT_CLICK, payload.name);
     }
 
     @Override
