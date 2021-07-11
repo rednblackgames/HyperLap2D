@@ -5,8 +5,10 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
+import games.rednblack.editor.renderer.components.NinePatchComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
+import games.rednblack.editor.renderer.data.Image9patchVO;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.renderer.data.SimpleImageVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
@@ -123,6 +125,16 @@ public class ImageAsset extends Asset {
                     .collect(Collectors.toList()));
             simpleImageVOs.removeAll(tmpImageList);
         }
+
+        tmpImageList.clear();
+        if (compositeItemVO.composite != null && compositeItemVO.composite.sImage9patchs.size() != 0) {
+            ArrayList<Image9patchVO> simple9PatchesVOs = compositeItemVO.composite.sImage9patchs;
+            tmpImageList.addAll(simple9PatchesVOs
+                    .stream()
+                    .filter(simple9PatchVO -> simple9PatchVO.imageName.equals(imageName))
+                    .collect(Collectors.toList()));
+            simple9PatchesVOs.removeAll(tmpImageList);
+        }
     }
 
     private void deleteEntitiesWithImages(Entity rootEntity, String regionName) {
@@ -130,6 +142,11 @@ public class ImageAsset extends Asset {
         Consumer<Entity> action = (root) -> {
             TextureRegionComponent regionComponent = ComponentRetriever.get(root, TextureRegionComponent.class);
             if (regionComponent != null && regionComponent.regionName.equals(regionName)) {
+                tmpEntityList.add(root);
+            }
+
+            NinePatchComponent ninePatchComponent = ComponentRetriever.get(root, NinePatchComponent.class);
+            if (ninePatchComponent != null && ninePatchComponent.textureRegionName.equals(regionName)) {
                 tmpEntityList.add(root);
             }
         };
