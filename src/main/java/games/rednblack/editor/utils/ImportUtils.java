@@ -135,7 +135,7 @@ public class ImportUtils {
             }
         }
 
-        return regions.get(regions.size - 1).index == regions.size - 1;
+        return regions.get(regions.size - 1).index == regions.size - 1 + regions.get(0).index;
     }
 
     public static void unpackAtlasIntoTmpFolder(File atlasFile, String prefix, String tmpDir) {
