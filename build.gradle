@@ -118,6 +118,9 @@ dependencies {
 }
 
 def getBuildVersion = {
+    if (osName.contains('mac')) {
+        return getVersion().toString().replaceAll("0\\.", "")
+    }
     if (project.hasProperty('SNAPSHOT')) {
         return getVersion() + (project.hasProperty('WORKFLOW_RUN') ? WORKFLOW_RUN : "$System.env.WORKFLOW_RUN")
     } else {
