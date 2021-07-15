@@ -70,7 +70,8 @@ public class DraggableResource extends DragAndDrop implements Comparable<Draggab
                 float dragY = dragActor.getHeight() / (runtimeCamera.zoom * 2f);
                 setDragActorPosition(dragX, -dragY);
 
-                HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.RESOURCE_BOX_DRAG_START, viewComponent, null);
+                if (viewComponent instanceof BoxItemResource)
+                    HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.RESOURCE_BOX_DRAG_START, viewComponent, null);
                 return payload;
             }
         });
