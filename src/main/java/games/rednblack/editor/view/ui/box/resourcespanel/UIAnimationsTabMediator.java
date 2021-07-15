@@ -26,7 +26,6 @@ import java.util.function.BiFunction;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -93,9 +92,8 @@ public class UIAnimationsTabMediator extends UIResourcesTabMediator<UIAnimations
         for (String animationName : strings) {
             if (!animationName.contains(searchText)) continue;
             try {
-                Constructor<? extends BoxItemResource> constructor = resourceClass.getConstructor(String.class, Color.class, Color.class, Color.class, Color.class, boolean.class);
-                DraggableResource draggableResource = new DraggableResource(constructor.newInstance(animationName, new Color(1, 1, 1, 0.2f), new Color(1, 1, 1, 0.4f),
-                		new Color(200f / 255f, 200f / 255f, 200f / 255f, 0.2f), new Color(255f / 255f, 94f / 255f, 0f / 255f, 1f), true));
+                Constructor<? extends BoxItemResource> constructor = resourceClass.getConstructor(String.class, boolean.class);
+                DraggableResource draggableResource = new DraggableResource(constructor.newInstance(animationName, true));
                 draggableResource.initDragDrop();
                 draggableResource.setFactoryFunction(factoryFunction);
                 animationBoxes.add(draggableResource);

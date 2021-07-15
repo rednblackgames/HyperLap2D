@@ -108,8 +108,6 @@ public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource
 	        case UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_EXIT:
 	        	setColorExcept(new Color(0f, 0f, 0f, 1f), null);
 	        	break;
-	        default:
-	        	System.err.println("Unknown notification: " + notification);
         }
     	
     }

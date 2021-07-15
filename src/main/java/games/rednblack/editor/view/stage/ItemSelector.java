@@ -140,7 +140,6 @@ public class ItemSelector {
             acc.carryVal = x;
             acc.carry = i;
         }
-        System.out.println("MaxFloat  = " + Float.MAX_VALUE + " MinFloat = " + Float.MIN_VALUE);
     };
 
     public BiConsumer<Entity, AccContainer> leftmostItem = (i, acc) -> {

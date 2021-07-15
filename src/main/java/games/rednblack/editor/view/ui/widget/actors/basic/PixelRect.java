@@ -31,6 +31,7 @@ public class PixelRect extends Group {
     private final HyperLap2DFacade facade;
     private final PixelLine[] lines = new PixelLine[4];
     private final Image fill;
+    private final Rectangle rectangle = new Rectangle();
 
     public PixelRect() {
         this(0, 0);
@@ -40,8 +41,10 @@ public class PixelRect extends Group {
         facade = HyperLap2DFacade.getInstance();
         lines[0] = new PixelLine(0, 0, width, 0);
         lines[1] = new PixelLine(0, 0, 0, height);
+        lines[1].setPosition(lines[1].getThickness(), 0, lines[1].getThickness(), height - lines[1].getThickness());
         lines[2] = new PixelLine(width, 0, width, height);
         lines[3] = new PixelLine(0, height, width, height);
+        lines[3].setPosition(0, height - lines[3].getThickness(), width, height - lines[3].getThickness());
 
         fill = new Image(WhitePixel.sharedInstance.texture);
         fill.setColor(new Color(0, 0, 0, 0));
@@ -109,16 +112,18 @@ public class PixelRect extends Group {
             height = -height;
             y = y - height;
         }
-        Rectangle r = new Rectangle(x, y, width, height);
 
-        return r;
+        return rectangle.set(x, y, width, height);
     }
 
-	 public void setThickness(float thickness) {
-		  lines[0].setThickness(thickness);
-		  lines[1].setThickness(thickness);
-		  lines[2].setThickness(thickness);
-		  lines[3].setThickness(thickness);
-	 }
+    public void setThickness(float thickness) {
+        lines[0].setThickness(thickness);
+        lines[1].setThickness(thickness);
+        lines[1].setPosition(lines[1].getThickness(), 0, lines[1].getThickness(), getHeight() - lines[1].getThickness());
+        lines[2].setThickness(thickness);
+        lines[3].setThickness(thickness);
+
+        lines[3].setPosition(0, getHeight() - lines[3].getThickness(), getWidth(), getHeight() - lines[3].getThickness());
+    }
 
 }

@@ -44,50 +44,55 @@ public abstract class BoxItemResource extends Group implements DraggableResource
     /**
      * The color to fill the background of the image. Also the color of the background when the mouse is not over the image.
      */
-    private final Color fillColor;
+    private final Color fillColor = new Color(1, 1, 1, 0.2f);
     /**
      * The standard color of the border. Also the color of the border when the mouse is not over the image.
      */
-    private final Color borderColor;
+    private final Color borderColor = new Color(1, 1, 1, 0.4f);
     /**
      * The color of the border when the mouse hovers over the image.
      */
-    private final Color borderMouseOverColor;
+    private final Color borderMouseOverColor = new Color(1f, 94f / 255f, 0f / 255f, 1f);
     /**
      * The color to fill the background of the image when the mouse hovers over the image.
      */
-    private final Color fillMouseOverColor;
+    private final Color fillMouseOverColor = new Color(200f / 255f, 200f / 255f, 200f / 255f, 0.2f);
     /**
      * Whether to change the border color when the mouse hovers over the image.
+     * Only used if the the parameter <code>highlightWhenMouseOver</code> is set to <code>true</code>.
      */
     private boolean highlightWhenMouseOver;
-    
+
+    /**
+     * The standard thickness of the border. Also the thickness of the border when the mouse is not over the image.
+     */
+    private float borderThickness = 1f;
+    /**
+     * The thickness of the border when the mouse hovers the image.
+     */
+    private float borderMouseOverThickness = 2f;
+
     public BoxItemResource() {
-    	this(new Color(1, 1, 1, 0.2f), new Color(1, 1, 1, 0.4f), Color.BLACK, Color.BLACK, false);
+    	this(false);
     }
     
     /**
      * Creates a new box item resource with the given colors.
      *
-     * @param fillColor The color to fill the background of the image.
-     * @param borderColor The standard color of the border. Also used when the mouse is not hovering over the image.
-     * @param fillMouseOverColor The color to fill the background of the image when the mouse hovers over the image. Only used if the the parameter <code>highlightWhenMouseOver</code> is set to <code>true</code>.
-     * @param borderMouseOverColor The color of the border when the mouse hovers over the image. Only used if the the parameter <code>highlightWhenMouseOver</code> is set to <code>true</code>.
      * @param highlightWhenMouseOver Whether to change the border color when the mouse hovers over the image.
      */
-    public BoxItemResource(Color fillColor, Color borderColor, Color fillMouseOverColor, Color borderMouseOverColor, boolean highlightWhenMouseOver) {
+    public BoxItemResource(boolean highlightWhenMouseOver) {
         sandbox = Sandbox.getInstance();
         rc = new PixelRect(thumbnailSize, thumbnailSize);
         rc.setFillColor(fillColor);
         rc.setBorderColor(borderColor);
+        rc.setThickness(borderThickness);
         addActor(rc);
         setWidth(thumbnailSize);
         setHeight(thumbnailSize);
-        
-        this.fillColor = fillColor;
-        this.borderColor = borderColor;
-        this.fillMouseOverColor = fillMouseOverColor;
-        this.borderMouseOverColor = borderMouseOverColor;
+
+        thumbnailSize -= Math.max(borderThickness, borderMouseOverThickness);
+
         this.highlightWhenMouseOver = highlightWhenMouseOver;
     }
 
@@ -161,8 +166,7 @@ public abstract class BoxItemResource extends Group implements DraggableResource
             	isOver = false;
             	// check if we have to revert the color
             	if (highlightWhenMouseOver) {
-            		rc.setFillColor(fillColor);
-            		rc.setBorderColor(borderColor);
+                    switchToStandardColor();
             	}
             }
         });
@@ -173,17 +177,54 @@ public abstract class BoxItemResource extends Group implements DraggableResource
     }
     
     public void switchToMouseOverColor() {
-    	if (fillMouseOverColor != null && borderMouseOverColor != null) {
-			rc.setFillColor(fillMouseOverColor);
-			rc.setBorderColor(borderMouseOverColor);
-    	}
+        rc.setFillColor(fillMouseOverColor);
+        rc.setBorderColor(borderMouseOverColor);
+        rc.setThickness(borderMouseOverThickness);
     }
     
     public void switchToStandardColor() {
-    	if (fillColor != null && borderColor != null) {
-			rc.setFillColor(fillColor);
-			rc.setBorderColor(borderColor);
-    	}
+        rc.setFillColor(fillColor);
+        rc.setBorderColor(borderColor);
+        rc.setThickness(borderThickness);
     }
-    
+
+    public void setFillColor(Color color) {
+        fillColor.set(color);
+    }
+
+    public void setFillColor(float r, float g, float b, float a) {
+        fillColor.set(r, g, b, a);
+    }
+
+    public void setBorderColor(Color color) {
+        borderColor.set(color);
+    }
+
+    public void setBorderColorColor(float r, float g, float b, float a) {
+        borderColor.set(r, g, b, a);
+    }
+
+    public void setHighlightFillColor(Color color) {
+        fillMouseOverColor.set(color);
+    }
+
+    public void setHighlightFillColor(float r, float g, float b, float a) {
+        fillMouseOverColor.set(r, g, b, a);
+    }
+
+    public void setHighlightBorderColor(Color color) {
+        borderMouseOverColor.set(color);
+    }
+
+    public void setHighlightBorderColorColor(float r, float g, float b, float a) {
+        borderMouseOverColor.set(r, g, b, a);
+    }
+
+    public void setBorderThickness(float borderThickness) {
+        this.borderThickness = borderThickness;
+    }
+
+    public void setHighlightBorderThickness(float borderThickness) {
+        this.borderMouseOverThickness = borderThickness;
+    }
 }

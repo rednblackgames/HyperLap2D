@@ -21,7 +21,6 @@ package games.rednblack.editor.view.ui.box.resourcespanel;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 
@@ -84,8 +83,7 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
                         || !region.name.contains(searchText)) continue;
 
                 boolean is9patch = region.findValue("split") != null;
-                ImageResource imageResource = new ImageResource(region, new Color(1, 1, 1, 0.2f), new Color(1, 1, 1, 0.4f),
-                		new Color(200f / 255f, 200f / 255f, 200f / 255f, 0.2f), new Color(255f / 255f, 94f / 255f, 0f / 255f, 1f), true);
+                ImageResource imageResource = new ImageResource(region, true);
                 DraggableResource draggableResource = new DraggableResource(imageResource);
                 if (is9patch) {
                     draggableResource.setFactoryFunction(ItemFactory.get()::create9Patch);

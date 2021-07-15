@@ -11,6 +11,7 @@
 - Add Editor performance settings (MSAA, OpenGL 3)
 - Add multiple atlas packing settings
 - Add Import libGDX atlas format
+- Improve `Resources` Panel UI/UX
 - Huge improvements to Tiled Plugin:
     * Sprite and Spine animated Tiles
     * UI improvements and general refactoring
