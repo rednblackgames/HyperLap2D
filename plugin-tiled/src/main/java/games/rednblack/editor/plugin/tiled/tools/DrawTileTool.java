@@ -1,24 +1,26 @@
 package games.rednblack.editor.plugin.tiled.tools;
 
+import org.puremvc.java.interfaces.INotification;
+
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.kotcrab.vis.ui.util.OsUtils;
+
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
+import games.rednblack.editor.plugin.tiled.tools.drawStrategy.AutoTileDrawStrategy;
 import games.rednblack.editor.plugin.tiled.tools.drawStrategy.IDrawStrategy;
 import games.rednblack.editor.plugin.tiled.tools.drawStrategy.ImageDrawStrategy;
 import games.rednblack.editor.plugin.tiled.tools.drawStrategy.SpineDrawStrategy;
 import games.rednblack.editor.plugin.tiled.tools.drawStrategy.SpriteDrawStrategy;
-import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.h2d.common.view.tools.Tool;
 import games.rednblack.h2d.common.vo.CursorData;
-import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by mariam on 3/29/16.
@@ -34,6 +36,7 @@ public class DrawTileTool implements Tool {
     private final ImageDrawStrategy imageDrawStrategy;
     private final SpriteDrawStrategy spriteDrawStrategy;
     private final SpineDrawStrategy spineDrawStrategy;
+    private final AutoTileDrawStrategy autoTileDrawStrategy;
     private IDrawStrategy currentDrawStrategy;
 
     public DrawTileTool(TiledPlugin tiledPlugin) {
@@ -41,6 +44,7 @@ public class DrawTileTool implements Tool {
         imageDrawStrategy = new ImageDrawStrategy(tiledPlugin);
         spriteDrawStrategy = new SpriteDrawStrategy(tiledPlugin);
         spineDrawStrategy = new SpineDrawStrategy(tiledPlugin);
+        autoTileDrawStrategy = new AutoTileDrawStrategy(tiledPlugin);
     }
 
     @Override
@@ -68,6 +72,7 @@ public class DrawTileTool implements Tool {
 
     @Override
     public void stageMouseUp(float x, float y) {
+    	tiledPlugin.facade.sendNotification(TiledPlugin.AUTO_FILL_TILES);
     }
 
     @Override
@@ -97,6 +102,7 @@ public class DrawTileTool implements Tool {
 
     @Override
     public void itemMouseUp(Entity entity, float x, float y) {
+    	tiledPlugin.facade.sendNotification(TiledPlugin.AUTO_FILL_TILES);
     }
 
     @Override
@@ -154,19 +160,23 @@ public class DrawTileTool implements Tool {
     }
 
     private void chooseDrawStrategy() {
-        switch (tiledPlugin.getSelectedTileType()) {
-            case EntityFactory.IMAGE_TYPE:
-                currentDrawStrategy = imageDrawStrategy;
-                break;
-            case EntityFactory.SPRITE_TYPE:
-                currentDrawStrategy = spriteDrawStrategy;
-                break;
-            case EntityFactory.SPINE_TYPE:
-                currentDrawStrategy = spineDrawStrategy;
-                break;
-            default:
-                currentDrawStrategy = null;
-        }
+    	if (tiledPlugin.isAutoGridTilesTabSelected()) {
+    		currentDrawStrategy = autoTileDrawStrategy;
+    	} else {
+	        switch (tiledPlugin.getSelectedTileType()) {
+	            case EntityFactory.IMAGE_TYPE:
+	                currentDrawStrategy = imageDrawStrategy;
+	                break;
+	            case EntityFactory.SPRITE_TYPE:
+	                currentDrawStrategy = spriteDrawStrategy;
+	                break;
+	            case EntityFactory.SPINE_TYPE:
+	                currentDrawStrategy = spineDrawStrategy;
+	                break;
+	            default:
+	                currentDrawStrategy = null;
+	        }
+    	}
     }
 
     private void drawTile(float x, float y) {

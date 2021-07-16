@@ -18,8 +18,11 @@
 
 package games.rednblack.editor.plugin.tiled;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 
+import games.rednblack.editor.renderer.data.TexturePackVO;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 
@@ -27,12 +30,21 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.OptionDialogAdapter;
 
+import games.rednblack.editor.plugin.tiled.data.AlternativeAutoTileVO;
+import games.rednblack.editor.plugin.tiled.data.AutoTileVO;
 import games.rednblack.editor.plugin.tiled.data.TileVO;
+import games.rednblack.editor.plugin.tiled.manager.AutoGridTileManager;
 import games.rednblack.editor.plugin.tiled.tools.DeleteTileTool;
 import games.rednblack.editor.plugin.tiled.tools.DrawTileTool;
 import games.rednblack.editor.plugin.tiled.view.SpineDrawable;
@@ -51,11 +63,16 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
     public static final String NAME = TAG;
 
     private TiledPlugin tiledPlugin;
-    private DragAndDrop.Target target;
+    private DragAndDrop.Target targetGrid;
+    private DragAndDrop.Target targetAutoGrid;
+
+    private AutoGridTileManager autoGridTileManager;
 
     public TiledPanelMediator(TiledPlugin tiledPlugin) {
         super(NAME, new TiledPanel(tiledPlugin));
         this.tiledPlugin = tiledPlugin;
+        
+        autoGridTileManager = new AutoGridTileManager(tiledPlugin);
 
         viewComponent.initLockView();
     }
@@ -71,6 +88,11 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST,
                 TiledPlugin.ACTION_SET_OFFSET,
                 TiledPlugin.OPEN_DROP_DOWN,
+                TiledPlugin.AUTO_TILE_SELECTED,
+                TiledPlugin.ACTION_DELETE_AUTO_TILE,
+                TiledPlugin.AUTO_OPEN_DROP_DOWN,
+                TiledPlugin.AUTO_FILL_TILES,
+                TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE,
                 TiledPlugin.GRID_CHANGED,
                 SettingsTab.OK_BTN_CLICKED,
                 TiledPlugin.ACTION_SET_GRID_SIZE_FROM_ITEM,
@@ -94,31 +116,8 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 tiledPlugin.initSaveData();
                 viewComponent.initView();
 
-                if (target != null)
-                    tiledPlugin.facade.sendNotification(MsgAPI.REMOVE_TARGET, target);
-                target = new DragAndDrop.Target(viewComponent.getDropTable()) {
-                    @Override
-                    public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-                        return true;
-                    }
-
-                    @Override
-                    public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-                        ResourcePayloadObject resourcePayloadObject = (ResourcePayloadObject) payload.getObject();
-                        int type = mapClassNameToEntityType(resourcePayloadObject.className);
-                        if (type == EntityFactory.UNKNOWN_TYPE) return; //only some resources can become a tile!
-
-                        String tileName = resourcePayloadObject.name;
-                        // we send a notifier even in the case when the tile is not already added
-                        tiledPlugin.facade.sendNotification(TiledPlugin.TILE_ADDED, new Object[]{tileName, type});
-                        if (type == EntityFactory.IMAGE_TYPE) {
-                        	// ensure that all selected images are dropped
-                        	// the respective listener is responsible for dropping one-by-one, since he tracks the selected ones
-                        	tiledPlugin.facade.sendNotification(MsgAPI.IMAGE_BUNDLE_DROP, new Object[]{tileName, type});
-                        }
-                    }
-                };
-                tiledPlugin.facade.sendNotification(MsgAPI.ADD_TARGET, target);
+                targetGrid = initTarget(targetGrid, viewComponent.getDropTable(), false);
+                targetAutoGrid = initTarget(targetAutoGrid, viewComponent.getAutoGridDropTable(), true);
                 Engine engine = tiledPlugin.getAPI().getEngine();
                 viewComponent.setEngine(engine);
                 viewComponent.setFixedPosition();
@@ -129,17 +128,40 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 Object[] payload = notification.getBody();
                 tileName = (String) payload[0];
                 int type = (int) payload[1];
-                // we only add tiles that have not been added previously
-                if (tiledPlugin.dataToSave.containsTile(tileName)) return;
+                boolean isAutoTilesTarget = (boolean) payload[2];
                 
-                viewComponent.addTile(tileName, type);
+                if (isAutoTilesTarget) {
+                	// we only add tiles that have not been added previously
+                	if (tiledPlugin.dataToSave.containsAutoTile(tileName)) return;
 
-                tiledPlugin.dataToSave.addTile(tileName, type);
+                    // retract the images for the auto-tiles
+                    retractAutoTiles(tileName);
+
+                    viewComponent.addAutoTile(tileName, type);
+
+                    tiledPlugin.dataToSave.addAutoTile(tileName, type);
+                } else {
+                	// we only add tiles that have not been added previously
+                	if (tiledPlugin.dataToSave.containsTile(tileName)) return;
+                	
+                    viewComponent.addTile(tileName, type);
+
+                    tiledPlugin.dataToSave.addTile(tileName, type);
+                }
+                
                 tiledPlugin.saveDataManager.save();
                 break;
             case TiledPlugin.TILE_SELECTED:
-                viewComponent.selectTile(notification.getBody());
+            case TiledPlugin.AUTO_TILE_SELECTED:
+            	if (viewComponent.isAutoGridTilesTabSelected()) {
+            		viewComponent.selectAutoTile(notification.getBody());
+            	} else {
+            		viewComponent.selectTile(notification.getBody());
+            	}
                 break;
+            case TiledPlugin.AUTO_FILL_TILES:
+            	autoGridTileManager.autoFill();
+            	break;
             case TiledPlugin.OPEN_DROP_DOWN:
                 tileName = notification.getBody();
                 HashMap<String, String> actionsSet = new HashMap<>();
@@ -150,24 +172,41 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 tiledPlugin.facade.sendNotification(TiledPlugin.TILE_SELECTED, tiledPlugin.dataToSave.getTile(tileName));
                 tiledPlugin.getAPI().showPopup(actionsSet, tileName);
                 break;
+            case TiledPlugin.AUTO_OPEN_DROP_DOWN:
+                tileName = notification.getBody();
+                HashMap<String, String> autoActionsSet = new HashMap<>();
+                autoActionsSet.put(TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST, "Set grid size");
+                autoActionsSet.put(TiledPlugin.ACTION_DELETE_AUTO_TILE, "Delete");
+//                autoActionsSet.put(TiledPlugin.ACTION_OPEN_OFFSET_PANEL, "Set offset");
+                autoActionsSet.put(TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE, "Setup alternatives");
+                tiledPlugin.facade.sendNotification(TiledPlugin.AUTO_TILE_SELECTED, tiledPlugin.dataToSave.getAutoTile(tileName));
+                tiledPlugin.getAPI().showPopup(autoActionsSet, tileName);
+            	break;
             case MsgAPI.ACTION_DELETE_IMAGE_RESOURCE:
                 tileName = notification.getBody();
                 tiledPlugin.facade.sendNotification(TiledPlugin.ACTION_DELETE_TILE, tileName);
+                tiledPlugin.facade.sendNotification(TiledPlugin.ACTION_DELETE_AUTO_TILE, tileName);
                 break;
             case TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST:
                 float width = 0;
                 float height = 0;
-                TileVO t = tiledPlugin.dataToSave.getTile(notification.getBody());
-                if (t.entityType == EntityFactory.SPINE_TYPE) {
-                    SpineDrawable spineDrawable = tiledPlugin.pluginRM.getSpineDrawable(t.regionName);
-                    width = spineDrawable.width;
-                    height = spineDrawable.height;
-                } else {
+                if (tiledPlugin.isAutoGridTilesTabSelected()) {
+                	AutoTileVO t = tiledPlugin.dataToSave.getAutoTile(notification.getBody());
                     TextureRegion r = tiledPlugin.pluginRM.getTextureRegion(t.regionName, t.entityType);
-                    width = r.getRegionWidth();
-                    height = r.getRegionHeight();
+                    width = r.getRegionWidth() / TiledPlugin.AUTO_TILE_COLS;
+                    height = r.getRegionHeight() / TiledPlugin.AUTO_TILE_ROWS;
+                } else {
+                    TileVO t = tiledPlugin.dataToSave.getTile(notification.getBody());
+	                if (t.entityType == EntityFactory.SPINE_TYPE) {
+	                    SpineDrawable spineDrawable = tiledPlugin.pluginRM.getSpineDrawable(t.regionName);
+	                    width = spineDrawable.width;
+	                    height = spineDrawable.height;
+	                } else {
+	                    TextureRegion r = tiledPlugin.pluginRM.getTextureRegion(t.regionName, t.entityType);
+	                    width = r.getRegionWidth();
+	                    height = r.getRegionHeight();
+	                }
                 }
-
                 tiledPlugin.dataToSave.setGrid(width / tiledPlugin.getPixelToWorld(), height / tiledPlugin.getPixelToWorld());
                 tiledPlugin.facade.sendNotification(TiledPlugin.GRID_CHANGED);
                 break;
@@ -180,6 +219,25 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
 
                 viewComponent.removeTile();
                 break;
+            case TiledPlugin.ACTION_DELETE_AUTO_TILE:
+                String tn2 = notification.getBody();
+                if (!tiledPlugin.dataToSave.containsAutoTile(tn2)) return;
+                tiledPlugin.dataToSave.removeAutoTile(tn2);
+                tiledPlugin.saveDataManager.save();
+                tiledPlugin.setSelectedAutoTileVO(new AutoTileVO());
+                
+                for (AutoTileVO autoTile : tiledPlugin.dataToSave.getAutoTiles()) {
+                	Iterator<AlternativeAutoTileVO> iter = autoTile.alternativeAutoTileList.iterator();
+                	while (iter.hasNext()) {
+                		AlternativeAutoTileVO alternativeAutoTileVO = iter.next();
+                		if (alternativeAutoTileVO.region.equals(tn2)) {
+                			iter.remove();
+                		}
+                	}
+                }
+
+                viewComponent.removeAutoTile();
+				tiledPlugin.facade.sendNotification(TiledPlugin.ACTION_RECALC_PERCENT_ALTERNATIVES_AUTO_TILE);
             case TiledPlugin.ACTION_DELETE_TILE_ALL:
                 Dialogs.showOptionDialog(tiledPlugin.getAPI().getUIStage(), "Delete all...", "Do you really want to delete all tiles?",
                         Dialogs.OptionDialogType.YES_NO, new OptionDialogAdapter() {
@@ -241,6 +299,99 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 break;
         }
     }
+
+    /**
+     * Retracts all auto-tiles from the given auto-tile-template.
+     * 
+     * @param tileName The name of the tile from that the auto-tiles are retracted from.
+     */
+    private void retractAutoTiles(String tileName) {
+    	TextureRegion tr = tiledPlugin.getAPI().getSceneLoader().getRm().getTextureRegion(tileName);
+    	tr.getTexture().getTextureData().prepare();
+    	Pixmap pixmap = tr.getTexture().getTextureData().consumePixmap();
+    	String name = tileName;
+
+    	int tileW = tr.getRegionWidth() / TiledPlugin.AUTO_TILE_COLS;
+    	int tileH = tr.getRegionHeight() / TiledPlugin.AUTO_TILE_ROWS;
+    	int maxX = tr.getRegionWidth() + tr.getRegionX();
+    	int maxY = tr.getRegionHeight() + tr.getRegionY();
+
+    	//Create new atlas packing settings if doesn't exists
+    	String atlasName = name + TiledPlugin.AUTO_TILE_ATLAS_SUFFIX;
+        TexturePackVO texturePackVO = tiledPlugin.getAPI().getCurrentProjectInfoVO().imagesPacks.get(atlasName);
+        if (texturePackVO == null) {
+            texturePackVO = new TexturePackVO();
+            texturePackVO.name = atlasName;
+
+            tiledPlugin.getAPI().getCurrentProjectInfoVO().imagesPacks.put(texturePackVO.name, texturePackVO);
+        }
+
+    	int i = 0;
+    	for (int x = tr.getRegionX(); x < maxX; x += tileW) {
+    		for (int y = tr.getRegionY(); y < maxY; y += tileH) {
+    			// skip non used
+    			if (i != 4 && i != 9 && i != 14 && i != 19 && i != 49 && i != 50 && i != 51) {
+	    			int w = x + tileW <= pixmap.getWidth() ? tileW : pixmap.getWidth() - x;
+	    			int h = y + tileH <= pixmap.getHeight() ? tileH : pixmap.getHeight() - y;
+	    			Pixmap tilePixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+	    			tilePixmap.drawPixmap(pixmap, 0, 0, x, y, w, h);
+
+	    			String tilePngName = name + i;
+	    			String imagesPath = tiledPlugin.getCurrentRawImagesPath() + File.separator + tilePngName + ".png";
+	    			FileHandle path = new FileHandle(imagesPath);
+	    			PixmapIO.writePNG(path, tilePixmap);
+	
+	    			tilePixmap.dispose();
+                    texturePackVO.regions.add(tilePngName);
+    			}
+    			i++;
+    		}
+    	}
+    	
+    	// create mini image
+    	Pixmap tilePixmap = new Pixmap(tileW, tileH, Pixmap.Format.RGBA8888);
+    	tilePixmap.drawPixmap(pixmap, tr.getRegionX(), tr.getRegionY(), tr.getRegionWidth(), tr.getRegionHeight(), 0, 0, tileW, tileH);
+    	String miniImageName = name + TiledPlugin.AUTO_TILE_MINI_SUFFIX;
+    	String imagesPath = tiledPlugin.getCurrentRawImagesPath() + File.separator + miniImageName + ".png";
+    	FileHandle path = new FileHandle(imagesPath);
+    	PixmapIO.writePNG(path, tilePixmap);
+    	tilePixmap.dispose();
+
+    	pixmap.dispose();
+        texturePackVO.regions.add(miniImageName);
+
+    	facade.sendNotification(MsgAPI.ACTION_REPACK);
+	}
+
+	private Target initTarget(Target targetGrid, Table dropTable, boolean isAutoGridTarget) {
+    	if (targetGrid != null)
+            tiledPlugin.facade.sendNotification(MsgAPI.REMOVE_TARGET, targetGrid);
+        targetGrid = new DragAndDrop.Target(dropTable) {
+            @Override
+            public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
+                return true;
+            }
+
+            @Override
+            public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
+                ResourcePayloadObject resourcePayloadObject = (ResourcePayloadObject) payload.getObject();
+                int type = mapClassNameToEntityType(resourcePayloadObject.className);
+                if (type == EntityFactory.UNKNOWN_TYPE) return; //only some resources can become a tile!
+
+                String tileName = resourcePayloadObject.name;
+                // we send a notifier even in the case when the tile is not already added
+                tiledPlugin.facade.sendNotification(TiledPlugin.TILE_ADDED, new Object[]{tileName, type, isAutoGridTarget});
+                if (type == EntityFactory.IMAGE_TYPE) {
+                	// ensure that all selected images are dropped
+                	// the respective listener is responsible for dropping one-by-one, since he tracks the selected ones
+                	tiledPlugin.facade.sendNotification(MsgAPI.IMAGE_BUNDLE_DROP, new Object[]{tileName, type, isAutoGridTarget});
+                }
+            }
+        };
+        tiledPlugin.facade.sendNotification(MsgAPI.ADD_TARGET, targetGrid);
+        
+        return targetGrid;
+	}
 
 	private int mapClassNameToEntityType(String className) {
         if (className.endsWith(".ImageResource"))

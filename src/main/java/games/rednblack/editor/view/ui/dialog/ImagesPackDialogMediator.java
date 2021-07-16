@@ -103,7 +103,6 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
                 );
                 projectManager.currentProjectInfoVO.imagesPacks.remove(packToRemove);
                 viewComponent.updateMainPack(projectManager.currentProjectInfoVO.imagesPacks.get("main").regions);
-                viewComponent.updateCurrentPack(projectManager.currentProjectInfoVO.imagesPacks.get(viewComponent.getSelectedTab()).regions);
                 viewComponent.clearCurrentPack();
                 projectManager.saveCurrentProject();
                 break;

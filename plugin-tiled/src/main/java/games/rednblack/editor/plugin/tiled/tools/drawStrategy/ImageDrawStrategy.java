@@ -1,7 +1,9 @@
 package games.rednblack.editor.plugin.tiled.tools.drawStrategy;
 
 import com.badlogic.ashley.core.Entity;
+
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
+import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.command.ReplaceRegionCommandBuilder;
@@ -43,6 +45,10 @@ public class ImageDrawStrategy extends BasicDrawStrategy {
                 replaceRegionCommandBuilder.setRegion(tiledPlugin.getAPI().getSceneLoader().getRm().getTextureRegion(region));
                 replaceRegionCommandBuilder.setRegionName(region);
                 replaceRegionCommandBuilder.execute(tiledPlugin.facade);
+
+                MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+                mainItemComponent.tags.remove(TiledPlugin.AUTO_TILE_TAG);
+                mainItemComponent.removeCustomVars(TiledPlugin.REGION);
             }
         }
     }

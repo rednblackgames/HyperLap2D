@@ -25,8 +25,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 
+import games.rednblack.editor.plugin.tiled.data.AutoTileVO;
 import games.rednblack.editor.plugin.tiled.data.TileVO;
 import games.rednblack.editor.plugin.tiled.manager.ResourcesManager;
+import games.rednblack.editor.plugin.tiled.view.tabs.AbstractGridTilesTab;
+import games.rednblack.editor.plugin.tiled.view.tabs.AutoGridTilesTab;
 import games.rednblack.editor.plugin.tiled.view.tabs.GridTilesTab;
 import games.rednblack.editor.plugin.tiled.view.tabs.SettingsTab;
 import games.rednblack.h2d.common.UIDraggablePanel;
@@ -39,11 +42,11 @@ import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPane
  */
 public class TiledPanel extends UIDraggablePanel {
 
-    public static final float GRID_WIDTH = 220f;
+    public static final float GRID_WIDTH = 240f;
     public static final float GRID_HEIGHT = 250f;
-    public static final float DROP_WIDTH = 220f;
+    public static final float DROP_WIDTH = 240f;
     public static final float DROP_HEIGHT = 140f;
-    public static final float SETTINGS_WIDTH = 220f;
+    public static final float SETTINGS_WIDTH = 240f;
     public static final float SETTINGS_HEIGHT = 150f;
 
     public TiledPlugin tiledPlugin;
@@ -55,9 +58,12 @@ public class TiledPanel extends UIDraggablePanel {
 
     private GridTilesTab tilesTab;
     private SettingsTab settingsTab;
+    private AutoGridTilesTab autoGridTilesTab;
     private VisTable mainTable;
     private Engine engine;
     private ResourcesManager resourcesManager;
+
+    private boolean isAutoGridTabSelected;
 
     public TiledPanel(TiledPlugin tiledPlugin) {
         super("Tiles");
@@ -104,8 +110,11 @@ public class TiledPanel extends UIDraggablePanel {
                 if (tab instanceof SettingsTab) {
                     WIDTH = SETTINGS_WIDTH;
                     HEIGHT = SETTINGS_HEIGHT;
-                } else if (tab instanceof GridTilesTab) {
-                    if (GridTilesTab.isDrop) {
+                } else if (tab instanceof AbstractGridTilesTab) {
+                    isAutoGridTabSelected = tab instanceof AutoGridTilesTab;
+                    tiledPlugin.setAutoGridTilesTabSelected(isAutoGridTabSelected);
+                    
+                    if (((AbstractGridTilesTab<?>) tab).isDrop) {
                         WIDTH = DROP_WIDTH;
                         HEIGHT = DROP_HEIGHT;
                     } else {
@@ -140,8 +149,10 @@ public class TiledPanel extends UIDraggablePanel {
         });
 
         initTabs();
+    }
 
-        pack();
+    public boolean isAutoGridTilesTabSelected() {
+    	return isAutoGridTabSelected;
     }
 
     public void setFixedPosition() {
@@ -152,6 +163,10 @@ public class TiledPanel extends UIDraggablePanel {
         return tilesTab.getContentTable();
     }
 
+    public Table getAutoGridDropTable() {
+    	return autoGridTilesTab.getContentTable();
+    }
+
     public void reInitGridSettings() {
         settingsTab.resetGridCategory();
     }
@@ -160,20 +175,34 @@ public class TiledPanel extends UIDraggablePanel {
         tilesTab.addTile(tileName, type);
     }
 
+    public void addAutoTile(String tileName, int type) {
+    	autoGridTilesTab.addTile(tileName, type);
+    }
+
     public void selectTile(TileVO tileVO) {
         tilesTab.selectTile(tileVO);
     }
 
+    public void selectAutoTile(AutoTileVO tileVO) {
+    	autoGridTilesTab.selectTile(tileVO);
+    }
+
     public void removeTile() {
         tilesTab.removeTile();
-        reInitTabTable();
+        reInitTabTable(tilesTab);
         tilesTab.scrollTiles();
     }
     
     public void removeAllTiles() {
     	tilesTab.removeAllTiles();
-    	reInitTabTable();
+    	reInitTabTable(tilesTab);
     	tilesTab.scrollTiles();
+    }
+
+    public void removeAutoTile() {
+    	autoGridTilesTab.removeTile();
+        reInitTabTable(autoGridTilesTab);
+        autoGridTilesTab.scrollTiles();
     }
 
     private void initTabs() {
@@ -184,15 +213,27 @@ public class TiledPanel extends UIDraggablePanel {
         settingsTab = new SettingsTab(this, "Settings", 1);
         settingsTab.initView();
         tabbedPane.insert(settingsTab.getTabIndex(), settingsTab);
+        
+        autoGridTilesTab = new AutoGridTilesTab(this, "Auto Tiling", 2);
+        autoGridTilesTab.initView();
+        tabbedPane.insert(autoGridTilesTab.getTabIndex(), autoGridTilesTab);
 
-        reInitTabTable();
+        // reinit the currently visible tab
+        if (isAutoGridTabSelected) {
+        	reInitTabTable(autoGridTilesTab);
+        } else {
+        	reInitTabTable(tilesTab);
+        }
     }
 
-    public void reInitTabTable() {
-        float width = GridTilesTab.isDrop ? DROP_WIDTH : GRID_WIDTH;
-        float height = GridTilesTab.isDrop ? DROP_HEIGHT : GRID_HEIGHT;
+    public void reInitTabTable(AbstractGridTilesTab<?> tab) {
+        isAutoGridTabSelected = tab instanceof AutoGridTilesTab;
+        tiledPlugin.setAutoGridTilesTabSelected(isAutoGridTabSelected);
+
+        float width = tab.isDrop ? DROP_WIDTH : GRID_WIDTH;
+        float height = tab.isDrop ? DROP_HEIGHT : GRID_HEIGHT;
         tabTable.clear();
-        tabTable.add(tilesTab.getContentTable())
+        tabTable.add(tab.getContentTable())
                 .width(width)
                 .height(height);
         tabTable.pack();

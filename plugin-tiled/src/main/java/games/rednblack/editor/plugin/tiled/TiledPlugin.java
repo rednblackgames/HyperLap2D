@@ -18,6 +18,7 @@
 
 package games.rednblack.editor.plugin.tiled;
 
+import java.io.File;
 import java.util.Set;
 
 import com.badlogic.ashley.core.Entity;
@@ -29,6 +30,7 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 
+import games.rednblack.editor.plugin.tiled.data.AutoTileVO;
 import games.rednblack.editor.plugin.tiled.data.TileVO;
 import games.rednblack.editor.plugin.tiled.manager.ResourcesManager;
 import games.rednblack.editor.plugin.tiled.offset.OffsetPanel;
@@ -37,6 +39,7 @@ import games.rednblack.editor.plugin.tiled.save.DataToSave;
 import games.rednblack.editor.plugin.tiled.save.SaveDataManager;
 import games.rednblack.editor.plugin.tiled.tools.DeleteTileTool;
 import games.rednblack.editor.plugin.tiled.tools.DrawTileTool;
+import games.rednblack.editor.plugin.tiled.view.dialog.AlternativeAutoTileDialogMediator;
 import games.rednblack.editor.plugin.tiled.view.dialog.ImportTileSetDialogMediator;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
@@ -58,21 +61,38 @@ public class TiledPlugin extends H2DPluginAdapter {
     public static final String CLASS_NAME = "games.rednblack.editor.plugin.tiled";
     public static final String TILE_ADDED                     = CLASS_NAME + ".TILE_ADDED";
     public static final String TILE_SELECTED                  = CLASS_NAME + ".TILE_SELECTED";
+    public static final String AUTO_TILE_SELECTED             = CLASS_NAME + ".AUTO_TILE_SELECTED";
+    public static final String AUTO_FILL_TILES                 = CLASS_NAME + ".FILL_AUTO_TILE";
     public static final String OPEN_DROP_DOWN                 = CLASS_NAME + ".OPEN_DROP_DOWN";
+    public static final String AUTO_OPEN_DROP_DOWN            = CLASS_NAME + ".AUTO_OPEN_DROP_DOWN";
     public static final String GRID_CHANGED                   = CLASS_NAME + ".GRID_CHANGED";
     public static final String IMPORT_TILESET_PANEL_OPEN      = CLASS_NAME + ".IMPORT_TILESET_PANEL_OPEN";
     public static final String ACTION_DELETE_TILE             = CLASS_NAME + ".ACTION_DELETE_TILE";
+    public static final String ACTION_DELETE_AUTO_TILE        = CLASS_NAME + ".ACTION_DELETE_AUTO_TILE";
     public static final String ACTION_DELETE_TILE_ALL         = CLASS_NAME + ".ACTION_DELETE_TILE_ALL";
     public static final String ACTION_SET_OFFSET              = CLASS_NAME + ".ACTION_SET_OFFSET";
     public static final String ACTION_OPEN_OFFSET_PANEL       = CLASS_NAME + ".ACTION_OPEN_OFFSET_PANEL";
     public static final String TILE_GRID_OFFSET_ADDED         = CLASS_NAME + ".TILE_GRID_OFFSET_ADDED";
     public static final String ACTION_SET_GRID_SIZE_FROM_ITEM = CLASS_NAME + ".ACTION_SET_GRID_SIZE_FROM_ITEM";
     public static final String ACTION_SET_GRID_SIZE_FROM_LIST = CLASS_NAME + ".ACTION_SET_GRID_SIZE_FROM_LIST";
+    public static final String ACTION_SAVE_ALTERNATIVES_AUTO_TILE = CLASS_NAME + ".ACTION_SAVE_ALTERNATIVES_AUTO_TILE";
+    public static final String ACTION_SETUP_ALTERNATIVES_AUTO_TILE = CLASS_NAME + ".ACTION_SETUP_ALTERNATIVES_AUTO_TILE";
+    public static final String ACTION_RECALC_PERCENT_ALTERNATIVES_AUTO_TILE = CLASS_NAME + ".ACTION_RECALC_PERCENT_ALTERNATIVES_AUTO_TILE";
     //-------end--------//
 
     public static final String TILE_TAG = "TILE";
     public static final String ROW = "ROW";
     public static final String COLUMN = "COLUMN";
+    public static final String REGION = "REGION";
+    public static final String ORIG_AUTO_TILE = "ORIG_AUTO_TILE";
+
+    public static final String AUTO_TILE_TAG = "AUTO_TILE";
+    public static final String AUTO_TILE_ATLAS_SUFFIX = "-autotile";
+    public static final String AUTO_TILE_MINI_SUFFIX = "-mini";
+	public static final String AUTO_TILE_DRAW_SUFFIX = "18";
+
+	public static final int AUTO_TILE_ROWS = 5;
+	public static final int AUTO_TILE_COLS = 11;
 
     public DataToSave dataToSave;
     public SaveDataManager saveDataManager;
@@ -83,13 +103,17 @@ public class TiledPlugin extends H2DPluginAdapter {
     public OffsetPanel offsetPanel;
 
     private TileVO selectedTileVO;
+    private AutoTileVO selectedAutoTileVO;
     private CustomVariables currentEntityCustomVariables;
     private MainItemComponent currentEntityMainItemComponent;
     private TransformComponent currentEntityTransformComponent;
 
+    private boolean isAutoGridTabSelected;
+
     public TiledPlugin() {
         super(CLASS_NAME);
         selectedTileVO = new TileVO();
+        selectedAutoTileVO = new AutoTileVO();
         currentEntityCustomVariables = new CustomVariables();
     }
 
@@ -97,6 +121,7 @@ public class TiledPlugin extends H2DPluginAdapter {
     public void initPlugin() {
         facade.registerMediator(new TiledPanelMediator(this));
         facade.registerMediator(new ImportTileSetDialogMediator(pluginAPI, facade));
+        facade.registerMediator(new AlternativeAutoTileDialogMediator(this));
 
         pluginRM = new ResourcesManager(this);
         offsetPanel = new OffsetPanel(this);
@@ -200,7 +225,19 @@ public class TiledPlugin extends H2DPluginAdapter {
     }
 
     public String getSelectedTileName() {
+    	if (isAutoGridTabSelected) {
+    		return selectedAutoTileVO.regionName;
+    	}
         return selectedTileVO.regionName;
+    }
+    
+    /**
+     * Explicitly returns the selected auto tile name, regardless of whether the auto grid tab is shown or any other.
+     * 
+     * @return The selected auto tile name.
+     */
+    public String getSelectedAutoTileName() {
+    	return selectedAutoTileVO.regionName;
     }
 
     public int getSelectedTileType() {
@@ -223,6 +260,14 @@ public class TiledPlugin extends H2DPluginAdapter {
         this.selectedTileVO = selectedTileVO;
     }
 
+    public AutoTileVO getSelectedAutoTileVO() {
+        return selectedAutoTileVO;
+    }
+
+    public void setSelectedAutoTileVO(AutoTileVO selectedAutoTileVO) {
+        this.selectedAutoTileVO = selectedAutoTileVO;
+    }
+
     public void applySelectedTileGridOffset() {
         pluginAPI.getProjectEntities().forEach(entity -> {
             if (!(isTile(entity))) return;
@@ -236,8 +281,21 @@ public class TiledPlugin extends H2DPluginAdapter {
         saveOffsetChanges();
     }
 
+    public boolean isAutoGridTilesTabSelected() {
+    	return isAutoGridTabSelected;
+    }
+
+    public void setAutoGridTilesTabSelected(boolean isAutoGridTabSelected) {
+    	this.isAutoGridTabSelected = isAutoGridTabSelected;
+    }
+
     private void saveOffsetChanges() {
         dataToSave.setTileGridOffset(selectedTileVO);
         saveDataManager.save();
     }
+
+    public String getCurrentRawImagesPath() {
+        return getAPI().getProjectPath() + File.separator + "assets" + File.separator + "orig" + File.separator + "images";
+    }
+
 }

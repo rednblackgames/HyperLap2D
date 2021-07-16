@@ -5,6 +5,7 @@ import java.util.stream.StreamSupport;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+import games.rednblack.editor.plugin.tiled.data.AutoTileVO;
 import games.rednblack.editor.plugin.tiled.data.ParameterVO;
 import games.rednblack.editor.plugin.tiled.data.TileVO;
 
@@ -14,10 +15,12 @@ import games.rednblack.editor.plugin.tiled.data.TileVO;
 public class DataToSave {
 
     private Array<TileVO> tiles;
+    private Array<AutoTileVO> autoTiles;
     private ParameterVO parameterVO;
 
     public DataToSave() {
         tiles = new Array<>();
+        autoTiles = new Array<>();
         parameterVO = new ParameterVO();
     }
 
@@ -73,6 +76,38 @@ public class DataToSave {
 
     public boolean containsTile(String regionName) {
         return StreamSupport.stream(tiles.spliterator(), false).anyMatch(tile -> tile.regionName.equals(regionName));
+    }
+
+    public void addAutoTile(String autoTileDrawableName, int type) {
+    	AutoTileVO newTile = new AutoTileVO(autoTileDrawableName);
+    	newTile.entityType = type;
+        if (!autoTiles.contains(newTile, false)) {
+            autoTiles.add(newTile);
+        }
+    }
+
+    public AutoTileVO getAutoTile(String regionName) {
+        return StreamSupport.stream(autoTiles.spliterator(), false)
+                .filter(tile -> tile.regionName.equals(regionName))
+                .findFirst()
+                .get();
+    }
+
+    public void removeAutoTile(String tileDrawableName) {
+    	autoTiles.forEach(tile -> {
+            if (tile.regionName.equals(tileDrawableName)) {
+            	autoTiles.removeValue(tile, false);
+            }
+        });
+
+    }
+
+    public Array<AutoTileVO> getAutoTiles() {
+        return autoTiles;
+    }
+
+    public boolean containsAutoTile(String regionName) {
+        return StreamSupport.stream(autoTiles.spliterator(), false).anyMatch(tile -> tile.regionName.equals(regionName));
     }
 
     public ParameterVO getParameterVO() {
