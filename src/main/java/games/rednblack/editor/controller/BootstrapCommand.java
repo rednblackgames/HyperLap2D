@@ -18,6 +18,7 @@
 
 package games.rednblack.editor.controller;
 
+import games.rednblack.editor.controller.commands.resource.*;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.command.SimpleCommand;
 
@@ -75,16 +76,6 @@ import games.rednblack.editor.controller.commands.component.UpdateShaderDataComm
 import games.rednblack.editor.controller.commands.component.UpdateSpineDataCommand;
 import games.rednblack.editor.controller.commands.component.UpdateSpriteAnimationDataCommand;
 import games.rednblack.editor.controller.commands.component.UpdateTalosDataCommand;
-import games.rednblack.editor.controller.commands.resource.DeleteImageResource;
-import games.rednblack.editor.controller.commands.resource.DeleteLibraryAction;
-import games.rednblack.editor.controller.commands.resource.DeleteLibraryItem;
-import games.rednblack.editor.controller.commands.resource.DeleteParticleEffect;
-import games.rednblack.editor.controller.commands.resource.DeleteSpineAnimation;
-import games.rednblack.editor.controller.commands.resource.DeleteSpriteAnimation;
-import games.rednblack.editor.controller.commands.resource.DeleteTalosVFX;
-import games.rednblack.editor.controller.commands.resource.DuplicateLibraryAction;
-import games.rednblack.editor.controller.commands.resource.ExportActionCommand;
-import games.rednblack.editor.controller.commands.resource.ExportLibraryItemCommand;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.h2d.common.MsgAPI;
 
@@ -176,6 +167,7 @@ public class BootstrapCommand extends SimpleCommand {
         facade.registerCommand(MsgAPI.ACTION_DELETE_TALOS_VFX, DeleteTalosVFX::new);
         facade.registerCommand(MsgAPI.ACTION_DELETE_SPINE_ANIMATION_RESOURCE, DeleteSpineAnimation::new);
         facade.registerCommand(MsgAPI.ACTION_DELETE_SPRITE_ANIMATION_RESOURCE, DeleteSpriteAnimation::new);
+        facade.registerCommand(MsgAPI.ACTION_DELETE_MULTIPLE_RESOURCE, DeleteMultipleResources::new);
 
         facade.registerCommand(MsgAPI.SHOW_NOTIFICATION, ShowNotificationCommand::new);
     }

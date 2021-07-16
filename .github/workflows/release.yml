@@ -15,10 +15,10 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
-      - name: Setup AdoptOpenJDK 14
+      - name: Setup AdoptOpenJDK 16
         uses: joschi/setup-jdk@v2.3.0
         with:
-          java-version: 14
+          java-version: 16
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build JAR dist files
@@ -34,4 +34,4 @@ jobs:
           NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         run:
-          ./gradlew clean uploadArchives -PRELEASE=true -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
+          ./gradlew clean build publish -PRELEASE=true -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}

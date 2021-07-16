@@ -40,6 +40,13 @@ public class DataToSave {
         });
 
     }
+    
+    /**
+     * Removes all tiles.
+     */
+    public void removeAllTiles() {
+    	tiles.clear();
+    }
 
     public void setTileGridOffset(TileVO tileVO) {
         StreamSupport.stream(tiles.spliterator(), false)

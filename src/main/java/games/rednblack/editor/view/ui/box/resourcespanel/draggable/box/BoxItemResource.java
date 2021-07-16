@@ -44,97 +44,110 @@ public abstract class BoxItemResource extends Group implements DraggableResource
     /**
      * The color to fill the background of the image. Also the color of the background when the mouse is not over the image.
      */
-    private final Color fillColor;
+    private final Color fillColor = new Color(1, 1, 1, 0.2f);
     /**
      * The standard color of the border. Also the color of the border when the mouse is not over the image.
      */
-    private final Color borderColor;
+    private final Color borderColor = new Color(1, 1, 1, 0.4f);
     /**
      * The color of the border when the mouse hovers over the image.
      */
-    private final Color borderMouseOverColor;
+    private final Color borderMouseOverColor = new Color(1f, 94f / 255f, 0f / 255f, 1f);
     /**
      * The color to fill the background of the image when the mouse hovers over the image.
      */
-    private final Color fillMouseOverColor;
+    private final Color fillMouseOverColor = new Color(200f / 255f, 200f / 255f, 200f / 255f, 0.2f);
     /**
      * Whether to change the border color when the mouse hovers over the image.
+     * Only used if the the parameter <code>highlightWhenMouseOver</code> is set to <code>true</code>.
      */
     private boolean highlightWhenMouseOver;
-    
+
+    /**
+     * The standard thickness of the border. Also the thickness of the border when the mouse is not over the image.
+     */
+    private float borderThickness = 1f;
+    /**
+     * The thickness of the border when the mouse hovers the image.
+     */
+    private float borderMouseOverThickness = 2f;
+
     public BoxItemResource() {
-    	this(new Color(1, 1, 1, 0.2f), new Color(1, 1, 1, 0.4f), Color.BLACK, Color.BLACK, false);
+    	this(false);
     }
     
     /**
      * Creates a new box item resource with the given colors.
-     * 
-     * @param region The atlas region for the image resource.
-     * @param fillColor The color to fill the background of the image.
-     * @param borderColor The standard color of the border. Also used when the mouse is not hovering over the image.
-     * @param fillMouseOverColor The color to fill the background of the image when the mouse hovers over the image. Only used if the the parameter <code>highlightWhenMouseOver</code> is set to <code>true</code>.
-     * @param borderMouseOverColor The color of the border when the mouse hovers over the image. Only used if the the parameter <code>highlightWhenMouseOver</code> is set to <code>true</code>.
+     *
      * @param highlightWhenMouseOver Whether to change the border color when the mouse hovers over the image.
      */
-    public BoxItemResource(Color fillColor, Color borderColor, Color fillMouseOverColor, Color borderMouseOverColor, boolean highlightWhenMouseOver) {
+    public BoxItemResource(boolean highlightWhenMouseOver) {
         sandbox = Sandbox.getInstance();
         rc = new PixelRect(thumbnailSize, thumbnailSize);
         rc.setFillColor(fillColor);
         rc.setBorderColor(borderColor);
+        rc.setThickness(borderThickness);
         addActor(rc);
         setWidth(thumbnailSize);
         setHeight(thumbnailSize);
-        
-        this.fillColor = fillColor;
-        this.borderColor = borderColor;
-        this.fillMouseOverColor = fillMouseOverColor;
-        this.borderMouseOverColor = borderMouseOverColor;
+
+        thumbnailSize -= Math.max(borderThickness, borderMouseOverThickness);
+
         this.highlightWhenMouseOver = highlightWhenMouseOver;
     }
 
     /**
-     * Sets the right-click event. Should not be used with {@link #setClickEvent(String, String, String)}.
+     * Sets the right-click event. Should not be used with {@link #setClickEvent(String, Object, String, Object)}.
      * 
      * @param eventName The event name in case of a right-click.
      * @param payload The payload for the right-click.
      */
     public void setRightClickEvent(String eventName, String payload) {
-    	setClickEvent(null, eventName, null, payload);
+    	setClickEvent(null, null, eventName, payload);
     }
 
     /**
      * Sets the left/right-click event. Should not be used with {@link #setRightClickEvent(String, String)}.
+     *
+     * Will be fired {@link UIResourcesBoxMediator#RESOURCE_BOX_LEFT_CLICK} and {@link UIResourcesBoxMediator#RESOURCE_BOX_RIGHT_CLICK}.
      * 
      * @param leftClickEventName The event name in case of a left-click.
      * @param leftClickPayload The payload for the left-click.
      * @param rightClickEventName The event name in case of a right-click.
      * @param rightClickPayload The payload for the right-click.
      */
-    public void setClickEvent(String leftClickEventName, String rightClickEventName, Object leftClickPayload, Object rightClickPayload) {
+    public void setClickEvent(String leftClickEventName, Object leftClickPayload, String rightClickEventName, Object rightClickPayload) {
         addListener(new InputListener() {
         	private boolean isOver;
             @Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                super.touchDown(event, x, y, pointer, button);
                 return true;
             }
             @Override
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
             	// we only care for the event if the mouse is still in this resource
             	if (isOver && !event.isTouchFocusCancel()) {
-	            	if(button == Input.Buttons.LEFT && leftClickEventName != null) {
-	            		String eventType = UIResourcesBoxMediator.NORMAL_CLICK_EVENT_TYPE;
-	            		if (UIUtils.shift() && UIUtils.ctrl()) {
-	            			 eventType = UIResourcesBoxMediator.SHIFT_CTRL_EVENT_TYPE;
-	            		} else if (UIUtils.shift()) {
-	            			eventType = UIResourcesBoxMediator.SHIFT_EVENT_TYPE;
-	            		} else if (UIUtils.ctrl()) {
-	            			eventType = UIResourcesBoxMediator.CTRL_EVENT_TYPE;
-	            		}
-	            		HyperLap2DFacade.getInstance().sendNotification(leftClickEventName, leftClickPayload, eventType);
+                    String eventType = UIResourcesBoxMediator.NORMAL_CLICK_EVENT_TYPE;
+                    if (UIUtils.shift() && UIUtils.ctrl()) {
+                        eventType = UIResourcesBoxMediator.SHIFT_CTRL_EVENT_TYPE;
+                    } else if (UIUtils.shift()) {
+                        eventType = UIResourcesBoxMediator.SHIFT_EVENT_TYPE;
+                    } else if (UIUtils.ctrl()) {
+                        eventType = UIResourcesBoxMediator.CTRL_EVENT_TYPE;
+                    }
+
+	            	if(button == Input.Buttons.LEFT) {
+	            		HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.RESOURCE_BOX_LEFT_CLICK, BoxItemResource.this, eventType);
+
+	            		if (leftClickEventName != null)
+                            HyperLap2DFacade.getInstance().sendNotification(leftClickEventName, leftClickPayload, eventType);
 	            	}
-	                if(button == Input.Buttons.RIGHT && rightClickEventName != null) {
-	                    HyperLap2DFacade.getInstance().sendNotification(rightClickEventName, rightClickPayload);
+
+	                if(button == Input.Buttons.RIGHT) {
+	                    HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.RESOURCE_BOX_RIGHT_CLICK, BoxItemResource.this, eventType);
+
+                        if (rightClickEventName != null)
+                            HyperLap2DFacade.getInstance().sendNotification(rightClickEventName, rightClickPayload, eventType);
 	                }
             	}
             }
@@ -153,8 +166,7 @@ public abstract class BoxItemResource extends Group implements DraggableResource
             	isOver = false;
             	// check if we have to revert the color
             	if (highlightWhenMouseOver) {
-            		rc.setFillColor(fillColor);
-            		rc.setBorderColor(borderColor);
+                    switchToStandardColor();
             	}
             }
         });
@@ -165,17 +177,54 @@ public abstract class BoxItemResource extends Group implements DraggableResource
     }
     
     public void switchToMouseOverColor() {
-    	if (fillMouseOverColor != null && borderMouseOverColor != null) {
-			rc.setFillColor(fillMouseOverColor);
-			rc.setBorderColor(borderMouseOverColor);
-    	}
+        rc.setFillColor(fillMouseOverColor);
+        rc.setBorderColor(borderMouseOverColor);
+        rc.setThickness(borderMouseOverThickness);
     }
     
     public void switchToStandardColor() {
-    	if (fillColor != null && borderColor != null) {
-			rc.setFillColor(fillColor);
-			rc.setBorderColor(borderColor);
-    	}
+        rc.setFillColor(fillColor);
+        rc.setBorderColor(borderColor);
+        rc.setThickness(borderThickness);
     }
-    
+
+    public void setFillColor(Color color) {
+        fillColor.set(color);
+    }
+
+    public void setFillColor(float r, float g, float b, float a) {
+        fillColor.set(r, g, b, a);
+    }
+
+    public void setBorderColor(Color color) {
+        borderColor.set(color);
+    }
+
+    public void setBorderColorColor(float r, float g, float b, float a) {
+        borderColor.set(r, g, b, a);
+    }
+
+    public void setHighlightFillColor(Color color) {
+        fillMouseOverColor.set(color);
+    }
+
+    public void setHighlightFillColor(float r, float g, float b, float a) {
+        fillMouseOverColor.set(r, g, b, a);
+    }
+
+    public void setHighlightBorderColor(Color color) {
+        borderMouseOverColor.set(color);
+    }
+
+    public void setHighlightBorderColorColor(float r, float g, float b, float a) {
+        borderMouseOverColor.set(r, g, b, a);
+    }
+
+    public void setBorderThickness(float borderThickness) {
+        this.borderThickness = borderThickness;
+    }
+
+    public void setHighlightBorderThickness(float borderThickness) {
+        this.borderMouseOverThickness = borderThickness;
+    }
 }

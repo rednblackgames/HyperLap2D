@@ -1,5 +1,6 @@
 package games.rednblack.editor.utils.asset.impl;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -7,6 +8,8 @@ import games.rednblack.editor.renderer.data.GraphVO;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.h2d.common.ProgressHandler;
+
+import java.util.HashMap;
 
 public class HyperLap2DActionAsset extends Asset {
     private final Json json = new Json();
@@ -17,7 +20,7 @@ public class HyperLap2DActionAsset extends Asset {
     }
 
     @Override
-    protected int getType() {
+    public int getType() {
         return ImportUtils.TYPE_HYPERLAP2D_ACTION;
     }
 
@@ -39,5 +42,14 @@ public class HyperLap2DActionAsset extends Asset {
             projectManager.getCurrentProjectInfoVO().libraryActions.put(fileHandle.nameWithoutExtension(), action);
             projectManager.saveCurrentProject();
         }
+    }
+
+    @Override
+    public boolean deleteAsset(Entity root, String name) {
+        HashMap<String, GraphVO> libraryActions = projectManager.currentProjectInfoVO.libraryActions;
+
+        libraryActions.remove(name);
+
+        return true;
     }
 }

@@ -61,6 +61,7 @@ task runHyperLap2D(dependsOn: classes, type: JavaExec) {
 }
 
 task dist(type: Jar) {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     from files(sourceSets.main.output.classesDirs)
     from files(sourceSets.main.output.resourcesDir)
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
@@ -117,6 +118,9 @@ dependencies {
 }
 
 def getBuildVersion = {
+    if (osName.contains('mac')) {
+        return getVersion().toString().replaceAll("0\\.", "")
+    }
     if (project.hasProperty('SNAPSHOT')) {
         return getVersion() + (project.hasProperty('WORKFLOW_RUN') ? WORKFLOW_RUN : "$System.env.WORKFLOW_RUN")
     } else {

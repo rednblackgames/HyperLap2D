@@ -1,5 +1,6 @@
 package games.rednblack.editor.utils.asset.impl;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -19,7 +20,7 @@ public class ShaderAsset extends Asset {
     }
 
     @Override
-    protected int getType() {
+    public int getType() {
         return ImportUtils.TYPE_SHADER;
     }
 
@@ -49,5 +50,10 @@ public class ShaderAsset extends Asset {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public boolean deleteAsset(Entity root, String name) {
+        return false;
     }
 }

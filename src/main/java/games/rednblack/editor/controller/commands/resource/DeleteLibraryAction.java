@@ -1,10 +1,7 @@
 package games.rednblack.editor.controller.commands.resource;
 
-import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.proxy.ProjectManager;
-import games.rednblack.editor.renderer.data.GraphVO;
-
-import java.util.HashMap;
+import games.rednblack.editor.utils.AssetImporter;
+import games.rednblack.editor.utils.ImportUtils;
 
 public class DeleteLibraryAction extends DeleteResourceCommand {
 
@@ -20,10 +17,7 @@ public class DeleteLibraryAction extends DeleteResourceCommand {
     public void doAction() {
         String libraryActionName = notification.getBody();
 
-        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
-        HashMap<String, GraphVO> libraryActions = projectManager.currentProjectInfoVO.libraryActions;
-
-        libraryActions.remove(libraryActionName);
+        AssetImporter.getInstance().deleteAsset(ImportUtils.TYPE_HYPERLAP2D_ACTION, sandbox.getRootEntity(), libraryActionName);
 
         facade.sendNotification(DONE, libraryActionName);
     }

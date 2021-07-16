@@ -93,10 +93,10 @@ public class KeyBindingsLayout {
 
         defaultMapper.put(RESET_CAMERA, new KeyMapper(RESET_CAMERA, true, false, false, Input.Keys.NUM_0, Input.Keys.NUMPAD_0));
 
-        defaultMapper.put(ALIGN_TOP, new KeyMapper(ALIGN_TOP, true, false, false, Input.Keys.NUM_1));
-        defaultMapper.put(ALIGN_LEFT, new KeyMapper(ALIGN_LEFT, true, false, false, Input.Keys.NUM_2));
-        defaultMapper.put(ALIGN_BOTTOM, new KeyMapper(ALIGN_BOTTOM, true, false, false, Input.Keys.NUM_3));
-        defaultMapper.put(ALIGN_RIGHT, new KeyMapper(ALIGN_RIGHT, true, false, false, Input.Keys.NUM_4));
+        defaultMapper.put(ALIGN_TOP, new KeyMapper(ALIGN_TOP, true, false, false, Input.Keys.NUMPAD_8));
+        defaultMapper.put(ALIGN_LEFT, new KeyMapper(ALIGN_LEFT, true, false, false, Input.Keys.NUMPAD_4));
+        defaultMapper.put(ALIGN_BOTTOM, new KeyMapper(ALIGN_BOTTOM, true, false, false, Input.Keys.NUMPAD_2));
+        defaultMapper.put(ALIGN_RIGHT, new KeyMapper(ALIGN_RIGHT, true, false, false, Input.Keys.NUMPAD_6));
 
         defaultMapper.put(DELETE, new KeyMapper(DELETE, false, false, false, Input.Keys.DEL));
 

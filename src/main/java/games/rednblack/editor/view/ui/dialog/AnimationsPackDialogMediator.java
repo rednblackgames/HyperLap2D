@@ -81,7 +81,6 @@ public class AnimationsPackDialogMediator extends Mediator<AtlasesPackDialog> {
                 break;
             case UPDATE_CURRENT_LIST:
                 currentTab = viewComponent.getSelectedTab();
-                System.out.println(currentTab);
                 if (currentTab != null)
                     viewComponent.updateCurrentPack(projectManager.currentProjectInfoVO.animationsPacks.get(currentTab).regions);
                 break;

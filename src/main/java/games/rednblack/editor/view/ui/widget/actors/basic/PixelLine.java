@@ -65,6 +65,10 @@ public class PixelLine extends Image {
 
 	 public void setThickness (float thickness) {
 		  this.thickness = thickness;
+		 this.setScaleY(thickness);
 	 }
-	
+
+	public float getThickness() {
+		return thickness;
+	}
 }

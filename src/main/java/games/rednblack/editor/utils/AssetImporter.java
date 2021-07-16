@@ -1,5 +1,6 @@
 package games.rednblack.editor.utils;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
@@ -112,5 +113,28 @@ public class AssetImporter {
         }
 
         return files;
+    }
+
+    private Asset getDescriptorFor(int type) {
+        for (Asset asset : new Array.ArrayIterator<>(assetDescriptors)) {
+            if (asset.getType() == type)
+                return asset;
+        }
+        return null;
+    }
+
+    public boolean deleteAsset(int type, Entity root, String name) {
+        Asset asset = getDescriptorFor(type);
+        if (asset != null)
+            return asset.deleteAsset(root, name);
+        return false;
+    }
+
+    public boolean deleteAsset(Entity root, String name) {
+        for (Asset asset : new Array.ArrayIterator<>(assetDescriptors)) {
+            if (asset.deleteAsset(root, name))
+                return true;
+        }
+        return false;
     }
 }

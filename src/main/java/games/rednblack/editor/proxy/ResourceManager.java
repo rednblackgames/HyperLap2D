@@ -66,7 +66,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private final HashMap<FontSizePair, BitmapFont> bitmapFonts = new HashMap<>();
     private final HashMap<String, ShaderProgram> shaderPrograms = new HashMap<>(1);
 
-    private TextureRegion defaultRegion;
+    private TextureAtlas.AtlasRegion defaultRegion;
 
     private ResolutionManager resolutionManager;
     private SettingsManager settingsManager;
@@ -133,11 +133,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         VisUI.load(skin);
         VisUI.setDefaultTitleAlign(Align.center);
 
-        // TODO: substitute this with "NO IMAGE" icon
-        Pixmap pixmap = new Pixmap(50, 50, Pixmap.Format.RGBA8888);
-        pixmap.setColor(new Color(1, 1, 1, 0.4f));
-        pixmap.fill();
-        defaultRegion = new TextureRegion(new Texture(pixmap));
+        defaultRegion = VisUI.getSkin().getAtlas().findRegion("missing-image");
 
         fontPacker = new PixmapPacker(4096, 4096, Pixmap.Format.RGBA8888, 1, false, new PixmapPacker.SkylineStrategy());
         fontPacker.setTransparentColor(Color.WHITE);

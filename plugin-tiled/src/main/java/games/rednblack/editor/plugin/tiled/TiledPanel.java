@@ -192,6 +192,12 @@ public class TiledPanel extends UIDraggablePanel {
         reInitTabTable(tilesTab);
         tilesTab.scrollTiles();
     }
+    
+    public void removeAllTiles() {
+    	tilesTab.removeAllTiles();
+    	reInitTabTable();
+    	tilesTab.scrollTiles();
+    }
 
     public void removeAutoTile() {
     	autoGridTilesTab.removeTile();

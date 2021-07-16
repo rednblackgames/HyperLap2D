@@ -19,5 +19,7 @@ public class BootstrapInfoCommand extends SimpleCommand {
         HyperLog.info("Screen size " + Gdx.graphics.getBackBufferWidth() + " x " + Gdx.graphics.getBackBufferHeight());
         HyperLog.info("GL version " + gl20.glGetString(GL20.GL_VERSION));
         HyperLog.info("Shaders version " + gl20.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION));
+
+        HyperLog.info("JVM Version: " + System.getProperty("java.version"));
     }
 }

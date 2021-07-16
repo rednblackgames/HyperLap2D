@@ -28,7 +28,7 @@ import games.rednblack.editor.view.menu.HyperLap2DMenuBarMediator;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.stage.UIStageMediator;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
-import games.rednblack.editor.view.ui.ImageResourceSelectionUIMediator;
+import games.rednblack.editor.view.ui.BoxItemResourceSelectionUIMediator;
 import games.rednblack.editor.view.ui.RulersUIMediator;
 import games.rednblack.editor.view.ui.StickyNotesUIMediator;
 import games.rednblack.editor.view.ui.UIDropDownMenuMediator;
@@ -93,6 +93,9 @@ public class BootstrapViewCommand extends SimpleCommand {
         facade.registerMediator(new FollowersUIMediator());
         facade.registerMediator(new StickyNotesUIMediator());
 
+        // Multiple selection behavior for box resources
+        facade.registerMediator(new BoxItemResourceSelectionUIMediator());
+
         facade.registerMediator(new UIAlignBoxMediator());
         facade.registerMediator(new UIItemsTreeBoxMediator());
         facade.registerMediator(new UIMultiPropertyBoxMediator());
@@ -101,9 +104,6 @@ public class BootstrapViewCommand extends SimpleCommand {
         facade.registerMediator(new UIStageMediator());
         facade.registerMediator(new SandboxMediator());
         facade.registerMediator(new UIDropDownMenuMediator());
-        
-        // improved selection behavior for the image panel
-        facade.registerMediator(new ImageResourceSelectionUIMediator());
 
         //Panels
         facade.registerMediator(new ImportPanelMediator());
