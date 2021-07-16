@@ -31,14 +31,6 @@ public class GridTilesTab extends AbstractGridTilesTab<TileVO> {
 	protected String getTileSelectedNotification() {
     	return TiledPlugin.TILE_SELECTED;
     }
-    
-    public void removeAllTiles() {
-    	if (pane != null) isBottomEdge = pane.isBottomEdge();
-    	tileIndex = 0;
-    	tilesCount = 19;
-    	tiles.clear();
-    	initView();
-    }
 
     @Override
     protected String getTiledOpenDropDownNotification() {

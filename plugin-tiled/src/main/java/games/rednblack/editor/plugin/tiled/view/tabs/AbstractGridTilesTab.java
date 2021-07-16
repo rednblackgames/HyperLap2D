@@ -96,6 +96,14 @@ public abstract class AbstractGridTilesTab<T extends TextureRegionVO> extends De
         initView();
     }
 
+    public void removeAllTiles() {
+        if (pane != null) isBottomEdge = pane.isBottomEdge();
+        tileIndex = 0;
+        tilesCount = 19;
+        tiles.clear();
+        initView();
+    }
+
     public void scrollTiles() {
         if(savedTiles.size + 1 >= tilesCount) {
             pane.layout();
