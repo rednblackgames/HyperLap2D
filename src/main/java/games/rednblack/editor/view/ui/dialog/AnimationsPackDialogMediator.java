@@ -9,6 +9,7 @@ import games.rednblack.editor.renderer.data.TexturePackVO;
 import games.rednblack.editor.view.menu.ResourcesMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
+import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 
@@ -40,6 +41,7 @@ public class AnimationsPackDialogMediator extends Mediator<AtlasesPackDialog> {
                 MOVE_REGION_TO_PACK,
                 UPDATE_CURRENT_LIST,
                 REMOVE_PACK,
+                MsgAPI.UPDATE_ATLAS_PACK_LIST,
                 ProjectManager.PROJECT_DATA_UPDATED,
                 DeleteImageResource.DONE,
                 DeleteSpineAnimation.DONE,
@@ -66,6 +68,7 @@ public class AnimationsPackDialogMediator extends Mediator<AtlasesPackDialog> {
                 if (currentTab != null)
                     viewComponent.updateCurrentPack(projectManager.currentProjectInfoVO.animationsPacks.get(currentTab).regions);
                 break;
+            case MsgAPI.UPDATE_ATLAS_PACK_LIST:
             case ProjectManager.PROJECT_OPENED:
                 viewComponent.initPacks(projectManager.currentProjectInfoVO.animationsPacks.keySet());
                 viewComponent.updateMainPack(projectManager.currentProjectInfoVO.animationsPacks.get("main").regions);

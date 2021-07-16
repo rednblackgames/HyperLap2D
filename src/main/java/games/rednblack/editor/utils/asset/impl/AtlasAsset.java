@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.data.TexturePackVO;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.ProgressHandler;
 import org.apache.commons.io.FileUtils;
 
@@ -64,6 +65,8 @@ public class AtlasAsset extends Asset {
             }
 
             resolutionManager.rePackProjectImagesForAllResolutionsSync();
+
+            facade.sendNotification(MsgAPI.UPDATE_ATLAS_PACK_LIST);
         } catch (IOException e) {
             e.printStackTrace();
             progressHandler.progressFailed();

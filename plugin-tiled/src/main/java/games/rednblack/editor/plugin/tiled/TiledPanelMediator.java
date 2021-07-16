@@ -360,6 +360,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
     	pixmap.dispose();
         texturePackVO.regions.add(miniImageName);
 
+        facade.sendNotification(MsgAPI.UPDATE_ATLAS_PACK_LIST);
     	facade.sendNotification(MsgAPI.ACTION_REPACK);
 	}
 
