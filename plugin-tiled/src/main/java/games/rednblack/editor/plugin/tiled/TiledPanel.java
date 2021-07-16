@@ -42,11 +42,11 @@ import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPane
  */
 public class TiledPanel extends UIDraggablePanel {
 
-    public static final float GRID_WIDTH = 220f;
+    public static final float GRID_WIDTH = 240f;
     public static final float GRID_HEIGHT = 250f;
-    public static final float DROP_WIDTH = 220f;
+    public static final float DROP_WIDTH = 240f;
     public static final float DROP_HEIGHT = 140f;
-    public static final float SETTINGS_WIDTH = 220f;
+    public static final float SETTINGS_WIDTH = 240f;
     public static final float SETTINGS_HEIGHT = 150f;
 
     public TiledPlugin tiledPlugin;

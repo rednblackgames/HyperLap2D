@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import games.rednblack.editor.renderer.data.TexturePackVO;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 
@@ -294,6 +295,16 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
     	int maxX = tr.getRegionWidth() + tr.getRegionX();
     	int maxY = tr.getRegionHeight() + tr.getRegionY();
 
+    	//Create new atlas packing settings if doesn't exists
+    	String atlasName = name + TiledPlugin.AUTO_TILE_ATLAS_SUFFIX;
+        TexturePackVO texturePackVO = tiledPlugin.getAPI().getCurrentProjectInfoVO().imagesPacks.get(atlasName);
+        if (texturePackVO == null) {
+            texturePackVO = new TexturePackVO();
+            texturePackVO.name = atlasName;
+
+            tiledPlugin.getAPI().getCurrentProjectInfoVO().imagesPacks.put(texturePackVO.name, texturePackVO);
+        }
+
     	int i = 0;
     	for (int x = tr.getRegionX(); x < maxX; x += tileW) {
     		for (int y = tr.getRegionY(); y < maxY; y += tileH) {
@@ -303,12 +314,14 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
 	    			int h = y + tileH <= pixmap.getHeight() ? tileH : pixmap.getHeight() - y;
 	    			Pixmap tilePixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
 	    			tilePixmap.drawPixmap(pixmap, 0, 0, x, y, w, h);
-	
-	    			String imagesPath = tiledPlugin.getCurrentRawImagesPath() + File.separator + name + i + ".png";
+
+	    			String tilePngName = name + i;
+	    			String imagesPath = tiledPlugin.getCurrentRawImagesPath() + File.separator + tilePngName + ".png";
 	    			FileHandle path = new FileHandle(imagesPath);
 	    			PixmapIO.writePNG(path, tilePixmap);
 	
 	    			tilePixmap.dispose();
+                    texturePackVO.regions.add(tilePngName);
     			}
     			i++;
     		}
@@ -317,12 +330,14 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
     	// create mini image
     	Pixmap tilePixmap = new Pixmap(tileW, tileH, Pixmap.Format.RGBA8888);
     	tilePixmap.drawPixmap(pixmap, tr.getRegionX(), tr.getRegionY(), tr.getRegionWidth(), tr.getRegionHeight(), 0, 0, tileW, tileH);
-    	String imagesPath = tiledPlugin.getCurrentRawImagesPath() + File.separator + name + TiledPlugin.AUTO_TILE_MINI_SUFFIX + ".png";
+    	String miniImageName = name + TiledPlugin.AUTO_TILE_MINI_SUFFIX;
+    	String imagesPath = tiledPlugin.getCurrentRawImagesPath() + File.separator + miniImageName + ".png";
     	FileHandle path = new FileHandle(imagesPath);
     	PixmapIO.writePNG(path, tilePixmap);
     	tilePixmap.dispose();
 
     	pixmap.dispose();
+        texturePackVO.regions.add(miniImageName);
 
     	facade.sendNotification(MsgAPI.ACTION_REPACK);
 	}
