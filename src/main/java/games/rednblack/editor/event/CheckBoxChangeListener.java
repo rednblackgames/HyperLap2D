@@ -28,15 +28,20 @@ import games.rednblack.editor.HyperLap2DFacade;
  */
 public class CheckBoxChangeListener extends ChangeListener {
 
-    private final String eventName;
+    private final String eventName, type;
 
     public CheckBoxChangeListener(String eventName) {
+        this(eventName, null);
+    }
+
+    public CheckBoxChangeListener(String eventName, String type) {
         this.eventName = eventName;
+        this.type = type;
     }
 
     @Override
     public void changed(ChangeEvent changeEvent, Actor actor) {
         HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
-        facade.sendNotification(eventName, ((VisCheckBox) actor).isChecked());
+        facade.sendNotification(eventName, ((VisCheckBox) actor).isChecked(), type);
     }
 }

@@ -48,6 +48,7 @@ import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.renderer.utils.CustomVariables;
 import games.rednblack.h2d.common.MenuAPI;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.plugins.H2DPluginAdapter;
 import net.mountainblade.modular.annotations.Implementation;
 
@@ -150,6 +151,8 @@ public class TiledPlugin extends H2DPluginAdapter {
         pluginAPI.setDropDownItemName(ACTION_SET_GRID_SIZE_FROM_ITEM, "Set tile grid size");
 
         pluginAPI.addMenuItem(MenuAPI.RESOURCE_MENU, "Import Tile Set...", IMPORT_TILESET_PANEL_OPEN);
+
+        facade.sendNotification(MsgAPI.ADD_RESOURCES_BOX_FILTER, new TilesResourceFilter(this));
     }
 
     @Override

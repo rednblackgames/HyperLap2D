@@ -60,16 +60,17 @@ public class UISensorProperties extends UIRemovableProperties {
         
         // table
         VisTable sensorTable = new VisTable();
-        sensorTable.add(sensorTop).padRight(5).fillX();
+        sensorTable.defaults().left();
+        sensorTable.add(sensorTop).padRight(5);
         sensorTable.add(sensorSpanPercentTop).width(50).padRight(5);
         sensorTable.row();
-        sensorTable.add(sensorLeft).padRight(5).fillX();
+        sensorTable.add(sensorLeft).padRight(5);
         sensorTable.add(sensorSpanPercentLeft).width(50).padRight(5);
         sensorTable.row();
-        sensorTable.add(sensorRight).padRight(5).fillX();
+        sensorTable.add(sensorRight).padRight(5);
         sensorTable.add(sensorSpanPercentRight).width(50).padRight(5);
         sensorTable.row();
-        sensorTable.add(sensorBottom).padRight(5).fillX();
+        sensorTable.add(sensorBottom).padRight(5);
         sensorTable.add(sensorSpanPercentBottom).width(50).padRight(5);
         
         mainTable.add(sensorTable).padBottom(5).colspan(2);
@@ -80,10 +81,10 @@ public class UISensorProperties extends UIRemovableProperties {
      * Initializes the tooltips.
      */
     private void initTooltip() {
-        StandardWidgetsFactory.addVisTooltip(sensorBottom, "Adds a sensor to the bottom of the body.\nThe value gives the percentage of\nthe body width where 1.0 equals 100%.");
-        StandardWidgetsFactory.addVisTooltip(sensorLeft, "Adds a sensor to the left of the body.\nThe value gives the percentage of\nthe body height where 1.0 equals 100%.");
-        StandardWidgetsFactory.addVisTooltip(sensorRight, "Adds a sensor to the right of the body.\nThe value gives the percentage of\nthe body height where 1.0 equals 100%.");
-        StandardWidgetsFactory.addVisTooltip(sensorTop, "Adds a sensor to the top of the body.\nThe value gives the percentage of\nthe body width where 1.0 equals 100%.");
+        StandardWidgetsFactory.addTooltip(sensorBottom, "Adds a sensor to the bottom of the body. The value gives the percentage of the body width where 1.0 equals 100%.");
+        StandardWidgetsFactory.addTooltip(sensorLeft, "Adds a sensor to the left of the body. The value gives the percentage of the body height where 1.0 equals 100%.");
+        StandardWidgetsFactory.addTooltip(sensorRight, "Adds a sensor to the right of the body. The value gives the percentage of the body height where 1.0 equals 100%.");
+        StandardWidgetsFactory.addTooltip(sensorTop, "Adds a sensor to the top of the body. The value gives the percentage of the body width where 1.0 equals 100%.");
     }
     
     private void initListeners() {

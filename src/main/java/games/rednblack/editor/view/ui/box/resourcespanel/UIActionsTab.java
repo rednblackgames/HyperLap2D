@@ -2,6 +2,7 @@ package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
@@ -25,7 +26,8 @@ public class UIActionsTab extends UIResourcesTab {
 
         VisTable bottomPane = new VisTable();
         contentTable.row();
-        contentTable.add(bottomPane).expandX().fillX();
+        bottomPane.align(Align.left);
+        contentTable.add(bottomPane).padTop(5).colspan(3).growX();
 
         bottomPane.add(newBtn).center().pad(3);
         bottomPane.add(deleteBtn).center().pad(3);

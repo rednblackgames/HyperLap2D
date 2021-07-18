@@ -30,7 +30,6 @@ import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableReso
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.ParticleEffectResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.TalosResource;
 import games.rednblack.h2d.extension.talos.TalosItemType;
-import games.rednblack.h2d.extention.spine.SpineItemType;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 
@@ -81,21 +80,22 @@ public class UIParticleEffectsTabMediator extends UIResourcesTabMediator<UIParti
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
         if (new TalosItemType().getTypeId() == EntityFactory.TALOS_TYPE) {
-            createAnimationResources(resourceManager.getProjectTalosList().keySet(), TalosResource.class, ItemFactory.get()::tryCreateTalosItem, searchText);
+            createParticleResources(resourceManager.getProjectTalosList().keySet(), TalosResource.class, ItemFactory.get()::tryCreateTalosItem, searchText);
         }
 
-        createAnimationResources(resourceManager.getProjectParticleList().keySet(), ParticleEffectResource.class, ItemFactory.get()::tryCreateParticleItem, searchText);
+        createParticleResources(resourceManager.getProjectParticleList().keySet(), ParticleEffectResource.class, ItemFactory.get()::tryCreateParticleItem, searchText);
         particlesList.sort();
         viewComponent.setItems(particlesList);
     }
 
 
-    private void createAnimationResources(Set<String> strings, Class resourceClass, BiFunction<String, Vector2, Boolean> factoryFunction, String searchText) {
-        for (String animationName : strings) {
-            if (!animationName.contains(searchText)) continue;
+    private void createParticleResources(Set<String> strings, Class resourceClass, BiFunction<String, Vector2, Boolean> factoryFunction, String searchText) {
+        for (String particleName : strings) {
+            if (!particleName.toLowerCase().contains(searchText)
+                || filterResource(particleName, resourceClass == TalosResource.class ? EntityFactory.TALOS_TYPE : EntityFactory.PARTICLE_TYPE)) continue;
             try {
                 Constructor constructor = resourceClass.getConstructor(String.class);
-                DraggableResource draggableResource = new DraggableResource((DraggableResourceView) constructor.newInstance(animationName));
+                DraggableResource draggableResource = new DraggableResource((DraggableResourceView) constructor.newInstance(particleName));
                 draggableResource.setFactoryFunction(factoryFunction);
                 particlesList.add(draggableResource);
             } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {

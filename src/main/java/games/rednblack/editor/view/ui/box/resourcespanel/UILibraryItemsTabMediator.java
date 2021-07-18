@@ -20,6 +20,7 @@ package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.controller.commands.resource.ExportLibraryItemCommand;
+import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.resource.DeleteLibraryItem;
@@ -41,6 +42,7 @@ public class UILibraryItemsTabMediator extends UIResourcesTabMediator<UILibraryI
     private static final String TAG = UILibraryItemsTabMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
+    private final Array<DraggableResource> itemArray = new Array<>();
 
     public UILibraryItemsTabMediator() {
         super(NAME, new UILibraryItemsTab());
@@ -76,9 +78,10 @@ public class UILibraryItemsTabMediator extends UIResourcesTabMediator<UILibraryI
         ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
         HashMap<String, CompositeItemVO> items = projectManager.currentProjectInfoVO.libraryItems;
 
-        Array<DraggableResource> itemArray = new Array<>();
+        itemArray.clear();
         for (String key : items.keySet()) {
-            if(!key.toLowerCase().contains(searchText))continue;
+            if (!key.toLowerCase().contains(searchText)
+                    || filterResource(key, EntityFactory.COMPOSITE_TYPE)) continue;
             DraggableResource draggableResource = new DraggableResource(new LibraryItemResource(key));
             draggableResource.setFactoryFunction(ItemFactory.get()::createItemFromLibrary);
             draggableResource.initDragDrop();

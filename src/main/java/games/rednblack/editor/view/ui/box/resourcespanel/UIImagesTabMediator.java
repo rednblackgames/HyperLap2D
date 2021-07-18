@@ -18,6 +18,7 @@
 
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
+import games.rednblack.editor.renderer.factory.EntityFactory;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 
@@ -40,6 +41,7 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
     private static final String TAG = UIImagesTabMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
+    private final Array<DraggableResource> thumbnailBoxes = new Array<>();
 
     public UIImagesTabMediator() {
         super(NAME, new UIImagesTab());
@@ -72,7 +74,7 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         ProjectInfoVO projectInfoVO = projectManager.getCurrentProjectInfoVO();
 
-        Array<DraggableResource> thumbnailBoxes = new Array<>();
+        thumbnailBoxes.clear();
 
         for (String atlasName : projectInfoVO.imagesPacks.keySet()) {
             TextureAtlas atlas = resourceManager.getTextureAtlas(atlasName);
@@ -80,7 +82,8 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
 
             for (TextureAtlas.AtlasRegion region : new Array.ArrayIterator<>(atlasRegions)) {
                 if(!projectInfoVO.imagesPacks.get(atlasName).regions.contains(region.name)
-                        || !region.name.contains(searchText)) continue;
+                        || !region.name.toLowerCase().contains(searchText)
+                        || filterResource(region.name, EntityFactory.IMAGE_TYPE)) continue;
 
                 boolean is9patch = region.findValue("split") != null;
                 ImageResource imageResource = new ImageResource(region, true);

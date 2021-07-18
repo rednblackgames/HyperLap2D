@@ -484,6 +484,11 @@
       imageOver: arrow-over,
       imageUp: arrow
     },
+    filter-button: {
+      imageDown: filter-down,
+      imageOver: filter-over,
+      imageUp: filter
+    },
     image-button: {
       imageUp: image-up
     },

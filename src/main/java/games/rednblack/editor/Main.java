@@ -40,6 +40,9 @@ public class Main {
         if (restartStartOnFirstThread()) {
             return;
         }
+
+        Thread.currentThread().setUncaughtExceptionHandler(new CustomExceptionHandler());
+
         HyperLap2DFacade.getInstance();
 
         Graphics.DisplayMode dm = Lwjgl3ApplicationConfiguration.getDisplayMode();
@@ -61,8 +64,6 @@ public class Main {
         if (settingsManager.editorConfigVO.useOpenGL3)
             config.useOpenGL3(true, 3, 2);
         config.setBackBufferConfig(8,8,8,8,16,8, settingsManager.editorConfigVO.msaaSamples);
-
-        Thread.currentThread().setUncaughtExceptionHandler(new CustomExceptionHandler());
 
         new Lwjgl3Application(HyperLap2DApp.initInstance(dm.width, dm.height, settingsManager), config);
     }

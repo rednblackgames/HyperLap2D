@@ -26,6 +26,7 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
         super(NAME, new UICompositeHierarchy());
     }
 
+    @Override
     public String[] listNotificationInterests() {
         return new String[]{
                 MsgAPI.SCENE_LOADED,

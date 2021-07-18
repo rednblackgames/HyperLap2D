@@ -8,6 +8,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.utils.AppConfig;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import org.apache.commons.lang3.SystemUtils;
 
 public class HyperLap2DApp extends ApplicationAdapter {
@@ -38,6 +39,8 @@ public class HyperLap2DApp extends ApplicationAdapter {
     @Override
     public void create() {
         Lwjgl3Application app = (Lwjgl3Application) Gdx.app;
+
+        StandardWidgetsFactory.init(HyperLap2DFacade.getInstance());
 
         Lwjgl3ApplicationConfiguration config2 = new Lwjgl3ApplicationConfiguration();
         config2.setWindowedMode(467, 385);

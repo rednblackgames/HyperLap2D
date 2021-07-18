@@ -90,7 +90,10 @@ public class UIAnimationsTabMediator extends UIResourcesTabMediator<UIAnimations
 
     private void createAnimationResources(Set<String> strings, Class<? extends BoxItemResource> resourceClass, BiFunction<String, Vector2, Boolean> factoryFunction, String searchText) {
         for (String animationName : strings) {
-            if (!animationName.contains(searchText)) continue;
+            if (!animationName.toLowerCase().contains(searchText)
+                    || filterResource(animationName, resourceClass == SpineResource.class ? EntityFactory.SPINE_TYPE : EntityFactory.SPRITE_TYPE))
+                continue;
+
             try {
                 Constructor<? extends BoxItemResource> constructor = resourceClass.getConstructor(String.class, boolean.class);
                 DraggableResource draggableResource = new DraggableResource(constructor.newInstance(animationName, true));

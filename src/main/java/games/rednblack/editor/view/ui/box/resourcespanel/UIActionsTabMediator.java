@@ -18,6 +18,8 @@ public class UIActionsTabMediator extends UIResourcesTabMediator<UIActionsTab> {
     private static final String TAG = UIActionsTabMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
+    private final Array<DraggableResource> itemArray = new Array<>();
+
     public UIActionsTabMediator() {
         super(NAME, new UIActionsTab());
     }
@@ -51,7 +53,7 @@ public class UIActionsTabMediator extends UIResourcesTabMediator<UIActionsTab> {
         ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
         HashMap<String, GraphVO> items = projectManager.currentProjectInfoVO.libraryActions;
 
-        Array<DraggableResource> itemArray = new Array<>();
+        itemArray.clear();
         for (String key : items.keySet()) {
             if(!key.toLowerCase().contains(searchText))continue;
             DraggableResource draggableResource = new DraggableResource(new LibraryActionResource(key));

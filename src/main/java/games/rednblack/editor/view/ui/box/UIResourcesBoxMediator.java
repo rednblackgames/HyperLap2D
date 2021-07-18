@@ -20,6 +20,7 @@ package games.rednblack.editor.view.ui.box;
 
 import java.util.stream.Stream;
 
+import games.rednblack.editor.view.ui.box.resourcespanel.*;
 import org.puremvc.java.interfaces.INotification;
 
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
@@ -27,11 +28,6 @@ import com.badlogic.gdx.utils.Array;
 
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
-import games.rednblack.editor.view.ui.box.resourcespanel.UIActionsTabMediator;
-import games.rednblack.editor.view.ui.box.resourcespanel.UIAnimationsTabMediator;
-import games.rednblack.editor.view.ui.box.resourcespanel.UIImagesTabMediator;
-import games.rednblack.editor.view.ui.box.resourcespanel.UILibraryItemsTabMediator;
-import games.rednblack.editor.view.ui.box.resourcespanel.UIParticleEffectsTabMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
 
@@ -119,6 +115,7 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
         facade.registerMediator(new UILibraryItemsTabMediator());
         facade.registerMediator(new UIParticleEffectsTabMediator());
         facade.registerMediator(new UIActionsTabMediator());
+        facade.registerMediator(new UIFilterMenuMediator());
     }
 
     private void initTabs() {
