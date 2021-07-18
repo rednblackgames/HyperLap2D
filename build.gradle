@@ -53,7 +53,7 @@ project.ext.assetsDir = new File("assets/");
 def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
 
 task runHyperLap2D(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
+    mainClass = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
@@ -154,7 +154,7 @@ runtime {
         if (osName.contains('windows')) {
             imageOptions += ["--icon", file("icons/icon.ico")]
             installerType = 'msi'
-            installerOptions += ['--win-dir-chooser', '--win-menu',
+            installerOptions += ['--win-dir-chooser', '--win-menu', '--win-menu-group', 'HyperLap2D',
                                  '--win-shortcut',  '--vendor', 'Red & Black Games',
                                  '--description', 'HyperLap2D Editor',
                                  '--win-upgrade-uuid', 'e5f64fb6-111f-41f3-8f33-03b90e1a3a32']
@@ -163,8 +163,10 @@ runtime {
             imageOptions += ["--icon", file("icons/HyperLap2D.png")]
             installerType = 'deb'
             installerOptions += [
+                    '--vendor', 'Red & Black Games',
+                    '--description', 'HyperLap2D is a Visual Editor for complex 2D worlds and scenes.',
                     '--linux-menu-group', 'Development', '--linux-deb-maintainer', 'business@rednblack.games',
-                    '--linux-shortcut'
+                    '--linux-shortcut', '--vendor', 'Red & Black Games', '--linux-rpm-license-type', 'License: GPL3'
             ]
             resourceDir = file("resources-linux")
         } else if (osName.contains('mac')) {
