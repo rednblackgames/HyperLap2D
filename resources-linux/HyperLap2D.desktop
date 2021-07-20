@@ -9,4 +9,4 @@ Type=Application
 DESKTOP_MIMES
 Categories=DEPLOY_BUNDLE_CATEGORY
 Keywords=development;games;hyperlap2d
-StartupWMClass=huperlap2d
+StartupWMClass=hyperlap2d
