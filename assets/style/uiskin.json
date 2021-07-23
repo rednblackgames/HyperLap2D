@@ -516,6 +516,13 @@
       over: button-over,
       imageUp: icon-close
     },
+    close-chip-tab: {
+      down: tab-chip-close-over,
+      up: tab-chip-close-inactive,
+      over: tab-chip-close-active,
+      disabled: tab-chip-close-inactive,
+      imageUp: icon-close
+    },
     close-box: {
       imageUp: box-colapse-on,
       imageChecked: box-colapse-off
@@ -897,6 +904,20 @@
         checked: tab-active,
         over: tab-inactive,
         disabled: tab-inactive
+      }
+    },
+    chip: {
+      draggable: false,
+      vertical: false,
+      font: default-font,
+      sharedCloseButton : close-chip-tab,
+      tabSpacing : 8,
+      buttonStyle: {
+        down: tab-chip-active,
+        up: tab-chip-inactive,
+        checked: tab-chip-active,
+        over: tab-chip-over,
+        disabled: tab-chip-inactive,
       }
     }
   },

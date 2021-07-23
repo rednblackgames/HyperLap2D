@@ -1,29 +1,32 @@
 package games.rednblack.editor.view.ui.dialog;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.adapter.AbstractListAdapter;
 import com.kotcrab.vis.ui.util.adapter.SimpleListAdapter;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.OptionDialogAdapter;
 import com.kotcrab.vis.ui.widget.*;
-import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
-import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane;
-import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneAdapter;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.listener.ScrollFocusListener;
+import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
+import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPane;
+import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPaneListener;
 
 import java.util.Set;
 
 public class AtlasesPackDialog extends H2DDialog {
 
-    private final TabbedPane tabbedPane;
+    private final ImageTabbedPane tabbedPane;
     private final String addNewNotification;
     private final String moveRegionNotification, updateCurrentNotification, removeNotification;
     private final SimpleListAdapter<String> mainPackAdapter, currentPackAdapter;
@@ -47,9 +50,9 @@ public class AtlasesPackDialog extends H2DDialog {
         addCloseButton();
         getContentTable().top().left();
 
-        tabbedPane = new TabbedPane() {
+        tabbedPane = new ImageTabbedPane("chip") {
             @Override
-            public boolean remove(Tab tab, boolean ignoreTabDirty) {
+            public boolean remove(ImageTab tab, boolean ignoreTabDirty) {
                 Dialogs.showOptionDialog(Sandbox.getInstance().getUIStage(), "Remove Pack", "Are you sure to remove this pack?",
                         Dialogs.OptionDialogType.YES_NO_CANCEL, new OptionDialogAdapter() {
                             @Override
@@ -66,16 +69,26 @@ public class AtlasesPackDialog extends H2DDialog {
                 return false;
             }
 
-            private boolean packRemove(Tab tab, boolean ignoreTabDirty) {
+            private boolean packRemove(ImageTab tab, boolean ignoreTabDirty) {
                 return super.remove(tab, ignoreTabDirty);
             }
         };
-        tabbedPane.addListener(new TabbedPaneAdapter() {
+        tabbedPane.addListener(new ImageTabbedPaneListener() {
             @Override
-            public void switchedTab(Tab tab) {
+            public void switchedTab(ImageTab tab) {
                 facade.sendNotification(updateCurrentNotification);
                 updateOpButtons();
                 currentSelectedPackLabel.setText(tab.getTabTitle());
+            }
+
+            @Override
+            public void removedTab(ImageTab tab) {
+
+            }
+
+            @Override
+            public void removedAllTabs() {
+
             }
         });
 
@@ -111,9 +124,9 @@ public class AtlasesPackDialog extends H2DDialog {
         currentPackList.setItemClickListener(this::selectCurrentItem);
 
         getContentTable().add(addNewPackTable).growX().row();
-        getContentTable().add(tabbedPane.getTable()).height(30).growX().row();
+        getContentTable().add(tabbedPane.getTable()).height(30).growX().padTop(4).padBottom(4).row();
 
-        insertButton = StandardWidgetsFactory.createTextButton("->");
+        insertButton = StandardWidgetsFactory.createTextButton(">");
         insertButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -121,7 +134,7 @@ public class AtlasesPackDialog extends H2DDialog {
                     facade.sendNotification(moveRegionNotification);
             }
         });
-        removeButton = StandardWidgetsFactory.createTextButton("<-");
+        removeButton = StandardWidgetsFactory.createTextButton("<");
         removeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -134,18 +147,19 @@ public class AtlasesPackDialog extends H2DDialog {
         VisTable opButtons = new VisTable();
         opButtons.add(insertButton).width(80).row();
         opButtons.add(removeButton).width(80).row();
-        opButtonsContainer.addSeparator(true);
         opButtonsContainer.add(opButtons);
-        opButtonsContainer.addSeparator(true);
 
         VisTable opTable = new VisTable();
         opTable.add(new VisLabel("Main Pack", Align.center)).uniformX().growX();
         opTable.add().width(80);
         currentSelectedPackLabel = new VisLabel("Select Pack", Align.center);
         opTable.add(currentSelectedPackLabel).uniformX().growX().row();
-        opTable.addSeparator().colspan(3);
+        NinePatchDrawable bg = new NinePatchDrawable((NinePatchDrawable) VisUI.getSkin().getDrawable("sticky-note"));
+        bg.getPatch().setColor(Color.DARK_GRAY);
+        mainPackList.getMainTable().background(bg);
         opTable.add(mainPackList.getMainTable()).uniformX().grow();
         opTable.add(opButtonsContainer).growY();
+        currentPackList.getMainTable().background(bg);
         opTable.add(currentPackList.getMainTable()).uniformX().grow().row();
 
         getContentTable().add(opTable).grow().row();
@@ -181,6 +195,7 @@ public class AtlasesPackDialog extends H2DDialog {
     public void clearCurrentPack() {
         currentList.clear();
         currentPackAdapter.itemsChanged();
+        currentSelectedPackLabel.setText("Select Pack");
     }
 
     public void updateCurrentPack(Set<String> regions) {
@@ -222,6 +237,7 @@ public class AtlasesPackDialog extends H2DDialog {
 
         mainPackAdapter.itemsChanged();
         if (toSelect != null) {
+            mainPackAdapter.getView(toSelect);
             mainPackAdapter.getSelectionManager().select(toSelect);
         }
     }
@@ -260,7 +276,7 @@ public class AtlasesPackDialog extends H2DDialog {
         return Sandbox.getInstance().getUIStage().getHeight() * 0.5f;
     }
 
-    public static class PackTab extends Tab {
+    public static class PackTab extends ImageTab {
         String name;
         public PackTab (String name) {
             super(false, true);
@@ -270,6 +286,16 @@ public class AtlasesPackDialog extends H2DDialog {
         @Override
         public String getTabTitle() {
             return name;
+        }
+
+        @Override
+        public String getTabIconStyle() {
+            return null;
+        }
+
+        @Override
+        public String getCloseButtonStyle() {
+            return "close-chip-tab";
         }
 
         @Override

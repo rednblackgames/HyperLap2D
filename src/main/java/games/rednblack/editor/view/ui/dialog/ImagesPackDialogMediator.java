@@ -67,11 +67,15 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
                 currentTab = viewComponent.getSelectedTab();
                 if (currentTab != null)
                     viewComponent.updateCurrentPack(projectManager.currentProjectInfoVO.imagesPacks.get(currentTab).regions);
+                else
+                    viewComponent.clearCurrentPack();
                 break;
             case MsgAPI.UPDATE_ATLAS_PACK_LIST:
             case ProjectManager.PROJECT_OPENED:
                 viewComponent.initPacks(projectManager.currentProjectInfoVO.imagesPacks.keySet());
                 viewComponent.updateMainPack(projectManager.currentProjectInfoVO.imagesPacks.get("main").regions);
+                if (viewComponent.getSelectedTab() == null)
+                    viewComponent.clearCurrentPack();
                 break;
             case NEW_IMAGES_PACK:
                 TexturePackVO newVo = new TexturePackVO();

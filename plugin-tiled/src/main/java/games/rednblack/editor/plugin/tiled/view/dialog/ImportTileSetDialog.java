@@ -46,11 +46,11 @@ public class ImportTileSetDialog extends H2DDialog {
         height = StandardWidgetsFactory.createValidableTextField(validator);
 
         VisTable sizeTable = new VisTable();
-        sizeTable.add("Width:").padRight(3);
+        sizeTable.add("Tile Width:").padRight(3);
         sizeTable.add(width).width(60);
         sizeTable.add("px");
         sizeTable.row().padTop(5);
-        sizeTable.add("Height:").padRight(3);
+        sizeTable.add("Tile Height:").padRight(3);
         sizeTable.add(height).width(60);
         sizeTable.add("px");
         getContentTable().add(sizeTable);
