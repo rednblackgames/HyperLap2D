@@ -31,6 +31,7 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.data.migrations.ProjectVersionMigrator;
 import games.rednblack.editor.renderer.data.*;
+import games.rednblack.editor.renderer.resources.FontSizePair;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -435,6 +436,7 @@ public class ProjectManager extends Proxy {
         if (!currentProjectVO.projectMainExportPath.isEmpty()) {
             exportShaders(currentProjectVO.projectMainExportPath);
         }
+        prepareFontsForExport();
         exportFonts(defaultBuildPath);
         if (!currentProjectVO.projectMainExportPath.isEmpty()) {
             exportFonts(currentProjectVO.projectMainExportPath);
@@ -476,6 +478,27 @@ public class ProjectManager extends Proxy {
         try {
             FileUtils.copyDirectory(particlesDirectory.file(), fileTarget);
         } catch (IOException ignore) {
+        }
+    }
+
+    private void prepareFontsForExport() {
+        String srcPath = currentProjectPath + "/assets/orig";
+        FileHandle origDirectoryHandle = Gdx.files.absolute(srcPath);
+        FileHandle fontsDirectory = origDirectoryHandle.child("freetypefonts");
+
+        for (FileHandle fontFile : fontsDirectory.list()) {
+            if (!fontFile.isDirectory())
+                fontFile.delete();
+        }
+
+        ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
+        ArrayList<FontSizePair> requiredFonts = resourceManager.getProjectRequiredFontsList();
+        for (FontSizePair font : requiredFonts) {
+            try {
+                resourceManager.getTTFSafely(font.fontName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
