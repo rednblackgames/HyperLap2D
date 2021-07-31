@@ -482,6 +482,7 @@ public class ProjectManager extends Proxy {
     }
 
     private void prepareFontsForExport() {
+        FontManager fontManager = facade.retrieveProxy(FontManager.NAME);
         String srcPath = currentProjectPath + "/assets/orig";
         FileHandle origDirectoryHandle = Gdx.files.absolute(srcPath);
         FileHandle fontsDirectory = origDirectoryHandle.child("freetypefonts");
@@ -495,7 +496,11 @@ public class ProjectManager extends Proxy {
         ArrayList<FontSizePair> requiredFonts = resourceManager.getProjectRequiredFontsList();
         for (FontSizePair font : requiredFonts) {
             try {
-                resourceManager.getTTFSafely(font.fontName);
+                HashMap<String, String> fonts = fontManager.getFontsMap();
+                if (fonts.containsKey(font.fontName)) {
+                    File source = new File(fonts.get(font.fontName));
+                    FileUtils.copyFileToDirectory(source, fontsDirectory.file());
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
