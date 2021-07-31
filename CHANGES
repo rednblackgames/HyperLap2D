@@ -3,6 +3,7 @@
 - [BREAK CHANGE] Update Project version to `0.2.0`
 - Experimental support to Normal Mapping in lights:
     * Simple Images
+    * Spine Animations
 - Add light `intensity`
 - Add Physics Sensors
 
@@ -11,13 +12,17 @@
 - Add Editor performance settings (MSAA, OpenGL 3)
 - Add multiple atlas packing settings
 - Add Import libGDX atlas format
-- Improve `Resources` Panel UI/UX
+- Improve `Resources` Panel UI/UX (Multiple selection/delete)
 - Huge improvements to Tiled Plugin:
     * Sprite and Spine animated Tiles
     * UI improvements and general refactoring
-    * Import Tile Set (`Resources -> Import Tile Set`)
+    * Split Tile Set image into single tiles (`Resources -> Import Tile Set`)
     * Drop multiple tiles at once
     * Sort tiles with drag and drop
+    * Experimental Auto Tiling drawing
+- Improve jpackage releases
+- Update to Java 16
+- Many bug fixes
 
 = Runtime =
 - Fix Lights positioning issues
