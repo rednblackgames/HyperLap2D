@@ -69,6 +69,8 @@ public class CreateNoiseDialogMediator extends Mediator<CreateNoiseDialog>  {
         PixmapIO.writePNG(path, pixmap);
         pixmap.dispose();
 
+        projectManager.getCurrentProjectInfoVO().imagesPacks.get("main").regions.add(name);
+
         facade.sendNotification(MsgAPI.ACTION_REPACK);
     }
 }

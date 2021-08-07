@@ -68,6 +68,8 @@ public class CreatePlaceholderDialogMediator extends Mediator<CreatePlaceholderD
         PixmapIO.writePNG(path, pixmap);
         pixmap.dispose();
 
+        projectManager.getCurrentProjectInfoVO().imagesPacks.get("main").regions.add(name);
+
         facade.sendNotification(MsgAPI.ACTION_REPACK);
     }
 }
