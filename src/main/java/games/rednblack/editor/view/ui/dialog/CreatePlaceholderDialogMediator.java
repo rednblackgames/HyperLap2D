@@ -59,7 +59,7 @@ public class CreatePlaceholderDialogMediator extends Mediator<CreatePlaceholderD
 
     private void createPlaceholder(String name, int width , int height) {
         Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
-        pixmap.setColor(new Color(1, 0, 0, 0.7f));
+        pixmap.setColor(new Color(1, 1, 1, 1f));
         pixmap.fill();
 
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
