@@ -1,14 +1,14 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.controller.commands.component.UpdateImageItemDataCommand;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.data.SimpleImageVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 
-public class UIImageItemPropertiesMediator extends UIItemPropertiesMediator<Entity, UIImageItemProperties> {
+public class UIImageItemPropertiesMediator extends UIItemPropertiesMediator<UIImageItemProperties> {
     private static final String TAG = UIImageItemPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -19,8 +19,8 @@ public class UIImageItemPropertiesMediator extends UIItemPropertiesMediator<Enti
     }
 
     @Override
-    protected void translateObservableDataToView(Entity item) {
-        textureRegionComponent = ComponentRetriever.get(item, TextureRegionComponent.class);
+    protected void translateObservableDataToView(int item) {
+        textureRegionComponent = SandboxComponentRetriever.get(item, TextureRegionComponent.class);
 
         if(textureRegionComponent.isRepeat) {
             viewComponent.setRenderMode("REPEAT");

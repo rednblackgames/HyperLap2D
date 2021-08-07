@@ -1,6 +1,5 @@
 package games.rednblack.editor.controller.commands.component;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
@@ -10,6 +9,7 @@ import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 
@@ -22,15 +22,15 @@ public class ReplaceRegionCommand extends EntityModifyRevertibleCommand {
     @Override
     public void doAction() {
         Object[] payload = getNotification().getBody();
-        Entity entity = (Entity) payload[0];
+        int entity = (int) payload[0];
         String regionName = (String) payload[1];
         TextureRegion region = (TextureRegion) payload[2];
 
         entityId = EntityUtils.getEntityId(entity);
 
-        TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
-        DimensionsComponent size = ComponentRetriever.get(entity, DimensionsComponent.class);
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+        TextureRegionComponent textureRegionComponent = SandboxComponentRetriever.get(entity, TextureRegionComponent.class);
+        DimensionsComponent size = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
 
         backupRegionName = textureRegionComponent.regionName;
         backupRegion = textureRegionComponent.region;
@@ -50,11 +50,11 @@ public class ReplaceRegionCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        Entity entity = EntityUtils.getByUniqueId(entityId);
+        int entity = EntityUtils.getByUniqueId(entityId);
 
-        TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
-        DimensionsComponent size = ComponentRetriever.get(entity, DimensionsComponent.class);
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+        TextureRegionComponent textureRegionComponent = SandboxComponentRetriever.get(entity, TextureRegionComponent.class);
+        DimensionsComponent size = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
 
         textureRegionComponent.regionName = backupRegionName;
         textureRegionComponent.region = backupRegion;

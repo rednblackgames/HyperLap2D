@@ -1,6 +1,5 @@
 package games.rednblack.editor.utils.asset.impl;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -15,6 +14,8 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
+import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
 
 import java.io.File;
@@ -70,7 +71,7 @@ public class ImageAsset extends Asset {
     }
 
     @Override
-    public boolean deleteAsset(Entity root, String name) {
+    public boolean deleteAsset(int root, String name) {
         for (ResolutionEntryVO resolutionEntryVO : projectManager.getCurrentProjectInfoVO().resolutions) {
             if(!deleteSingleImage(resolutionEntryVO.name, name))
                 return false;
@@ -99,7 +100,7 @@ public class ImageAsset extends Asset {
      *  Clear scenes and library items that contains deleted image
      * @param imageName image to delete
      */
-    protected void postDeleteImage(Entity root, String imageName) {
+    protected void postDeleteImage(int root, String imageName) {
         deleteEntitiesWithImages(root, imageName);
         deleteAllItemsImages(imageName);
     }
@@ -137,15 +138,15 @@ public class ImageAsset extends Asset {
         }
     }
 
-    private void deleteEntitiesWithImages(Entity rootEntity, String regionName) {
+    private void deleteEntitiesWithImages(int rootEntity, String regionName) {
         tmpEntityList.clear();
-        Consumer<Entity> action = (root) -> {
-            TextureRegionComponent regionComponent = ComponentRetriever.get(root, TextureRegionComponent.class);
+        Consumer<Integer> action = (root) -> {
+            TextureRegionComponent regionComponent = SandboxComponentRetriever.get(root, TextureRegionComponent.class);
             if (regionComponent != null && regionComponent.regionName.equals(regionName)) {
                 tmpEntityList.add(root);
             }
 
-            NinePatchComponent ninePatchComponent = ComponentRetriever.get(root, NinePatchComponent.class);
+            NinePatchComponent ninePatchComponent = SandboxComponentRetriever.get(root, NinePatchComponent.class);
             if (ninePatchComponent != null && ninePatchComponent.textureRegionName.equals(regionName)) {
                 tmpEntityList.add(root);
             }

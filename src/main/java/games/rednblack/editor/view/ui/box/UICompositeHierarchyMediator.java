@@ -1,7 +1,7 @@
 package games.rednblack.editor.view.ui.box;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
@@ -58,25 +58,25 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
         }
     }
 
-    private void buildCompositeTree(Entity entity) {
+    private void buildCompositeTree(int entity) {
         viewComponent.clearItems();
 
         Array<CompositeHierarchyItem> items = new Array<>();
 
         ParentNodeComponent parentNodeComponent;
-        Entity currEntity = entity;
+        int currEntity = entity;
 
         do {
             CompositeHierarchyItem item = new CompositeHierarchyItem(EntityUtils.getItemName(currEntity), EntityUtils.getEntityId(currEntity));
 
-            parentNodeComponent = ComponentRetriever.get(currEntity, ParentNodeComponent.class);
+            parentNodeComponent = SandboxComponentRetriever.get(currEntity, ParentNodeComponent.class);
             if (parentNodeComponent != null) {
                 currEntity = parentNodeComponent.parentEntity;
                 item.isRoot = true;
             }
 
             items.add(item);
-        } while (parentNodeComponent != null);
+        } while (parentNodeComponent != null && currEntity != -1);
 
         items.reverse();
 
@@ -105,7 +105,7 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
         //updateOriginalItem(scenes.get(scenes.size() - 1), commands.sceneControl.getCurrentScene());
     }
 
-    private void updateOriginalItem(CompositeItemVO updatableVo, Entity currItem) {
+    private void updateOriginalItem(CompositeItemVO updatableVo, int currItem) {
     	//TODO fix and uncomment
 //        updatableVo.update(new CompositeItemVO(currItem.getDataVO().composite));
 //

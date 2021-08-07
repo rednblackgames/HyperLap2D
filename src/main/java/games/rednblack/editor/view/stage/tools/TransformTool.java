@@ -18,11 +18,11 @@
 
 package games.rednblack.editor.view.stage.tools;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.kotcrab.vis.ui.util.OsUtils;
 import games.rednblack.editor.utils.KeyBindingsLayout;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.tools.transformStrategy.*;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -66,7 +66,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
 
     private boolean fixCursor = false;
 
-    public void execute(Vector2 mouseInitialCoordinates, Vector2 mousePointStage, int anchor, Entity entity) {
+    public void execute(Vector2 mouseInitialCoordinates, Vector2 mousePointStage, int anchor, int entity) {
         float mouseDx = mousePointStage.x - mouseInitialCoordinates.x;
         float mouseDy = mousePointStage.y - mouseInitialCoordinates.y;
 
@@ -107,7 +107,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
     public void handleNotification(INotification notification) {
         switch (notification.getName()) {
             case MsgAPI.NEW_ITEM_ADDED:
-                updateListeners((Entity) notification.getBody());
+                updateListeners((int) notification.getBody());
                 break;
         }
     }
@@ -119,28 +119,28 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
     }
 
     @Override
-    public void itemMouseUp(Entity entity, float x, float y) {
+    public void itemMouseUp(int entity, float x, float y) {
         super.itemMouseUp(entity, x, y);
         updateListeners();
     }
 
     private void updateListeners() {
         Sandbox sandbox = Sandbox.getInstance();
-        Set<Entity> selectedEntities = sandbox.getSelector().getSelectedItems();
+        Set<Integer> selectedEntities = sandbox.getSelector().getSelectedItems();
         updateListeners(selectedEntities);
     }
 
-    private void updateListeners(Entity entity) {
-        Set<Entity> entities = new HashSet<>();
+    private void updateListeners(int entity) {
+        Set<Integer> entities = new HashSet<>();
         entities.add(entity);
         updateListeners(entities);
     }
 
-    private void updateListeners(Set<Entity> entities) {
+    private void updateListeners(Set<Integer> entities) {
         FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
         followersUIMediator.clearAllListeners();
 
-        for (Entity entity : entities) {
+        for (int entity : entities) {
             if (followersUIMediator.getFollower(entity) != null)
                 followersUIMediator.getFollower(entity).setFollowerListener(this);
         }
@@ -152,9 +152,9 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
 
         Sandbox sandbox = Sandbox.getInstance();
 
-        commandBuilder.begin(follower.getEntity());
+        commandBuilder.begin(follower.getEntity(), Sandbox.getInstance().getEngine());
 
-        TransformComponent transformComponent = ComponentRetriever.get(follower.getEntity(), TransformComponent.class);
+        TransformComponent transformComponent = SandboxComponentRetriever.get(follower.getEntity(), TransformComponent.class);
         Vector2 mousePoint = sandbox.screenToWorld(x, y);
         mouseInitialCoordinates.set(mousePoint.x, mousePoint.y);
 
@@ -177,7 +177,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
                 break;
         }
 
-        commandBuilder.begin(follower.getEntity());
+        commandBuilder.begin(follower.getEntity(), sandbox.getEngine());
 
         if (anchor == NormalSelectionFollower.ROTATION_LT ||
                 anchor == NormalSelectionFollower.ROTATION_RT ||

@@ -18,8 +18,8 @@
 
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.factory.EntityFactory;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.NodeComponent;
@@ -43,11 +43,11 @@ public class CreateItemCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void doAction() {
-        Entity entity = getNotification().getBody();
+        int entity = getNotification().getBody();
 
         if (serializedEntity != null) {
             EntityFactory factory = Sandbox.getInstance().sceneControl.sceneLoader.getEntityFactory();
-            Entity parentEntity = Sandbox.getInstance().getCurrentViewingEntity();
+            int parentEntity = Sandbox.getInstance().getCurrentViewingEntity();
             entity =  EntityUtils.getEntityFromJson(serializedEntity, entityType, factory, parentEntity);
             serializedEntity = null;
         }
@@ -55,29 +55,29 @@ public class CreateItemCommand extends EntityModifyRevertibleCommand {
         entityId = EntityUtils.getEntityId(entity);
         entityType = EntityUtils.getType(entity);
 
-        sandbox.getEngine().addEntity(entity);
-
         // z-index
-        NodeComponent nodeComponent = ComponentRetriever.get(Sandbox.getInstance().getCurrentViewingEntity(), NodeComponent.class);
-        ZIndexComponent zindexComponent = ComponentRetriever.get(entity, ZIndexComponent.class);
+        NodeComponent nodeComponent = SandboxComponentRetriever.get(Sandbox.getInstance().getCurrentViewingEntity(), NodeComponent.class);
+        ZIndexComponent zindexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
         zindexComponent.setZIndex(nodeComponent.children.size);
 
+        sandbox.getEngine().process();
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
 
-        Set<Entity> items = new HashSet<>();
+        Set<Integer> items = new HashSet<>();
         items.add(entity);
         facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, items);
     }
 
     @Override
     public void undoAction() {
-        Entity entity = EntityUtils.getByUniqueId(entityId);
+        int entity = EntityUtils.getByUniqueId(entityId);
         serializedEntity = EntityUtils.getJsonStringFromEntity(entity);
 
         FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
         followersUIMediator.removeFollower(entity);
 
-        sandbox.getEngine().removeEntity(entity);
+        sandbox.getEngine().delete(entity);
+        sandbox.getEngine().process();
         facade.sendNotification(MsgAPI.DELETE_ITEMS_COMMAND_DONE);
     }
 }

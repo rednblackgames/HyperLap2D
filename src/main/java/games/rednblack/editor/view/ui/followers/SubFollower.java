@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui.followers;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import org.puremvc.java.interfaces.INotification;
 
@@ -9,15 +8,15 @@ import org.puremvc.java.interfaces.INotification;
  */
 public abstract class SubFollower extends Group {
 
-    protected Entity entity;
+    protected int entity;
     protected BasicFollower parentFollower;
 
-    public SubFollower(Entity entity) {
+    public SubFollower(int entity) {
         setItem(entity);
         create();
     }
 
-    private void setItem(Entity entity) {
+    private void setItem(int entity) {
         this.entity = entity;
     }
 

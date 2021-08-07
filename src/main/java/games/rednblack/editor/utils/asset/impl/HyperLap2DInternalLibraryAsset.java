@@ -1,6 +1,5 @@
 package games.rednblack.editor.utils.asset.impl;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -53,7 +52,7 @@ public class HyperLap2DInternalLibraryAsset extends Asset {
     }
 
     @Override
-    public boolean deleteAsset(Entity root, String name) {
+    public boolean deleteAsset(int root, String name) {
         return false;
     }
 

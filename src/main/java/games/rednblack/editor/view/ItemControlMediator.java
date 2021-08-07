@@ -20,10 +20,10 @@ package games.rednblack.editor.view;
 
 import java.util.Set;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 
 /**
  * Created by CyberJoe on 3/18/2015.
@@ -39,9 +39,9 @@ public class ItemControlMediator {
         this.sceneControl = sceneControl;
     }
 
-    public void itemZIndexChange( Set<Entity> currentSelection, boolean isUp) {
-        for (Entity item : currentSelection) {
-        	zIndexComponent = ComponentRetriever.get(item, ZIndexComponent.class);
+    public void itemZIndexChange(Set<Integer> currentSelection, boolean isUp) {
+        for (Integer item : currentSelection) {
+        	zIndexComponent = SandboxComponentRetriever.get(item, ZIndexComponent.class);
 
             int ammount = 1;
             if (!isUp) ammount = -1;
@@ -52,8 +52,8 @@ public class ItemControlMediator {
         }
     }
 
-    public void moveItemBy(Entity entity, float x, float y) {
-    	transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+    public void moveItemBy(int entity, float x, float y) {
+    	transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
     	transformComponent.x+=x;
     	transformComponent.y+=y;
     }

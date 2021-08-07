@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.ui.followers;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 
@@ -27,7 +26,7 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
  */
 public class FollowerFactory {
 
-    public static BasicFollower createFollower(Entity entity) {
+    public static BasicFollower createFollower(int entity) {
         switch (EntityUtils.getType(entity)) {
             case EntityFactory.IMAGE_TYPE:
                 return new ImageFollower(entity);

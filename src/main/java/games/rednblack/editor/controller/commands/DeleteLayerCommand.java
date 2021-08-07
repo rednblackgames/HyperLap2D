@@ -1,9 +1,9 @@
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 
 import java.util.HashSet;
@@ -40,13 +40,13 @@ public class DeleteLayerCommand extends TransactiveCommand {
         facade.sendNotification(UNDONE, layerName);
     }
 
-    public Set<Entity> getItemsByLayerName(String layerName) {
-        Set<Entity> result = new HashSet<>();
-        Entity viewingEntity = Sandbox.getInstance().getCurrentViewingEntity();
-        NodeComponent nodeComponent = ComponentRetriever.get(viewingEntity, NodeComponent.class);
+    public Set<Integer> getItemsByLayerName(String layerName) {
+        Set<Integer> result = new HashSet<>();
+        int viewingEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        NodeComponent nodeComponent = SandboxComponentRetriever.get(viewingEntity, NodeComponent.class);
         for(int i = 0; i < nodeComponent.children.size; i++) {
-            Entity child = nodeComponent.children.get(i);
-            ZIndexComponent zIndexComponent = ComponentRetriever.get(child, ZIndexComponent.class);
+            int child = nodeComponent.children.get(i);
+            ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(child, ZIndexComponent.class);
             if(zIndexComponent.layerName.equals(layerName)) {
                 result.add(child);
             }

@@ -18,10 +18,10 @@
 
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.components.LayerMapComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 
 /**
@@ -49,8 +49,8 @@ public class LayerSwapCommand extends EntityModifyRevertibleCommand {
     public void doAction() {
         backup();
 
-        Entity viewingEntity = EntityUtils.getByUniqueId(entityId);
-        LayerMapComponent layerMapComponent = ComponentRetriever.get(viewingEntity, LayerMapComponent.class);
+        int viewingEntity = EntityUtils.getByUniqueId(entityId);
+        LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
         layerMapComponent.swap(sourceName, targetName);
 
         facade.sendNotification(DONE);
@@ -59,8 +59,8 @@ public class LayerSwapCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        Entity viewingEntity = EntityUtils.getByUniqueId(entityId);
-        LayerMapComponent layerMapComponent = ComponentRetriever.get(viewingEntity, LayerMapComponent.class);
+        int viewingEntity = EntityUtils.getByUniqueId(entityId);
+        LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
         layerMapComponent.swap(targetName, sourceName);
 
         facade.sendNotification(DONE);

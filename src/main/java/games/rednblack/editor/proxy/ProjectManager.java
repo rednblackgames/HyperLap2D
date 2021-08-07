@@ -498,8 +498,9 @@ public class ProjectManager extends Proxy {
             try {
                 HashMap<String, String> fonts = fontManager.getFontsMap();
                 if (fonts.containsKey(font.fontName)) {
-                    File source = new File(fonts.get(font.fontName));
-                    FileUtils.copyFileToDirectory(source, fontsDirectory.file());
+                    FileHandle source = new FileHandle(fonts.get(font.fontName));
+                    FileHandle dest = new FileHandle(fontsDirectory.path() + File.separator + font.fontName + ".ttf");
+                    FileUtils.copyFile(source.file(), dest.file());
                 }
             } catch (IOException e) {
                 e.printStackTrace();

@@ -23,10 +23,11 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
+import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
 import org.puremvc.java.interfaces.IMediator;
 import org.puremvc.java.interfaces.INotification;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
@@ -47,7 +48,6 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.stage.tools.TextTool;
 import games.rednblack.editor.view.ui.properties.UIAbstractProperties;
-import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
 import games.rednblack.editor.view.ui.properties.panels.UIBasicItemPropertiesMediator;
 import games.rednblack.editor.view.ui.properties.panels.UICompositeItemPropertiesMediator;
 import games.rednblack.editor.view.ui.properties.panels.UIImageItemPropertiesMediator;
@@ -90,9 +90,8 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
     private void initMap() {
         classToMediatorMap = new HashMap<>();
 
-        //TODO this is very bad, but PooledEngine$PooledEntity is private :(
-        classToMediatorMap.put("com.badlogic.ashley.core.PooledEngine$PooledEntity", new ArrayList<>());
-        classToMediatorMap.get("com.badlogic.ashley.core.PooledEngine$PooledEntity").add(UIBasicItemPropertiesMediator.NAME);
+        classToMediatorMap.put(Integer.class.getName(), new ArrayList<>());
+        classToMediatorMap.get(Integer.class.getName()).add(UIBasicItemPropertiesMediator.NAME);
 
         classToMediatorMap.put(SceneVO.class.getName(), new ArrayList<>());
         classToMediatorMap.get(SceneVO.class.getName()).add(UIScenePropertiesMediator.NAME);
@@ -126,7 +125,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
                 initAllPropertyBoxes(null);
                 break;
             case MsgAPI.ITEM_SELECTION_CHANGED:
-                Set<Entity> selection = notification.getBody();
+                Set<Integer> selection = notification.getBody();
                 if (selection.size() == 1) {
                     initAllPropertyBoxes(selection.iterator().next());
                 } else if (selection.size() > 1) {
@@ -157,8 +156,8 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         ArrayList<String> mediatorNames = new ArrayList<>(classToMediatorMap.get(mapName));
 
         // TODO: this is not uber cool, gotta think a new way to make this class know nothing about entities
-        if (observable instanceof Entity) {
-            initEntityProperties(mediatorNames, (Entity) observable);
+        if (observable instanceof Integer) {
+            initEntityProperties(mediatorNames, (int) observable);
         }
 
         clearPropertyBoxes();
@@ -177,7 +176,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         }
     }
 
-    private void initEntityProperties(ArrayList<String> mediatorNames, Entity entity) {
+    private void initEntityProperties(ArrayList<String> mediatorNames, int entity) {
         int entityType = EntityUtils.getType(entity);
 
         if (entityType == EntityFactory.IMAGE_TYPE) {
@@ -207,12 +206,12 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         }
 
         // optional panels based on components
-        PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
-        PhysicsBodyComponent physicsComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
-        SensorComponent sensorComponent = ComponentRetriever.get(entity, SensorComponent.class);
-        ShaderComponent shaderComponent = ComponentRetriever.get(entity, ShaderComponent.class);
-        LightBodyComponent lightComponent = ComponentRetriever.get(entity, LightBodyComponent.class);
-        TypingLabelComponent typingLabelComponent = ComponentRetriever.get(entity, TypingLabelComponent.class);
+        PolygonComponent polygonComponent = SandboxComponentRetriever.get(entity, PolygonComponent.class);
+        PhysicsBodyComponent physicsComponent = SandboxComponentRetriever.get(entity, PhysicsBodyComponent.class);
+        SensorComponent sensorComponent = SandboxComponentRetriever.get(entity, SensorComponent.class);
+        ShaderComponent shaderComponent = SandboxComponentRetriever.get(entity, ShaderComponent.class);
+        LightBodyComponent lightComponent = SandboxComponentRetriever.get(entity, LightBodyComponent.class);
+        TypingLabelComponent typingLabelComponent = SandboxComponentRetriever.get(entity, TypingLabelComponent.class);
 
         if (polygonComponent != null) {
             mediatorNames.add(UIPolygonComponentPropertiesMediator.NAME);
@@ -245,7 +244,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         currentRegisteredPropertyBoxes.clear();
     }
 
-    private void initMultipleSelectionPropertyBox(Set<Entity> selection) {
+    private void initMultipleSelectionPropertyBox(Set<Integer> selection) {
         clearPropertyBoxes();
         UIMultipleSelectPropertiesMediator mediator = new UIMultipleSelectPropertiesMediator();
         facade.registerMediator(mediator);

@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.stage.tools;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -27,6 +26,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.util.OsUtils;
 import games.rednblack.editor.utils.KeyBindingsLayout;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.proxy.CursorManager;
@@ -66,8 +66,8 @@ public class SelectionTool extends SimpleTool {
     private Vector2 directionVector = null;
 
     private Vector2 dragMouseStartPosition;
-    private HashMap<Entity, Vector2> dragStartPositions = new HashMap<>();
-    private HashMap<Entity, Vector2> dragTouchDiff = new HashMap<>();
+    private HashMap<Integer, Vector2> dragStartPositions = new HashMap<>();
+    private HashMap<Integer, Vector2> dragTouchDiff = new HashMap<>();
 
     private TransformComponent transformComponent;
 
@@ -136,17 +136,17 @@ public class SelectionTool extends SimpleTool {
 
     @Override
     public void stageMouseDoubleClick(float x, float y) {
-        Entity currentView = sandbox.getCurrentViewingEntity();
-        if (currentView == null)
+        int currentView = sandbox.getCurrentViewingEntity();
+        if (currentView == -1)
             return;
-        ParentNodeComponent parentNodeComponent = ComponentRetriever.get(currentView, ParentNodeComponent.class);
+        ParentNodeComponent parentNodeComponent = SandboxComponentRetriever.get(currentView, ParentNodeComponent.class);
         if (parentNodeComponent != null) {
             HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, parentNodeComponent.parentEntity);
         }
     }
 
     @Override
-    public boolean itemMouseDown(Entity entity, float x, float y) {
+    public boolean itemMouseDown(int entity, float x, float y) {
         isItemDown = true;
         sandbox = Sandbox.getInstance();
         HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
@@ -157,14 +157,14 @@ public class SelectionTool extends SimpleTool {
         if (isShiftPressed()) {
             if (!currentTouchedItemWasSelected) {
                 // item was not selected, adding it to selection
-                Set<Entity> items = new HashSet<>();
+                Set<Integer> items = new HashSet<>();
                 items.add(entity);
                 facade.sendNotification(MsgAPI.ACTION_ADD_SELECTION, items);
             }
         } else {
             if (!currentTouchedItemWasSelected) {
                 // get selection, add this item to selection
-                Set<Entity> items = new HashSet<>();
+                Set<Integer> items = new HashSet<>();
                 items.add(entity);
                 facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, items);
             }
@@ -173,8 +173,8 @@ public class SelectionTool extends SimpleTool {
         // remembering local touch position for each of selected boxes, if planning to drag
         dragStartPositions.clear();
         dragTouchDiff.clear();
-        for (Entity itemInstance : sandbox.getSelector().getCurrentSelection()) {
-            transformComponent = ComponentRetriever.get(itemInstance, TransformComponent.class);
+        for (int itemInstance : sandbox.getSelector().getCurrentSelection()) {
+            transformComponent = SandboxComponentRetriever.get(itemInstance, TransformComponent.class);
             if (transformComponent == null)
                 continue;
 
@@ -193,7 +193,7 @@ public class SelectionTool extends SimpleTool {
     private boolean isItemDown = false;
 
     @Override
-    public void itemMouseDragged(Entity entity, float x, float y) {
+    public void itemMouseDragged(int entity, float x, float y) {
         sandbox = Sandbox.getInstance();
 
         if (!isDragging && (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT))) { // first drag iteration and is copy mode
@@ -203,8 +203,8 @@ public class SelectionTool extends SimpleTool {
 
             dragStartPositions.clear();
             dragTouchDiff.clear();
-            for (Entity itemInstance : sandbox.getSelector().getCurrentSelection()) {
-                transformComponent = ComponentRetriever.get(itemInstance, TransformComponent.class);
+            for (int itemInstance : sandbox.getSelector().getCurrentSelection()) {
+                transformComponent = SandboxComponentRetriever.get(itemInstance, TransformComponent.class);
 
                 dragTouchDiff.put(itemInstance, new Vector2(x - transformComponent.x, y - transformComponent.y));
                 dragStartPositions.put(itemInstance, new Vector2(transformComponent.x, transformComponent.y));
@@ -246,8 +246,8 @@ public class SelectionTool extends SimpleTool {
             newY = MathUtils.floor(y / gridSize) * gridSize;
 
             // Selection rectangles should move and follow along
-            for (Entity itemInstance : sandbox.getSelector().getCurrentSelection()) {
-                transformComponent = ComponentRetriever.get(itemInstance, TransformComponent.class);
+            for (int itemInstance : sandbox.getSelector().getCurrentSelection()) {
+                transformComponent = SandboxComponentRetriever.get(itemInstance, TransformComponent.class);
 
                 if (dragTouchDiff.get(itemInstance) == null)
                     continue;
@@ -277,8 +277,8 @@ public class SelectionTool extends SimpleTool {
     @Override
     public boolean stageMouseScrolled(float amountX, float amountY) {
         if (isItemDown) {
-            for (Entity itemInstance : sandbox.getSelector().getCurrentSelection()) {
-                transformComponent = ComponentRetriever.get(itemInstance, TransformComponent.class);
+            for (int itemInstance : sandbox.getSelector().getCurrentSelection()) {
+                transformComponent = SandboxComponentRetriever.get(itemInstance, TransformComponent.class);
 
                 float degreeAmount = 3;
                 if (amountX < 0 || amountY < 0) degreeAmount = -3;
@@ -297,7 +297,7 @@ public class SelectionTool extends SimpleTool {
     }
 
     @Override
-    public void itemMouseUp(Entity entity, float x, float y) {
+    public void itemMouseUp(int entity, float x, float y) {
         isItemDown = false;
         sandbox = Sandbox.getInstance();
         HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
@@ -305,7 +305,7 @@ public class SelectionTool extends SimpleTool {
         if (currentTouchedItemWasSelected && !isDragging) {
             // item was selected (and no dragging was performed), so we need to release it
             if (isShiftPressed()) {
-                Set<Entity> items = new HashSet<>();
+                Set<Integer> items = new HashSet<>();
                 items.add(entity);
                 facade.sendNotification(MsgAPI.ACTION_RELEASE_SELECTION, items);
             }
@@ -315,8 +315,8 @@ public class SelectionTool extends SimpleTool {
         if (isDragging) {
             // sets item position, and puts things into undo-redo que
             Array<Object[]> payloads = new Array<>();
-            for (Entity itemInstance : sandbox.getSelector().getCurrentSelection()) {
-                transformComponent = ComponentRetriever.get(itemInstance, TransformComponent.class);
+            for (int itemInstance : sandbox.getSelector().getCurrentSelection()) {
+                transformComponent = SandboxComponentRetriever.get(itemInstance, TransformComponent.class);
                 Vector2 newPosition = new Vector2(transformComponent.x, transformComponent.y);
                 Vector2 oldPosition = dragStartPositions.get(itemInstance);
 
@@ -335,7 +335,7 @@ public class SelectionTool extends SimpleTool {
     }
 
     @Override
-    public void itemMouseDoubleClick(Entity item, float x, float y) {
+    public void itemMouseDoubleClick(int item, float x, float y) {
         if (sandbox.getSelector().selectionIsComposite()) {
             HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, item);
         }
@@ -355,14 +355,14 @@ public class SelectionTool extends SimpleTool {
         Viewport viewport = Sandbox.getInstance().getViewport();
 
 
-        HashSet<Entity> freeItems = sandbox.getSelector().getAllFreeItems();
+        HashSet<Integer> freeItems = sandbox.getSelector().getAllFreeItems();
 
         // when touch is up, selection process stops, and if any items got "caught" in they should be selected.
 
         // hiding selection rectangle
         sandbox.selectionRec.setOpacity(0.0f);
         //ArrayList<Entity> curr = new ArrayList<Entity>();
-        Set<Entity> curr = new HashSet<>();
+        Set<Integer> curr = new HashSet<>();
         Rectangle sR = sandbox.screenToWorld(sandbox.selectionRec.getRect());
 
         draggedRectanglePoints[0] = sR.x;
@@ -374,9 +374,9 @@ public class SelectionTool extends SimpleTool {
         draggedRectanglePoints[6] = sR.x;
         draggedRectanglePoints[7] = sR.y + sR.height;
 
-        for (Entity entity : freeItems) {
-            transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
-            dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
+        for (int entity : freeItems) {
+            transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+            dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
 
             //if (!freeItems.get(i).isLockedByLayer() && Intersector.overlaps(sR, new Rectangle(entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight()))) {
 
@@ -399,14 +399,14 @@ public class SelectionTool extends SimpleTool {
         facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, curr);
     }
 
-    private boolean isEntityVisible(Entity e) {
+    private boolean isEntityVisible(int e) {
         LayerItemVO layer = EntityUtils.getEntityLayer(e);
 
         return (layer == null || layer.isVisible);
     }
 
     @Override
-    public void keyDown(Entity entity, int keycode) {
+    public void keyDown(int entity, int keycode) {
         boolean isControlPressed = isControlPressed();
 
         // the amount of pixels by which to move item if moving
@@ -427,8 +427,8 @@ public class SelectionTool extends SimpleTool {
 
         if (!isControlPressed) {
             dragStartPositions.clear();
-            for (Entity itemInstance : sandbox.getSelector().getCurrentSelection()) {
-                transformComponent = ComponentRetriever.get(itemInstance, TransformComponent.class);
+            for (int itemInstance : sandbox.getSelector().getCurrentSelection()) {
+                transformComponent = SandboxComponentRetriever.get(itemInstance, TransformComponent.class);
                 if (transformComponent != null)
                     dragStartPositions.put(itemInstance, new Vector2(transformComponent.x, transformComponent.y));
             }
@@ -452,8 +452,8 @@ public class SelectionTool extends SimpleTool {
 
             // sets item position, and puts things into undo-redo que
             Array<Object[]> payloads = new Array<>();
-            for (Entity itemInstance : sandbox.getSelector().getCurrentSelection()) {
-                transformComponent = ComponentRetriever.get(itemInstance, TransformComponent.class);
+            for (int itemInstance : sandbox.getSelector().getCurrentSelection()) {
+                transformComponent = SandboxComponentRetriever.get(itemInstance, TransformComponent.class);
                 if (transformComponent == null)
                     continue;
                 Vector2 newPosition = new Vector2(transformComponent.x, transformComponent.y);
@@ -480,7 +480,7 @@ public class SelectionTool extends SimpleTool {
     }
 
     @Override
-    public void keyUp(Entity entity, int keycode) {
+    public void keyUp(int entity, int keycode) {
 
     }
 

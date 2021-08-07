@@ -18,7 +18,7 @@
 
 package games.rednblack.editor.view.ui.box;
 
-import com.badlogic.ashley.core.Entity;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
@@ -174,9 +174,9 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                 setEntityVisibilityByLayer(layerItem, true);
                 break;
             case MsgAPI.ITEM_SELECTION_CHANGED:
-                Set<Entity> selection = notification.getBody();
+                Set<Integer> selection = notification.getBody();
                 if(selection.size() == 1) {
-                    ZIndexComponent zIndexComponent = ComponentRetriever.get(selection.iterator().next(), ZIndexComponent.class);
+                    ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(selection.iterator().next(), ZIndexComponent.class);
                     index = findLayerByName(zIndexComponent.layerName);
                     if(index == -1) {
                         // handle this somehow
@@ -190,8 +190,8 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                 break;
             case MsgAPI.NEW_ITEM_ADDED:
                 index = viewComponent.getCurrentSelectedLayerIndex();
-                Entity item = notification.getBody();
-                ZIndexComponent zIndexComponent = ComponentRetriever.get(item, ZIndexComponent.class);
+                int item = notification.getBody();
+                ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(item, ZIndexComponent.class);
                 if(zIndexComponent.layerName == null) zIndexComponent.layerName = layers.get(index).layerName;
                 break;
             case UILayerBox.CHANGE_LAYER_NAME:
@@ -238,7 +238,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
     }*/
 
     private void addNewLayerToItemComposite(LayerItemVO layerVo) {
-        LayerMapComponent layerMapComponent = ComponentRetriever.get(Sandbox.getInstance().getCurrentViewingEntity(), LayerMapComponent.class);
+        LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(Sandbox.getInstance().getCurrentViewingEntity(), LayerMapComponent.class);
         layerMapComponent.addLayer(layerVo);
     }
 
@@ -247,8 +247,8 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
         if(setLocked){
             Sandbox.getInstance().getSelector().clearSelections();
         }
-        Entity viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
-        LayerMapComponent layerMapComponent = ComponentRetriever.get(viewEntity, LayerMapComponent.class);
+        int viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewEntity, LayerMapComponent.class);
 
         layerMapComponent.getLayer(layerName).isLocked = setLocked;
     }
@@ -260,13 +260,13 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
             return;
         }
         String layerName = layerItem.getLayerName();
-        Entity viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        int viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
 
-        NodeComponent nodeComponent = ComponentRetriever.get(viewEntity, NodeComponent.class);
-        Set<Entity> items = new HashSet<>();
+        NodeComponent nodeComponent = SandboxComponentRetriever.get(viewEntity, NodeComponent.class);
+        Set<Integer> items = new HashSet<>();
         for(int i=0; i<nodeComponent.children.size; i++){
-            Entity entity = nodeComponent.children.get(i);
-            ZIndexComponent childZComponent = ComponentRetriever.get(entity, ZIndexComponent.class);
+            int entity = nodeComponent.children.get(i);
+            ZIndexComponent childZComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
             if(childZComponent.layerName.equals(layerName)){
                 items.add(entity);
             }
@@ -277,12 +277,12 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
 
     private void setEntityVisibilityByLayer(UILayerBox.UILayerItem layerItem, boolean setVisible) {
         String layerName = layerItem.getLayerName();
-        Entity viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        int viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
 
-        NodeComponent nodeComponent = ComponentRetriever.get(viewEntity, NodeComponent.class);
+        NodeComponent nodeComponent = SandboxComponentRetriever.get(viewEntity, NodeComponent.class);
         for(int i=0; i<nodeComponent.children.size; i++){
-            Entity entity = nodeComponent.children.get(i);
-            ZIndexComponent childZComponent = ComponentRetriever.get(entity, ZIndexComponent.class);
+            int entity = nodeComponent.children.get(i);
+            ZIndexComponent childZComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
             if(childZComponent.layerName.equals(layerName)){
                 EntityUtils.getEntityLayer(entity).isVisible = setVisible;
             }
@@ -320,9 +320,8 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
     }
 
     private void initLayerData() {
-
-        Entity viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
-        LayerMapComponent layerMapComponent = ComponentRetriever.get(viewEntity, LayerMapComponent.class);
+        int viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewEntity, LayerMapComponent.class);
         layers = layerMapComponent.getLayers();
 
         viewComponent.clearItems();

@@ -18,10 +18,10 @@
 
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.TransformComponent;
@@ -64,12 +64,13 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
         Json json =  new Json();
         CompositeVO compositeVO = json.fromJson(CompositeVO.class, (String) payload[1]);
         forceIdChange(compositeVO);
-        Set<Entity> newEntitiesList = createEntitiesFromVO(compositeVO);
-        for (Entity entity : newEntitiesList) {
-            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+        Set<Integer> newEntitiesList = createEntitiesFromVO(compositeVO);
+        sandbox.getEngine().process();
+        for (int entity : newEntitiesList) {
+            TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
             transformComponent.x += diff.x;
             transformComponent.y += diff.y;
-            ZIndexComponent zIndexComponent = ComponentRetriever.get(entity, ZIndexComponent.class);
+            ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
 //            UILayerBoxMediator layerBoxMediator = facade.retrieveMediator(UILayerBoxMediator.NAME);
             zIndexComponent.layerName = layerBoxMediator.getCurrentSelectedLayerName();
             HyperLap2DFacade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
@@ -82,9 +83,10 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
     public void undoAction() {
         FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
         for (Integer entityId : pastedEntityIds) {
-            Entity entity = EntityUtils.getByUniqueId(entityId);
+            int entity = EntityUtils.getByUniqueId(entityId);
             followersUIMediator.removeFollower(entity);
-            sandbox.getEngine().removeEntity(entity);
+            sandbox.getEngine().delete(entity);
+            sandbox.getEngine().process();
             facade.sendNotification(MsgAPI.DELETE_ITEMS_COMMAND_DONE);
         }
         pastedEntityIds.clear();
@@ -98,62 +100,52 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
     }
 
 
-    public static Set<Entity> createEntitiesFromVO(CompositeVO compositeVO) {
-        Set<Entity> entities = new HashSet<>();
+    public static Set<Integer> createEntitiesFromVO(CompositeVO compositeVO) {
+        Set<Integer> entities = new HashSet<>();
 
         EntityFactory factory = Sandbox.getInstance().sceneControl.sceneLoader.getEntityFactory();
-        Entity parentEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        int parentEntity = Sandbox.getInstance().getCurrentViewingEntity();
 
         for (int i = 0; i < compositeVO.sImages.size(); i++) {
-            Entity child = factory.createEntity(parentEntity, compositeVO.sImages.get(i));
-            Sandbox.getInstance().getEngine().addEntity(child);
+            int child = factory.createEntity(parentEntity, compositeVO.sImages.get(i));
             entities.add(child);
         }
         for (int i = 0; i < compositeVO.sImage9patchs.size(); i++) {
-            Entity child = factory.createEntity(parentEntity, compositeVO.sImage9patchs.get(i));
-            Sandbox.getInstance().getEngine().addEntity(child);
+            int child = factory.createEntity(parentEntity, compositeVO.sImage9patchs.get(i));
             entities.add(child);
         }
         for (int i = 0; i < compositeVO.sLabels.size(); i++) {
-            Entity child = factory.createEntity(parentEntity, compositeVO.sLabels.get(i));
-            Sandbox.getInstance().getEngine().addEntity(child);
+            int child = factory.createEntity(parentEntity, compositeVO.sLabels.get(i));
             entities.add(child);
         }
         for (int i = 0; i < compositeVO.sParticleEffects.size(); i++) {
-            Entity child = factory.createEntity(parentEntity, compositeVO.sParticleEffects.get(i));
-            Sandbox.getInstance().getEngine().addEntity(child);
+            int child = factory.createEntity(parentEntity, compositeVO.sParticleEffects.get(i));
             entities.add(child);
         }
         for (int i = 0; i < compositeVO.sTalosVFX.size(); i++) {
-            Entity child = factory.createEntity(parentEntity, compositeVO.sTalosVFX.get(i));
-            Sandbox.getInstance().getEngine().addEntity(child);
+            int child = factory.createEntity(parentEntity, compositeVO.sTalosVFX.get(i));
             entities.add(child);
         }
         for (int i = 0; i < compositeVO.sLights.size(); i++) {
-            Entity child = factory.createEntity(parentEntity, compositeVO.sLights.get(i));
-            Sandbox.getInstance().getEngine().addEntity(child);
+            int child = factory.createEntity(parentEntity, compositeVO.sLights.get(i));
             entities.add(child);
         }
         for (int i = 0; i < compositeVO.sSpineAnimations.size(); i++) {
-            Entity child = factory.createEntity(parentEntity, compositeVO.sSpineAnimations.get(i));
-            Sandbox.getInstance().getEngine().addEntity(child);
+            int child = factory.createEntity(parentEntity, compositeVO.sSpineAnimations.get(i));
             entities.add(child);
         }
         for (int i = 0; i < compositeVO.sSpriteAnimations.size(); i++) {
-            Entity child = factory.createEntity(parentEntity, compositeVO.sSpriteAnimations.get(i));
-            Sandbox.getInstance().getEngine().addEntity(child);
+            int child = factory.createEntity(parentEntity, compositeVO.sSpriteAnimations.get(i));
             entities.add(child);
         }
         for (int i = 0; i < compositeVO.sColorPrimitives.size(); i++) {
-            Entity child = factory.createEntity(parentEntity, compositeVO.sColorPrimitives.get(i));
-            Sandbox.getInstance().getEngine().addEntity(child);
+            int child = factory.createEntity(parentEntity, compositeVO.sColorPrimitives.get(i));
             entities.add(child);
         }
         for (int i = 0; i < compositeVO.sComposites.size(); i++) {
-            Entity child = factory.createEntity(parentEntity, compositeVO.sComposites.get(i));
-            Sandbox.getInstance().getEngine().addEntity(child);
+            int child = factory.createEntity(parentEntity, compositeVO.sComposites.get(i));
             entities.add(child);
-            factory.initAllChildren(Sandbox.getInstance().getEngine(), child, compositeVO.sComposites.get(i).composite);
+            factory.initAllChildren(child, compositeVO.sComposites.get(i).composite);
         }
 
         return entities;

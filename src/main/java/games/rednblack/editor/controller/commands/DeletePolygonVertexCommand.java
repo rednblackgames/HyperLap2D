@@ -8,6 +8,7 @@ import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCom
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.poly.PolygonUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
 import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
@@ -31,7 +32,7 @@ public class DeletePolygonVertexCommand extends SandboxCommand {
         PolygonFollower follower = (PolygonFollower) payload[0];
         int anchor = (int) payload[1];
 
-        PolygonComponent polygonComponent = ComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
+        PolygonComponent polygonComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
         if(polygonComponent == null || polygonComponent.vertices == null || polygonComponent.vertices.length == 0) return;
         if(follower.getOriginalPoints().size() <= 3) return;
 

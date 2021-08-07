@@ -1,29 +1,28 @@
 package games.rednblack.editor.system;
 
-import com.badlogic.ashley.core.Entity;
+import com.artemis.annotations.All;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.systems.PhysicsSystem;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 
+@All(PhysicsBodyComponent.class)
 public class PhysicsAdjustSystem extends PhysicsSystem {
 
 	private final Vector2 transformVec = new Vector2();
 	
-	public PhysicsAdjustSystem(World world) {
-		super(world);
+	public PhysicsAdjustSystem() {
 		setPhysicsOn(false);
 	}
 
 	@Override
-	protected void processEntity(Entity entity, float deltaTime) {
+	protected void process(int entity) {
 		TransformComponent transformComponent = transformComponentMapper.get(entity);
 		processBody(entity);
 
-		PhysicsBodyComponent physicsBodyComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
+		PhysicsBodyComponent physicsBodyComponent = SandboxComponentRetriever.get(entity, PhysicsBodyComponent.class);
 
 		if(physicsBodyComponent.body == null) return;
 

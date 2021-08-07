@@ -18,8 +18,8 @@
 
 package games.rednblack.editor.controller.commands.component;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
@@ -38,7 +38,7 @@ public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
 
     private void collectData() {
         Object[] payload = getNotification().getBody();
-        entityId = EntityUtils.getEntityId((Entity) payload[0]);
+        entityId = EntityUtils.getEntityId((int) payload[0]);
         dataFrom = (Vector2[][]) payload[1];
         dataTo = (Vector2[][]) payload[2];
         dataFrom = dataFrom.clone();
@@ -49,9 +49,9 @@ public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
     public void doAction() {
         collectData();
 
-        Entity entity = EntityUtils.getByUniqueId(entityId);
+        int entity = EntityUtils.getByUniqueId(entityId);
 
-        PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
+        PolygonComponent polygonComponent = SandboxComponentRetriever.get(entity, PolygonComponent.class);
         polygonComponent.vertices = dataTo;
 
         EntityUtils.refreshComponents(entity);
@@ -62,9 +62,9 @@ public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        Entity entity = EntityUtils.getByUniqueId(entityId);
+        int entity = EntityUtils.getByUniqueId(entityId);
 
-        PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
+        PolygonComponent polygonComponent = SandboxComponentRetriever.get(entity, PolygonComponent.class);
         polygonComponent.vertices = dataFrom;
 
         EntityUtils.refreshComponents(entity);
@@ -72,8 +72,8 @@ public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
-    public static Object[] payloadInitialState(Entity entity) {
-        PolygonComponent polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
+    public static Object[] payloadInitialState(int entity) {
+        PolygonComponent polygonComponent = SandboxComponentRetriever.get(entity, PolygonComponent.class);
         Object[] payload = new Object[3];
         payload[0] = entity;
         payload[1] = cloneData(polygonComponent.vertices);

@@ -1,6 +1,5 @@
 package games.rednblack.editor.utils.asset.impl;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
@@ -13,6 +12,8 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
+import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
 import org.apache.commons.io.FileUtils;
 
@@ -101,7 +102,7 @@ public class SpriteAnimationAtlasAsset extends Asset {
     }
 
     @Override
-    public boolean deleteAsset(Entity root, String name) {
+    public boolean deleteAsset(int root, String name) {
         for (ResolutionEntryVO resolutionEntryVO : projectManager.getCurrentProjectInfoVO().resolutions) {
             if(!deleteSpriteAnimation(resolutionEntryVO.name, name))
                 return false;
@@ -128,7 +129,7 @@ public class SpriteAnimationAtlasAsset extends Asset {
         return ImportUtils.deleteDirectory(filePath);
     }
 
-    protected void postDeleteSpriteAnimation(Entity root, String spriteAnimationName) {
+    protected void postDeleteSpriteAnimation(int root, String spriteAnimationName) {
         deleteEntitiesWithSpriteAnimation(root, spriteAnimationName);
         deleteAllItemsSpriteAnimations(spriteAnimationName);
     }
@@ -158,10 +159,10 @@ public class SpriteAnimationAtlasAsset extends Asset {
         }
     }
 
-    private void deleteEntitiesWithSpriteAnimation(Entity rootEntity, String spriteAnimationName) {
+    private void deleteEntitiesWithSpriteAnimation(int rootEntity, String spriteAnimationName) {
         tmpEntityList.clear();
-        Consumer<Entity> action = (root) -> {
-            SpriteAnimationComponent spriteAnimationComponent = ComponentRetriever.get(root, SpriteAnimationComponent.class);
+        Consumer<Integer> action = (root) -> {
+            SpriteAnimationComponent spriteAnimationComponent = SandboxComponentRetriever.get(root, SpriteAnimationComponent.class);
             if (spriteAnimationComponent != null && spriteAnimationComponent.animationName.equals(spriteAnimationName)) {
                 tmpEntityList.add(root);
             }

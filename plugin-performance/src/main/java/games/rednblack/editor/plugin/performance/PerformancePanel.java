@@ -1,6 +1,8 @@
 package games.rednblack.editor.plugin.performance;
 
-import com.badlogic.ashley.core.Engine;
+import com.artemis.Aspect;
+import com.artemis.EntitySubscription;
+import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -16,7 +18,7 @@ public class PerformancePanel extends UIDraggablePanel {
 
     private VisLabel entitiesCount, memoryLabel, fpsLbl, glCalls, drawCalls, shaderSwitch, textureBind, vertexCount;
 
-    private Engine engine;
+    private EntitySubscription entitySubscription;
     private final GLProfiler profiler;
 
     public PerformancePanel() {
@@ -87,7 +89,7 @@ public class PerformancePanel extends UIDraggablePanel {
     @Override
     public void act(float delta) {
         super.act(delta);
-        entitiesCount.setText(engine.getEntities().size());
+        entitiesCount.setText(entitySubscription.getEntities().size());
         fpsLbl.setText(Gdx.graphics.getFramesPerSecond());
         MemoryUsage memoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
         long usedMemory = memoryUsage.getUsed() / (1024 * 1024);
@@ -109,7 +111,8 @@ public class PerformancePanel extends UIDraggablePanel {
         profiler.reset();
     }
 
-    public void setEngine(Engine engine) {
-        this.engine = engine;
+    public void setEngine(com.artemis.World engine) {
+        entitySubscription = engine.getAspectSubscriptionManager()
+                .get(Aspect.all());
     }
 }

@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.utils;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -27,7 +26,7 @@ import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.light.LightObjectComponent;
 import games.rednblack.editor.renderer.components.particle.ParticleComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.extension.talos.TalosComponent;
 
 /**
@@ -54,7 +53,7 @@ public class EntityBounds extends Rectangle {
     private final Array<Vector2> boundPointList = new Array<>();
     private final float[] boundPoints = new float[8];
 
-    public EntityBounds(Entity entity) {
+    public EntityBounds(int entity) {
         setEntity(entity);
     }
 
@@ -62,9 +61,9 @@ public class EntityBounds extends Rectangle {
 
     }
 
-    public void setEntity(Entity entity) {
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
-        DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
+    public void setEntity(int entity) {
+        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+        DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
         x = transformComponent.x;
         y = transformComponent.y;
         scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
@@ -72,7 +71,7 @@ public class EntityBounds extends Rectangle {
         width = dimensionsComponent.width;
         height = dimensionsComponent.height;
 
-        if (ComponentRetriever.get(entity, LightObjectComponent.class) != null) {
+        if (SandboxComponentRetriever.get(entity, LightObjectComponent.class) != null) {
             x += dimensionsComponent.boundBox.x;
             y += dimensionsComponent.boundBox.y;
             scaleX = 1;
@@ -81,8 +80,8 @@ public class EntityBounds extends Rectangle {
             height = dimensionsComponent.boundBox.height;
         }
 
-        if (ComponentRetriever.get(entity, ParticleComponent.class) != null
-            || ComponentRetriever.get(entity, TalosComponent.class) != null) {
+        if (SandboxComponentRetriever.get(entity, ParticleComponent.class) != null
+            || SandboxComponentRetriever.get(entity, TalosComponent.class) != null) {
             width = dimensionsComponent.boundBox.width;
             height = dimensionsComponent.boundBox.height;
             dimensionsComponent.width = width;
@@ -186,7 +185,7 @@ public class EntityBounds extends Rectangle {
         return boundPoints;
     }
 
-    public float[] getBoundPoints(Entity entity) {
+    public float[] getBoundPoints(int entity) {
         setEntity(entity);
         return boundPoints;
     }
@@ -197,7 +196,7 @@ public class EntityBounds extends Rectangle {
         return boundPointList;
     }
 
-    public Array<Vector2> getBoundPointsList(Entity entity) {
+    public Array<Vector2> getBoundPointsList(int entity) {
         setEntity(entity);
         return getBoundPointsList();
 

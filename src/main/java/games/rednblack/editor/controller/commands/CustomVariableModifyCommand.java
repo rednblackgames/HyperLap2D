@@ -1,9 +1,9 @@
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 
 /**
  * Created by CyberJoe on 11/6/2015.
@@ -41,14 +41,14 @@ public class CustomVariableModifyCommand extends EntityModifyRevertibleCommand {
     }
 
     private void addVariable(String key, String value) {
-        Entity entity = EntityUtils.getByUniqueId(entityId);
-        MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+        int entity = EntityUtils.getByUniqueId(entityId);
+        MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
         mainItemComponent.setCustomVars(key, value);
     }
 
     private void removeVariable(String key) {
-        Entity entity = EntityUtils.getByUniqueId(entityId);
-        MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+        int entity = EntityUtils.getByUniqueId(entityId);
+        MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
         value = mainItemComponent.customVariables.getStringVariable(key); //storing the backup
         mainItemComponent.removeCustomVars(key);
     }
@@ -57,7 +57,7 @@ public class CustomVariableModifyCommand extends EntityModifyRevertibleCommand {
         if(entityId == null) {
             // First time call, need to prepare the data and fetch payload
             Object[] payload = getNotification().getBody();
-            Entity item = (Entity) payload[0];
+            int item = (int) payload[0];
             entityId = EntityUtils.getEntityId(item);
             key = (String) payload[2];
             isAdding = false;
@@ -68,7 +68,7 @@ public class CustomVariableModifyCommand extends EntityModifyRevertibleCommand {
         }
     }
 
-    public static Object addCustomVariable(Entity entity, String key, String value) {
+    public static Object addCustomVariable(int entity, String key, String value) {
         Object[] payload = new Object[4];
         payload[0] = entity;
         payload[1] = true; // is adding type
@@ -78,7 +78,7 @@ public class CustomVariableModifyCommand extends EntityModifyRevertibleCommand {
         return payload;
     }
 
-    public static Object removeCustomVariable(Entity entity, String key) {
+    public static Object removeCustomVariable(int entity, String key) {
         Object[] payload = new Object[3];
         payload[0] = entity;
         payload[1] = true;

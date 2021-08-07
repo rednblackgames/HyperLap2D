@@ -1,12 +1,12 @@
 package games.rednblack.editor.controller.commands.component;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.data.LightBodyDataVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 
 public class UpdateLightBodyDataCommand extends EntityModifyRevertibleCommand {
@@ -17,11 +17,11 @@ public class UpdateLightBodyDataCommand extends EntityModifyRevertibleCommand {
     @Override
     public void doAction() {
         Object[] payload = getNotification().getBody();
-        Entity entity = (Entity) payload[0];
+        int entity = (int) payload[0];
         LightBodyDataVO vo = (LightBodyDataVO) payload[1];
         entityId = EntityUtils.getEntityId(entity);
 
-        LightBodyComponent lightComponent = ComponentRetriever.get(entity, LightBodyComponent.class);
+        LightBodyComponent lightComponent = SandboxComponentRetriever.get(entity, LightBodyComponent.class);
 
         backup = new LightBodyDataVO();
         backup.loadFromComponent(lightComponent);
@@ -47,8 +47,8 @@ public class UpdateLightBodyDataCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        Entity entity = EntityUtils.getByUniqueId(entityId);
-        LightBodyComponent lightComponent = ComponentRetriever.get(entity, LightBodyComponent.class);
+        int entity = EntityUtils.getByUniqueId(entityId);
+        LightBodyComponent lightComponent = SandboxComponentRetriever.get(entity, LightBodyComponent.class);
 
         lightComponent.rayDirection = backup.rayDirection;
         lightComponent.distance = backup.distance;
@@ -69,7 +69,7 @@ public class UpdateLightBodyDataCommand extends EntityModifyRevertibleCommand {
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
-    public static Object payload(Entity entity, LightBodyDataVO vo) {
+    public static Object payload(int entity, LightBodyDataVO vo) {
         Object[] payload = new Object[2];
         payload[0] = entity;
         payload[1] = vo;

@@ -1,16 +1,16 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.renderer.components.label.TypingLabelComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 
-public class UITypingLabelPropertiesMediator extends UIItemPropertiesMediator<Entity, UITypingLabelProperties> {
+public class UITypingLabelPropertiesMediator extends UIItemPropertiesMediator<UITypingLabelProperties> {
     private static final String TAG = UITypingLabelPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -44,12 +44,12 @@ public class UITypingLabelPropertiesMediator extends UIItemPropertiesMediator<En
     }
 
     private void restartTypingLabel() {
-        TypingLabelComponent typingLabelComponent = ComponentRetriever.get(observableReference, TypingLabelComponent.class);
+        TypingLabelComponent typingLabelComponent = SandboxComponentRetriever.get(observableReference, TypingLabelComponent.class);
         typingLabelComponent.typingLabel.restart();
     }
 
     @Override
-    protected void translateObservableDataToView(Entity item) {
+    protected void translateObservableDataToView(int item) {
 
     }
 

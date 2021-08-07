@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.components.LayerMapComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.additional.ButtonComponent;
@@ -26,6 +25,7 @@ import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 
 import java.util.HashSet;
 
@@ -37,10 +37,10 @@ public class ConvertToButtonCommand extends ConvertToCompositeCommand {
 
     @Override
     public void doAction() {
-        Entity entity;
+        int entity;
 
-        HashSet<Entity> entities = (HashSet<Entity>) sandbox.getSelector().getSelectedItems();
-        Entity item = entities.iterator().next();
+        HashSet<Integer> entities = (HashSet<Integer>) sandbox.getSelector().getSelectedItems();
+        int item = entities.iterator().next();
 
         if(entities.size() == 1 && EntityUtils.getType(item) == EntityFactory.COMPOSITE_TYPE) {
             entity = item;
@@ -50,14 +50,14 @@ public class ConvertToButtonCommand extends ConvertToCompositeCommand {
         }
 
         //create layers
-        LayerMapComponent layerMapComponent = ComponentRetriever.get(entity, LayerMapComponent.class);
+        LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(entity, LayerMapComponent.class);
         layerMapComponent.addLayer(new LayerItemVO("normal"));
         layerMapComponent.addLayer(new LayerItemVO("pressed"));
 
         // adding button logic
-        MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+        MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
         mainItemComponent.tags.add("button");
-        entity.add(new ButtonComponent());
+        sandbox.getEngine().edit(entity).create(ButtonComponent.class);
     }
 
     @Override

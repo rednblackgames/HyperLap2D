@@ -1,8 +1,9 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.controller.commands.component.UpdatePhysicsDataCommand;
 import games.rednblack.editor.renderer.data.PhysicsBodyDataVO;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
@@ -12,7 +13,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.puremvc.java.interfaces.INotification;
 
-public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<Entity, UIPhysicsProperties> {
+public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<UIPhysicsProperties> {
 
     private static final String TAG = UIPhysicsPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
@@ -45,8 +46,8 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<Entity
     }
 
     @Override
-    protected void translateObservableDataToView(Entity item) {
-        physicsComponent = item.getComponent(PhysicsBodyComponent.class);
+    protected void translateObservableDataToView(int item) {
+        physicsComponent = SandboxComponentRetriever.get(item, PhysicsBodyComponent.class);
         viewComponent.setBodyType(physicsComponent.bodyType);
         viewComponent.getMassField().setText(physicsComponent.mass + "");
         viewComponent.getCenterOfMassXField().setText(physicsComponent.centerOfMass.x + "");
@@ -68,7 +69,7 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<Entity
 
     @Override
     protected void translateViewToItemData() {
-        physicsComponent = observableReference.getComponent(PhysicsBodyComponent.class);
+        physicsComponent = SandboxComponentRetriever.get(observableReference, PhysicsBodyComponent.class);
 
         PhysicsBodyDataVO oldPayloadVo = new PhysicsBodyDataVO();
         oldPayloadVo.loadFromComponent(physicsComponent);

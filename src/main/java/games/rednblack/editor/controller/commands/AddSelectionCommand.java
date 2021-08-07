@@ -20,7 +20,6 @@ package games.rednblack.editor.controller.commands;
 
 import java.util.Set;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.utils.runtime.EntityUtils;
@@ -39,18 +38,18 @@ public class AddSelectionCommand extends RevertibleCommand {
     public void doAction() {
         cancel();
         if(entityIds == null) {
-            Set<Entity> items = getNotification().getBody();
+            Set<Integer> items = getNotification().getBody();
             entityIds = EntityUtils.getEntityId(items);
         }
 
-        Set<Entity> items = EntityUtils.getByUniqueId(entityIds);
+        Set<Integer> items = EntityUtils.getByUniqueId(entityIds);
         Sandbox.getInstance().getSelector().addSelections(items);
         facade.sendNotification(DONE);
     }
 
     @Override
     public void undoAction() {
-        Set<Entity> items = EntityUtils.getByUniqueId(entityIds);
+        Set<Integer> items = EntityUtils.getByUniqueId(entityIds);
         Sandbox.getInstance().getSelector().releaseSelections(items);
         facade.sendNotification(DONE);
     }

@@ -15,6 +15,7 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.ResourceManager;
+import games.rednblack.editor.renderer.SceneConfiguration;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.components.additional.ButtonComponent;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -51,9 +52,12 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
 
         viewport = new ExtendViewport(worldSizeVO.getWorldWidth(), worldSizeVO.getWorldHeight());
         mCamera = (OrthographicCamera) viewport.getCamera();
-        sceneLoader = new SceneLoader(resourceManager);
-        sceneLoader.injectExternalItemType(new SpineItemType());
-        sceneLoader.injectExternalItemType(new TalosItemType());
+        SceneConfiguration config = new SceneConfiguration();
+        config.setResourceRetriever(resourceManager);
+        config.addExternalItemType(new SpineItemType());
+        config.addExternalItemType(new TalosItemType());
+        sceneLoader = new SceneLoader(config);
+
         sceneLoader.loadScene(projectManager.getCurrentSceneConfigVO().sceneName, viewport);
 
         bgColor = projectManager.currentProjectVO.backgroundColor;
@@ -74,7 +78,8 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
         mCamera.position.lerp(cameraTargetPos, 0.5f);
 
         viewport.apply();
-        sceneLoader.getEngine().update(delta);
+        sceneLoader.getEngine().setDelta(delta);
+        sceneLoader.getEngine().process();
 
         if (projectManager.currentProjectVO.box2dDebugRender)
             mBox2DDebugRenderer.render(sceneLoader.getWorld(), mCamera.combined);

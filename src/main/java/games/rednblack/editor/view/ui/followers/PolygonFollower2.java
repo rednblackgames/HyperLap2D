@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui.followers;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -18,6 +17,7 @@ import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.renderer.utils.PolygonUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.editor.view.ui.widget.actors.polygon.PolyLine;
@@ -64,7 +64,7 @@ public class PolygonFollower2 extends SubFollower {
         }
     };
 
-    public PolygonFollower2(Entity entity) {
+    public PolygonFollower2(int entity) {
         super(entity);
         setTouchable(Touchable.enabled);
         pixelsPerWU = Sandbox.getInstance().getPixelPerWU();
@@ -72,9 +72,9 @@ public class PolygonFollower2 extends SubFollower {
 
     @Override
     public void create() {
-        polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
-        transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
-        dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
+        polygonComponent = SandboxComponentRetriever.get(entity, PolygonComponent.class);
+        transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+        dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
     }
 
     @Override
@@ -204,7 +204,7 @@ public class PolygonFollower2 extends SubFollower {
         });
     }
 
-    public Entity getEntity() {
+    public int getEntity() {
         return entity;
     }
 

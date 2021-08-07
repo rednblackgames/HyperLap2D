@@ -1,7 +1,8 @@
 package games.rednblack.editor.system;
 
-import com.badlogic.ashley.core.Entity;
+import com.artemis.annotations.All;
 import com.talosvfx.talos.runtime.ParticleEffectInstance;
+import games.rednblack.editor.renderer.components.particle.TalosDataComponent;
 import games.rednblack.h2d.extension.talos.TalosComponent;
 import games.rednblack.h2d.extension.talos.TalosSystem;
 
@@ -10,11 +11,12 @@ import games.rednblack.h2d.extension.talos.TalosSystem;
  * This system will make sure they look continuous while in editor, so user will find and see them easily.
  *
  */
+@All({TalosComponent.class, TalosDataComponent.class})
 public class TalosContinuousSystem extends TalosSystem {
 
     @Override
-    protected void processEntity(Entity entity, float deltaTime) {
-        super.processEntity(entity, deltaTime);
+    protected void process(int entity) {
+        super.process(entity);
 
         TalosComponent talosComponent = particleComponentMapper.get(entity);
         ParticleEffectInstance effect = talosComponent.effect;

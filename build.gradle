@@ -14,7 +14,7 @@ plugins {
 }
 
 group 'games.rednblack'
-version '0.0.7'
+version '0.0.8'
 
 repositories {
     mavenCentral()
@@ -84,7 +84,7 @@ dependencies {
         exclude group: 'com.badlogicgames.gdx', module: 'gdx-backend-lwjgl'
     }
     implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-    implementation "com.badlogicgames.ashley:ashley:$ashleyVersion"
+    implementation "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
 
     implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
 

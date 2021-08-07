@@ -18,10 +18,10 @@
 
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.code.syntax.GLSLSyntax;
 import games.rednblack.editor.controller.commands.component.UpdateShaderDataCommand;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.dialog.CodeEditorDialogMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
@@ -39,7 +39,7 @@ import java.nio.file.Files;
 /**
  * Created by azakhary on 8/12/2015.
  */
-public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<Entity, UIShaderProperties> {
+public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<UIShaderProperties> {
     private static final String TAG = UIShaderPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -101,8 +101,8 @@ public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<Entity,
     }
 
     @Override
-    protected void translateObservableDataToView(Entity item) {
-        ShaderComponent shaderComponent = ComponentRetriever.get(item, ShaderComponent.class);
+    protected void translateObservableDataToView(int item) {
+        ShaderComponent shaderComponent = SandboxComponentRetriever.get(item, ShaderComponent.class);
         String currShaderName = shaderComponent.shaderName;
         viewComponent.setSelected(currShaderName);
         viewComponent.setRenderingLayer(shaderComponent.renderingLayer);
@@ -110,7 +110,7 @@ public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<Entity,
 
     @Override
     protected void translateViewToItemData() {
-        ShaderComponent shaderComponent = ComponentRetriever.get(observableReference, ShaderComponent.class);
+        ShaderComponent shaderComponent = SandboxComponentRetriever.get(observableReference, ShaderComponent.class);
 
         if (!shaderComponent.shaderName.equals(viewComponent.getShader())
                 || shaderComponent.renderingLayer != viewComponent.getRenderingLayer()) {

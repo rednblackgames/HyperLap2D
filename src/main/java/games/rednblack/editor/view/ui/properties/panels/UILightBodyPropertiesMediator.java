@@ -1,15 +1,17 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdateLightBodyDataCommand;
+import games.rednblack.editor.renderer.components.TintComponent;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.data.LightBodyDataVO;
 import games.rednblack.editor.renderer.data.LightVO;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
@@ -18,7 +20,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.puremvc.java.interfaces.INotification;
 
-public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<Entity, UILightBodyProperties> {
+public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<UILightBodyProperties> {
 
     private static final String TAG = UILightBodyPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
@@ -53,7 +55,7 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<Enti
                 ColorPicker picker = new HyperLapColorPicker(new ColorPickerAdapter() {
                     @Override
                     public void finished(Color newColor) {
-                        lightComponent = observableReference.getComponent(LightBodyComponent.class);
+                        lightComponent = SandboxComponentRetriever.get(observableReference, LightBodyComponent.class);
                         lightComponent.color[0] = prevColor.r;
                         lightComponent.color[1] = prevColor.g;
                         lightComponent.color[2] = prevColor.b;
@@ -64,7 +66,7 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<Enti
                     }
                     @Override
                     public void changed(Color newColor) {
-                        lightComponent = observableReference.getComponent(LightBodyComponent.class);
+                        lightComponent = SandboxComponentRetriever.get(observableReference, LightBodyComponent.class);
                         lightComponent.color[0] = newColor.r;
                         lightComponent.color[1] = newColor.g;
                         lightComponent.color[2] = newColor.b;
@@ -82,8 +84,8 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<Enti
     }
 
     @Override
-    protected void translateObservableDataToView(Entity item) {
-        lightComponent = item.getComponent(LightBodyComponent.class);
+    protected void translateObservableDataToView(int item) {
+        lightComponent = SandboxComponentRetriever.get(item, LightBodyComponent.class);
         viewComponent.setDirection(lightComponent.rayDirection);
         viewComponent.setDistance(lightComponent.distance + "");
         viewComponent.setLightIntensity(lightComponent.intensity + "");
@@ -98,7 +100,7 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<Enti
 
     @Override
     protected void translateViewToItemData() {
-        lightComponent = observableReference.getComponent(LightBodyComponent.class);
+        lightComponent = SandboxComponentRetriever.get(observableReference, LightBodyComponent.class);
         LightBodyDataVO oldPayloadVo = new LightBodyDataVO();
         oldPayloadVo.loadFromComponent(lightComponent);
 

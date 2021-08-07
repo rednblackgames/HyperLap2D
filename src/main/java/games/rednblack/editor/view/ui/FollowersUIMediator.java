@@ -18,7 +18,7 @@
 
 package games.rednblack.editor.view.ui;
 
-import com.badlogic.ashley.core.Entity;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
@@ -45,7 +45,7 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
     private static final String TAG = FollowersUIMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
-    private final HashMap<Entity, BasicFollower> followers = new HashMap<>();
+    private final HashMap<Integer, BasicFollower> followers = new HashMap<>();
 
     public FollowersUIMediator() {
         super(NAME, new FollowersUI());
@@ -130,7 +130,7 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
         }
     }
 
-    private void clearAllSubFollowersExceptNew(Set<Entity> items) {
+    private void clearAllSubFollowersExceptNew(Set<Integer> items) {
         for (BasicFollower follower : followers.values()) {
             if(!items.contains(follower)) {
                 if(follower instanceof NormalSelectionFollower) {
@@ -140,9 +140,9 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
         }
     }
 
-    private void setNewSelectionConfiguration(Set<Entity> items) {
+    private void setNewSelectionConfiguration(Set<Integer> items) {
         followers.values().forEach(games.rednblack.editor.view.ui.followers.BasicFollower::hide);
-        for (Entity item : items) {
+        for (int item : items) {
             if (followers.get(item) != null)
                 followers.get(item).show();
         }
@@ -151,9 +151,9 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
     private void createFollowersForAllVisible() {
         removeAllfollowers();
         Sandbox sandbox = Sandbox.getInstance();
-        NodeComponent nodeComponent = ComponentRetriever.get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
+        NodeComponent nodeComponent = SandboxComponentRetriever.get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
 
-        for (Entity entity: nodeComponent.children) {
+        for (int entity: nodeComponent.children) {
             createFollower(entity);
         }
     }
@@ -163,17 +163,17 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
         followers.clear();
     }
 
-    private void hideAllFollowers(Set<Entity> items) {
+    private void hideAllFollowers(Set<Integer> items) {
         if (followers != null) {
-            for (Entity item : items) {
+            for (int item : items) {
                 followers.get(item).hide();
             }
         }
     }
 
-    private void showAllFollowers(Set<Entity> items) {
+    private void showAllFollowers(Set<Integer> items) {
         if (followers != null) {
-            for (Entity item : items) {
+            for (int item : items) {
                 if (followers.get(item) != null)
                     followers.get(item).show();
             }
@@ -184,7 +184,7 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
         followers.values().forEach(games.rednblack.editor.view.ui.followers.BasicFollower::update);
     }
 
-    public void createFollower(Entity entity) {
+    public void createFollower(int entity) {
         BasicFollower follower = FollowerFactory.createFollower(entity);
         viewComponent.addActor(follower);
         followers.put(entity, follower);
@@ -193,7 +193,7 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
         follower.handleNotification(new Notification(MsgAPI.TOOL_SELECTED, sandboxMediator.getCurrentSelectedToolName()));
     }
 
-    public void removeFollower(Entity entity) {
+    public void removeFollower(int entity) {
         BasicFollower follower = followers.remove(entity);
         if (follower != null)
             follower.remove();
@@ -203,7 +203,7 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
         followers.values().forEach(games.rednblack.editor.view.ui.followers.BasicFollower::clearFollowerListener);
     }
 
-    public BasicFollower getFollower(Entity entity) {
+    public BasicFollower getFollower(int entity) {
         return followers.get(entity);
     }
 }

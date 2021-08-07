@@ -18,7 +18,7 @@
 
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.ashley.core.Entity;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.controller.commands.component.UpdateLightDataCommand;
 import games.rednblack.editor.renderer.components.light.LightObjectComponent;
@@ -30,7 +30,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 /**
  * Created by azakhary on 4/28/2015.
  */
-public class UILightItemPropertiesMediator extends UIItemPropertiesMediator<Entity, UILightItemProperties> {
+public class UILightItemPropertiesMediator extends UIItemPropertiesMediator<UILightItemProperties> {
 
     private static final String TAG = UILightItemPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
@@ -40,8 +40,8 @@ public class UILightItemPropertiesMediator extends UIItemPropertiesMediator<Enti
     }
 
     @Override
-    protected void translateObservableDataToView(Entity entity) {
-        LightObjectComponent lightObjectComponent = ComponentRetriever.get(entity, LightObjectComponent.class);
+    protected void translateObservableDataToView(int entity) {
+        LightObjectComponent lightObjectComponent = SandboxComponentRetriever.get(entity, LightObjectComponent.class);
 
         viewComponent.setType(lightObjectComponent.getType());
         viewComponent.setRayCount(lightObjectComponent.rays);
@@ -61,10 +61,10 @@ public class UILightItemPropertiesMediator extends UIItemPropertiesMediator<Enti
     @Override
     protected void translateViewToItemData() {
         LightVO oldPayloadVo = new LightVO();
-        oldPayloadVo.loadFromEntity(observableReference);
+        oldPayloadVo.loadFromEntity(observableReference, sandbox.getEngine());
 
         LightVO payloadVo = new LightVO();
-        payloadVo.loadFromEntity(observableReference);
+        payloadVo.loadFromEntity(observableReference, sandbox.getEngine());
 
         payloadVo.rays = viewComponent.getRayCount();
         payloadVo.isStatic = viewComponent.isStatic();

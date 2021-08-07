@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.ui.followers;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -62,7 +61,7 @@ public class NormalSelectionFollower extends BasicFollower {
     }
     protected SelectionMode mode = SelectionMode.normal;
 
-    public NormalSelectionFollower(Entity entity) {
+    public NormalSelectionFollower(int entity) {
         super(entity);
     }
 

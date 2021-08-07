@@ -7,6 +7,7 @@ import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCom
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.poly.PolygonUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
 import games.rednblack.editor.view.ui.validator.FloatInputValidator;
 import games.rednblack.h2d.common.MsgAPI;
@@ -36,7 +37,7 @@ public class ChangePolygonVertexPositionCommand extends SandboxCommand {
             @Override
             public void finished(String[] input) {
                 Vector2[] points = follower.getOriginalPoints().toArray(new Vector2[0]);
-                PolygonComponent polygonComponent = ComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
+                PolygonComponent polygonComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
                 points[anchor].set(Float.parseFloat(input[0]), Float.parseFloat(input[1]));
 
                 // check if any of near lines intersect

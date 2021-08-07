@@ -18,9 +18,10 @@
 
 package games.rednblack.editor.view.stage;
 
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
+import com.artemis.Aspect;
+import com.artemis.BaseComponentMapper;
+import com.artemis.ComponentMapper;
+import com.artemis.EntitySubscription;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
@@ -29,6 +30,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.kotcrab.vis.ui.FocusManager;
 import games.rednblack.editor.utils.KeyBindingsLayout;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.tools.Tool;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -156,13 +158,11 @@ public class SandboxMediator extends Mediator<Sandbox> {
     }
 
     private void initItemListeners() {
-        Engine engine = getViewComponent().getEngine();
-        Family rootFamily = Family.all(ViewPortComponent.class).get();
-        Entity rootEntity = engine.getEntitiesFor(rootFamily).iterator().next();
-        NodeComponent nodeComponent = ComponentRetriever.get(rootEntity, NodeComponent.class);
-        SnapshotArray<Entity> childrenEntities = nodeComponent.children;
+        int rootEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        NodeComponent nodeComponent = SandboxComponentRetriever.get(rootEntity, NodeComponent.class);
+        SnapshotArray<Integer> childrenEntities = nodeComponent.children;
 
-        for (Entity child: childrenEntities) {
+        for (int child: childrenEntities) {
             addListenerToItem(child);
         }
     }
@@ -173,11 +173,11 @@ public class SandboxMediator extends Mediator<Sandbox> {
      *
      * @param entity
      */
-    private void addListenerToItem(Entity entity) {
-        InputListenerComponent inputListenerComponent = entity.getComponent(InputListenerComponent.class);
+    private void addListenerToItem(int entity) {
+        BaseComponentMapper<InputListenerComponent> mapper = ComponentMapper.getFor(InputListenerComponent.class, getViewComponent().getEngine());
+        InputListenerComponent inputListenerComponent = mapper.get(entity);
         if(inputListenerComponent == null){
-            inputListenerComponent = new InputListenerComponent();
-            entity.add(inputListenerComponent);
+            inputListenerComponent = getViewComponent().getEngine().edit(entity).create(InputListenerComponent.class);
         }
         inputListenerComponent.removeAllListener();
         inputListenerComponent.addListener(new SandboxItemEventListener(entity));
@@ -192,12 +192,12 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
     public class SandboxItemEventListener extends EntityClickListener {
 
-        public SandboxItemEventListener(final Entity entity) {
+        public SandboxItemEventListener(final int entity) {
         	
         }
 
         @Override
-        public boolean touchDown(Entity entity, float x, float y, int pointer, int button) {
+        public boolean touchDown(int entity, float x, float y, int pointer, int button) {
             super.touchDown(entity, x, y, pointer, button);
 
             setSandboxFocus();
@@ -215,7 +215,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
         
         @Override
-        public void touchUp(Entity entity, float x, float y, int pointer, int button) {
+        public void touchUp(int entity, float x, float y, int pointer, int button) {
             super.touchUp(entity, x, y, pointer, button);
             Vector2 coords = getStageCoordinates();
 
@@ -239,7 +239,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
         }
 
         @Override
-        public void touchDragged(Entity entity, float x, float y, int pointer) {
+        public void touchDragged(int entity, float x, float y, int pointer) {
             Vector2 coords = getStageCoordinates();
 
             if (currentSelectedTool != null) {
@@ -248,7 +248,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
         }
 
         @Override
-        public boolean scrolled(Entity entity, float amountX, float amountY) {
+        public boolean scrolled(int entity, float amountX, float amountY) {
 
             return false;
         }
@@ -260,7 +260,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
         }
 
         @Override
-        public boolean keyDown(Entity entity, int keycode) {
+        public boolean keyDown(int entity, int keycode) {
             Sandbox sandbox = Sandbox.getInstance();
             if (sandbox.sceneControl.getCurrentSceneVO() == null) {
                 return false;
@@ -348,7 +348,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
         }
 
         @Override
-        public boolean keyUp(Entity entity, int keycode) {
+        public boolean keyUp(int entity, int keycode) {
             facade.sendNotification(MsgAPI.ACTION_KEY_UP, keycode);
 
             Sandbox sandbox = Sandbox.getInstance();
@@ -372,7 +372,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
 
         @Override
-        public boolean touchDown(Entity entity, float x, float y, int pointer, int button) {
+        public boolean touchDown(int entity, float x, float y, int pointer, int button) {
             super.touchDown(entity, x, y, pointer, button);
 
             setSandboxFocus();
@@ -392,7 +392,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
         }
 
         @Override
-        public void touchUp(Entity entity, float x, float y, int pointer, int button) {
+        public void touchUp(int entity, float x, float y, int pointer, int button) {
             super.touchUp(entity, x, y, pointer, button);
 
             if(currentSelectedTool != null) {
@@ -420,7 +420,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
         }
 
-        private void doubleClick(Entity entity, float x, float y) {
+        private void doubleClick(int entity, float x, float y) {
             if (currentSelectedTool != null) {
                 Sandbox sandbox = Sandbox.getInstance();
                 currentSelectedTool.stageMouseDoubleClick(x, y);
@@ -428,7 +428,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
         }
 
         @Override
-        public void touchDragged(Entity entity, float x, float y, int pointer) {
+        public void touchDragged(int entity, float x, float y, int pointer) {
             if (currentSelectedTool != null) {
                 Sandbox sandbox = Sandbox.getInstance();
                 currentSelectedTool.stageMouseDragged(x, y);
@@ -437,7 +437,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
 
         @Override
-        public boolean scrolled(Entity entity, float amountX, float amountY) {
+        public boolean scrolled(int entity, float amountX, float amountY) {
             Sandbox sandbox = Sandbox.getInstance();
             // well, duh
             if (amountX == 0 && amountY == 0) return false;

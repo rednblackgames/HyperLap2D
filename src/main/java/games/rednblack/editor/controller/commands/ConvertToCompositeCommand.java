@@ -18,8 +18,8 @@
 
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.factory.ItemFactory;
@@ -50,14 +50,14 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
     @Override
     public void doAction() {
         // get entity list
-        HashSet<Entity> entities = (HashSet<Entity>) sandbox.getSelector().getSelectedItems();
+        HashSet<Integer> entities = (HashSet<Integer>) sandbox.getSelector().getSelectedItems();
         UILayerBoxMediator layerBoxMediator = facade.retrieveMediator(UILayerBoxMediator.NAME);
 
         if(layersBackup == null) {
             // backup layer data
             layersBackup = new HashMap<>();
-            for(Entity entity: entities) {
-                ZIndexComponent zIndexComponent = ComponentRetriever.get(entity, ZIndexComponent.class);
+            for(int entity: entities) {
+                ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
                 int tmpId = EntityUtils.getEntityId(entity);
                 layersBackup.put(tmpId, zIndexComponent.layerName);
             }
@@ -67,9 +67,8 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
         Vector2 position = EntityUtils.getLeftBottomPoint(entities);
 
         //create new entity
-        Entity entity = ItemFactory.get().createCompositeItem(position);
+        int entity = ItemFactory.get().createCompositeItem(position);
         entityId = EntityUtils.getEntityId(entity);
-        sandbox.getEngine().addEntity(entity);
 
         // what was the parent component of entities
         parentEntityId = EntityUtils.getEntityId(sandbox.getCurrentViewingEntity());
@@ -78,25 +77,27 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
         EntityUtils.changeParent(entities, entity);
 
         //reposition children
-        for(Entity childEntity: entities) {
-            TransformComponent transformComponent = ComponentRetriever.get(childEntity, TransformComponent.class);
+        for(int childEntity: entities) {
+            TransformComponent transformComponent = SandboxComponentRetriever.get(childEntity, TransformComponent.class);
             transformComponent.x -= position.x;
             transformComponent.y -=position.y;
 
             // put it on default layer
-            ZIndexComponent zIndexComponent = ComponentRetriever.get(childEntity, ZIndexComponent.class);
+            ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(childEntity, ZIndexComponent.class);
             zIndexComponent.layerName = "Default";
 
         }
         // recalculate composite size
-        DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
+        DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
         Vector2 newSize = EntityUtils.getRightTopPoint(entities);
         dimensionsComponent.width = newSize.x;
         dimensionsComponent.height = newSize.y;
         dimensionsComponent.boundBox.set(0, 0, newSize.x, newSize.y);
 
-        ZIndexComponent zIndexComponent = ComponentRetriever.get(entity, ZIndexComponent.class);
+        ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
         zIndexComponent.layerName = layerBoxMediator.getCurrentSelectedLayerName();
+
+        sandbox.getEngine().process();
 
         //let everyone know
         HyperLap2DFacade.getInstance().sendNotification(DONE);
@@ -110,11 +111,11 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
         FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
 
         //get the entity
-        Entity entity = EntityUtils.getByUniqueId(entityId);
-        Entity oldParentEntity = EntityUtils.getByUniqueId(parentEntityId);
-        if (entity == null || oldParentEntity == null)
+        int entity = EntityUtils.getByUniqueId(entityId);
+        int oldParentEntity = EntityUtils.getByUniqueId(parentEntityId);
+        if (entity == -1 || oldParentEntity == -1)
             return;
-        HashSet<Entity> children = EntityUtils.getChildren(entity);
+        HashSet<Integer> children = EntityUtils.getChildren(entity);
         if (children == null)
             return;
         // what will be the position diff of children?
@@ -124,19 +125,20 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
         EntityUtils.changeParent(children, oldParentEntity);
 
         //reposition children
-        for(Entity tmpEntity: children) {
-            TransformComponent transformComponent = ComponentRetriever.get(tmpEntity, TransformComponent.class);
+        for(int tmpEntity: children) {
+            TransformComponent transformComponent = SandboxComponentRetriever.get(tmpEntity, TransformComponent.class);
             transformComponent.x+=positionDiff.x;
             transformComponent.y+=positionDiff.y;
 
             // put layer data back
-            ZIndexComponent zIndexComponent = ComponentRetriever.get(entity, ZIndexComponent.class);
+            ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
             zIndexComponent.layerName = layersBackup.get(EntityUtils.getEntityId(tmpEntity));
         }
 
         // remove composite
         followersUIMediator.removeFollower(entity);
-        sandbox.getEngine().removeEntity(entity);
+        sandbox.getEngine().delete(entity);
+        sandbox.getEngine().process();
 
         HyperLap2DFacade.getInstance().sendNotification(DONE);
 

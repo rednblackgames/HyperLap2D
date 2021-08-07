@@ -20,7 +20,7 @@ public enum ActionFieldType implements FieldType {
             case Delay:
                 return value instanceof DelayData;
             case Entity:
-                return value instanceof com.badlogic.ashley.core.Entity;
+                return value instanceof Integer;
             case Color:
                 return value instanceof com.badlogic.gdx.graphics.Color;
             case Boolean:

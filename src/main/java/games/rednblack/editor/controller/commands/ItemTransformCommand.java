@@ -1,12 +1,8 @@
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.renderer.components.PolygonComponent;
-import games.rednblack.editor.renderer.components.TextureRegionComponent;
-import games.rednblack.editor.renderer.components.light.LightBodyComponent;
-import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
@@ -26,7 +22,7 @@ public class ItemTransformCommand extends EntityModifyRevertibleCommand {
     @Override
     public void doAction() {
         payload = getNotification().getBody();
-        Entity entity = (Entity) payload.get(0);
+        int entity = (int) payload.get(0);
         Object[] newData = (Object[]) payload.get(2);
 
         entityId = EntityUtils.getEntityId(entity);
@@ -37,8 +33,8 @@ public class ItemTransformCommand extends EntityModifyRevertibleCommand {
         Float newRotation = (Float) newData[3];
         Vector2 newOrigin = (Vector2) newData[4];
 
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
-        DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
+        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+        DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
 
         if(newPos != null) transformComponent.x = newPos.x;
         if(newPos != null) transformComponent.y = newPos.y;
@@ -57,7 +53,7 @@ public class ItemTransformCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        Entity entity = EntityUtils.getByUniqueId(entityId);
+        int entity = EntityUtils.getByUniqueId(entityId);
         Object[] prevData = (Object[]) payload.get(1);
 
         Vector2 prevPos = (Vector2) prevData[0];
@@ -66,8 +62,8 @@ public class ItemTransformCommand extends EntityModifyRevertibleCommand {
         Float prevRotation = (Float) prevData[3];
         Vector2 prevOrigin = (Vector2) prevData[4];
 
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
-        DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
+        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+        DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
 
         transformComponent.x = prevPos.x;
         transformComponent.y = prevPos.y;

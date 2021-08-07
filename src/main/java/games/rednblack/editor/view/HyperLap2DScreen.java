@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.InputMultiplexer;
@@ -55,7 +54,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
     public UIStage uiStage;
 
-    private Engine engine;
+    private com.artemis.World engine;
 
     private final HyperLap2DFacade facade;
 
@@ -95,7 +94,8 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
             if (sandboxBackUI != null) sandboxBackUI.render(deltaTime);
             sandbox.render(deltaTime);
-            engine.update(deltaTime);
+            engine.setDelta(deltaTime);
+            engine.process();
         }
 
         uiStage.getViewport().apply();
@@ -289,7 +289,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         return false;
     }
 
-    public void setEngine(Engine engine) {
+    public void setEngine(com.artemis.World engine) {
         this.engine = engine;
     }
 

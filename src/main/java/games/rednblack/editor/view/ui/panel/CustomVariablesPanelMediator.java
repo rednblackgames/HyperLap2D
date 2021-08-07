@@ -18,7 +18,7 @@
 
 package games.rednblack.editor.view.ui.panel;
 
-import com.badlogic.ashley.core.Entity;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.menu.WindowMenu;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -40,7 +40,7 @@ public class CustomVariablesPanelMediator extends Mediator<CustomVariablesPanel>
     private static final String TAG = CustomVariablesPanelMediator.class.getCanonicalName();
     private static final String NAME = TAG;
 
-    private Entity observable = null;
+    private int observable = -1;
 
     public CustomVariablesPanelMediator() {
         super(NAME, new CustomVariablesPanel());
@@ -79,7 +79,7 @@ public class CustomVariablesPanelMediator extends Mediator<CustomVariablesPanel>
                 viewComponent.show(uiStage);
                 break;
             case MsgAPI.ITEM_SELECTION_CHANGED:
-                Set<Entity> selection = notification.getBody();
+                Set<Integer> selection = notification.getBody();
                 if (selection.size() == 1) {
                     setObservable(selection.iterator().next());
                 } else {
@@ -87,7 +87,7 @@ public class CustomVariablesPanelMediator extends Mediator<CustomVariablesPanel>
                 }
                 break;
             case MsgAPI.EMPTY_SPACE_CLICKED:
-                setObservable(null);
+                setObservable(-1);
                 break;
             case CustomVariablesPanel.ADD_BUTTON_PRESSED:
                 setVariable();
@@ -112,7 +112,7 @@ public class CustomVariablesPanelMediator extends Mediator<CustomVariablesPanel>
         sendNotification(MsgAPI.CUSTOM_VARIABLE_MODIFY, CustomVariableModifyCommand.removeCustomVariable(observable, key));
     }
 
-    private void setObservable(Entity item) {
+    private void setObservable(int item) {
         observable = item;
         updateView();
         viewComponent.setKeyFieldValue("");
@@ -120,10 +120,10 @@ public class CustomVariablesPanelMediator extends Mediator<CustomVariablesPanel>
     }
 
     private void updateView() {
-        if (observable == null) {
+        if (observable == -1) {
             viewComponent.setEmptyMsg("No item selected.");
         } else {
-            MainItemComponent mainItemComponent = ComponentRetriever.get(observable, MainItemComponent.class);
+            MainItemComponent mainItemComponent = SandboxComponentRetriever.get(observable, MainItemComponent.class);
             viewComponent.updateView(mainItemComponent.customVariables);
         }
     }

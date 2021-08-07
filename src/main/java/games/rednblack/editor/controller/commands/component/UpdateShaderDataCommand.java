@@ -1,12 +1,12 @@
 package games.rednblack.editor.controller.commands.component;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.renderer.data.MainItemVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 
 public class UpdateShaderDataCommand extends EntityModifyRevertibleCommand {
@@ -18,12 +18,12 @@ public class UpdateShaderDataCommand extends EntityModifyRevertibleCommand {
     @Override
     public void doAction() {
         Object[] payload = getNotification().getBody();
-        Entity entity = (Entity) payload[0];
+        int entity = (int) payload[0];
         String shaderName = (String) payload[1];
         MainItemVO.RenderingLayer renderingLayer = (MainItemVO.RenderingLayer) payload[2];
         entityId = EntityUtils.getEntityId(entity);
 
-        ShaderComponent shaderComponent = ComponentRetriever.get(entity, ShaderComponent.class);
+        ShaderComponent shaderComponent = SandboxComponentRetriever.get(entity, ShaderComponent.class);
         if (shaderComponent == null) {
             cancel();
             return;
@@ -45,8 +45,8 @@ public class UpdateShaderDataCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        Entity entity = EntityUtils.getByUniqueId(entityId);
-        ShaderComponent shaderComponent = ComponentRetriever.get(entity, ShaderComponent.class);
+        int entity = EntityUtils.getByUniqueId(entityId);
+        ShaderComponent shaderComponent = SandboxComponentRetriever.get(entity, ShaderComponent.class);
         if (shaderComponent == null) return;
 
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
@@ -61,7 +61,7 @@ public class UpdateShaderDataCommand extends EntityModifyRevertibleCommand {
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
-    public static Object payload(Entity entity, String shaderName, MainItemVO.RenderingLayer layer) {
+    public static Object payload(int entity, String shaderName, MainItemVO.RenderingLayer layer) {
         Object[] payload = new Object[3];
         payload[0] = entity;
         payload[1] = shaderName;

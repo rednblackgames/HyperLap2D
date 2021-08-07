@@ -1,6 +1,5 @@
 package games.rednblack.editor.utils.asset.impl;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -15,6 +14,7 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.utils.runtime.TalosResources;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
@@ -115,7 +115,7 @@ public class TalosVFXAsset extends Asset {
     }
 
     @Override
-    public boolean deleteAsset(Entity root, String name) {
+    public boolean deleteAsset(int root, String name) {
         String particlePath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.TALOS_VFX_DIR_PATH + File.separator;
         String filePath = particlePath + name;
 
@@ -217,10 +217,10 @@ public class TalosVFXAsset extends Asset {
         }
     }
 
-    private void deleteEntitiesWithParticleEffects(Entity rootEntity, String particleName) {
+    private void deleteEntitiesWithParticleEffects(int rootEntity, String particleName) {
         tmpEntityList.clear();
-        Consumer<Entity> action = (root) -> {
-            TalosDataComponent particleComponent = ComponentRetriever.get(root, TalosDataComponent.class);
+        Consumer<Integer> action = (root) -> {
+            TalosDataComponent particleComponent = SandboxComponentRetriever.get(root, TalosDataComponent.class);
             if (particleComponent != null && particleComponent.particleName.equals(particleName)) {
                 tmpEntityList.add(root);
             }

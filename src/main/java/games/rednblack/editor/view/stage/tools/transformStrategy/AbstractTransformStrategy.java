@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.stage.tools.transformStrategy;
 
-
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.components.TransformComponent;

@@ -1,9 +1,10 @@
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Entity;
-import games.rednblack.editor.renderer.components.RemovableComponent;
+import com.artemis.Component;
+import games.rednblack.editor.renderer.components.RemovableObject;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.ComponentCloner;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 
@@ -15,23 +16,25 @@ public class RemoveComponentFromItemCommand extends EntityModifyRevertibleComman
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand";
     public static final String DONE = CLASS_NAME + "DONE";
 
-    private Entity entity;
+    private int entity;
     private Component component;
+    private Class<? extends Component> componentClass;
 
     private void collectData() {
         Object[] payload = getNotification().getBody();
-        entity = (Entity) payload[0];
-        Class<? extends Component> componentClass = (Class<? extends Component>) payload[1];
-        component = ComponentCloner.get(entity.getComponent(componentClass));
+        entity = (int) payload[0];
+        componentClass = (Class<? extends Component>) payload[1];
+        component = ComponentCloner.get(SandboxComponentRetriever.get(entity, componentClass));
     }
 
     @Override
     public void doAction() {
         collectData();
-        if (component instanceof RemovableComponent) {
-            ((RemovableComponent) component).onRemove();
+        if (component instanceof RemovableObject) {
+            ((RemovableObject) component).onRemove();
         }
-        entity.remove(component.getClass());
+        sandbox.getEngine().edit(entity).remove(component.getClass());
+        sandbox.getEngine().process();
 
         HyperLap2DFacade.getInstance().sendNotification(DONE, entity);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
@@ -39,15 +42,16 @@ public class RemoveComponentFromItemCommand extends EntityModifyRevertibleComman
 
     @Override
     public void undoAction() {
-        if (entity.getComponent(component.getClass()) == null) {
-            entity.add(component);
+        if (SandboxComponentRetriever.get(entity, component.getClass()) == null) {
+            Component newComponent = sandbox.getEngine().edit(entity).create(componentClass);
+            ComponentCloner.set(newComponent, component);
         }
 
         HyperLap2DFacade.getInstance().sendNotification(DONE, entity);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
-    public static Object[] payload(Entity entity, Class<? extends Component> componentClass) {
+    public static Object[] payload(int entity, Class<? extends Component> componentClass) {
         Object[] payload = new Object[2];
         payload[0] = entity;
         payload[1] = componentClass;

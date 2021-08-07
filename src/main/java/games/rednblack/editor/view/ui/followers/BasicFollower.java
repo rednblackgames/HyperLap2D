@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.ui.followers;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -27,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import games.rednblack.editor.renderer.components.MainItemComponent;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
@@ -41,7 +41,7 @@ public abstract class BasicFollower extends Group {
 
     protected TransformComponent transformComponent;
     protected DimensionsComponent dimensionsComponent;
-    protected Entity entity;
+    protected int entity;
 
     protected float pointOriginX;
     protected float pointOriginY;
@@ -51,20 +51,20 @@ public abstract class BasicFollower extends Group {
 
     private final Array<SubFollower> subFollowers = new Array<>();
 
-    public BasicFollower(Entity entity) {
+    public BasicFollower(int entity) {
         setItem(entity);
         create();
         update();
     }
 
-    private void setItem(Entity entity) {
-        transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
-        dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
+    private void setItem(int entity) {
+        transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+        dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
         this.entity = entity;
     }
 
     public void update() {
-        if (ComponentRetriever.get(entity, MainItemComponent.class) == null)
+        if (SandboxComponentRetriever.get(entity, MainItemComponent.class) == null)
             return;
 
         Sandbox sandbox = Sandbox.getInstance();
@@ -77,7 +77,7 @@ public abstract class BasicFollower extends Group {
         position.x = 0;
         position.y = 0;
 
-        TransformMathUtils.localToAscendantCoordinates(sandbox.getCurrentViewingEntity(), entity, position);
+        TransformMathUtils.localToAscendantCoordinates(sandbox.getCurrentViewingEntity(), entity, position, sandbox.getEngine());
         position = Sandbox.getInstance().worldToScreen(position);
 
         setX( ( int ) ( position.x ) );
@@ -164,7 +164,7 @@ public abstract class BasicFollower extends Group {
         }
     }
 
-    public Entity getEntity() {
+    public int getEntity() {
         return entity;
     }
 

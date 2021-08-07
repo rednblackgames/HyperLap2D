@@ -1,10 +1,10 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.puremvc.java.interfaces.INotification;
-
-import com.badlogic.ashley.core.Entity;
 
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
@@ -19,7 +19,7 @@ import games.rednblack.h2d.common.MsgAPI;
  * 
  * @author Jan-Thierry Wegener
  */
-public class UISensorPropertiesMediator extends UIItemPropertiesMediator<Entity, UISensorProperties> {
+public class UISensorPropertiesMediator extends UIItemPropertiesMediator<UISensorProperties> {
 
 	private static final String TAG = UISensorPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
@@ -52,8 +52,8 @@ public class UISensorPropertiesMediator extends UIItemPropertiesMediator<Entity,
     }
 
 	@Override
-	protected void translateObservableDataToView(Entity item) {
-		sensorComponent = item.getComponent(SensorComponent.class);
+	protected void translateObservableDataToView(int item) {
+		sensorComponent = SandboxComponentRetriever.get(item, SensorComponent.class);
 
         viewComponent.getSensorBottomBox().setChecked(sensorComponent.bottom);
         viewComponent.getSensorLeftBox().setChecked(sensorComponent.left);
@@ -68,7 +68,7 @@ public class UISensorPropertiesMediator extends UIItemPropertiesMediator<Entity,
 
 	@Override
 	protected void translateViewToItemData() {
-        sensorComponent = observableReference.getComponent(SensorComponent.class);
+        sensorComponent = SandboxComponentRetriever.get(observableReference, SensorComponent.class);
 
         SensorDataVO oldPayloadVo = new SensorDataVO();
         oldPayloadVo.loadFromComponent(sensorComponent);

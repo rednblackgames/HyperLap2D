@@ -18,9 +18,9 @@
 
 package games.rednblack.editor.view.stage.tools;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
@@ -95,7 +95,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
     }
 
     @Override
-    public boolean itemMouseDown(Entity entity, float x, float y) {
+    public boolean itemMouseDown(int entity, float x, float y) {
         lastSelectedMeshFollower = getMeshFollower(entity);
         return super.itemMouseDown(entity, x, y);
     }
@@ -106,8 +106,8 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
 
     private void updateSubFollowerList() {
         Sandbox sandbox = Sandbox.getInstance();
-        Set<Entity> selectedEntities = sandbox.getSelector().getSelectedItems();
-        for(Entity entity: selectedEntities) {
+        Set<Integer> selectedEntities = sandbox.getSelector().getSelectedItems();
+        for(int entity: selectedEntities) {
             BasicFollower follower = followersUIMediator.getFollower(entity);
             follower.update();
             follower.removeSubFollower(PolygonFollower.class);
@@ -125,7 +125,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
 
     @Override
     public void vertexDown(PolygonFollower follower, int vertexIndex, float x, float y) {
-        PolygonComponent polygonComponent = ComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
+        PolygonComponent polygonComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
         currentCommandPayload = UpdatePolygonDataCommand.payloadInitialState(follower.getEntity());
 
         follower.getOriginalPoints().add(vertexIndex, new Vector2(x, y));
@@ -156,13 +156,13 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
         follower.setSelectedAnchor(anchor);
         lastSelectedMeshFollower = follower;
 
-        PolygonComponent polygonComponent = ComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
+        PolygonComponent polygonComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
         polygonBackup = polygonComponent.vertices.clone();
     }
 
     @Override
     public void anchorDragged(PolygonFollower follower, int anchor, float x, float y) {
-        PolygonComponent polygonComponent = ComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
+        PolygonComponent polygonComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
 
         Vector2[] points = follower.getOriginalPoints().toArray(new Vector2[0]);
         Vector2 diff = dragLastPoint.sub(x, y);
@@ -192,7 +192,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
             return;
         }
 
-        PolygonComponent polygonComponent = ComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
+        PolygonComponent polygonComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
 
         Vector2[] points = follower.getOriginalPoints().toArray(new Vector2[0]);
 
@@ -219,7 +219,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
     }
 
     @Override
-    public void keyDown(Entity entity, int keycode) {
+    public void keyDown(int entity, int keycode) {
         if(keycode == Input.Keys.DEL || keycode == Input.Keys.FORWARD_DEL) {
             if(!deleteSelectedAnchor()) {
                 super.keyDown(entity, keycode);
@@ -229,7 +229,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
         }
     }
 
-    private PolygonFollower getMeshFollower(Entity entity) {
+    private PolygonFollower getMeshFollower(int entity) {
         FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
         BasicFollower follower = followersUIMediator.getFollower(entity);
 
@@ -239,7 +239,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
 
     private boolean deleteSelectedAnchor() {
         PolygonFollower follower = lastSelectedMeshFollower;
-        PolygonComponent polygonComponent = ComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
+        PolygonComponent polygonComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
         if(follower != null) {
             if(polygonComponent == null || polygonComponent.vertices == null || polygonComponent.vertices.length == 0) return false;
             if(follower.getOriginalPoints().size() <= 3) return false;

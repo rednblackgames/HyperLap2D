@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.puremvc.java.interfaces.INotification;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -72,24 +71,24 @@ public class DeleteTileTool implements Tool {
     }
 
     @Override
-    public boolean itemMouseDown(Entity entity, float x, float y) {
+    public boolean itemMouseDown(int entity, float x, float y) {
         deleteEntityWithCoordinate(x, y);
         tiledPlugin.facade.sendNotification(TiledPlugin.AUTO_FILL_TILES);
         return true;
     }
 
     @Override
-    public void itemMouseUp(Entity entity, float x, float y) {
+    public void itemMouseUp(int entity, float x, float y) {
     	tiledPlugin.facade.sendNotification(TiledPlugin.AUTO_FILL_TILES);
     }
 
     @Override
-    public void itemMouseDragged(Entity entity, float x, float y) {
+    public void itemMouseDragged(int entity, float x, float y) {
         deleteEntityWithCoordinate(x, y);
     }
 
     @Override
-    public void itemMouseDoubleClick(Entity entity, float x, float y) {
+    public void itemMouseDoubleClick(int entity, float x, float y) {
 
     }
 
@@ -104,12 +103,12 @@ public class DeleteTileTool implements Tool {
     }
 
     @Override
-    public void keyDown(Entity entity, int keycode) {
+    public void keyDown(int entity, int keycode) {
 
     }
 
     @Override
-    public void keyUp(Entity entity, int keycode) {
+    public void keyUp(int entity, int keycode) {
         if(isHotswapped) {
             if(keycode == Input.Keys.SHIFT_LEFT || keycode == Input.Keys.SHIFT_RIGHT) {
                 isHotswapped = false;
@@ -118,8 +117,8 @@ public class DeleteTileTool implements Tool {
         }
     }
 
-    Set<Entity> items = new HashSet<>();
-    private void deleteEntity(Entity entity) {
+    Set<Integer> items = new HashSet<>();
+    private void deleteEntity(int entity) {
         if (tiledPlugin.isTile(entity) && tiledPlugin.isOnCurrentSelectedLayer(entity)) {
             items.clear();
             items.add(entity);
@@ -129,8 +128,8 @@ public class DeleteTileTool implements Tool {
     }
 
     private void deleteEntityWithCoordinate (float x, float y) {
-        Entity entity = tiledPlugin.getPluginEntityWithCoords(x, y);
-        if (entity != null) {
+        int entity = tiledPlugin.getPluginEntityWithCoords(x, y);
+        if (entity != -1) {
             deleteEntity(entity);
         }
     }

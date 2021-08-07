@@ -1,12 +1,12 @@
 package games.rednblack.editor.controller.commands.component;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.data.PhysicsBodyDataVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 
 public class UpdatePhysicsDataCommand extends EntityModifyRevertibleCommand {
@@ -17,11 +17,11 @@ public class UpdatePhysicsDataCommand extends EntityModifyRevertibleCommand {
     @Override
     public void doAction() {
         Object[] payload = getNotification().getBody();
-        Entity entity = (Entity) payload[0];
+        int entity = (int) payload[0];
         PhysicsBodyDataVO vo = (PhysicsBodyDataVO) payload[1];
         entityId = EntityUtils.getEntityId(entity);
 
-        PhysicsBodyComponent physicsComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
+        PhysicsBodyComponent physicsComponent = SandboxComponentRetriever.get(entity, PhysicsBodyComponent.class);
 
         backup = new PhysicsBodyDataVO();
         backup.loadFromComponent(physicsComponent);
@@ -54,8 +54,8 @@ public class UpdatePhysicsDataCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        Entity entity = EntityUtils.getByUniqueId(entityId);
-        PhysicsBodyComponent physicsComponent = ComponentRetriever.get(entity, PhysicsBodyComponent.class);
+        int entity = EntityUtils.getByUniqueId(entityId);
+        PhysicsBodyComponent physicsComponent = SandboxComponentRetriever.get(entity, PhysicsBodyComponent.class);
 
         physicsComponent.bodyType = backup.bodyType;
         physicsComponent.mass = backup.mass;
@@ -83,7 +83,7 @@ public class UpdatePhysicsDataCommand extends EntityModifyRevertibleCommand {
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
-    public static Object payload(Entity entity, PhysicsBodyDataVO vo) {
+    public static Object payload(int entity, PhysicsBodyDataVO vo) {
         Object[] payload = new Object[2];
         payload[0] = entity;
         payload[1] = vo;

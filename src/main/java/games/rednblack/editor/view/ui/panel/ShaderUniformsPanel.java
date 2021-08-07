@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.util.InputValidator;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
@@ -16,9 +17,6 @@ import games.rednblack.editor.view.ui.widget.actors.table.CellBody;
 import games.rednblack.editor.view.ui.widget.actors.table.CellHeader;
 import games.rednblack.h2d.common.UIDraggablePanel;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ShaderUniformsPanel extends UIDraggablePanel {
     private static final String prefix = "games.rednblack.editor.view.ui.panel.ShaderUniformsPanel";
@@ -35,8 +33,8 @@ public class ShaderUniformsPanel extends UIDraggablePanel {
     private final InputValidator integerValidator = new Validators.IntegerValidator();
     private final InputValidator floatValidator = new Validators.FloatValidator();
 
-    private HashMap<String, String> uniforms;
-    private HashMap<String, ShaderUniformVO> customUniforms;
+    private ObjectMap<String, String> uniforms;
+    private ObjectMap<String, ShaderUniformVO> customUniforms;
 
     public ShaderUniformsPanel() {
         super("Shader Uniforms");
@@ -86,13 +84,13 @@ public class ShaderUniformsPanel extends UIDraggablePanel {
         pack();
     }
 
-    public void updateView(HashMap<String, String> uniforms, HashMap<String, ShaderUniformVO> customUniforms) {
+    public void updateView(ObjectMap<String, String> uniforms, ObjectMap<String, ShaderUniformVO> customUniforms) {
         clearInputs();
         getContentTable().clear();
 
         this.uniforms = uniforms;
         this.customUniforms = customUniforms;
-        uniformName.setItems(uniforms.keySet().toArray(String[]::new));
+        uniformName.setItems(uniforms.keys().toArray());
 
         getContentTable().add(addUniformTable).growX().row();
         hSeparator(getContentTable());
@@ -250,11 +248,11 @@ public class ShaderUniformsPanel extends UIDraggablePanel {
         uniformsTable.add();
         uniformsTable.add().row();
 
-        for (Map.Entry<String, ShaderUniformVO> me : customUniforms.entrySet()) {
-            removeUniformFromList(me.getKey());
+        for (String key : customUniforms.keys()) {
+            removeUniformFromList(key);
 
-            uniformsTable.add(new CellBody(me.getKey()));
-            ShaderUniformVO uniformVO = me.getValue();
+            uniformsTable.add(new CellBody(key));
+            ShaderUniformVO uniformVO = customUniforms.get(key);
 
             uniformsTable.add(new CellBody(uniformVO.getType()));
 
@@ -285,8 +283,8 @@ public class ShaderUniformsPanel extends UIDraggablePanel {
             VisTable editTable = new VisTable();
             LinkLabel editLabel = new LinkLabel("Edit");
             editLabel.setListener(url -> {
-                addUniformFromList(me.getKey());
-                uniformName.setSelected(me.getKey());
+                addUniformFromList(key);
+                uniformName.setSelected(key);
                 uniformName.setDisabled(true);
 
                 editUniform(uniformVO);
@@ -295,7 +293,7 @@ public class ShaderUniformsPanel extends UIDraggablePanel {
             editTable.add("/").padLeft(2).padRight(2);
             LinkLabel deleteLabel = new LinkLabel("Delete");
             deleteLabel.setListener(url -> {
-                facade.sendNotification(REMOVE_BUTTON_CLICKED, me.getKey());
+                facade.sendNotification(REMOVE_BUTTON_CLICKED, key);
             });
             editTable.add(deleteLabel);
             uniformsTable.add(new CellBody(editTable));

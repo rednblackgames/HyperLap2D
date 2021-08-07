@@ -1,12 +1,12 @@
 package games.rednblack.editor.view.ui.followers;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
 import com.esotericsoftware.spine.SkeletonRendererDebug;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.extention.spine.SpineObjectComponent;
 
@@ -16,9 +16,9 @@ public class SpineFollower extends NormalSelectionFollower {
 
     private final Matrix4 matrix = new Matrix4();
 
-    public SpineFollower(Entity entity) {
+    public SpineFollower(int entity) {
         super(entity);
-        spineObjectComponent = ComponentRetriever.get(entity, SpineObjectComponent.class);
+        spineObjectComponent = SandboxComponentRetriever.get(entity, SpineObjectComponent.class);
         skeletonRendererDebug = new SkeletonRendererDebug();
         skeletonRendererDebug.setScale(2f);
         skeletonRendererDebug.setBoundingBoxes(false);

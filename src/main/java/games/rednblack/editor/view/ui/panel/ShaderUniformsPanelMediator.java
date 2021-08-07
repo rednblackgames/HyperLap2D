@@ -1,10 +1,10 @@
 package games.rednblack.editor.view.ui.panel;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.renderer.data.ShaderUniformVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.menu.WindowMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -19,7 +19,7 @@ public class ShaderUniformsPanelMediator extends Mediator<ShaderUniformsPanel> {
     private static final String TAG = ShaderUniformsPanelMediator.class.getCanonicalName();
     private static final String NAME = TAG;
 
-    private Entity observable = null;
+    private int observable = -1;
 
     public ShaderUniformsPanelMediator() {
         super(NAME, new ShaderUniformsPanel());
@@ -58,16 +58,16 @@ public class ShaderUniformsPanelMediator extends Mediator<ShaderUniformsPanel> {
                 viewComponent.show(uiStage);
                 break;
             case MsgAPI.ITEM_SELECTION_CHANGED:
-                Set<Entity> selection = notification.getBody();
+                Set<Integer> selection = notification.getBody();
                 if (selection.size() == 1) {
-                    Entity entity = selection.iterator().next();
+                    int entity = selection.iterator().next();
                     setObservable(entity);
                 } else {
-                    setObservable(null);
+                    setObservable(-1);
                 }
                 break;
             case MsgAPI.EMPTY_SPACE_CLICKED:
-                setObservable(null);
+                setObservable(-1);
                 break;
             case ShaderUniformsPanel.ADD_BUTTON_CLICKED:
                 addNewUniform(notification.getBody());
@@ -78,18 +78,18 @@ public class ShaderUniformsPanelMediator extends Mediator<ShaderUniformsPanel> {
         }
     }
 
-    private void setObservable(Entity item) {
+    private void setObservable(int item) {
         observable = item;
         updateView();
     }
 
     private void updateView() {
-        if (observable == null) {
+        if (observable == -1) {
             viewComponent.setEmpty();
             return;
         }
 
-        ShaderComponent shaderComponent = ComponentRetriever.get(observable, ShaderComponent.class);
+        ShaderComponent shaderComponent = SandboxComponentRetriever.get(observable, ShaderComponent.class);
         if (shaderComponent != null)
             viewComponent.updateView(shaderComponent.uniforms, shaderComponent.customUniforms);
         else
@@ -117,14 +117,14 @@ public class ShaderUniformsPanelMediator extends Mediator<ShaderUniformsPanel> {
                 break;
         }
 
-        ShaderComponent shaderComponent = ComponentRetriever.get(observable, ShaderComponent.class);
+        ShaderComponent shaderComponent = SandboxComponentRetriever.get(observable, ShaderComponent.class);
         shaderComponent.customUniforms.put(name, vo);
 
         updateView();
     }
 
     private void removeUniform(String uniform) {
-        ShaderComponent shaderComponent = ComponentRetriever.get(observable, ShaderComponent.class);
+        ShaderComponent shaderComponent = SandboxComponentRetriever.get(observable, ShaderComponent.class);
         shaderComponent.customUniforms.remove(uniform);
 
         updateView();

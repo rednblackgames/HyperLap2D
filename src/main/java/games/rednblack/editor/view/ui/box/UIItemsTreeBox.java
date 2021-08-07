@@ -21,13 +21,11 @@ package games.rednblack.editor.view.ui.box;
 import java.util.Comparator;
 import java.util.Set;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -37,6 +35,7 @@ import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.utils.runtime.EntityUtils;
@@ -49,7 +48,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     private Tree<UIItemsTreeNode, UIItemsTreeValue> tree;
 
     private UIItemsTreeNode rootNode;
-    private Set<Entity> lastSelection;
+    private Set<Integer> lastSelection;
 
     private final VisImageButton zUp, zDown;
 
@@ -90,7 +89,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
 
     UIItemsTreeNode rootTreeNode;
 
-    public void init(Entity rootScene) {
+    public void init(int rootScene) {
         sandbox = Sandbox.getInstance();
 
         treeTable.clear();
@@ -121,14 +120,14 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         tree.updateRootNodes();
     }
 
-    private UIItemsTreeNode addTreeRoot(Entity entity, UIItemsTreeNode parentNode) {  // was like this addTreeRoot(CompositeItem compoiteItem, Node parentNode)
+    private UIItemsTreeNode addTreeRoot(int entity, UIItemsTreeNode parentNode) {  // was like this addTreeRoot(CompositeItem compoiteItem, Node parentNode)
         UIItemsTreeNode node = addTreeNode(entity, parentNode);
         if (parentNode == null) rootNode = node;
 
-        NodeComponent nodeComponent = ComponentRetriever.get(entity, NodeComponent.class);
+        NodeComponent nodeComponent = SandboxComponentRetriever.get(entity, NodeComponent.class);
 
         if(nodeComponent != null) {
-            for (Entity item : nodeComponent.children) {
+            for (int item : nodeComponent.children) {
                 if (EntityUtils.getType(entity) == EntityFactory.COMPOSITE_TYPE) {
                     addTreeRoot(item, node);
                 } else {
@@ -139,10 +138,10 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         return node;
     }
 
-    private UIItemsTreeNode addTreeNode(Entity item, UIItemsTreeNode parentNode) {
+    private UIItemsTreeNode addTreeNode(int item, UIItemsTreeNode parentNode) {
         String name, style;
-        ParentNodeComponent parentNodeComponent = ComponentRetriever.get(item, ParentNodeComponent.class);
-        MainItemComponent mainItemComponent = ComponentRetriever.get(item, MainItemComponent.class);
+        ParentNodeComponent parentNodeComponent = SandboxComponentRetriever.get(item, ParentNodeComponent.class);
+        MainItemComponent mainItemComponent = SandboxComponentRetriever.get(item, MainItemComponent.class);
 
         if (parentNodeComponent == null) {
             name = Sandbox.getInstance().sceneControl.getCurrentSceneVO().sceneName;
@@ -161,7 +160,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         VisTable label = new VisTable();
         Cell<VisLabel> lblCell = label.add(new VisLabel(name, style));
         UIItemsTreeNode node = new UIItemsTreeNode(label);
-        ZIndexComponent zIndexComponent = ComponentRetriever.get(item, ZIndexComponent.class);
+        ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(item, ZIndexComponent.class);
 
         node.setValue(new UIItemsTreeValue(mainItemComponent.uniqueId, zIndexComponent.getGlobalZIndex()));
         if (mainItemComponent.entityType != EntityFactory.COMPOSITE_TYPE)
@@ -180,7 +179,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         return node;
     }
 
-    public void setSelection(Set<Entity> selection) {
+    public void setSelection(Set<Integer> selection) {
         lastSelection = selection;
 
         if (tree == null) return;
@@ -189,7 +188,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         addToSelection(selection);
     }
 
-    public void addToSelection(Set<Entity> selection) {
+    public void addToSelection(Set<Integer> selection) {
         if (lastSelection != null && selection != null)
             lastSelection.addAll(selection);
 
@@ -206,7 +205,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         }
     }
 
-    public void removeFromSelection(Set<Entity> selection) {
+    public void removeFromSelection(Set<Integer> selection) {
         if (lastSelection != null && selection != null)
             lastSelection.removeAll(selection);
 
@@ -231,7 +230,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
             facade.sendNotification(ITEMS_SELECTED, selection);
             if (selection.size() == 1 && getTapCount() == 2) {
                 UIItemsTreeValue selected = selection.first().getValue();
-                Entity item = EntityUtils.getByUniqueId(selected.entityId);
+                int item = EntityUtils.getByUniqueId(selected.entityId);
                 if (EntityUtils.getType(item) == EntityFactory.COMPOSITE_TYPE) {
                     HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, item);
                 }

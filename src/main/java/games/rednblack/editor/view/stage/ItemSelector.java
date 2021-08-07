@@ -18,12 +18,12 @@
 
 package games.rednblack.editor.view.stage;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 import games.rednblack.editor.renderer.components.TransformComponent;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.NodeComponent;
@@ -56,7 +56,7 @@ public class ItemSelector {
     private SceneControlMediator sceneControl;
 
     /** list of current selected panels */
-    private Set<Entity> currentSelection = new HashSet<>();
+    private Set<Integer> currentSelection = new HashSet<>();
 
     private FollowersUIMediator followersUIMediator;
 
@@ -74,19 +74,19 @@ public class ItemSelector {
     /**
      * @return HashMap of selection rectangles that contain panels
      */
-    public Set<Entity> getCurrentSelection() {
+    public Set<Integer> getCurrentSelection() {
         return currentSelection;
     }
 
     /**
      * @return one selected item
      */
-    public Entity getSelectedItem() {
+    public int getSelectedItem() {
         if(currentSelection.size() > 0) {
             return currentSelection.iterator().next();
         }
 
-        return null;
+        return -1;
     }
 
     /**
@@ -107,12 +107,12 @@ public class ItemSelector {
     /**
      * @return list of currently selected panels
      */
-    public Set<Entity> getSelectedItems() {
+    public Set<Integer> getSelectedItems() {
         return currentSelection;
     }
 
 
-    public BiConsumer<Entity, AccContainer> broadestItem = (i, acc) -> {
+    public BiConsumer<Integer, AccContainer> broadestItem = (i, acc) -> {
         if (acc.carryVal == null) acc.carryVal = Constants.FLOAT_MIN;
         EntityBounds bounds = new EntityBounds(i);
         final float width = bounds.getVisualWidth();
@@ -122,7 +122,7 @@ public class ItemSelector {
         }
     };
 
-    public BiConsumer<Entity, AccContainer> highestItem = (i, acc) -> {
+    public BiConsumer<Integer, AccContainer> highestItem = (i, acc) -> {
         if (acc.carryVal == null) acc.carryVal = Constants.FLOAT_MIN;
         EntityBounds bounds = new EntityBounds(i);
         final float height = bounds.getVisualHeight();
@@ -132,7 +132,7 @@ public class ItemSelector {
         }
     };
 
-    public BiConsumer<Entity, AccContainer> rightmostItem = (i, acc) -> {
+    public BiConsumer<Integer, AccContainer> rightmostItem = (i, acc) -> {
         if (acc.carryVal == null) acc.carryVal = Constants.FLOAT_MIN;
         EntityBounds bounds = new EntityBounds(i);
         final float x = bounds.getVisualRightX();
@@ -142,7 +142,7 @@ public class ItemSelector {
         }
     };
 
-    public BiConsumer<Entity, AccContainer> leftmostItem = (i, acc) -> {
+    public BiConsumer<Integer, AccContainer> leftmostItem = (i, acc) -> {
         if (acc.carryVal == null) acc.carryVal = Constants.FLOAT_MAX;
         EntityBounds bounds = new EntityBounds(i);
         final float x = bounds.getVisualX();
@@ -152,7 +152,7 @@ public class ItemSelector {
         }
     };
 
-    public BiConsumer<Entity, AccContainer> topmostItem = (i, acc) -> {
+    public BiConsumer<Integer, AccContainer> topmostItem = (i, acc) -> {
         if (acc.carryVal == null) acc.carryVal = Constants.FLOAT_MIN;
         EntityBounds bounds = new EntityBounds(i);
         final float y = bounds.getVisualTopY();
@@ -161,7 +161,7 @@ public class ItemSelector {
             acc.carry = i;
         }
     };
-    public BiConsumer<Entity, AccContainer> bottommostItem = (i, acc) -> {
+    public BiConsumer<Integer, AccContainer> bottommostItem = (i, acc) -> {
         if (acc.carryVal == null) acc.carryVal = Constants.FLOAT_MAX;
         EntityBounds bounds = new EntityBounds(i);
         final float y = bounds.getVisualY();
@@ -177,14 +177,14 @@ public class ItemSelector {
      */
     private static class AccContainer {
         public Float carryVal = null;
-        public Entity carry = null;
+        public int carry = -1;
     }
 
 
-    public Entity get(BiConsumer<Entity, AccContainer> checkSelection) {
+    public int get(BiConsumer<Integer, AccContainer> checkSelection) {
         final AccContainer acc = new AccContainer();
 
-        for (Entity entity : currentSelection) {
+        for (int entity : currentSelection) {
             checkSelection.accept(entity, acc);
         }
         return acc.carry;
@@ -212,7 +212,7 @@ public class ItemSelector {
      * @param item to select
      * @param removeOthers if set to true this item will become the only selection, otherwise will be added to existing
      */
-    public void setSelection(Entity item, boolean removeOthers) {
+    public void setSelection(int item, boolean removeOthers) {
         if (currentSelection.contains(item)) return;
 
         if (removeOthers) clearSelections();
@@ -226,13 +226,13 @@ public class ItemSelector {
      * adds to selection a list of items
      * @param items list of panels to select
      */
-    public void addSelections(Set<Entity> items) {
-        for (Entity item : items) {
+    public void addSelections(Set<Integer> items) {
+        for (int item : items) {
             setSelection(item, false);
         }
     }
 
-    public boolean isSelected(Entity entity) {
+    public boolean isSelected(int entity) {
         return currentSelection.contains(entity);
     }
 
@@ -241,7 +241,7 @@ public class ItemSelector {
      * @param items list of panels to select
      * @param alsoShow if false, selection will remain hidden at this moment
      */
-    public void setSelections(Set<Entity> items, boolean alsoShow) {
+    public void setSelections(Set<Integer> items, boolean alsoShow) {
         currentSelection.clear();
 
         if(items == null) {
@@ -263,8 +263,8 @@ public class ItemSelector {
      * remove selection to a list of items
      * @param items list of panels to remove selection
      */
-    public void releaseSelections(Set<Entity> items) {
-        for (Entity item : items) {
+    public void releaseSelections(Set<Integer> items) {
+        for (int item : items) {
             releaseSelection(item);
         }
     }
@@ -273,7 +273,7 @@ public class ItemSelector {
      * Un-selects item
      * @param item to un-select
      */
-    public void releaseSelection(Entity item) {
+    public void releaseSelection(int item) {
         currentSelection.remove(item);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
@@ -292,15 +292,15 @@ public class ItemSelector {
     /**
      * Selects all panels on currently active scene
      */
-    public HashSet<Entity> getAllFreeItems() {
-    	NodeComponent nodeComponent = ComponentRetriever.get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
-		SnapshotArray<Entity> childrenEntities = nodeComponent.children;
+    public HashSet<Integer> getAllFreeItems() {
+    	NodeComponent nodeComponent = SandboxComponentRetriever.get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
+		SnapshotArray<Integer> childrenEntities = nodeComponent.children;
 
-        Entity[] array = childrenEntities.toArray();
-        HashSet<Entity> result = new HashSet<>(Arrays.asList(array));
+        Integer[] array = childrenEntities.toArray();
+        HashSet<Integer> result = new HashSet<>(Arrays.asList(array));
 
-        for (Iterator<Entity> i = result.iterator(); i.hasNext();) {
-            Entity element = i.next();
+        for (Iterator<Integer> i = result.iterator(); i.hasNext();) {
+            int element = i.next();
             LayerItemVO layerItemVO = EntityUtils.getEntityLayer(element);
             if(layerItemVO != null && layerItemVO.isLocked) {
                 i.remove();
@@ -318,22 +318,22 @@ public class ItemSelector {
      * removes all selected panels from the scene
      */
     public void removeCurrentSelectedItems() {
-        for (Entity item : currentSelection) {
+        for (int item : currentSelection) {
             followersUIMediator.removeFollower(item);
-            sandbox.getEngine().removeEntity(item);
+            sandbox.getEngine().delete(item);
         }
 
         currentSelection.clear();
     }
 
-    public void alignSelectionsByX(Entity relativeTo, boolean toHighestX) {
-    	if (relativeTo == null) return;
+    public void alignSelectionsByX(int relativeTo, boolean toHighestX) {
+    	if (relativeTo == -1) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);
         final float relativeToX = (toHighestX)? (bounds.getVisualRightX()) : bounds.getVisualX();
 
         moveCommandBuilder.clear();
-        for (Entity entity : currentSelection) {
+        for (int entity : currentSelection) {
             EntityBounds entityBounds = new EntityBounds(entity);
             final float deltaX = entityBounds.getX() - entityBounds.getVisualX();
             final float visualX = relativeToX - ((toHighestX)? 1 : 0) * entityBounds.getVisualWidth();
@@ -343,14 +343,14 @@ public class ItemSelector {
         moveCommandBuilder.execute();
     }
 
-    public void alignSelectionsByY(Entity relativeTo, boolean toHighestY) {
-    	if (relativeTo == null) return;
+    public void alignSelectionsByY(int relativeTo, boolean toHighestY) {
+    	if (relativeTo == -1) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);
         final float relativeToY = (toHighestY)? bounds.getVisualTopY() : bounds.getVisualY();
 
         moveCommandBuilder.clear();
-        for (Entity entity : currentSelection) {
+        for (int entity : currentSelection) {
             EntityBounds entityBounds = new EntityBounds(entity);
             final float deltaY = entityBounds.getY() - entityBounds.getVisualY();
             final float visualY = relativeToY - ((toHighestY)? 1 : 0) * entityBounds.getVisualHeight();
@@ -360,14 +360,14 @@ public class ItemSelector {
         moveCommandBuilder.execute();
     }
 
-    public void alignSelectionsAtLeftEdge(Entity relativeTo) {
-        if (relativeTo == null) return;
+    public void alignSelectionsAtLeftEdge(int relativeTo) {
+        if (relativeTo == -1) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);
         final float relativeToX = bounds.getVisualX();
 
         moveCommandBuilder.clear();
-        for (Entity entity : currentSelection) {
+        for (int entity : currentSelection) {
             if (entity == relativeTo) continue;
             EntityBounds entityBounds = new EntityBounds(entity);
 
@@ -379,14 +379,14 @@ public class ItemSelector {
         moveCommandBuilder.execute();
     }
 
-    public void alignSelectionsAtRightEdge(Entity relativeTo) {
-        if (relativeTo == null) return;
+    public void alignSelectionsAtRightEdge(int relativeTo) {
+        if (relativeTo == -1) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);
         final float relativeToRightX = bounds.getVisualRightX();
 
         moveCommandBuilder.clear();
-        for (Entity entity : currentSelection) {
+        for (int entity : currentSelection) {
             if (entity == relativeTo) continue;
             EntityBounds entityBounds = new EntityBounds(entity);
 
@@ -397,14 +397,14 @@ public class ItemSelector {
         moveCommandBuilder.execute();
     }
 
-    public void alignSelectionsAtTopEdge(Entity relativeTo) {
-        if (relativeTo == null) return;
+    public void alignSelectionsAtTopEdge(int relativeTo) {
+        if (relativeTo == -1) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);
         final float relativeToTopY = bounds.getVisualTopY();
 
         moveCommandBuilder.clear();
-        for (Entity entity : currentSelection) {
+        for (int entity : currentSelection) {
             if (entity == relativeTo) continue;
             EntityBounds entityBounds = new EntityBounds(entity);
 
@@ -415,14 +415,14 @@ public class ItemSelector {
         moveCommandBuilder.execute();
     }
 
-    public void alignSelectionsAtBottomEdge(Entity relativeTo) {
-        if (relativeTo == null) return;
+    public void alignSelectionsAtBottomEdge(int relativeTo) {
+        if (relativeTo == -1) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);
         final float relativeToY = bounds.getVisualY();
 
         moveCommandBuilder.clear();
-        for (Entity entity : currentSelection) {
+        for (int entity : currentSelection) {
             if (entity == relativeTo) continue;
             EntityBounds entityBounds = new EntityBounds(entity);
 
@@ -434,15 +434,15 @@ public class ItemSelector {
         moveCommandBuilder.execute();
     }
 
-    public void alignSelectionsVerticallyCentered(Entity relativeTo) {
-        if (relativeTo == null) return;
+    public void alignSelectionsVerticallyCentered(int relativeTo) {
+        if (relativeTo == -1) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);
         final float relativeToY = bounds.getVisualY();
         final float relativeToHeight = bounds.getVisualHeight();
 
         moveCommandBuilder.clear();
-        for (Entity entity : currentSelection) {
+        for (int entity : currentSelection) {
             if (entity == relativeTo) continue;
             EntityBounds entityBounds = new EntityBounds(entity);
 
@@ -454,15 +454,15 @@ public class ItemSelector {
         moveCommandBuilder.execute();
     }
 
-    public void alignSelectionsHorizontallyCentered(Entity relativeTo) {
-        if (relativeTo == null) return;
+    public void alignSelectionsHorizontallyCentered(int relativeTo) {
+        if (relativeTo == -1) return;
 
         EntityBounds bounds = new EntityBounds(relativeTo);
         final float relativeToX = bounds.getVisualX();
         final float relativeToWidth = bounds.getVisualWidth();
 
         moveCommandBuilder.clear();
-        for (Entity entity : currentSelection) {
+        for (int entity : currentSelection) {
             if (entity == relativeTo) continue;
             EntityBounds entityBounds = new EntityBounds(entity);
 
@@ -521,7 +521,7 @@ public class ItemSelector {
      * @param y
      */
     public void moveSelectedItemsBy(float x, float y) {
-        for (Entity entity : currentSelection) {
+        for (int entity : currentSelection) {
             sandbox.itemControl.moveItemBy(entity, x, y);
             HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
         }
@@ -535,8 +535,8 @@ public class ItemSelector {
 
         if(currentSelection.isEmpty()) return false;
 
-        Entity entity = currentSelection.stream().findFirst().get();
-        NodeComponent nodeComponent = entity.getComponent(NodeComponent.class);
+        int entity = currentSelection.stream().findFirst().get();
+        NodeComponent nodeComponent = SandboxComponentRetriever.get(entity, NodeComponent.class);
 
         return nodeComponent != null;
     }

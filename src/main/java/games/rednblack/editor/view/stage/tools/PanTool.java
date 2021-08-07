@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.stage.tools;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
@@ -71,7 +70,7 @@ public class PanTool extends SimpleTool {
     }
 
     @Override
-    public boolean itemMouseDown(Entity entity, float x, float y) {
+    public boolean itemMouseDown(int entity, float x, float y) {
         lastCoordinates.set(Gdx.input.getX(), Gdx.input.getY());
         currX = Sandbox.getInstance().getCamera().position.x;
         currY = Sandbox.getInstance().getCamera().position.y;
@@ -79,17 +78,17 @@ public class PanTool extends SimpleTool {
     }
 
     @Override
-    public void itemMouseUp(Entity entity, float x, float y) {
+    public void itemMouseUp(int entity, float x, float y) {
 
     }
 
     @Override
-    public void itemMouseDragged(Entity entity, float x, float y) {
+    public void itemMouseDragged(int entity, float x, float y) {
         doPanning(x, y);
     }
 
     @Override
-    public void itemMouseDoubleClick(Entity entity, float x, float y) {
+    public void itemMouseDoubleClick(int entity, float x, float y) {
 
     }
 

@@ -1,7 +1,5 @@
 package games.rednblack.editor.plugin.tiled.tools.drawStrategy;
 
-import com.badlogic.ashley.core.Entity;
-
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.plugin.tiled.data.AutoTileVO;
 import games.rednblack.editor.renderer.components.MainItemComponent;
@@ -22,8 +20,8 @@ public class AutoTileDrawStrategy extends BasicDrawStrategy {
 
 	@Override
 	public void drawTile(float x, float y, int row, int column) {
-        Entity underneathTile = tiledPlugin.getPluginEntityWithParams(row, column);
-        if (underneathTile != null) {
+        int underneathTile = tiledPlugin.getPluginEntityWithParams(row, column);
+        if (underneathTile != -1) {
             updateTile(underneathTile);
             return;
         }
@@ -32,7 +30,7 @@ public class AutoTileDrawStrategy extends BasicDrawStrategy {
         temp.set(x, y);
         tileToDraw = selectTileToDraw();
         if (itemFactory.createSimpleImage(tileToDraw + TiledPlugin.AUTO_TILE_DRAW_SUFFIX, temp)) {
-            Entity imageEntity = itemFactory.getCreatedEntity();
+            int imageEntity = itemFactory.getCreatedEntity();
             postProcessEntity(imageEntity, x, y, row, column);
         }
 	}
@@ -64,10 +62,10 @@ public class AutoTileDrawStrategy extends BasicDrawStrategy {
 	}
 
 	@Override
-	public void updateTile(Entity entity) {
+	public void updateTile(int entity) {
         if (!checkValidTile(entity)) return;
         
-        MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+        MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class, tiledPlugin.getAPI().getEngine());
         if (tiledPlugin.getSelectedAutoTileName().equals(mainItemComponent.customVariables.getStringVariable(TiledPlugin.ORIG_AUTO_TILE))) {
         	// we only allow an update when the auto-tiles is different
         	// firstly, it does not make any sense to randomly reselect another alternative tile
@@ -75,7 +73,7 @@ public class AutoTileDrawStrategy extends BasicDrawStrategy {
         	return;
         }
 
-        TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
+        TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class, tiledPlugin.getAPI().getEngine());
         if (textureRegionComponent != null && textureRegionComponent.regionName != null) {
             // there is already other tile under this one
         	String selectedAutoTileName = selectTileToDraw();
@@ -94,10 +92,10 @@ public class AutoTileDrawStrategy extends BasicDrawStrategy {
 	}
 
     @Override
-	protected void postProcessEntity(Entity entity, float x, float y, int row, int column) {
+	protected void postProcessEntity(int entity, float x, float y, int row, int column) {
     	super.postProcessEntity(entity, x, y, row, column);
 
-        MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+        MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class, tiledPlugin.getAPI().getEngine());
         mainItemComponent.tags.add(TiledPlugin.AUTO_TILE_TAG);
         mainItemComponent.setCustomVars(TiledPlugin.REGION, tileToDraw);
         mainItemComponent.setCustomVars(TiledPlugin.ORIG_AUTO_TILE, tiledPlugin.getSelectedAutoTileName());

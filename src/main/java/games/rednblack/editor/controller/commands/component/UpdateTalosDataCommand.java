@@ -1,12 +1,12 @@
 package games.rednblack.editor.controller.commands.component;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.particle.TalosDataComponent;
 import games.rednblack.editor.renderer.data.TalosVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extension.talos.TalosComponent;
 
@@ -18,17 +18,17 @@ public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
     @Override
     public void doAction() {
         Object[] payload = getNotification().getBody();
-        Entity entity = (Entity) payload[0];
+        int entity = (int) payload[0];
         TalosVO vo = (TalosVO) payload[1];
         entityId = EntityUtils.getEntityId(entity);
 
         backup = new TalosVO();
-        backup.loadFromEntity(entity);
+        backup.loadFromEntity(entity, sandbox.getEngine());
 
-        TalosDataComponent dataComponent = ComponentRetriever.get(entity, TalosDataComponent.class);
+        TalosDataComponent dataComponent = SandboxComponentRetriever.get(entity, TalosDataComponent.class);
         dataComponent.transform = vo.transform;
 
-        TalosComponent talosComponent = ComponentRetriever.get(entity, TalosComponent.class);
+        TalosComponent talosComponent = SandboxComponentRetriever.get(entity, TalosComponent.class);
         talosComponent.effect.setPosition(0, 0);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
@@ -36,18 +36,18 @@ public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        Entity entity = EntityUtils.getByUniqueId(entityId);
+        int entity = EntityUtils.getByUniqueId(entityId);
 
-        TalosDataComponent particleComponent = ComponentRetriever.get(entity, TalosDataComponent.class);
+        TalosDataComponent particleComponent = SandboxComponentRetriever.get(entity, TalosDataComponent.class);
         particleComponent.transform = backup.transform;
 
-        TalosComponent talosComponent = ComponentRetriever.get(entity, TalosComponent.class);
+        TalosComponent talosComponent = SandboxComponentRetriever.get(entity, TalosComponent.class);
         talosComponent.effect.setPosition(0, 0);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
-    public static Object payload(Entity entity, TalosVO vo) {
+    public static Object payload(int entity, TalosVO vo) {
         Object[] payload = new Object[2];
         payload[0] = entity;
         payload[1] = vo;

@@ -22,8 +22,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
@@ -42,10 +42,10 @@ public class SetSelectionCommand extends RevertibleCommand {
     @Override
     public void doAction() {
         cancel();
-        HashSet<Entity> previousSelection = new HashSet<>(Sandbox.getInstance().getSelector().getSelectedItems());
+        HashSet<Integer> previousSelection = new HashSet<>(Sandbox.getInstance().getSelector().getSelectedItems());
         previousSelectionIds = EntityUtils.getEntityId(previousSelection);
 
-        Set<Entity> items = getNotification().getBody();
+        Set<Integer> items = getNotification().getBody();
 
         if(items == null) {
             // deselect all
@@ -55,10 +55,10 @@ public class SetSelectionCommand extends RevertibleCommand {
         }
 
         // check if items are in viewable element, if no - cancel
-        NodeComponent nodeComponent = ComponentRetriever.get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
-        for (Iterator<Entity> iterator = items.iterator(); iterator.hasNext();) {
-            Entity item = iterator.next();
-            if(!nodeComponent.children.contains(item, true)) {
+        NodeComponent nodeComponent = SandboxComponentRetriever.get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
+        for (Iterator<Integer> iterator = items.iterator(); iterator.hasNext();) {
+            int item = iterator.next();
+            if(!nodeComponent.children.contains(item, false)) {
                 iterator.remove();
             }
         }

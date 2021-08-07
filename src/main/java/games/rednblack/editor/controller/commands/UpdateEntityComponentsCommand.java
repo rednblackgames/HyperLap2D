@@ -18,9 +18,9 @@
 
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Entity;
+import com.artemis.Component;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
@@ -39,13 +39,13 @@ public class UpdateEntityComponentsCommand extends EntityModifyRevertibleCommand
     public void doAction() {
         Object[] payload = getNotification().getBody();
 
-        Entity entity = (Entity) payload[0];
+        int entity = (int) payload[0];
         entityId = EntityUtils.getEntityId(entity);
         Array<Component> components = (Array<Component>) payload[1];
 
         for(int i = 0; i < components.size; i++) {
             //backup the original component
-            Component originalComponent = ComponentRetriever.get(entity, components.get(i).getClass());
+            Component originalComponent = SandboxComponentRetriever.get(entity, components.get(i).getClass());
             backupComponents.add(ComponentCloner.get(originalComponent));
 
             //now modify the entity component from provided data
@@ -59,9 +59,9 @@ public class UpdateEntityComponentsCommand extends EntityModifyRevertibleCommand
 
     @Override
     public void undoAction() {
-        Entity entity = EntityUtils.getByUniqueId(entityId);
+        int entity = EntityUtils.getByUniqueId(entityId);
         for(int i = 0; i < backupComponents.size; i++) {
-            Component entityComponent = ComponentRetriever.get(entity, backupComponents.get(i).getClass());
+            Component entityComponent = SandboxComponentRetriever.get(entity, backupComponents.get(i).getClass());
             ComponentCloner.set(entityComponent, backupComponents.get(i));
         }
 

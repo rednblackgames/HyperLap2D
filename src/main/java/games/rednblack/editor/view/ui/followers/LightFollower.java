@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.ui.followers;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -35,7 +34,7 @@ public class LightFollower extends BasicFollower {
 
     private Image icon;
 
-    public LightFollower(Entity entity) {
+    public LightFollower(int entity) {
         super(entity);
     }
 

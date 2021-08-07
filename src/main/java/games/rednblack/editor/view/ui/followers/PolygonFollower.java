@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.ui.followers;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -36,6 +35,7 @@ import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.utils.PolygonUtils;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public class PolygonFollower extends SubFollower {
     private final int pixelsPerWU;
     private final OrthographicCamera runtimeCamera = Sandbox.getInstance().getCamera();
 
-    public PolygonFollower(Entity entity) {
+    public PolygonFollower(int entity) {
         super(entity);
         pixelsPerWU = Sandbox.getInstance().getPixelPerWU();
         setTouchable(Touchable.enabled);
@@ -80,8 +80,8 @@ public class PolygonFollower extends SubFollower {
     }
 
     public void create() {
-        polygonComponent = ComponentRetriever.get(entity, PolygonComponent.class);
-        transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+        polygonComponent = SandboxComponentRetriever.get(entity, PolygonComponent.class);
+        transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
         shapeRenderer = new ShapeRenderer();
     }
 
@@ -366,7 +366,7 @@ public class PolygonFollower extends SubFollower {
         return -1;
     }
 
-    public Entity getEntity() {
+    public int getEntity() {
         return entity;
     }
 

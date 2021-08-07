@@ -1,9 +1,9 @@
 package games.rednblack.editor.view.stage.input;
 
-import com.badlogic.ashley.core.Component;
+import com.artemis.Component;
 import com.badlogic.gdx.utils.Array;
 
-public class InputListenerComponent implements Component {
+public class InputListenerComponent extends Component {
 	private Array<InputListener> listeners = new Array<InputListener>(1); 
 	
 	public void addListener(InputListener listener){

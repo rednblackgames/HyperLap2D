@@ -1,23 +1,21 @@
 package games.rednblack.editor.view.stage.input;
 
-import com.badlogic.ashley.core.Entity;
-
 public interface InputListener {
 	
-	boolean keyDown(Entity entity, int keycode);
+	boolean keyDown(int entity, int keycode);
 	
-	boolean keyUp(Entity entity, int keycode);
+	boolean keyUp(int entity, int keycode);
 	
-	boolean keyTyped(Entity entity, char character);
+	boolean keyTyped(int entity, char character);
 
-	boolean touchDown(Entity entity, float screenX, float screenY, int pointer, int button);
+	boolean touchDown(int entity, float screenX, float screenY, int pointer, int button);
 	
-	void touchUp(Entity entity, float screenX, float screenY, int pointer, int button);
+	void touchUp(int entity, float screenX, float screenY, int pointer, int button);
 	
-	void touchDragged(Entity entity, float screenX, float screenY, int pointer);
+	void touchDragged(int entity, float screenX, float screenY, int pointer);
 	
-	boolean mouseMoved(Entity entity, float screenX, float screenY);
+	boolean mouseMoved(int entity, float screenX, float screenY);
 	
-	boolean scrolled(Entity entity, float amountX, float amountY);
+	boolean scrolled(int entity, float amountX, float amountY);
 
 }

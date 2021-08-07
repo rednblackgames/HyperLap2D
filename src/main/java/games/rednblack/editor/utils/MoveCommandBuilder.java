@@ -18,9 +18,9 @@
 
 package games.rednblack.editor.utils;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.TransformComponent;
@@ -37,17 +37,17 @@ public class MoveCommandBuilder {
         payload =  new Array<>();
     }
 
-    public void setX(Entity entity, float x) {
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+    public void setX(int entity, float x) {
+        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class, Sandbox.getInstance().getEngine());
         setXY(entity, x, transformComponent.y);
     }
 
-    public void setY(Entity entity, float y) {
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+    public void setY(int entity, float y) {
+        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class, Sandbox.getInstance().getEngine());
         setXY(entity, transformComponent.x, y);
     }
 
-    public void setXY(Entity entity, float x, float y) {
+    public void setXY(int entity, float x, float y) {
         Object[] data = new Object[2];
         data[0] = entity;
         data[1] = new Vector2(x, y);

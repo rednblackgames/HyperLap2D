@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'games.rednblack'
-version '0.0.7'
+version '0.0.8'
 
 ext {
     pack = ["assets/textures", "assets/pack/", "tiled"]
@@ -16,8 +16,8 @@ repositories {
 
 dependencies {
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
-    implementation "com.badlogicgames.ashley:ashley:$ashleyVersion"
     implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
+    implementation "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
 
     implementation "com.esotericsoftware.spine:spine-libgdx:$spineVersion"
 

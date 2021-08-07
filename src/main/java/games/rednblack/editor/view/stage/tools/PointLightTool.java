@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.stage.tools;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.factory.ItemFactory;
 import games.rednblack.editor.renderer.data.LightVO;
@@ -47,7 +46,7 @@ public class PointLightTool extends ItemDropTool {
     }
 
     @Override
-    public Entity putItem(float x, float y) {
+    public int putItem(float x, float y) {
         LightVO vo = new LightVO();
         vo.type = LightVO.LightType.POINT;
         vo.distance = vo.distance / sandbox.getPixelPerWU();

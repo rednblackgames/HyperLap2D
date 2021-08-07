@@ -1,6 +1,5 @@
 package games.rednblack.editor.controller.commands.component;
 
-import com.badlogic.ashley.core.Entity;
 import com.esotericsoftware.spine.*;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
@@ -9,6 +8,7 @@ import games.rednblack.editor.renderer.components.SpineDataComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extention.spine.SpineObjectComponent;
 
@@ -22,7 +22,7 @@ public class ReplaceSpineCommand extends EntityModifyRevertibleCommand {
     @Override
     public void doAction() {
         Object[] payload = getNotification().getBody();
-        Entity entity = (Entity) payload[0];
+        int entity = (int) payload[0];
         String animName = (String) payload[1];
         SkeletonJson skeletonJson = (SkeletonJson) payload[2];
         Skeleton skeleton = (Skeleton) payload[3];
@@ -30,10 +30,10 @@ public class ReplaceSpineCommand extends EntityModifyRevertibleCommand {
 
         entityId = EntityUtils.getEntityId(entity);
 
-        SpineDataComponent spineDataComponent = ComponentRetriever.get(entity, SpineDataComponent.class);
-        SpineObjectComponent spineObjectComponent = ComponentRetriever.get(entity, SpineObjectComponent.class);
-        DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+        SpineDataComponent spineDataComponent = SandboxComponentRetriever.get(entity, SpineDataComponent.class);
+        SpineObjectComponent spineObjectComponent = SandboxComponentRetriever.get(entity, SpineObjectComponent.class);
+        DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
 
         backupAnimName = spineDataComponent.animationName;
         backupSkeletonJson = spineObjectComponent.skeletonJson;
@@ -63,12 +63,12 @@ public class ReplaceSpineCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        Entity entity = EntityUtils.getByUniqueId(entityId);
+        int entity = EntityUtils.getByUniqueId(entityId);
 
-        SpineDataComponent spineDataComponent = ComponentRetriever.get(entity, SpineDataComponent.class);
-        SpineObjectComponent spineObjectComponent = ComponentRetriever.get(entity, SpineObjectComponent.class);
-        DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+        SpineDataComponent spineDataComponent = SandboxComponentRetriever.get(entity, SpineDataComponent.class);
+        SpineObjectComponent spineObjectComponent = SandboxComponentRetriever.get(entity, SpineObjectComponent.class);
+        DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
 
         spineDataComponent.animationName = backupAnimName;
         spineObjectComponent.skeletonJson = backupSkeletonJson;

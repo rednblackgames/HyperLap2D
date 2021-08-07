@@ -20,7 +20,6 @@ package games.rednblack.editor.plugin.tiled;
 
 import org.puremvc.java.interfaces.IFacade;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -60,7 +59,7 @@ public class TiledPanel extends UIDraggablePanel {
     private SettingsTab settingsTab;
     private AutoGridTilesTab autoGridTilesTab;
     private VisTable mainTable;
-    private Engine engine;
+    private com.artemis.World engine;
     private ResourcesManager resourcesManager;
 
     private boolean isAutoGridTabSelected;
@@ -246,7 +245,7 @@ public class TiledPanel extends UIDraggablePanel {
         mainTable.add(new VisLabel("no scenes open")).right();
     }
 
-    public void setEngine(Engine engine) {
+    public void setEngine(com.artemis.World engine) {
         this.engine = engine;
     }
 

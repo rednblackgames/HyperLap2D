@@ -1,6 +1,6 @@
 package games.rednblack.editor.system;
 
-import com.badlogic.ashley.core.Entity;
+import com.artemis.annotations.All;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import games.rednblack.editor.renderer.components.particle.ParticleComponent;
 import games.rednblack.editor.renderer.systems.ParticleSystem;
@@ -10,11 +10,12 @@ import games.rednblack.editor.renderer.systems.ParticleSystem;
  * This system will make sure they look continuous while in editor, so user will find and see them easily.
  *
  */
+@All(ParticleComponent.class)
 public class ParticleContinuousSystem extends ParticleSystem {
 
     @Override
-    protected void processEntity(Entity entity, float deltaTime) {
-        super.processEntity(entity, deltaTime);
+    protected void process(int entity) {
+        super.process(entity);
 
         ParticleComponent particleComponent = particleComponentMapper.get(entity);
         ParticleEffect particleEffect = particleComponent.particleEffect;

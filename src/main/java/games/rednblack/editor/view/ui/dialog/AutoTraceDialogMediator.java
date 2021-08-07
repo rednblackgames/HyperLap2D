@@ -1,13 +1,14 @@
 package games.rednblack.editor.view.ui.dialog;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.utils.poly.tracer.Tracer;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.MsgAPI;
@@ -21,7 +22,7 @@ public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
     private static final String TAG = AutoTraceDialogMediator.class.getCanonicalName();
     private static final String NAME = TAG;
 
-    private Entity entity;
+    private int entity;
 
     public AutoTraceDialogMediator() {
         super(NAME, new AutoTraceDialog());
@@ -59,10 +60,10 @@ public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
     }
 
     private void addAutoTraceMesh() {
-        PolygonComponent polygonComponent = entity.getComponent(PolygonComponent.class);
+        PolygonComponent polygonComponent = SandboxComponentRetriever.get(entity, PolygonComponent.class);
 
         if (polygonComponent != null) {
-            TextureRegionComponent textureRegionComponent = entity.getComponent(TextureRegionComponent.class);
+            TextureRegionComponent textureRegionComponent = SandboxComponentRetriever.get(entity, TextureRegionComponent.class);
 
             if (textureRegionComponent != null && textureRegionComponent.region != null && !textureRegionComponent.regionName.equals("")) {
                 polygonComponent.vertices = Tracer.trace(textureRegionComponent.region, viewComponent.getHullTolerance(),

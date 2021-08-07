@@ -18,8 +18,8 @@
 
 package games.rednblack.editor.controller.commands.component;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.label.LabelComponent;
@@ -48,10 +48,10 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
     @Override
     public void doAction() {
         Object[] payload = getNotification().getBody();
-        Entity entity = (Entity) payload[0];
+        int entity = (int) payload[0];
         entityId = EntityUtils.getEntityId(entity);
 
-        LabelComponent labelComponent = ComponentRetriever.get(entity, LabelComponent.class);
+        LabelComponent labelComponent = SandboxComponentRetriever.get(entity, LabelComponent.class);
 
         this.prevFontName = labelComponent.fontName;
         this.prevFontSize = labelComponent.fontSize;
@@ -85,8 +85,8 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        final Entity entity = EntityUtils.getByUniqueId(entityId);
-        final LabelComponent labelComponent = ComponentRetriever.get(entity, LabelComponent.class);
+        final int entity = EntityUtils.getByUniqueId(entityId);
+        final LabelComponent labelComponent = SandboxComponentRetriever.get(entity, LabelComponent.class);
 
         labelComponent.fontName = prevFontName;
         labelComponent.fontSize = prevFontSize;

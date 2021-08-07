@@ -18,8 +18,6 @@
 
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -29,6 +27,7 @@ import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 
 import java.util.HashMap;
 
@@ -50,10 +49,10 @@ public abstract class EntityModifyRevertibleCommand extends RevertibleCommand {
 
     protected void postChange() {
         Integer parentId = EntityUtils.getEntityId(sandbox.getCurrentViewingEntity());
-        Entity entity = EntityUtils.getByUniqueId(parentId);
+        int entity = EntityUtils.getByUniqueId(parentId);
 
         // Update item library data if it was in library
-        MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+        MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
         String link = mainItemComponent.libraryLink;
 
         if(link != null && link.length() > 0) {
@@ -61,23 +60,23 @@ public abstract class EntityModifyRevertibleCommand extends RevertibleCommand {
             HashMap<String, CompositeItemVO> libraryItems = projectManager.currentProjectInfoVO.libraryItems;
             if (libraryItems.containsKey(mainItemComponent.libraryLink)) {
                 CompositeItemVO itemVO = new CompositeItemVO();
-                itemVO.loadFromEntity(entity);
+                itemVO.loadFromEntity(entity, sandbox.getEngine());
                 itemVO.cleanIds();
                 libraryItems.put(mainItemComponent.libraryLink, itemVO);
             }
 
-            Array<Entity> linkedEntities = EntityUtils.getByLibraryLink(link);
-            for (Entity dependable : linkedEntities) {
+            Array<Integer> linkedEntities = EntityUtils.getByLibraryLink(link);
+            for (int dependable : linkedEntities) {
                 if(dependable == entity) continue;
-                NodeComponent nodeComponent = ComponentRetriever.get(dependable, NodeComponent.class);
-                for(Entity child: nodeComponent.children) {
-                    sandbox.getEngine().removeEntity(child);
+                NodeComponent nodeComponent = SandboxComponentRetriever.get(dependable, NodeComponent.class);
+                for(int child: nodeComponent.children) {
+                    sandbox.getEngine().delete(child);
                 }
                 nodeComponent.children.clear();
+                sandbox.getEngine().process();
 
-                Engine engine = sandbox.getSceneControl().sceneLoader.getEngine();
                 EntityFactory factory = sandbox.getSceneControl().sceneLoader.getEntityFactory();
-                factory.initAllChildren(engine, dependable, libraryItems.get(link).composite);
+                factory.initAllChildren(dependable, libraryItems.get(link).composite);
             }
         }
     }

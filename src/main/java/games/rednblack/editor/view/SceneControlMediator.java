@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -55,11 +54,6 @@ public class SceneControlMediator {
 	 */
 	private CompositeItemVO rootSceneVO;
 
-	/**
-	 * current scene rendering item
-	 */
-	private Entity currentScene;
-
 	public SceneControlMediator(SceneLoader sceneLoader) {
 		this.sceneLoader = sceneLoader;
 		facade = HyperLap2DFacade.getInstance();
@@ -82,6 +76,7 @@ public class SceneControlMediator {
 		currentSceneVo = sceneLoader.loadScene(sceneName, viewport);
 
 		rootSceneVO = new CompositeItemVO(currentSceneVo.composite);
+		Sandbox.getInstance().getEngine().process();
 	}
 
 	public void updateAmbientLights() {
@@ -92,15 +87,11 @@ public class SceneControlMediator {
 		return rootSceneVO;
 	}
 
-	public Entity getCurrentScene() {
-		return currentScene;
-	}
-
 	public SceneVO getCurrentSceneVO() {
 		return currentSceneVo;
 	}
 	
-	public Entity getRootEntity() {
+	public int getRootEntity() {
 		return sceneLoader.getRoot();
 	}
 }

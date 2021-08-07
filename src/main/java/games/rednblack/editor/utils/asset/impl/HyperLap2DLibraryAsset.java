@@ -1,6 +1,5 @@
 package games.rednblack.editor.utils.asset.impl;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -16,6 +15,7 @@ import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.ZipUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
@@ -134,14 +134,14 @@ public class HyperLap2DLibraryAsset extends Asset {
     }
 
     @Override
-    public boolean deleteAsset(Entity root, String name) {
+    public boolean deleteAsset(int root, String name) {
         HashMap<String, CompositeItemVO> libraryItems = projectManager.currentProjectInfoVO.libraryItems;
 
         libraryItems.remove(name);
 
-        Array<Entity> linkedEntities = EntityUtils.getByLibraryLink(name);
-        for (Entity entity : linkedEntities) {
-            MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+        Array<Integer> linkedEntities = EntityUtils.getByLibraryLink(name);
+        for (int entity : linkedEntities) {
+            MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
             mainItemComponent.libraryLink = "";
         }
 

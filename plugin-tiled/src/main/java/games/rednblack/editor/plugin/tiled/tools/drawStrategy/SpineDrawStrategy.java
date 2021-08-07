@@ -1,6 +1,5 @@
 package games.rednblack.editor.plugin.tiled.tools.drawStrategy;
 
-import com.badlogic.ashley.core.Entity;
 import com.esotericsoftware.spine.Skeleton;
 import com.esotericsoftware.spine.SkeletonData;
 import com.esotericsoftware.spine.SkeletonJson;
@@ -21,8 +20,8 @@ public class SpineDrawStrategy extends BasicDrawStrategy {
 
     @Override
     public void drawTile(float x, float y, int row, int column) {
-        Entity underneathTile = tiledPlugin.getPluginEntityWithParams(row, column);
-        if (underneathTile != null) {
+        int underneathTile = tiledPlugin.getPluginEntityWithParams(row, column);
+        if (underneathTile != -1) {
             updateTile(underneathTile);
             return;
         }
@@ -31,16 +30,16 @@ public class SpineDrawStrategy extends BasicDrawStrategy {
         temp.set(x, y);
 
         if (itemFactory.createSpineAnimation(tiledPlugin.getSelectedTileName(), temp)) {
-            Entity imageEntity = itemFactory.getCreatedEntity();
+            int imageEntity = itemFactory.getCreatedEntity();
             postProcessEntity(imageEntity, x, y, row, column);
         }
     }
 
     @Override
-    public void updateTile(Entity entity) {
+    public void updateTile(int entity) {
         if (!checkValidTile(entity)) return;
 
-        SpineDataComponent spineDataComponent = ComponentRetriever.get(entity, SpineDataComponent.class);
+        SpineDataComponent spineDataComponent = ComponentRetriever.get(entity, SpineDataComponent.class, tiledPlugin.getAPI().getEngine());
         if (!spineDataComponent.animationName.equals(tiledPlugin.getSelectedTileName())) {
             replaceSpineCommandBuilder.begin(entity);
             String animName = tiledPlugin.getSelectedTileName();

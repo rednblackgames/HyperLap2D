@@ -18,9 +18,9 @@
 
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.TransformComponent;
@@ -44,10 +44,10 @@ public class ItemsMoveCommand extends EntityModifyRevertibleCommand {
         for(int i = 0; i < payload.size; i++) {
             Object[] itemData = payload.get(i);
 
-            Entity entity = (Entity) itemData[0];
+            int entity = (int) itemData[0];
             Vector2 newLocation = (Vector2) itemData[1];
 
-            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+            TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
 
             Vector2 prevLocation = new Vector2(transformComponent.x, transformComponent.y);
             if(itemData.length > 2) {
@@ -69,9 +69,9 @@ public class ItemsMoveCommand extends EntityModifyRevertibleCommand {
             Integer entityUniqueId = entry.getKey();
             Vector2 prevLocation = entry.getValue();
 
-            Entity entity = EntityUtils.getByUniqueId(entityUniqueId);
+            int entity = EntityUtils.getByUniqueId(entityUniqueId);
 
-            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+            TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
             transformComponent.x = prevLocation.x;
             transformComponent.y = prevLocation.y;
 

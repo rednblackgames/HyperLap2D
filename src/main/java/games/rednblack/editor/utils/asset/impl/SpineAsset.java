@@ -1,6 +1,5 @@
 package games.rednblack.editor.utils.asset.impl;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
@@ -18,6 +17,7 @@ import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.extention.spine.SpineItemType;
@@ -77,7 +77,7 @@ public class SpineAsset extends Asset {
     }
 
     @Override
-    public boolean deleteAsset(Entity root, String spineName) {
+    public boolean deleteAsset(int root, String spineName) {
         for (ResolutionEntryVO resolutionEntryVO : projectManager.getCurrentProjectInfoVO().resolutions) {
             if(!deleteSpineAnimation(resolutionEntryVO.name, spineName))
                 return false;
@@ -205,7 +205,7 @@ public class SpineAsset extends Asset {
         return true;
     }
 
-    protected void postDeleteSpineAnimation(Entity root, String spineAnimationName) {
+    protected void postDeleteSpineAnimation(int root, String spineAnimationName) {
         deleteEntitiesWithSpineAnimation(root, spineAnimationName);
         deleteAllItemsSpineAnimations(spineAnimationName);
     }
@@ -233,10 +233,10 @@ public class SpineAsset extends Asset {
         }
     }
 
-    private void deleteEntitiesWithSpineAnimation(Entity rootEntity, String spineName) {
+    private void deleteEntitiesWithSpineAnimation(int rootEntity, String spineName) {
         tmpEntityList.clear();
-        Consumer<Entity> action = (root) -> {
-            SpineDataComponent spineDataComponent = ComponentRetriever.get(root, SpineDataComponent.class);
+        Consumer<Integer> action = (root) -> {
+            SpineDataComponent spineDataComponent = SandboxComponentRetriever.get(root, SpineDataComponent.class);
             if (spineDataComponent != null && spineDataComponent.animationName.equals(spineName)) {
                 tmpEntityList.add(root);
             }

@@ -18,9 +18,9 @@
 
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.components.MainItemComponent;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.controller.commands.component.UpdateSpriteAnimationDataCommand;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
@@ -32,7 +32,7 @@ import org.puremvc.java.interfaces.INotification;
 /**
  * Created by azakhary on 4/16/2015.
  */
-public class UISpriteAnimationItemPropertiesMediator extends UIItemPropertiesMediator<Entity, UISpriteAnimationItemProperties> {
+public class UISpriteAnimationItemPropertiesMediator extends UIItemPropertiesMediator<UISpriteAnimationItemProperties> {
     private static final String TAG = UISpriteAnimationItemPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -66,9 +66,9 @@ public class UISpriteAnimationItemPropertiesMediator extends UIItemPropertiesMed
     }
 
     @Override
-    protected void translateObservableDataToView(Entity entity) {
+    protected void translateObservableDataToView(int entity) {
 
-    	spriteAnimationComponent = ComponentRetriever.get(entity, SpriteAnimationComponent.class);
+    	spriteAnimationComponent = SandboxComponentRetriever.get(entity, SpriteAnimationComponent.class);
         Array<String> animations = new Array<>();
         spriteAnimationComponent.frameRangeMap.keySet().forEach(animations::add);
 

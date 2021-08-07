@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.stage.tools;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 
 /**
@@ -14,7 +13,7 @@ public abstract class ItemDropTool extends SelectionTool {
 
     @Override
     public boolean stageMouseDown(float x, float y) {
-        Entity entity = putItem(x, y);
+        int entity = putItem(x, y);
 
         return false;
     }
@@ -25,7 +24,7 @@ public abstract class ItemDropTool extends SelectionTool {
     }
 
     @Override
-    public boolean itemMouseDown(Entity entity, float x, float y) {
+    public boolean itemMouseDown(int entity, float x, float y) {
         if(checkFilter(entity)) {
             return super.itemMouseDown(entity, x, y);
         } else {
@@ -36,7 +35,7 @@ public abstract class ItemDropTool extends SelectionTool {
     }
 
     @Override
-    public void itemMouseDragged(Entity entity, float x, float y) {
+    public void itemMouseDragged(int entity, float x, float y) {
         if(checkFilter(entity)) {
             super.itemMouseDragged(entity, x, y);
         }
@@ -44,13 +43,13 @@ public abstract class ItemDropTool extends SelectionTool {
     }
 
     @Override
-    public void itemMouseUp(Entity entity, float x, float y) {
+    public void itemMouseUp(int entity, float x, float y) {
         if(checkFilter(entity)) {
             super.itemMouseUp(entity, x, y);
         }
     }
 
-    protected boolean checkFilter(Entity entity) {
+    protected boolean checkFilter(int entity) {
         int[] itemTypes = listItemFilters();
         for(int i = 0; i < itemTypes.length; i++) {
             if(itemTypes[i] == EntityUtils.getType(entity)) {
@@ -61,7 +60,7 @@ public abstract class ItemDropTool extends SelectionTool {
         return false;
     }
 
-    public abstract Entity putItem(float x, float y);
+    public abstract int putItem(float x, float y);
 
     public abstract int[] listItemFilters();
 }

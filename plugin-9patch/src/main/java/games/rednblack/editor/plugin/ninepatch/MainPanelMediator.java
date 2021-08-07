@@ -1,6 +1,5 @@
 package games.rednblack.editor.plugin.ninepatch;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -56,8 +55,8 @@ public class MainPanelMediator extends Mediator<MainPanel> {
                 convertImageToNinePatch();
                 break;
             case MainPanel.SAVE_CLICKED:
-                Entity entity = plugin.currEditingEntity;
-                NinePatchComponent ninePatchComponent = ComponentRetriever.get(entity, NinePatchComponent.class);
+                int entity = plugin.currEditingEntity;
+                NinePatchComponent ninePatchComponent = ComponentRetriever.get(entity, NinePatchComponent.class, plugin.getAPI().getEngine());
                 applyNewSplits(ninePatchComponent.textureRegionName, viewComponent.getSplits());
                 viewComponent.hide();
                 break;
@@ -65,12 +64,12 @@ public class MainPanelMediator extends Mediator<MainPanel> {
     }
 
     private void convertImageToNinePatch() {
-        Entity entity = plugin.currEditingEntity;
-        MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+        int entity = plugin.currEditingEntity;
+        MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class, plugin.getAPI().getEngine());
         mainItemComponent.entityType = EntityFactory.NINE_PATCH;
-        TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
+        TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class, plugin.getAPI().getEngine());
         String regionName = textureRegionComponent.regionName;
-        NinePatchComponent ninePatchComponent = plugin.getAPI().getEngine().createComponent(NinePatchComponent.class);
+        NinePatchComponent ninePatchComponent = plugin.getAPI().getEngine().edit(entity).create(NinePatchComponent.class);
         ninePatchComponent.textureRegionName = regionName;
         TextureAtlas.AtlasRegion newRegion = (TextureAtlas.AtlasRegion) textureRegionComponent.region;
         int[] splits = {0, 0, 0, 0};
@@ -78,7 +77,6 @@ public class MainPanelMediator extends Mediator<MainPanel> {
         newRegion.names = new String[] {"split", "pad"};
         newRegion.values = new int[][] {splits, pad};
         ninePatchComponent.ninePatch = new NinePatch(textureRegionComponent.region, 0, 0, 0, 0);
-        entity.add(ninePatchComponent);
 
         //remove original image
         File originalImg = new File(plugin.getAPI().getProjectPath() + "/assets/orig/images/"+regionName+".png");
@@ -93,8 +91,8 @@ public class MainPanelMediator extends Mediator<MainPanel> {
     }
 
     private void loadNinePatch() {
-        Entity entity = plugin.currEditingEntity;
-        NinePatchComponent ninePatchComponent = ComponentRetriever.get(entity, NinePatchComponent.class);
+        int entity = plugin.currEditingEntity;
+        NinePatchComponent ninePatchComponent = ComponentRetriever.get(entity, NinePatchComponent.class, plugin.getAPI().getEngine());
         loadRegion(ninePatchComponent.textureRegionName);
         viewComponent.show(plugin.getAPI().getUIStage());
     }

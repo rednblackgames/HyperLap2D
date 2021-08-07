@@ -1,13 +1,12 @@
 package games.rednblack.editor.controller.commands.component;
 
-import com.badlogic.ashley.core.Entity;
-
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.physics.SensorComponent;
 import games.rednblack.editor.renderer.data.SensorDataVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 
 /**
@@ -26,11 +25,11 @@ public class UpdateSensorDataCommand extends EntityModifyRevertibleCommand {
     @Override
     public void doAction() {
         Object[] payload = getNotification().getBody();
-        Entity entity = (Entity) payload[0];
+        int entity = (int) payload[0];
         SensorDataVO vo = (SensorDataVO) payload[1];
         entityId = EntityUtils.getEntityId(entity);
 
-        SensorComponent sensorComponent = ComponentRetriever.get(entity, SensorComponent.class);
+        SensorComponent sensorComponent = SandboxComponentRetriever.get(entity, SensorComponent.class);
 
         backup = new SensorDataVO();
         backup.loadFromComponent(sensorComponent);
@@ -52,8 +51,8 @@ public class UpdateSensorDataCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        Entity entity = EntityUtils.getByUniqueId(entityId);
-        SensorComponent sensorComponent = ComponentRetriever.get(entity, SensorComponent.class);
+        int entity = EntityUtils.getByUniqueId(entityId);
+        SensorComponent sensorComponent = SandboxComponentRetriever.get(entity, SensorComponent.class);
 
         sensorComponent.bottom = backup.bottom;
         sensorComponent.left = backup.left;
@@ -70,7 +69,7 @@ public class UpdateSensorDataCommand extends EntityModifyRevertibleCommand {
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
-    public static Object payload(Entity entity, SensorDataVO vo) {
+    public static Object payload(int entity, SensorDataVO vo) {
         Object[] payload = new Object[2];
         payload[0] = entity;
         payload[1] = vo;

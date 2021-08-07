@@ -18,17 +18,16 @@
 
 package games.rednblack.editor.view.ui.properties;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.editor.view.stage.Sandbox;
 import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by azakhary on 4/15/2015.
  */
-public abstract class UIItemPropertiesMediator<T extends Entity, V extends UIAbstractProperties> extends UIAbstractPropertiesMediator<T, V> {
+public abstract class UIItemPropertiesMediator<V extends UIAbstractProperties> extends UIAbstractEntityPropertiesMediator<V> {
 
     public UIItemPropertiesMediator(String mediatorName, V viewComponent) {
         super(mediatorName, viewComponent);
@@ -48,7 +47,7 @@ public abstract class UIItemPropertiesMediator<T extends Entity, V extends UIAbs
 
         switch (notification.getName()) {
             case MsgAPI.ITEM_DATA_UPDATED:
-                if(observableReference == null) return;
+                if(observableReference == -1) return;
                 onItemDataUpdate();
                 break;
             default:
@@ -61,9 +60,8 @@ public abstract class UIItemPropertiesMediator<T extends Entity, V extends UIAbs
     }
 
     private boolean validReference() {
-        return observableReference != null
-                && !observableReference.isScheduledForRemoval()
-                && !observableReference.isRemoving()
-                && ComponentRetriever.get(observableReference, MainItemComponent.class) != null;
+        return observableReference != -1
+                && sandbox.getEngine().getEntityManager().isActive(observableReference)
+                && SandboxComponentRetriever.get(observableReference, MainItemComponent.class) != null;
     }
 }

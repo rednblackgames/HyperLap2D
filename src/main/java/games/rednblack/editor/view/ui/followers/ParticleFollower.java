@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.ui.followers;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -32,7 +31,7 @@ public class ParticleFollower extends BasicFollower {
 
     private Image icon;
 
-    public ParticleFollower(Entity entity) {
+    public ParticleFollower(int entity) {
         super(entity);
         setTransform(false);
     }

@@ -1,7 +1,5 @@
 package games.rednblack.editor.plugin.tiled.manager;
 
-import com.badlogic.ashley.core.Entity;
-
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
@@ -27,8 +25,8 @@ public class AutoGridTileManager {
     }
 
     public void autoFill() {
-    	for (Entity entity : tiledPlugin.getAPI().getProjectEntities()) {
-    		MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+    	for (int entity : tiledPlugin.getAPI().getProjectEntities()) {
+    		MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class, tiledPlugin.getAPI().getEngine());
     		if (!mainItemComponent.tags.contains(TiledPlugin.AUTO_TILE_TAG)) {
     			continue;
     		}
@@ -37,43 +35,43 @@ public class AutoGridTileManager {
 
     		int c = 0;
     		int val = 0;
-    		Entity ul = tiledPlugin.getPluginEntityWithParams(row + 1, col - 1);
-    		if (ul != null) {
+    		int ul = tiledPlugin.getPluginEntityWithParams(row + 1, col - 1);
+    		if (ul != -1) {
     			c++;
     			val += UL;
     		}
-    		Entity u = tiledPlugin.getPluginEntityWithParams(row + 1, col);
-    		if (u != null) {
+    		int u = tiledPlugin.getPluginEntityWithParams(row + 1, col);
+    		if (u != -1) {
     			c++;
     			val += U;
     		}
-    		Entity ur = tiledPlugin.getPluginEntityWithParams(row + 1, col + 1);
-    		if (ur != null) {
+    		int ur = tiledPlugin.getPluginEntityWithParams(row + 1, col + 1);
+    		if (ur != -1) {
     			c++;
     			val += UR;
     		}
-    		Entity r = tiledPlugin.getPluginEntityWithParams(row, col + 1);
-    		if (r != null) {
+    		int r = tiledPlugin.getPluginEntityWithParams(row, col + 1);
+    		if (r != -1) {
     			c++;
     			val += R;
     		}
-    		Entity dr = tiledPlugin.getPluginEntityWithParams(row - 1, col + 1);
-    		if (dr != null) {
+    		int dr = tiledPlugin.getPluginEntityWithParams(row - 1, col + 1);
+    		if (dr != -1) {
     			c++;
     			val += DR;
     		}
-    		Entity d = tiledPlugin.getPluginEntityWithParams(row - 1, col);
-    		if (d != null) {
+    		int d = tiledPlugin.getPluginEntityWithParams(row - 1, col);
+    		if (d != -1) {
     			c++;
     			val += D;
     		}
-    		Entity dl = tiledPlugin.getPluginEntityWithParams(row - 1, col - 1);
-    		if (dl != null) {
+    		int dl = tiledPlugin.getPluginEntityWithParams(row - 1, col - 1);
+    		if (dl != -1) {
     			c++;
     			val += DL;
     		}
-    		Entity l = tiledPlugin.getPluginEntityWithParams(row, col - 1);
-    		if (l != null) {
+    		int l = tiledPlugin.getPluginEntityWithParams(row, col - 1);
+    		if (l != -1) {
     			c++;
     			val += L;
     		}

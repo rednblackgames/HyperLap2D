@@ -26,8 +26,6 @@ import games.rednblack.editor.renderer.data.TexturePackVO;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
@@ -118,7 +116,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
 
                 targetGrid = initTarget(targetGrid, viewComponent.getDropTable(), false);
                 targetAutoGrid = initTarget(targetAutoGrid, viewComponent.getAutoGridDropTable(), true);
-                Engine engine = tiledPlugin.getAPI().getEngine();
+                com.artemis.World engine = tiledPlugin.getAPI().getEngine();
                 viewComponent.setEngine(engine);
                 viewComponent.setFixedPosition();
                 break;
@@ -289,8 +287,8 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 tiledPlugin.saveDataManager.save();
                 break;
             case TiledPlugin.ACTION_SET_GRID_SIZE_FROM_ITEM:
-                Entity observable = notification.getBody();
-                DimensionsComponent dimensionsComponent = ComponentRetriever.get(observable, DimensionsComponent.class);
+                int observable = notification.getBody();
+                DimensionsComponent dimensionsComponent = ComponentRetriever.get(observable, DimensionsComponent.class, tiledPlugin.getAPI().getEngine());
                 tiledPlugin.dataToSave.setGrid(dimensionsComponent.width, dimensionsComponent.height);
                 tiledPlugin.facade.sendNotification(TiledPlugin.GRID_CHANGED);
                 break;

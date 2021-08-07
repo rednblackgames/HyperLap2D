@@ -1,8 +1,8 @@
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
@@ -20,19 +20,19 @@ public class ItemChildrenTransformCommand extends EntityModifyRevertibleCommand 
 
     private HashMap<Integer, Vector2> prevPosMap = new HashMap<>();
     private HashMap<Integer, PositionSize> parentPositionAndSizeMap = new HashMap<>();
-    private Entity entity;
+    private int entity;
 
     private Vector2 prevLo;
 
     private void doActionOnParent() {
         Array<Object[]> objects = getNotification().getBody();
         Object[] itemData = objects.get(0);
-        Entity entity = (Entity) itemData[0];
+        int entity = (int) itemData[0];
         Vector2 newPos = (Vector2) itemData[1];
         Vector2 newSize = (Vector2) itemData[2];
 
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
-        DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
+        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+        DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
         Vector2 prevLocation = new Vector2(transformComponent.x, transformComponent.y);
         Vector2 prevSize = new Vector2(dimensionsComponent.width, dimensionsComponent.height);
         PositionSize positionSize = new PositionSize(prevLocation, prevSize);
@@ -56,8 +56,8 @@ public class ItemChildrenTransformCommand extends EntityModifyRevertibleCommand 
         Vector2 prevLocation = positionSize.position;
         Vector2 prevSize = positionSize.size;
         entity = EntityUtils.getByUniqueId(entityUniqueId);
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
-        DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
+        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+        DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
         setState(transformComponent, prevLocation, dimensionsComponent, prevSize);
 //        transformComponent.x = prevLocation.x;
 //        transformComponent.y = prevLocation.y;
@@ -77,9 +77,9 @@ public class ItemChildrenTransformCommand extends EntityModifyRevertibleCommand 
         Array<Object[]> payload = notification.getBody();
         for (int i = 1; i < payload.size; i++) {
             Object[] objectData = payload.get(i);
-            Entity entity = (Entity) objectData[0];
+            int entity = (int) objectData[0];
             Vector2 newPos = (Vector2) objectData[1];
-            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+            TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
             Vector2 prevPos = new Vector2(transformComponent.x, transformComponent.y);
             prevPosMap.put(EntityUtils.getEntityId(entity), prevPos);
 //            EntityUtils.setPosition(entity, newPos);
@@ -95,8 +95,8 @@ public class ItemChildrenTransformCommand extends EntityModifyRevertibleCommand 
         for (Map.Entry<Integer, Vector2> entry : prevPosMap.entrySet()) {
             Integer entityUniqueId = entry.getKey();
             Vector2 oldPosition = entry.getValue();
-            Entity entity = EntityUtils.getByUniqueId(entityUniqueId);
-            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+            int entity = EntityUtils.getByUniqueId(entityUniqueId);
+            TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
             transformComponent.x = oldPosition.x;
             transformComponent.y = oldPosition.y;
         }

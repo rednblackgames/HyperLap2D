@@ -2,7 +2,6 @@ package games.rednblack.editor.plugin.tiled.tools;
 
 import org.puremvc.java.interfaces.INotification;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -91,9 +90,9 @@ public class DrawTileTool implements Tool {
     }
 
     @Override
-    public boolean itemMouseDown(Entity entity, float x, float y) {
+    public boolean itemMouseDown(int entity, float x, float y) {
         initGridThings();
-        if (entity == null)
+        if (entity == -1)
             drawTile(x, y);
         else
             drawOnEntity(entity);
@@ -101,23 +100,23 @@ public class DrawTileTool implements Tool {
     }
 
     @Override
-    public void itemMouseUp(Entity entity, float x, float y) {
+    public void itemMouseUp(int entity, float x, float y) {
     	tiledPlugin.facade.sendNotification(TiledPlugin.AUTO_FILL_TILES);
     }
 
     @Override
-    public void itemMouseDragged(Entity entity, float x, float y) {
+    public void itemMouseDragged(int entity, float x, float y) {
         drawTile(x, y);
     }
 
     @Override
-    public void itemMouseDoubleClick(Entity entity, float x, float y) {
+    public void itemMouseDoubleClick(int entity, float x, float y) {
         if (!tiledPlugin.isOnCurrentSelectedLayer(entity)) return;
-        if (entity != null && tiledPlugin.isTile(entity)) {
+        if (entity != -1 && tiledPlugin.isTile(entity)) {
             //rotate
             TransformCommandBuilder commandBuilder = new TransformCommandBuilder();
-            commandBuilder.begin(entity);
-            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+            commandBuilder.begin(entity, tiledPlugin.getAPI().getEngine());
+            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class, tiledPlugin.getAPI().getEngine());
             if (transformComponent.scaleX > 0 && transformComponent.scaleY > 0) {
                 commandBuilder.setScale(transformComponent.scaleX * -1f, transformComponent.scaleY);
             } else if (transformComponent.scaleX < 0 && transformComponent.scaleY > 0) {
@@ -142,7 +141,7 @@ public class DrawTileTool implements Tool {
     }
 
     @Override
-    public void keyDown(Entity entity, int keycode) {
+    public void keyDown(int entity, int keycode) {
         if(keycode == Input.Keys.SHIFT_LEFT || keycode == Input.Keys.SHIFT_RIGHT) {
             tiledPlugin.getAPI().toolHotSwap(tiledPlugin.deleteTileTool);
             tiledPlugin.deleteTileTool.setHotSwapped();
@@ -150,7 +149,7 @@ public class DrawTileTool implements Tool {
     }
 
     @Override
-    public void keyUp(Entity entity, int keycode) {
+    public void keyUp(int entity, int keycode) {
 
     }
 
@@ -191,7 +190,7 @@ public class DrawTileTool implements Tool {
         currentDrawStrategy.drawTile(newX, newY, row, column);
     }
 
-    private void drawOnEntity(Entity entity) {
+    private void drawOnEntity(int entity) {
         chooseDrawStrategy();
         currentDrawStrategy.updateTile(entity);
     }

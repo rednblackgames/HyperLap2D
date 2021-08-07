@@ -1,6 +1,5 @@
 package games.rednblack.editor.controller.commands.component;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
@@ -8,6 +7,7 @@ import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponen
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationStateComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 
 /**
@@ -24,15 +24,15 @@ public class UpdateSpriteAnimationDataCommand extends EntityModifyRevertibleComm
     @Override
     public void doAction() {
         Object[] payload = getNotification().getBody();
-        Entity entity = (Entity) payload[0];
+        int entity = (int) payload[0];
         entityId = EntityUtils.getEntityId(entity);
 
         int fps = (int) payload[1];
         String animName = (String) payload[2];
         Animation.PlayMode playMode = (Animation.PlayMode) payload[3];
 
-        SpriteAnimationComponent spriteAnimationComponent = ComponentRetriever.get(entity, SpriteAnimationComponent.class);
-        SpriteAnimationStateComponent spriteAnimationStateComponent = ComponentRetriever.get(entity, SpriteAnimationStateComponent.class);
+        SpriteAnimationComponent spriteAnimationComponent = SandboxComponentRetriever.get(entity, SpriteAnimationComponent.class);
+        SpriteAnimationStateComponent spriteAnimationStateComponent = SandboxComponentRetriever.get(entity, SpriteAnimationStateComponent.class);
         previousFps = spriteAnimationComponent.fps;
         previousAnimationName = spriteAnimationComponent.currentAnimation;
         previousPlayMode = spriteAnimationComponent.playMode;
@@ -47,10 +47,10 @@ public class UpdateSpriteAnimationDataCommand extends EntityModifyRevertibleComm
 
     @Override
     public void undoAction() {
-        Entity entity = EntityUtils.getByUniqueId(entityId);
+        int entity = EntityUtils.getByUniqueId(entityId);
 
-        SpriteAnimationComponent spriteAnimationComponent = ComponentRetriever.get(entity, SpriteAnimationComponent.class);
-        SpriteAnimationStateComponent spriteAnimationStateComponent = ComponentRetriever.get(entity, SpriteAnimationStateComponent.class);
+        SpriteAnimationComponent spriteAnimationComponent = SandboxComponentRetriever.get(entity, SpriteAnimationComponent.class);
+        SpriteAnimationStateComponent spriteAnimationStateComponent = SandboxComponentRetriever.get(entity, SpriteAnimationStateComponent.class);
         spriteAnimationComponent.fps = previousFps;
         spriteAnimationComponent.currentAnimation = previousAnimationName;
         spriteAnimationComponent.playMode = previousPlayMode;
@@ -59,7 +59,7 @@ public class UpdateSpriteAnimationDataCommand extends EntityModifyRevertibleComm
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
-    public static Object payload(Entity entity, int fps, String animName, Animation.PlayMode playMode) {
+    public static Object payload(int entity, int fps, String animName, Animation.PlayMode playMode) {
         Object[] payload = new Object[4];
         payload[0] = entity;
         payload[1] = fps;

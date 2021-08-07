@@ -24,6 +24,7 @@ import games.rednblack.editor.controller.commands.UpdateSceneDataCommand;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.LightsPropertiesVO;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
+import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
 import org.apache.commons.lang3.ArrayUtils;
@@ -31,7 +32,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import com.badlogic.gdx.graphics.Color;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
 import games.rednblack.editor.renderer.data.PhysicsPropertiesVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import org.puremvc.java.interfaces.INotification;

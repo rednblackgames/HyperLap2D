@@ -1,6 +1,5 @@
 package games.rednblack.editor.plugin.tiled.tools.drawStrategy;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
@@ -18,8 +17,8 @@ public class SpriteDrawStrategy extends BasicDrawStrategy {
 
     @Override
     public void drawTile(float x, float y, int row, int column) {
-        Entity underneathTile = tiledPlugin.getPluginEntityWithParams(row, column);
-        if (underneathTile != null) {
+        int underneathTile = tiledPlugin.getPluginEntityWithParams(row, column);
+        if (underneathTile != -1) {
             updateTile(underneathTile);
             return;
         }
@@ -28,16 +27,16 @@ public class SpriteDrawStrategy extends BasicDrawStrategy {
         temp.set(x, y);
 
         if (itemFactory.createSpriteAnimation(tiledPlugin.getSelectedTileName(), temp)) {
-            Entity imageEntity = itemFactory.getCreatedEntity();
+            int imageEntity = itemFactory.getCreatedEntity();
             postProcessEntity(imageEntity, x, y, row, column);
         }
     }
 
     @Override
-    public void updateTile(Entity entity) {
+    public void updateTile(int entity) {
         if (!checkValidTile(entity)) return;
 
-        SpriteAnimationComponent spriteAnimationComponent = ComponentRetriever.get(entity, SpriteAnimationComponent.class);
+        SpriteAnimationComponent spriteAnimationComponent = ComponentRetriever.get(entity, SpriteAnimationComponent.class, tiledPlugin.getAPI().getEngine());
 
         if (!spriteAnimationComponent.animationName.equals(tiledPlugin.getSelectedTileName())) {
             Array<TextureAtlas.AtlasRegion> regions = getRegions(tiledPlugin.getSelectedTileName());

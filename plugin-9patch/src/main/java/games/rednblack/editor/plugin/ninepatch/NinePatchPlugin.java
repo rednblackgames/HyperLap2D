@@ -1,6 +1,5 @@
 package games.rednblack.editor.plugin.ninepatch;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
@@ -23,7 +22,7 @@ public class NinePatchPlugin extends H2DPluginAdapter {
 
     private MainPanelMediator performancePanelMediator;
 
-    public Entity currEditingEntity;
+    public int currEditingEntity;
 
     public NinePatchPlugin() {
         super(CLASS_NAME);
@@ -38,10 +37,10 @@ public class NinePatchPlugin extends H2DPluginAdapter {
     }
 
     @Override
-    public void onDropDownOpen(Set<Entity> selectedEntities, Array<String> actionsSet) {
+    public void onDropDownOpen(Set<Integer> selectedEntities, Array<String> actionsSet) {
         if(selectedEntities.size() == 1) {
-            Entity entity = selectedEntities.stream().findFirst().get();
-            MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+            int entity = selectedEntities.stream().findFirst().get();
+            MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class, getAPI().getEngine());
 
             if(mainItemComponent.entityType == EntityFactory.NINE_PATCH) {
                 // it's our guy

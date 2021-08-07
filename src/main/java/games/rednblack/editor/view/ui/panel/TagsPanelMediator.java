@@ -1,6 +1,6 @@
 package games.rednblack.editor.view.ui.panel;
 
-import com.badlogic.ashley.core.Entity;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.menu.WindowMenu;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -24,7 +24,7 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
     private static final String TAG = TagsPanelMediator.class.getCanonicalName();
     private static final String NAME = TAG;
 
-    private final Set<Entity> observables = new HashSet<>();
+    private final Set<Integer> observables = new HashSet<>();
 
     public TagsPanelMediator() {
         super(NAME, new TagsPanel());
@@ -62,7 +62,7 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
                 viewComponent.show(uiStage);
                 break;
             case MsgAPI.ITEM_SELECTION_CHANGED:
-                Set<Entity> selection = notification.getBody();
+                Set<Integer> selection = notification.getBody();
                 setObservable(selection);
                 break;
             case MsgAPI.EMPTY_SPACE_CLICKED:
@@ -71,23 +71,23 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
             case TagsPanel.ITEM_REMOVED:
                 viewComponent.updateView();
                 String tagToRemove = notification.getBody();
-                for (Entity observable : observables) {
-                    MainItemComponent mainItemComponent = observable.getComponent(MainItemComponent.class);
+                for (int observable : observables) {
+                    MainItemComponent mainItemComponent = SandboxComponentRetriever.get(observable, MainItemComponent.class);
                     mainItemComponent.tags.remove(tagToRemove);
                 }
                 break;
             case TagsPanel.ITEM_ADD:
                 viewComponent.updateView();
                 String tagToAdd = notification.getBody();
-                for (Entity observable : observables) {
-                    MainItemComponent mainItemComponent = observable.getComponent(MainItemComponent.class);
+                for (int observable : observables) {
+                    MainItemComponent mainItemComponent = SandboxComponentRetriever.get(observable, MainItemComponent.class);
                     mainItemComponent.tags.add(tagToAdd);
                 }
                 break;
         }
     }
 
-    private void setObservable(Set<Entity> items) {
+    private void setObservable(Set<Integer> items) {
         observables.clear();
         if (items != null)
             observables.addAll(items);
@@ -98,10 +98,10 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
         if(observables.size() == 0) {
             viewComponent.setEmpty();
         } else {
-            Iterator<Entity> iterator = observables.iterator();
+            Iterator<Integer> iterator = observables.iterator();
 
-            Entity entity = iterator.next();
-            MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+            int entity = iterator.next();
+            MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
             if (mainItemComponent == null)
                 return;
             Set<String> common = new LinkedHashSet<>();
@@ -112,7 +112,7 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
 
             while (iterator.hasNext()) {
                 entity = iterator.next();
-                mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+                mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
                 toRetain.clear();
                 for (String tag : mainItemComponent.tags)
                     toRetain.add(tag);

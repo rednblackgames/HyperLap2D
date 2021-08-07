@@ -21,7 +21,6 @@ package games.rednblack.editor.plugin.tiled;
 import java.io.File;
 import java.util.Set;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -156,7 +155,7 @@ public class TiledPlugin extends H2DPluginAdapter {
     }
 
     @Override
-    public void onDropDownOpen(Set<Entity> selectedEntities, Array<String> actionsSet) {
+    public void onDropDownOpen(Set<Integer> selectedEntities, Array<String> actionsSet) {
         if(selectedEntities.size() == 1) {
             actionsSet.add(ACTION_SET_GRID_SIZE_FROM_ITEM);
         }
@@ -172,29 +171,29 @@ public class TiledPlugin extends H2DPluginAdapter {
         deleteTileTool = new DeleteTileTool(this);
     }
 
-    public Entity getPluginEntityWithParams(int row, int column) {
-        for (Entity entity : pluginAPI.getProjectEntities()) {
+    public int getPluginEntityWithParams(int row, int column) {
+        for (int entity : pluginAPI.getProjectEntities()) {
             if(!isTile(entity)) continue;
             boolean isEntityVisible = pluginAPI.isEntityVisible(entity);
             if (!isEntityVisible || !isOnCurrentSelectedLayer(entity)) continue;
 
-            currentEntityMainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+            currentEntityMainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class, getAPI().getEngine());
             currentEntityCustomVariables = currentEntityMainItemComponent.customVariables;
             if (currentEntityCustomVariables.getIntegerVariable(ROW) == row
                     && currentEntityCustomVariables.getIntegerVariable(COLUMN) == column) {
                 return entity;
             }
         }
-        return null;
+        return -1;
     }
 
-    public Entity getPluginEntityWithCoords(float x, float y) {
-        for (Entity entity : pluginAPI.getProjectEntities()) {
+    public int getPluginEntityWithCoords(float x, float y) {
+        for (int entity : pluginAPI.getProjectEntities()) {
             if (!isTile(entity)) continue;
             boolean isEntityVisible = pluginAPI.isEntityVisible(entity);
             if (!isEntityVisible || !isOnCurrentSelectedLayer(entity)) continue;
 
-            currentEntityTransformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+            currentEntityTransformComponent = ComponentRetriever.get(entity, TransformComponent.class, getAPI().getEngine());
             Rectangle tmp = new Rectangle(
                     currentEntityTransformComponent.x,
                     currentEntityTransformComponent.y,
@@ -205,21 +204,21 @@ public class TiledPlugin extends H2DPluginAdapter {
                 return entity;
             }
         }
-        return null;
+        return -1;
     }
 
     public float getPixelToWorld() {
         return pluginAPI.getSceneLoader().getRm().getProjectVO().pixelToWorld;
     }
 
-    public boolean isTile(Entity entity) {
-        if (entity == null)
+    public boolean isTile(int entity) {
+        if (entity == -1)
             return false;
-        return ComponentRetriever.get(entity, MainItemComponent.class).tags.contains(TILE_TAG);
+        return ComponentRetriever.get(entity, MainItemComponent.class, getAPI().getEngine()).tags.contains(TILE_TAG);
     }
 
-    public boolean isOnCurrentSelectedLayer(Entity entity) {
-        ZIndexComponent entityZComponent = ComponentRetriever.get(entity, ZIndexComponent.class);
+    public boolean isOnCurrentSelectedLayer(int entity) {
+        ZIndexComponent entityZComponent = ComponentRetriever.get(entity, ZIndexComponent.class, getAPI().getEngine());
         return entityZComponent.layerName.equals(pluginAPI.getCurrentSelectedLayerName());
     }
 
@@ -274,8 +273,8 @@ public class TiledPlugin extends H2DPluginAdapter {
     public void applySelectedTileGridOffset() {
         pluginAPI.getProjectEntities().forEach(entity -> {
             if (!(isTile(entity))) return;
-            TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
-            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+            TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class, getAPI().getEngine());
+            TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class, getAPI().getEngine());
             if (selectedTileVO.regionName.equals(textureRegionComponent.regionName)) {
                 transformComponent.x -= selectedTileVO.gridOffset.x;
                 transformComponent.y -= selectedTileVO.gridOffset.y;

@@ -18,8 +18,6 @@
 
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.h2d.common.MsgAPI;
@@ -51,9 +49,10 @@ public class CutItemsCommand extends EntityModifyRevertibleCommand {
     public void undoAction() {
         Json json =  new Json();
         CompositeVO compositeVO = json.fromJson(CompositeVO.class, backup);
-        Set<Entity> newEntitiesList = PasteItemsCommand.createEntitiesFromVO(compositeVO);
+        Set<Integer> newEntitiesList = PasteItemsCommand.createEntitiesFromVO(compositeVO);
 
-        for (Entity entity : newEntitiesList) {
+        sandbox.getEngine().process();
+        for (int entity : newEntitiesList) {
             HyperLap2DFacade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
         }
 

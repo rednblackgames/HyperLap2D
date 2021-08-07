@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui.followers;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 
@@ -9,7 +8,7 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
  */
 public class ImageFollower extends NormalSelectionFollower {
 
-    public ImageFollower(Entity entity) {
+    public ImageFollower(int entity) {
         super(entity);
     }
 

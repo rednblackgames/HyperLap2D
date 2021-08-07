@@ -1,7 +1,5 @@
 package games.rednblack.editor.plugin.tiled.tools.drawStrategy;
 
-import com.badlogic.ashley.core.Entity;
-
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
@@ -18,8 +16,8 @@ public class ImageDrawStrategy extends BasicDrawStrategy {
 
     @Override
     public void drawTile(float x, float y, int row, int column) {
-        Entity underneathTile = tiledPlugin.getPluginEntityWithParams(row, column);
-        if (underneathTile != null) {
+        int underneathTile = tiledPlugin.getPluginEntityWithParams(row, column);
+        if (underneathTile != -1) {
             updateTile(underneathTile);
             return;
         }
@@ -27,16 +25,16 @@ public class ImageDrawStrategy extends BasicDrawStrategy {
         IFactory itemFactory =  tiledPlugin.getAPI().getItemFactory();
         temp.set(x, y);
         if (itemFactory.createSimpleImage(tiledPlugin.getSelectedTileName(), temp)) {
-            Entity imageEntity = itemFactory.getCreatedEntity();
+            int imageEntity = itemFactory.getCreatedEntity();
             postProcessEntity(imageEntity, x, y, row, column);
         }
     }
 
     @Override
-    public void updateTile(Entity entity) {
+    public void updateTile(int entity) {
         if (!checkValidTile(entity)) return;
 
-        TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
+        TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class, tiledPlugin.getAPI().getEngine());
         if (textureRegionComponent != null && textureRegionComponent.regionName != null) {
             // there is already other tile under this one
             if (!textureRegionComponent.regionName.equals(tiledPlugin.getSelectedTileName())) {
@@ -46,7 +44,7 @@ public class ImageDrawStrategy extends BasicDrawStrategy {
                 replaceRegionCommandBuilder.setRegionName(region);
                 replaceRegionCommandBuilder.execute(tiledPlugin.facade);
 
-                MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+                MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class, tiledPlugin.getAPI().getEngine());
                 mainItemComponent.tags.remove(TiledPlugin.AUTO_TILE_TAG);
                 mainItemComponent.removeCustomVars(TiledPlugin.REGION);
             }

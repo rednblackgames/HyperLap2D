@@ -18,10 +18,10 @@
 
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Gdx;
 import games.rednblack.editor.controller.commands.component.UpdateCompositeDataCommand;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.CompositeTransformComponent;
@@ -35,7 +35,7 @@ import java.util.Set;
 /**
  * Created by azakhary on 4/16/2015.
  */
-public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<Entity, UICompositeItemProperties> {
+public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<UICompositeItemProperties> {
 
     private static final String TAG = UICompositeItemPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
@@ -45,16 +45,17 @@ public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<
     }
 
     @Override
-    protected void translateObservableDataToView(Entity item) {
-        viewComponent.setAutomaticResize(item.getComponent(CompositeTransformComponent.class).automaticResize);
-        viewComponent.setScissorsEnabled(item.getComponent(CompositeTransformComponent.class).scissorsEnabled);
-        viewComponent.setRenderToFBOEnabled(item.getComponent(CompositeTransformComponent.class).renderToFBO);
+    protected void translateObservableDataToView(int item) {
+        CompositeTransformComponent transformComponent = SandboxComponentRetriever.get(item, CompositeTransformComponent.class);
+        viewComponent.setAutomaticResize(transformComponent.automaticResize);
+        viewComponent.setScissorsEnabled(transformComponent.scissorsEnabled);
+        viewComponent.setRenderToFBOEnabled(transformComponent.renderToFBO);
     }
 
     @Override
     protected void translateViewToItemData() {
         CompositeItemVO payloadVo = new CompositeItemVO();
-        payloadVo.loadFromEntity(observableReference);
+        payloadVo.loadFromEntity(observableReference, sandbox.getEngine());
 
         payloadVo.automaticResize = viewComponent.isAutomaticResizeIsEnabled();
         payloadVo.scissorsEnabled = viewComponent.isScissorsEnabled();
@@ -65,10 +66,10 @@ public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<
 
         CompositeSystem compositeSystem = Sandbox.getInstance().getEngine().getSystem(CompositeSystem.class);
         if (compositeSystem != null) {
-            compositeSystem.processEntity(observableReference, Gdx.graphics.getDeltaTime());
+            compositeSystem.process(observableReference);
         }
 
-        Set<Entity> entityHashSet = new HashSet<>();
+        Set<Integer> entityHashSet = new HashSet<>();
         entityHashSet.add(observableReference);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, entityHashSet);
     }

@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.stage.input;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -27,8 +26,7 @@ public class EntityClickListener implements InputListener {
 	private int tapCount;
 	private long lastTapTime;
 
-	/** Create a listener where {@link #clicked(float, float)} is only called for left clicks.
-	 * @see #ClickListener(int) */
+	/** Create a listener where  is only called for left clicks.   */
 	public EntityClickListener () {
 	}
 
@@ -38,7 +36,7 @@ public class EntityClickListener implements InputListener {
 	}
 
 	@Override
-	public boolean touchDown (Entity entity, float x, float y, int pointer, int button) {
+	public boolean touchDown (int entity, float x, float y, int pointer, int button) {
 		if (pressed) return false;
 		if (pointer == 0 && this.button != -1 && button != this.button) return false;
 		pressed = true;
@@ -51,7 +49,7 @@ public class EntityClickListener implements InputListener {
 	}
 
 	@Override
-	public void touchDragged (Entity entity, float x, float y, int pointer) {
+	public void touchDragged (int entity, float x, float y, int pointer) {
 		if (pointer != pressedPointer || cancelled) return;
 		pressed = isOver(entity, x, y);
 		if (pressed && pointer == 0 && button != -1 && !Gdx.input.isButtonPressed(button)) pressed = false;
@@ -62,7 +60,7 @@ public class EntityClickListener implements InputListener {
 	}
 
 	@Override
-	public void touchUp (Entity entity, float x, float y, int pointer, int button) {
+	public void touchUp (int entity, float x, float y, int pointer, int button) {
 		if (pointer == pressedPointer) {
 			if (!cancelled) {
 				boolean touchUpOver = isOver(entity, x, y);
@@ -83,11 +81,11 @@ public class EntityClickListener implements InputListener {
 		}
 	}
 
-	public void enter (Entity entity, float x, float y, int pointer, Actor fromActor) {
+	public void enter (int entity, float x, float y, int pointer, Actor fromActor) {
 		if (pointer == -1 && !cancelled) over = true;
 	}
 
-	public void exit (Entity entity, float x, float y, int pointer, Actor toActor) {
+	public void exit (int entity, float x, float y, int pointer, Actor toActor) {
 		if (pointer == -1 && !cancelled) over = false;
 	}
 
@@ -98,11 +96,11 @@ public class EntityClickListener implements InputListener {
 		pressed = false;
 	}
 
-	public void clicked (Entity entity, float x, float y) {
+	public void clicked (int entity, float x, float y) {
 	}
 
 	/** Returns true if the specified position is over the specified actor or within the tap square. */
-	public boolean isOver (Entity entity, float x, float y) {
+	public boolean isOver (int entity, float x, float y) {
 		//TODO this part
 //		Actor hit = actor.hit(x, y, true);
 //		if (hit == null || !hit.isDescendantOf(actor)) return inTapSquare(x, y);
@@ -192,31 +190,31 @@ public class EntityClickListener implements InputListener {
 	}
 
 	@Override
-	public boolean keyDown(Entity entity, int keycode) {
+	public boolean keyDown(int entity, int keycode) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean keyUp(Entity entity, int keycode) {
+	public boolean keyUp(int entity, int keycode) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean keyTyped(Entity entity, char character) {
+	public boolean keyTyped(int entity, char character) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	@Override
-	public boolean mouseMoved(Entity entity, float screenX, float screenY) {
+	public boolean mouseMoved(int entity, float screenX, float screenY) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean scrolled(Entity entity, float amountX, float amountY) {
+	public boolean scrolled(int entity, float amountX, float amountY) {
 		// TODO Auto-generated method stub
 		return false;
 	}

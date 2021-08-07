@@ -18,8 +18,6 @@
 
 package games.rednblack.editor.view.stage;
 
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.graphics.Color;
@@ -34,11 +32,13 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.util.ToastManager;
 import games.rednblack.editor.proxy.*;
+import games.rednblack.editor.renderer.SceneConfiguration;
 import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
 import games.rednblack.editor.renderer.systems.LightSystem;
 import games.rednblack.editor.renderer.systems.ParticleSystem;
 import games.rednblack.editor.system.ParticleContinuousSystem;
 import games.rednblack.editor.system.TalosContinuousSystem;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.tools.PanTool;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extension.talos.TalosItemType;
@@ -81,7 +81,7 @@ public class Sandbox {
 
     private final HashMap<String, Object> localClipboard = new HashMap<>();
 
-    private Entity currentViewingEntity;
+    private int currentViewingEntity = -1;
 
     public String currentLoadedSceneFileName;
     private UIStage uiStage;
@@ -129,24 +129,30 @@ public class Sandbox {
         UIStageMediator uiStageMediator = facade.retrieveMediator(UIStageMediator.NAME);
         uiStage = uiStageMediator.getViewComponent();
 
-        sceneLoader = new SceneLoader(resourceManager);
+        SceneConfiguration config = new SceneConfiguration();
+        config.setResourceRetriever(resourceManager);
         // adding spine as external component
-        sceneLoader.injectExternalItemType(new SpineItemType());
-        sceneLoader.injectExternalItemType(new TalosItemType());
+        config.addExternalItemType(new SpineItemType());
+        config.addExternalItemType(new TalosItemType());
 
         //Remove Physics System and add Adjusting System for box2d objects to follow items and stop world tick
-        sceneLoader.getEngine().removeSystem(sceneLoader.getEngine().getSystem(PhysicsSystem.class));
-        sceneLoader.getEngine().removeSystem(sceneLoader.getEngine().getSystem(LightSystem.class));
+        config.removeSystem(PhysicsSystem.class);
+        config.removeSystem(LightSystem.class);
+        PhysicsAdjustSystem physicsAdjustSystem = new PhysicsAdjustSystem();
+        config.addSystem(physicsAdjustSystem);
         LightSystem lightSystem = new LightSystem();
-        lightSystem.setRayHandler(sceneLoader.getRayHandler());
-        sceneLoader.getEngine().addSystem(new PhysicsAdjustSystem(sceneLoader.getWorld()));
-        sceneLoader.getEngine().addSystem(lightSystem);
+        config.addSystem(lightSystem);
 
         //Remove particle system and use a continuous system for preview purpose
-        sceneLoader.getEngine().removeSystem(sceneLoader.getEngine().getSystem(ParticleSystem.class));
-        sceneLoader.getEngine().addSystem(new ParticleContinuousSystem());
-        sceneLoader.getEngine().removeSystem(sceneLoader.getEngine().getSystem(TalosSystem.class));
-        sceneLoader.getEngine().addSystem(new TalosContinuousSystem());
+        config.removeSystem(ParticleSystem.class);
+        config.addSystem(new ParticleContinuousSystem());
+        config.removeSystem(TalosSystem.class);
+        config.addSystem(new TalosContinuousSystem());
+
+        sceneLoader = new SceneLoader(config);
+
+        physicsAdjustSystem.setBox2DWorld(sceneLoader.getWorld());
+        lightSystem.setRayHandler(sceneLoader.getRayHandler());
 
         sceneControl = new SceneControlMediator(sceneLoader);
         itemControl = new ItemControlMediator(sceneControl);
@@ -181,7 +187,7 @@ public class Sandbox {
         return sceneControl;
     }
 
-    public PooledEngine getEngine() {
+    public com.artemis.World getEngine() {
         return sceneLoader.getEngine();
     }
 
@@ -300,7 +306,7 @@ public class Sandbox {
      */
     public SceneVO sceneVoFromItems() {
         CompositeVO newVo = new CompositeVO();
-        newVo.loadFromEntity(getRootEntity());
+        newVo.loadFromEntity(getRootEntity(), getEngine());
         newVo.sStickyNotes.putAll(sceneControl.getCurrentSceneVO().composite.sStickyNotes);
         sceneControl.getCurrentSceneVO().composite = newVo;
 
@@ -309,10 +315,6 @@ public class Sandbox {
 
     public ItemSelector getSelector() {
         return selector;
-    }
-
-    public Entity getCurrentScene() {
-        return sceneControl.getCurrentScene();
     }
 
     public void prepareSelectionRectangle(float x, float y) {
@@ -369,12 +371,12 @@ public class Sandbox {
         facade.sendNotification(MsgAPI.LOCK_LINES_CHANGED, lockLines);
     }
 
-    public Entity getRootEntity() {
+    public int getRootEntity() {
         return sceneControl.getRootEntity();
     }
 
     public boolean isViewingRootEntity() {
-        return currentViewingEntity.equals(getRootEntity());
+        return currentViewingEntity == getRootEntity();
     }
 
     public void overrideAmbientLightInComposite() {
@@ -410,17 +412,17 @@ public class Sandbox {
         return (OrthographicCamera) getViewport().getCamera();
     }
 
-    public Entity getCurrentViewingEntity() {
+    public int getCurrentViewingEntity() {
         return currentViewingEntity;
     }
 
-    public void setCurrentViewingEntity(Entity entity) {
+    public void setCurrentViewingEntity(int entity) {
         currentViewingEntity = entity;
     }
 
     public ViewPortComponent getViewportComponent() {
-        if (getCurrentViewingEntity() == null) return null;
-        return ComponentRetriever.get(getCurrentViewingEntity(), ViewPortComponent.class);
+        if (getCurrentViewingEntity() == -1) return null;
+        return SandboxComponentRetriever.get(getCurrentViewingEntity(), ViewPortComponent.class);
     }
 
     public Viewport getViewport() {

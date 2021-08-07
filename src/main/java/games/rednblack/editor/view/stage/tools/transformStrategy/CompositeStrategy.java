@@ -1,12 +1,11 @@
 package games.rednblack.editor.view.stage.tools.transformStrategy;
 
-import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.panels.UIBasicItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -27,7 +26,6 @@ import java.util.*;
  */
 public class CompositeStrategy extends AbstractTransformStrategy {
 
-    private ComponentMapper<NodeComponent> nodeMapper = ComponentMapper.getFor(NodeComponent.class);
     private HashMap<Integer, Vector2> childrenInitialPositions = new HashMap<>();
     private HashMap<Integer, Vector2> childrenFinalPositions = new HashMap<>();
     private final Array<Object[]> payloads = new Array<>();
@@ -43,13 +41,13 @@ public class CompositeStrategy extends AbstractTransformStrategy {
 
     private final Facade facade = HyperLap2DFacade.getInstance();
 
-    public void getInitialPositions(Entity entity) {
+    public void getInitialPositions(int entity) {
         getParentState(entity, parentInitialPosition, parentInitialSize);
         childrenInitialPositions.clear();
         getChildrenPositions(entity, childrenInitialPositions);
     }
 
-    public void swapItemFinalAndInitialStates(Entity entity) {
+    public void swapItemFinalAndInitialStates(int entity) {
         childrenFinalPositions.clear();
         getChildrenPositions(entity, childrenFinalPositions);
         getParentState(entity, parentFinalPosition, parentFinalSize);
@@ -60,7 +58,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
         sendResizePositionNotification(entity);
     }
 
-    private void sendResizePositionNotification(Entity entity) {
+    private void sendResizePositionNotification(int entity) {
         payloads.clear();
         payloads.add(parentEntity(entity));
         for (Map.Entry<Integer, Vector2> entrySet : childrenFinalPositions.entrySet()) {
@@ -73,17 +71,17 @@ public class CompositeStrategy extends AbstractTransformStrategy {
             HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_ITEM_AND_CHILDREN_TO, payloads);
     }
 
-    private void setParentState(Entity entity, Vector2 position, Vector2 size) {
+    private void setParentState(int entity, Vector2 position, Vector2 size) {
         EntityUtils.setPosition(entity, position);
         EntityUtils.setSize(entity, size);
     }
 
-    private void getParentState(Entity entity, Vector2 position, Vector2 size) {
+    private void getParentState(int entity, Vector2 position, Vector2 size) {
         EntityUtils.getPosition(entity, position);
         EntityUtils.getSize(entity, size);
     }
 
-    private Object[] parentEntity(Entity entity) {
+    private Object[] parentEntity(int entity) {
         Object[] obj = new Object[3];
         obj[0] = entity;
         obj[1] = new Vector2(parentFinalPosition);
@@ -91,11 +89,11 @@ public class CompositeStrategy extends AbstractTransformStrategy {
         return obj;
     }
 
-    private void getChildrenPositions(Entity parentEntity, HashMap<Integer, Vector2> entityPos) {
-        NodeComponent nodeComponent = nodeMapper.get(parentEntity);
+    private void getChildrenPositions(int parentEntity, HashMap<Integer, Vector2> entityPos) {
+        NodeComponent nodeComponent = SandboxComponentRetriever.get(parentEntity, NodeComponent.class);
         if (nodeComponent != null) {
-            for (Entity entity : nodeComponent.children) {
-                TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+            for (int entity : nodeComponent.children) {
+                TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
                 Vector2 currentEntityPos = new Vector2(transformComponent.x, transformComponent.y);
                 entityPos.put(EntityUtils.getEntityId(entity), currentEntityPos);
             }
@@ -106,15 +104,15 @@ public class CompositeStrategy extends AbstractTransformStrategy {
         for (Map.Entry<Integer, Vector2> entrySet : posMap.entrySet()) {
             Integer id = entrySet.getKey();
             Vector2 position = entrySet.getValue();
-            Entity entity = EntityUtils.getByUniqueId(id);
+            int entity = EntityUtils.getByUniqueId(id);
             EntityUtils.setPosition(entity, position);
         }
     }
 
     @Override
-    public void calculate(float mouseDx, float mouseDy, int anchor, Entity entity, TransformCommandBuilder transformCommandBuilder, Vector2 mousePointStage, float lastTransformAngle, float lastEntityAngle) {
-        CompositeTransformComponent component = entity.getComponent(CompositeTransformComponent.class);
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+    public void calculate(float mouseDx, float mouseDy, int anchor, int entity, TransformCommandBuilder transformCommandBuilder, Vector2 mousePointStage, float lastTransformAngle, float lastEntityAngle) {
+        CompositeTransformComponent component = SandboxComponentRetriever.get(entity, CompositeTransformComponent.class);
+        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
 
         float[] horizontal = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation, tmp1);
         float[] vertical = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation + 90, tmp2);
@@ -122,7 +120,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
         float deltaH = vertical[0] / transformComponent.scaleY;
 
         if (!component.automaticResize) {
-            DimensionsComponent dimensionsComponent = ComponentRetriever.get(entity, DimensionsComponent.class);
+            DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
 
             float newWidth = dimensionsComponent.width;
             float newHeight = dimensionsComponent.height;
@@ -246,11 +244,10 @@ public class CompositeStrategy extends AbstractTransformStrategy {
                 || (mediator != null && mediator.isXYScaleLinked());
     }
 
-    private void move(Entity node, float x, float y) {
-        ComponentMapper<TransformComponent> transMapper = ComponentMapper.getFor(TransformComponent.class);
-        SnapshotArray<Entity> nodeEntity = node.getComponent(NodeComponent.class).children;
-        for (Entity child : nodeEntity) {
-            TransformComponent transformComponent = transMapper.get(child);
+    private void move(int node, float x, float y) {
+        SnapshotArray<Integer> nodeEntity = SandboxComponentRetriever.get(node, NodeComponent.class).children;
+        for (int child : nodeEntity) {
+            TransformComponent transformComponent = SandboxComponentRetriever.get(child, TransformComponent.class);
             transformComponent.x += x;
             transformComponent.y += y;
         }

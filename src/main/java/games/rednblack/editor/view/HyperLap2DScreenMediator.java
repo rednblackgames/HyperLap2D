@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view;
 
-import com.badlogic.ashley.core.Engine;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.h2d.common.MsgAPI;
@@ -72,7 +71,7 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
             	facade = HyperLap2DFacade.getInstance();
             	SandboxMediator sandboxMediator = facade.retrieveMediator(SandboxMediator.NAME);
 
-                Engine engine = sandboxMediator.getViewComponent().getEngine();
+                com.artemis.World engine = sandboxMediator.getViewComponent().getEngine();
 
             	getViewComponent().setEngine(engine);
                 viewComponent.show();

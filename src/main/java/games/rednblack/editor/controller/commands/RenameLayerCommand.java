@@ -18,11 +18,11 @@
 
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.components.LayerMapComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 
 /**
@@ -57,9 +57,9 @@ public class RenameLayerCommand extends EntityModifyRevertibleCommand {
     }
 
     private void renameLayer(String fromName, String toName) {
-        Entity viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
-        NodeComponent nodeComponent = ComponentRetriever.get(viewEntity, NodeComponent.class);
-        LayerMapComponent layerMapComponent = ComponentRetriever.get(viewEntity, LayerMapComponent.class);
+        int viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        NodeComponent nodeComponent = SandboxComponentRetriever.get(viewEntity, NodeComponent.class);
+        LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewEntity, LayerMapComponent.class);
 
         if (layerMapComponent.getLayer(toName) != null) {
             cancel();
@@ -68,8 +68,8 @@ public class RenameLayerCommand extends EntityModifyRevertibleCommand {
 
         layerMapComponent.rename(fromName, toName);
 
-        for(Entity childEntity: nodeComponent.children) {
-            ZIndexComponent zIndexComponent = ComponentRetriever.get(childEntity, ZIndexComponent.class);
+        for(int childEntity: nodeComponent.children) {
+            ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(childEntity, ZIndexComponent.class);
             if(zIndexComponent.layerName.equals(fromName)) {
                 zIndexComponent.layerName = toName;
             }

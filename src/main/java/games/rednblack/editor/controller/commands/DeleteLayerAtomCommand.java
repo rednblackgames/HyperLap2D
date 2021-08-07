@@ -1,9 +1,9 @@
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.renderer.components.LayerMapComponent;
 import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 
 /**
@@ -24,10 +24,8 @@ public class DeleteLayerAtomCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void doAction() {
-        Entity viewingEntity = Sandbox.getInstance().getCurrentViewingEntity();
-        LayerMapComponent layerMapComponent = ComponentRetriever.get(viewingEntity, LayerMapComponent.class);
-
-
+        int viewingEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
 
         if(layerMapComponent.getLayers().size() > 1) {
             layerMapComponent.deleteLayer(layerName);
@@ -38,8 +36,8 @@ public class DeleteLayerAtomCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        Entity viewingEntity = Sandbox.getInstance().getCurrentViewingEntity();
-        LayerMapComponent layerMapComponent = ComponentRetriever.get(viewingEntity, LayerMapComponent.class);
+        int viewingEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
 
         layerMapComponent.addLayer(layerIndex, layerItemVO);
     }

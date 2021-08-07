@@ -1,6 +1,6 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.ashley.core.Entity;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.FontManager;
@@ -10,7 +10,7 @@ import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 
-public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<Entity, UILabelItemProperties> {
+public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILabelItemProperties> {
 
     private static final String TAG = UILabelItemPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
@@ -59,13 +59,13 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<Enti
     }
 
     private void onTextChange() {
-        LabelComponent labelComponent = ComponentRetriever.get(observableReference, LabelComponent.class);
+        LabelComponent labelComponent = SandboxComponentRetriever.get(observableReference, LabelComponent.class);
         labelComponent.setText(viewComponent.getText());
     }
 
     @Override
-    protected void translateObservableDataToView(Entity item) {
-        LabelComponent labelComponent = ComponentRetriever.get(item, LabelComponent.class);
+    protected void translateObservableDataToView(int item) {
+        LabelComponent labelComponent = SandboxComponentRetriever.get(item, LabelComponent.class);
         viewComponent.setFontFamily(labelComponent.fontName);
         viewComponent.setFontSize(labelComponent.fontSize);
         viewComponent.setAlignValue(labelComponent.labelAlign);

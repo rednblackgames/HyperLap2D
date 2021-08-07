@@ -1,6 +1,5 @@
 package games.rednblack.editor.utils.asset;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -25,7 +24,7 @@ public abstract class Asset implements IAsset {
     protected ResolutionManager resolutionManager;
     protected ResourceManager resourceManager;
 
-    protected final ArrayList<Entity> tmpEntityList = new ArrayList<>();
+    protected final ArrayList<Integer> tmpEntityList = new ArrayList<>();
     protected final ArrayList<MainItemVO> tmpImageList = new ArrayList<>();
 
     public Asset() {

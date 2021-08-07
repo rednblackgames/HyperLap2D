@@ -1,6 +1,5 @@
 package games.rednblack.editor.controller.commands.component;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
@@ -15,6 +14,7 @@ import games.rednblack.editor.renderer.data.FrameRange;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 
@@ -27,17 +27,17 @@ public class ReplaceSpriteAnimationCommand extends EntityModifyRevertibleCommand
     @Override
     public void doAction() {
         Object[] payload = getNotification().getBody();
-        Entity entity = (Entity) payload[0];
+        int entity = (int) payload[0];
         String animName = (String) payload[1];
         Array<TextureAtlas.AtlasRegion> regions = (Array<TextureAtlas.AtlasRegion>) payload[2];
 
         entityId = EntityUtils.getEntityId(entity);
 
-        SpriteAnimationComponent spriteAnimationComponent = ComponentRetriever.get(entity, SpriteAnimationComponent.class);
-        SpriteAnimationStateComponent spriteAnimationStateComponent = ComponentRetriever.get(entity, SpriteAnimationStateComponent.class);
-        TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
-        DimensionsComponent size = ComponentRetriever.get(entity, DimensionsComponent.class);
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+        SpriteAnimationComponent spriteAnimationComponent = SandboxComponentRetriever.get(entity, SpriteAnimationComponent.class);
+        SpriteAnimationStateComponent spriteAnimationStateComponent = SandboxComponentRetriever.get(entity, SpriteAnimationStateComponent.class);
+        TextureRegionComponent textureRegionComponent = SandboxComponentRetriever.get(entity, TextureRegionComponent.class);
+        DimensionsComponent size = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
 
         backupAnimName = spriteAnimationComponent.animationName;
         backupAnimRegions = spriteAnimationStateComponent.allRegions;
@@ -67,13 +67,13 @@ public class ReplaceSpriteAnimationCommand extends EntityModifyRevertibleCommand
 
     @Override
     public void undoAction() {
-        Entity entity = EntityUtils.getByUniqueId(entityId);
+        int entity = EntityUtils.getByUniqueId(entityId);
 
-        SpriteAnimationComponent spriteAnimationComponent = ComponentRetriever.get(entity, SpriteAnimationComponent.class);
-        SpriteAnimationStateComponent spriteAnimationStateComponent = ComponentRetriever.get(entity, SpriteAnimationStateComponent.class);
-        TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class);
-        DimensionsComponent size = ComponentRetriever.get(entity, DimensionsComponent.class);
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
+        SpriteAnimationComponent spriteAnimationComponent = SandboxComponentRetriever.get(entity, SpriteAnimationComponent.class);
+        SpriteAnimationStateComponent spriteAnimationStateComponent = SandboxComponentRetriever.get(entity, SpriteAnimationStateComponent.class);
+        TextureRegionComponent textureRegionComponent = SandboxComponentRetriever.get(entity, TextureRegionComponent.class);
+        DimensionsComponent size = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
 
         spriteAnimationComponent.animationName = backupAnimName;
         spriteAnimationComponent.frameRangeMap.clear();

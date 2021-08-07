@@ -18,8 +18,8 @@
 
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.dialog.AutoTraceDialog;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 /**
  * Created by azakhary on 7/2/2015.
  */
-public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediator<Entity, UIPolygonComponentProperties> {
+public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediator<UIPolygonComponentProperties> {
 
     private static final String TAG = UIPolygonComponentPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
@@ -87,8 +87,8 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
     }
 
     @Override
-    protected void translateObservableDataToView(Entity item) {
-        polygonComponent = item.getComponent(PolygonComponent.class);
+    protected void translateObservableDataToView(int item) {
+        polygonComponent = SandboxComponentRetriever.get(item, PolygonComponent.class);
         if(polygonComponent.vertices != null) {
             viewComponent.initView();
             int verticesCount = 0;
@@ -110,7 +110,7 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
     }
 
     private void addDefaultMesh() {
-        DimensionsComponent dimensionsComponent = ComponentRetriever.get(observableReference, DimensionsComponent.class);
+        DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(observableReference, DimensionsComponent.class);
         if(dimensionsComponent.boundBox != null) { // If the bound box is not null we have a Composite Item!
             polygonComponent.makeRectangle( dimensionsComponent.boundBox.x, dimensionsComponent.boundBox.y, dimensionsComponent.boundBox.width, dimensionsComponent.boundBox.height);
         }
@@ -127,7 +127,7 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
     }
 
     private void copyMesh() {
-        polygonComponent = observableReference.getComponent(PolygonComponent.class);
+        polygonComponent =  SandboxComponentRetriever.get(observableReference, PolygonComponent.class);
         Sandbox.getInstance().copyToLocalClipboard("meshData", polygonComponent.vertices);
     }
 

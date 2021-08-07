@@ -1,7 +1,7 @@
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Entity;
+import com.artemis.Component;
+import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 
@@ -13,20 +13,20 @@ public class AddComponentToItemCommand extends EntityModifyRevertibleCommand {
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.AddComponentToItemCommand";
     public static final String DONE = CLASS_NAME + "DONE";
 
-    private Entity entity;
-    private Component component;
+    private int entity;
+    private Class<? extends Component> component;
 
     private void collectData() {
         Object[] payload = getNotification().getBody();
-        entity = (Entity) payload[0];
-        component = (Component) payload[1];
+        entity = (int) payload[0];
+        component = (Class<? extends Component>) payload[1];
     }
 
     @Override
     public void doAction() {
         collectData();
 
-        entity.add(component);
+        Sandbox.getInstance().getEngine().edit(entity).create(component);
 
         HyperLap2DFacade.getInstance().sendNotification(DONE, entity);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
@@ -34,13 +34,14 @@ public class AddComponentToItemCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        entity.remove(component.getClass());
+        Sandbox.getInstance().getEngine().edit(entity).remove(component);
+        Sandbox.getInstance().getEngine().process();
 
         HyperLap2DFacade.getInstance().sendNotification(DONE, entity);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
-    public static Object[] payload(Entity entity, Component component) {
+    public static Object[] payload(int entity, Class<? extends Component> component) {
         Object[] payload = new Object[2];
         payload[0] = entity;
         payload[1] = component;

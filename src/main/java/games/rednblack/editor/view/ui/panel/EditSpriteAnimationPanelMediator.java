@@ -18,7 +18,7 @@
 
 package games.rednblack.editor.view.ui.panel;
 
-import com.badlogic.ashley.core.Entity;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.menu.WindowMenu;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -42,7 +42,7 @@ public class EditSpriteAnimationPanelMediator extends Mediator<EditSpriteAnimati
     private static final String TAG = EditSpriteAnimationPanelMediator.class.getCanonicalName();
     private static final String NAME = TAG;
 
-    private Entity observable = null;
+    private int observable = -1;
 
     public EditSpriteAnimationPanelMediator() {
         super(NAME, new EditSpriteAnimationPanel());
@@ -82,20 +82,20 @@ public class EditSpriteAnimationPanelMediator extends Mediator<EditSpriteAnimati
                 viewComponent.show(uiStage);
                 break;
             case MsgAPI.ITEM_SELECTION_CHANGED:
-                Set<Entity> selection = notification.getBody();
+                Set<Integer> selection = notification.getBody();
                 if(selection.size() == 1) {
-                    Entity entity = selection.iterator().next();
+                    int entity = selection.iterator().next();
                     if(EntityUtils.getType(entity) == EntityFactory.SPRITE_TYPE) {
                         setObservable(entity);
                     } else {
-                        observable = null;
+                        observable = -1;
                         viewComponent.setEmpty("Selected item is not a sprite animation");
                     }
                 }
 
             break;
             case MsgAPI.EMPTY_SPACE_CLICKED:
-                setObservable(null);
+                setObservable(-1);
                 break;
             case EditSpriteAnimationPanel.ADD_BUTTON_PRESSED:
                 addAnimation();
@@ -108,7 +108,7 @@ public class EditSpriteAnimationPanelMediator extends Mediator<EditSpriteAnimati
         }
     }
 
-    private void setObservable(Entity animation) {
+    private void setObservable(int animation) {
         observable = animation;
         updateView();
         viewComponent.setName("");
@@ -117,10 +117,10 @@ public class EditSpriteAnimationPanelMediator extends Mediator<EditSpriteAnimati
     }
 
     private void updateView() {
-        if(observable == null) {
+        if(observable == -1) {
             viewComponent.setEmpty("No item selected");
         } else {
-            SpriteAnimationComponent spriteAnimationComponent = ComponentRetriever.get(observable, SpriteAnimationComponent.class);
+            SpriteAnimationComponent spriteAnimationComponent = SandboxComponentRetriever.get(observable, SpriteAnimationComponent.class);
             viewComponent.updateView(spriteAnimationComponent.frameRangeMap);
         }
     }
@@ -130,14 +130,14 @@ public class EditSpriteAnimationPanelMediator extends Mediator<EditSpriteAnimati
         int frameFrom = viewComponent.getFrameFrom();
         int frameTo = viewComponent.getFrameTo();
 
-        SpriteAnimationComponent spriteAnimationComponent = ComponentRetriever.get(observable, SpriteAnimationComponent.class);
+        SpriteAnimationComponent spriteAnimationComponent = SandboxComponentRetriever.get(observable, SpriteAnimationComponent.class);
         spriteAnimationComponent.frameRangeMap.put(name, new FrameRange(name, frameFrom, frameTo));
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, observable);
     }
 
     private void removeAnimation(String name) {
-        SpriteAnimationComponent spriteAnimationComponent = ComponentRetriever.get(observable, SpriteAnimationComponent.class);
+        SpriteAnimationComponent spriteAnimationComponent = SandboxComponentRetriever.get(observable, SpriteAnimationComponent.class);
         spriteAnimationComponent.frameRangeMap.remove(name);
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, observable);

@@ -18,12 +18,8 @@
 
 package games.rednblack.editor.proxy;
 
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
@@ -70,7 +66,7 @@ public class PluginManager extends Proxy implements PluginAPI {
     private ArrayList<H2DPlugin> plugins = new ArrayList<>();
     private String pluginDir, cacheDir;
 
-    private HashSet<Entity> pluginEntities;
+    private HashSet<Integer> pluginEntities;
 
     public PluginManager() {
         super(NAME);
@@ -91,7 +87,7 @@ public class PluginManager extends Proxy implements PluginAPI {
         plugin.initPlugin();
     }
 
-    public void dropDownActionSets(Set<Entity> selectedEntities, Array<String> actionsSet) {
+    public void dropDownActionSets(Set<Integer> selectedEntities, Array<String> actionsSet) {
         for(H2DPlugin plugin: plugins) {
             plugin.onDropDownOpen(selectedEntities, actionsSet);
         }
@@ -138,7 +134,7 @@ public class PluginManager extends Proxy implements PluginAPI {
     }
 
     @Override
-    public void removeFollower(Entity entity) {
+    public void removeFollower(int entity) {
         FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
         followersUIMediator.removeFollower(entity);
     }
@@ -215,7 +211,7 @@ public class PluginManager extends Proxy implements PluginAPI {
     }
 
     @Override
-    public PooledEngine getEngine() {
+    public com.artemis.World getEngine() {
         return getSceneLoader().getEngine();
     }
 
@@ -229,13 +225,13 @@ public class PluginManager extends Proxy implements PluginAPI {
         return ItemFactory.get();
     }
 
-    public boolean isEntityVisible(Entity e) {
+    public boolean isEntityVisible(int e) {
         LayerItemVO layer = EntityUtils.getEntityLayer(e);
         return layer != null && layer.isVisible;
     }
 
     @Override
-    public HashSet<Entity> getProjectEntities() {
+    public HashSet<Integer> getProjectEntities() {
         Sandbox sandbox = Sandbox.getInstance();
         return sandbox.getSelector().getAllFreeItems();
     }

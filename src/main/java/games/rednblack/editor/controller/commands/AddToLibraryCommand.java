@@ -18,7 +18,7 @@
 
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Entity;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -43,11 +43,11 @@ public class AddToLibraryCommand extends RevertibleCommand {
     public void doAction() {
         Object[] payload = getNotification().getBody();
 
-        Entity item = ((Entity) payload[0]);
+        int item = ((int) payload[0]);
         entityId = EntityUtils.getEntityId(item);
         createdLibraryItemName = (String) payload[1];
 
-        MainItemComponent mainItemComponent = ComponentRetriever.get(item, MainItemComponent.class);
+        MainItemComponent mainItemComponent = SandboxComponentRetriever.get(item, MainItemComponent.class);
 
         if(createdLibraryItemName.length() > 0) {
             ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
@@ -58,7 +58,7 @@ public class AddToLibraryCommand extends RevertibleCommand {
             }
 
             CompositeItemVO newVO = new CompositeItemVO();
-            newVO.loadFromEntity(item);
+            newVO.loadFromEntity(item, sandbox.getEngine());
             newVO.cleanIds();
             libraryItems.put(createdLibraryItemName, newVO);
 
@@ -86,14 +86,14 @@ public class AddToLibraryCommand extends RevertibleCommand {
             }
             facade.sendNotification(MsgAPI.LIBRARY_LIST_UPDATED);
         } else {
-            Entity entity = EntityUtils.getByUniqueId(entityId);
-            MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class);
+            int entity = EntityUtils.getByUniqueId(entityId);
+            MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
             mainItemComponent.libraryLink = prevName;
             facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED);
         }
     }
 
-    public static Object payloadUnLink(Entity entity) {
+    public static Object payloadUnLink(int entity) {
         Object[] payload = new Object[2];
         payload[0] = entity;
         payload[1] = "";
@@ -101,7 +101,7 @@ public class AddToLibraryCommand extends RevertibleCommand {
         return payload;
     }
 
-    public static Object payloadLink(Entity entity, String link) {
+    public static Object payloadLink(int entity, String link) {
         Object[] payload = new Object[2];
         payload[0] = entity;
         payload[1] = link;

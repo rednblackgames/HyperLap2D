@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui.box;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.controller.commands.resource.DeleteResourceCommand;
@@ -53,7 +52,7 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
         Sandbox sandbox = Sandbox.getInstance();
         switch (notification.getName()) {
             case MsgAPI.SCENE_LOADED:
-                Entity rootEntity = sandbox.getCurrentViewingEntity();
+                int rootEntity = sandbox.getCurrentViewingEntity();
                 viewComponent.init(rootEntity);
                 break;
             case MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE:
@@ -71,17 +70,17 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
             case UIItemsTreeBox.ITEMS_SELECTED:
                 Selection<UIItemsTreeNode> selection = notification.getBody();
                 Array<UIItemsTreeNode> nodes = selection.toArray();
-                Set<Entity> items = new HashSet<>();
+                Set<Integer> items = new HashSet<>();
 
                 for (UIItemsTreeNode node : nodes) {
                     Integer entityId = node.getValue().entityId;
-                    Entity item = EntityUtils.getByUniqueId(entityId);
+                    int item = EntityUtils.getByUniqueId(entityId);
                     //layer lock thing
                     LayerItemVO layerItemVO = EntityUtils.getEntityLayer(item);
                     if(layerItemVO != null && layerItemVO.isLocked) {
                         continue;
                     }
-                    if (item != null) {
+                    if (item != -1) {
                         items.add(item);
                     }
                 }
@@ -97,8 +96,8 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
         }
     }
 
-    private void sendSelectionNotification(Set<Entity> items) {
-        Set<Entity> ntfItems = (items.isEmpty())? null : items;
+    private void sendSelectionNotification(Set<Integer> items) {
+        Set<Integer> ntfItems = (items.isEmpty())? null : items;
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_SET_SELECTION, ntfItems);
     }
 }

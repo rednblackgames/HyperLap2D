@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.stage.tools;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
@@ -78,12 +77,12 @@ public class TextTool extends ItemDropTool {
     }
 
     @Override
-    public Entity putItem(float x, float y) {
+    public int putItem(float x, float y) {
         if (getFontFamily() == null || getFontFamily().equals("")) {
             NativeDialogs.showError("No Font detected on your System.\n"
                     + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION
                     + " (HyperLap2D v" + AppConfig.getInstance().versionString + ")");
-            return null;
+            return -1;
         }
         return ItemFactory.get().createLabel(this, new Vector2(x, y));
     }

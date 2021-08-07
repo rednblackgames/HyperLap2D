@@ -1,13 +1,12 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 
 import java.util.Set;
 
-public class UIMultipleSelectPropertiesMediator extends UIAbstractPropertiesMediator<Set<Entity>, UIMultipleSelectProperties> {
+public class UIMultipleSelectPropertiesMediator extends UIAbstractPropertiesMediator<Set<Integer>, UIMultipleSelectProperties> {
     private static final String TAG = UIMultipleSelectPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -30,7 +29,7 @@ public class UIMultipleSelectPropertiesMediator extends UIAbstractPropertiesMedi
     }
 
     @Override
-    protected void translateObservableDataToView(Set<Entity> selection) {
+    protected void translateObservableDataToView(Set<Integer> selection) {
         viewComponent.setSelectionCount(selection.size());
     }
 

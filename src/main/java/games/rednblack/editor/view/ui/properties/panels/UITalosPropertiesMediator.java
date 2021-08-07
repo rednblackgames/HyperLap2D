@@ -1,13 +1,14 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.editor.controller.commands.component.UpdateTalosDataCommand;
 import games.rednblack.editor.renderer.components.particle.TalosDataComponent;
 import games.rednblack.editor.renderer.data.TalosVO;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 
-public class UITalosPropertiesMediator extends UIItemPropertiesMediator<Entity, UITalosProperties> {
+public class UITalosPropertiesMediator extends UIItemPropertiesMediator<UITalosProperties> {
 
     private static final String TAG = UITalosPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
@@ -17,8 +18,8 @@ public class UITalosPropertiesMediator extends UIItemPropertiesMediator<Entity, 
     }
 
     @Override
-    protected void translateObservableDataToView(Entity item) {
-        viewComponent.setMatrixTransformEnabled(item.getComponent(TalosDataComponent.class).transform);
+    protected void translateObservableDataToView(int item) {
+        viewComponent.setMatrixTransformEnabled(SandboxComponentRetriever.get(item, TalosDataComponent.class).transform);
     }
 
     @Override

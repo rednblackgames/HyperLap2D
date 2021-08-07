@@ -18,9 +18,9 @@
 
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ViewPortComponent;
@@ -43,8 +43,8 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
     @Override
     public void doAction() {
         cancel();
-        Entity entity = getNotification().getBody();
-        Entity oldEntity = sandbox.getCurrentViewingEntity();
+        int entity = getNotification().getBody();
+        int oldEntity = sandbox.getCurrentViewingEntity();
 
         // check if entity is selected
         wasPrevSelected = sandbox.getSelector().isSelected(entity);
@@ -52,21 +52,20 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
         if(enteringInto == null) enteringInto = EntityUtils.getEntityId(entity);
         if(previousViewEntityId == null) previousViewEntityId = EntityUtils.getEntityId(oldEntity);
 
-        ViewPortComponent viewPortComponent = ComponentRetriever.get(oldEntity, ViewPortComponent.class);
+        ViewPortComponent viewPortComponent = SandboxComponentRetriever.get(oldEntity, ViewPortComponent.class);
         Viewport currViewport = viewPortComponent.viewPort;
-        oldEntity.remove(ViewPortComponent.class);
+        sandbox.getEngine().edit(oldEntity).remove(ViewPortComponent.class);
 
-        ViewPortComponent newViewPortComponent = sandbox.getEngine().createComponent(ViewPortComponent.class);
+        ViewPortComponent newViewPortComponent = sandbox.getEngine().edit(entity).create(ViewPortComponent.class);
         newViewPortComponent.viewPort = currViewport;
-        entity.add(newViewPortComponent);
 
         sandbox.setCurrentViewingEntity(entity);
 
         sandbox.getSelector().clearSelections();
 
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class);
-        TransformComponent previousTransformComponent = ComponentRetriever.get(oldEntity, TransformComponent.class);
-        ParentNodeComponent parentNodeComponent = ComponentRetriever.get(entity, ParentNodeComponent.class);
+        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+        TransformComponent previousTransformComponent = SandboxComponentRetriever.get(oldEntity, TransformComponent.class);
+        ParentNodeComponent parentNodeComponent = SandboxComponentRetriever.get(entity, ParentNodeComponent.class);
         if (parentNodeComponent == null || oldEntity != parentNodeComponent.parentEntity)
             previousTransformComponent.enableTransform();
         transformComponent.disableTransform();
@@ -80,22 +79,21 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
 
     @Override
     public void undoAction() {
-        Entity oldEntity = EntityUtils.getByUniqueId(previousViewEntityId);
-        Entity currEntity = sandbox.getCurrentViewingEntity();
+        int oldEntity = EntityUtils.getByUniqueId(previousViewEntityId);
+        int currEntity = sandbox.getCurrentViewingEntity();
 
-        ViewPortComponent viewPortComponent = ComponentRetriever.get(currEntity, ViewPortComponent.class);
+        ViewPortComponent viewPortComponent = SandboxComponentRetriever.get(currEntity, ViewPortComponent.class);
         Viewport currViewport = viewPortComponent.viewPort;
-        currEntity.remove(ViewPortComponent.class);
+        sandbox.getEngine().edit(currEntity).remove(ViewPortComponent.class);
 
-        ViewPortComponent newViewPortComponent = sandbox.getEngine().createComponent(ViewPortComponent.class);
+        ViewPortComponent newViewPortComponent = sandbox.getEngine().edit(oldEntity).create(ViewPortComponent.class);
         newViewPortComponent.viewPort = currViewport;
-        oldEntity.add(newViewPortComponent);
         sandbox.setCurrentViewingEntity(oldEntity);
 
         facade.sendNotification(DONE, previousViewEntityId);
 
-        TransformComponent transformComponent = ComponentRetriever.get(currEntity, TransformComponent.class);
-        TransformComponent previousTransformComponent = ComponentRetriever.get(oldEntity, TransformComponent.class);
+        TransformComponent transformComponent = SandboxComponentRetriever.get(currEntity, TransformComponent.class);
+        TransformComponent previousTransformComponent = SandboxComponentRetriever.get(oldEntity, TransformComponent.class);
         previousTransformComponent.disableTransform();
         transformComponent.enableTransform();
 

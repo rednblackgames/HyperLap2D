@@ -1,19 +1,40 @@
+/*
+ * ******************************************************************************
+ *  * Copyright 2015 See AUTHORS file.
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *   http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
+ *  *****************************************************************************
+ */
+
 package games.rednblack.editor.view.ui.properties;
 
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 
-public abstract class UIAbstractPropertiesMediator<T, V extends UIAbstractProperties> extends Mediator<V> {
-    private Sandbox sandbox;
+/**
+ * Created by azakhary on 4/15/2015.
+ */
+public abstract class UIAbstractEntityPropertiesMediator<V extends UIAbstractProperties> extends UIAbstractPropertiesMediator<Integer, V> {
+    protected Sandbox sandbox;
 
-    protected T observableReference;
+    protected int observableReference;
 
     protected boolean lockUpdates = true;
 
-    public UIAbstractPropertiesMediator(String mediatorName, V viewComponent) {
+    public UIAbstractEntityPropertiesMediator(String mediatorName, V viewComponent) {
         super(mediatorName, viewComponent);
 
         sandbox = Sandbox.getInstance();
@@ -54,7 +75,12 @@ public abstract class UIAbstractPropertiesMediator<T, V extends UIAbstractProper
         }
     }
 
-    public void setItem(T item) {
+    @Override
+    public void setItem(Integer item) {
+        setItem((int) item);
+    }
+
+    public void setItem(int item) {
         observableReference = item;
         lockUpdates = true;
         translateObservableDataToView(observableReference);
@@ -67,7 +93,12 @@ public abstract class UIAbstractPropertiesMediator<T, V extends UIAbstractProper
         lockUpdates = false;
     }
 
-    protected abstract void translateObservableDataToView(T item);
+    @Override
+    protected void translateObservableDataToView(Integer item) {
+        translateObservableDataToView((int) item);
+    }
+
+    protected abstract void translateObservableDataToView(int item);
 
     protected abstract void translateViewToItemData();
 }

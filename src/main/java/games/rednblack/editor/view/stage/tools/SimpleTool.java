@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.stage.tools;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.h2d.common.view.tools.Tool;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -19,9 +18,9 @@ public abstract class SimpleTool implements Tool {
     @Override
     public void initTool() {
         Sandbox sandbox = Sandbox.getInstance();
-        Set<Entity> currSelection = sandbox.getSelector().getCurrentSelection();
+        Set<Integer> currSelection = sandbox.getSelector().getCurrentSelection();
         FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
-        for(Entity entity: currSelection) {
+        for(int entity: currSelection) {
             BasicFollower follower = followersUIMediator.getFollower(entity);
             if(follower instanceof NormalSelectionFollower) {
                 NormalSelectionFollower selectionFollower = (NormalSelectionFollower) follower;
@@ -56,22 +55,22 @@ public abstract class SimpleTool implements Tool {
     }
 
     @Override
-    public boolean itemMouseDown(Entity entity, float x, float y) {
+    public boolean itemMouseDown(int entity, float x, float y) {
         return false;
     }
 
     @Override
-    public void itemMouseUp(Entity entity, float x, float y) {
+    public void itemMouseUp(int entity, float x, float y) {
 
     }
 
     @Override
-    public void itemMouseDragged(Entity entity, float x, float y) {
+    public void itemMouseDragged(int entity, float x, float y) {
 
     }
 
     @Override
-    public void itemMouseDoubleClick(Entity entity, float x, float y) {
+    public void itemMouseDoubleClick(int entity, float x, float y) {
 
     }
 
@@ -81,12 +80,12 @@ public abstract class SimpleTool implements Tool {
     }
 
     @Override
-    public void keyDown(Entity entity, int keycode) {
+    public void keyDown(int entity, int keycode) {
 
     }
 
     @Override
-    public void keyUp(Entity entity, int keycode) {
+    public void keyUp(int entity, int keycode) {
 
     }
 }

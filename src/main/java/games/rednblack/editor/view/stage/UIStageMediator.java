@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.stage;
 
-import com.badlogic.ashley.core.Entity;
 import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
@@ -57,7 +56,7 @@ public class UIStageMediator extends Mediator<UIStage> {
             case MsgAPI.SHOW_ADD_LIBRARY_DIALOG:
                 Sandbox sandbox = Sandbox.getInstance();
 
-                Entity item = notification.getBody();
+                int item = notification.getBody();
 
                 Dialogs.showInputDialog(sandbox.getUIStage(), "New Library Item ", "Unique Name", new InputDialogListener() {
                     @Override
