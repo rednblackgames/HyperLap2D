@@ -24,7 +24,6 @@ import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.TransformComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 
 import java.util.HashMap;
@@ -34,6 +33,8 @@ import java.util.Map;
  * Created by azakhary on 6/4/2015.
  */
 public class ItemsMoveCommand extends EntityModifyRevertibleCommand {
+
+    public static final String TAG = ItemsMoveCommand.class.getCanonicalName();
 
     private HashMap<Integer, Vector2> prevLocations = new HashMap<>();
 
@@ -59,7 +60,7 @@ public class ItemsMoveCommand extends EntityModifyRevertibleCommand {
             transformComponent.y = newLocation.y;
 
             // pining UI to update current item properties tools
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity, TAG);
         }
     }
 
@@ -76,7 +77,7 @@ public class ItemsMoveCommand extends EntityModifyRevertibleCommand {
             transformComponent.y = prevLocation.y;
 
             // pining UI to update current item properties tools
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity, TAG);
         }
 
     }

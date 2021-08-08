@@ -143,5 +143,7 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
         HyperLap2DFacade.getInstance().sendNotification(DONE);
 
         sandbox.getSelector().setSelections(children, true);
+
+        facade.sendNotification(MsgAPI.DELETE_ITEMS_COMMAND_DONE);
     }
 }

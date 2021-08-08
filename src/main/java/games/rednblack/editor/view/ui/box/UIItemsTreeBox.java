@@ -21,12 +21,15 @@ package games.rednblack.editor.view.ui.box;
 import java.util.Comparator;
 import java.util.Set;
 
+import com.artemis.ComponentMapper;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pools;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.MainItemComponent;
@@ -34,25 +37,33 @@ import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 
 public class UIItemsTreeBox extends UICollapsibleBox {
+    protected ComponentMapper<NodeComponent> nodeComponentMapper;
+    protected ComponentMapper<ParentNodeComponent> parentNodeComponentMapper;
+    protected ComponentMapper<MainItemComponent> mainItemComponentMapper;
+    protected ComponentMapper<ZIndexComponent> zIndexComponentMapper;
+
     public static final String ITEMS_SELECTED = "games.rednblack.editor.view.ui.box.UIItemsTreeBox." + ".ITEMS_SELECTED";
     private final HyperLap2DFacade facade;
     private final VisTable treeTable;
     private Tree<UIItemsTreeNode, UIItemsTreeValue> tree;
+    private VisScrollPane scroller;
+    private UIItemsTreeNode rootTreeNode;
 
+    private final Array<UIItemsTreeNode> tmpNodes = new Array<>();
     private UIItemsTreeNode rootNode;
     private Set<Integer> lastSelection;
 
     private final VisImageButton zUp, zDown;
 
-    Sandbox sandbox;
+    private Sandbox sandbox;
+
+    private final ZIndexComparator zIndexComparator = new ZIndexComparator();
 
     public UIItemsTreeBox() {
         super("Items Tree", 180);
@@ -87,14 +98,13 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         });
     }
 
-    UIItemsTreeNode rootTreeNode;
-
     public void init(int rootScene) {
         sandbox = Sandbox.getInstance();
+        sandbox.getEngine().inject(this);
 
         treeTable.clear();
         tree = new VisTree<>();
-        VisScrollPane scroller = StandardWidgetsFactory.createScrollPane(tree);
+        scroller = StandardWidgetsFactory.createScrollPane(tree);
         scroller.setFlickScroll(false);
         treeTable.add(scroller).width(177).maxHeight(570).colspan(2);
         //
@@ -115,20 +125,39 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     }
 
     public void sortTree() {
-        rootTreeNode.getChildren().sort(new ZIndexComparator());
+        rootTreeNode.getChildren().sort(zIndexComparator);
         rootTreeNode.updateChildren();
         tree.updateRootNodes();
+    }
+
+    public void update(int rootScene) {
+        Pools.freeAll(tmpNodes);
+        tmpNodes.clear();
+
+        tree.clearChildren();
+        tree.setOverNode(null);
+        tree.getRootNodes().clear();
+        tree.getSelection().clear();
+
+        rootTreeNode = addTreeRoot(rootScene, null);
+        rootTreeNode.setExpanded(true);
+
+        sortTree();
+
+        if (lastSelection != null)
+            setSelection(lastSelection);
     }
 
     private UIItemsTreeNode addTreeRoot(int entity, UIItemsTreeNode parentNode) {  // was like this addTreeRoot(CompositeItem compoiteItem, Node parentNode)
         UIItemsTreeNode node = addTreeNode(entity, parentNode);
         if (parentNode == null) rootNode = node;
 
-        NodeComponent nodeComponent = SandboxComponentRetriever.get(entity, NodeComponent.class);
+        NodeComponent nodeComponent = nodeComponentMapper.get(entity);
+        MainItemComponent mainItemComponent = mainItemComponentMapper.get(entity);
 
         if(nodeComponent != null) {
             for (int item : nodeComponent.children) {
-                if (EntityUtils.getType(entity) == EntityFactory.COMPOSITE_TYPE) {
+                if (mainItemComponent.entityType == EntityFactory.COMPOSITE_TYPE) {
                     addTreeRoot(item, node);
                 } else {
                     addTreeNode(item, node);
@@ -139,38 +168,36 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     }
 
     private UIItemsTreeNode addTreeNode(int item, UIItemsTreeNode parentNode) {
-        String name, style;
-        ParentNodeComponent parentNodeComponent = SandboxComponentRetriever.get(item, ParentNodeComponent.class);
-        MainItemComponent mainItemComponent = SandboxComponentRetriever.get(item, MainItemComponent.class);
+        String name;
+        ParentNodeComponent parentNodeComponent = parentNodeComponentMapper.get(item);
+        MainItemComponent mainItemComponent = mainItemComponentMapper.get(item);
+
+        UIItemsTreeNode node = Pools.get(UIItemsTreeNode.class, 20000).obtain();
+        tmpNodes.add(node);
 
         if (parentNodeComponent == null) {
+            node.setColor(Color.WHITE);
             name = Sandbox.getInstance().sceneControl.getCurrentSceneVO().sceneName;
-            style = "default";
         } else if (mainItemComponent.itemIdentifier != null && !mainItemComponent.itemIdentifier.isEmpty()) {
+            node.setColor(Color.WHITE);
             name = mainItemComponent.itemIdentifier;
-            style = "default";
         } else {
-            style = "greyed";
-            int type = EntityUtils.getType(item);
-            name = EntityUtils.itemTypeNameMap.get(type);
+            node.setColor(0.65f, 0.65f, 0.65f, 1f);
+            name = EntityUtils.itemTypeNameMap.get(mainItemComponent.entityType);
             if (name == null)
                 name = EntityUtils.itemTypeNameMap.get(EntityFactory.UNKNOWN_TYPE);
         }
 
-        VisTable label = new VisTable();
-        Cell<VisLabel> lblCell = label.add(new VisLabel(name, style));
-        UIItemsTreeNode node = new UIItemsTreeNode(label);
-        ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(item, ZIndexComponent.class);
+        node.setName(name);
+        ZIndexComponent zIndexComponent = zIndexComponentMapper.get(item);
 
-        node.setValue(new UIItemsTreeValue(mainItemComponent.uniqueId, zIndexComponent.getGlobalZIndex()));
+        node.setNodeValue(mainItemComponent.uniqueId, zIndexComponent.getGlobalZIndex());
         if (mainItemComponent.entityType != EntityFactory.COMPOSITE_TYPE)
-            lblCell.padBottom(4);
-        else {
-            lblCell.padTop(4);
-            lblCell.padLeft(3);
-            lblCell.padBottom(4);
-        }
-        node.setIcon(EntityUtils.getItemIcon(item));
+            node.setPad(0, 0, 4, 0);
+        else
+            node.setPad(4, 3, 4, 0);
+
+        node.setIcon(EntityUtils.getItemIcon(mainItemComponent.entityType));
         if (parentNode != null) {
             parentNode.add(node);
         } else {
@@ -193,7 +220,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
             lastSelection.addAll(selection);
 
         if (tree == null || selection == null) return;
-        Array<UIItemsTreeNode> allSceneRootNodes = tree.getNodes().get(0).getChildren();
+        Array<UIItemsTreeNode> allSceneRootNodes = tree.getRootNodes().get(0).getChildren();
 
         for (int entityId : EntityUtils.getEntityId(selection)) {
             for (UIItemsTreeNode n : allSceneRootNodes) {
@@ -203,6 +230,11 @@ public class UIItemsTreeBox extends UICollapsibleBox {
                 }
             }
         }
+
+        if (tree.getSelection().size() > 0) {
+            Actor firstSelected = tree.getSelection().first().getActor();
+            scroller.scrollTo(0, firstSelected.getY(), firstSelected.getWidth(), firstSelected.getHeight());
+        }
     }
 
     public void removeFromSelection(Set<Integer> selection) {
@@ -210,7 +242,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
             lastSelection.removeAll(selection);
 
         if (tree == null || selection == null) return;
-        Array<UIItemsTreeNode> allSceneRootNodes = tree.getNodes().get(0).getChildren();
+        Array<UIItemsTreeNode> allSceneRootNodes = tree.getRootNodes().get(0).getChildren();
 
         for (int entityId : EntityUtils.getEntityId(selection)) {
             for (UIItemsTreeNode n : allSceneRootNodes) {

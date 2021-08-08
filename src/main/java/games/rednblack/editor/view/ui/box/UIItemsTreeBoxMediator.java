@@ -2,6 +2,7 @@ package games.rednblack.editor.view.ui.box;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.controller.commands.ItemsMoveCommand;
 import games.rednblack.editor.controller.commands.resource.DeleteResourceCommand;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -65,7 +66,8 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
             case MsgAPI.DELETE_ITEMS_COMMAND_DONE:
             case DeleteResourceCommand.DONE:
                 rootEntity = sandbox.getCurrentViewingEntity();
-                viewComponent.init(rootEntity);
+                if (notification.getType() == null || !notification.getType().equals(ItemsMoveCommand.TAG))
+                    viewComponent.update(rootEntity);
                 break;
             case UIItemsTreeBox.ITEMS_SELECTED:
                 Selection<UIItemsTreeNode> selection = notification.getBody();

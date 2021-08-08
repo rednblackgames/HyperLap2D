@@ -37,6 +37,8 @@ public class CustomExceptionHandler implements UncaughtExceptionHandler {
         stacktrace = stacktrace.replace("<", "");
         stacktrace = stacktrace.replace(">", "");
         stacktrace = stacktrace.replace("$", "");
+        stacktrace = stacktrace.replace("'", "");
+        stacktrace = stacktrace.replace("\"", "");
 
         TinyFileDialogs.tinyfd_messageBox("Oops! Something went wrong",
                 "HyperLap2D just crashed, stacktrace saved in: " + localPath.getAbsolutePath()

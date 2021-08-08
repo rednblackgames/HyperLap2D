@@ -92,9 +92,8 @@ public class EntityUtils {
         }
     }
 
-    public static Drawable getItemIcon(int entity) {
-        int type = EntityUtils.getType(entity);
-        String icon = itemTypeIconMap.get(type);
+    public static Drawable getItemIcon(int entityType) {
+        String icon = itemTypeIconMap.get(entityType);
         return VisUI.getSkin().getDrawable(icon);
     }
 
