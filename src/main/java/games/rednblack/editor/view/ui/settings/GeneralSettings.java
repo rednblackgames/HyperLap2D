@@ -17,7 +17,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
     private final VisCheckBox autoSaving, useOpenGL3;
     private final VisCheckBox enablePlugins;
     private VisSelectBox<String> filterKeyMapping;
-    private VisSlider uiScaleDensity, msaaSamples;
+    private VisSlider uiScaleDensity, msaaSamples, fpsLimit;
 
     public GeneralSettings() {
         super("General", HyperLap2DFacade.getInstance());
@@ -39,6 +39,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         getContentTable().add("Performance").left().padTop(10).row();
         getContentTable().addSeparator();
         getContentTable().add(getMassSamplesTable()).left().padTop(5).row();
+        getContentTable().add(getFPSLimitTable()).left().padTop(5).row();
 
         useOpenGL3 = StandardWidgetsFactory.createCheckBox("Use OpenGL 3 API [Require restart]");
         getContentTable().add(useOpenGL3).left().padTop(5).padLeft(8).row();
@@ -65,6 +66,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         scaleTable.add(uiScaleDensity).padLeft(8);
         VisLabel labelFactor = StandardWidgetsFactory.createLabel("", "default", Align.left);
         scaleTable.add(labelFactor).padLeft(8);
+        labelFactor.setText(getUIScaleDensity() + "x");
         uiScaleDensity.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -83,6 +85,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         msaaTable.add(msaaSamples).padLeft(8);
         VisLabel labelFactor = StandardWidgetsFactory.createLabel("", "default", Align.left);
         msaaTable.add(labelFactor).padLeft(8);
+        labelFactor.setText(getMsaaSamples());
         msaaSamples.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -93,12 +96,38 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         return msaaTable;
     }
 
+    private Actor getFPSLimitTable() {
+        VisTable fpsLimitTable = new VisTable();
+
+        fpsLimitTable.add("FPS Limit:").padLeft(8);
+        fpsLimit = StandardWidgetsFactory.createSlider(0, 240, 10);
+        fpsLimitTable.add(fpsLimit).padLeft(8);
+        VisLabel labelFactor = StandardWidgetsFactory.createLabel("", "default", Align.left);
+        fpsLimitTable.add(labelFactor).padLeft(8);
+        labelFactor.setText("Unlimited");
+        fpsLimit.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (getFPSLimit() == 0)
+                    labelFactor.setText("Unlimited");
+                else
+                    labelFactor.setText(getFPSLimit() + " [Require restart]");
+            }
+        });
+
+        return fpsLimitTable;
+    }
+
     private float getUIScaleDensity() {
         return RoundUtils.round(uiScaleDensity.getValue(), 2);
     }
 
     private int getMsaaSamples() {
         return (int) msaaSamples.getValue();
+    }
+
+    private int getFPSLimit() {
+        return (int) fpsLimit.getValue();
     }
 
     @Override
@@ -109,6 +138,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         filterKeyMapping.setSelected(getSettings().keyBindingLayout);
         uiScaleDensity.setValue(getSettings().uiScaleDensity);
         msaaSamples.setValue(getSettings().msaaSamples);
+        fpsLimit.setValue(getSettings().fpsLimit);
     }
 
     @Override
@@ -119,6 +149,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         getSettings().keyBindingLayout = filterKeyMapping.getSelected();
         getSettings().uiScaleDensity = getUIScaleDensity();
         getSettings().msaaSamples = getMsaaSamples();
+        getSettings().fpsLimit = getFPSLimit();
         facade.sendNotification(MsgAPI.SAVE_EDITOR_CONFIG);
     }
 
@@ -129,6 +160,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
                 || getSettings().enablePlugins != enablePlugins.isChecked()
                 || !getSettings().keyBindingLayout.equals(filterKeyMapping.getSelected())
                 || getSettings().uiScaleDensity != getUIScaleDensity()
-                || getSettings().msaaSamples != getMsaaSamples();
+                || getSettings().msaaSamples != getMsaaSamples()
+                || getSettings().fpsLimit != getFPSLimit();
     }
 }

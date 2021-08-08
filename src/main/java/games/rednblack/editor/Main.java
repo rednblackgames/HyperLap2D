@@ -55,7 +55,7 @@ public class Main {
         config.setDecorated(false);
         config.setInitialVisible(false);
         config.setIdleFPS(60);
-        config.setForegroundFPS(60);
+        config.setForegroundFPS(settingsManager.editorConfigVO.fpsLimit);
         config.useVsync(false);
         config.setTitle("HyperLap2D");
         config.setWindowIcon("hyperlap_icon_96.png");
