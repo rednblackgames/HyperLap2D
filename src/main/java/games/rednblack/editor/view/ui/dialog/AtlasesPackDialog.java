@@ -154,8 +154,7 @@ public class AtlasesPackDialog extends H2DDialog {
         opTable.add().width(80);
         currentSelectedPackLabel = new VisLabel("Select Pack", Align.center);
         opTable.add(currentSelectedPackLabel).uniformX().growX().row();
-        NinePatchDrawable bg = new NinePatchDrawable((NinePatchDrawable) VisUI.getSkin().getDrawable("sticky-note"));
-        bg.getPatch().setColor(Color.DARK_GRAY);
+        NinePatchDrawable bg = ((NinePatchDrawable) VisUI.getSkin().getDrawable("sticky-note")).tint(Color.DARK_GRAY);
         mainPackList.getMainTable().background(bg);
         opTable.add(mainPackList.getMainTable()).uniformX().grow();
         opTable.add(opButtonsContainer).growY();

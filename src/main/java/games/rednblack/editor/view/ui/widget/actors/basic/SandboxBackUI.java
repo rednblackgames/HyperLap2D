@@ -25,20 +25,21 @@ import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.view.ui.widget.actors.GridView;
+import space.earlygrey.shapedrawer.ShapeDrawer;
 
 /**
  * Created by azakhary on 6/10/2015.
  */
 public class SandboxBackUI {
 
-    private Array<Actor> actors = new Array<>();
-
-    private Batch batch;
+    private final Array<Actor> actors = new Array<>();
+    private final Batch batch;
 
     public SandboxBackUI(Batch batch) {
         this.batch = batch;
+        ShapeDrawer shapeDrawer = new ShapeDrawer(batch, WhitePixel.sharedInstance.textureRegion);
 
-        GridView gridView = new GridView();
+        GridView gridView = new GridView(shapeDrawer);
         addActor(gridView);
     }
 
@@ -50,7 +51,7 @@ public class SandboxBackUI {
         ResourceManager resourceManager = HyperLap2DFacade.getInstance().retrieveProxy(ResourceManager.NAME);
         batch.begin();
         for (Actor actor : actors) {
-            actor.setScale(1f/resourceManager.getProjectVO().pixelToWorld);
+            actor.setScale(1f / resourceManager.getProjectVO().pixelToWorld);
             actor.act(delta);
             actor.draw(batch, 1);
         }

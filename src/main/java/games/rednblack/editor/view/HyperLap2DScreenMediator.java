@@ -80,7 +80,7 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
                 facade = HyperLap2DFacade.getInstance();
                 sandboxMediator = facade.retrieveMediator(SandboxMediator.NAME);
                 engine = sandboxMediator.getViewComponent().getEngine();
-                SandboxBackUI sandboxBackUI = new SandboxBackUI(engine.getSystem(HyperLap2dRenderer.class).batch);
+                SandboxBackUI sandboxBackUI = new SandboxBackUI(engine.getSystem(HyperLap2dRenderer.class).getBatch());
                 getViewComponent().setBackUI(sandboxBackUI);
                 getViewComponent().disableDrawingBgLogo();
                 break;
