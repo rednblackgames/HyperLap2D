@@ -18,44 +18,34 @@
 
 package games.rednblack.editor.view.ui.properties.panels;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
 import com.artemis.Component;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.puremvc.java.interfaces.INotification;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
-
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.AddToLibraryCommand;
-import games.rednblack.editor.renderer.components.DimensionsComponent;
-import games.rednblack.editor.renderer.components.MainItemComponent;
-import games.rednblack.editor.renderer.components.PolygonComponent;
-import games.rednblack.editor.renderer.components.ShaderComponent;
-import games.rednblack.editor.renderer.components.TintComponent;
-import games.rednblack.editor.renderer.components.TransformComponent;
+import games.rednblack.editor.renderer.components.*;
 import games.rednblack.editor.renderer.components.label.TypingLabelComponent;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.components.physics.SensorComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.ComponentCloner;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.puremvc.java.interfaces.INotification;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by azakhary on 4/15/2015.

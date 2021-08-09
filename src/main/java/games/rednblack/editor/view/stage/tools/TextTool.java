@@ -23,10 +23,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.factory.ItemFactory;
+import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.AppConfig;
 import games.rednblack.editor.utils.NativeDialogs;
 import games.rednblack.h2d.common.proxy.CursorManager;
-import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.h2d.common.view.ui.Cursors;
 import org.apache.commons.lang3.SystemUtils;
 

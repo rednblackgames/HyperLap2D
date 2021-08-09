@@ -1,9 +1,9 @@
 package games.rednblack.editor.controller.commands;
 
 import com.artemis.Component;
+import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.editor.HyperLap2DFacade;
 
 /**
  * Created by CyberJoe on 7/2/2015.

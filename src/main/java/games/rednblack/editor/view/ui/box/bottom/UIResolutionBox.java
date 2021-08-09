@@ -27,12 +27,10 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
-import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.view.ui.box.UIBaseBox;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 public class UIResolutionBox extends UIBaseBox {

@@ -4,10 +4,9 @@ import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.NinePatchComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
+import games.rednblack.h2d.common.command.TransformCommandBuilder;
 
 /**
  * Created by Sasun Poghosyan on 4/13/2016.

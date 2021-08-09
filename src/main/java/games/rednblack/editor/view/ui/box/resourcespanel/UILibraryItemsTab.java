@@ -19,12 +19,11 @@
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by azakhary on 4/17/2015.

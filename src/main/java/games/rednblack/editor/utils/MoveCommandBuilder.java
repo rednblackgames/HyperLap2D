@@ -20,11 +20,11 @@ package games.rednblack.editor.utils;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.MsgAPI;
 
 /**
  * Created by azakhary on 6/5/2015.

@@ -1,18 +1,16 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.puremvc.java.interfaces.INotification;
-
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdateSensorDataCommand;
 import games.rednblack.editor.renderer.components.physics.SensorComponent;
 import games.rednblack.editor.renderer.data.SensorDataVO;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.puremvc.java.interfaces.INotification;
 
 /**
  * The properties mediator for the sensors.

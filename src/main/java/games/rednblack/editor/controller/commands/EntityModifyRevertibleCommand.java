@@ -21,11 +21,10 @@ package games.rednblack.editor.controller.commands;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
-import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 

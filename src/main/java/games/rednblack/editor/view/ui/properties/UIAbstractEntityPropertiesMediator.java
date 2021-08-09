@@ -18,11 +18,10 @@
 
 package games.rednblack.editor.view.ui.properties;
 
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
 
 /**
  * Created by azakhary on 4/15/2015.

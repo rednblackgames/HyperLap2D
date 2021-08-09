@@ -10,10 +10,10 @@ import com.kotcrab.vis.ui.widget.file.FileChooser;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import games.rednblack.h2d.common.view.ui.widget.InputFileWidget;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.widget.InputFileWidget;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import games.rednblack.h2d.common.vo.TexturePackerVO;
 

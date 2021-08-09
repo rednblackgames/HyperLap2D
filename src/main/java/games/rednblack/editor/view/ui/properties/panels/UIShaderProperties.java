@@ -28,9 +28,8 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.ButtonToNotificationListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.renderer.data.MainItemVO;
-import games.rednblack.editor.renderer.data.ShaderUniformVO;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -22,16 +22,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.kotcrab.vis.ui.widget.VisLabel;
-import com.kotcrab.vis.ui.widget.VisRadioButton;
-import com.kotcrab.vis.ui.widget.VisTable;
-import com.kotcrab.vis.ui.widget.VisTextButton;
-import com.kotcrab.vis.ui.widget.VisTextField;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import games.rednblack.editor.view.ui.validator.StringNameValidator;
-import games.rednblack.h2d.common.H2DDialog;
+import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
+import games.rednblack.editor.view.ui.validator.StringNameValidator;
+import games.rednblack.h2d.common.H2DDialog;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 public class CreateNewResolutionDialog extends H2DDialog {
 	private static final String prefix = "games.rednblack.editor.view.ui.dialog.CreateNewResolutionDialog";

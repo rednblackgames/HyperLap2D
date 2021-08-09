@@ -23,7 +23,6 @@ import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.additional.ButtonComponent;
 import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 

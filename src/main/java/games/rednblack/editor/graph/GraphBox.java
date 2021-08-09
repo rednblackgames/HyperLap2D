@@ -3,11 +3,7 @@ package games.rednblack.editor.graph;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Disposable;
-import games.rednblack.editor.graph.data.FieldType;
-import games.rednblack.editor.graph.data.Graph;
-import games.rednblack.editor.graph.data.GraphConnection;
-import games.rednblack.editor.graph.data.GraphNode;
-import games.rednblack.editor.graph.data.GraphProperty;
+import games.rednblack.editor.graph.data.*;
 
 import java.util.Map;
 

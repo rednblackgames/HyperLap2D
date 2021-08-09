@@ -18,9 +18,6 @@
 
 package games.rednblack.editor.view.ui.box;
 
-import java.util.Comparator;
-import java.util.Set;
-
 import com.artemis.ComponentMapper;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -37,10 +34,13 @@ import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+
+import java.util.Comparator;
+import java.util.Set;
 
 public class UIItemsTreeBox extends UICollapsibleBox {
     protected ComponentMapper<NodeComponent> nodeComponentMapper;

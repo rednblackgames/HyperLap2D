@@ -18,13 +18,13 @@
 
 package games.rednblack.editor.view;
 
+import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
-import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.systems.render.HyperLap2dRenderer;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.ui.widget.actors.basic.SandboxBackUI;
+import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 

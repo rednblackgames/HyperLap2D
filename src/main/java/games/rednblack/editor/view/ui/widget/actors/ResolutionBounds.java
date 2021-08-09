@@ -22,8 +22,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.kotcrab.vis.ui.widget.VisLabel;
-import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
 
 /**
  * Created by sargis on 7/10/14.

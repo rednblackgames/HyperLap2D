@@ -3,10 +3,10 @@ package games.rednblack.editor.view.stage.tools;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import games.rednblack.h2d.common.proxy.CursorManager;
+import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.h2d.common.view.ui.Cursors;
 
 /**

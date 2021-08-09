@@ -22,8 +22,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import games.rednblack.editor.event.SelectBoxChangeListener;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by azakhary on 4/16/2015.

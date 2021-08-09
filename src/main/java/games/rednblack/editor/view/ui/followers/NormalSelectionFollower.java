@@ -23,11 +23,11 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import games.rednblack.editor.view.ui.widget.actors.basic.PixelDashedRectangle;
-import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.VisUI;
 import games.rednblack.editor.view.stage.tools.TransformTool;
 import games.rednblack.editor.view.ui.widget.EmptyTarget;
+import games.rednblack.editor.view.ui.widget.actors.basic.PixelDashedRectangle;
+import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
 
 /**

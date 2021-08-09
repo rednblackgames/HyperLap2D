@@ -20,8 +20,6 @@ package games.rednblack.editor.factory;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.PasteItemsCommand;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -30,10 +28,11 @@ import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.tools.TextTool;
 import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.factory.IFactory;
 
 import java.util.HashMap;

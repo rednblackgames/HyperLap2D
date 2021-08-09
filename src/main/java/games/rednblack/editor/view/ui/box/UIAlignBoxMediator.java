@@ -18,14 +18,14 @@
 
 package games.rednblack.editor.view.ui.box;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.stream.Stream;
-
 import com.badlogic.gdx.utils.Align;
 import games.rednblack.editor.view.stage.ItemSelector;
 import games.rednblack.editor.view.stage.Sandbox;
 import org.puremvc.java.interfaces.INotification;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.stream.Stream;
 
 /**
  * Created by sargis on 4/10/15.

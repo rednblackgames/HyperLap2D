@@ -3,7 +3,6 @@ package games.rednblack.editor.view.ui.properties.panels;
 import games.rednblack.editor.controller.commands.component.UpdateParticleDataCommand;
 import games.rednblack.editor.renderer.components.particle.ParticleComponent;
 import games.rednblack.editor.renderer.data.ParticleEffectVO;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;

@@ -6,13 +6,12 @@ import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.RoundUtils;
+import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
+import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 import games.rednblack.editor.view.ui.properties.panels.UIBasicItemPropertiesMediator;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
-import games.rednblack.editor.utils.runtime.EntityUtils;
-import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 import org.puremvc.java.patterns.facade.Facade;
 
 /**

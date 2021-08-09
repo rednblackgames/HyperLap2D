@@ -1,13 +1,13 @@
 package games.rednblack.editor.view.ui.box;
 
-import java.util.Stack;
-
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisImageTextButton;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+
+import java.util.Stack;
 
 /**
  * Created by CyberJoe on 4/22/2015.

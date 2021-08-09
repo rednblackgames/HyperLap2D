@@ -18,18 +18,16 @@
 
 package games.rednblack.editor.view.ui.box;
 
-import java.util.stream.Stream;
-
-import games.rednblack.editor.view.ui.box.resourcespanel.*;
-import org.puremvc.java.interfaces.INotification;
-
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
-
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.view.ui.box.resourcespanel.*;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
+import org.puremvc.java.interfaces.INotification;
+
+import java.util.stream.Stream;
 
 /**
  * Created by azakhary on 4/17/2015.

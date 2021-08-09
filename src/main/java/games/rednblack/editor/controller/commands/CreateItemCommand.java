@@ -18,16 +18,15 @@
 
 package games.rednblack.editor.controller.commands;
 
-import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
+import games.rednblack.h2d.common.MsgAPI;
 
 import java.util.HashSet;
 import java.util.Set;

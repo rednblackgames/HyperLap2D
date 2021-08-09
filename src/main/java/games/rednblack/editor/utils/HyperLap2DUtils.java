@@ -18,11 +18,6 @@
 
 package games.rednblack.editor.utils;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.nio.DoubleBuffer;
-import java.nio.IntBuffer;
-
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -34,6 +29,11 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang3.SystemUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
 
 /**
  * Created by sargis on 4/1/15.

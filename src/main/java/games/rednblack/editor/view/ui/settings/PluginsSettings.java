@@ -4,8 +4,8 @@ import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.SettingsManager;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 import java.io.File;
 

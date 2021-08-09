@@ -19,7 +19,6 @@
 package games.rednblack.editor.utils.runtime;
 
 import com.artemis.Aspect;
-import com.artemis.Component;
 import com.artemis.EntitySubscription;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.math.Vector2;
@@ -27,13 +26,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.VisUI;
-import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.components.*;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 
 import java.util.*;

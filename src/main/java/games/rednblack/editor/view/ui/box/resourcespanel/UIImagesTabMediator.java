@@ -18,20 +18,18 @@
 
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
-import games.rednblack.editor.renderer.factory.EntityFactory;
-import org.apache.commons.lang3.ArrayUtils;
-import org.puremvc.java.interfaces.INotification;
-
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
-
 import games.rednblack.editor.controller.commands.resource.DeleteImageResource;
 import games.rednblack.editor.factory.ItemFactory;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
+import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.ImageResource;
+import org.apache.commons.lang3.ArrayUtils;
+import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by azakhary on 4/17/2015.

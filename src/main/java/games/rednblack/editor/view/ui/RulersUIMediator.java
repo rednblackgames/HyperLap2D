@@ -1,11 +1,11 @@
 package games.rednblack.editor.view.ui;
 
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.utils.Guide;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 

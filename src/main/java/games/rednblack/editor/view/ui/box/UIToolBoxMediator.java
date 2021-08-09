@@ -18,13 +18,13 @@
 
 package games.rednblack.editor.view.ui.box;
 
-import games.rednblack.editor.view.stage.SandboxMediator;
-import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.h2d.common.view.tools.Tool;
 import com.kotcrab.vis.ui.widget.Separator;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.stage.tools.*;
+import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.common.view.tools.Tool;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 

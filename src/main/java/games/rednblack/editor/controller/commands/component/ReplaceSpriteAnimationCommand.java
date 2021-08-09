@@ -12,7 +12,6 @@ import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponen
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationStateComponent;
 import games.rednblack.editor.renderer.data.FrameRange;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;

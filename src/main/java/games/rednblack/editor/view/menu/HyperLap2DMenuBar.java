@@ -18,14 +18,14 @@
 
 package games.rednblack.editor.view.menu;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import games.rednblack.editor.event.MenuItemListener;
 import games.rednblack.editor.view.ui.widget.CustomMenu;
 import games.rednblack.editor.view.ui.widget.CustomMenuBar;
 import games.rednblack.h2d.common.MenuAPI;
+
+import java.util.ArrayList;
 
 public class HyperLap2DMenuBar extends CustomMenuBar {
 

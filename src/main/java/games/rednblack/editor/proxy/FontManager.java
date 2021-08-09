@@ -1,28 +1,23 @@
 package games.rednblack.editor.proxy;
 
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import games.rednblack.editor.utils.AppConfig;
-import games.rednblack.editor.utils.NativeDialogs;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.SystemUtils;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.utils.AppConfig;
+import games.rednblack.editor.utils.NativeDialogs;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.puremvc.java.patterns.proxy.Proxy;
+
+import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.*;
 
 /**
  * Created by azakhary on 4/24/2015.

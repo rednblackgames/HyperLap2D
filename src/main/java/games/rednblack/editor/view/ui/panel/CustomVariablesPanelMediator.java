@@ -18,16 +18,15 @@
 
 package games.rednblack.editor.view.ui.panel;
 
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.editor.view.menu.WindowMenu;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.CustomVariableModifyCommand;
 import games.rednblack.editor.renderer.components.MainItemComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
+import games.rednblack.editor.view.menu.WindowMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.properties.panels.UIBasicItemProperties;
+import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 

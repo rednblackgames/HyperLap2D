@@ -18,21 +18,17 @@
 
 package games.rednblack.editor.view.ui.panel;
 
-import java.util.Map;
-
-import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.widget.VisImageButton;
-import com.kotcrab.vis.ui.widget.VisLabel;
-import com.kotcrab.vis.ui.widget.VisTable;
-import com.kotcrab.vis.ui.widget.VisTextButton;
-import com.kotcrab.vis.ui.widget.VisTextField;
+import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.h2d.common.UIDraggablePanel;
 import games.rednblack.editor.renderer.utils.CustomVariables;
+import games.rednblack.h2d.common.UIDraggablePanel;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+
+import java.util.Map;
 
 /**
  * Created by azakhary on 5/12/2015.

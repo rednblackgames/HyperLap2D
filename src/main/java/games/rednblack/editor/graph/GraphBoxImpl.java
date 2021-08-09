@@ -6,15 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Align;
-import games.rednblack.editor.graph.data.FieldType;
-import games.rednblack.editor.graph.data.Graph;
-import games.rednblack.editor.graph.data.GraphConnection;
-import games.rednblack.editor.graph.data.GraphNode;
-import games.rednblack.editor.graph.data.GraphNodeInput;
-import games.rednblack.editor.graph.data.GraphNodeOutput;
-import games.rednblack.editor.graph.data.GraphProperty;
-import games.rednblack.editor.graph.data.NodeConfiguration;
 import com.google.common.base.Supplier;
+import games.rednblack.editor.graph.data.*;
 
 import java.util.HashMap;
 import java.util.LinkedList;

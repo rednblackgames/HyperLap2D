@@ -19,15 +19,14 @@
 package games.rednblack.editor.controller.commands.component;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.label.LabelComponent;
 import games.rednblack.editor.renderer.factory.component.LabelComponentFactory;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.MsgAPI;
 
 /**
  * Created by azakhary on 6/11/2015.

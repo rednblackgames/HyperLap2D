@@ -20,14 +20,14 @@ package games.rednblack.editor.view.ui;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.view.stage.UIStage;
-import games.rednblack.editor.view.stage.tools.PolygonTool;
-import games.rednblack.editor.view.stage.tools.TransformTool;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.PluginManager;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.view.stage.UIStage;
+import games.rednblack.editor.view.stage.tools.PolygonTool;
+import games.rednblack.editor.view.stage.tools.TransformTool;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
+import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 

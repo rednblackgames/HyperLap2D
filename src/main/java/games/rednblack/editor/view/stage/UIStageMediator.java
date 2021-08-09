@@ -18,10 +18,10 @@
 
 package games.rednblack.editor.view.stage;
 
-import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 

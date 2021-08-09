@@ -1,50 +1,42 @@
 package games.rednblack.editor.proxy;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map.Entry;
-
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.VisUI;
 import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
-import com.talosvfx.talos.runtime.assets.AtlasAssetProvider;
 import com.talosvfx.talos.runtime.utils.ShaderDescriptor;
 import com.talosvfx.talos.runtime.utils.VectorField;
+import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.data.SpineAnimData;
 import games.rednblack.editor.renderer.data.*;
-
+import games.rednblack.editor.renderer.resources.FontSizePair;
+import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.editor.renderer.utils.H2DSkinLoader;
 import games.rednblack.editor.renderer.utils.ShadedDistanceFieldFont;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.h2d.extension.talos.ResourceRetrieverAssetProvider;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.utils.Json;
-import games.rednblack.editor.data.SpineAnimData;
-import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.renderer.resources.FontSizePair;
-import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import org.puremvc.java.patterns.proxy.Proxy;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Created by azakhary on 4/26/2015.

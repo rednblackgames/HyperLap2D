@@ -1,10 +1,6 @@
 package games.rednblack.editor.graph.config;
 
-import games.rednblack.editor.graph.data.FieldType;
-import games.rednblack.editor.graph.data.GraphNodeInput;
-import games.rednblack.editor.graph.data.GraphNodeOutput;
-import games.rednblack.editor.graph.data.GraphProperty;
-import games.rednblack.editor.graph.data.NodeConfiguration;
+import games.rednblack.editor.graph.data.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

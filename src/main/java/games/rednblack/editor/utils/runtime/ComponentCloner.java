@@ -18,14 +18,14 @@
 
 package games.rednblack.editor.utils.runtime;
 
+import com.artemis.Component;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import com.artemis.Component;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 /**
  * Created by azakhary on 6/3/2015.

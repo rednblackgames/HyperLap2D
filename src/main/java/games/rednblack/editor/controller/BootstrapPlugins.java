@@ -18,11 +18,11 @@
 
 package games.rednblack.editor.controller;
 
+import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.proxy.PluginManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.h2d.common.plugins.H2DPlugin;
-import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.proxy.PluginManager;
 import net.mountainblade.modular.Module;
 import net.mountainblade.modular.ModuleManager;
 import net.mountainblade.modular.impl.DefaultModuleManager;

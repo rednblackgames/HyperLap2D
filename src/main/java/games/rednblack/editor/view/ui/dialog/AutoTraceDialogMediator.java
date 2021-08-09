@@ -5,7 +5,6 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.utils.poly.tracer.Tracer;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;

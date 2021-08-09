@@ -2,13 +2,12 @@ package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
+import games.rednblack.h2d.common.MsgAPI;
 
 import java.util.HashMap;
 import java.util.Map;

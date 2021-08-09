@@ -18,10 +18,8 @@
 
 package games.rednblack.editor.view.stage;
 
-import com.artemis.Aspect;
 import com.artemis.BaseComponentMapper;
 import com.artemis.ComponentMapper;
-import com.artemis.EntitySubscription;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
@@ -29,22 +27,22 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.kotcrab.vis.ui.FocusManager;
-import games.rednblack.editor.utils.KeyBindingsLayout;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.h2d.common.view.tools.Tool;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.renderer.components.NodeComponent;
-import games.rednblack.editor.renderer.components.ViewPortComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.KeyBindingsLayout;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.input.EntityClickListener;
 import games.rednblack.editor.view.stage.input.InputListenerComponent;
-import games.rednblack.editor.view.stage.tools.*;
+import games.rednblack.editor.view.stage.tools.PanTool;
+import games.rednblack.editor.view.stage.tools.SelectionTool;
+import games.rednblack.editor.view.stage.tools.TransformTool;
 import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
+import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.common.view.tools.Tool;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 

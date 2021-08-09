@@ -20,8 +20,8 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import games.rednblack.editor.event.CheckBoxChangeListener;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by azakhary on 4/16/2015.

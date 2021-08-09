@@ -18,11 +18,8 @@
 
 package games.rednblack.editor.view.ui.panel;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -35,9 +32,11 @@ import com.kotcrab.vis.ui.widget.VisProgressBar;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.UIDraggablePanel;
-import games.rednblack.editor.utils.ImportUtils;
+
+import java.util.HashMap;
 
 public class ImportPanel extends UIDraggablePanel {
     public static final String CLASS_NAME = "games.rednblack.editor.view.ui.panel.ImportDialog";

@@ -25,13 +25,12 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-import games.rednblack.editor.renderer.components.MainItemComponent;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
+import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.utils.TransformMathUtils;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
+import games.rednblack.editor.view.stage.Sandbox;
 import org.puremvc.java.interfaces.INotification;
 
 /**

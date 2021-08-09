@@ -20,12 +20,11 @@ package games.rednblack.editor.controller.commands;
 
 import com.artemis.Component;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.ComponentCloner;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
+import games.rednblack.h2d.common.MsgAPI;
 
 /**
  * Created by azakhary on 6/3/2015.

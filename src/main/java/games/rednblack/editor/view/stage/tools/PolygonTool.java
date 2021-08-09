@@ -20,20 +20,19 @@ package games.rednblack.editor.view.stage.tools;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
 import games.rednblack.editor.renderer.components.PolygonComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.poly.PolygonUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.followers.BasicFollower;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
 import games.rednblack.editor.view.ui.followers.PolygonTransformationListener;
+import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
 
 import java.util.Collections;

@@ -6,7 +6,6 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
 import games.rednblack.editor.renderer.components.PolygonComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;

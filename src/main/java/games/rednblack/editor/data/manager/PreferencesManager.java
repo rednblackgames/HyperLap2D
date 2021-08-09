@@ -18,13 +18,13 @@
 
 package games.rednblack.editor.data.manager;
 
-import java.util.ArrayList;
-import java.util.Map;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Array;
 import org.apache.commons.io.FilenameUtils;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class PreferencesManager {
 	private static final String TAG = PreferencesManager.class.getCanonicalName();

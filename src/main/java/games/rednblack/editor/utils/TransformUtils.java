@@ -1,7 +1,6 @@
 package games.rednblack.editor.utils;
 
 import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.components.TransformComponent;
 
 /**

@@ -1,12 +1,11 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.FontManager;
 import games.rednblack.editor.renderer.components.label.LabelComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
+import games.rednblack.h2d.common.MsgAPI;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 

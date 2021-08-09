@@ -18,8 +18,6 @@
 
 package games.rednblack.editor.view.ui.box;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -27,8 +25,10 @@ import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.tools.Tool;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+
+import java.util.HashMap;
 
 public class UIToolBox extends VisTable {
     private final ButtonGroup<VisImageButton> toolsButtonGroup;

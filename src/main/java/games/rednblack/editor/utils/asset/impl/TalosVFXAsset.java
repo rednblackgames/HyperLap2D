@@ -10,7 +10,6 @@ import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.components.particle.TalosDataComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.TalosVO;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;

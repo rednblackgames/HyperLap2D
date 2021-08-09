@@ -1,7 +1,7 @@
 package games.rednblack.editor.graph;
 
-import games.rednblack.editor.graph.data.FieldType;
 import com.google.common.base.Supplier;
+import games.rednblack.editor.graph.data.FieldType;
 
 public class GraphBoxInputConnectorImpl<T extends FieldType> implements GraphBoxInputConnector<T> {
     private Side side;

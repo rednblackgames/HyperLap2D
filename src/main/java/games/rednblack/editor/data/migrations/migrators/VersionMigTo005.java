@@ -18,21 +18,20 @@
 
 package games.rednblack.editor.data.migrations.migrators;
 
-import java.io.File;
-import java.io.IOException;
-
-import games.rednblack.h2d.common.vo.ProjectVO;
-import org.apache.commons.io.FileUtils;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonWriter;
-import games.rednblack.editor.data.migrations.IVersionMigrator;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.data.migrations.IVersionMigrator;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
+import games.rednblack.h2d.common.vo.ProjectVO;
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by azakhary on 9/28/2014.

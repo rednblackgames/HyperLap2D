@@ -11,8 +11,8 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.AppConfig;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.H2DDialog;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;

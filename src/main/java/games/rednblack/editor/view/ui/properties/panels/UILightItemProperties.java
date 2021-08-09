@@ -20,15 +20,18 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.util.Validators;
-import com.kotcrab.vis.ui.widget.*;
+import com.kotcrab.vis.ui.widget.VisCheckBox;
+import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisValidatableTextField;
 import com.kotcrab.vis.ui.widget.spinner.IntSpinnerModel;
 import com.kotcrab.vis.ui.widget.spinner.Spinner;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.NumberSelectorOverlapListener;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.editor.renderer.data.LightVO;
+import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by azakhary on 4/28/2015.

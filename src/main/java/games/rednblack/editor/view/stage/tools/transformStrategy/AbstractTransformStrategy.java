@@ -4,8 +4,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.utils.RoundUtils;
-import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
+import games.rednblack.h2d.common.command.TransformCommandBuilder;
 
 /**
  * Created by Sasun Poghosyan on 4/14/2016.

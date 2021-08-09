@@ -18,19 +18,18 @@
 
 package games.rednblack.editor.view.ui;
 
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
 import games.rednblack.editor.controller.commands.ConvertToCompositeCommand;
 import games.rednblack.editor.renderer.components.NodeComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.stage.tools.PanTool;
 import games.rednblack.editor.view.ui.followers.BasicFollower;
 import games.rednblack.editor.view.ui.followers.FollowerFactory;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
+import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 import org.puremvc.java.patterns.observer.Notification;

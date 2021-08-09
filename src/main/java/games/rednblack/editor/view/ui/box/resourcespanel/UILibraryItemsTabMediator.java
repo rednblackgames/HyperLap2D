@@ -19,16 +19,16 @@
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.controller.commands.resource.ExportLibraryItemCommand;
-import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.resource.DeleteLibraryItem;
+import games.rednblack.editor.controller.commands.resource.ExportLibraryItemCommand;
 import games.rednblack.editor.factory.ItemFactory;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
+import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.LibraryItemResource;
+import games.rednblack.h2d.common.MsgAPI;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 

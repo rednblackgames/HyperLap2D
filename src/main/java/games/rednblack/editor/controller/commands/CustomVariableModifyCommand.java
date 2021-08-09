@@ -1,7 +1,6 @@
 package games.rednblack.editor.controller.commands;
 
 import games.rednblack.editor.renderer.components.MainItemComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 

@@ -11,7 +11,6 @@ import games.rednblack.editor.renderer.components.SpineDataComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.renderer.data.SpineVO;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.renderer.utils.Version;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.utils.ImportUtils;

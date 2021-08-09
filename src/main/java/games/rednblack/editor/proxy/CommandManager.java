@@ -18,8 +18,6 @@
 
 package games.rednblack.editor.proxy;
 
-import java.util.ArrayList;
-
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.controller.commands.RevertibleCommand;
@@ -27,6 +25,8 @@ import games.rednblack.editor.controller.commands.TransactiveCommand;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.h2d.common.MenuAPI;
 import org.puremvc.java.patterns.proxy.Proxy;
+
+import java.util.ArrayList;
 
 public class CommandManager extends Proxy {
     private static final String TAG = CommandManager.class.getCanonicalName();

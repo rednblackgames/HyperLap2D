@@ -19,13 +19,12 @@
 package games.rednblack.editor.controller.commands.component;
 
 import com.badlogic.gdx.math.Vector2;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.PolygonComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
+import games.rednblack.h2d.common.MsgAPI;
 
 /**
  * Created by azakhary on 7/3/2015.

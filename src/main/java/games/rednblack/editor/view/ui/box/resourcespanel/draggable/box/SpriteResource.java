@@ -21,7 +21,6 @@ package games.rednblack.editor.view.ui.box.resourcespanel.draggable.box;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import games.rednblack.editor.renderer.data.SpriteAnimationVO;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;

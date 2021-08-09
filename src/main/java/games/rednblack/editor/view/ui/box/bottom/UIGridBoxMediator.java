@@ -18,9 +18,9 @@
 
 package games.rednblack.editor.view.ui.box.bottom;
 
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 

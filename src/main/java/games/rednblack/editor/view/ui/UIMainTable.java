@@ -23,18 +23,7 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBarMediator;
-import games.rednblack.editor.view.ui.box.UIAlignBox;
-import games.rednblack.editor.view.ui.box.UIAlignBoxMediator;
-import games.rednblack.editor.view.ui.box.UIItemsTreeBox;
-import games.rednblack.editor.view.ui.box.UIItemsTreeBoxMediator;
-import games.rednblack.editor.view.ui.box.UILayerBox;
-import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
-import games.rednblack.editor.view.ui.box.UIMultiPropertyBox;
-import games.rednblack.editor.view.ui.box.UIMultiPropertyBoxMediator;
-import games.rednblack.editor.view.ui.box.UIResourcesBox;
-import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
-import games.rednblack.editor.view.ui.box.UIToolBox;
-import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
+import games.rednblack.editor.view.ui.box.*;
 import games.rednblack.editor.view.ui.widget.H2DLogo;
 
 public class UIMainTable extends VisTable {

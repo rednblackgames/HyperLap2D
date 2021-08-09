@@ -3,8 +3,8 @@ package games.rednblack.editor.view.ui.properties.panels;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import games.rednblack.editor.event.SelectBoxChangeListener;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by azakhary on 8/2/2015.

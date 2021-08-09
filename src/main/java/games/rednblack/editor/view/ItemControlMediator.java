@@ -18,12 +18,11 @@
 
 package games.rednblack.editor.view;
 
-import java.util.Set;
-
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
+
+import java.util.Set;
 
 /**
  * Created by CyberJoe on 3/18/2015.

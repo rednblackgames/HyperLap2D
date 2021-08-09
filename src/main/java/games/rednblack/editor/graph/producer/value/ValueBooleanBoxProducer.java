@@ -5,9 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
+import games.rednblack.editor.graph.*;
 import games.rednblack.editor.graph.data.FieldType;
 import games.rednblack.editor.graph.data.NodeConfiguration;
-import games.rednblack.editor.graph.*;
 import games.rednblack.editor.graph.producer.ValueGraphBoxProducer;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 

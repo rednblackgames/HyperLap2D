@@ -5,21 +5,21 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.editor.view.ui.properties.panels.UIBasicItemPropertiesMediator;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.CompositeTransformComponent;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
-import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
+import games.rednblack.editor.view.ui.properties.panels.UIBasicItemPropertiesMediator;
+import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import org.puremvc.java.patterns.facade.Facade;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Sasun Poghosyan on 4/13/2016.

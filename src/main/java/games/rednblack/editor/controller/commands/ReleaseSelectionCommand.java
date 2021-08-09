@@ -18,13 +18,13 @@
 
 package games.rednblack.editor.controller.commands;
 
+import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.view.stage.Sandbox;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.editor.utils.runtime.EntityUtils;
 
 /**
  * Created by azakhary on 5/14/2015.

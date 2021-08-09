@@ -18,17 +18,16 @@
 
 package games.rednblack.editor.data.migrations;
 
-import java.io.IOException;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import games.rednblack.editor.data.migrations.migrators.*;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import org.apache.commons.io.FileUtils;
 
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonWriter;
+import java.io.IOException;
 
 /**
  * Created by azakhary on 9/28/2014.

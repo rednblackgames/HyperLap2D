@@ -18,17 +18,8 @@
 
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Set;
-import java.util.function.BiFunction;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.puremvc.java.interfaces.INotification;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-
 import games.rednblack.editor.controller.commands.resource.DeleteSpineAnimation;
 import games.rednblack.editor.controller.commands.resource.DeleteSpriteAnimation;
 import games.rednblack.editor.factory.ItemFactory;
@@ -39,6 +30,13 @@ import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.BoxItemRe
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.SpineResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.SpriteResource;
 import games.rednblack.h2d.extention.spine.SpineItemType;
+import org.apache.commons.lang3.ArrayUtils;
+import org.puremvc.java.interfaces.INotification;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
+import java.util.function.BiFunction;
 
 /**
  * Created by azakhary on 4/17/2015.

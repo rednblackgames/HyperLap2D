@@ -1,26 +1,24 @@
 package games.rednblack.editor.view.ui;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectSet;
-import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.BoxItemResource;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.kotcrab.vis.ui.widget.VisTable;
-
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.UIImagesTab;
+import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.BoxItemResource;
 import games.rednblack.h2d.common.MsgAPI;
+import org.puremvc.java.interfaces.INotification;
+import org.puremvc.java.patterns.mediator.Mediator;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * This mediator is part of the behavior that allows multiple images to be selected and dropped to other panels (like the GridTilesTab from the tiles plugin).

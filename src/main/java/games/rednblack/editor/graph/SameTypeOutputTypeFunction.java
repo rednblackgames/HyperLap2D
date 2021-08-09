@@ -1,7 +1,7 @@
 package games.rednblack.editor.graph;
 
-import games.rednblack.editor.graph.data.FieldType;
 import com.google.common.base.Function;
+import games.rednblack.editor.graph.data.FieldType;
 
 import java.util.Map;
 

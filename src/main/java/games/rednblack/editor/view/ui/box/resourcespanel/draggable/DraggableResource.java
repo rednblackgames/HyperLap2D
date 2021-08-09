@@ -18,14 +18,11 @@
 
 package games.rednblack.editor.view.ui.box.resourcespanel.draggable;
 
-import java.util.function.BiFunction;
-
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -34,6 +31,8 @@ import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.BoxItemResource;
 import games.rednblack.h2d.common.ResourcePayloadObject;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+
+import java.util.function.BiFunction;
 
 /**
  * Created by azakhary on 7/3/2014.

@@ -1,17 +1,16 @@
 package games.rednblack.editor;
 
+import games.rednblack.editor.utils.AppConfig;
+import games.rednblack.editor.utils.HyperLap2DUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.lwjgl.util.tinyfd.TinyFileDialogs;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
-
-import games.rednblack.editor.utils.HyperLap2DUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.SystemUtils;
-
-import games.rednblack.editor.utils.AppConfig;
-import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
 public class CustomExceptionHandler implements UncaughtExceptionHandler {
 

@@ -1,8 +1,5 @@
 package games.rednblack.editor.view.ui.followers;
 
-import games.rednblack.editor.renderer.components.TextureRegionComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
-
 /**
  * Created by CyberJoe on 8/2/2015.
  */

@@ -19,9 +19,9 @@
 package games.rednblack.editor.view.ui;
 
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.h2d.common.MsgAPI;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import games.rednblack.editor.event.MenuItemListener;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.widget.H2DPopupMenu;
 
 import java.util.HashMap;

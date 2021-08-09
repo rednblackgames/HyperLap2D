@@ -21,13 +21,12 @@ package games.rednblack.editor.view.ui.properties.panels;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.Animation;
 import games.rednblack.editor.controller.commands.component.UpdateSpineDataCommand;
+import games.rednblack.editor.renderer.components.SpineDataComponent;
 import games.rednblack.editor.renderer.data.SpineVO;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
+import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extention.spine.SpineObjectComponent;
-import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
-import games.rednblack.editor.renderer.components.SpineDataComponent;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 
 public class UISpineAnimationItemPropertiesMediator extends UIItemPropertiesMediator<UISpineAnimationItemProperties> {
     private static final String TAG = UISpineAnimationItemPropertiesMediator.class.getCanonicalName();

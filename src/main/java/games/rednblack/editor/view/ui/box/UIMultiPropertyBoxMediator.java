@@ -18,19 +18,8 @@
 
 package games.rednblack.editor.view.ui.box;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
-import org.puremvc.java.interfaces.IMediator;
-import org.puremvc.java.interfaces.INotification;
-
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
@@ -42,31 +31,22 @@ import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.components.physics.SensorComponent;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.stage.tools.TextTool;
 import games.rednblack.editor.view.ui.properties.UIAbstractProperties;
-import games.rednblack.editor.view.ui.properties.panels.UIBasicItemPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UICompositeItemPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UIImageItemPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UILabelItemPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UILightBodyPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UILightItemPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UIMultipleSelectPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UIParticlePropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UIPhysicsPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UIPolygonComponentPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UIScenePropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UISensorPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UIShaderPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UISpineAnimationItemPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UISpriteAnimationItemPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UITalosPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UITextToolPropertiesMediator;
-import games.rednblack.editor.view.ui.properties.panels.UITypingLabelPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.*;
 import games.rednblack.h2d.common.MsgAPI;
+import org.puremvc.java.interfaces.IMediator;
+import org.puremvc.java.interfaces.INotification;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Created by azakhary on 4/15/2015.

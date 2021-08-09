@@ -20,9 +20,9 @@ package games.rednblack.editor.view.ui.box.resourcespanel.draggable.list;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import games.rednblack.h2d.common.ResourcePayloadObject;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
+import games.rednblack.h2d.common.ResourcePayloadObject;
 
 /**
  * Created by azakhary on 7/3/2014.

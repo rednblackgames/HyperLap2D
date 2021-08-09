@@ -18,23 +18,19 @@
 
 package games.rednblack.editor.view.stage;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
-import games.rednblack.editor.renderer.components.TransformComponent;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.data.LayerItemVO;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.Constants;
 import games.rednblack.editor.utils.EntityBounds;
 import games.rednblack.editor.utils.MoveCommandBuilder;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.SceneControlMediator;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
+import games.rednblack.h2d.common.MsgAPI;
 
 import java.util.Arrays;
 import java.util.HashSet;

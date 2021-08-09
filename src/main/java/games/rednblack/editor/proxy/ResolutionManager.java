@@ -18,36 +18,33 @@
 
 package games.rednblack.editor.proxy;
 
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.kotcrab.vis.ui.util.dialog.Dialogs;
+import com.mortennobel.imagescaling.ResampleOp;
+import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.renderer.data.ProjectInfoVO;
+import games.rednblack.editor.renderer.data.ResolutionEntryVO;
+import games.rednblack.editor.renderer.data.TexturePackVO;
+import games.rednblack.editor.utils.HyperLap2DUtils;
+import games.rednblack.editor.utils.NinePatchUtils;
+import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.common.ProgressHandler;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.puremvc.java.patterns.proxy.Proxy;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import javax.imageio.ImageIO;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
-import games.rednblack.editor.renderer.data.TexturePackVO;
-import games.rednblack.h2d.common.MsgAPI;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker;
-import com.badlogic.gdx.utils.Array;
-import com.mortennobel.imagescaling.ResampleOp;
-import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.h2d.common.ProgressHandler;
-import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.renderer.data.ProjectInfoVO;
-import games.rednblack.editor.renderer.data.ResolutionEntryVO;
-import games.rednblack.editor.utils.NinePatchUtils;
-import games.rednblack.editor.utils.HyperLap2DUtils;
-import org.puremvc.java.patterns.proxy.Proxy;
 
 public class ResolutionManager extends Proxy {
     public interface RepackCallback {

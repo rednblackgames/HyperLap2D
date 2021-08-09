@@ -28,12 +28,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.util.Validators;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import games.rednblack.h2d.common.H2DDialog;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.validator.StringNameValidator;
+import games.rednblack.h2d.common.H2DDialog;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.InputFileWidget;
 import org.apache.commons.lang3.math.NumberUtils;
 

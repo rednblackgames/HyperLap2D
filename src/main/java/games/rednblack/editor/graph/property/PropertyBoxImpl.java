@@ -6,12 +6,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import games.rednblack.editor.graph.config.PropertyNodeConfiguration;
-import games.rednblack.editor.graph.data.FieldType;
 import games.rednblack.editor.graph.GraphBox;
 import games.rednblack.editor.graph.GraphBoxImpl;
 import games.rednblack.editor.graph.GraphChangedEvent;
 import games.rednblack.editor.graph.ValueGraphNodeOutput;
+import games.rednblack.editor.graph.config.PropertyNodeConfiguration;
+import games.rednblack.editor.graph.data.FieldType;
 
 import java.util.HashMap;
 import java.util.Map;

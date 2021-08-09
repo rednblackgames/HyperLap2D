@@ -1,8 +1,8 @@
 package games.rednblack.editor.graph;
 
+import com.google.common.base.Function;
 import games.rednblack.editor.graph.data.FieldType;
 import games.rednblack.editor.graph.data.GraphNodeOutput;
-import com.google.common.base.Function;
 
 import java.util.Arrays;
 import java.util.List;

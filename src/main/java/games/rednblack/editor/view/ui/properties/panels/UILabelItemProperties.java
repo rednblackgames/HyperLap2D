@@ -1,19 +1,25 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.kotcrab.vis.ui.widget.*;
+import com.kotcrab.vis.ui.widget.VisCheckBox;
+import com.kotcrab.vis.ui.widget.VisSelectBox;
+import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextArea;
 import com.kotcrab.vis.ui.widget.spinner.IntSpinnerModel;
 import com.kotcrab.vis.ui.widget.spinner.Spinner;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.code.syntax.TypingLabelSyntax;
-import games.rednblack.editor.event.*;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.editor.event.CheckBoxChangeListener;
+import games.rednblack.editor.event.KeyboardListener;
+import games.rednblack.editor.event.NumberSelectorOverlapListener;
+import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.editor.view.ui.widget.actors.ExpandableTextArea;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by azakhary on 4/24/15.

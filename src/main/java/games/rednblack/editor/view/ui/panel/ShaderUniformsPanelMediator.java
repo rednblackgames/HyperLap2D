@@ -3,7 +3,6 @@ package games.rednblack.editor.view.ui.panel;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.renderer.data.ShaderUniformVO;
-import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.menu.WindowMenu;
 import games.rednblack.editor.view.stage.Sandbox;

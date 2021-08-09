@@ -24,15 +24,14 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
 import com.badlogic.gdx.math.Vector2;
-import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
+import com.kotcrab.vis.ui.VisUI;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.view.ui.panel.ImportPanel;
+import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.h2d.common.MsgAPI;
-import com.kotcrab.vis.ui.VisUI;
 import org.lwjgl.BufferUtils;
-
 import org.lwjgl.glfw.GLFW;
 import org.puremvc.java.interfaces.IProxy;
 import org.puremvc.java.patterns.observer.Notification;

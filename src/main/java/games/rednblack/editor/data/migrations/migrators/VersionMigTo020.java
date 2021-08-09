@@ -11,9 +11,9 @@ import com.badlogic.gdx.utils.JsonWriter;
 import games.rednblack.editor.data.migrations.IVersionMigrator;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
+import games.rednblack.editor.renderer.data.TexturePackVO;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.h2d.common.vo.ProjectVO;
-import games.rednblack.editor.renderer.data.TexturePackVO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 

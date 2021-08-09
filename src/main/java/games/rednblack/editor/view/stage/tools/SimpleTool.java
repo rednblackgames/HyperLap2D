@@ -1,11 +1,11 @@
 package games.rednblack.editor.view.stage.tools;
 
-import games.rednblack.h2d.common.view.tools.Tool;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.followers.BasicFollower;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
+import games.rednblack.h2d.common.view.tools.Tool;
 import org.puremvc.java.interfaces.INotification;
 
 import java.util.Set;
