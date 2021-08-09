@@ -94,7 +94,6 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
             if (sandboxBackUI != null) sandboxBackUI.render(deltaTime);
             sandbox.render(deltaTime);
-            engine.setDelta(deltaTime);
             engine.process();
         }
 

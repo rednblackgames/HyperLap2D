@@ -78,7 +78,6 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
         mCamera.position.lerp(cameraTargetPos, 0.5f);
 
         viewport.apply();
-        sceneLoader.getEngine().setDelta(delta);
         sceneLoader.getEngine().process();
 
         if (projectManager.currentProjectVO.box2dDebugRender)

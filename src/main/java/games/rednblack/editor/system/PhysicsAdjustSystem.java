@@ -20,7 +20,7 @@ public class PhysicsAdjustSystem extends PhysicsSystem {
 	@Override
 	protected void process(int entity) {
 		TransformComponent transformComponent = transformComponentMapper.get(entity);
-		processBody(entity);
+		super.process(entity);
 
 		PhysicsBodyComponent physicsBodyComponent = SandboxComponentRetriever.get(entity, PhysicsBodyComponent.class);
 
