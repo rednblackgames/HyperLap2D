@@ -4,6 +4,8 @@
 
 = Editor =
 - Update LWJGL to 3.3.0-SNAPSHOT
+- Add FPS Limit in Settings
+- Performance improvements
 
 [0.0.7]
 - [BREAK CHANGE] Spine and Sprite animations are now packed into same main atlas pack
