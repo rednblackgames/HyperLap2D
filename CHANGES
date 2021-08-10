@@ -1,6 +1,7 @@
 [0.0.8]
 - Update libGDX to 1.10.1-SNAPSHOT
 - [BREAK CHANGE] Rework runtime code, replaced Ashley ECS with Artemis-odb
+- [BREAK CHANGE] Update Spine Support to `4.0.18.1`
 
 = Editor =
 - Update LWJGL to 3.3.0-SNAPSHOT

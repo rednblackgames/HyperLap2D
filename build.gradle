@@ -152,8 +152,8 @@ dependencies {
     implementation "com.rafaskoberg.gdx:typing-label:$typingLabelVersion"
     implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
     implementation "com.esotericsoftware.spine:spine-libgdx:$spineVersion"
-    implementation "com.mortennobel:java-image-scaling:0.8.5"
-    implementation "org.apache.commons:commons-lang3:3.11"
+    implementation "com.mortennobel:java-image-scaling:0.8.6"
+    implementation "org.apache.commons:commons-lang3:3.12.0"
     implementation "commons-io:commons-io:2.7"
     implementation 'net.mountainblade:modular:1.0'
 
