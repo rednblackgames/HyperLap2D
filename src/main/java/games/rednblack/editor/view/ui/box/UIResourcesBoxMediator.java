@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.ui.box.resourcespanel.*;
+import games.rednblack.editor.view.ui.box.resourcespanel.filter.NormalMapFilter;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
 import org.puremvc.java.interfaces.INotification;
@@ -117,6 +118,8 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
     }
 
     private void initTabs() {
+        facade.sendNotification(MsgAPI.ADD_RESOURCES_BOX_FILTER, new NormalMapFilter());
+
         UIImagesTabMediator imagesTabMediator = facade.retrieveMediator(UIImagesTabMediator.NAME);
         ImageTab imagesTab = imagesTabMediator.getViewComponent();
         viewComponent.addTab(0, imagesTab);

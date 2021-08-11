@@ -25,10 +25,9 @@ public class UIFilterMenuMediator extends Mediator<UIFilterMenu> {
 
     @Override
     public void handleNotification(INotification notification) {
-        UIStage uiStage = Sandbox.getInstance().getUIStage();
-
         switch (notification.getName()) {
             case UIFilterMenu.SHOW_FILTER_MENU:
+                UIStage uiStage = Sandbox.getInstance().getUIStage();
                 Object[] payload = notification.getBody();
                 viewComponent.showMenu(uiStage, (float) payload[0], (float) payload[1]);
                 break;
