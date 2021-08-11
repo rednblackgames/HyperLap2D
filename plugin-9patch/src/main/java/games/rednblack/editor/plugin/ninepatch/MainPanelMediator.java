@@ -150,8 +150,6 @@ public class MainPanelMediator extends Mediator<MainPanel> {
         TextureAtlas.AtlasRegion region = plugin.getAPI().getProjectTextureRegion(name);
         validateNinePatchTextureRegion(region);
         viewComponent.setTexture(region);
-
-        viewComponent.setListeners(plugin.getAPI().getUIStage());
     }
 
     private void validateNinePatchTextureRegion(TextureAtlas.AtlasRegion texture) {

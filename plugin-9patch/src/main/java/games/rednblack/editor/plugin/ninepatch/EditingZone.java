@@ -37,7 +37,7 @@ public class EditingZone extends Actor {
     private int[] splits = new int[4];
 
     public interface PatchChangeListener {
-        public void changed(int[] splits);
+        void changed(int[] splits);
     }
 
     private PatchChangeListener listener;
@@ -120,6 +120,12 @@ public class EditingZone extends Actor {
                 mouseOverSplit = splitCollision(x, y);
                 return false;
             }
+
+            @Override
+            public boolean scrolled(InputEvent event, float x, float y, float amountX, float amountY) {
+                zoomBy(amountY);
+                return true;
+            }
         });
     }
 
@@ -153,14 +159,15 @@ public class EditingZone extends Actor {
     public void draw (Batch batch, float parentAlpha) {
         Rectangle scissors = new Rectangle();
         Rectangle clipBounds = new Rectangle(getX(),getY(),getWidth(),getHeight());
+        batch.flush();
         ScissorStack.calculateScissors(getStage().getCamera(), batch.getTransformMatrix(), clipBounds, scissors);
         ScissorStack.pushScissors(scissors);
 
         drawBg(batch, parentAlpha);
 
         batch.draw(texture,
-                getX() + getWidth() / 2 - texture.getRegionWidth() / 2 + shift.x,
-                getY() + getHeight() / 2 - texture.getRegionHeight() / 2 + shift.y,
+                getX() + getWidth() / 2 - texture.getRegionWidth() / 2f + shift.x,
+                getY() + getHeight() / 2 - texture.getRegionHeight() / 2f + shift.y,
                 texture.getRegionWidth() / 2f,
                 texture.getRegionHeight() / 2f,
                 texture.getRegionWidth(), texture.getRegionHeight(),
@@ -213,8 +220,8 @@ public class EditingZone extends Actor {
 
         splitPositions[0] = shift.x + getWidth() / 2f + (-texture.getRegionWidth() / 2f + splits[0]) * currZoom;
         splitPositions[1] = shift.x + getWidth() / 2f + (texture.getRegionWidth() / 2f - splits[1]) * currZoom;
-        splitPositions[2] = shift.y + getHeight()/2f + (texture.getRegionHeight()/2 - splits[2])*currZoom;
-        splitPositions[3] = shift.y + getHeight() / 2f + (-texture.getRegionHeight() / 2 + splits[3]) * currZoom;
+        splitPositions[2] = shift.y + getHeight()/2f + (texture.getRegionHeight() / 2f - splits[2])*currZoom;
+        splitPositions[3] = shift.y + getHeight() / 2f + (-texture.getRegionHeight() / 2f + splits[3]) * currZoom;
 
 
         if(mouseOverSplit == 0) shapeRenderer.setColor(overColor); else shapeRenderer.setColor(guideColor);

@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -33,7 +32,7 @@ public class MainPanel extends H2DDialog {
     private PreviewWidget previewWidget;
 
     public MainPanel(IFacade facade) {
-        super("Nine Patch");
+        super("Nine Patch", false);
         addCloseButton();
 
         this.facade = facade;
@@ -53,6 +52,13 @@ public class MainPanel extends H2DDialog {
         editingZone = new EditingZone();
         editingZone.setTexture(texture);
         editingTable.add(editingZone);
+        addListener(new InputListener() {
+            @Override
+            public boolean scrolled(InputEvent event, float x, float y, float amountX, float amountY) {
+                editingZone.zoomBy(amountY);
+                return true;
+            }
+        });
 
         editingZone.setWidth(310);
         editingZone.setHeight(310);
@@ -94,16 +100,6 @@ public class MainPanel extends H2DDialog {
 
         initView();
         initPreView();
-    }
-
-    public void setListeners(Stage stage) {
-        stage.addListener(new InputListener() {
-            @Override
-            public boolean scrolled(InputEvent event, float x, float y, float amountX, float amountY) {
-                editingZone.zoomBy(amountX);
-                return false;
-            }
-        });
     }
 
     public int[] getSplits() {
