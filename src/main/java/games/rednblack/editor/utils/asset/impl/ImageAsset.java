@@ -1,7 +1,10 @@
 package games.rednblack.editor.utils.asset.impl;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.Array;
+import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.components.NinePatchComponent;
@@ -14,6 +17,7 @@ import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
+import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
 
 import java.io.File;
@@ -40,7 +44,24 @@ public class ImageAsset extends Asset {
 
     @Override
     protected boolean matchMimeType(FileHandle file) {
-        return file.extension().equalsIgnoreCase("png");
+        if (file.extension().equalsIgnoreCase("png")) {
+            try {
+                Pixmap image = new Pixmap(file);
+                int width = image.getWidth();
+                int height = image.getHeight();
+                TexturePacker.Settings settings = projectManager.getTexturePackerSettings();
+                if (width >= settings.maxWidth - settings.paddingX || height >= settings.maxHeight - settings.paddingY) {
+                    Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                            "Provided image exceeds atlas limits (" + settings.maxWidth + "x" + settings.maxHeight
+                                    + ")\nPlease, resize images to the correct scale.").padBottom(20).pack();
+                    return false;
+                }
+                return true;
+            } catch (Exception ignore) {
+                return false;
+            }
+        }
+        return false;
     }
 
     @Override
