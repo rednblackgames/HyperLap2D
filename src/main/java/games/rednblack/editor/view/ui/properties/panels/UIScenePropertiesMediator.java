@@ -42,6 +42,32 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
     private static final String TAG = UIScenePropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
+    private final ColorPicker picker = new HyperLapColorPicker();
+    private final ColorPickerAdapter ambientColorListener = new ColorPickerAdapter() {
+        @Override
+        public void finished(Color newColor) {
+            viewComponent.setAmbientColor(newColor);
+            facade.sendNotification(viewComponent.getUpdateEventName());
+        }
+        @Override
+        public void changed(Color newColor) {
+            viewComponent.setAmbientColor(newColor);
+            facade.sendNotification(viewComponent.getUpdateEventName());
+        }
+    };
+    private final ColorPickerAdapter directionalColorListener = new ColorPickerAdapter() {
+        @Override
+        public void finished(Color newColor) {
+            viewComponent.setDirectionalColor(newColor);
+            facade.sendNotification(viewComponent.getUpdateEventName());
+        }
+        @Override
+        public void changed(Color newColor) {
+            viewComponent.setDirectionalColor(newColor);
+            facade.sendNotification(viewComponent.getUpdateEventName());
+        }
+    };
+
     public UIScenePropertiesMediator() {
         super(NAME, new UISceneProperties());
     }
@@ -63,46 +89,24 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
 
         switch (notification.getName()) {
             case UISceneProperties.AMBIENT_COLOR_BUTTON_CLICKED:
-                ColorPicker picker = new HyperLapColorPicker(new ColorPickerAdapter() {
-                    @Override
-                    public void finished(Color newColor) {
-                        viewComponent.setAmbientColor(newColor);
-                        facade.sendNotification(viewComponent.getUpdateEventName());
-                    }
-                    @Override
-                    public void changed(Color newColor) {
-                        viewComponent.setAmbientColor(newColor);
-                        facade.sendNotification(viewComponent.getUpdateEventName());
-                    }
-                });
-
+                picker.setListener(null);
                 if (notification.getBody() != null) {
                     viewComponent.setAmbientColor(notification.getBody());
                 }
-                picker.setColor(viewComponent.getAmbientColor());
-                Sandbox.getInstance().getUIStage().addActor(picker.fadeIn());
 
+                picker.setColor(viewComponent.getAmbientColor());
+                picker.setListener(ambientColorListener);
+                Sandbox.getInstance().getUIStage().addActor(picker.fadeIn());
                 break;
             case UISceneProperties.DIRECTIONAL_COLOR_BUTTON_CLICKED:
-                picker = new HyperLapColorPicker(new ColorPickerAdapter() {
-                    @Override
-                    public void finished(Color newColor) {
-                        viewComponent.setDirectionalColor(newColor);
-                        facade.sendNotification(viewComponent.getUpdateEventName());
-                    }
-                    @Override
-                    public void changed(Color newColor) {
-                        viewComponent.setDirectionalColor(newColor);
-                        facade.sendNotification(viewComponent.getUpdateEventName());
-                    }
-                });
-
+                picker.setListener(null);
                 if (notification.getBody() != null) {
                     viewComponent.setDirectionalColor(notification.getBody());
                 }
-                picker.setColor(viewComponent.getDirectionalColor());
-                Sandbox.getInstance().getUIStage().addActor(picker.fadeIn());
 
+                picker.setColor(viewComponent.getDirectionalColor());
+                picker.setListener(directionalColorListener);
+                Sandbox.getInstance().getUIStage().addActor(picker.fadeIn());
                 break;
             default:
                 break;
