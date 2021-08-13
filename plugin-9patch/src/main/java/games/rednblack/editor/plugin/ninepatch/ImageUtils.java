@@ -159,7 +159,7 @@ public class ImageUtils {
                 } catch (IOException e) {
 
                 }
-                int[] pad = {0, 0, 0, 0};
+                int[] pad = splits.clone();
                 region.names = new String[] {"split", "pad"};
                 region.values = new int[][] {splits, pad};
                 return extractNinePatch(img, region);
