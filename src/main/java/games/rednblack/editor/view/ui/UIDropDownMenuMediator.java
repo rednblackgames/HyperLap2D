@@ -120,6 +120,7 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
 
         actionSets.put(ORIGIN_POINT_ACTION_SET, new Array<>());
         actionSets.get(ORIGIN_POINT_ACTION_SET).add(MsgAPI.ACTION_CHANGE_ORIGIN_POSITION);
+        actionSets.get(ORIGIN_POINT_ACTION_SET).add(MsgAPI.ACTION_CENTER_ORIGIN_POSITION);
 
         facade = HyperLap2DFacade.getInstance();
     }

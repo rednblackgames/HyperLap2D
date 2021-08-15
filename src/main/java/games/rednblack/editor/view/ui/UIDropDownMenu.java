@@ -67,6 +67,7 @@ public class UIDropDownMenu extends H2DPopupMenu {
         actionNames.put(MsgAPI.ACTION_DELETE_POLYGON_VERTEX, "Delete Vertex");
 
         actionNames.put(MsgAPI.ACTION_CHANGE_ORIGIN_POSITION, "Change Origin Position");
+        actionNames.put(MsgAPI.ACTION_CENTER_ORIGIN_POSITION, "Center Origin");
 
         actionNames.put(MsgAPI.ACTION_DUPLICATE_LIBRARY_ACTION, "Duplicate");
         actionNames.put(MsgAPI.ACTION_DELETE_LIBRARY_ACTION, "Delete");
