@@ -320,6 +320,7 @@ public class ItemSelector {
         }
 
         currentSelection.clear();
+        sandbox.getEngine().process();
     }
 
     public void alignSelectionsByX(int relativeTo, boolean toHighestX) {
