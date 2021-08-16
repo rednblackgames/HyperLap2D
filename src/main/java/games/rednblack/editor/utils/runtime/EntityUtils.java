@@ -268,7 +268,7 @@ public class EntityUtils {
         IntBag composites = subscription.getEntities();
         for (int composite : composites.getData()) {
             MainItemComponent mainItemComponent = SandboxComponentRetriever.get(composite, MainItemComponent.class);
-            if (mainItemComponent.libraryLink.equals(link)) {
+            if (mainItemComponent != null && mainItemComponent.libraryLink.equals(link)) {
                 result.add(composite);
             }
         }
