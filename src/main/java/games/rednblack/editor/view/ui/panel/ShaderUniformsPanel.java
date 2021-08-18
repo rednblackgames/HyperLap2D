@@ -88,6 +88,9 @@ public class ShaderUniformsPanel extends UIDraggablePanel {
         clearInputs();
         getContentTable().clear();
 
+        if (uniforms.size == 0)
+            return;
+
         this.uniforms = uniforms;
         this.customUniforms = customUniforms;
         uniformName.setItems(uniforms.keys().toArray());
