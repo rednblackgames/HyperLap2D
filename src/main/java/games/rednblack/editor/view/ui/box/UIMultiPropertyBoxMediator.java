@@ -25,7 +25,6 @@ import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.ShaderComponent;
-import games.rednblack.editor.renderer.components.label.TypingLabelComponent;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.components.physics.SensorComponent;
@@ -40,6 +39,7 @@ import games.rednblack.editor.view.ui.properties.UIAbstractProperties;
 import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
 import games.rednblack.editor.view.ui.properties.panels.*;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.extension.typinglabel.TypingLabelComponent;
 import org.puremvc.java.interfaces.IMediator;
 import org.puremvc.java.interfaces.INotification;
 

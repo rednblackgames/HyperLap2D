@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+}
+
+apply from : 'publish.gradle'
+
+repositories {
+    mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+dependencies {
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+
+    implementation "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
+    implementation project(":hyperlap2d-runtime-libgdx")
+
+    implementation "com.rafaskoberg.gdx:typing-label:$typingLabelVersion"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+task dist(type: Jar) {
+    from files(sourceSets.main.output.classesDirs)
+    from files(sourceSets.main.output.resourcesDir)
+}
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = "1.7"
+    targetCompatibility = "1.7"
+}

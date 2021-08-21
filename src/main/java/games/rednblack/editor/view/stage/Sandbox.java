@@ -57,6 +57,7 @@ import games.rednblack.h2d.common.vo.ProjectVO;
 import games.rednblack.h2d.common.vo.SceneConfigVO;
 import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.talos.TalosSystem;
+import games.rednblack.h2d.extension.typinglabel.TypingLabelItemType;
 import games.rednblack.h2d.extention.spine.SpineItemType;
 
 import java.util.HashMap;
@@ -133,6 +134,7 @@ public class Sandbox {
         // adding spine as external component
         config.addExternalItemType(new SpineItemType());
         config.addExternalItemType(new TalosItemType());
+        config.addExternalItemType(new TypingLabelItemType());
 
         //Remove Physics System and add Adjusting System for box2d objects to follow items and stop world tick
         config.removeSystem(PhysicsSystem.class);

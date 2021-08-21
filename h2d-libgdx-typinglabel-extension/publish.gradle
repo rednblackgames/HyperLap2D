@@ -1,0 +1,106 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+group = 'games.rednblack.hyperlap2d'
+version = '0.0.8'
+ext.artifact = 'libgdx-typinglabel-extension'
+ext.packaging = 'jar'
+
+def isDevBuild
+def isCiBuild
+def isReleaseBuild
+
+def sonatypeRepositoryUrl
+
+//set build variables based on build type (release, continuous integration, development)
+if(hasProperty("RELEASE")) {
+    isReleaseBuild = true
+    sonatypeRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+    println "Performing release build"
+} else if (hasProperty("SNAPSHOT")) {
+    isCiBuild = true
+    version += "-SNAPSHOT"
+    sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+    println "Performing snapshot build"
+} else {
+    isDevBuild = true
+    println "Performing local build"
+}
+
+def getRepositoryUsername = {
+    return project.hasProperty('NEXUS_USERNAME') ? NEXUS_USERNAME : "$System.env.NEXUS_USERNAME"
+}
+
+def getRepositoryPassword = {
+    return project.hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : "$System.env.NEXUS_PASSWORD"
+}
+
+repositories {
+    mavenCentral()
+}
+
+if(isReleaseBuild) {
+    signing {
+        useGpgCmd()
+        sign publishing.publications
+    }
+} else {
+    task signArchives {
+        // do nothing
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            artifactId = artifact
+            pom {
+                name = "HyperLap2D Typing Label extension for libGDX runtime"
+                description = "Typing Label extension for HyperLap2D libgdx runtime"
+                url = "https://github.com/rednblackgames/h2d-libgdx-typinglabel-extension"
+                licenses {
+                    license {
+                        name = "The Apache Software License, Version 2.0"
+                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                        distribution = "repo"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "fgnm"
+                        name = "Francesco Marongiu"
+                        email = "fgnm.dev@gmail.com"
+                    }
+                }
+                scm {
+                    connection = "scm:git@github.com:rednblackgames/h2d-libgdx-typinglabel-extension.git"
+                    developerConnection = "scm:git@github.com:rednblackgames/h2d-libgdx-typinglabel-extension.git"
+                    url = "scm:git@github.com:rednblackgames/h2d-libgdx-typinglabel-extension.git"
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url = sonatypeRepositoryUrl
+
+            if (getRepositoryUsername() || getRepositoryPassword())
+            {
+                credentials {
+                    username = getRepositoryUsername()
+                    password = getRepositoryPassword()
+                }
+            }
+        }
+    }
+}

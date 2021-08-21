@@ -2,10 +2,10 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
-import games.rednblack.editor.renderer.components.label.TypingLabelComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.extension.typinglabel.TypingLabelComponent;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 
