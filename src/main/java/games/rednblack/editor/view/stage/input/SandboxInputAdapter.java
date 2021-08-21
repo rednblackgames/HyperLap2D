@@ -11,8 +11,11 @@ import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.NodeComponent;
+import games.rednblack.editor.renderer.components.ParentNodeComponent;
+import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ViewPortComponent;
 import games.rednblack.editor.renderer.data.LayerItemVO;
+import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.renderer.utils.TransformMathUtils;
 import games.rednblack.editor.utils.EntityBounds;
 import games.rednblack.editor.utils.runtime.EntityUtils;
@@ -103,7 +106,9 @@ public class SandboxInputAdapter implements InputProcessor {
 		inpputListenerComponent = mapper.get(target);
 		if(inpputListenerComponent == null) return false;
 		Array<InputListener> listeners = inpputListenerComponent.getAllListeners();
-		TransformMathUtils.sceneToLocalCoordinates(target, hitTargetLocalCoordinates, sandbox.getEngine());
+		ComponentMapper<TransformComponent> transformMapper = (ComponentMapper<TransformComponent>) ComponentRetriever.getMapper(TransformComponent.class, sandbox.getEngine());
+		ComponentMapper<ParentNodeComponent> parentMapper = (ComponentMapper<ParentNodeComponent>) ComponentRetriever.getMapper(ParentNodeComponent.class, sandbox.getEngine());
+		TransformMathUtils.sceneToLocalCoordinates(target, hitTargetLocalCoordinates, transformMapper, parentMapper);
 		for (int j = 0, s = listeners.size; j < s; j++) {
 			if (listeners.get(j).touchDown(target, hitTargetLocalCoordinates.x, hitTargetLocalCoordinates.y, pointer, button)) {
 				return true;
@@ -220,8 +225,9 @@ public class SandboxInputAdapter implements InputProcessor {
 	
 	public int hit(int root, float x, float y){
 		Vector2 localCoordinates  = tmpVector2.set(x, y);
-		
-		TransformMathUtils.parentToLocalCoordinates(root, localCoordinates, sandbox.getEngine());
+
+		ComponentMapper<TransformComponent> transformMapper = (ComponentMapper<TransformComponent>) ComponentRetriever.getMapper(TransformComponent.class, sandbox.getEngine());
+		TransformMathUtils.parentToLocalCoordinates(root, localCoordinates, transformMapper);
 
 		NodeComponent nodeComponent = SandboxComponentRetriever.get(root, NodeComponent.class);
 		SnapshotArray<Integer> childrenEntities = nodeComponent.children;

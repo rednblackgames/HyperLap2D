@@ -18,6 +18,7 @@
 
 package games.rednblack.editor.view.ui.followers;
 
+import com.artemis.ComponentMapper;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -27,6 +28,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
+import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.utils.TransformMathUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -76,7 +78,9 @@ public abstract class BasicFollower extends Group {
         position.x = 0;
         position.y = 0;
 
-        TransformMathUtils.localToAscendantCoordinates(sandbox.getCurrentViewingEntity(), entity, position, sandbox.getEngine());
+        ComponentMapper<TransformComponent> transformMapper = (ComponentMapper<TransformComponent>) ComponentMapper.getFor(TransformComponent.class, sandbox.getEngine());
+        ComponentMapper<ParentNodeComponent> parentNodeMapper = (ComponentMapper<ParentNodeComponent>) ComponentMapper.getFor(ParentNodeComponent.class, sandbox.getEngine());
+        TransformMathUtils.localToAscendantCoordinates(sandbox.getCurrentViewingEntity(), entity, position, transformMapper, parentNodeMapper);
         position = Sandbox.getInstance().worldToScreen(position);
 
         setX( ( int ) ( position.x ) );
