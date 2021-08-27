@@ -182,8 +182,8 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
 
     @Override
-    public BitmapFont getBitmapFont(String fontName, int fontSize) {
-        FontSizePair pair = new FontSizePair(fontName, fontSize);
+    public BitmapFont getBitmapFont(String fontName, int fontSize, boolean mono) {
+        FontSizePair pair = new FontSizePair(fontName, fontSize, mono);
         return bitmapFonts.get(pair);
     }
 
@@ -445,8 +445,8 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return expectedFile;
     }
 
-    public void addBitmapFont(String name, int size, BitmapFont font) {
-        bitmapFonts.put(new FontSizePair(name, size), font);
+    public void addBitmapFont(String name, int size, BitmapFont font, boolean mono) {
+        bitmapFonts.put(new FontSizePair(name, size, mono), font);
     }
 
     public void flushAllUnusedFonts() {
@@ -461,14 +461,14 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         }
     }
 
-    public boolean isFontLoaded(String shortName, int fontSize) {
-        return bitmapFonts.containsKey(new FontSizePair(shortName, fontSize));
+    public boolean isFontLoaded(String shortName, int fontSize, boolean mono) {
+        return bitmapFonts.containsKey(new FontSizePair(shortName, fontSize, mono));
     }
 
-    public void prepareEmbeddingFont(String fontfamily, int fontSize) {
+    public void prepareEmbeddingFont(String fontfamily, int fontSize, boolean mono) {
         flushAllUnusedFonts();
 
-        if (isFontLoaded(fontfamily, fontSize)) {
+        if (isFontLoaded(fontfamily, fontSize, mono)) {
             return;
         }
 
@@ -477,11 +477,14 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = fontSize;
         parameter.packer = fontPacker;
+        parameter.mono = mono;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontManager.getTTFByName(fontfamily));
         BitmapFont font = generator.generateFont(parameter);
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setUseIntegerPositions(false);
-        addBitmapFont(fontfamily, parameter.size, font);
+        if (mono)
+            font.setFixedWidthGlyphs(FreeTypeFontGenerator.DEFAULT_CHARS);
+        addBitmapFont(fontfamily, parameter.size, font, mono);
     }
 
     public HashMap<String, SpineAnimData> getProjectSpineAnimationsList() {

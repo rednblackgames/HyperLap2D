@@ -40,6 +40,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
     private VisSelectBox<String> alignSelectBox;
     private VisCheckBox boldCheckBox;
     private VisCheckBox wrapCheckBox;
+    private VisCheckBox monoCheckBox;
     private VisCheckBox italicCheckBox;
     private Spinner fontSizeField;
     private VisTextArea textArea;
@@ -53,6 +54,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
         boldCheckBox = StandardWidgetsFactory.createCheckBox();
         italicCheckBox = StandardWidgetsFactory.createCheckBox();
         wrapCheckBox = StandardWidgetsFactory.createCheckBox("Wrap");
+        monoCheckBox = StandardWidgetsFactory.createCheckBox("Mono Space");
         fontSizeField = StandardWidgetsFactory.createNumberSelector(12, 1, 500);
 
         fontFamilySelectBox.setMaxListCount(10);
@@ -83,6 +85,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
         mainTable.add(textEditTable).colspan(2).width(200);
         mainTable.row().padTop(5);
         mainTable.add(wrapCheckBox).padRight(5);
+        mainTable.add(monoCheckBox).padRight(5);
         mainTable.row().padTop(5);
 
         textEditTable.add(textAreaTable).width(200);
@@ -107,6 +110,10 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
         return wrapCheckBox.isChecked();
     }
 
+    public boolean isMono() {
+        return monoCheckBox.isChecked();
+    }
+
     public String getText() {
         return textArea.getText();
     }
@@ -117,6 +124,10 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
 
     public void setWrap(boolean wrap) {
         wrapCheckBox.setChecked(wrap);
+    }
+
+    public void setMono(boolean mono) {
+        monoCheckBox.setChecked(mono);
     }
 
     public void setAlignList() {
@@ -194,6 +205,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
         boldCheckBox.addListener(new CheckBoxChangeListener(eventName));
         italicCheckBox.addListener(new CheckBoxChangeListener(eventName));
         wrapCheckBox.addListener(new CheckBoxChangeListener(eventName));
+        monoCheckBox.addListener(new CheckBoxChangeListener(eventName));
         fontSizeField.addListener(new NumberSelectorOverlapListener(eventName));
         textArea.addListener(new KeyboardListener(eventName));
     }

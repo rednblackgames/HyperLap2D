@@ -43,6 +43,7 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
     String prevText;
     Label.LabelStyle prevStyle;
     boolean prevWrap;
+    boolean prevMono;
 
     @Override
     public void doAction() {
@@ -59,27 +60,29 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
         this.prevStyle = labelComponent.getStyle();
         this.prevText = (String) payload[5];
         this.prevWrap = labelComponent.wrap;
+        this.prevMono = labelComponent.mono;
 
         labelComponent.fontName = (String) payload[1];
         labelComponent.fontSize = (int) payload[2];
         labelComponent.setAlignment((Integer) payload[3]);
         labelComponent.setText((String) payload[4]);
-        labelComponent.setStyle(getNewStyle(labelComponent.fontName, labelComponent.fontSize));
+        labelComponent.setStyle(getNewStyle(labelComponent.fontName, labelComponent.fontSize, labelComponent.mono));
         labelComponent.setWrap((Boolean) payload[6]);
+        labelComponent.mono = (Boolean) payload[7];
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
-    private Label.LabelStyle getNewStyle(String fontName, int fontSize) {
+    private Label.LabelStyle getNewStyle(String fontName, int fontSize, boolean mono) {
 
         IResourceRetriever rm = Sandbox.getInstance().getSceneControl().sceneLoader.getRm();
-        final boolean hasBitmapFont = rm.getBitmapFont(fontName, fontSize) != null;
+        final boolean hasBitmapFont = rm.getBitmapFont(fontName, fontSize, mono) != null;
 
         if(!hasBitmapFont) {
             games.rednblack.editor.proxy.ResourceManager resourceManager = facade.retrieveProxy(games.rednblack.editor.proxy.ResourceManager.NAME);
-            resourceManager.prepareEmbeddingFont(fontName, fontSize);
+            resourceManager.prepareEmbeddingFont(fontName, fontSize, mono);
         }
-        return LabelComponentFactory.generateStyle(rm, fontName, fontSize);
+        return LabelComponentFactory.generateStyle(rm, fontName, fontSize, mono);
     }
 
     @Override
@@ -93,6 +96,7 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
         labelComponent.setText(prevText);
         labelComponent.setStyle(prevStyle);
         labelComponent.setWrap(prevWrap);
+        labelComponent.mono = prevMono;
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

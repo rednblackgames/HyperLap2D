@@ -70,6 +70,7 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
         viewComponent.setAlignValue(labelComponent.labelAlign);
         viewComponent.setText(labelComponent.text.toString().replace("\\n", "\n"));
         viewComponent.setWrap(labelComponent.wrap);
+        viewComponent.setMono(labelComponent.mono);
 
         if(prevText == null) this.prevText = viewComponent.getText();
     }
@@ -78,7 +79,7 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
     protected void translateViewToItemData() {
         final String newText = viewComponent.getText();
 
-        Object[] payload = new Object[7];
+        Object[] payload = new Object[8];
         payload[0] = observableReference;
         payload[1] = viewComponent.getFontFamily();
         payload[2] = viewComponent.getFontSize();
@@ -86,6 +87,7 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
         payload[4] = newText;
         payload[5] = prevText;
         payload[6] = viewComponent.isWrap();
+        payload[7] = viewComponent.isMono();
         sendNotification(MsgAPI.ACTION_UPDATE_LABEL_DATA, payload);
 
         this.prevText = newText;

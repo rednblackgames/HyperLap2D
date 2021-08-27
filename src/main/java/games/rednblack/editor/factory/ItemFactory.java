@@ -248,7 +248,7 @@ public class ItemFactory implements IFactory {
         HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
-        resourceManager.prepareEmbeddingFont(textSettings.getFontFamily(), textSettings.getFontSize());
+        resourceManager.prepareEmbeddingFont(textSettings.getFontFamily(), textSettings.getFontSize(), false);
 
         // using long unique name
         vo.style = textSettings.getFontFamily();
