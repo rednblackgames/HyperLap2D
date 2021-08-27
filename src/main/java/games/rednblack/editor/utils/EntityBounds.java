@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.renderer.components.BoundingBoxComponent;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.light.LightObjectComponent;
@@ -39,12 +40,12 @@ public class EntityBounds extends Rectangle {
 
     /**
      * points winding order is counterclockwise (p1 -> p2 -> p3 -> p4)
-     * *      **p3
-     * p4 **     *
-     * *         *
-     * *         *
-     * *      **p2
-     * p1 **
+     *       /---p3
+     * p4---/    |
+     * |         |
+     * |         |
+     * |      __p2
+     * p1 ___/
      */
     private final Vector2 p1 = new Vector2();
     private final Vector2 p2 = new Vector2();
@@ -64,6 +65,7 @@ public class EntityBounds extends Rectangle {
     public void setEntity(int entity) {
         TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
         DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+        BoundingBoxComponent boundingBoxComponent = SandboxComponentRetriever.get(entity, BoundingBoxComponent.class);
         x = transformComponent.x;
         y = transformComponent.y;
         scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
@@ -71,49 +73,51 @@ public class EntityBounds extends Rectangle {
         width = dimensionsComponent.width;
         height = dimensionsComponent.height;
 
-        if (SandboxComponentRetriever.get(entity, LightObjectComponent.class) != null) {
-            x += dimensionsComponent.boundBox.x;
-            y += dimensionsComponent.boundBox.y;
-            scaleX = 1;
-            scaleY = 1;
-            width = dimensionsComponent.boundBox.width;
-            height = dimensionsComponent.boundBox.height;
+        //Use custom bounding boxes only for lights and particles which doesn't have dimensions
+        //Or if the entity has no bounding boxes
+        if (boundingBoxComponent == null
+                || SandboxComponentRetriever.get(entity, LightObjectComponent.class) != null
+                || SandboxComponentRetriever.get(entity, ParticleComponent.class) != null
+                || SandboxComponentRetriever.get(entity, TalosComponent.class) != null) {
+
+            if (SandboxComponentRetriever.get(entity, LightObjectComponent.class) != null) {
+                x += dimensionsComponent.boundBox.x;
+                y += dimensionsComponent.boundBox.y;
+                scaleX = 1;
+                scaleY = 1;
+                width = dimensionsComponent.boundBox.width;
+                height = dimensionsComponent.boundBox.height;
+            } else if (SandboxComponentRetriever.get(entity, ParticleComponent.class) != null
+                    || SandboxComponentRetriever.get(entity, TalosComponent.class) != null) {
+                width = dimensionsComponent.boundBox.width;
+                height = dimensionsComponent.boundBox.height;
+                dimensionsComponent.width = width;
+                dimensionsComponent.height = height;
+                x += dimensionsComponent.boundBox.x;
+                y += dimensionsComponent.boundBox.y;
+            }
+
+            Matrix3 transMat = TransformUtils.identity();
+
+            if ((scaleX != 1 || scaleY != 1) && transformComponent.rotation != 0) {
+                transMat = TransformUtils.scaleRotMat(transformComponent);
+            } else if (scaleX != 1 || scaleY != 1) {
+                transMat = TransformUtils.scalingMat(transformComponent);
+            } else if (transformComponent.rotation != 0) {
+                transMat = TransformUtils.rotationMat(transformComponent);
+            }
+
+            p1.set(x, y).mul(transMat);
+            p2.set(x + width, y).mul(transMat);
+            p3.set(x + width, y + height).mul(transMat);
+            p4.set(x, y + height).mul(transMat);
+        } else {
+            //Otherwise, we already have a neat and solid bounding boxes system, so use it!
+            p1.set(boundingBoxComponent.points[0]);
+            p2.set(boundingBoxComponent.points[1]);
+            p3.set(boundingBoxComponent.points[2]);
+            p4.set(boundingBoxComponent.points[3]);
         }
-
-        if (SandboxComponentRetriever.get(entity, ParticleComponent.class) != null
-            || SandboxComponentRetriever.get(entity, TalosComponent.class) != null) {
-            width = dimensionsComponent.boundBox.width;
-            height = dimensionsComponent.boundBox.height;
-            dimensionsComponent.width = width;
-            dimensionsComponent.height = height;
-            x += dimensionsComponent.boundBox.x;
-            y += dimensionsComponent.boundBox.y;
-        }
-
-        if (dimensionsComponent.polygon != null) {
-            Rectangle bound = dimensionsComponent.polygon.getBoundingRectangle();
-            width = bound.width;
-            height = bound.height;
-            dimensionsComponent.width = width;
-            dimensionsComponent.height = height;
-            x += bound.x;
-            y += bound.y;
-        }
-
-        Matrix3 transMat = TransformUtils.identity();
-
-        if ((scaleX != 1 || scaleY != 1) && transformComponent.rotation != 0) {
-            transMat = TransformUtils.scaleRotMat(transformComponent);
-        } else if (scaleX != 1 || scaleY != 1) {
-            transMat = TransformUtils.scalingMat(transformComponent);
-        } else if (transformComponent.rotation != 0) {
-            transMat = TransformUtils.rotationMat(transformComponent);
-        }
-
-        p1.set(x, y).mul(transMat);
-        p2.set(x + width, y).mul(transMat);
-        p3.set(x + width, y + height).mul(transMat);
-        p4.set(x, y + height).mul(transMat);
 
         boundPoints[0] = p1.x;
         boundPoints[1] = p1.y;
@@ -192,7 +196,7 @@ public class EntityBounds extends Rectangle {
 
     public Array<Vector2> getBoundPointsList() {
         boundPointList.clear();
-        boundPointList.addAll(p1, p2, p3, p4);
+        boundPointList.add(p1, p2, p3, p4);
         return boundPointList;
     }
 
