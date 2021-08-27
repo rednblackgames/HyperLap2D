@@ -108,7 +108,7 @@ public class UISceneProperties extends UIAbstractProperties {
         add(new VisLabel("Enable Pseudo3D:", Align.right)).padRight(5).width(115);
         add(enablePseudo3DLightsCheckBox).padLeft(1).left();
         row().padTop(5);
-        add(new VisLabel("Lights Blur:", Align.right)).padRight(5).width(115);
+        add(new VisLabel("Shadows Blur:", Align.right)).padRight(5).width(115);
         add(blurNumTextField).width(100);
         row().padTop(5);
         add(new VisLabel("Ambient Color:", Align.right)).padRight(5).width(115);
