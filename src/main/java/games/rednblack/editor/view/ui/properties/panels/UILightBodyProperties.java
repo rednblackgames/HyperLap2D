@@ -36,6 +36,7 @@ public class UILightBodyProperties extends UIRemovableProperties {
     private VisCheckBox isSoftCheckBox;
     private VisCheckBox isActiveCheckBox;
     private VisSelectBox<String> directionBox;
+    private VisValidatableTextField heightField;
 
     public UILightBodyProperties() {
         super("Light");
@@ -61,6 +62,7 @@ public class UILightBodyProperties extends UIRemovableProperties {
         distanceTextField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         intensityField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         softnessLengthField = new VisValidatableTextField(floatValidator);
+        heightField = new VisValidatableTextField(floatValidator);
         isStaticCheckBox = StandardWidgetsFactory.createCheckBox("Static");
         isXRayCheckBox = StandardWidgetsFactory.createCheckBox("X-Ray");
         isSoftCheckBox = StandardWidgetsFactory.createCheckBox("Soft");
@@ -78,6 +80,9 @@ public class UILightBodyProperties extends UIRemovableProperties {
         mainTable.row().padTop(5);
         mainTable.add(new VisLabel("Distance:", Align.right)).padRight(5).colspan(2).fillX();
         mainTable.add(distanceTextField).width(100).colspan(2);
+        mainTable.row().padTop(5);
+        mainTable.add(new VisLabel("Height: ", Align.right)).padRight(5).colspan(2).fillX();
+        mainTable.add(heightField).width(100).colspan(2);
         mainTable.row().padTop(5);
         mainTable.add(new VisLabel("Intensity:", Align.right)).padRight(5).colspan(2).fillX();
         mainTable.add(intensityField).width(100).colspan(2);
@@ -153,6 +158,9 @@ public class UILightBodyProperties extends UIRemovableProperties {
     public boolean isActive() {
         return isActiveCheckBox.isChecked();
     }
+    public String getLightHeight() {
+        return heightField.getText();
+    }
 
     public void setStatic(boolean bool) {
         isStaticCheckBox.setChecked(bool);
@@ -165,6 +173,9 @@ public class UILightBodyProperties extends UIRemovableProperties {
     }
     public void setActive(boolean bool) {
         isActiveCheckBox.setChecked(bool);
+    }
+    public void setLightHeight(String distance) {
+        heightField.setText(distance);
     }
 
     public Color getLightColor() {
@@ -187,6 +198,7 @@ public class UILightBodyProperties extends UIRemovableProperties {
         distanceTextField.addListener(new KeyboardListener(getUpdateEventName()));
         intensityField.addListener(new KeyboardListener(getUpdateEventName()));
         softnessLengthField.addListener(new KeyboardListener(getUpdateEventName()));
+        heightField.addListener(new KeyboardListener(getUpdateEventName()));
 
         lightColor.addListener(new ClickListener() {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {

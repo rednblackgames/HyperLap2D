@@ -89,6 +89,7 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<UILi
         viewComponent.setRays(lightComponent.rays + "");
         viewComponent.setSoft(lightComponent.isSoft);
         viewComponent.setSoftnessLength(lightComponent.softnessLength + "");
+        viewComponent.setLightHeight(lightComponent.height + "");
         viewComponent.setStatic(lightComponent.isStatic);
         viewComponent.setXRay(lightComponent.isXRay);
         viewComponent.setActive(lightComponent.isActive);
@@ -108,6 +109,7 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<UILi
         payloadVo.distance = NumberUtils.toFloat(viewComponent.getDistance());
         payloadVo.intensity = NumberUtils.toFloat(viewComponent.getLightIntensity());
         payloadVo.softnessLength = NumberUtils.toFloat(viewComponent.getSoftnessLength());
+        payloadVo.height = NumberUtils.toFloat(viewComponent.getLightHeight());
         payloadVo.rays = NumberUtils.toInt(viewComponent.getRays());
         payloadVo.isSoft = viewComponent.isSoft();
         payloadVo.isStatic = viewComponent.isStatic();

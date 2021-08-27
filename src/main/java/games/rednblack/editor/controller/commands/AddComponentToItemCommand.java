@@ -26,7 +26,8 @@ public class AddComponentToItemCommand extends EntityModifyRevertibleCommand {
     public void doAction() {
         collectData();
 
-        Sandbox.getInstance().getEngine().edit(entity).create(component);
+        Component newComponent = Sandbox.getInstance().getEngine().edit(entity).create(component);
+        sandbox.getEngine().inject(newComponent);
 
         HyperLap2DFacade.getInstance().sendNotification(DONE, entity);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
