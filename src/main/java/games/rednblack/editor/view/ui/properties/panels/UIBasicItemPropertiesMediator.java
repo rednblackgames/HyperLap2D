@@ -59,7 +59,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
     private DimensionsComponent dimensionComponent;
     private TintComponent tintComponent;
 
-    public static final String POLYGON_COMPONENT_KEY = "Polygon";
+    public static final String POLYGON_COMPONENT_KEY = "Polygon Shape";
     public static final String PHYSICS_COMPONENT_KEY = "Physics";
     public static final String SENSOR_COMPONENT_KEY = "Physics Sensors";
     public static final String SHADER_COMPONENT_KEY = "Shader";
