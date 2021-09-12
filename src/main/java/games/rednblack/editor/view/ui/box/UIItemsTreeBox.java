@@ -114,8 +114,8 @@ public class UIItemsTreeBox extends UICollapsibleBox {
 
         sortTree();
 
-        if (lastSelection != null)
-            setSelection(lastSelection);
+        lastSelection = null;
+        setSelection(null);
 
         treeTable.row().padTop(5);
         treeTable.add(new Separator("tool")).colspan(2).padTop(2).padBottom(2).fill().expand().row();

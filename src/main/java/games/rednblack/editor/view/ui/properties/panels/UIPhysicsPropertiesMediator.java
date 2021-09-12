@@ -64,6 +64,7 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<UIPhys
         viewComponent.getBulletBox().setChecked(physicsComponent.bullet);
         viewComponent.getSensorBox().setChecked(physicsComponent.sensor);
         viewComponent.getFixedRotationBox().setChecked(physicsComponent.fixedRotation);
+        viewComponent.setShapeType(physicsComponent.shapeType);
     }
 
     @Override
@@ -94,6 +95,7 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<UIPhys
         payloadVo.bullet = viewComponent.getBulletBox().isChecked();
         payloadVo.sensor = viewComponent.getSensorBox().isChecked();
         payloadVo.fixedRotation = viewComponent.getFixedRotationBox().isChecked();
+        payloadVo.shapeType = viewComponent.getShapeType();
 
         if (!oldPayloadVo.equals(payloadVo)) {
             Object payload = UpdatePhysicsDataCommand.payload(observableReference, payloadVo);

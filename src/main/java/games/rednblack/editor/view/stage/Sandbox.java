@@ -527,7 +527,7 @@ public class Sandbox {
 
     public void dispose() {
         sceneLoader.dispose();
-        PhysicsBodyLoader.getInstance().tmpShape.dispose();
+        PhysicsBodyLoader.getInstance().dispose();
     }
 
     public void resize(int width, int height) {

@@ -8,6 +8,7 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
+import games.rednblack.editor.renderer.data.PhysicsBodyDataVO;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
@@ -23,7 +24,7 @@ public class UIPhysicsProperties extends UIRemovableProperties {
 
     private final HashMap<Integer, String> bodyTypes = new HashMap<>();
 
-    private VisSelectBox<String> bodyTypeBox;
+    private VisSelectBox<String> bodyTypeBox, shapeType;
     private VisValidatableTextField massField;
     private VisValidatableTextField centerOfMassXField;
     private VisValidatableTextField centerOfMassYField;
@@ -58,6 +59,12 @@ public class UIPhysicsProperties extends UIRemovableProperties {
         bodyTypes.values().forEach(types::add);
         bodyTypeBox.setItems(types);
 
+        shapeType = StandardWidgetsFactory.createSelectBox(String.class);
+        types.clear();
+        for (PhysicsBodyDataVO.ShapeType type : PhysicsBodyDataVO.ShapeType.values())
+            types.add(type.toString());
+        shapeType.setItems(types);
+
         Validators.FloatValidator floatValidator = new Validators.FloatValidator();
 
         massField = StandardWidgetsFactory.createValidableTextField(floatValidator);
@@ -79,6 +86,10 @@ public class UIPhysicsProperties extends UIRemovableProperties {
 
         mainTable.add(new VisLabel("Body Type:", Align.right)).padRight(5).colspan(2).fillX();
         mainTable.add(bodyTypeBox).width(100).colspan(2);
+        mainTable.row().padTop(5);
+
+        mainTable.add(new VisLabel("Shape Type:", Align.right)).padRight(5).colspan(2).fillX();
+        mainTable.add(shapeType).width(100).colspan(2);
         mainTable.row().padTop(5);
 
         mainTable.add(new VisLabel("Mass:", Align.right)).padRight(5).colspan(2).fillX();
@@ -138,6 +149,7 @@ public class UIPhysicsProperties extends UIRemovableProperties {
 
     private void initListeners() {
         bodyTypeBox.addListener(new SelectBoxChangeListener(getUpdateEventName()));
+        shapeType.addListener(new SelectBoxChangeListener(getUpdateEventName()));
 
         massField.addListener(new KeyboardListener(getUpdateEventName()));
         centerOfMassXField.addListener(new KeyboardListener(getUpdateEventName()));
@@ -170,6 +182,14 @@ public class UIPhysicsProperties extends UIRemovableProperties {
 
     public void setBodyType(int type) {
         bodyTypeBox.setSelected(bodyTypes.get(type));
+    }
+
+    public void setShapeType(PhysicsBodyDataVO.ShapeType type) {
+        shapeType.setSelected(type.toString());
+    }
+
+    public PhysicsBodyDataVO.ShapeType getShapeType() {
+        return PhysicsBodyDataVO.ShapeType.valueOf(shapeType.getSelected());
     }
 
     public VisValidatableTextField getMassField() {

@@ -43,6 +43,7 @@ public class UpdatePhysicsDataCommand extends EntityModifyRevertibleCommand {
         physicsComponent.bullet = vo.bullet;
         physicsComponent.sensor = vo.sensor;
         physicsComponent.fixedRotation = vo.fixedRotation;
+        physicsComponent.shapeType = vo.shapeType;
 
         physicsComponent.height = vo.height;
 
@@ -74,6 +75,7 @@ public class UpdatePhysicsDataCommand extends EntityModifyRevertibleCommand {
         physicsComponent.bullet = backup.bullet;
         physicsComponent.sensor = backup.sensor;
         physicsComponent.fixedRotation = backup.fixedRotation;
+        physicsComponent.shapeType = backup.shapeType;
 
         physicsComponent.height = backup.height;
 
