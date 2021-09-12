@@ -60,6 +60,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
     private TintComponent tintComponent;
 
     public static final String POLYGON_COMPONENT_KEY = "Polygon Shape";
+    public static final String CIRCLE_SHAPE_COMPONENT_KEY = "Circle Shape";
     public static final String PHYSICS_COMPONENT_KEY = "Physics";
     public static final String SENSOR_COMPONENT_KEY = "Physics Sensors";
     public static final String SHADER_COMPONENT_KEY = "Shader";
@@ -75,6 +76,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
     @Override
     public void onRegister() {
         componentClassMap.put(POLYGON_COMPONENT_KEY, PolygonComponent.class);
+        componentClassMap.put(CIRCLE_SHAPE_COMPONENT_KEY, CircleShapeComponent.class);
         componentClassMap.put(PHYSICS_COMPONENT_KEY, PhysicsBodyComponent.class);
         componentClassMap.put(SENSOR_COMPONENT_KEY, SensorComponent.class);
         componentClassMap.put(SHADER_COMPONENT_KEY, ShaderComponent.class);

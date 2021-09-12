@@ -3,6 +3,7 @@
 - [BREAK CHANGE] Update Spine Support to `4.0.18.1`
 - Update libGDX to 1.10.1-SNAPSHOT
 - Support mono space fonts
+- Support Circle shapes for physics bodies
 
 = Editor =
 - Update LWJGL to 3.3.0-SNAPSHOT

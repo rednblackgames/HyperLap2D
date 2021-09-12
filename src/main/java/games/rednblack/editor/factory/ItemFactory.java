@@ -135,7 +135,7 @@ public class ItemFactory implements IFactory {
         return true;
     }
 
-    public boolean createPrimitive(Vector2 position, ShapeVO shape) {
+    public boolean createPrimitive(Vector2 position, PolygonShapeVO shape) {
         ColorPrimitiveVO vo = new ColorPrimitiveVO();
         vo.shape = shape.clone();
         vo.originX = vo.shape.polygons[0][2].x / 2;

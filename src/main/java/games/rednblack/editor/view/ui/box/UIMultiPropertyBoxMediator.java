@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
+import games.rednblack.editor.renderer.components.CircleShapeComponent;
 import games.rednblack.editor.renderer.components.PolygonComponent;
 import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
@@ -192,6 +193,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         ShaderComponent shaderComponent = SandboxComponentRetriever.get(entity, ShaderComponent.class);
         LightBodyComponent lightComponent = SandboxComponentRetriever.get(entity, LightBodyComponent.class);
         TypingLabelComponent typingLabelComponent = SandboxComponentRetriever.get(entity, TypingLabelComponent.class);
+        CircleShapeComponent circleShapeComponent = SandboxComponentRetriever.get(entity, CircleShapeComponent.class);
 
         if (polygonComponent != null) {
             mediatorNames.add(UIPolygonComponentPropertiesMediator.NAME);
@@ -210,6 +212,9 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         }
         if (typingLabelComponent != null) {
             mediatorNames.add(UITypingLabelPropertiesMediator.NAME);
+        }
+        if (circleShapeComponent != null) {
+            mediatorNames.add(UICircleShapePropertiesMediator.NAME);
         }
     }
 
