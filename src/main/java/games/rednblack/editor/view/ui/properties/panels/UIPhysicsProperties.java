@@ -1,5 +1,7 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.Validators;
@@ -53,7 +55,7 @@ public class UIPhysicsProperties extends UIRemovableProperties {
         initListeners();
     }
 
-    public void initView() {
+    private void initView() {
         bodyTypeBox = StandardWidgetsFactory.createSelectBox(String.class);
         Array<String> types = new Array<>();
         bodyTypes.values().forEach(types::add);
@@ -147,8 +149,21 @@ public class UIPhysicsProperties extends UIRemovableProperties {
         mainTable.row().padTop(5);
     }
 
+    private void updateEnabled() {
+        massField.setDisabled(!bodyTypeBox.getSelected().equals(bodyTypes.get(2)));
+        centerOfMassXField.setDisabled(!bodyTypeBox.getSelected().equals(bodyTypes.get(2)));
+        centerOfMassYField.setDisabled(!bodyTypeBox.getSelected().equals(bodyTypes.get(2)));
+        rotationalInertiaField.setDisabled(!bodyTypeBox.getSelected().equals(bodyTypes.get(2)));
+    }
+
     private void initListeners() {
         bodyTypeBox.addListener(new SelectBoxChangeListener(getUpdateEventName()));
+        bodyTypeBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                updateEnabled();
+            }
+        });
         shapeType.addListener(new SelectBoxChangeListener(getUpdateEventName()));
 
         massField.addListener(new KeyboardListener(getUpdateEventName()));
@@ -182,6 +197,7 @@ public class UIPhysicsProperties extends UIRemovableProperties {
 
     public void setBodyType(int type) {
         bodyTypeBox.setSelected(bodyTypes.get(type));
+        updateEnabled();
     }
 
     public void setShapeType(PhysicsBodyDataVO.ShapeType type) {
