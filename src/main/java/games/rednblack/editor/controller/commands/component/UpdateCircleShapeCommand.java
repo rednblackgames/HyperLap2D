@@ -26,7 +26,8 @@ public class UpdateCircleShapeCommand extends EntityModifyRevertibleCommand {
         circleShapeComponent.radius = radius;
 
         PhysicsBodyComponent physicsBodyComponent = SandboxComponentRetriever.get(entity, PhysicsBodyComponent.class);
-        physicsBodyComponent.scheduleRefresh();
+        if (physicsBodyComponent != null)
+            physicsBodyComponent.scheduleRefresh();
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
@@ -39,7 +40,8 @@ public class UpdateCircleShapeCommand extends EntityModifyRevertibleCommand {
         circleShapeComponent.radius = radiusBackup;
 
         PhysicsBodyComponent physicsBodyComponent = SandboxComponentRetriever.get(entity, PhysicsBodyComponent.class);
-        physicsBodyComponent.scheduleRefresh();
+        if (physicsBodyComponent != null)
+            physicsBodyComponent.scheduleRefresh();
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
