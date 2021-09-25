@@ -145,9 +145,9 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                     viewComponent.addTile(tileName, type);
 
                     tiledPlugin.dataToSave.addTile(tileName, type);
-                }
 
-                facade.sendNotification(MsgAPI.UPDATE_RESOURCES_LIST);
+                    facade.sendNotification(MsgAPI.UPDATE_RESOURCES_LIST);
+                }
                 
                 tiledPlugin.saveDataManager.save();
                 break;
@@ -240,6 +240,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 viewComponent.removeAutoTile();
 				tiledPlugin.facade.sendNotification(TiledPlugin.ACTION_RECALC_PERCENT_ALTERNATIVES_AUTO_TILE);
                 facade.sendNotification(MsgAPI.UPDATE_RESOURCES_LIST);
+                break;
             case TiledPlugin.ACTION_DELETE_TILE_ALL:
                 Dialogs.showOptionDialog(tiledPlugin.getAPI().getUIStage(), "Delete all...", "Do you really want to delete all tiles?",
                         Dialogs.OptionDialogType.YES_NO, new OptionDialogAdapter() {

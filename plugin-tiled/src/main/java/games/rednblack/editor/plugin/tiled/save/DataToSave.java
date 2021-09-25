@@ -107,7 +107,7 @@ public class DataToSave {
     }
 
     public boolean containsAutoTile(String regionName) {
-        return StreamSupport.stream(autoTiles.spliterator(), false).anyMatch(tile -> tile.regionName.equals(regionName));
+        return StreamSupport.stream(autoTiles.spliterator(), false).anyMatch(tile -> regionName.startsWith(tile.regionName));
     }
 
     public ParameterVO getParameterVO() {
