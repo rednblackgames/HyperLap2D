@@ -1,6 +1,7 @@
 [0.0.8]
 - [BREAK CHANGE] Rework runtime code, replaced Ashley ECS with Artemis-odb
-- [BREAK CHANGE] Update Spine Support to `4.0.18.1`
+- [BREAK CHANGE] Update Spine support to `4.0.18.1`
+- [BREAK CHANGE] Update Talos VFX support to `1.4.0`
 - Update libGDX to 1.10.1-SNAPSHOT
 - Support mono space fonts
 - Support Circle shapes for physics bodies
