@@ -28,19 +28,19 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * RegEx to identify a valid color markup, format:
+ *            Text color: [RRGGBB] or [RRGGBBAA]
+ *            Background color: [@RRGGBB] or [@RRGGBBAA]
+ *            Text Style : [NORMAL] or [UNDERLINE] or [STRIKE]
+ *
+ *            [RESET] : set text color to [FFFFFF], background color to [@00000000] and style to [NORMAL]
+ */
 public class ConsoleDialog extends H2DDialog {
 
     private final HighlightTextArea textArea;
     private final FixedRule fixedRule;
 
-    /*
-        RegEx to identify a valid color markup, format:
-         Text color: [RRGGBB] or [RRGGBBAA]
-         Background color: [@RRGGBB] or [@RRGGBBAA]
-         Text Style : [NORMAL] or [UNDERLINE] or [STRIKE]
-
-         [RESET] : set text color to [FFFFFF], background color to [@00000000] and style to [NORMAL]
-     */
     private final String regex = "\\[(@?[A-F0-9a-f]{6}|@?[A-F0-9a-f]{8}|NORMAL|UNDERLINE|STRIKE|RESET)\\]";
     private final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
 
@@ -48,6 +48,8 @@ public class ConsoleDialog extends H2DDialog {
     private Color lastColor = Color.WHITE;
     private Color lastBackgroundColor = Color.CLEAR;
     private H2DHighlight.TextFormat lastTextFormat = H2DHighlight.TextFormat.NORMAL;
+
+    public static int MAX_TEXT_LENGTH = 5000;
 
     public ConsoleDialog() {
         super("Console", "console");
@@ -174,6 +176,9 @@ public class ConsoleDialog extends H2DDialog {
 
         String output = RegExUtils.removeAll(s, pattern);
 
+        if (textArea.getText().length() > MAX_TEXT_LENGTH) {
+            textArea.setText(textArea.getText().substring(textArea.getText().length() - MAX_TEXT_LENGTH));
+        }
         textArea.appendText(output);
         textArea.processHighlighter();
     }

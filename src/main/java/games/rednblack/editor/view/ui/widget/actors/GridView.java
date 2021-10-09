@@ -46,7 +46,7 @@ public class GridView extends Actor {
     public GridView(ShapeDrawer shapeDrawer) {
         this.shapeDrawer = shapeDrawer;
         gridSize = 50;
-        gridLinesCount = 40;
+        gridLinesCount = 80;
 
         pixelsPerWU = Sandbox.getInstance().getPixelPerWU();
 
