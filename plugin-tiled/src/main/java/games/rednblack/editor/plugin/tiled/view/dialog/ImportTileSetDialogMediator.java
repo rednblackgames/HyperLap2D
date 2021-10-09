@@ -4,6 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
+import games.rednblack.editor.renderer.data.TexturePackVO;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.plugins.PluginAPI;
 import org.puremvc.java.interfaces.IFacade;
@@ -52,6 +53,14 @@ public class ImportTileSetDialogMediator extends Mediator<ImportTileSetDialog> {
         int tileW = viewComponent.getTileWidth();
         int tileH = viewComponent.getTileHeight();
 
+        TexturePackVO texturePackVO = pluginAPI.getCurrentProjectInfoVO().imagesPacks.get(name + "-tile-set");
+        if (texturePackVO == null) {
+            texturePackVO = new TexturePackVO();
+            texturePackVO.name = name + "-tile-set";
+
+            pluginAPI.getCurrentProjectInfoVO().imagesPacks.put(texturePackVO.name, texturePackVO);
+        }
+
         int i = 0;
         for (int x = 0; x < pixmap.getWidth(); x += tileW) {
             for (int y = 0; y < pixmap.getHeight(); y += tileH) {
@@ -65,6 +74,7 @@ public class ImportTileSetDialogMediator extends Mediator<ImportTileSetDialog> {
                 PixmapIO.writePNG(path, tilePixmap);
 
                 tilePixmap.dispose();
+                texturePackVO.regions.add(name + i);
                 i++;
             }
         }
@@ -72,6 +82,8 @@ public class ImportTileSetDialogMediator extends Mediator<ImportTileSetDialog> {
         pixmap.dispose();
 
         viewComponent.close();
+
+        facade.sendNotification(MsgAPI.UPDATE_ATLAS_PACK_LIST);
         facade.sendNotification(MsgAPI.ACTION_REPACK);
     }
 
