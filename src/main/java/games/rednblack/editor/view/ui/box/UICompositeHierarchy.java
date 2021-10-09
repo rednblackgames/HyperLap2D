@@ -2,12 +2,12 @@ package games.rednblack.editor.view.ui.box;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageTextButton;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-
-import java.util.Stack;
 
 /**
  * Created by CyberJoe on 4/22/2015.
@@ -15,12 +15,9 @@ import java.util.Stack;
 public class UICompositeHierarchy extends UIBaseBox {
 
     private static final String PREFIX = "games.rednblack.editor.view.ui.box.UICompositeHierarchy";
-
     public static final String SWITCH_VIEW_COMPOSITE_CLICKED = PREFIX + ".SWITCH_VIEW_COMPOSITE_CLICKED";
 
-    private Stack<VisImageTextButton> buttons = new Stack<>();
-
-    private HorizontalGroup mainGroup;
+    private final HorizontalGroup mainGroup;
 
     public UICompositeHierarchy() {
         super();
@@ -39,7 +36,7 @@ public class UICompositeHierarchy extends UIBaseBox {
         String classType = "hierarchy-item";
         if(isRoot) classType+="-root";
 
-        VisImageTextButton button = new VisImageTextButton(name, classType);
+        VisImageTextButton button = StandardWidgetsFactory.createImageTextButton(name, classType);
         button.getLabelCell().padLeft(3);
 
 
@@ -51,18 +48,15 @@ public class UICompositeHierarchy extends UIBaseBox {
         });
 
         button.padLeft(5).padRight(3);
+        if (!isRoot)
+            mainGroup.addActor(new Image(VisUI.getSkin(), "hierarchy-separator"));
+        else
+            button.padLeft(10);
         mainGroup.addActor(button);
-        buttons.add(button);
-    }
-
-    public void removeLastItem() {
-        VisImageTextButton button = buttons.pop();
-        button.remove();
     }
 
     public void clearItems() {
         mainGroup.clear();
-        buttons.clear();
     }
 
     @Override

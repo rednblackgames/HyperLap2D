@@ -4,7 +4,6 @@ import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
-import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -71,6 +70,8 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
             parentNodeComponent = SandboxComponentRetriever.get(currEntity, ParentNodeComponent.class);
             if (parentNodeComponent != null) {
                 currEntity = parentNodeComponent.parentEntity;
+                item.isRoot = false;
+            } else {
                 item.isRoot = true;
             }
 
@@ -98,36 +99,4 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
             this.name = name;
         }
     }
-
-    public void updateOriginalItem() {
-    	//TODO fix and uncomment
-        //updateOriginalItem(scenes.get(scenes.size() - 1), commands.sceneControl.getCurrentScene());
-    }
-
-    private void updateOriginalItem(CompositeItemVO updatableVo, int currItem) {
-    	//TODO fix and uncomment
-//        updatableVo.update(new CompositeItemVO(currItem.getDataVO().composite));
-//
-//        String libName = currItem.getDataVO().libraryLink;
-//        CompositeItemVO libItem = commands.sceneControl.getCurrentSceneVO().libraryItems.get(libName);
-//
-//        if (libItem != null) {
-//            libItem.update(currItem.getDataVO());
-//
-//
-//            //TODO: update other items with same name
-//            revursiveUpdateLibraryVO(libName, commands.sceneControl.getRootSceneVO(), currItem.getDataVO());
-//        }
-    }
-
-    /*
-    private void revursiveUpdateLibraryVO(String libName, CompositeItemVO initialVO, CompositeItemVO updatingWith) {
-        for (int i = 0; i < initialVO.composite.sComposites.size(); i++) {
-            if (initialVO.composite.sComposites.get(i).libraryLink.equals(libName)) {
-                initialVO.composite.sComposites.get(i).update(updatingWith);
-            } else {
-                revursiveUpdateLibraryVO(libName, initialVO.composite.sComposites.get(i), updatingWith);
-            }
-        }
-    }*/
 }
