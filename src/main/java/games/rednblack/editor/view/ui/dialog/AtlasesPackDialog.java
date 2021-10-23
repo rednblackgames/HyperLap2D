@@ -1,10 +1,15 @@
 package games.rednblack.editor.view.ui.dialog;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.VisUI;
@@ -24,6 +29,8 @@ import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPane
 
 import java.util.Set;
 
+import static com.kotcrab.vis.ui.util.adapter.AbstractListAdapter.ListSelection.DEFAULT_KEY;
+
 public class AtlasesPackDialog extends H2DDialog {
 
     private final ImageTabbedPane tabbedPane;
@@ -37,6 +44,9 @@ public class AtlasesPackDialog extends H2DDialog {
 
     private final Array<String> mainList = new Array<>();
     private final Array<String> currentList = new Array<>();
+
+    private final ListView<String> mainPackList;
+    private final ListView<String> currentPackList;
 
     public AtlasesPackDialog(String title, String add, String move, String updateList, String removeNotification) {
         super(title);
@@ -113,9 +123,9 @@ public class AtlasesPackDialog extends H2DDialog {
         currentPackAdapter.setSelectionMode(AbstractListAdapter.SelectionMode.MULTIPLE);
         currentPackAdapter.getSelectionManager().setProgrammaticChangeEvents(false);
 
-        ListView<String> mainPackList = new ListView<>(mainPackAdapter);
+        mainPackList = new ListView<>(mainPackAdapter);
         mainPackList.getScrollPane().addListener(new ScrollFocusListener());
-        ListView<String> currentPackList = new ListView<>(currentPackAdapter);
+        currentPackList = new ListView<>(currentPackAdapter);
         currentPackList.getScrollPane().addListener(new ScrollFocusListener());
 
         mainPackList.setItemClickListener(this::selectMainItem);
@@ -130,6 +140,7 @@ public class AtlasesPackDialog extends H2DDialog {
             public void clicked(InputEvent event, float x, float y) {
                 if (!insertButton.isDisabled())
                     facade.sendNotification(moveRegionNotification);
+                AtlasesPackDialog.this.getStage().setKeyboardFocus(AtlasesPackDialog.this);
             }
         });
         removeButton = StandardWidgetsFactory.createTextButton("<");
@@ -138,6 +149,7 @@ public class AtlasesPackDialog extends H2DDialog {
             public void clicked(InputEvent event, float x, float y) {
                 if (!removeButton.isDisabled())
                     facade.sendNotification(moveRegionNotification);
+                AtlasesPackDialog.this.getStage().setKeyboardFocus(AtlasesPackDialog.this);
             }
         });
         updateOpButtons();
@@ -160,6 +172,63 @@ public class AtlasesPackDialog extends H2DDialog {
         opTable.add(currentPackList.getMainTable()).uniformX().grow().row();
 
         getContentTable().add(opTable).grow().row();
+
+        addListener(new InputListener(){
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.DOWN) {
+                    if (mainPackAdapter.getSelection().size > 0) {
+                        int lastSelected = mainPackAdapter.indexOf(mainPackAdapter.getSelection().get(mainPackAdapter.getSelection().size - 1));
+                        if (lastSelected + 1 < mainPackAdapter.size()) {
+                            String nextItem = mainPackAdapter.get(lastSelected + 1);
+                            if (!isGroupMultiSelectKeyPressed(mainPackAdapter))
+                                mainPackAdapter.getSelectionManager().deselectAll();
+                            mainPackAdapter.getSelectionManager().select(nextItem);
+                            Actor item = mainPackAdapter.getView(nextItem);
+                            mainPackList.getScrollPane().scrollTo(0, item.getY(), item.getWidth(), item.getHeight());
+                        }
+                    } else if (currentPackAdapter.getSelection().size > 0) {
+                        int lastSelected = currentPackAdapter.indexOf(currentPackAdapter.getSelection().get(currentPackAdapter.getSelection().size - 1));
+                        if (lastSelected + 1 < currentPackAdapter.size()) {
+                            String nextItem = currentPackAdapter.get(lastSelected + 1);
+                            if (!isGroupMultiSelectKeyPressed(currentPackAdapter))
+                                currentPackAdapter.getSelectionManager().deselectAll();
+                            currentPackAdapter.getSelectionManager().select(nextItem);
+                            Actor item = currentPackAdapter.getView(nextItem);
+                            currentPackList.getScrollPane().scrollTo(0, item.getY(), item.getWidth(), item.getHeight());
+                        }
+                    }
+                    return true;
+                }
+
+                if (keycode == Input.Keys.UP) {
+                    if (mainPackAdapter.getSelection().size > 0) {
+                        int lastSelected = mainPackAdapter.indexOf(mainPackAdapter.getSelection().get(mainPackAdapter.getSelection().size - 1));
+                        if (lastSelected - 1 >= 0) {
+                            String nextItem = mainPackAdapter.get(lastSelected - 1);
+                            if (!isGroupMultiSelectKeyPressed(mainPackAdapter))
+                                mainPackAdapter.getSelectionManager().deselectAll();
+                            mainPackAdapter.getSelectionManager().select(nextItem);
+                            Actor item = mainPackAdapter.getView(nextItem);
+                            mainPackList.getScrollPane().scrollTo(0, item.getY(), item.getWidth(), item.getHeight());
+                        }
+                    } else if (currentPackAdapter.getSelection().size > 0) {
+                        int lastSelected = currentPackAdapter.indexOf(currentPackAdapter.getSelection().get(currentPackAdapter.getSelection().size - 1));
+                        if (lastSelected - 1 >= 0) {
+                            String nextItem = currentPackAdapter.get(lastSelected - 1);
+                            if (!isGroupMultiSelectKeyPressed(currentPackAdapter))
+                                currentPackAdapter.getSelectionManager().deselectAll();
+                            currentPackAdapter.getSelectionManager().select(nextItem);
+                            Actor item = currentPackAdapter.getView(nextItem);
+                            currentPackList.getScrollPane().scrollTo(0, item.getY(), item.getWidth(), item.getHeight());
+                        }
+                    }
+                    return true;
+                }
+
+                return false;
+            }
+        });
     }
 
     private void selectCurrentItem(String item) {
@@ -293,5 +362,12 @@ public class AtlasesPackDialog extends H2DDialog {
         public Table getContentTable() {
             return null;
         }
+    }
+
+    private boolean isGroupMultiSelectKeyPressed(AbstractListAdapter adapter) {
+        if (adapter.getSelectionManager().getGroupMultiSelectKey() == DEFAULT_KEY)
+            return UIUtils.shift();
+        else
+            return Gdx.input.isKeyPressed(adapter.getSelectionManager().getGroupMultiSelectKey());
     }
 }
