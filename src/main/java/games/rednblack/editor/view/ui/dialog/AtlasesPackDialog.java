@@ -38,8 +38,6 @@ public class AtlasesPackDialog extends H2DDialog {
     private final Array<String> mainList = new Array<>();
     private final Array<String> currentList = new Array<>();
 
-    private String mainSelected = null, currentSelected = null;
-
     public AtlasesPackDialog(String title, String add, String move, String updateList, String removeNotification) {
         super(title);
         addNewNotification = add;
@@ -108,11 +106,11 @@ public class AtlasesPackDialog extends H2DDialog {
         addNewPackTable.add(newPackButton).width(80);
 
         mainPackAdapter = new SimpleListAdapter<>(mainList);
-        mainPackAdapter.setSelectionMode(AbstractListAdapter.SelectionMode.SINGLE);
+        mainPackAdapter.setSelectionMode(AbstractListAdapter.SelectionMode.MULTIPLE);
         mainPackAdapter.getSelectionManager().setProgrammaticChangeEvents(false);
 
         currentPackAdapter = new SimpleListAdapter<>(currentList);
-        currentPackAdapter.setSelectionMode(AbstractListAdapter.SelectionMode.SINGLE);
+        currentPackAdapter.setSelectionMode(AbstractListAdapter.SelectionMode.MULTIPLE);
         currentPackAdapter.getSelectionManager().setProgrammaticChangeEvents(false);
 
         ListView<String> mainPackList = new ListView<>(mainPackAdapter);
@@ -166,17 +164,11 @@ public class AtlasesPackDialog extends H2DDialog {
 
     private void selectCurrentItem(String item) {
         mainPackAdapter.getSelectionManager().deselectAll();
-        mainSelected = null;
-        currentSelected = item;
-
         updateOpButtons();
     }
 
     private void selectMainItem(String item) {
         currentPackAdapter.getSelectionManager().deselectAll();
-        currentSelected = null;
-        mainSelected = item;
-
         updateOpButtons();
     }
 
@@ -253,16 +245,16 @@ public class AtlasesPackDialog extends H2DDialog {
     }
 
     private void updateOpButtons() {
-       insertButton.setDisabled(tabbedPane.getActiveTab() == null || mainSelected == null);
-       removeButton.setDisabled(tabbedPane.getActiveTab() == null || currentSelected == null);
+       insertButton.setDisabled(tabbedPane.getActiveTab() == null || mainPackAdapter.getSelection().size == 0);
+       removeButton.setDisabled(tabbedPane.getActiveTab() == null || currentPackAdapter.getSelection().size == 0);
     }
 
-    public String getCurrentSelected() {
-        return currentSelected;
+    public Array<String> getCurrentSelected() {
+        return currentPackAdapter.getSelection();
     }
 
-    public String getMainSelected() {
-        return mainSelected;
+    public Array<String> getMainSelected() {
+        return mainPackAdapter.getSelection();
     }
 
     @Override

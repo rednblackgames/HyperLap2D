@@ -1,5 +1,6 @@
 package games.rednblack.editor.view.ui.dialog;
 
+import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.resource.DeleteImageResource;
 import games.rednblack.editor.controller.commands.resource.DeleteSpineAnimation;
@@ -92,12 +93,14 @@ public class AnimationsPackDialogMediator extends Mediator<AtlasesPackDialog> {
                     viewComponent.updateCurrentPack(projectManager.currentProjectInfoVO.animationsPacks.get(currentTab).regions);
                 break;
             case MOVE_REGION_TO_PACK:
-                String toPack = viewComponent.getMainSelected() != null ? viewComponent.getSelectedTab() : "main";
-                String fromPack = viewComponent.getMainSelected() == null ? viewComponent.getSelectedTab() : "main";
-                String region = viewComponent.getMainSelected() != null ? viewComponent.getMainSelected() : viewComponent.getCurrentSelected();
+                String toPack = viewComponent.getMainSelected().size > 0 ? viewComponent.getSelectedTab() : "main";
+                String fromPack = viewComponent.getMainSelected().size == 0 ? viewComponent.getSelectedTab() : "main";
+                Array<String> regions = viewComponent.getMainSelected().size > 0 ? viewComponent.getMainSelected() : viewComponent.getCurrentSelected();
 
-                projectManager.currentProjectInfoVO.animationsPacks.get(fromPack).regions.remove(region);
-                projectManager.currentProjectInfoVO.animationsPacks.get(toPack).regions.add(region);
+                for (String region : regions) {
+                    projectManager.currentProjectInfoVO.animationsPacks.get(fromPack).regions.remove(region);
+                    projectManager.currentProjectInfoVO.animationsPacks.get(toPack).regions.add(region);
+                }
 
                 viewComponent.updateCurrentPack(projectManager.currentProjectInfoVO.animationsPacks.get(viewComponent.getSelectedTab()).regions);
                 viewComponent.updateMainPack(projectManager.currentProjectInfoVO.animationsPacks.get("main").regions);
