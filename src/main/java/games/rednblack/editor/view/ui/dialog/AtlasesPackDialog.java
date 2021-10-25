@@ -19,6 +19,7 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.OptionDialogAdapter;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.utils.ResourceListAdapter;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
@@ -115,11 +116,11 @@ public class AtlasesPackDialog extends H2DDialog {
         addNewPackTable.add(newPackName).growX();
         addNewPackTable.add(newPackButton).width(80);
 
-        mainPackAdapter = new SimpleListAdapter<>(mainList);
+        mainPackAdapter = new ResourceListAdapter(mainList);
         mainPackAdapter.setSelectionMode(AbstractListAdapter.SelectionMode.MULTIPLE);
         mainPackAdapter.getSelectionManager().setProgrammaticChangeEvents(false);
 
-        currentPackAdapter = new SimpleListAdapter<>(currentList);
+        currentPackAdapter = new ResourceListAdapter(currentList);
         currentPackAdapter.setSelectionMode(AbstractListAdapter.SelectionMode.MULTIPLE);
         currentPackAdapter.getSelectionManager().setProgrammaticChangeEvents(false);
 
