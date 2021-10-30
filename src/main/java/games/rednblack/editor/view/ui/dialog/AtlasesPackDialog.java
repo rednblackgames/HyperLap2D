@@ -181,20 +181,36 @@ public class AtlasesPackDialog extends H2DDialog {
                     if (mainPackAdapter.getSelection().size > 0) {
                         int lastSelected = mainPackAdapter.indexOf(mainPackAdapter.getSelection().get(mainPackAdapter.getSelection().size - 1));
                         if (lastSelected + 1 < mainPackAdapter.size()) {
+                            String currentItem = mainPackAdapter.get(lastSelected);
                             String nextItem = mainPackAdapter.get(lastSelected + 1);
+
                             if (!isGroupMultiSelectKeyPressed(mainPackAdapter))
                                 mainPackAdapter.getSelectionManager().deselectAll();
-                            mainPackAdapter.getSelectionManager().select(nextItem);
+
+                            if (mainPackAdapter.getSelectionManager().getSelection().contains(nextItem, false)) {
+                                mainPackAdapter.getSelectionManager().deselect(currentItem);
+                            } else {
+                                mainPackAdapter.getSelectionManager().select(nextItem);
+                            }
+
                             Actor item = mainPackAdapter.getView(nextItem);
                             mainPackList.getScrollPane().scrollTo(0, item.getY(), item.getWidth(), item.getHeight());
                         }
                     } else if (currentPackAdapter.getSelection().size > 0) {
                         int lastSelected = currentPackAdapter.indexOf(currentPackAdapter.getSelection().get(currentPackAdapter.getSelection().size - 1));
                         if (lastSelected + 1 < currentPackAdapter.size()) {
+                            String currentItem = currentPackAdapter.get(lastSelected);
                             String nextItem = currentPackAdapter.get(lastSelected + 1);
+
                             if (!isGroupMultiSelectKeyPressed(currentPackAdapter))
                                 currentPackAdapter.getSelectionManager().deselectAll();
-                            currentPackAdapter.getSelectionManager().select(nextItem);
+
+                            if (currentPackAdapter.getSelectionManager().getSelection().contains(nextItem, false)) {
+                                currentPackAdapter.getSelectionManager().deselect(currentItem);
+                            } else {
+                                currentPackAdapter.getSelectionManager().select(nextItem);
+                            }
+
                             Actor item = currentPackAdapter.getView(nextItem);
                             currentPackList.getScrollPane().scrollTo(0, item.getY(), item.getWidth(), item.getHeight());
                         }
@@ -206,20 +222,36 @@ public class AtlasesPackDialog extends H2DDialog {
                     if (mainPackAdapter.getSelection().size > 0) {
                         int lastSelected = mainPackAdapter.indexOf(mainPackAdapter.getSelection().get(mainPackAdapter.getSelection().size - 1));
                         if (lastSelected - 1 >= 0) {
+                            String currentItem = mainPackAdapter.get(lastSelected);
                             String nextItem = mainPackAdapter.get(lastSelected - 1);
+
                             if (!isGroupMultiSelectKeyPressed(mainPackAdapter))
                                 mainPackAdapter.getSelectionManager().deselectAll();
-                            mainPackAdapter.getSelectionManager().select(nextItem);
+
+                            if (mainPackAdapter.getSelectionManager().getSelection().contains(nextItem, false)) {
+                                mainPackAdapter.getSelectionManager().deselect(currentItem);
+                            } else {
+                                mainPackAdapter.getSelectionManager().select(nextItem);
+                            }
+
                             Actor item = mainPackAdapter.getView(nextItem);
                             mainPackList.getScrollPane().scrollTo(0, item.getY(), item.getWidth(), item.getHeight());
                         }
                     } else if (currentPackAdapter.getSelection().size > 0) {
                         int lastSelected = currentPackAdapter.indexOf(currentPackAdapter.getSelection().get(currentPackAdapter.getSelection().size - 1));
                         if (lastSelected - 1 >= 0) {
+                            String currentItem = currentPackAdapter.get(lastSelected);
                             String nextItem = currentPackAdapter.get(lastSelected - 1);
+
                             if (!isGroupMultiSelectKeyPressed(currentPackAdapter))
                                 currentPackAdapter.getSelectionManager().deselectAll();
-                            currentPackAdapter.getSelectionManager().select(nextItem);
+
+                            if (currentPackAdapter.getSelectionManager().getSelection().contains(nextItem, false)) {
+                                currentPackAdapter.getSelectionManager().deselect(currentItem);
+                            } else {
+                                currentPackAdapter.getSelectionManager().select(nextItem);
+                            }
+
                             Actor item = currentPackAdapter.getView(nextItem);
                             currentPackList.getScrollPane().scrollTo(0, item.getY(), item.getWidth(), item.getHeight());
                         }

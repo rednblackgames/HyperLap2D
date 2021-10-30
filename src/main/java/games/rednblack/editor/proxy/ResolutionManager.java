@@ -390,7 +390,7 @@ public class ResolutionManager extends Proxy {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         for (ResolutionEntryVO res : projectManager.getCurrentProjectInfoVO().resolutions) {
             if (res.name.equals(currentResolutionName)) {
-                return  res;
+                return res;
             }
         }
         return getOriginalResolution();

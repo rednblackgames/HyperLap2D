@@ -223,6 +223,8 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         loadCurrentProjectSpriteAnimations(projectPath + "/assets/", curResolution);
         loadCurrentProjectBitmapFonts(projectPath, curResolution);
         loadCurrentProjectShaders(projectPath + "/assets/shaders/");
+
+        removeInvalidResourceReferences();
     }
 
     private void loadCurrentProjectParticles(String path) {
@@ -518,5 +520,30 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     public HashMap<String, ShaderProgram> getShaders() {
         return shaderPrograms;
+    }
+
+    public void removeInvalidResourceReferences() {
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        HashSet<String> invalidImages = new HashSet<>();
+
+        for (TexturePackVO packVO : projectManager.currentProjectInfoVO.imagesPacks.values()) {
+            invalidImages.clear();
+            for (String region : packVO.regions) {
+                if (!hasTextureRegion(region))
+                    invalidImages.add(region);
+            }
+            if (invalidImages.size() > 0)
+                packVO.regions.removeAll(invalidImages);
+        }
+
+        for (TexturePackVO packVO : projectManager.currentProjectInfoVO.animationsPacks.values()) {
+            invalidImages.clear();
+            for (String region : packVO.regions) {
+                if (!hasTextureRegion(region))
+                    invalidImages.add(region);
+            }
+            if (invalidImages.size() > 0)
+                packVO.regions.removeAll(invalidImages);
+        }
     }
 }
