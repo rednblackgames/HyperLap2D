@@ -66,7 +66,7 @@ public class AtlasesPackDialog extends H2DDialog {
                         Dialogs.OptionDialogType.YES_NO_CANCEL, new OptionDialogAdapter() {
                             @Override
                             public void yes () {
-                                facade.sendNotification(removeNotification, tab.getTabTitle());
+                                facade.sendNotification(removeNotification, ((PackTab) tab).getName());
                                 packRemove(tab, ignoreTabDirty);
                             }
 
@@ -87,7 +87,7 @@ public class AtlasesPackDialog extends H2DDialog {
             public void switchedTab(ImageTab tab) {
                 facade.sendNotification(updateCurrentNotification);
                 updateOpButtons();
-                currentSelectedPackLabel.setText(tab.getTabTitle());
+                currentSelectedPackLabel.setText(((PackTab) tab).getName());
             }
 
             @Override
@@ -113,7 +113,7 @@ public class AtlasesPackDialog extends H2DDialog {
                 newPackName.setText("");
             }
         });
-        addNewPackTable.add(newPackName).growX();
+        addNewPackTable.add(newPackName).growX().padRight(5);
         addNewPackTable.add(newPackButton).width(80);
 
         mainPackAdapter = new ResourceListAdapter(mainList);
@@ -132,7 +132,7 @@ public class AtlasesPackDialog extends H2DDialog {
         mainPackList.setItemClickListener(this::selectMainItem);
         currentPackList.setItemClickListener(this::selectCurrentItem);
 
-        getContentTable().add(addNewPackTable).growX().row();
+        getContentTable().add(addNewPackTable).growX().padTop(5).row();
         getContentTable().add(tabbedPane.getTable()).height(30).growX().padTop(4).padBottom(4).row();
 
         insertButton = StandardWidgetsFactory.createTextButton(">");
@@ -343,7 +343,7 @@ public class AtlasesPackDialog extends H2DDialog {
     public String getSelectedTab() {
         if (tabbedPane.getActiveTab() == null)
             return null;
-        return tabbedPane.getActiveTab().getTabTitle();
+        return ((PackTab) tabbedPane.getActiveTab()).getName();
     }
 
     private void updateOpButtons() {
@@ -378,6 +378,10 @@ public class AtlasesPackDialog extends H2DDialog {
 
         @Override
         public String getTabTitle() {
+            return name + " ";
+        }
+
+        public String getName() {
             return name;
         }
 

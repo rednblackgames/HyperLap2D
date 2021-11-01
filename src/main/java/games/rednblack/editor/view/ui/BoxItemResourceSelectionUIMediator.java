@@ -153,6 +153,8 @@ public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource
      * @param boxResource The clicked image resource.
      */
     private void handleShiftClick(BoxItemResource boxResource) {
+		if (boxResourcePreviousClick == null) boxResourcePreviousClick = boxResource;
+
     	boolean removed = boxResourceSelectedSet.remove(boxResource.getPayloadData().name);
 
 		clearSelection();
@@ -171,6 +173,8 @@ public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource
      * @param boxResource The clicked image resource.
      */
     private void handleShiftCtrlClick(BoxItemResource boxResource) {
+		if (boxResourcePreviousClick == null) boxResourcePreviousClick = boxResource;
+
     	if (boxResourceSelectedSet.remove(boxResource.getPayloadData().name)) {
     		setSelectionBetween(boxResourcePreviousClick, boxResource, false);
     	} else {
