@@ -96,7 +96,7 @@ public class UIAlignBox extends UICollapsibleBox {
         return visImageButton;
     }
 
-    private class AlignmentButtonClickListener extends ClickListener {
+    private static class AlignmentButtonClickListener extends ClickListener {
 
         private final int alignment;
 

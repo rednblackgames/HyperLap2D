@@ -72,7 +72,7 @@ public class UIToolBox extends VisTable {
         return visImageButton;
     }
 
-    private class ToolboxButtonClickListener extends ClickListener {
+    private static class ToolboxButtonClickListener extends ClickListener {
 
         private final String toolId;
 

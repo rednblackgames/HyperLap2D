@@ -215,18 +215,6 @@
       knobBefore: progressbar-filled-vertical
     }
   },
-  com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
-    default-horizontal: {
-      background: slider,
-      knob: slider-knob,
-      disabledKnob: slider-knob-disabled
-    },
-    default-vertical: {
-      background: slider-vertical,
-      knob: slider-knob,
-      disabledKnob: slider-knob-disabled
-    }
-  },
   com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
     default: {
       font: default-font,

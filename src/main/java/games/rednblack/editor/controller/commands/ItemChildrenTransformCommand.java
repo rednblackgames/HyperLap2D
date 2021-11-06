@@ -113,7 +113,7 @@ public class ItemChildrenTransformCommand extends EntityModifyRevertibleCommand 
         }
     }
 
-    private class PositionSize {
+    private static class PositionSize {
         Vector2 position;
         Vector2 size;
 

@@ -103,7 +103,7 @@ public class SettingsDialog extends H2DDialog {
     }
 
     private void applyAllSettings() {
-        for (SettingsNode node : settingsTree.getNodes()) {
+        for (SettingsNode node : settingsTree.getRootNodes()) {
             if (node.getValue().validateSettings()) {
                 node.getValue().translateViewToSettings();
             }
@@ -120,8 +120,8 @@ public class SettingsDialog extends H2DDialog {
     @Override
     public VisDialog show(Stage stage) {
         super.show(stage);
-        if (settingsTree.getSelection().size() == 0 && settingsTree.getNodes().size > 0) {
-            settingsTree.getSelection().add(settingsTree.getNodes().first());
+        if (settingsTree.getSelection().size() == 0 && settingsTree.getRootNodes().size > 0) {
+            settingsTree.getSelection().add(settingsTree.getRootNodes().first());
         }
 
         if (settingsTree.getSelection().size() > 0) {
@@ -142,12 +142,12 @@ public class SettingsDialog extends H2DDialog {
 
     public SettingsNode addSettingsNode(SettingsNodeValue<?> nodeValue) {
         SettingsNode node = new SettingsNode(nodeValue.getName());
-        int existingIndex = settingsTree.getNodes().indexOf(node, false);
+        int existingIndex = settingsTree.getRootNodes().indexOf(node, false);
         if (existingIndex == -1) {
             node.setValue(nodeValue);
             settingsTree.add(node);
         } else {
-            settingsTree.getNodes().get(existingIndex).setValue(nodeValue);
+            settingsTree.getRootNodes().get(existingIndex).setValue(nodeValue);
         }
         return node;
     }

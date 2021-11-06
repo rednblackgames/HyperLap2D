@@ -22,7 +22,7 @@ public class EntityClickListener implements InputListener {
 	private int button;
 	private boolean pressed, over, cancelled;
 	private long visualPressedTime;
-	private long tapCountInterval = (long)(0.4f * 1000000000l);
+	private long tapCountInterval = (long)(0.4f * 1000000000L);
 	private int tapCount;
 	private long lastTapTime;
 
@@ -153,7 +153,7 @@ public class EntityClickListener implements InputListener {
 
 	/** @param tapCountInterval time in seconds that must pass for two touch down/up sequences to be detected as consecutive taps. */
 	public void setTapCountInterval (float tapCountInterval) {
-		this.tapCountInterval = (long)(tapCountInterval * 1000000000l);
+		this.tapCountInterval = (long)(tapCountInterval * 1000000000L);
 	}
 
 	/** Returns the number of taps within the tap count interval for the most recent click event. */
