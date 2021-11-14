@@ -32,7 +32,7 @@ public class CreatePrimitiveCommand extends EntityModifyRevertibleCommand {
         Vector2 position = new Vector2(0, 0);
         PolygonShapeVO shape = PolygonShapeVO.createRect(100f / sandbox.getPixelPerWU(), 100f / sandbox.getPixelPerWU());
 
-        ItemFactory.get().createPrimitive(position, shape);
+        if (!ItemFactory.get().createPrimitive(position, shape)) cancel();
     }
 
     @Override

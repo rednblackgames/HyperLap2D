@@ -1,16 +1,17 @@
 package games.rednblack.editor.view.stage.input;
 
-import com.artemis.Component;
+import com.artemis.PooledComponent;
+import com.artemis.annotations.Transient;
 import com.badlogic.gdx.utils.Array;
 
-public class InputListenerComponent extends Component {
-	private Array<InputListener> listeners = new Array<InputListener>(1); 
+@Transient
+public class InputListenerComponent extends PooledComponent {
+	private Array<InputListener> listeners = new Array<>(1);
 	
 	public void addListener(InputListener listener){
 		if (!listeners.contains(listener, true)) {
 			listeners.add(listener);
 		}
-		
 	}
 	
 	public void removeListener(InputListener listener){
@@ -25,5 +26,9 @@ public class InputListenerComponent extends Component {
 		listeners.shrink();
 		return listeners;
 	}
-	
+
+	@Override
+	protected void reset() {
+		listeners.clear();
+	}
 }

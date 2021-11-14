@@ -29,6 +29,7 @@ import com.kotcrab.vis.ui.widget.spinner.Spinner;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.NumberSelectorOverlapListener;
+import games.rednblack.editor.renderer.components.light.LightObjectComponent;
 import games.rednblack.editor.renderer.data.LightVO;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
@@ -129,11 +130,11 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
         secondaryTable.row().padTop(5);
     }
 
-    public void setType(LightVO.LightType type) {
-        if (type == LightVO.LightType.POINT) {
+    public void setType(LightObjectComponent.LightType type) {
+        if (type == LightObjectComponent.LightType.POINT) {
             lightTypeLabel.setText("Point Light");
             initPointFields();
-        } else if (type == LightVO.LightType.CONE) {
+        } else if (type == LightObjectComponent.LightType.CONE) {
             lightTypeLabel.setText("Cone Light");
             initConeFields();
         }

@@ -18,6 +18,10 @@
 
 package games.rednblack.editor.view.stage;
 
+import com.artemis.Aspect;
+import com.artemis.io.JsonArtemisSerializer;
+import com.artemis.io.SaveFileFormat;
+import com.artemis.managers.WorldSerializationManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.graphics.Color;
@@ -60,6 +64,7 @@ import games.rednblack.h2d.extension.talos.TalosSystem;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelItemType;
 import games.rednblack.h2d.extention.spine.SpineItemType;
 
+import java.io.*;
 import java.util.HashMap;
 
 /**
@@ -121,6 +126,8 @@ public class Sandbox {
         return instance;
     }
 
+    final WorldSerializationManager manager = new WorldSerializationManager();
+
     private void init() {
         facade = HyperLap2DFacade.getInstance();
         projectManager = facade.retrieveProxy(ProjectManager.NAME);
@@ -150,7 +157,11 @@ public class Sandbox {
         config.removeSystem(TalosSystem.class);
         config.addSystem(new TalosContinuousSystem());
 
+        config.addSystem(manager);
+
         sceneLoader = new SceneLoader(config);
+
+        manager.setSerializer(new JsonArtemisSerializer(sceneLoader.getEngine()));
 
         physicsAdjustSystem.setBox2DWorld(sceneLoader.getWorld());
         lightSystem.setRayHandler(sceneLoader.getRayHandler());
@@ -310,6 +321,21 @@ public class Sandbox {
         newVo.loadFromEntity(getRootEntity(), getEngine());
         newVo.sStickyNotes.putAll(sceneControl.getCurrentSceneVO().composite.sStickyNotes);
         sceneControl.getCurrentSceneVO().composite = newVo;
+
+        //TODO WIP Artemis serialization
+        /*try {
+            //Serialize
+            FileOutputStream fos = new FileOutputStream("level.json");
+            manager.save(fos, new SaveFileFormat(getEngine().getAspectSubscriptionManager().get(Aspect.all())));
+            fos.close();
+
+            //Deserialize
+            final InputStream is = new FileInputStream("level.json");
+            SaveFileFormat sff = manager.load(is, SaveFileFormat.class);
+            sceneLoader.getEntityFactoryV2().loadEntities(getCurrentViewingEntity(), sff.entities);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
 
         return sceneControl.getCurrentSceneVO();
     }

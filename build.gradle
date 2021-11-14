@@ -85,6 +85,7 @@ dependencies {
     }
     implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
     implementation "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
+    implementation "net.onedaybeard.artemis:artemis-odb-serializer-json-libgdx:$artemisVersion"
 
     implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
 

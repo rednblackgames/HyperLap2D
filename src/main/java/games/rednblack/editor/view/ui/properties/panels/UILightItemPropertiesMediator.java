@@ -42,7 +42,7 @@ public class UILightItemPropertiesMediator extends UIItemPropertiesMediator<UILi
     protected void translateObservableDataToView(int entity) {
         LightObjectComponent lightObjectComponent = SandboxComponentRetriever.get(entity, LightObjectComponent.class);
 
-        viewComponent.setType(lightObjectComponent.getType());
+        viewComponent.setType(lightObjectComponent.type);
         viewComponent.setRayCount(lightObjectComponent.rays);
         viewComponent.setStatic(lightObjectComponent.isStatic);
         viewComponent.setXRay(lightObjectComponent.isXRay);
@@ -75,7 +75,7 @@ public class UILightItemPropertiesMediator extends UIItemPropertiesMediator<UILi
         payloadVo.isActive = viewComponent.isActive();
         payloadVo.isSoft = viewComponent.isSoft();
         
-        if(payloadVo.type == LightVO.LightType.POINT) {
+        if(payloadVo.type == LightObjectComponent.LightType.POINT) {
             payloadVo.distance = NumberUtils.toFloat(viewComponent.getRadius());
         } else {
             payloadVo.distance = NumberUtils.toFloat(viewComponent.getDistance());
