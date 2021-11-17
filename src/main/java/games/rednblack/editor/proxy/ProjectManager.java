@@ -33,6 +33,7 @@ import games.rednblack.editor.data.migrations.ProjectVersionMigrator;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.resources.FontSizePair;
 import games.rednblack.editor.utils.HyperLap2DUtils;
+import games.rednblack.editor.utils.RecursiveFileSuffixFilter;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.SettingsDialog;
@@ -45,8 +46,6 @@ import games.rednblack.h2d.common.vo.SceneConfigVO;
 import games.rednblack.h2d.common.vo.TexturePackerVO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
@@ -57,6 +56,7 @@ import org.puremvc.java.patterns.proxy.Proxy;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -524,9 +524,9 @@ public class ProjectManager extends Proxy {
 
     private void exportAnimations(String targetPath) {
         exportSpineAnimationForResolution("orig", targetPath);
-        for (ResolutionEntryVO resolutionEntryVO : currentProjectInfoVO.resolutions) {
+        /*for (ResolutionEntryVO resolutionEntryVO : currentProjectInfoVO.resolutions) {
             exportSpineAnimationForResolution(resolutionEntryVO.name, targetPath);
-        }
+        }*/
     }
 
     private void exportSpineAnimationForResolution(String res, String targetPath) {
@@ -538,7 +538,7 @@ public class ProjectManager extends Proxy {
 
             File fileTargetSpine = new File(finalTarget);
 
-            IOFileFilter jsonSuffixFilter = FileFilterUtils.suffixFileFilter(".json");
+            FileFilter jsonSuffixFilter = new RecursiveFileSuffixFilter(".json");
             FileUtils.copyDirectory(fileSrc, fileTargetSpine, jsonSuffixFilter);
         } catch (IOException e) {
             e.printStackTrace();
