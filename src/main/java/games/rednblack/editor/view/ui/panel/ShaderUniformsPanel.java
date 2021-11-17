@@ -125,7 +125,8 @@ public class ShaderUniformsPanel extends UIDraggablePanel {
         uniformName.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                uniformType.setText(uniforms.get(uniformName.getSelected()));
+                if (uniformName.getSelected() != null)
+                    uniformType.setText(uniforms.get(uniformName.getSelected()));
                 updateInputFields();
             }
         });
