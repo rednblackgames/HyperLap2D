@@ -590,6 +590,7 @@ public class ProjectManager extends Proxy {
         settings.filterMin = TexturePackerVO.filterMap.get(vo.filterMin);
         settings.square = vo.square;
         settings.flattenPaths = true;
+        settings.legacyOutput = false;
         return settings;
     }
 
