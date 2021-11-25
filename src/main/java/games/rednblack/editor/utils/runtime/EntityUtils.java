@@ -232,11 +232,11 @@ public class EntityUtils {
 
             //remove me from previous parent children list
             NodeComponent nodeComponent = SandboxComponentRetriever.get(parentNodeComponent.parentEntity, NodeComponent.class);
-            nodeComponent.children.removeValue(entity, true);
+            nodeComponent.removeChild(entity);
 
             //add me to new parent child list
             NodeComponent rootNodeComponent = SandboxComponentRetriever.get(parent, NodeComponent.class);
-            rootNodeComponent.children.add(entity);
+            rootNodeComponent.addChild(entity);
 
             //change my parent
             parentNodeComponent.parentEntity = parent;
