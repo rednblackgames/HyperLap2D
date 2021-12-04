@@ -2,19 +2,22 @@
 - [BREAK CHANGE] Rework runtime code, replaced Ashley ECS with Artemis-odb
 - [BREAK CHANGE] Update Spine support to `4.0.18.1`
 - [BREAK CHANGE] Update Talos VFX support to `1.4.0`
+- [BREAK CHANGE] Use new libGDX atlas packing format
 - Update libGDX to 1.10.1-SNAPSHOT
 - Support mono space fonts
 - Support Circle shapes for physics bodies
 
 = Editor =
-- Update LWJGL to 3.3.0-SNAPSHOT
+- Update LWJGL to 3.3.0
 - Add FPS Limit in Settings
 - Add Normal Map resource filter
 - Add automatically center origin
+- Restyle Atlas Packing Dialog
 - Many bug fixes and performance improvements
 
 = Runtime =
 - Split Typing Label into its own extension
+- Support artemis serialization
 
 [0.0.7]
 - [BREAK CHANGE] Spine and Sprite animations are now packed into same main atlas pack
