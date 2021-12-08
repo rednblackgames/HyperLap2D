@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.esotericsoftware.spine.SkeletonRendererDebug;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.h2d.extention.spine.SpineObjectComponent;
+import games.rednblack.h2d.extension.spine.SpineObjectComponent;
 
 public class SpineFollower extends NormalSelectionFollower {
     private final SpineObjectComponent spineObjectComponent;

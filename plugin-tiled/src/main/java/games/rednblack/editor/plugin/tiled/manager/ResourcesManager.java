@@ -14,7 +14,7 @@ import com.google.common.io.ByteStreams;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.plugin.tiled.view.SpineDrawable;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.h2d.extention.spine.ResourceRetrieverAttachmentLoader;
+import games.rednblack.h2d.extension.spine.ResourceRetrieverAttachmentLoader;
 
 import java.io.File;
 import java.io.FileOutputStream;

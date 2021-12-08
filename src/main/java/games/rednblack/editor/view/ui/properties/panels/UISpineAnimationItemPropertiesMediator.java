@@ -26,7 +26,7 @@ import games.rednblack.editor.renderer.data.SpineVO;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.h2d.extention.spine.SpineObjectComponent;
+import games.rednblack.h2d.extension.spine.SpineObjectComponent;
 
 public class UISpineAnimationItemPropertiesMediator extends UIItemPropertiesMediator<UISpineAnimationItemProperties> {
     private static final String TAG = UISpineAnimationItemPropertiesMediator.class.getCanonicalName();

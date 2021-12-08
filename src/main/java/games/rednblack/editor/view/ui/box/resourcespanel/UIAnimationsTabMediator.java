@@ -29,7 +29,7 @@ import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableReso
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.BoxItemResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.SpineResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.SpriteResource;
-import games.rednblack.h2d.extention.spine.SpineItemType;
+import games.rednblack.h2d.extension.spine.SpineItemType;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 

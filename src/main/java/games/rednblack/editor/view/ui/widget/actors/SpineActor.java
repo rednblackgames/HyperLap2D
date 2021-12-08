@@ -12,7 +12,7 @@ import com.esotericsoftware.spine.attachments.Attachment;
 import com.esotericsoftware.spine.attachments.MeshAttachment;
 import com.esotericsoftware.spine.attachments.RegionAttachment;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
-import games.rednblack.h2d.extention.spine.ResourceRetrieverAttachmentLoader;
+import games.rednblack.h2d.extension.spine.ResourceRetrieverAttachmentLoader;
 
 public class SpineActor extends Actor {
 

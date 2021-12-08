@@ -8,7 +8,7 @@ import games.rednblack.editor.renderer.components.SpineDataComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.command.ReplaceSpineCommandBuilder;
 import games.rednblack.h2d.common.factory.IFactory;
-import games.rednblack.h2d.extention.spine.ResourceRetrieverAttachmentLoader;
+import games.rednblack.h2d.extension.spine.ResourceRetrieverAttachmentLoader;
 
 public class SpineDrawStrategy extends BasicDrawStrategy {
 

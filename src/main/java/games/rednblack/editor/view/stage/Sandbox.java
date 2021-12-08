@@ -18,9 +18,7 @@
 
 package games.rednblack.editor.view.stage;
 
-import com.artemis.Aspect;
 import com.artemis.io.JsonArtemisSerializer;
-import com.artemis.io.SaveFileFormat;
 import com.artemis.managers.WorldSerializationManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
@@ -62,9 +60,8 @@ import games.rednblack.h2d.common.vo.SceneConfigVO;
 import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.talos.TalosSystem;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelItemType;
-import games.rednblack.h2d.extention.spine.SpineItemType;
+import games.rednblack.h2d.extension.spine.SpineItemType;
 
-import java.io.*;
 import java.util.HashMap;
 
 /**
