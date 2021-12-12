@@ -578,6 +578,7 @@ public class ProjectManager extends Proxy {
         vo.maxHeight = texturePackerVO.maxHeight;
         vo.maxWidth = texturePackerVO.maxWidth;
         vo.square = texturePackerVO.square;
+        vo.legacy = texturePackerVO.legacy;
     }
 
     public Settings getTexturePackerSettings() {
@@ -590,7 +591,7 @@ public class ProjectManager extends Proxy {
         settings.filterMin = TexturePackerVO.filterMap.get(vo.filterMin);
         settings.square = vo.square;
         settings.flattenPaths = true;
-        settings.legacyOutput = false;
+        settings.legacyOutput = vo.legacy;
         return settings;
     }
 

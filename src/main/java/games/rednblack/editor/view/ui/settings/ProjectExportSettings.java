@@ -22,6 +22,7 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
     private final InputFileWidget exportSettingsInputFileWidget;
     private final VisCheckBox duplicateCheckBox;
     private final VisCheckBox forceSquareCheckBox;
+    private final VisCheckBox legacyCheckBox;
     private final VisSelectBox<Integer> widthSelectBox;
     private final VisSelectBox<Integer> heightSelectBox;
     private final VisSelectBox<String> filterMagSelectBox;
@@ -31,6 +32,7 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
         super("Project Export", HyperLap2DFacade.getInstance());
         duplicateCheckBox = StandardWidgetsFactory.createCheckBox("Duplicate edge pixels in atlas");
         forceSquareCheckBox = StandardWidgetsFactory.createCheckBox("Force Square");
+        legacyCheckBox = StandardWidgetsFactory.createCheckBox("Legacy libGDX format");
         exportSettingsInputFileWidget = new InputFileWidget(FileChooser.Mode.OPEN, FileChooser.SelectionMode.DIRECTORIES, false);
         widthSelectBox = StandardWidgetsFactory.createSelectBox(Integer.class);
         heightSelectBox = StandardWidgetsFactory.createSelectBox(Integer.class);
@@ -53,6 +55,7 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
         texturePackerTable.add(getFilterTable()).padTop(10).left();
         texturePackerTable.row().padTop(10);
         texturePackerTable.add(duplicateCheckBox).left().colspan(2).row();
+        texturePackerTable.add(legacyCheckBox).left().colspan(2).row();
         texturePackerTable.add(forceSquareCheckBox).left().row();
         texturePackerTable.row().padTop(23);
 
@@ -103,6 +106,7 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
         heightSelectBox.setSelected(Integer.parseInt(vo.maxHeight));
 
         duplicateCheckBox.setChecked(vo.duplicate);
+        legacyCheckBox.setChecked(vo.legacy);
         forceSquareCheckBox.setChecked(vo.square);
 
         filterMagSelectBox.setSelected(vo.filterMag);
@@ -118,6 +122,7 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
         vo.maxWidth = String.valueOf(widthSelectBox.getSelected());
         vo.maxHeight = String.valueOf(heightSelectBox.getSelected());
         vo.duplicate = duplicateCheckBox.isChecked();
+        vo.legacy = legacyCheckBox.isChecked();
         vo.square = forceSquareCheckBox.isChecked();
         vo.filterMag = filterMagSelectBox.getSelected();
         vo.filterMin = filterMinSelectBox.getSelected();
