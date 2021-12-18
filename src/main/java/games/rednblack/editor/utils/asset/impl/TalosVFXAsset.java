@@ -7,8 +7,10 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.talosvfx.talos.runtime.ParticleEmitterDescriptor;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
+import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.renderer.components.particle.TalosDataComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
+import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.data.TalosVO;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
@@ -195,6 +197,16 @@ public class TalosVFXAsset extends Asset {
     private void deleteAllItemsWithParticleName(String name) {
         for (CompositeItemVO compositeItemVO : projectManager.getCurrentProjectInfoVO().libraryItems.values()) {
             deleteAllParticles(compositeItemVO, name);
+        }
+
+        for (SceneVO scene : projectManager.currentProjectInfoVO.scenes) {
+            CompositeItemVO tmpVo = new CompositeItemVO();
+            SceneVO loadedScene = resourceManager.getSceneVO(scene.sceneName);
+            tmpVo.composite = loadedScene.composite;
+            deleteAllParticles(tmpVo, name);
+            loadedScene.composite = tmpVo.composite;
+            SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
+            sceneDataManager.saveScene(loadedScene);
         }
     }
 

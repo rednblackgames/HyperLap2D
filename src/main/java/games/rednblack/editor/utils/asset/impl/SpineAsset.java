@@ -7,9 +7,11 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.renderer.components.SpineDataComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
+import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.data.SpineVO;
 import games.rednblack.editor.renderer.utils.Version;
 import games.rednblack.editor.utils.HyperLap2DUtils;
@@ -212,6 +214,16 @@ public class SpineAsset extends Asset {
     private void deleteAllItemsSpineAnimations(String spineAnimationName) {
         for (CompositeItemVO compositeItemVO : projectManager.getCurrentProjectInfoVO().libraryItems.values()) {
             deleteAllSpineAnimationsOfItem(compositeItemVO, spineAnimationName);
+        }
+
+        for (SceneVO scene : projectManager.currentProjectInfoVO.scenes) {
+            CompositeItemVO tmpVo = new CompositeItemVO();
+            SceneVO loadedScene = resourceManager.getSceneVO(scene.sceneName);
+            tmpVo.composite = loadedScene.composite;
+            deleteAllSpineAnimationsOfItem(tmpVo, spineAnimationName);
+            loadedScene.composite = tmpVo.composite;
+            SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
+            sceneDataManager.saveScene(loadedScene);
         }
     }
 

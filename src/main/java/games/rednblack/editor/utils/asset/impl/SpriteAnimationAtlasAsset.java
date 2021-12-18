@@ -4,9 +4,11 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
+import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.data.SpriteAnimationVO;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
@@ -135,6 +137,16 @@ public class SpriteAnimationAtlasAsset extends Asset {
     private void deleteAllItemsSpriteAnimations(String spriteAnimationName) {
         for (CompositeItemVO compositeItemVO : projectManager.getCurrentProjectInfoVO().libraryItems.values()) {
             deleteAllSpriteAnimationsOfItem(compositeItemVO, spriteAnimationName);
+        }
+
+        for (SceneVO scene : projectManager.currentProjectInfoVO.scenes) {
+            CompositeItemVO tmpVo = new CompositeItemVO();
+            SceneVO loadedScene = resourceManager.getSceneVO(scene.sceneName);
+            tmpVo.composite = loadedScene.composite;
+            deleteAllSpriteAnimationsOfItem(tmpVo, spriteAnimationName);
+            loadedScene.composite = tmpVo.composite;
+            SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
+            sceneDataManager.saveScene(loadedScene);
         }
     }
 

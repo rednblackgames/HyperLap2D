@@ -7,12 +7,10 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
+import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.renderer.components.NinePatchComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
-import games.rednblack.editor.renderer.data.CompositeItemVO;
-import games.rednblack.editor.renderer.data.Image9patchVO;
-import games.rednblack.editor.renderer.data.ResolutionEntryVO;
-import games.rednblack.editor.renderer.data.SimpleImageVO;
+import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
@@ -127,6 +125,16 @@ public class ImageAsset extends Asset {
     private void deleteAllItemsImages(String imageName) {
         for (CompositeItemVO compositeItemVO : projectManager.getCurrentProjectInfoVO().libraryItems.values()) {
             deleteAllImagesOfItem(compositeItemVO, imageName);
+        }
+
+        for (SceneVO scene : projectManager.currentProjectInfoVO.scenes) {
+            CompositeItemVO tmpVo = new CompositeItemVO();
+            SceneVO loadedScene = resourceManager.getSceneVO(scene.sceneName);
+            tmpVo.composite = loadedScene.composite;
+            deleteAllImagesOfItem(tmpVo, imageName);
+            loadedScene.composite = tmpVo.composite;
+            SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
+            sceneDataManager.saveScene(loadedScene);
         }
     }
 
