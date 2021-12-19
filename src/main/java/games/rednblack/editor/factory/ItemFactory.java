@@ -11,8 +11,7 @@ import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.editor.renderer.factory.v2.ComponentFactoryV2;
-import games.rednblack.editor.renderer.factory.v2.EntityFactoryV2;
+import games.rednblack.editor.renderer.factory.component.ComponentFactory;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.tools.TextTool;
@@ -25,7 +24,6 @@ import java.util.HashMap;
 public class ItemFactory implements IFactory {
 
     private final EntityFactory entityFactory;
-    private final EntityFactoryV2 entityFactoryV2;
     private final SceneLoader sceneLoader;
     private final Sandbox sandbox;
     private int createdEntity;
@@ -35,7 +33,6 @@ public class ItemFactory implements IFactory {
     private ItemFactory(SceneLoader sceneLoader) {
         this.sceneLoader = sceneLoader;
         entityFactory = sceneLoader.getEntityFactory();
-        entityFactoryV2 = sceneLoader.getEntityFactoryV2();
         sandbox = Sandbox.getInstance();
     }
 
@@ -65,7 +62,7 @@ public class ItemFactory implements IFactory {
         return true;
     }
 
-    private boolean setEssentialData(ComponentFactoryV2.InitialData vo, Vector2 position) {
+    private boolean setEssentialData(ComponentFactory.InitialData vo, Vector2 position) {
         UILayerBoxMediator layerBoxMediator = HyperLap2DFacade.getInstance().retrieveMediator(UILayerBoxMediator.NAME);
         String layerName = layerBoxMediator.getCurrentSelectedLayerName();
 
@@ -85,7 +82,7 @@ public class ItemFactory implements IFactory {
 
     @Override
     public boolean createSimpleImage(String regionName, Vector2 position) {
-        ComponentFactoryV2.InitialData data = Pools.obtain(ComponentFactoryV2.InitialData.class);
+        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
             Pools.free(data);
             return false;
@@ -93,7 +90,7 @@ public class ItemFactory implements IFactory {
 
         data.data = regionName;
 
-        createdEntity = entityFactoryV2.createEntity(sandbox.getCurrentViewingEntity(), EntityFactoryV2.IMAGE_TYPE, data);
+        createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.IMAGE_TYPE, data);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         Pools.free(data);
@@ -106,14 +103,14 @@ public class ItemFactory implements IFactory {
     }
 
     public boolean create9Patch(String regionName, Vector2 position) {
-        ComponentFactoryV2.InitialData data = Pools.obtain(ComponentFactoryV2.InitialData.class);
+        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
             Pools.free(data);
             return false;
         }
         data.data = regionName;
 
-        createdEntity = entityFactoryV2.createEntity(sandbox.getCurrentViewingEntity(), EntityFactoryV2.NINE_PATCH, data);
+        createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.NINE_PATCH, data);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         Pools.free(data);
@@ -122,14 +119,14 @@ public class ItemFactory implements IFactory {
 
     @Override
     public boolean createSpriteAnimation(String animationName, Vector2 position) {
-        ComponentFactoryV2.InitialData data = Pools.obtain(ComponentFactoryV2.InitialData.class);
+        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
             Pools.free(data);
             return false;
         }
         data.data = animationName;
 
-        createdEntity = entityFactoryV2.createEntity(sandbox.getCurrentViewingEntity(), EntityFactoryV2.SPRITE_TYPE, data);
+        createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.SPRITE_TYPE, data);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         Pools.free(data);
@@ -138,14 +135,14 @@ public class ItemFactory implements IFactory {
 
     @Override
     public boolean createSpineAnimation(String animationName, Vector2 position) {
-        ComponentFactoryV2.InitialData data = Pools.obtain(ComponentFactoryV2.InitialData.class);
+        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
             Pools.free(data);
             return false;
         }
         data.data = animationName;
 
-        createdEntity = entityFactoryV2.createEntity(sandbox.getCurrentViewingEntity(), EntityFactoryV2.SPINE_TYPE, data);
+        createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.SPINE_TYPE, data);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         Pools.free(data);
@@ -153,13 +150,13 @@ public class ItemFactory implements IFactory {
     }
 
     public boolean createPrimitive(Vector2 position, PolygonShapeVO shape) {
-        ComponentFactoryV2.InitialData data = Pools.obtain(ComponentFactoryV2.InitialData.class);
+        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
             Pools.free(data);
             return false;
         }
         data.data = shape.clone().polygons;
-        createdEntity = entityFactoryV2.createEntity(sandbox.getCurrentViewingEntity(), EntityFactoryV2.COLOR_PRIMITIVE, data);
+        createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.COLOR_PRIMITIVE, data);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
         Pools.free(data);
         return true;
@@ -202,14 +199,14 @@ public class ItemFactory implements IFactory {
     }
 
     public int createLightItem(LightVO vo, Vector2 position) {
-        ComponentFactoryV2.InitialData data = Pools.obtain(ComponentFactoryV2.InitialData.class);
+        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
             Pools.free(data);
             return -1;
         }
         data.data = vo.type;
 
-        int entity = entityFactoryV2.createEntity(sandbox.getCurrentViewingEntity(), EntityFactoryV2.LIGHT_TYPE, data);
+        int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.LIGHT_TYPE, data);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
 
@@ -223,13 +220,13 @@ public class ItemFactory implements IFactory {
     }
 
     public int createParticleItem(String particleName, Vector2 position) {
-        ComponentFactoryV2.InitialData data = Pools.obtain(ComponentFactoryV2.InitialData.class);
+        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
             Pools.free(data);
             return -1;
         }
         data.data = particleName;
-        int entity = entityFactoryV2.createEntity(sandbox.getCurrentViewingEntity(), EntityFactoryV2.PARTICLE_TYPE, data);
+        int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.PARTICLE_TYPE, data);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
         Pools.free(data);
@@ -242,13 +239,13 @@ public class ItemFactory implements IFactory {
     }
 
     public int createTalosItem(String particleName, Vector2 position) {
-        ComponentFactoryV2.InitialData data = Pools.obtain(ComponentFactoryV2.InitialData.class);
+        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
             Pools.free(data);
             return -1;
         }
         data.data = particleName;
-        int entity = entityFactoryV2.createEntity(sandbox.getCurrentViewingEntity(), EntityFactoryV2.TALOS_TYPE, data);
+        int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.TALOS_TYPE, data);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
 
@@ -257,7 +254,7 @@ public class ItemFactory implements IFactory {
     }
 
     public int createLabel(TextTool textSettings, Vector2 position) {
-        ComponentFactoryV2.InitialData data = Pools.obtain(ComponentFactoryV2.InitialData.class);
+        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
             Pools.free(data);
             return -1;
@@ -275,7 +272,7 @@ public class ItemFactory implements IFactory {
         params[4] = false;
         data.data = params;
 
-        int entity = entityFactoryV2.createEntity(sandbox.getCurrentViewingEntity(), EntityFactoryV2.LABEL_TYPE, data);
+        int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.LABEL_TYPE, data);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
         Pools.free(data);

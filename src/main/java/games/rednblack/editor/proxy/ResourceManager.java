@@ -254,7 +254,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         for (FileHandle entry : sourceDir.list()) {
             File file = entry.file();
             String filename = file.getName();
-            if (file.isDirectory() || filename.endsWith(".DS_Store") || filename.endsWith("shdr") || filename.endsWith(".fga")) continue;
+            if (file.isDirectory() || filename.endsWith(".DS_Store") || !filename.endsWith("p")) continue;
 
             ResourceRetrieverAssetProvider assetProvider = new ResourceRetrieverAssetProvider(this);
             assetProvider.setAssetHandler(ShaderDescriptor.class, this::findShaderDescriptorOnLoad);
