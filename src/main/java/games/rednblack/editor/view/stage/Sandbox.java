@@ -156,6 +156,9 @@ public class Sandbox {
 
         config.addSystem(manager);
 
+        // add additional components
+        config.addTagTransmuter("button", ButtonComponent.class);
+
         sceneLoader = new SceneLoader(config);
 
         manager.setSerializer(new JsonArtemisSerializer(sceneLoader.getEngine()));
@@ -229,10 +232,6 @@ public class Sandbox {
         //TODO: move this into SceneDataManager!
         SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
         sceneDataManager.sendNotification(MsgAPI.SCENE_LOADED);
-
-        // add additional components
-        // TODO: maybe move this somewhere else
-        sceneControl.sceneLoader.addComponentByTagName("button", ButtonComponent.class);
 
         CommandManager commandManager = facade.retrieveProxy(CommandManager.NAME);
         commandManager.initHistory();

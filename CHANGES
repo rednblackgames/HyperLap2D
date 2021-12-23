@@ -18,6 +18,7 @@
 = Runtime =
 - Split Typing Label into its own extension
 - Support artemis serialization
+- Add `SceneConfiguration#addTagTransmuter`
 
 [0.0.7]
 - [BREAK CHANGE] Spine and Sprite animations are now packed into same main atlas pack
