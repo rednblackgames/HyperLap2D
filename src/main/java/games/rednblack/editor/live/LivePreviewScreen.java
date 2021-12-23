@@ -58,6 +58,7 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
         config.addExternalItemType(new SpineItemType());
         config.addExternalItemType(new TalosItemType());
         config.addExternalItemType(new TypingLabelItemType());
+        config.addTagTransmuter("button", ButtonComponent.class);
         sceneLoader = new SceneLoader(config);
 
         sceneLoader.loadScene(projectManager.getCurrentSceneConfigVO().sceneName, viewport);
@@ -67,8 +68,6 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
         Gdx.input.setInputProcessor(new GestureDetector(this));
 
         cameraTargetPos.set(mCamera.position);
-
-        sceneLoader.addComponentByTagName("button", ButtonComponent.class);
     }
 
     @Override
