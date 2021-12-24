@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.CustomExceptionHandler;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.Main;
+import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
@@ -99,11 +100,11 @@ public class SettingsManager extends Proxy {
                 e.printStackTrace();
             }
         } else {
-            Json gson = new Json();
+            Json json = HyperJson.getJson();
             String editorConfigJson;
             try {
                 editorConfigJson = FileUtils.readFileToString(configFile, "utf-8");
-                editorConfig = gson.fromJson(EditorConfigVO.class, editorConfigJson);
+                editorConfig = json.fromJson(EditorConfigVO.class, editorConfigJson);
             } catch (IOException e) {
                 e.printStackTrace();
             }

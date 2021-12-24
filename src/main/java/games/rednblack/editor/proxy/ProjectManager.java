@@ -32,6 +32,7 @@ import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.data.migrations.ProjectVersionMigrator;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.resources.FontSizePair;
+import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.utils.RecursiveFileSuffixFilter;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
@@ -202,7 +203,7 @@ public class ProjectManager extends Proxy {
             String projectContents = null;
             try {
                 projectContents = FileUtils.readFileToString(projectFile.file(), "utf-8");
-                Json json = new Json();
+                Json json = HyperJson.getJson();
                 json.setIgnoreUnknownFields(true);
                 ProjectVO vo = json.fromJson(ProjectVO.class, projectContents);
                 goThroughVersionMigrationProtocol(projectPath, vo);
@@ -289,15 +290,15 @@ public class ProjectManager extends Proxy {
         FileHandle sourceDir = new FileHandle(projectPath + "/scenes/");
         for (FileHandle entry : sourceDir.list(HyperLap2DUtils.DT_FILTER)) {
             if (!entry.file().isDirectory()) {
-                Json json = new Json();
+                Json json = HyperJson.getJson();
                 json.setIgnoreUnknownFields(true);
                 SceneVO sceneVO = json.fromJson(SceneVO.class, entry);
                 if (sceneVO.composite == null) continue;
-                ArrayList<MainItemVO> items = sceneVO.composite.getAllItems();
+                Array<MainItemVO> items = sceneVO.composite.getAllItems();
 
                 for (CompositeItemVO libraryItem : currentProjectInfoVO.libraryItems.values()) {
-                    if (libraryItem.composite == null) continue;
-                    items = libraryItem.composite.getAllItems();
+                    if (libraryItem == null) continue;
+                    items = libraryItem.getAllItems();
                 }
             }
         }

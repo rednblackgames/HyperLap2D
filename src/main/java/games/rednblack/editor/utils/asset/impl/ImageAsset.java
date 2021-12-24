@@ -128,11 +128,10 @@ public class ImageAsset extends Asset {
         }
 
         for (SceneVO scene : projectManager.currentProjectInfoVO.scenes) {
-            CompositeItemVO tmpVo = new CompositeItemVO();
             SceneVO loadedScene = resourceManager.getSceneVO(scene.sceneName);
-            tmpVo.composite = loadedScene.composite;
+            CompositeItemVO tmpVo = new CompositeItemVO(loadedScene.composite);
             deleteAllImagesOfItem(tmpVo, imageName);
-            loadedScene.composite = tmpVo.composite;
+            loadedScene.composite = tmpVo;
             SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
             sceneDataManager.saveScene(loadedScene);
         }
@@ -145,23 +144,25 @@ public class ImageAsset extends Asset {
 
     private void deleteCurrentItemImage(CompositeItemVO compositeItemVO, String imageName) {
         tmpImageList.clear();
-        if (compositeItemVO.composite != null && compositeItemVO.composite.sImages.size() != 0) {
-            ArrayList<SimpleImageVO> simpleImageVOs = compositeItemVO.composite.sImages;
-            tmpImageList.addAll(simpleImageVOs
-                    .stream()
-                    .filter(simpleImageVO -> simpleImageVO.imageName.equals(imageName))
-                    .collect(Collectors.toList()));
-            simpleImageVOs.removeAll(tmpImageList);
+        if (compositeItemVO != null && compositeItemVO.getElementsArray(SimpleImageVO.class).size != 0) {
+            Array<SimpleImageVO> simpleImageVOs = compositeItemVO.getElementsArray(SimpleImageVO.class);
+
+            for (SimpleImageVO simpleImageVO : simpleImageVOs)
+                if (simpleImageVO.getResourceName().equals(imageName))
+                    tmpImageList.add(simpleImageVO);
+
+            simpleImageVOs.removeAll(tmpImageList, true);
         }
 
         tmpImageList.clear();
-        if (compositeItemVO.composite != null && compositeItemVO.composite.sImage9patchs.size() != 0) {
-            ArrayList<Image9patchVO> simple9PatchesVOs = compositeItemVO.composite.sImage9patchs;
-            tmpImageList.addAll(simple9PatchesVOs
-                    .stream()
-                    .filter(simple9PatchVO -> simple9PatchVO.imageName.equals(imageName))
-                    .collect(Collectors.toList()));
-            simple9PatchesVOs.removeAll(tmpImageList);
+        if (compositeItemVO != null && compositeItemVO.getElementsArray(Image9patchVO.class).size != 0) {
+            Array<Image9patchVO> simple9PatchesVOs = compositeItemVO.getElementsArray(Image9patchVO.class);
+
+            for (Image9patchVO simpleImageVO : simple9PatchesVOs)
+                if (simpleImageVO.getResourceName().equals(imageName))
+                    tmpImageList.add(simpleImageVO);
+
+            simple9PatchesVOs.removeAll(tmpImageList, true);
         }
     }
 

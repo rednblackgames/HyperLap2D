@@ -57,7 +57,7 @@ public class AddToLibraryCommand extends RevertibleCommand {
             }
 
             CompositeItemVO newVO = new CompositeItemVO();
-            newVO.loadFromEntity(item, sandbox.getEngine());
+            newVO.loadFromEntity(item, sandbox.getEngine(), sandbox.sceneControl.sceneLoader.getEntityFactory());
             newVO.cleanIds();
             libraryItems.put(createdLibraryItemName, newVO);
 

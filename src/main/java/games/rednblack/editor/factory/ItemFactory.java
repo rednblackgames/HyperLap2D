@@ -168,8 +168,7 @@ public class ItemFactory implements IFactory {
         HashMap<String, CompositeItemVO> libraryItems = projectManager.currentProjectInfoVO.libraryItems;
 
         CompositeItemVO itemVO = libraryItems.get(libraryName);
-        itemVO.uniqueId = -1;
-        PasteItemsCommand.forceIdChange(itemVO.composite);
+        itemVO.cleanIds();
         createdEntity = createCompositeItem(itemVO, position);
 
         if (createdEntity == -1) return false;
@@ -188,7 +187,7 @@ public class ItemFactory implements IFactory {
 
         int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), vo);
         EntityFactory factory = sceneLoader.getEntityFactory();
-        factory.initAllChildren(entity, vo.composite);
+        factory.initAllChildren(entity, vo);
 
         return entity;
     }

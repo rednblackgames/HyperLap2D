@@ -22,7 +22,7 @@ public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
         entityId = EntityUtils.getEntityId(entity);
 
         backup = new TalosVO();
-        backup.loadFromEntity(entity, sandbox.getEngine());
+        backup.loadFromEntity(entity, sandbox.getEngine(), sandbox.sceneControl.sceneLoader.getEntityFactory());
 
         TalosDataComponent dataComponent = SandboxComponentRetriever.get(entity, TalosDataComponent.class);
         dataComponent.transform = vo.transform;

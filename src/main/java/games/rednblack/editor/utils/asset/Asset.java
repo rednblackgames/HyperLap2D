@@ -6,7 +6,6 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.ResourceManager;
-import games.rednblack.editor.renderer.data.MainItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -25,7 +24,7 @@ public abstract class Asset implements IAsset {
     protected ResourceManager resourceManager;
 
     protected final ArrayList<Integer> tmpEntityList = new ArrayList<>();
-    protected final ArrayList<MainItemVO> tmpImageList = new ArrayList<>();
+    protected final Array tmpImageList = new Array<>();
 
     public Asset() {
         facade = HyperLap2DFacade.getInstance();

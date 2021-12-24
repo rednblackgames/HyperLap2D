@@ -60,7 +60,7 @@ public class HyperLap2DApp extends ApplicationAdapter {
                 hyperlap2D = new HyperLap2D(settingsManager);
 
                 Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-                config.setTitle("HyperLap2D - Public Alpha v" + AppConfig.getInstance().versionString);
+                config.setTitle("HyperLap2D - Beta v" + AppConfig.getInstance().versionString);
                 config.setResizable(true);
                 config.setWindowedMode((int) (windowWidth), (int) (windowHeight));
                 config.setIdleFPS(60);

@@ -39,12 +39,13 @@ import games.rednblack.editor.renderer.SceneConfiguration;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.components.ViewPortComponent;
 import games.rednblack.editor.renderer.components.additional.ButtonComponent;
-import games.rednblack.editor.renderer.data.CompositeVO;
+import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
 import games.rednblack.editor.renderer.systems.LightSystem;
 import games.rednblack.editor.renderer.systems.ParticleSystem;
 import games.rednblack.editor.renderer.systems.PhysicsSystem;
+import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.system.ParticleContinuousSystem;
 import games.rednblack.editor.system.PhysicsAdjustSystem;
 import games.rednblack.editor.system.TalosContinuousSystem;
@@ -313,25 +314,10 @@ public class Sandbox {
      * @return SceneVO
      */
     public SceneVO sceneVoFromItems() {
-        CompositeVO newVo = new CompositeVO();
-        newVo.loadFromEntity(getRootEntity(), getEngine());
+        CompositeItemVO newVo = new CompositeItemVO();
+        newVo.loadFromEntity(getRootEntity(), getEngine(), sceneControl.sceneLoader.getEntityFactory());
         newVo.sStickyNotes.putAll(sceneControl.getCurrentSceneVO().composite.sStickyNotes);
         sceneControl.getCurrentSceneVO().composite = newVo;
-
-        //TODO WIP Artemis serialization
-        /*try {
-            //Serialize
-            FileOutputStream fos = new FileOutputStream("level.json");
-            manager.save(fos, new SaveFileFormat(getEngine().getAspectSubscriptionManager().get(Aspect.all())));
-            fos.close();
-
-            //Deserialize
-            final InputStream is = new FileInputStream("level.json");
-            SaveFileFormat sff = manager.load(is, SaveFileFormat.class);
-            sceneLoader.getEntityFactoryV2().loadEntities(getCurrentViewingEntity(), sff.entities);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
 
         return sceneControl.getCurrentSceneVO();
     }
@@ -519,13 +505,13 @@ public class Sandbox {
         payload[1] = data;
 
         Lwjgl3Application app = (Lwjgl3Application) Gdx.app;
-        Json json = new Json();
+        Json json = HyperJson.getJson();
         app.getClipboard().setContents(json.toJson(payload));
     }
 
     public static Object retrieveFromClipboard() {
         Lwjgl3Application app = (Lwjgl3Application) Gdx.app;
-        Json json = new Json();
+        Json json = HyperJson.getJson();
         Object[] data = null;
         try {
             data = json.fromJson(Object[].class, app.getClipboard().getContents());

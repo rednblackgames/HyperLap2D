@@ -11,10 +11,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.*;
 import com.kotcrab.vis.ui.VisUI;
 import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
 import com.talosvfx.talos.runtime.utils.ShaderDescriptor;
@@ -25,6 +22,7 @@ import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.resources.FontSizePair;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.editor.renderer.utils.H2DSkinLoader;
+import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.renderer.utils.ShadedDistanceFieldFont;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.h2d.extension.talos.ResourceRetrieverAssetProvider;
@@ -209,8 +207,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
         // TODO: this should be cached
         FileHandle file = Gdx.files.internal(sceneDataManager.getCurrProjectScenePathByName(name));
-        Json json = new Json();
-        json.setIgnoreUnknownFields(true);
+        Json json = HyperJson.getJson();
         return json.fromJson(SceneVO.class, file.readString());
     }
 
@@ -343,23 +340,26 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     }
 
     public ArrayList<FontSizePair> getProjectRequiredFontsList() {
-        HashSet<FontSizePair> fontsToLoad = new HashSet<>();
+        ObjectSet<FontSizePair> fontsToLoad = new ObjectSet<>();
 
         for (int i = 0; i < getProjectVO().scenes.size(); i++) {
             SceneVO scene = getSceneVO(getProjectVO().scenes.get(i).sceneName);
-            CompositeVO composite = scene.composite;
+            CompositeItemVO composite = scene.composite;
             if (composite == null) {
                 continue;
             }
-            FontSizePair[] fonts = composite.getRecursiveFontList();
+            Array<FontSizePair> fonts = composite.getRecursiveFontList();
             for (CompositeItemVO library : getProjectVO().libraryItems.values()) {
-                FontSizePair[] libFonts = library.composite.getRecursiveFontList();
-                Collections.addAll(fontsToLoad, libFonts);
+                Array<FontSizePair>  libFonts = library.getRecursiveFontList();
+                fontsToLoad.addAll(libFonts);
             }
-            Collections.addAll(fontsToLoad, fonts);
+            fontsToLoad.addAll(fonts);
         }
 
-        return new ArrayList<>(fontsToLoad);
+        ArrayList<FontSizePair> result = new ArrayList<>();
+        for (FontSizePair fontSizePair : fontsToLoad)
+            result.add(fontSizePair);
+        return result;
     }
 
     public void loadCurrentProjectBitmapFonts(String path, String curResolution) {

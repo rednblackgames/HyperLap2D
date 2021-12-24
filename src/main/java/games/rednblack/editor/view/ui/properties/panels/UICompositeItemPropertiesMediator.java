@@ -54,7 +54,7 @@ public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<
     @Override
     protected void translateViewToItemData() {
         CompositeItemVO payloadVo = new CompositeItemVO();
-        payloadVo.loadFromEntity(observableReference, sandbox.getEngine());
+        payloadVo.loadFromEntity(observableReference, sandbox.getEngine(), sandbox.sceneControl.sceneLoader.getEntityFactory());
 
         payloadVo.automaticResize = viewComponent.isAutomaticResizeIsEnabled();
         payloadVo.scissorsEnabled = viewComponent.isScissorsEnabled();

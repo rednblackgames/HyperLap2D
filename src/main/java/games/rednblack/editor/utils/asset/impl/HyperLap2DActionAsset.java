@@ -4,6 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.renderer.data.GraphVO;
+import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.h2d.common.ProgressHandler;
@@ -11,7 +12,7 @@ import games.rednblack.h2d.common.ProgressHandler;
 import java.util.HashMap;
 
 public class HyperLap2DActionAsset extends Asset {
-    private final Json json = new Json();
+    private final Json json = HyperJson.getJson();
 
     @Override
     protected boolean matchMimeType(FileHandle file) {

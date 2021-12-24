@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonWriter;
 import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
 import com.talosvfx.talos.runtime.ParticleEmitterDescriptor;
 import com.talosvfx.talos.runtime.modules.*;
@@ -14,6 +13,7 @@ import games.rednblack.editor.controller.commands.NonRevertibleCommand;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.data.*;
+import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.ZipUtils;
 import games.rednblack.h2d.common.MsgAPI;
@@ -33,7 +33,7 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
 
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.resource.ExportLibraryItemCommand";
     public static final String DONE = CLASS_NAME + "DONE";
-    private final Json json = new Json(JsonWriter.OutputType.json);
+    private final Json json = HyperJson.getJson();
 
     private final String currentProjectPath;
     private final ResourceManager resourceManager;
@@ -106,7 +106,7 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
 
         FileUtils.writeStringToFile(new File(tempDir.getPath() + File.separator + libraryItemName + ".lib"), json.toJson(compositeItemVO), "utf-8");
 
-        exportAllAssets(compositeItemVO.composite, tempDir);
+        exportAllAssets(compositeItemVO, tempDir);
 
         exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_HYPERLAP2D_INTERNAL_LIBRARY, libraryItemName + ".lib"));
 
@@ -116,36 +116,36 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
         FileUtils.deleteDirectory(tempDir);
     }
 
-    private void exportAllAssets(CompositeVO compositeVO, File tmpDir) throws IOException {
-        for (SimpleImageVO imageVO : compositeVO.sImages) {
+    private void exportAllAssets(CompositeItemVO compositeVO, File tmpDir) throws IOException {
+        for (SimpleImageVO imageVO : compositeVO.getElementsArray(SimpleImageVO.class)) {
             File fileSrc = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + imageVO.imageName + ".png");
             FileUtils.copyFileToDirectory(fileSrc, tmpDir);
             exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_IMAGE, fileSrc.getName()));
             copyShader(imageVO.shaderName, tmpDir);
         }
 
-        for (Image9patchVO imageVO : compositeVO.sImage9patchs) {
+        for (Image9patchVO imageVO : compositeVO.getElementsArray(Image9patchVO.class)) {
             File fileSrc = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + imageVO.imageName + ".9.png");
             FileUtils.copyFileToDirectory(fileSrc, tmpDir);
             exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_IMAGE, fileSrc.getName()));
             copyShader(imageVO.shaderName, tmpDir);
         }
 
-        for (SpineVO imageVO : compositeVO.sSpineAnimations) {
+        for (SpineVO imageVO : compositeVO.getElementsArray(SpineVO.class)) {
             File fileSrc = new File(currentProjectPath + ProjectManager.SPINE_DIR_PATH + File.separator + imageVO.animationName);
             FileUtils.copyDirectory(fileSrc, tmpDir);
             exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_SPINE_ANIMATION, fileSrc.getName() + ".json"));
             copyShader(imageVO.shaderName, tmpDir);
         }
 
-        for (SpriteAnimationVO imageVO : compositeVO.sSpriteAnimations) {
+        for (SpriteAnimationVO imageVO : compositeVO.getElementsArray(SpriteAnimationVO.class)) {
             File fileSrc = new File(currentProjectPath + ProjectManager.SPRITE_DIR_PATH + File.separator + imageVO.animationName);
             FileUtils.copyDirectory(fileSrc, tmpDir);
             exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS, fileSrc.getName() + ".atlas"));
             copyShader(imageVO.shaderName, tmpDir);
         }
 
-        for (ParticleEffectVO imageVO : compositeVO.sParticleEffects) {
+        for (ParticleEffectVO imageVO : compositeVO.getElementsArray(ParticleEffectVO.class)) {
             File fileSrc = new File(currentProjectPath + ProjectManager.PARTICLE_DIR_PATH + File.separator + imageVO.particleName);
             FileUtils.copyFileToDirectory(fileSrc, tmpDir);
             exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_PARTICLE_EFFECT, fileSrc.getName()));
@@ -159,7 +159,7 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
             copyShader(imageVO.shaderName, tmpDir);
         }
 
-        for (TalosVO imageVO : compositeVO.sTalosVFX) {
+        for (TalosVO imageVO : compositeVO.getElementsArray(TalosVO.class)) {
             File fileSrc = new File(currentProjectPath + ProjectManager.TALOS_VFX_DIR_PATH + File.separator + imageVO.particleName);
             FileUtils.copyFileToDirectory(fileSrc, tmpDir);
             exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_TALOS_VFX, fileSrc.getName()));
@@ -194,8 +194,8 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
             copyShader(imageVO.shaderName, tmpDir);
         }
 
-        for (CompositeItemVO compositeItemVO : compositeVO.sComposites) {
-            exportAllAssets(compositeItemVO.composite, tmpDir);
+        for (CompositeItemVO compositeItemVO : compositeVO.getElementsArray(CompositeItemVO.class)) {
+            exportAllAssets(compositeItemVO, tmpDir);
         }
     }
 
@@ -214,7 +214,7 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
     }
 
 	private void adjustPPWCoordinates(CompositeItemVO compositeItemVO) {
-		for (MainItemVO item : compositeItemVO.composite.getAllItems()) {
+		for (MainItemVO item : compositeItemVO.getAllItems()) {
 			item.originX = item.originX * projectManager.getCurrentProjectInfoVO().pixelToWorld;
 			item.originY = item.originY * projectManager.getCurrentProjectInfoVO().pixelToWorld;
 			item.x = item.x * projectManager.getCurrentProjectInfoVO().pixelToWorld;

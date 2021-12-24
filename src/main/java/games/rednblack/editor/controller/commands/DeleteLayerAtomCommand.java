@@ -26,7 +26,7 @@ public class DeleteLayerAtomCommand extends EntityModifyRevertibleCommand {
         int viewingEntity = Sandbox.getInstance().getCurrentViewingEntity();
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
 
-        if(layerMapComponent.getLayers().size() > 1) {
+        if(layerMapComponent.getLayers().size > 1) {
             layerMapComponent.deleteLayer(layerName);
         } else {
             cancel();

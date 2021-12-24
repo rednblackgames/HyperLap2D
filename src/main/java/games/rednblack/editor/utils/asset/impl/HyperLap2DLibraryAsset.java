@@ -9,6 +9,7 @@ import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
+import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.AssetImporter;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.ZipUtils;
@@ -73,8 +74,7 @@ public class HyperLap2DLibraryAsset extends Asset {
                     FileUtils.deleteDirectory(tmpDir);
                     FileUtils.forceMkdir(tmpDir);
                     FileHandle mapper = ZipUtils.saveZipContent(fileHandle.file(), tmpDir);
-                    Json json = new Json();
-                    json.setIgnoreUnknownFields(true);
+                    Json json = HyperJson.getJson();
                     ExportMapperVO exportMapperVO = json.fromJson(ExportMapperVO.class, mapper);
 
                     recursiveProgressHandler = new ProgressHandler() {

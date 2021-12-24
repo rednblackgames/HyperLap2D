@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
 import games.rednblack.editor.data.migrations.migrators.*;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
+import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import org.apache.commons.io.FileUtils;
 
@@ -43,9 +44,9 @@ public class ProjectVersionMigrator {
 	/**
 	 * this is the current supported version, change when data format is changed, and add migration script
 	 */
-	public static String dataFormatVersion = "0.2.0";
+	public static String dataFormatVersion = "1.0.0";
 
-	private final Json json = new Json();
+	private final Json json = HyperJson.getJson();
 
 	public ProjectVersionMigrator (String projectPath, ProjectVO projectVo) {
 		this.projectPath = projectPath;
@@ -58,7 +59,8 @@ public class ProjectVersionMigrator {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		projectInfoVO = json.fromJson(ProjectInfoVO.class, projectInfoContents);
+		if (!projectVo.projectVersion.equals("0.2.0"))
+			projectInfoVO = json.fromJson(ProjectInfoVO.class, projectInfoContents);
 
 		json.setOutputType(JsonWriter.OutputType.json);
 	}
@@ -103,6 +105,10 @@ public class ProjectVersionMigrator {
 		if (projectVo.projectVersion.equals("0.1.1")) {
 			IVersionMigrator vmt = new VersionMigTo020();
 			doMigration(vmt, "0.2.0");
+		}
+		if (projectVo.projectVersion.equals("0.2.0")) {
+			IVersionMigrator vmt = new VersionMigTo100();
+			doMigration(vmt, "1.0.0");
 		}
 	}
 

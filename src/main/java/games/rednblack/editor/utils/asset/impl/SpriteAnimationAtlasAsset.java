@@ -140,11 +140,10 @@ public class SpriteAnimationAtlasAsset extends Asset {
         }
 
         for (SceneVO scene : projectManager.currentProjectInfoVO.scenes) {
-            CompositeItemVO tmpVo = new CompositeItemVO();
             SceneVO loadedScene = resourceManager.getSceneVO(scene.sceneName);
-            tmpVo.composite = loadedScene.composite;
+            CompositeItemVO tmpVo = new CompositeItemVO(loadedScene.composite);
             deleteAllSpriteAnimationsOfItem(tmpVo, spriteAnimationName);
-            loadedScene.composite = tmpVo.composite;
+            loadedScene.composite = tmpVo;
             SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
             sceneDataManager.saveScene(loadedScene);
         }
@@ -157,15 +156,14 @@ public class SpriteAnimationAtlasAsset extends Asset {
 
     private void deleteCurrentItemSpriteAnimations(CompositeItemVO compositeItemVO, String spriteAnimationName) {
         tmpImageList.clear();
-        if (compositeItemVO.composite != null && compositeItemVO.composite.sSpriteAnimations.size() != 0) {
-            ArrayList<SpriteAnimationVO> spriteAnimations = compositeItemVO.composite.sSpriteAnimations;
+        if (compositeItemVO != null && compositeItemVO.getElementsArray(SpriteAnimationVO.class).size != 0) {
+            Array<SpriteAnimationVO> spriteAnimations = compositeItemVO.getElementsArray(SpriteAnimationVO.class);
 
-            tmpImageList.addAll(spriteAnimations
-                    .stream()
-                    .filter(spriteVO -> spriteVO.animationName.equals(spriteAnimationName))
-                    .collect(Collectors.toList()));
+            for (SpriteAnimationVO spriteVO :spriteAnimations)
+                if (spriteVO.getResourceName().equals(spriteAnimationName))
+                    tmpImageList.add(spriteVO);
 
-            spriteAnimations.removeAll(tmpImageList);
+            spriteAnimations.removeAll(tmpImageList, true);
         }
     }
 

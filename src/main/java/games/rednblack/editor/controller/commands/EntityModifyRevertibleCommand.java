@@ -59,7 +59,7 @@ public abstract class EntityModifyRevertibleCommand extends RevertibleCommand {
             HashMap<String, CompositeItemVO> libraryItems = projectManager.currentProjectInfoVO.libraryItems;
             if (libraryItems.containsKey(mainItemComponent.libraryLink)) {
                 CompositeItemVO itemVO = new CompositeItemVO();
-                itemVO.loadFromEntity(entity, sandbox.getEngine());
+                itemVO.loadFromEntity(entity, sandbox.getEngine(), sandbox.sceneControl.sceneLoader.getEntityFactory());
                 itemVO.cleanIds();
                 libraryItems.put(mainItemComponent.libraryLink, itemVO);
             }
@@ -75,7 +75,7 @@ public abstract class EntityModifyRevertibleCommand extends RevertibleCommand {
                 sandbox.getEngine().process();
 
                 EntityFactory factory = sandbox.getSceneControl().sceneLoader.getEntityFactory();
-                factory.initAllChildren(dependable, libraryItems.get(link).composite);
+                factory.initAllChildren(dependable, libraryItems.get(link));
             }
         }
     }

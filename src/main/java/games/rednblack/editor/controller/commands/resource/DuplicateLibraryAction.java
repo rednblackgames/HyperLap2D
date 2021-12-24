@@ -8,6 +8,7 @@ import games.rednblack.editor.controller.commands.AddToLibraryAction;
 import games.rednblack.editor.controller.commands.NonRevertibleCommand;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.GraphVO;
+import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.validator.StringNameValidator;
 import games.rednblack.h2d.common.MsgAPI;
@@ -36,7 +37,7 @@ public class DuplicateLibraryAction extends NonRevertibleCommand {
                     return;
                 }
 
-                Json json = new Json();
+                Json json = HyperJson.getJson();
                 GraphVO duplicated = json.fromJson(GraphVO.class, json.toJson(actionToDuplicate));
 
                 Object[] payload = AddToLibraryAction.getPayload(input, duplicated);

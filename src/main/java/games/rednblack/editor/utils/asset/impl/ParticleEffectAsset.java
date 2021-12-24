@@ -158,11 +158,10 @@ public class ParticleEffectAsset extends Asset {
         }
 
         for (SceneVO scene : projectManager.currentProjectInfoVO.scenes) {
-            CompositeItemVO tmpVo = new CompositeItemVO();
             SceneVO loadedScene = resourceManager.getSceneVO(scene.sceneName);
-            tmpVo.composite = loadedScene.composite;
+            CompositeItemVO tmpVo = new CompositeItemVO(loadedScene.composite);
             deleteAllParticles(tmpVo, name);
-            loadedScene.composite = tmpVo.composite;
+            loadedScene.composite = tmpVo;
             SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
             sceneDataManager.saveScene(loadedScene);
         }
@@ -175,14 +174,14 @@ public class ParticleEffectAsset extends Asset {
 
     private void getParticles(CompositeItemVO compositeItemVO, String name) {
         tmpImageList.clear();
-        if (compositeItemVO.composite != null && compositeItemVO.composite.sParticleEffects.size() != 0) {
-            ArrayList<ParticleEffectVO> particleEffectList = compositeItemVO.composite.sParticleEffects;
-            for (ParticleEffectVO particleEffectVO : particleEffectList) {
-                if (particleEffectVO.particleName.equals(name)) {
-                    tmpImageList.add(particleEffectVO);
-                }
-            }
-            particleEffectList.removeAll(tmpImageList);
+        if (compositeItemVO != null && compositeItemVO.getElementsArray(ParticleEffectVO.class).size != 0) {
+            Array<ParticleEffectVO> particleEffectList = compositeItemVO.getElementsArray(ParticleEffectVO.class);
+
+            for (ParticleEffectVO spriteVO :particleEffectList)
+                if (spriteVO.getResourceName().equals(name))
+                    tmpImageList.add(spriteVO);
+
+            particleEffectList.removeAll(tmpImageList, true);
         }
     }
 
