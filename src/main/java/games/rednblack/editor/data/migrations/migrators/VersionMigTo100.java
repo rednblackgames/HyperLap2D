@@ -119,9 +119,6 @@ public class VersionMigTo100 implements IVersionMigrator {
         for (int i = 0; i < vo.sTalosVFX.size(); i++) {
             target.addItem(vo.sTalosVFX.get(i));
         }
-        for (int i = 0; i < vo.sImages.size(); i++) {
-            target.addItem(vo.sImages.get(i));
-        }
         for (int i = 0; i < vo.sLights.size(); i++) {
             target.addItem(vo.sLights.get(i));
         }
