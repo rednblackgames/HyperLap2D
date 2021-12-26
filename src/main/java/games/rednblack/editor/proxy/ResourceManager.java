@@ -25,7 +25,9 @@ import games.rednblack.editor.renderer.utils.H2DSkinLoader;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.renderer.utils.ShadedDistanceFieldFont;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
+import games.rednblack.h2d.extension.spine.SpineItemType;
 import games.rednblack.h2d.extension.talos.ResourceRetrieverAssetProvider;
+import games.rednblack.h2d.extension.talos.TalosItemType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.puremvc.java.patterns.proxy.Proxy;
@@ -150,11 +152,6 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return new ParticleEffect(particleEffects.get(name));
     }
 
-    @Override
-    public FileHandle getTalosVFX(String name) {
-        return talosVFXsFiles.get(name);
-    }
-
     /**
      * Sets working resolution, please set before doing any loading
      * @param resolution String resolution name, default is "orig" later use resolution names created in editor
@@ -166,11 +163,17 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         }
     }
 
-
     @Override
-    public FileHandle getSkeletonJSON(String animationName) {
-        SpineAnimData animData = spineAnimAtlases.get(animationName);
-        return animData.jsonFile;
+    public FileHandle getExternalItemType(int itemType, String name) {
+        switch (itemType) {
+            case SpineItemType.SPINE_TYPE:
+                SpineAnimData animData = spineAnimAtlases.get(name);
+                return animData.jsonFile;
+            case TalosItemType.TALOS_TYPE:
+                return talosVFXsFiles.get(name);
+            default:
+                return null;
+        }
     }
 
     @Override

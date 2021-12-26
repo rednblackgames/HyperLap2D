@@ -20,6 +20,8 @@ package games.rednblack.editor.view.ui.followers;
 
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.h2d.extension.spine.SpineItemType;
+import games.rednblack.h2d.extension.talos.TalosItemType;
 
 /**
  * Created by azakhary on 5/21/2015.
@@ -32,10 +34,10 @@ public class FollowerFactory {
                 return new ImageFollower(entity);
             case EntityFactory.LIGHT_TYPE:
                 return new LightFollower(entity);
-            case EntityFactory.TALOS_TYPE:
+            case TalosItemType.TALOS_TYPE:
             case EntityFactory.PARTICLE_TYPE:
                 return new ParticleFollower(entity);
-            case EntityFactory.SPINE_TYPE:
+            case SpineItemType.SPINE_TYPE:
                 return new SpineFollower(entity);
         }
 

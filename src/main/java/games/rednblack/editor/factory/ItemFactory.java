@@ -18,6 +18,8 @@ import games.rednblack.editor.view.stage.tools.TextTool;
 import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.factory.IFactory;
+import games.rednblack.h2d.extension.spine.SpineItemType;
+import games.rednblack.h2d.extension.talos.TalosItemType;
 
 import java.util.HashMap;
 
@@ -142,7 +144,7 @@ public class ItemFactory implements IFactory {
         }
         data.data = animationName;
 
-        createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.SPINE_TYPE, data);
+        createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), SpineItemType.SPINE_TYPE, data);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         Pools.free(data);
@@ -244,7 +246,7 @@ public class ItemFactory implements IFactory {
             return -1;
         }
         data.data = particleName;
-        int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.TALOS_TYPE, data);
+        int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), TalosItemType.TALOS_TYPE, data);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
 

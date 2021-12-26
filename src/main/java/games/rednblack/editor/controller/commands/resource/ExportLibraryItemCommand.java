@@ -19,6 +19,8 @@ import games.rednblack.editor.utils.ZipUtils;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.h2d.common.vo.ExportMapperVO.ExportedAsset;
+import games.rednblack.h2d.extension.spine.SpineVO;
+import games.rednblack.h2d.extension.talos.TalosVO;
 import org.apache.commons.io.FileUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;

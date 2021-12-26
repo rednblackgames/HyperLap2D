@@ -8,7 +8,6 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SceneDataManager;
-import games.rednblack.editor.renderer.components.SpineDataComponent;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.utils.Version;
 import games.rednblack.editor.utils.HyperLap2DUtils;
@@ -18,7 +17,9 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
+import games.rednblack.h2d.extension.spine.SpineComponent;
 import games.rednblack.h2d.extension.spine.SpineItemType;
+import games.rednblack.h2d.extension.spine.SpineVO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -242,7 +243,7 @@ public class SpineAsset extends Asset {
     private void deleteEntitiesWithSpineAnimation(int rootEntity, String spineName) {
         tmpEntityList.clear();
         Consumer<Integer> action = (root) -> {
-            SpineDataComponent spineDataComponent = SandboxComponentRetriever.get(root, SpineDataComponent.class);
+            SpineComponent spineDataComponent = SandboxComponentRetriever.get(root, SpineComponent.class);
             if (spineDataComponent != null && spineDataComponent.animationName.equals(spineName)) {
                 tmpEntityList.add(root);
             }

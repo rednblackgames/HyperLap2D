@@ -79,7 +79,7 @@ public class UIParticleEffectsTabMediator extends UIResourcesTabMediator<UIParti
         particlesList.clear();
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
-        if (new TalosItemType().getTypeId() == EntityFactory.TALOS_TYPE) {
+        if (new TalosItemType().getTypeId() == TalosItemType.TALOS_TYPE) {
             createParticleResources(resourceManager.getProjectTalosList().keySet(), TalosResource.class, ItemFactory.get()::tryCreateTalosItem, searchText);
         }
 
@@ -92,7 +92,7 @@ public class UIParticleEffectsTabMediator extends UIResourcesTabMediator<UIParti
     private void createParticleResources(Set<String> strings, Class resourceClass, BiFunction<String, Vector2, Boolean> factoryFunction, String searchText) {
         for (String particleName : strings) {
             if (!particleName.toLowerCase().contains(searchText)
-                || filterResource(particleName, resourceClass == TalosResource.class ? EntityFactory.TALOS_TYPE : EntityFactory.PARTICLE_TYPE)) continue;
+                || filterResource(particleName, resourceClass == TalosResource.class ? TalosItemType.TALOS_TYPE : EntityFactory.PARTICLE_TYPE)) continue;
             try {
                 Constructor constructor = resourceClass.getConstructor(String.class);
                 DraggableResource draggableResource = new DraggableResource((DraggableResourceView) constructor.newInstance(particleName));

@@ -34,6 +34,8 @@ import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.extension.spine.SpineItemType;
+import games.rednblack.h2d.extension.talos.TalosItemType;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -55,10 +57,10 @@ public class EntityUtils {
         itemTypeNameMap.put(IMAGE_TYPE, "Image");
         itemTypeNameMap.put(NINE_PATCH, "9-Patch Image");
         itemTypeNameMap.put(LIGHT_TYPE, "Light");
-        itemTypeNameMap.put(SPINE_TYPE, "Spine Animation");
+        itemTypeNameMap.put(SpineItemType.SPINE_TYPE, "Spine Animation");
         itemTypeNameMap.put(SPRITE_TYPE, "Sprite Animation");
         itemTypeNameMap.put(COLOR_PRIMITIVE, "Primitive");
-        itemTypeNameMap.put(TALOS_TYPE, "Talos VFX");
+        itemTypeNameMap.put(TalosItemType.TALOS_TYPE, "Talos VFX");
 
         itemTypeIconMap.put(UNKNOWN_TYPE, "icon-unknown");
         itemTypeIconMap.put(COMPOSITE_TYPE, "icon-root");
@@ -67,10 +69,10 @@ public class EntityUtils {
         itemTypeIconMap.put(IMAGE_TYPE, "icon-image");
         itemTypeIconMap.put(NINE_PATCH, "icon-image");
         itemTypeIconMap.put(LIGHT_TYPE, "icon-particle-white");
-        itemTypeIconMap.put(SPINE_TYPE, "icon-spine");
+        itemTypeIconMap.put(SpineItemType.SPINE_TYPE, "icon-spine");
         itemTypeIconMap.put(SPRITE_TYPE, "icon-animation");
         itemTypeIconMap.put(COLOR_PRIMITIVE, "icon-image");
-        itemTypeIconMap.put(TALOS_TYPE, "icon-particle-white");
+        itemTypeIconMap.put(TalosItemType.TALOS_TYPE, "icon-particle-white");
     }
 
     public static String getItemName(int entity) {

@@ -1,6 +1,8 @@
 package games.rednblack.editor.data.migrations.data020;
 
 import games.rednblack.editor.renderer.data.*;
+import games.rednblack.h2d.extension.spine.SpineVO;
+import games.rednblack.h2d.extension.talos.TalosVO;
 
 import java.util.ArrayList;
 import java.util.HashMap;

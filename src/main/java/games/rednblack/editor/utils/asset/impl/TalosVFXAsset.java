@@ -8,11 +8,10 @@ import com.talosvfx.talos.runtime.ParticleEmitterDescriptor;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.SceneDataManager;
-import games.rednblack.editor.renderer.components.particle.TalosDataComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
-import games.rednblack.editor.renderer.data.SpriteAnimationVO;
-import games.rednblack.editor.renderer.data.TalosVO;
+import games.rednblack.h2d.extension.talos.TalosComponent;
+import games.rednblack.h2d.extension.talos.TalosVO;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
@@ -25,7 +24,6 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.function.Consumer;
 
 public class TalosVFXAsset extends Asset {
@@ -231,7 +229,7 @@ public class TalosVFXAsset extends Asset {
     private void deleteEntitiesWithParticleEffects(int rootEntity, String particleName) {
         tmpEntityList.clear();
         Consumer<Integer> action = (root) -> {
-            TalosDataComponent particleComponent = SandboxComponentRetriever.get(root, TalosDataComponent.class);
+            TalosComponent particleComponent = SandboxComponentRetriever.get(root, TalosComponent.class);
             if (particleComponent != null && particleComponent.particleName.equals(particleName)) {
                 tmpEntityList.add(root);
             }

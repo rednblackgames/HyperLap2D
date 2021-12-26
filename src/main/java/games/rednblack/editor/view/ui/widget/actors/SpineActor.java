@@ -13,6 +13,7 @@ import com.esotericsoftware.spine.attachments.MeshAttachment;
 import com.esotericsoftware.spine.attachments.RegionAttachment;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.h2d.extension.spine.ResourceRetrieverAttachmentLoader;
+import games.rednblack.h2d.extension.spine.SpineItemType;
 
 public class SpineActor extends Actor {
 
@@ -75,7 +76,7 @@ public class SpineActor extends Actor {
 
     private void initSkeletonData() {
         skeletonJson = new SkeletonJson(new ResourceRetrieverAttachmentLoader(animationName, irr));
-        skeletonData = skeletonJson.readSkeletonData((irr.getSkeletonJSON(animationName)));
+        skeletonData = skeletonJson.readSkeletonData((irr.getExternalItemType(SpineItemType.SPINE_TYPE, animationName)));
     }
 
     private void initSpine() {

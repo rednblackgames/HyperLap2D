@@ -1,5 +1,6 @@
 package games.rednblack.editor.plugin.tiled.tools;
 
+import games.rednblack.h2d.extension.spine.SpineItemType;
 import org.puremvc.java.interfaces.INotification;
 
 import com.badlogic.gdx.Input;
@@ -169,7 +170,7 @@ public class DrawTileTool implements Tool {
 	            case EntityFactory.SPRITE_TYPE:
 	                currentDrawStrategy = spriteDrawStrategy;
 	                break;
-	            case EntityFactory.SPINE_TYPE:
+	            case SpineItemType.SPINE_TYPE:
 	                currentDrawStrategy = spineDrawStrategy;
 	                break;
 	            default:

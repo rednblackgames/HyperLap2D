@@ -15,6 +15,7 @@ import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.plugin.tiled.view.SpineDrawable;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.h2d.extension.spine.ResourceRetrieverAttachmentLoader;
+import games.rednblack.h2d.extension.spine.SpineItemType;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -98,7 +99,7 @@ public class ResourcesManager {
         if (spineDrawableCache.get(name) == null) {
             ResourceRetrieverAttachmentLoader atlasAttachmentLoader = new ResourceRetrieverAttachmentLoader(name, tiledPlugin.getAPI().getSceneLoader().getRm());
             SkeletonJson skeletonJson = new SkeletonJson(atlasAttachmentLoader);
-            SkeletonData skeletonData = skeletonJson.readSkeletonData(tiledPlugin.getAPI().getSceneLoader().getRm().getSkeletonJSON(name));
+            SkeletonData skeletonData = skeletonJson.readSkeletonData(tiledPlugin.getAPI().getSceneLoader().getRm().getExternalItemType(SpineItemType.SPINE_TYPE, name));
             Skeleton skeleton = new Skeleton(skeletonData);
 
             spineDrawableCache.put(name, new SpineDrawable(skeleton, skeletonRenderer));
