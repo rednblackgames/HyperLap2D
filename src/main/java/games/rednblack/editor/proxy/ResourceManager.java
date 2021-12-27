@@ -12,19 +12,23 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.*;
+import com.esotericsoftware.spine.SkeletonJson;
 import com.kotcrab.vis.ui.VisUI;
 import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
 import com.talosvfx.talos.runtime.utils.ShaderDescriptor;
 import com.talosvfx.talos.runtime.utils.VectorField;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.data.SpineAnimData;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.resources.FontSizePair;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.editor.renderer.utils.H2DSkinLoader;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.renderer.utils.ShadedDistanceFieldFont;
+import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
+import games.rednblack.h2d.extension.spine.ResourceRetrieverAttachmentLoader;
+import games.rednblack.h2d.extension.spine.SpineDataObject;
+import games.rednblack.h2d.extension.spine.SpineDrawableLogic;
 import games.rednblack.h2d.extension.spine.SpineItemType;
 import games.rednblack.h2d.extension.talos.ResourceRetrieverAssetProvider;
 import games.rednblack.h2d.extension.talos.TalosItemType;
@@ -50,10 +54,9 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     private final HashMap<String, ParticleEffect> particleEffects = new HashMap<>(1);
     private final HashMap<String, ParticleEffectDescriptor> talosVFXs = new HashMap<>(1);
-    private final HashMap<String, FileHandle> talosVFXsFiles = new HashMap<>(1);
     private HashMap<String, TextureAtlas> currentProjectAtlas = new HashMap<>(1);
 
-    private final HashMap<String, SpineAnimData> spineAnimAtlases = new HashMap<>();
+    private final HashMap<String, SpineDataObject> spineAnimAtlases = new HashMap<>();
     private final HashMap<String, Array<TextureAtlas.AtlasRegion>> spriteAnimAtlases = new HashMap<>();
     private final HashMap<FontSizePair, BitmapFont> bitmapFonts = new HashMap<>();
     private final HashMap<String, ShaderProgram> shaderPrograms = new HashMap<>(1);
@@ -164,13 +167,12 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     }
 
     @Override
-    public FileHandle getExternalItemType(int itemType, String name) {
+    public Object getExternalItemType(int itemType, String name) {
         switch (itemType) {
             case SpineItemType.SPINE_TYPE:
-                SpineAnimData animData = spineAnimAtlases.get(name);
-                return animData.jsonFile;
+                return spineAnimAtlases.get(name);
             case TalosItemType.TALOS_TYPE:
-                return talosVFXsFiles.get(name);
+                return talosVFXs.get(name);
             default:
                 return null;
         }
@@ -261,7 +263,6 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
             assetProvider.setAssetHandler(VectorField.class, this::findVectorFieldDescriptorOnLoad);
             ParticleEffectDescriptor effectDescriptor = new ParticleEffectDescriptor();
             effectDescriptor.setAssetProvider(assetProvider);
-            talosVFXsFiles.put(filename, Gdx.files.internal(file.getAbsolutePath()));
             effectDescriptor.load(Gdx.files.internal(file.getAbsolutePath()));
             talosVFXs.put(filename, effectDescriptor);
         }
@@ -301,14 +302,17 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private void loadCurrentProjectSpineAnimations(String path, String curResolution) {
         spineAnimAtlases.clear();
         FileHandle sourceDir = new FileHandle(path + "orig/spine-animations");
+        SpineDrawableLogic spineDrawableLogic = (SpineDrawableLogic) Sandbox.getInstance().sceneControl.sceneLoader.getExternalItemType(SpineItemType.SPINE_TYPE).getDrawable();
         for (FileHandle entry : sourceDir.list()) {
             if (entry.file().isDirectory()) {
                 String animName = FilenameUtils.removeExtension(entry.file().getName());
                 FileHandle animJsonFile = Gdx.files.internal(entry.file().getAbsolutePath() + File.separator + animName + ".json");
-                SpineAnimData data = new SpineAnimData();
-                data.jsonFile = animJsonFile;
-                data.animName = animName;
-                spineAnimAtlases.put(animName, data);
+
+                SpineDataObject spineDataObject = new SpineDataObject();
+                spineDataObject.skeletonJson = new SkeletonJson(new ResourceRetrieverAttachmentLoader(animName, this, spineDrawableLogic));
+                spineDataObject.skeletonData = spineDataObject.skeletonJson.readSkeletonData(animJsonFile);
+
+                spineAnimAtlases.put(animName, spineDataObject);
             }
         }
 
@@ -492,7 +496,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         addBitmapFont(fontfamily, parameter.size, font, mono);
     }
 
-    public HashMap<String, SpineAnimData> getProjectSpineAnimationsList() {
+    public HashMap<String, SpineDataObject> getProjectSpineAnimationsList() {
         return spineAnimAtlases;
     }
 
