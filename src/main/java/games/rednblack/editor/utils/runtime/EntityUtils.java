@@ -63,16 +63,16 @@ public class EntityUtils {
         itemTypeNameMap.put(TalosItemType.TALOS_TYPE, "Talos VFX");
 
         itemTypeIconMap.put(UNKNOWN_TYPE, "icon-unknown");
-        itemTypeIconMap.put(COMPOSITE_TYPE, "icon-root");
+        itemTypeIconMap.put(COMPOSITE_TYPE, "icon-composite2");
         itemTypeIconMap.put(PARTICLE_TYPE, "icon-particle-white");
         itemTypeIconMap.put(LABEL_TYPE, "icon-label");
         itemTypeIconMap.put(IMAGE_TYPE, "icon-image");
         itemTypeIconMap.put(NINE_PATCH, "icon-image");
-        itemTypeIconMap.put(LIGHT_TYPE, "icon-particle-white");
+        itemTypeIconMap.put(LIGHT_TYPE, "icon-light");
         itemTypeIconMap.put(SpineItemType.SPINE_TYPE, "icon-spine");
         itemTypeIconMap.put(SPRITE_TYPE, "icon-animation");
         itemTypeIconMap.put(COLOR_PRIMITIVE, "icon-image");
-        itemTypeIconMap.put(TalosItemType.TALOS_TYPE, "icon-particle-white");
+        itemTypeIconMap.put(TalosItemType.TALOS_TYPE, "icon-talos");
     }
 
     public static String getItemName(int entity) {

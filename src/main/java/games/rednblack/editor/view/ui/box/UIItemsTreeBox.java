@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.MainItemComponent;
@@ -197,10 +198,11 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         else
             node.setPad(4, 3, 4, 0);
 
-        node.setIcon(EntityUtils.getItemIcon(mainItemComponent.entityType));
         if (parentNode != null) {
+            node.setIcon(EntityUtils.getItemIcon(mainItemComponent.entityType));
             parentNode.add(node);
         } else {
+            node.setIcon(VisUI.getSkin().getDrawable("icon-root"));
             tree.add(node);
         }
         return node;
