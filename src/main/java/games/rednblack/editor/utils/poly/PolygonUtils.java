@@ -20,8 +20,7 @@ package games.rednblack.editor.utils.poly;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.*;
 import games.rednblack.editor.utils.Vector2Pool;
 import games.rednblack.editor.view.stage.Sandbox;
 
@@ -57,67 +56,71 @@ public class PolygonUtils {
 		return Clipper.polygonize(Clipper.Polygonizer.EWJORDAN, vertices);
 	}
 
-	public static boolean intersectSegments(Vector2[] points, int index1, int index2, int index3, int index4) {
-		Vector2 intersectionPoint = new Vector2(points[index1]);
-		boolean isIntersecting = Intersector.intersectSegments(points[index1], points[index2], points[index3], points[index4], intersectionPoint);
-		if(isIntersecting && !isSamePoint(intersectionPoint, points[index1]) && !isSamePoint(intersectionPoint, points[index2]) && !isSamePoint(intersectionPoint, points[index3]) && !isSamePoint(intersectionPoint, points[index4])) {
+	public static boolean intersectSegments(Array<Vector2> points, int index1, int index2, int index3, int index4) {
+		Vector2 intersectionPoint = Pools.obtain(Vector2.class).set(points.get(index1));
+		boolean isIntersecting = Intersector.intersectSegments(points.get(index1), points.get(index2), points.get(index3), points.get(index4), intersectionPoint);
+		if(isIntersecting
+				&& !isSamePoint(intersectionPoint, points.get(index1))
+				&& !isSamePoint(intersectionPoint, points.get(index2))
+				&& !isSamePoint(intersectionPoint, points.get(index3))
+				&& !isSamePoint(intersectionPoint, points.get(index4))) {
+			Pools.free(intersectionPoint);
 			return true;
 		}
-
+		Pools.free(intersectionPoint);
 		return false;
 	}
 
 	public static boolean isSamePoint(Vector2 point1, Vector2 point2) {
 		int pixelsPerWU = Sandbox.getInstance().getPixelPerWU();
-		int precision = 10000 * pixelsPerWU;
-		Vector2 pointA = new Vector2(point1);
-		Vector2 pointB = new Vector2(point2);
+		int precision = 1000 * pixelsPerWU;
+		Vector2 pointA = Pools.obtain(Vector2.class).set(point1);
+		Vector2 pointB = Pools.obtain(Vector2.class).set(point2);
 		pointA.x = Math.round(point1.x * precision) / (float)precision;
 		pointA.y = Math.round(point1.y * precision) / (float)precision;
 		pointB.x = Math.round(point2.x * precision) / (float)precision;
 		pointB.y = Math.round(point2.y * precision) / (float)precision;
-
-		return pointA.equals(pointB);
+		boolean res = pointA.equals(pointB);
+		Pools.free(pointA);
+		Pools.free(pointB);
+		return res;
 	}
 
-
-	public static int[] checkForIntersection(int anchor, Vector2[] points) {
-		int leftPointIndex = points.length-1;
+	public static IntSet checkForIntersection(int anchor, Array<Vector2> points, IntSet problems) {
+		problems.clear();
+		int leftPointIndex = points.size - 1;
 		int rightPointIndex = 0;
-		if(anchor > 0) {
-			leftPointIndex = anchor-1;
+		if (anchor > 0) {
+			leftPointIndex = anchor - 1;
 		}
-		if(anchor < points.length-1) {
-			rightPointIndex =  anchor+1;
+		if (anchor < points.size - 1) {
+			rightPointIndex = anchor + 1;
 		}
 
-		HashSet<Integer> problems = new HashSet<>();
-
-		for(int i = 0; i < points.length-1; i++) {
-
-			if(i != leftPointIndex && i != anchor) {
+		for (int i = 0; i < points.size - 1; i++) {
+			if (i != leftPointIndex && i != anchor) {
 				if(intersectSegments(points, i, i+1, leftPointIndex, anchor)) {
 					problems.add(leftPointIndex);
 				}
+
 				if(intersectSegments(points, i, i+1, anchor, rightPointIndex)) {
 					problems.add(anchor);
 				}
 			}
 		}
-		if(anchor != points.length-1 && leftPointIndex != points.length-1 && intersectSegments(points, points.length-1, 0, leftPointIndex, anchor)) {
+
+		if (anchor != points.size - 1 && leftPointIndex != points.size - 1 && intersectSegments(points, points.size - 1, 0, leftPointIndex, anchor)) {
 			problems.add(leftPointIndex);
 		}
-		if(anchor != points.length-1 && leftPointIndex != points.length-1 && intersectSegments(points, points.length-1, 0, anchor, rightPointIndex)) {
+		if(anchor != points.size - 1 && leftPointIndex != points.size - 1 && intersectSegments(points, points.size - 1, 0, anchor, rightPointIndex)) {
 			problems.add(anchor);
 		}
 
-		if(problems.size() == 0) {
+		if(problems.size == 0) {
 			return null;
 		}
 
-		int[] result = problems.stream().mapToInt(i->i).toArray();
-
-		return result;
+		return problems;
 	}
 
 	public static Pool<Vector2> vector2Pool = new Vector2Pool(60);

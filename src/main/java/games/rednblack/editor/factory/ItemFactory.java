@@ -157,7 +157,10 @@ public class ItemFactory implements IFactory {
             Pools.free(data);
             return false;
         }
-        data.data = shape.clone().polygons;
+        Object[] params = new Object[5];
+        data.data = params;
+        params[0] = shape.clone().vertices;
+        params[1] = shape.clone().polygonizedVertices;
         createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.COLOR_PRIMITIVE, data);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
         Pools.free(data);

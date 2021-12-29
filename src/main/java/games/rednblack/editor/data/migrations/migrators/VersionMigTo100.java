@@ -3,11 +3,13 @@ package games.rednblack.editor.data.migrations.migrators;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
 import games.rednblack.editor.data.migrations.IVersionMigrator;
 import games.rednblack.editor.data.migrations.data020.CompositeVO;
 import games.rednblack.editor.renderer.data.*;
+import games.rednblack.editor.renderer.utils.PolygonUtils;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import org.apache.commons.io.FileUtils;
 
@@ -137,6 +139,13 @@ public class VersionMigTo100 implements IVersionMigrator {
         for (int i = 0; i < vo.layers.size(); i++) {
             target.layers.add(vo.layers.get(i));
         }
+        for (MainItemVO mainItemVO : target.getAllItems()) {
+            if(mainItemVO.shape != null) {
+                target.shape = new PolygonShapeVO();
+                target.shape.polygonizedVertices = mainItemVO.shape.polygons;
+                target.shape.vertices = new Array<>(PolygonUtils.mergeTouchingPolygonsToOne(mainItemVO.shape.polygons));
+            }
+        }
         for (int i = 0; i < vo.sComposites.size(); i++) {
             games.rednblack.editor.data.migrations.data020.CompositeItemVO compositeItemVO = vo.sComposites.get(i);
             CompositeItemVO newCompositeItemVO = new CompositeItemVO();
@@ -171,7 +180,9 @@ public class VersionMigTo100 implements IVersionMigrator {
         target.flipY = vo.flipY;
 
         if(vo.shape != null) {
-            target.shape = vo.shape.clone();
+            target.shape = new PolygonShapeVO();
+            target.shape.polygonizedVertices = vo.shape.polygons;
+            target.shape.vertices = new Array<>(PolygonUtils.mergeTouchingPolygonsToOne(vo.shape.polygons));
         }
 
         if(vo.circle != null) {

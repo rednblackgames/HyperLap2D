@@ -1,10 +1,12 @@
 package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntSet;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
-import games.rednblack.editor.renderer.components.PolygonComponent;
+import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
@@ -14,11 +16,10 @@ import games.rednblack.h2d.common.view.ui.dialog.MultipleInputDialog;
 import games.rednblack.h2d.common.view.ui.listener.MultipleInputDialogListener;
 import org.puremvc.java.interfaces.INotification;
 
-import java.util.Collections;
-
 public class ChangePolygonVertexPositionCommand extends SandboxCommand {
 
     private Object[] currentCommandPayload;
+    private final IntSet intersectionProblems = new IntSet();
 
     @Override
     public void execute(INotification notification) {
@@ -28,39 +29,38 @@ public class ChangePolygonVertexPositionCommand extends SandboxCommand {
         PolygonFollower follower = (PolygonFollower) payload[0];
         int anchor = (int) payload[1];
 
-        Vector2[] points = follower.getOriginalPoints().toArray(new Vector2[0]);
-        Vector2 backup = points[anchor].cpy();
+        PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonShapeComponent.class);
+        Array<Vector2> points = polygonShapeComponent.vertices;
+        Vector2 backup = points.get(anchor).cpy();
         currentCommandPayload = UpdatePolygonDataCommand.payloadInitialState(follower.getEntity());
 
         MultipleInputDialog dialog = new MultipleInputDialog("Vertex Position", new String[]{"X : ", "Y : "}, false, new FloatInputValidator(), new MultipleInputDialogListener() {
             @Override
             public void finished(String[] input) {
-                Vector2[] points = follower.getOriginalPoints().toArray(new Vector2[0]);
-                PolygonComponent polygonComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
-                points[anchor].set(Float.parseFloat(input[0]), Float.parseFloat(input[1]));
+                Array<Vector2> points = polygonShapeComponent.vertices;
+                points.get(anchor).set(Float.parseFloat(input[0]), Float.parseFloat(input[1]));
 
                 // check if any of near lines intersect
-                int[] intersections = PolygonUtils.checkForIntersection(anchor, points);
+                Vector2[] pointsArray = points.toArray();
+                IntSet intersections = PolygonUtils.checkForIntersection(anchor, points, intersectionProblems);
                 if(intersections == null) {
-                    if(PolygonUtils.isPolygonCCW(points)){
-                        Collections.reverse(follower.getOriginalPoints());
-                        points = follower.getOriginalPoints().toArray(new Vector2[0]);
+                    if(PolygonUtils.isPolygonCCW(pointsArray)){
+                        points.reverse();
                     }
-                    polygonComponent.vertices = PolygonUtils.polygonize(points);
+                    polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(polygonShapeComponent.vertices.toArray());
 
-                    currentCommandPayload = UpdatePolygonDataCommand.payload(currentCommandPayload, polygonComponent.vertices);
+                    UpdatePolygonDataCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
                     HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
                 } else {
-                    points[anchor].set(backup);
+                    points.get(anchor).set(backup);
                 }
             }
 
             @Override
             public void canceled() {
-
             }
         });
-        dialog.setText(new String[]{points[anchor].x+"", points[anchor].y+""});
+        dialog.setText(new String[]{points.get(anchor).x+"", points.get(anchor).y+""});
         sandbox.getUIStage().addActor(dialog.fadeIn());
     }
 }

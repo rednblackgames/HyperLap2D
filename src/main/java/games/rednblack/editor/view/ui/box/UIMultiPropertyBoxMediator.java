@@ -23,8 +23,8 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
-import games.rednblack.editor.renderer.components.CircleShapeComponent;
-import games.rednblack.editor.renderer.components.PolygonComponent;
+import games.rednblack.editor.renderer.components.shape.CircleShapeComponent;
+import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
@@ -189,7 +189,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         }
 
         // optional panels based on components
-        PolygonComponent polygonComponent = SandboxComponentRetriever.get(entity, PolygonComponent.class);
+        PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(entity, PolygonShapeComponent.class);
         PhysicsBodyComponent physicsComponent = SandboxComponentRetriever.get(entity, PhysicsBodyComponent.class);
         SensorComponent sensorComponent = SandboxComponentRetriever.get(entity, SensorComponent.class);
         ShaderComponent shaderComponent = SandboxComponentRetriever.get(entity, ShaderComponent.class);
@@ -197,7 +197,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         TypingLabelComponent typingLabelComponent = SandboxComponentRetriever.get(entity, TypingLabelComponent.class);
         CircleShapeComponent circleShapeComponent = SandboxComponentRetriever.get(entity, CircleShapeComponent.class);
 
-        if (polygonComponent != null) {
+        if (polygonShapeComponent != null) {
             mediatorNames.add(UIPolygonComponentPropertiesMediator.NAME);
         }
         if (physicsComponent != null) {

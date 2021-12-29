@@ -19,9 +19,10 @@
 package games.rednblack.editor.controller.commands.component;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
-import games.rednblack.editor.renderer.components.PolygonComponent;
+import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
@@ -32,16 +33,23 @@ import games.rednblack.h2d.common.MsgAPI;
 public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
 
     private Integer entityId;
-    private Vector2[][] dataFrom;
-    private Vector2[][] dataTo;
+    private Vector2[][] polygonizedDataFrom;
+    private Vector2[][] polygonizedDataTo;
+    private Array<Vector2> dataFrom;
+    private Array<Vector2> dataTo;
 
     private void collectData() {
         Object[] payload = getNotification().getBody();
         entityId = EntityUtils.getEntityId((int) payload[0]);
-        dataFrom = (Vector2[][]) payload[1];
-        dataTo = (Vector2[][]) payload[2];
-        dataFrom = dataFrom.clone();
-        dataTo = dataTo.clone();
+        polygonizedDataFrom = (Vector2[][]) payload[1];
+        dataFrom = (Array<Vector2>) payload[2];
+        polygonizedDataTo = (Vector2[][]) payload[3];
+        dataTo = (Array<Vector2>) payload[4];
+
+        polygonizedDataFrom = cloneData(polygonizedDataFrom);
+        dataFrom = cloneData(dataFrom);
+        polygonizedDataTo = cloneData(polygonizedDataTo);
+        dataTo = cloneData(dataTo);
     }
 
     @Override
@@ -50,8 +58,9 @@ public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
 
         int entity = EntityUtils.getByUniqueId(entityId);
 
-        PolygonComponent polygonComponent = SandboxComponentRetriever.get(entity, PolygonComponent.class);
-        polygonComponent.vertices = dataTo;
+        PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(entity, PolygonShapeComponent.class);
+        polygonShapeComponent.vertices = dataTo;
+        polygonShapeComponent.polygonizedVertices = polygonizedDataTo;
 
         EntityUtils.refreshComponents(entity);
 
@@ -63,8 +72,9 @@ public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
     public void undoAction() {
         int entity = EntityUtils.getByUniqueId(entityId);
 
-        PolygonComponent polygonComponent = SandboxComponentRetriever.get(entity, PolygonComponent.class);
-        polygonComponent.vertices = dataFrom;
+        PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(entity, PolygonShapeComponent.class);
+        polygonShapeComponent.vertices = dataFrom;
+        polygonShapeComponent.polygonizedVertices = polygonizedDataFrom;
 
         EntityUtils.refreshComponents(entity);
 
@@ -72,21 +82,28 @@ public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
     }
 
     public static Object[] payloadInitialState(int entity) {
-        PolygonComponent polygonComponent = SandboxComponentRetriever.get(entity, PolygonComponent.class);
-        Object[] payload = new Object[3];
+        PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(entity, PolygonShapeComponent.class);
+        Object[] payload = new Object[5];
         payload[0] = entity;
-        payload[1] = cloneData(polygonComponent.vertices);
-
+        payload[1] = cloneData(polygonShapeComponent.polygonizedVertices);
+        payload[2] = cloneData(polygonShapeComponent.vertices);
         return payload;
     }
 
-    public static Object[] payload(Object[] payload, Vector2[][] vertices) {
-        payload[2] = cloneData(vertices);
-
+    public static Object[] payload(Object[] payload, Array<Vector2> vertices, Vector2[][] polygonizedVertices) {
+        payload[3] = cloneData(polygonizedVertices);
+        payload[4] = cloneData(vertices);
         return payload;
     }
 
-    private static Vector2[][] cloneData(Vector2[][] data) {
+    public static Array<Vector2> cloneData(Array<Vector2> data) {
+        Array<Vector2> clone = new Array<>(true, data.size, Vector2.class);
+        for (Vector2 vector2 : data) {
+            clone.add(vector2.cpy());
+        }
+        return clone;
+    }
+    public static Vector2[][] cloneData(Vector2[][] data) {
         Vector2[][] newData = new Vector2[data.length][];
         for(int i = 0; i < data.length; i++) {
             newData[i] = new Vector2[data[i].length];
