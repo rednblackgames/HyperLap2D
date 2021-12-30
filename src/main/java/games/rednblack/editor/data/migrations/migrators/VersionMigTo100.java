@@ -141,9 +141,10 @@ public class VersionMigTo100 implements IVersionMigrator {
         }
         for (MainItemVO mainItemVO : target.getAllItems()) {
             if(mainItemVO.shape != null) {
-                target.shape = new PolygonShapeVO();
-                target.shape.polygonizedVertices = mainItemVO.shape.polygons;
-                target.shape.vertices = new Array<>(PolygonUtils.mergeTouchingPolygonsToOne(mainItemVO.shape.polygons));
+                PolygonShapeVO newShape = new PolygonShapeVO();
+                newShape.polygonizedVertices = mainItemVO.shape.polygons;
+                newShape.vertices = new Array<>(PolygonUtils.mergeTouchingPolygonsToOne(mainItemVO.shape.polygons));
+                mainItemVO.shape = newShape;
             }
         }
         for (int i = 0; i < vo.sComposites.size(); i++) {
