@@ -278,6 +278,7 @@ public class PolygonFollower extends SubFollower {
 
             listener.vertexUp(PolygonFollower.this, line.getIndex(), coord.x, coord.y);
 
+            draggingAnchorId = -1;
             Pools.free(coord);
         }
 

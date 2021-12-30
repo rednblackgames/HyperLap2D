@@ -19,7 +19,9 @@
 package games.rednblack.editor.utils.runtime;
 
 import com.artemis.Aspect;
+import com.artemis.Component;
 import com.artemis.EntitySubscription;
+import com.artemis.utils.Bag;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -27,9 +29,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.kotcrab.vis.ui.VisUI;
+import games.rednblack.editor.renderer.commons.RefreshableComponent;
 import games.rednblack.editor.renderer.components.*;
-import games.rednblack.editor.renderer.components.light.LightBodyComponent;
-import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.HyperJson;
@@ -319,20 +320,16 @@ public class EntityUtils {
         Sandbox.getInstance().getEngine().process();
     }
 
+    private static final Bag<Component> tmpComponents = new Bag<>();
+
     public static void refreshComponents(int entity) {
-        TextureRegionComponent textureRegionComponent = SandboxComponentRetriever.get(entity, TextureRegionComponent.class);
-        if (textureRegionComponent != null) {
-            textureRegionComponent.scheduleRefresh();
-        }
-
-        PhysicsBodyComponent physicsBodyComponent = SandboxComponentRetriever.get(entity, PhysicsBodyComponent.class);
-        if (physicsBodyComponent != null) {
-            physicsBodyComponent.scheduleRefresh();
-        }
-
-        LightBodyComponent lightBodyComponent = SandboxComponentRetriever.get(entity, LightBodyComponent.class);
-        if (lightBodyComponent != null) {
-            lightBodyComponent.scheduleRefresh();
+        com.artemis.World engine = Sandbox.getInstance().getEngine();
+        tmpComponents.clear();
+        engine.getComponentManager().getComponentsFor(entity, tmpComponents);
+        for (Component component : tmpComponents) {
+            if (component instanceof RefreshableComponent) {
+                ((RefreshableComponent) component).scheduleRefresh();
+            }
         }
     }
 
