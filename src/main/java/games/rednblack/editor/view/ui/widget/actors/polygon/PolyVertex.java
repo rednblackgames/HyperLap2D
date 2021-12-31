@@ -43,6 +43,7 @@ public class PolyVertex extends Actor implements Pool.Poolable {
         setColor(selected ? selectedColor : normalColor);
         getColor().a *= parentAlpha;
 
+        shapeDrawer.filledCircle(getX() + getWidth() * 0.5f, getY() + getHeight() * 0.5f, (getWidth() + 2) * 0.5f, Color.BLACK);
         shapeDrawer.filledCircle(getX() + getWidth() * 0.5f, getY() + getHeight() * 0.5f, getWidth() * 0.5f, getColor());
         if (selected)
             indexLabel.draw(batch, parentAlpha);

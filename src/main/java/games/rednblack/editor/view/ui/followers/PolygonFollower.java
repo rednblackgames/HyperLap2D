@@ -86,7 +86,13 @@ public class PolygonFollower extends SubFollower {
     protected void setStage(Stage stage) {
         super.setStage(stage);
         if (stage != null)
-            shapeDrawer = new ShapeDrawer(stage.getBatch(), WhitePixel.sharedInstance.textureRegion);
+            shapeDrawer = new ShapeDrawer(stage.getBatch(), WhitePixel.sharedInstance.textureRegion){
+                /* OPTIONAL: Ensuring a certain smoothness. */
+                @Override
+                protected int estimateSidesRequired(float radiusX, float radiusY) {
+                    return 200;
+                }
+            };
         addActor(innerMesh);
         addActor(outline);
         addActor(vertices);
