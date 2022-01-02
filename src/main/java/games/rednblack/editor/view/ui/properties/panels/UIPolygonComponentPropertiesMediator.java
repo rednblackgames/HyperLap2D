@@ -22,7 +22,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
-import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -87,8 +87,15 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
     @Override
     protected void translateObservableDataToView(int item) {
         polygonShapeComponent = SandboxComponentRetriever.get(item, PolygonShapeComponent.class);
+        if (polygonShapeComponent.vertices == null && polygonShapeComponent.polygonizedVertices == null) {
+            viewComponent.initEmptyView();
+            return;
+        }
+
+        viewComponent.initView();
+        viewComponent.setOpenPath(polygonShapeComponent.openEnded);
+
         if(polygonShapeComponent.polygonizedVertices != null) {
-            viewComponent.initView();
             int verticesCount = 0;
             for(int i = 0; i < polygonShapeComponent.polygonizedVertices.length; i++) {
                 for(int j = 0; j < polygonShapeComponent.polygonizedVertices[i].length; j++) {
@@ -96,15 +103,17 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
                 }
             }
             viewComponent.setVerticesCount(verticesCount);
-
-        } else {
-            viewComponent.initEmptyView();
         }
     }
 
     @Override
     protected void translateViewToItemData() {
+        Object[] payload = new Object[2];
+        payload[0] = observableReference;
+        payload[1] = viewComponent.isOpenEnded();
 
+        if (viewComponent.isOpenEnded() != polygonShapeComponent.openEnded)
+            facade.sendNotification(MsgAPI.ACTION_UPDATE_POLYGON_DATA, payload);
     }
 
     private void addDefaultMesh() {
@@ -137,8 +146,8 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
         Vector2[][] polygonizedVertices = (Vector2[][]) param[0];
         Array<Vector2> vertices = (Array<Vector2>) param[1];
         if(vertices == null) return;
-        Object[] payload = UpdatePolygonDataCommand.payloadInitialState(observableReference);
-        UpdatePolygonDataCommand.payload(payload, vertices, polygonizedVertices);
+        Object[] payload = UpdatePolygonVerticesCommand.payloadInitialState(observableReference);
+        UpdatePolygonVerticesCommand.payload(payload, vertices, polygonizedVertices);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, payload);
     }
 }

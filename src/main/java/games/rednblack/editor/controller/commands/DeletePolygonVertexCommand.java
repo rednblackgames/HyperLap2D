@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.SandboxCommand;
-import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -36,10 +36,10 @@ public class DeletePolygonVertexCommand extends SandboxCommand {
         if(polygonShapeComponent == null || polygonShapeComponent.vertices == null || polygonShapeComponent.vertices.size == 0) return;
         if(polygonShapeComponent.vertices.size <= 3) return;
 
-        Vector2[][] poligonyzedBackup = UpdatePolygonDataCommand.cloneData(polygonShapeComponent.polygonizedVertices);
-        Array<Vector2> verticesBackup = UpdatePolygonDataCommand.cloneData(polygonShapeComponent.vertices);
+        Vector2[][] poligonyzedBackup = UpdatePolygonVerticesCommand.cloneData(polygonShapeComponent.polygonizedVertices);
+        Array<Vector2> verticesBackup = UpdatePolygonVerticesCommand.cloneData(polygonShapeComponent.vertices);
 
-        Object[] currentCommandPayload = UpdatePolygonDataCommand.payloadInitialState(follower.getEntity());
+        Object[] currentCommandPayload = UpdatePolygonVerticesCommand.payloadInitialState(follower.getEntity());
 
         polygonShapeComponent.vertices.removeIndex(anchor);
         follower.setSelectedAnchor(0);
@@ -52,7 +52,7 @@ public class DeletePolygonVertexCommand extends SandboxCommand {
             follower.update();
         }
 
-        UpdatePolygonDataCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
+        UpdatePolygonVerticesCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
 
         follower.update();

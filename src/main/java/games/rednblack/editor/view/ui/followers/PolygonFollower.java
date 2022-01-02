@@ -142,7 +142,7 @@ public class PolygonFollower extends SubFollower {
         }
 
         //Compute inner mesh
-        if (intersections == null || intersections.size == 0) {
+        if ((intersections == null || intersections.size == 0) && !polygonShapeComponent.openEnded) {
             for (Vector2[] poly : polygonShapeComponent.polygonizedVertices) {
                 for (int i = 1; i < poly.length; i++) {
                     PolyLine line = linePool.obtain();
@@ -187,17 +187,19 @@ public class PolygonFollower extends SubFollower {
             outline.addActor(line);
         }
 
-        PolyLine line = linePool.obtain();
-        line.setIndex(0);
-        line.setPoint1(polygonShapeComponent.vertices.get(polygonShapeComponent.vertices.size - 1));
-        line.setPoint2(polygonShapeComponent.vertices.get(0));
-        line.offsetPoints(pX, pY);
-        line.setColor(hasProblems(0) ? problemColor : outlineColor);
-        line.setThickness(1.7f);
-        line.scalePoints(scaleX, scaleY);
-        line.addListener(new LineClickListener());
-        drawingLines.add(line);
-        outline.addActor(line);
+        if (!polygonShapeComponent.openEnded) {
+            PolyLine line = linePool.obtain();
+            line.setIndex(0);
+            line.setPoint1(polygonShapeComponent.vertices.get(polygonShapeComponent.vertices.size - 1));
+            line.setPoint2(polygonShapeComponent.vertices.get(0));
+            line.offsetPoints(pX, pY);
+            line.setColor(hasProblems(0) ? problemColor : outlineColor);
+            line.setThickness(1.7f);
+            line.scalePoints(scaleX, scaleY);
+            line.addListener(new LineClickListener());
+            drawingLines.add(line);
+            outline.addActor(line);
+        }
 
         //compute vertices position
         for (int i = 0; i < polygonShapeComponent.vertices.size; i++) {

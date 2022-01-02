@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntSet;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.SandboxCommand;
-import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -32,13 +32,19 @@ public class ChangePolygonVertexPositionCommand extends SandboxCommand {
         PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonShapeComponent.class);
         Array<Vector2> points = polygonShapeComponent.vertices;
         Vector2 backup = points.get(anchor).cpy();
-        currentCommandPayload = UpdatePolygonDataCommand.payloadInitialState(follower.getEntity());
+        currentCommandPayload = UpdatePolygonVerticesCommand.payloadInitialState(follower.getEntity());
 
         MultipleInputDialog dialog = new MultipleInputDialog("Vertex Position", new String[]{"X : ", "Y : "}, false, new FloatInputValidator(), new MultipleInputDialogListener() {
             @Override
             public void finished(String[] input) {
                 Array<Vector2> points = polygonShapeComponent.vertices;
                 points.get(anchor).set(Float.parseFloat(input[0]), Float.parseFloat(input[1]));
+
+                if (polygonShapeComponent.openEnded) {
+                    UpdatePolygonVerticesCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
+                    HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
+                    return;
+                }
 
                 // check if any of near lines intersect
                 Vector2[] pointsArray = points.toArray();
@@ -49,7 +55,7 @@ public class ChangePolygonVertexPositionCommand extends SandboxCommand {
                     }
                     polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(polygonShapeComponent.vertices.toArray());
 
-                    UpdatePolygonDataCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
+                    UpdatePolygonVerticesCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
                     HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
                 } else {
                     points.get(anchor).set(backup);

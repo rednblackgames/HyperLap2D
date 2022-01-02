@@ -25,7 +25,7 @@ import com.badlogic.gdx.utils.IntSet;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
-import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -127,33 +127,34 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
 
         Array<Vector2> points = polygonShapeComponent.vertices;
 
-        IntSet intersections = PolygonUtils.checkForIntersection(vertexIndex, points, intersectionProblems);
-        if(intersections == null) {
-            if(PolygonUtils.isPolygonCCW(points.toArray())){
-                points.reverse();
+        if (!polygonShapeComponent.openEnded) {
+            IntSet intersections = PolygonUtils.checkForIntersection(vertexIndex, points, intersectionProblems);
+            if(intersections == null) {
+                if(PolygonUtils.isPolygonCCW(points.toArray())){
+                    points.reverse();
+                }
+                polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(points.toArray());
+            } else {
+                // restore from backup
+                polygonShapeComponent.vertices = UpdatePolygonVerticesCommand.cloneData(verticesBackup);
+                polygonShapeComponent.polygonizedVertices = UpdatePolygonVerticesCommand.cloneData(polygonizedVerticesBackup);
             }
-            polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(points.toArray());
-        }
-
-        if(polygonShapeComponent.vertices == null || intersections != null) {
-            // restore from backup
-            polygonShapeComponent.vertices = UpdatePolygonDataCommand.cloneData(verticesBackup);
-            polygonShapeComponent.polygonizedVertices = UpdatePolygonDataCommand.cloneData(polygonizedVerticesBackup);
         }
 
         follower.setProblems(null);
 
-        UpdatePolygonDataCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
+        UpdatePolygonVerticesCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
     }
 
     @Override
     public void vertexDown(PolygonFollower follower, int vertexIndex, float x, float y) {
         PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonShapeComponent.class);
-        currentCommandPayload = UpdatePolygonDataCommand.payloadInitialState(follower.getEntity());
+        currentCommandPayload = UpdatePolygonVerticesCommand.payloadInitialState(follower.getEntity());
 
         polygonShapeComponent.vertices.insert(vertexIndex, new Vector2(x, y));
-        polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(polygonShapeComponent.vertices.toArray());
+        if (!polygonShapeComponent.openEnded)
+            polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(polygonShapeComponent.vertices.toArray());
         follower.update();
 
         follower.draggingAnchorId = vertexIndex;
@@ -161,22 +162,22 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
         follower.setSelectedAnchor(vertexIndex);
         lastSelectedMeshFollower = follower;
 
-        if (polygonShapeComponent.vertices != null) {
-            verticesBackup = UpdatePolygonDataCommand.cloneData(polygonShapeComponent.vertices);
-            polygonizedVerticesBackup = UpdatePolygonDataCommand.cloneData(polygonShapeComponent.polygonizedVertices);
+        verticesBackup = UpdatePolygonVerticesCommand.cloneData(polygonShapeComponent.vertices);
+        if (polygonShapeComponent.polygonizedVertices != null) {
+            polygonizedVerticesBackup = UpdatePolygonVerticesCommand.cloneData(polygonShapeComponent.polygonizedVertices);
         }
     }
 
     @Override
     public void anchorDown(PolygonFollower follower, int anchor, float x, float y) {
         dragLastPoint.set(x, y);
-        currentCommandPayload = UpdatePolygonDataCommand.payloadInitialState(follower.getEntity());
+        currentCommandPayload = UpdatePolygonVerticesCommand.payloadInitialState(follower.getEntity());
         follower.setSelectedAnchor(anchor);
         lastSelectedMeshFollower = follower;
 
         PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonShapeComponent.class);
-        polygonizedVerticesBackup = UpdatePolygonDataCommand.cloneData(polygonShapeComponent.polygonizedVertices);
-        verticesBackup = UpdatePolygonDataCommand.cloneData(polygonShapeComponent.vertices);
+        polygonizedVerticesBackup = UpdatePolygonVerticesCommand.cloneData(polygonShapeComponent.polygonizedVertices);
+        verticesBackup = UpdatePolygonVerticesCommand.cloneData(polygonShapeComponent.vertices);
     }
 
     @Override
@@ -188,13 +189,15 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
         points.get(anchor).sub(diff);
         dragLastPoint.set(x, y);
 
-        // check if any of near lines intersect
-        IntSet intersections = PolygonUtils.checkForIntersection(anchor, points, intersectionProblems);
-        if(intersections == null) {
-            polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(points.toArray());
-            follower.setProblems(null);
-        } else {
-            follower.setProblems(intersections);
+        if (!polygonShapeComponent.openEnded) {
+            // check if any of near lines intersect
+            IntSet intersections = PolygonUtils.checkForIntersection(anchor, points, intersectionProblems);
+            if(intersections == null) {
+                polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(points.toArray());
+                follower.setProblems(null);
+            } else {
+                follower.setProblems(intersections);
+            }
         }
 
         follower.update();
@@ -240,21 +243,24 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
             if(polygonShapeComponent == null || polygonShapeComponent.vertices == null || polygonShapeComponent.vertices.size == 0) return false;
             if( polygonShapeComponent.vertices.size <= 3) return false;
 
-            verticesBackup = UpdatePolygonDataCommand.cloneData(polygonShapeComponent.vertices);
-            currentCommandPayload = UpdatePolygonDataCommand.payloadInitialState(follower.getEntity());
+            verticesBackup = UpdatePolygonVerticesCommand.cloneData(polygonShapeComponent.vertices);
+            currentCommandPayload = UpdatePolygonVerticesCommand.payloadInitialState(follower.getEntity());
 
             polygonShapeComponent.vertices.removeIndex(follower.getSelectedAnchorId());
             follower.setSelectedAnchor(follower.getSelectedAnchorId() - 1);
-            polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(polygonShapeComponent.vertices.toArray());
 
-            if(polygonShapeComponent.vertices == null) {
-                // restore from backup
-                polygonShapeComponent.vertices = UpdatePolygonDataCommand.cloneData(verticesBackup);
-                polygonShapeComponent.polygonizedVertices = UpdatePolygonDataCommand.cloneData(polygonizedVerticesBackup);
-                follower.update();
+            if (!polygonShapeComponent.openEnded) {
+                polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(polygonShapeComponent.vertices.toArray());
+
+                if(polygonShapeComponent.polygonizedVertices == null) {
+                    // restore from backup
+                    polygonShapeComponent.vertices = UpdatePolygonVerticesCommand.cloneData(verticesBackup);
+                    polygonShapeComponent.polygonizedVertices = UpdatePolygonVerticesCommand.cloneData(polygonizedVerticesBackup);
+                    follower.update();
+                }
             }
 
-            UpdatePolygonDataCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
+            UpdatePolygonVerticesCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
             HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
 
             follower.update();
