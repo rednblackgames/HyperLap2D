@@ -108,6 +108,10 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
 
     @Override
     protected void translateViewToItemData() {
+        if (polygonShapeComponent.vertices == null && polygonShapeComponent.polygonizedVertices == null) {
+            return;
+        }
+
         Object[] payload = new Object[2];
         payload[0] = observableReference;
         payload[1] = viewComponent.isOpenEnded();
