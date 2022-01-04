@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
+import com.badlogic.gdx.utils.ObjectMap;
 import games.rednblack.editor.data.migrations.IVersionMigrator;
 import games.rednblack.editor.data.migrations.data020.CompositeVO;
 import games.rednblack.editor.renderer.data.*;
@@ -17,6 +18,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class VersionMigTo100 implements IVersionMigrator {
     private final Json json = new Json();
@@ -24,6 +27,8 @@ public class VersionMigTo100 implements IVersionMigrator {
     private String projectPath;
     private ProjectVO projectVO;
     private games.rednblack.editor.data.migrations.data020.ProjectInfoVO projectInfoVO;
+
+    final Pattern customVarsPattern = Pattern.compile("\"customVars\":\"(.*?)\"", Pattern.MULTILINE);
 
     @Override
     public void setProject(String path, ProjectVO vo, ProjectInfoVO projectInfoVO) {
@@ -40,6 +45,7 @@ public class VersionMigTo100 implements IVersionMigrator {
             e.printStackTrace();
         }
         projectInfoContents = projectInfoContents.replaceAll("\"polygons\"", "\"polygonizedVertices\"");
+        projectInfoContents = migrateCustomVariableFormat(projectInfoContents);
         this.projectInfoVO = json.fromJson(games.rednblack.editor.data.migrations.data020.ProjectInfoVO.class, projectInfoContents);
     }
 
@@ -50,7 +56,10 @@ public class VersionMigTo100 implements IVersionMigrator {
         try {
             for (File scene : scenesDirectoryHandle.file().listFiles()) {
                 String sceneString = FileUtils.readFileToString(scene, "utf-8");
+                //Migrate polygon vertices
                 sceneString = sceneString.replaceAll("\"polygons\"", "\"polygonizedVertices\"");
+                sceneString = migrateCustomVariableFormat(sceneString);
+
                 games.rednblack.editor.data.migrations.data020.SceneVO sceneToExport = json.fromJson(games.rednblack.editor.data.migrations.data020.SceneVO.class, sceneString);
 
                 SceneVO newVO = new SceneVO();
@@ -169,7 +178,6 @@ public class VersionMigTo100 implements IVersionMigrator {
         target.itemIdentifier = vo.itemIdentifier;
         target.itemName = vo.itemName;
         if(vo.tags != null) target.tags = Arrays.copyOf(vo.tags, vo.tags.length);
-        target.customVars = vo.customVars;
         target.x = vo.x;
         target.y = vo.y;
         target.rotation = vo.rotation;
@@ -210,5 +218,25 @@ public class VersionMigTo100 implements IVersionMigrator {
         target.shaderUniforms.putAll(vo.shaderUniforms);
 
         target.renderingLayer = vo.renderingLayer;
+    }
+
+    private String migrateCustomVariableFormat(String jsonSource) {
+        //Migrate old custom variable format
+        Matcher matcher = customVarsPattern.matcher(jsonSource);
+        while (matcher.find()) {
+            String fullMatch = matcher.group(0);
+            String varString = matcher.group(1);
+            ObjectMap<String, String> newVars = new ObjectMap<>();
+            String[] vars = varString.split(";");
+            for (String var : vars) {
+                String[] tmp = var.split(":");
+                if (tmp.length > 1) {
+                    newVars.put(tmp[0], tmp[1]);
+                }
+            }
+            String newVarsString = "\"customVariables\":" + json.toJson(newVars);
+            jsonSource = jsonSource.replaceAll(fullMatch, newVarsString);
+        }
+        return jsonSource;
     }
 }

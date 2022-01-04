@@ -26,6 +26,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 
@@ -45,7 +46,6 @@ import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
-import games.rednblack.editor.renderer.utils.CustomVariables;
 import games.rednblack.h2d.common.MenuAPI;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.plugins.H2DPluginAdapter;
@@ -104,7 +104,7 @@ public class TiledPlugin extends H2DPluginAdapter {
 
     private TileVO selectedTileVO;
     private AutoTileVO selectedAutoTileVO;
-    private CustomVariables currentEntityCustomVariables;
+    private ObjectMap<String, String> currentEntityCustomVariables;
     private MainItemComponent currentEntityMainItemComponent;
     private TransformComponent currentEntityTransformComponent;
 
@@ -114,7 +114,7 @@ public class TiledPlugin extends H2DPluginAdapter {
         super(CLASS_NAME);
         selectedTileVO = new TileVO();
         selectedAutoTileVO = new AutoTileVO();
-        currentEntityCustomVariables = new CustomVariables();
+        currentEntityCustomVariables = new ObjectMap<>();
     }
 
     @Override
@@ -179,8 +179,8 @@ public class TiledPlugin extends H2DPluginAdapter {
 
             currentEntityMainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class, getAPI().getEngine());
             currentEntityCustomVariables = currentEntityMainItemComponent.customVariables;
-            if (currentEntityCustomVariables.getIntegerVariable(ROW) == row
-                    && currentEntityCustomVariables.getIntegerVariable(COLUMN) == column) {
+            if (Integer.parseInt(currentEntityCustomVariables.get(ROW)) == row
+                    && Integer.parseInt(currentEntityCustomVariables.get(COLUMN)) == column) {
                 return entity;
             }
         }
