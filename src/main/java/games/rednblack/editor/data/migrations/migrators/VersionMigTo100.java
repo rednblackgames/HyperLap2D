@@ -39,6 +39,7 @@ public class VersionMigTo100 implements IVersionMigrator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        projectInfoContents = projectInfoContents.replaceAll("\"polygons\"", "\"polygonizedVertices\"");
         this.projectInfoVO = json.fromJson(games.rednblack.editor.data.migrations.data020.ProjectInfoVO.class, projectInfoContents);
     }
 
@@ -48,7 +49,9 @@ public class VersionMigTo100 implements IVersionMigrator {
         FileHandle scenesDirectoryHandle = Gdx.files.absolute(srcPath);
         try {
             for (File scene : scenesDirectoryHandle.file().listFiles()) {
-                games.rednblack.editor.data.migrations.data020.SceneVO sceneToExport = json.fromJson(games.rednblack.editor.data.migrations.data020.SceneVO.class, FileUtils.readFileToString(scene, "utf-8"));
+                String sceneString = FileUtils.readFileToString(scene, "utf-8");
+                sceneString = sceneString.replaceAll("\"polygons\"", "\"polygonizedVertices\"");
+                games.rednblack.editor.data.migrations.data020.SceneVO sceneToExport = json.fromJson(games.rednblack.editor.data.migrations.data020.SceneVO.class, sceneString);
 
                 SceneVO newVO = new SceneVO();
                 newVO.sceneName = sceneToExport.sceneName;
@@ -142,8 +145,8 @@ public class VersionMigTo100 implements IVersionMigrator {
         for (MainItemVO mainItemVO : target.getAllItems()) {
             if(mainItemVO.shape != null) {
                 PolygonShapeVO newShape = new PolygonShapeVO();
-                newShape.polygonizedVertices = mainItemVO.shape.polygons;
-                newShape.vertices = new Array<>(PolygonUtils.mergeTouchingPolygonsToOne(mainItemVO.shape.polygons));
+                newShape.polygonizedVertices = mainItemVO.shape.polygonizedVertices;
+                newShape.vertices = new Array<>(PolygonUtils.mergeTouchingPolygonsToOne(mainItemVO.shape.polygonizedVertices));
                 mainItemVO.shape = newShape;
             }
         }
@@ -182,8 +185,8 @@ public class VersionMigTo100 implements IVersionMigrator {
 
         if(vo.shape != null) {
             target.shape = new PolygonShapeVO();
-            target.shape.polygonizedVertices = vo.shape.polygons;
-            target.shape.vertices = new Array<>(PolygonUtils.mergeTouchingPolygonsToOne(vo.shape.polygons));
+            target.shape.polygonizedVertices = vo.shape.polygonizedVertices;
+            target.shape.vertices = new Array<>(PolygonUtils.mergeTouchingPolygonsToOne(vo.shape.polygonizedVertices));
         }
 
         if(vo.circle != null) {
