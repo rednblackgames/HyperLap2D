@@ -42,6 +42,8 @@ public class Main {
         }
 
         Thread.currentThread().setUncaughtExceptionHandler(new CustomExceptionHandler());
+        //Increase default lwjgl stack size
+        System.setProperty("org.lwjgl.system.stackSize", "256");
 
         HyperLap2DFacade.getInstance();
 

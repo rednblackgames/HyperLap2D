@@ -49,6 +49,7 @@ import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.system.ParticleContinuousSystem;
 import games.rednblack.editor.system.PhysicsAdjustSystem;
 import games.rednblack.editor.system.TalosContinuousSystem;
+import games.rednblack.editor.utils.NativeDialogs;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ItemControlMediator;
 import games.rednblack.editor.view.SceneControlMediator;
@@ -506,7 +507,12 @@ public class Sandbox {
 
         Lwjgl3Application app = (Lwjgl3Application) Gdx.app;
         Json json = HyperJson.getJson();
-        app.getClipboard().setContents(json.toJson(payload));
+        try {
+            app.getClipboard().setContents(json.toJson(payload));
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+            NativeDialogs.showError("You are trying to copy too many objects!");
+        }
     }
 
     public static Object retrieveFromClipboard() {
