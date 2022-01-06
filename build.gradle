@@ -180,7 +180,7 @@ runtime {
             ]
             resourceDir = file("resources-linux")
         } else if (osName.contains('mac')) {
-            imageOptions += ['--copyright', '(c) 2020, Red &amp; Black Games', "--icon", file("icons/icon.icns")
+            imageOptions += ['--copyright', '(c) 2022, Red &amp; Black Games', "--icon", file("icons/icon.icns")
                              , '--resource-dir', "${projectDir}/resources-macos"]
             jvmArgs = ['-XstartOnFirstThread', '-Djava.awt.headless=true']
             installerOptions += ['--verbose','--app-version', getBuildVersion(), '--vendor', 'Red & Black Games', '--resource-dir', "${projectDir}/resources-macos" ]

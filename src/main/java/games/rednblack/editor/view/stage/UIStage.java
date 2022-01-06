@@ -138,9 +138,6 @@ public class UIStage extends Stage {
                 return event.getTarget() != getRoot() && event.getTarget() != dummyTarget;
             }
         });
-
-        //TODO Undecorated window is cool but too much glitches
-        //HyperLap2DUtils.setWindowResizeListener(this.getRoot());
     }
 
     @Override
