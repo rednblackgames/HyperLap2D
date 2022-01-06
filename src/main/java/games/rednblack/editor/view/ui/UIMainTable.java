@@ -54,9 +54,10 @@ public class UIMainTable extends VisTable {
 
         HyperLap2DMenuBarMediator hyperlap2DMenuBarMediator = facade.retrieveMediator(HyperLap2DMenuBarMediator.NAME);
         HyperLap2DMenuBar menuBar = hyperlap2DMenuBarMediator.getViewComponent();
-		topTable.add(menuBar.getTable()).height(32);
 
 		if (SystemUtils.IS_OS_WINDOWS) {
+            topTable.add(menuBar.getTable()).height(32);
+
             UIWindowTitleMediator uiWindowTitleMediator = facade.retrieveMediator(UIWindowTitleMediator.NAME);
             UIWindowTitle uiWindowTitle = uiWindowTitleMediator.getViewComponent();
             topTable.add(uiWindowTitle).growX().fillY();
@@ -64,6 +65,8 @@ public class UIMainTable extends VisTable {
             UIWindowActionMediator uiWindowActionMediator = facade.retrieveMediator(UIWindowActionMediator.NAME);
             UIWindowAction uiWindowAction = uiWindowActionMediator.getViewComponent();
             topTable.add(uiWindowAction).padTop(-1).fillY();
+        } else {
+            topTable.add(menuBar.getTable()).growX().height(32);
         }
 	}
 
