@@ -1,7 +1,6 @@
 package games.rednblack.editor.utils;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.UIWindowTitle;
@@ -64,7 +63,6 @@ public class HyperLap2DUtils {
 
         WindowProc proc = new WindowProc() {
             private final Vector2 tmp = new Vector2();
-            private final Rectangle titleBounds = new Rectangle();
             private final DoubleBuffer cursorX = BufferUtils.createDoubleBuffer(1);
             private final DoubleBuffer cursorY = BufferUtils.createDoubleBuffer(1);
             private RECT rect;
@@ -117,15 +115,15 @@ public class HyperLap2DUtils {
                         //Test if the pointer is in Title Bar
                         UIWindowTitleMediator uiWindowTitleMediator = HyperLap2DFacade.getInstance().retrieveMediator(UIWindowTitleMediator.NAME);
                         UIWindowTitle uiWindowTitle = uiWindowTitleMediator.getViewComponent();
-                        uiWindowTitle.localToScreenCoordinates(tmp.set(0, 0));
-                        titleBounds.set(tmp.x, tmp.y, uiWindowTitle.getWidth() + ((11 * uiWindowTitle.getWidth() / 100)), uiWindowTitle.getHeight());
 
                         int glfwX = getX();
                         int glfwY = getY();
-                        if (titleBounds.x <= glfwX && titleBounds.x + titleBounds.width >= glfwX
-                            && titleBounds.y >= glfwY && titleBounds.y - titleBounds.height <= glfwY) {
+
+                        uiWindowTitle.screenToLocalCoordinates(tmp.set(glfwX, glfwY));
+                        if (uiWindowTitle.hit(tmp.x, tmp.y, true) != null) {
                             return User32.HTCAPTION;
                         }
+
                         return JNI.callPPPP(hwnd, uMsg, wParam, lParam, pWindowProc);
                     }
                 }
