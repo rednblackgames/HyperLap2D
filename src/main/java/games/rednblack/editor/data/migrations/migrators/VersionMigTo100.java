@@ -118,6 +118,8 @@ public class VersionMigTo100 implements IVersionMigrator {
     }
 
     private void copyRecursiveElements(CompositeVO vo, CompositeItemVO target) {
+        if (vo == null) return;
+
         for (int i = 0; i < vo.sImages.size(); i++) {
             target.addItem(vo.sImages.get(i));
         }
