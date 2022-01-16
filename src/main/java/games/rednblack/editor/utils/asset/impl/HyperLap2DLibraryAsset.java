@@ -76,6 +76,9 @@ public class HyperLap2DLibraryAsset extends Asset {
                     FileHandle mapper = ZipUtils.saveZipContent(fileHandle.file(), tmpDir);
                     Json json = HyperJson.getJson();
                     ExportMapperVO exportMapperVO = json.fromJson(ExportMapperVO.class, mapper);
+                    if (!exportMapperVO.projectVersion.equals(projectManager.currentProjectVO.projectVersion)) {
+                        //TODO migrate library version if necessary
+                    }
 
                     recursiveProgressHandler = new ProgressHandler() {
                         @Override

@@ -17,11 +17,12 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
+import games.rednblack.h2d.common.vo.ExportMapperVO;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class ImageAsset extends Asset {
 
@@ -181,5 +182,21 @@ public class ImageAsset extends Asset {
         };
         EntityUtils.applyActionRecursivelyOnEntities(rootEntity, action);
         EntityUtils.removeEntities(tmpEntityList);
+    }
+
+    @Override
+    public boolean exportAsset(MainItemVO item, ExportMapperVO exportMapperVO, File tmpDir) throws IOException {
+        super.exportAsset(item, exportMapperVO, tmpDir);
+        if (item instanceof SimpleImageVO imageVO) {
+            File fileSrc = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + imageVO.imageName + ".png");
+            FileUtils.copyFileToDirectory(fileSrc, tmpDir);
+            exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_IMAGE, fileSrc.getName()));
+        } else if (item instanceof Image9patchVO imageVO) {
+            File fileSrc = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + imageVO.imageName + ".9.png");
+            FileUtils.copyFileToDirectory(fileSrc, tmpDir);
+            exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_IMAGE, fileSrc.getName()));
+        }
+
+        return true;
     }
 }

@@ -2,18 +2,12 @@ package games.rednblack.editor.controller.commands.resource;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
-import com.talosvfx.talos.runtime.ParticleEmitterDescriptor;
-import com.talosvfx.talos.runtime.modules.*;
 import games.rednblack.editor.controller.commands.NonRevertibleCommand;
-import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.utils.HyperJson;
+import games.rednblack.editor.utils.AssetImporter;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.ZipUtils;
 import games.rednblack.h2d.common.MsgAPI;
@@ -120,99 +114,32 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
 
     private void exportAllAssets(CompositeItemVO compositeVO, File tmpDir) throws IOException {
         for (SimpleImageVO imageVO : compositeVO.getElementsArray(SimpleImageVO.class)) {
-            File fileSrc = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + imageVO.imageName + ".png");
-            FileUtils.copyFileToDirectory(fileSrc, tmpDir);
-            exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_IMAGE, fileSrc.getName()));
-            copyShader(imageVO.shaderName, tmpDir);
+            AssetImporter.getInstance().exportAsset(ImportUtils.TYPE_IMAGE, imageVO, exportMapperVO, tmpDir);
         }
 
         for (Image9patchVO imageVO : compositeVO.getElementsArray(Image9patchVO.class)) {
-            File fileSrc = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + imageVO.imageName + ".9.png");
-            FileUtils.copyFileToDirectory(fileSrc, tmpDir);
-            exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_IMAGE, fileSrc.getName()));
-            copyShader(imageVO.shaderName, tmpDir);
+            AssetImporter.getInstance().exportAsset(ImportUtils.TYPE_IMAGE, imageVO, exportMapperVO, tmpDir);
         }
 
         for (SpineVO imageVO : compositeVO.getElementsArray(SpineVO.class)) {
-            File fileSrc = new File(currentProjectPath + ProjectManager.SPINE_DIR_PATH + File.separator + imageVO.animationName);
-            FileUtils.copyDirectory(fileSrc, tmpDir);
-            exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_SPINE_ANIMATION, fileSrc.getName() + ".json"));
-            copyShader(imageVO.shaderName, tmpDir);
+            AssetImporter.getInstance().exportAsset(ImportUtils.TYPE_SPINE_ANIMATION, imageVO, exportMapperVO, tmpDir);
         }
 
         for (SpriteAnimationVO imageVO : compositeVO.getElementsArray(SpriteAnimationVO.class)) {
-            File fileSrc = new File(currentProjectPath + ProjectManager.SPRITE_DIR_PATH + File.separator + imageVO.animationName);
-            FileUtils.copyDirectory(fileSrc, tmpDir);
-            exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS, fileSrc.getName() + ".atlas"));
-            copyShader(imageVO.shaderName, tmpDir);
+            AssetImporter.getInstance().exportAsset(ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS, imageVO, exportMapperVO, tmpDir);
         }
 
         for (ParticleEffectVO imageVO : compositeVO.getElementsArray(ParticleEffectVO.class)) {
-            File fileSrc = new File(currentProjectPath + ProjectManager.PARTICLE_DIR_PATH + File.separator + imageVO.particleName);
-            FileUtils.copyFileToDirectory(fileSrc, tmpDir);
-            exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_PARTICLE_EFFECT, fileSrc.getName()));
-            ParticleEffect particleEffect = new ParticleEffect(resourceManager.getParticleEffect(imageVO.particleName));
-            for (ParticleEmitter emitter : particleEffect.getEmitters()) {
-                for (String path : emitter.getImagePaths()) {
-                    File f = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + path);
-                    FileUtils.copyFileToDirectory(f, tmpDir);
-                }
-            }
-            copyShader(imageVO.shaderName, tmpDir);
+            AssetImporter.getInstance().exportAsset(ImportUtils.TYPE_PARTICLE_EFFECT, imageVO, exportMapperVO, tmpDir);
         }
 
         for (TalosVO imageVO : compositeVO.getElementsArray(TalosVO.class)) {
-            File fileSrc = new File(currentProjectPath + ProjectManager.TALOS_VFX_DIR_PATH + File.separator + imageVO.particleName);
-            FileUtils.copyFileToDirectory(fileSrc, tmpDir);
-            exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_TALOS_VFX, fileSrc.getName()));
-            ParticleEffectDescriptor particleEffect = resourceManager.getProjectTalosList().get(imageVO.particleName);
-            for (ParticleEmitterDescriptor emitter : new Array.ArrayIterator<>(particleEffect.emitterModuleGraphs)) {
-                for (AbstractModule module : new Array.ArrayIterator<>(emitter.getModules())) {
-                    if (module instanceof TextureModule) {
-                        String path = ((TextureModule) module).regionName + ".png";
-                        File f = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + path);
-                        FileUtils.copyFileToDirectory(f, tmpDir);
-                    }
-
-                    if (module instanceof PolylineModule) {
-                        String path = ((PolylineModule) module).regionName + ".png";
-                        File f = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + path);
-                        FileUtils.copyFileToDirectory(f, tmpDir);
-                    }
-
-                    if (module instanceof FlipbookModule) {
-                        String path = ((FlipbookModule) module).regionName + ".png";
-                        File f = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + path);
-                        FileUtils.copyFileToDirectory(f, tmpDir);
-                    }
-
-                    if (module instanceof ShadedSpriteModule) {
-                        String path = ((ShadedSpriteModule) module).shdrFileName;
-                        File f = new File(currentProjectPath + ProjectManager.TALOS_VFX_DIR_PATH + File.separator + path);
-                        FileUtils.copyFileToDirectory(f, tmpDir);
-                    }
-                }
-            }
-            copyShader(imageVO.shaderName, tmpDir);
+            AssetImporter.getInstance().exportAsset(ImportUtils.TYPE_TALOS_VFX, imageVO, exportMapperVO, tmpDir);
         }
 
         for (CompositeItemVO compositeItemVO : compositeVO.getElementsArray(CompositeItemVO.class)) {
             exportAllAssets(compositeItemVO, tmpDir);
         }
-    }
-
-    private void copyShader(String shaderName, File tmpDir) throws IOException {
-        if (shaderName.equals(""))
-            return;
-
-        File f = new File(currentProjectPath + ProjectManager.SHADER_DIR_PATH + File.separator + shaderName + ".frag");
-        FileUtils.copyFileToDirectory(f, tmpDir);
-
-        File v = new File(currentProjectPath + ProjectManager.SHADER_DIR_PATH + File.separator + shaderName + ".vert");
-        FileUtils.copyFileToDirectory(v, tmpDir);
-
-        exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_SHADER, shaderName + ".frag"));
-        exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_SHADER, shaderName + ".vert"));
     }
 
 	private void adjustPPWCoordinates(CompositeItemVO compositeItemVO) {

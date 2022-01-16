@@ -6,22 +6,18 @@ import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
-import games.rednblack.editor.renderer.data.CompositeItemVO;
-import games.rednblack.editor.renderer.data.ResolutionEntryVO;
-import games.rednblack.editor.renderer.data.SceneVO;
-import games.rednblack.editor.renderer.data.SpriteAnimationVO;
+import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.ProgressHandler;
+import games.rednblack.h2d.common.vo.ExportMapperVO;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class SpriteAnimationAtlasAsset extends Asset {
 
@@ -177,5 +173,15 @@ public class SpriteAnimationAtlasAsset extends Asset {
         };
         EntityUtils.applyActionRecursivelyOnEntities(rootEntity, action);
         EntityUtils.removeEntities(tmpEntityList);
+    }
+
+    @Override
+    public boolean exportAsset(MainItemVO item, ExportMapperVO exportMapperVO, File tmpDir) throws IOException {
+        super.exportAsset(item, exportMapperVO, tmpDir);
+        SpriteAnimationVO spriteAnimationVO = (SpriteAnimationVO) item;
+        File fileSrc = new File(currentProjectPath + ProjectManager.SPRITE_DIR_PATH + File.separator + spriteAnimationVO.animationName);
+        FileUtils.copyDirectory(fileSrc, tmpDir);
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS, fileSrc.getName() + ".atlas"));
+        return true;
     }
 }

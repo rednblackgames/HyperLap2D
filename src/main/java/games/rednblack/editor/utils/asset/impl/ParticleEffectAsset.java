@@ -1,6 +1,8 @@
 package games.rednblack.editor.utils.asset.impl;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -8,6 +10,7 @@ import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.renderer.components.particle.ParticleComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
+import games.rednblack.editor.renderer.data.MainItemVO;
 import games.rednblack.editor.renderer.data.ParticleEffectVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.utils.ImportUtils;
@@ -16,6 +19,7 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
+import games.rednblack.h2d.common.vo.ExportMapperVO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -23,7 +27,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.function.Consumer;
 
 public class ParticleEffectAsset extends Asset {
@@ -195,5 +198,22 @@ public class ParticleEffectAsset extends Asset {
         };
         EntityUtils.applyActionRecursivelyOnEntities(rootEntity, action);
         EntityUtils.removeEntities(tmpEntityList);
+    }
+
+    @Override
+    public boolean exportAsset(MainItemVO item, ExportMapperVO exportMapperVO, File tmpDir) throws IOException {
+        super.exportAsset(item, exportMapperVO, tmpDir);
+        ParticleEffectVO particleEffectVO = (ParticleEffectVO) item;
+        File fileSrc = new File(currentProjectPath + ProjectManager.PARTICLE_DIR_PATH + File.separator + particleEffectVO.particleName);
+        FileUtils.copyFileToDirectory(fileSrc, tmpDir);
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_PARTICLE_EFFECT, fileSrc.getName()));
+        ParticleEffect particleEffect = new ParticleEffect(resourceManager.getParticleEffect(particleEffectVO.particleName));
+        for (ParticleEmitter emitter : particleEffect.getEmitters()) {
+            for (String path : emitter.getImagePaths()) {
+                File f = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + path);
+                FileUtils.copyFileToDirectory(f, tmpDir);
+            }
+        }
+        return true;
     }
 }

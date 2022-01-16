@@ -4,12 +4,16 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
+import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
 import com.talosvfx.talos.runtime.ParticleEmitterDescriptor;
+import com.talosvfx.talos.runtime.modules.*;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
+import games.rednblack.editor.renderer.data.MainItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
+import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.h2d.extension.talos.TalosComponent;
 import games.rednblack.h2d.extension.talos.TalosVO;
 import games.rednblack.editor.utils.ImportUtils;
@@ -236,5 +240,43 @@ public class TalosVFXAsset extends Asset {
         };
         EntityUtils.applyActionRecursivelyOnEntities(rootEntity, action);
         EntityUtils.removeEntities(tmpEntityList);
+    }
+
+    @Override
+    public boolean exportAsset(MainItemVO item, ExportMapperVO exportMapperVO, File tmpDir) throws IOException {
+        super.exportAsset(item, exportMapperVO, tmpDir);
+        TalosVO talosVO = (TalosVO) item;
+        File fileSrc = new File(currentProjectPath + ProjectManager.TALOS_VFX_DIR_PATH + File.separator + talosVO.particleName);
+        FileUtils.copyFileToDirectory(fileSrc, tmpDir);
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_TALOS_VFX, fileSrc.getName()));
+        ParticleEffectDescriptor particleEffect = resourceManager.getProjectTalosList().get(talosVO.particleName);
+        for (ParticleEmitterDescriptor emitter : new Array.ArrayIterator<>(particleEffect.emitterModuleGraphs)) {
+            for (AbstractModule module : new Array.ArrayIterator<>(emitter.getModules())) {
+                if (module instanceof TextureModule) {
+                    String path = ((TextureModule) module).regionName + ".png";
+                    File f = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + path);
+                    FileUtils.copyFileToDirectory(f, tmpDir);
+                }
+
+                if (module instanceof PolylineModule) {
+                    String path = ((PolylineModule) module).regionName + ".png";
+                    File f = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + path);
+                    FileUtils.copyFileToDirectory(f, tmpDir);
+                }
+
+                if (module instanceof FlipbookModule) {
+                    String path = ((FlipbookModule) module).regionName + ".png";
+                    File f = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + path);
+                    FileUtils.copyFileToDirectory(f, tmpDir);
+                }
+
+                if (module instanceof ShadedSpriteModule) {
+                    String path = ((ShadedSpriteModule) module).shdrFileName;
+                    File f = new File(currentProjectPath + ProjectManager.TALOS_VFX_DIR_PATH + File.separator + path);
+                    FileUtils.copyFileToDirectory(f, tmpDir);
+                }
+            }
+        }
+        return true;
     }
 }

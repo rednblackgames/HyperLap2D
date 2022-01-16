@@ -5,14 +5,17 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.SettingsManager;
+import games.rednblack.editor.renderer.data.MainItemVO;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.asset.impl.*;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.panel.ImportPanel;
 import games.rednblack.editor.view.ui.panel.ImportPanelMediator;
 import games.rednblack.h2d.common.ProgressHandler;
+import games.rednblack.h2d.common.vo.ExportMapperVO;
 
 import java.io.File;
+import java.io.IOException;
 
 public class AssetImporter {
 
@@ -134,6 +137,13 @@ public class AssetImporter {
             if (asset.deleteAsset(root, name))
                 return true;
         }
+        return false;
+    }
+
+    public boolean exportAsset(int type, MainItemVO itemVO, ExportMapperVO exportMapperVO, File tmpDir) throws IOException {
+        Asset asset = getDescriptorFor(type);
+        if (asset != null)
+            return asset.exportAsset(itemVO, exportMapperVO, tmpDir);
         return false;
     }
 }

@@ -17,6 +17,7 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
+import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.h2d.extension.spine.SpineComponent;
 import games.rednblack.h2d.extension.spine.SpineItemType;
 import games.rednblack.h2d.extension.spine.SpineVO;
@@ -250,5 +251,15 @@ public class SpineAsset extends Asset {
         };
         EntityUtils.applyActionRecursivelyOnEntities(rootEntity, action);
         EntityUtils.removeEntities(tmpEntityList);
+    }
+
+    @Override
+    public boolean exportAsset(MainItemVO item, ExportMapperVO exportMapperVO, File tmpDir) throws IOException {
+        super.exportAsset(item, exportMapperVO, tmpDir);
+        SpineVO spineVO = (SpineVO) item;
+        File fileSrc = new File(currentProjectPath + ProjectManager.SPINE_DIR_PATH + File.separator + spineVO.animationName);
+        FileUtils.copyDirectory(fileSrc, tmpDir);
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_SPINE_ANIMATION, fileSrc.getName() + ".json"));
+        return true;
     }
 }
