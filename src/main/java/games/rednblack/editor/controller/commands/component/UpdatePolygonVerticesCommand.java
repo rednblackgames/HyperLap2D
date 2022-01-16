@@ -46,7 +46,8 @@ public class UpdatePolygonVerticesCommand extends EntityModifyRevertibleCommand 
 
         //Force TextureRegionComponent refresh to immediately update follower size and position
         TextureRegionComponent textureRegionComponent = SandboxComponentRetriever.get(entity, TextureRegionComponent.class);
-        textureRegionComponent.executeRefresh(entity);
+        if (textureRegionComponent != null)
+            textureRegionComponent.executeRefresh(entity);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
 
