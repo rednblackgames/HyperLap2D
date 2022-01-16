@@ -1,397 +1,361 @@
-/*
- * ******************************************************************************
- *  * Copyright 2015 See AUTHORS file.
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *   http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
- *  *****************************************************************************
- */
-
 package games.rednblack.editor.view.ui.followers;
 
+import com.artemis.ComponentMapper;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import games.rednblack.editor.renderer.components.PolygonComponent;
+import com.badlogic.gdx.utils.*;
+import games.rednblack.editor.renderer.components.DimensionsComponent;
+import games.rednblack.editor.renderer.components.ParentNodeComponent;
+import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
-import games.rednblack.editor.renderer.utils.PolygonUtils;
+import games.rednblack.editor.renderer.utils.TransformMathUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
+import games.rednblack.editor.view.ui.widget.actors.polygon.PolyLine;
+import games.rednblack.editor.view.ui.widget.actors.polygon.PolyVertex;
+import space.earlygrey.shapedrawer.ShapeDrawer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-/**
- * Created by azakhary on 7/2/2015.
- */
 public class PolygonFollower extends SubFollower {
 
-    private TransformComponent transformComponent;
-    private PolygonComponent polygonComponent;
-
-    private ArrayList<Vector2> originalPoints;
-    private Vector2[] drawPoints;
-
-    private ShapeRenderer shapeRenderer;
-
-    public static final int ANCHOR_SIZE = 9;
-    public static final int CIRCLE_RADIUS = 10;
-
-    private static final Color outlineColor = new Color(200f / 255f, 156f / 255f, 71f / 255f, 1f);
     private static final Color innerColor = new Color(200f / 255f, 200f / 255f, 200f / 255f, 0.2f);
-    private static final Color overColor = new Color(255f / 255f, 94f / 255f, 0f / 255f, 1f);
+    public static final Color outlineColor = new Color(200f / 255f, 156f / 255f, 71f / 255f, 1f);
+    public static final Color overColor = new Color(255f / 255f, 94f / 255f, 0f / 255f, 1f);
     private static final Color problemColor = new Color(200f / 255f, 0f / 255f, 0f / 255f, 1f);
-
-    private int lineIndex = -1;
-    public int draggingAnchorId = -1;
-
-    private int[] intersections = null;
-
-    private int selectedAnchorId = -1;
 
     private final int pixelsPerWU;
     private final OrthographicCamera runtimeCamera = Sandbox.getInstance().getCamera();
 
+    ComponentMapper<TransformComponent> transformCM;
+    ComponentMapper<ParentNodeComponent> parentNodeCM;
+    private TransformComponent transformComponent;
+    private PolygonShapeComponent polygonShapeComponent;
+    private DimensionsComponent dimensionsComponent;
+
+    private ShapeDrawer shapeDrawer;
+
+    private final Array<PolyLine> drawingInnerMesh = new Array<>();
+    private final Array<PolyLine> drawingLines = new Array<>();
+    private final Array<PolyVertex> drawingVertices = new Array<>();
+
+    private PolygonTransformationListener listener;
+
+    public int draggingAnchorId = -1;
+    private int selectedAnchorId = -1;
+
+    private IntSet intersections = new IntSet();
+
+    private final Group innerMesh = new Group();
+    private final Group outline = new Group();
+    private final Group vertices = new Group();
+
+    private final Pool<PolyLine> linePool = new Pool<>() {
+        @Override
+        protected PolyLine newObject() {
+            return new PolyLine(shapeDrawer);
+        }
+    };
+    private final Pool<PolyVertex> vertexPool = new Pool<>() {
+        @Override
+        protected PolyVertex newObject() {
+            return new PolyVertex(shapeDrawer);
+        }
+    };
+
     public PolygonFollower(int entity) {
         super(entity);
-        pixelsPerWU = Sandbox.getInstance().getPixelPerWU();
         setTouchable(Touchable.enabled);
-        update();
+        pixelsPerWU = Sandbox.getInstance().getPixelPerWU();
     }
 
+    @Override
     public void create() {
-        polygonComponent = SandboxComponentRetriever.get(entity, PolygonComponent.class);
+        polygonShapeComponent = SandboxComponentRetriever.get(entity, PolygonShapeComponent.class);
         transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
-        shapeRenderer = new ShapeRenderer();
+        dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+        transformCM = (ComponentMapper<TransformComponent>) SandboxComponentRetriever.getMapper(TransformComponent.class);
+        parentNodeCM = (ComponentMapper<ParentNodeComponent>) SandboxComponentRetriever.getMapper(ParentNodeComponent.class);
     }
 
     @Override
     protected void setStage(Stage stage) {
         super.setStage(stage);
-        if (stage != null) {
-            shapeRenderer.setProjectionMatrix(getStage().getCamera().combined);
-        }
+        if (stage != null)
+            shapeDrawer = new ShapeDrawer(stage.getBatch(), WhitePixel.sharedInstance.textureRegion){
+                /* OPTIONAL: Ensuring a certain smoothness. */
+                @Override
+                protected int estimateSidesRequired(float radiusX, float radiusY) {
+                    return 200;
+                }
+            };
+        addActor(innerMesh);
+        addActor(outline);
+        addActor(vertices);
+        update();
     }
 
     @Override
     public void update() {
-        if(polygonComponent != null && polygonComponent.vertices != null) {
-            computeOriginalPoints();
-            computeDrawPoints();
-            if(selectedAnchorId == -1) selectedAnchorId = 0;
-        }
+        computeDrawingObjects();
+        setSelectedAnchor(selectedAnchorId);
     }
-
-    public void updateDraw() {
-        computeDrawPoints();
-    }
-
-    private void computeOriginalPoints() {
-        originalPoints = new ArrayList<>();
-        if(polygonComponent == null) return;
-
-        originalPoints = new ArrayList<>(Arrays.asList(PolygonUtils.mergeTouchingPolygonsToOne(polygonComponent.vertices)));
-    }
-
-    private void computeDrawPoints() {
-        drawPoints = originalPoints.toArray(new Vector2[0]);
-    }
-
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
-        if(polygonComponent != null && polygonComponent.vertices != null) {
-            batch.end();
-
-            Gdx.gl.glLineWidth(1.7f);
-            Gdx.gl.glEnable(GL20.GL_BLEND);
-            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-            shapeRenderer.setProjectionMatrix(getStage().getCamera().combined);
-            Matrix4 matrix = batch.getTransformMatrix();
-            matrix.translate(-parentFollower.polygonOffsetX, -parentFollower.polygonOffsetY, 0);
-            matrix.scale(pixelsPerWU / runtimeCamera.zoom, pixelsPerWU / runtimeCamera.zoom, 1f);
-            shapeRenderer.setTransformMatrix(matrix);
-
-            drawTriangulatedPolygons();
-            drawOutlines();
-            drawPoints();
-
-            Gdx.gl.glDisable(GL20.GL_BLEND);
-
-            batch.begin();
-        }
+    public void act(float delta) {
+        super.act(delta);
+        for (Actor child : innerMesh.getChildren())
+            if (!drawingInnerMesh.contains((PolyLine) child, true))
+                child.remove();
+        for (Actor child : outline.getChildren())
+            if (!drawingLines.contains((PolyLine) child, true))
+                child.remove();
+        for (Actor child : vertices.getChildren())
+            if (!drawingVertices.contains((PolyVertex) child, true))
+                child.remove();
     }
 
-    public void drawOutlines() {
-        float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
-        float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
+    private void computeDrawingObjects() {
+        linePool.freeAll(drawingInnerMesh);
+        vertexPool.freeAll(drawingVertices);
+        linePool.freeAll(drawingLines);
+        drawingLines.clear();
+        drawingVertices.clear();
+        drawingInnerMesh.clear();
 
-        if (drawPoints.length > 0) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            for (int i = 1; i < drawPoints.length; i++) {
-                shapeRenderer.setColor(outlineColor);
-                if (lineIndex == i && draggingAnchorId == -1) {
-                    shapeRenderer.setColor(overColor);
-                }
-                if(checkIfLineIntersects(i - 1)) {
-                    shapeRenderer.setColor(problemColor);
-                }
-                shapeRenderer.line(drawPoints[i].x*scaleX, drawPoints[i].y*scaleY, drawPoints[i - 1].x*scaleX, drawPoints[i - 1].y*scaleY);
-            }
-            shapeRenderer.setColor(outlineColor);
-            if(lineIndex == 0 && draggingAnchorId == -1) {
-                shapeRenderer.setColor(overColor);
-            }
-            if(checkIfLineIntersects(drawPoints.length - 1)) {
-                shapeRenderer.setColor(problemColor);
-            }
-            shapeRenderer.line(drawPoints[drawPoints.length - 1].x*scaleX, drawPoints[drawPoints.length - 1].y*scaleY, drawPoints[0].x*scaleX, drawPoints[0].y*scaleY);
-            shapeRenderer.end();
-        }
-
-    }
-
-    private boolean checkIfLineIntersects(int index) {
-        if(intersections == null) return false;
-        for(int i = 0; i < intersections.length; i++) {
-            if(intersections[i] == index) return true;
-        }
-
-        return false;
-    }
-
-    public void drawTriangulatedPolygons() {
-        if (polygonComponent.vertices == null) {
+        if (polygonShapeComponent == null || polygonShapeComponent.vertices == null)
             return;
+
+        float scale = pixelsPerWU / runtimeCamera.zoom;
+
+        float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1) * scale;
+        float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1) * scale;
+
+        float pX = 0, pY = 0;
+        if (dimensionsComponent.polygon != null) {
+            pX = -dimensionsComponent.polygon.getBoundingRectangle().x;
+            pY = -dimensionsComponent.polygon.getBoundingRectangle().y;
         }
-        if(intersections != null) {
-            return;
-        }
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(innerColor);
+        //Compute inner mesh
+        if ((intersections == null || intersections.size == 0) && !polygonShapeComponent.openEnded) {
+            for (Vector2[] poly : polygonShapeComponent.polygonizedVertices) {
+                for (int i = 1; i < poly.length; i++) {
+                    PolyLine line = linePool.obtain();
+                    line.setPoint1(poly[i - 1]);
+                    line.setPoint2(poly[i]);
+                    line.offsetPoints(pX, pY);
+                    line.setColor(innerColor);
+                    line.setThickness(1.7f);
+                    line.scalePoints(scaleX, scaleY);
+                    line.setTouchable(Touchable.disabled);
+                    drawingInnerMesh.add(line);
+                    innerMesh.addActor(line);
+                }
 
-        float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
-        float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
-
-        for (Vector2[] poly : polygonComponent.vertices) {
-            for (int i = 1; i < poly.length; i++) {
-                shapeRenderer.line(poly[i - 1].x*scaleX, poly[i - 1].y*scaleY, poly[i].x*scaleX, poly[i].y*scaleY);
+                if (poly.length > 0) {
+                    PolyLine line = linePool.obtain();
+                    line.setPoint1(poly[poly.length - 1]);
+                    line.setPoint2(poly[0]);
+                    line.offsetPoints(pX, pY);
+                    line.setColor(innerColor);
+                    line.setThickness(1.7f);
+                    line.scalePoints(scaleX, scaleY);
+                    line.setTouchable(Touchable.disabled);
+                    drawingInnerMesh.add(line);
+                    innerMesh.addActor(line);
+                }
             }
-            if (poly.length > 0)
-                shapeRenderer.line(poly[poly.length - 1].x*scaleX, poly[poly.length - 1].y*scaleY, poly[0].x*scaleX, poly[0].y*scaleY);
         }
-        shapeRenderer.end();
+
+        //compute outer mesh
+        for (int i = 1; i < polygonShapeComponent.vertices.size; i++) {
+            PolyLine line = linePool.obtain();
+            line.setIndex(i);
+            line.setPoint1(polygonShapeComponent.vertices.get(i));
+            line.setPoint2(polygonShapeComponent.vertices.get(i - 1));
+            line.offsetPoints(pX, pY);
+            line.setColor(hasProblems(i) ? problemColor : outlineColor);
+            line.setThickness(1.7f);
+            line.scalePoints(scaleX, scaleY);
+            line.addListener(new LineClickListener());
+            drawingLines.add(line);
+            outline.addActor(line);
+        }
+
+        if (!polygonShapeComponent.openEnded) {
+            PolyLine line = linePool.obtain();
+            line.setIndex(0);
+            line.setPoint1(polygonShapeComponent.vertices.get(polygonShapeComponent.vertices.size - 1));
+            line.setPoint2(polygonShapeComponent.vertices.get(0));
+            line.offsetPoints(pX, pY);
+            line.setColor(hasProblems(0) ? problemColor : outlineColor);
+            line.setThickness(1.7f);
+            line.scalePoints(scaleX, scaleY);
+            line.addListener(new LineClickListener());
+            drawingLines.add(line);
+            outline.addActor(line);
+        }
+
+        //compute vertices position
+        for (int i = 0; i < polygonShapeComponent.vertices.size; i++) {
+            Vector2 point = polygonShapeComponent.vertices.get(i);
+            PolyVertex vertex = vertexPool.obtain();
+            vertex.setIndex(i);
+            vertex.setPosition((point.x + pX) * scaleX, (point.y + pY) * scaleY, Align.center);
+            vertex.addListener(new VertexClickListener());
+            drawingVertices.add(vertex);
+            vertices.addActor(vertex);
+        }
     }
 
-    public void drawPoints() {
-        float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
-        float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (int i = 0; i < originalPoints.size(); i++) {
-            shapeRenderer.setColor(Color.WHITE);
-            if(selectedAnchorId == i) {
-                shapeRenderer.setColor(Color.ORANGE);
-            }
-            float side = (float) (ANCHOR_SIZE) / ((float)pixelsPerWU / runtimeCamera.zoom);
-            float onePixel = 1f/((float)pixelsPerWU / runtimeCamera.zoom);
-            shapeRenderer.rect(originalPoints.get(i).x*scaleX-side/2f, originalPoints.get(i).y*scaleY-side/2f, side, side);
-            shapeRenderer.setColor(Color.BLACK);
-            shapeRenderer.rect(originalPoints.get(i).x*scaleX-side/2f+onePixel, originalPoints.get(i).y*scaleY-side/2f+onePixel, side-2*onePixel, side-2*onePixel);
-        }
-        shapeRenderer.end();
-    }
-
-    public void setListener(final PolygonTransformationListener listener) {
+    public void setListener(PolygonTransformationListener listener) {
+        this.listener = listener;
         clearListeners();
         addListener(new ClickListener() {
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                super.touchDown(event, x, y, pointer, button);
-                x = (x + parentFollower.polygonOffsetX) / pixelsPerWU;
-                y = (y + parentFollower.polygonOffsetY) / pixelsPerWU;
-                if(button != Input.Buttons.LEFT) return true;
-                int anchorId = anchorHitTest(x, y);
-
-                float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
-                float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
-
-                if (anchorId >= 0) {
-                    draggingAnchorId = anchorId;
-                    listener.anchorDown(PolygonFollower.this, anchorId, x*runtimeCamera.zoom/scaleX, y*runtimeCamera.zoom/scaleY);
-                } else if (lineIndex > -1) {
-                    // not anchor but line is selected gotta make new point
-                    listener.vertexDown(PolygonFollower.this, lineIndex, x*runtimeCamera.zoom/scaleX, y*runtimeCamera.zoom/scaleY);
-                }
-                return true;
-            }
-
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
-                float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
+                super.touchDragged(event, x, y, pointer);
 
-                x = (x + parentFollower.polygonOffsetX) / pixelsPerWU;
-                y = (y + parentFollower.polygonOffsetY) / pixelsPerWU;
+                Vector2 coord = Pools.obtain(Vector2.class).set(x, y);
+                transformActorCoordIntoEntity(PolygonFollower.this, coord);
                 int anchorId = draggingAnchorId;
+
                 if (anchorId >= 0) {
-                    listener.anchorDragged(PolygonFollower.this, anchorId, x*runtimeCamera.zoom/scaleX, y*runtimeCamera.zoom/scaleY);
-                } else if (lineIndex > -1) {
-
-                }
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
-                float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
-
-                x = (x + parentFollower.polygonOffsetX) / pixelsPerWU;
-                y = (y + parentFollower.polygonOffsetY) / pixelsPerWU;
-
-                int anchorId = anchorHitTest(x, y);
-
-                lineIndex = vertexHitTest(x, y);
-                if (anchorId >= 0) {
-                    listener.anchorUp(PolygonFollower.this, anchorId, button,x*runtimeCamera.zoom/scaleX, y*runtimeCamera.zoom/scaleY);
-                } else if (lineIndex > -1) {
-                    listener.vertexUp(PolygonFollower.this, lineIndex, x*runtimeCamera.zoom/scaleX, y*runtimeCamera.zoom/scaleY);
-                }
-                draggingAnchorId = -1;
-            }
-
-            @Override
-            public boolean mouseMoved(InputEvent event, float x, float y) {
-                x = (x + parentFollower.polygonOffsetX) / pixelsPerWU;
-                y = (y + parentFollower.polygonOffsetY) / pixelsPerWU;
-                int anchorId = anchorHitTest(x, y);
-                lineIndex = vertexHitTest(x, y);
-                if(anchorId >= 0) {
-                    lineIndex = -1;
-                }
-                if (lineIndex > -1) {
-
+                    listener.anchorDragged(PolygonFollower.this, anchorId, coord.x, coord.y);
                 }
 
-                return super.mouseMoved(event, x, y);
+                Pools.free(coord);
             }
         });
-    }
-
-    @Override
-    public Actor hit (float x, float y, boolean touchable) {
-        if(originalPoints == null || originalPoints.size() == 0) return null;
-
-        x = (x + parentFollower.polygonOffsetX) / pixelsPerWU;
-        y = (y + parentFollower.polygonOffsetY) / pixelsPerWU;
-
-        int anchorId = anchorHitTest(x, y);
-        if(anchorId > -1) {
-            return this;
-        }
-
-        // checking for vertex intersect
-        lineIndex = vertexHitTest(x, y);
-        if(lineIndex > -1) {
-            return this;
-        }
-
-        return null;
-    }
-
-    private int vertexHitTest(float x, float y) {
-        Vector2 tmpVector = new Vector2(x, y);
-        int lineIndex = -1;
-
-        float circleSqr = ((float)CIRCLE_RADIUS/pixelsPerWU)*((float)CIRCLE_RADIUS/pixelsPerWU);
-
-        float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
-        float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
-
-        for (int i = 1; i < drawPoints.length; i++) {
-            Vector2 pointOne = drawPoints[i-1].cpy().scl(1f/runtimeCamera.zoom*scaleX, 1f/runtimeCamera.zoom*scaleY);
-            Vector2 pointTwo = drawPoints[i].cpy().scl(1f/runtimeCamera.zoom*scaleX, 1f/runtimeCamera.zoom*scaleY);
-            if (Intersector.intersectSegmentCircle(pointOne, pointTwo, tmpVector, circleSqr)) {
-                lineIndex = i;
-                break;
-            }
-        }
-        Vector2 pointOne = drawPoints[drawPoints.length - 1].cpy().scl(1f/runtimeCamera.zoom*scaleX, 1f/runtimeCamera.zoom*scaleY);
-        Vector2 pointTwo = drawPoints[0].cpy().scl(1f/runtimeCamera.zoom*scaleX, 1f/runtimeCamera.zoom*scaleY);
-        if (drawPoints.length > 0 && Intersector.intersectSegmentCircle(pointOne, pointTwo, tmpVector, circleSqr)) {
-            lineIndex = 0;
-        }
-
-        if(lineIndex > -1) {
-            return lineIndex;
-        }
-
-        return -1;
-    }
-
-    private int anchorHitTest(float x, float y) {
-        if(originalPoints == null || originalPoints.size() == 0) return -1;
-        float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
-        float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
-
-        for (int i = 0; i < drawPoints.length; i++) {
-            Circle pointCircle = new Circle(drawPoints[i].x/runtimeCamera.zoom*scaleX, drawPoints[i].y/runtimeCamera.zoom*scaleY, (float)CIRCLE_RADIUS/pixelsPerWU);
-            if(pointCircle.contains(x, y)) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     public int getEntity() {
         return entity;
     }
 
-    public ArrayList<Vector2> getOriginalPoints() {
-        return originalPoints;
+    public void setProblems(IntSet intersections) {
+        this.intersections = intersections;
     }
 
+    private boolean hasProblems(int line) {
+        if (intersections == null) return false;
+        line = line > 0 ? line - 1 : polygonShapeComponent.vertices.size - 1;
+        return intersections.contains(line);
+    }
     public void setSelectedAnchor(int anchorId) {
-        if(anchorId == -1) return;
-
         selectedAnchorId = anchorId;
+        for (PolyVertex vertex : drawingVertices) {
+            vertex.setSelected(vertex.getIndex() == selectedAnchorId);
+        }
     }
 
     public int getSelectedAnchorId() {
         return selectedAnchorId;
     }
 
-    public void getSelectedAnchorId(int id) {
-        if(id < 0) id = 0;
-        selectedAnchorId = id;
+    private class LineClickListener extends ClickListener {
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            if (super.touchDown(event, x, y, pointer, button)) {
+                PolyLine line = (PolyLine) event.getListenerActor();
+
+                Vector2 coord = Pools.obtain(Vector2.class).set(x, y);
+                transformActorCoordIntoEntity(line, coord);
+
+                listener.vertexDown(PolygonFollower.this, line.getIndex(), coord.x, coord.y);
+
+                Pools.free(coord);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            super.touchUp(event, x, y, pointer, button);
+            PolyLine line = (PolyLine) event.getListenerActor();
+
+            Vector2 coord = Pools.obtain(Vector2.class).set(x, y);
+            transformActorCoordIntoEntity(line, coord);
+
+            listener.vertexUp(PolygonFollower.this, line.getIndex(), coord.x, coord.y);
+
+            draggingAnchorId = -1;
+            Pools.free(coord);
+        }
+
+        @Override
+        public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+            super.enter(event, x, y, pointer, fromActor);
+            if (draggingAnchorId == -1) {
+                PolyLine line = (PolyLine) event.getListenerActor();
+                line.setColor(overColor);
+            }
+        }
+
+        @Override
+        public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+            super.exit(event, x, y, pointer, toActor);
+            if (draggingAnchorId == -1) {
+                PolyLine line = (PolyLine) event.getListenerActor();
+                line.setColor(outlineColor);
+            }
+        }
     }
 
-    public void setProblems(int[] intersections) {
-        this.intersections = intersections;
+    private class VertexClickListener extends ClickListener {
+        public VertexClickListener() {
+            super(-1);
+        }
+
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            if (super.touchDown(event, x, y, pointer, button)) {
+                if(button != Input.Buttons.LEFT) return true;
+
+                PolyVertex vertex = (PolyVertex) event.getListenerActor();
+                draggingAnchorId = vertex.getIndex();
+
+                Vector2 coord = Pools.obtain(Vector2.class).set(x, y);
+                transformActorCoordIntoEntity(vertex, coord);
+
+                setSelectedAnchor(draggingAnchorId);
+                listener.anchorDown(PolygonFollower.this, draggingAnchorId, coord.x, coord.y);
+
+                Pools.free(coord);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            super.touchUp(event, x, y, pointer, button);
+
+            PolyVertex vertex = (PolyVertex) event.getListenerActor();
+            draggingAnchorId = vertex.getIndex();
+
+            Vector2 coord = Pools.obtain(Vector2.class).set(x, y);
+            transformActorCoordIntoEntity(vertex, coord);
+
+            listener.anchorUp(PolygonFollower.this, draggingAnchorId, button,coord.x, coord.y);
+            draggingAnchorId = -1;
+            Pools.free(coord);
+        }
+    }
+
+    private void transformActorCoordIntoEntity(Actor actor, Vector2 coord) {
+        actor.localToScreenCoordinates(coord);
+        coord.y = Gdx.graphics.getHeight() - coord.y;
+        Sandbox.getInstance().screenToWorld(coord);
+        TransformMathUtils.sceneToLocalCoordinates(entity, coord, transformCM, parentNodeCM);
     }
 }
+

@@ -8,11 +8,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SceneDataManager;
-import games.rednblack.editor.renderer.components.SpineDataComponent;
-import games.rednblack.editor.renderer.data.CompositeItemVO;
-import games.rednblack.editor.renderer.data.ResolutionEntryVO;
-import games.rednblack.editor.renderer.data.SceneVO;
-import games.rednblack.editor.renderer.data.SpineVO;
+import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.utils.Version;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.utils.ImportUtils;
@@ -21,17 +17,18 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
+import games.rednblack.h2d.common.vo.ExportMapperVO;
+import games.rednblack.h2d.extension.spine.SpineComponent;
 import games.rednblack.h2d.extension.spine.SpineItemType;
+import games.rednblack.h2d.extension.spine.SpineVO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class SpineAsset extends Asset {
     @Override
@@ -217,11 +214,10 @@ public class SpineAsset extends Asset {
         }
 
         for (SceneVO scene : projectManager.currentProjectInfoVO.scenes) {
-            CompositeItemVO tmpVo = new CompositeItemVO();
             SceneVO loadedScene = resourceManager.getSceneVO(scene.sceneName);
-            tmpVo.composite = loadedScene.composite;
+            CompositeItemVO tmpVo = new CompositeItemVO(loadedScene.composite);
             deleteAllSpineAnimationsOfItem(tmpVo, spineAnimationName);
-            loadedScene.composite = tmpVo.composite;
+            loadedScene.composite = tmpVo;
             SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
             sceneDataManager.saveScene(loadedScene);
         }
@@ -234,25 +230,36 @@ public class SpineAsset extends Asset {
 
     private void deleteCurrentItemSpineAnimations(CompositeItemVO compositeItemVO, String spineAnimationName) {
         tmpImageList.clear();
-        if (compositeItemVO.composite != null && compositeItemVO.composite.sSpineAnimations.size() != 0) {
-            ArrayList<SpineVO> spineAnimations = compositeItemVO.composite.sSpineAnimations;
-            tmpImageList.addAll(spineAnimations
-                    .stream()
-                    .filter(spineVO -> spineVO.animationName.equals(spineAnimationName))
-                    .collect(Collectors.toList()));
-            spineAnimations.removeAll(tmpImageList);
+        if (compositeItemVO != null && compositeItemVO.getElementsArray(SpineVO.class).size != 0) {
+            Array<SpineVO> spineAnimations = compositeItemVO.getElementsArray(SpineVO.class);
+
+            for (SpineVO spriteVO :spineAnimations)
+                if (spriteVO.getResourceName().equals(spineAnimationName))
+                    tmpImageList.add(spriteVO);
+
+            spineAnimations.removeAll(tmpImageList, true);
         }
     }
 
     private void deleteEntitiesWithSpineAnimation(int rootEntity, String spineName) {
         tmpEntityList.clear();
         Consumer<Integer> action = (root) -> {
-            SpineDataComponent spineDataComponent = SandboxComponentRetriever.get(root, SpineDataComponent.class);
+            SpineComponent spineDataComponent = SandboxComponentRetriever.get(root, SpineComponent.class);
             if (spineDataComponent != null && spineDataComponent.animationName.equals(spineName)) {
                 tmpEntityList.add(root);
             }
         };
         EntityUtils.applyActionRecursivelyOnEntities(rootEntity, action);
         EntityUtils.removeEntities(tmpEntityList);
+    }
+
+    @Override
+    public boolean exportAsset(MainItemVO item, ExportMapperVO exportMapperVO, File tmpDir) throws IOException {
+        super.exportAsset(item, exportMapperVO, tmpDir);
+        SpineVO spineVO = (SpineVO) item;
+        File fileSrc = new File(currentProjectPath + ProjectManager.SPINE_DIR_PATH + File.separator + spineVO.animationName);
+        FileUtils.copyDirectory(fileSrc, tmpDir);
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_SPINE_ANIMATION, fileSrc.getName() + ".json"));
+        return true;
     }
 }

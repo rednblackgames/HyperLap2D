@@ -1,15 +1,19 @@
 package games.rednblack.editor.view.ui.dialog;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.renderer.components.PolygonComponent;
+import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.utils.poly.tracer.Tracer;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
+import games.rednblack.editor.view.ui.FollowersUIMediator;
+import games.rednblack.editor.view.ui.followers.BasicFollower;
+import games.rednblack.editor.view.ui.followers.PolygonFollower;
 import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
@@ -59,21 +63,26 @@ public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
     }
 
     private void addAutoTraceMesh() {
-        PolygonComponent polygonComponent = SandboxComponentRetriever.get(entity, PolygonComponent.class);
+        PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(entity, PolygonShapeComponent.class);
 
-        if (polygonComponent != null) {
+        if (polygonShapeComponent != null) {
             TextureRegionComponent textureRegionComponent = SandboxComponentRetriever.get(entity, TextureRegionComponent.class);
 
             if (textureRegionComponent != null && textureRegionComponent.region != null && !textureRegionComponent.regionName.equals("")) {
-                polygonComponent.vertices = Tracer.trace(textureRegionComponent.region, viewComponent.getHullTolerance(),
+                Vector2[][] traceResult = Tracer.trace(textureRegionComponent.region, viewComponent.getHullTolerance(),
                         viewComponent.getAlphaTolerance(), viewComponent.isMultiPartDetection(),
                         viewComponent.isHoleDetection());
 
-                if (polygonComponent.vertices != null) {
-                    Vector2[] points = Stream.of(polygonComponent.vertices)
+                if (traceResult != null) {
+                    Vector2[] points = Stream.of(traceResult)
                             .flatMap(Stream::of)
                             .toArray(Vector2[]::new);
-                    polygonComponent.vertices = PolygonUtils.polygonize(points);
+                    polygonShapeComponent.vertices = new Array<>(points);
+                    polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(points);
+
+                    FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+                    BasicFollower follower = followersUIMediator.getFollower(entity);
+                    follower.getSubFollower(PolygonFollower.class).update();
 
                     HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
                 }

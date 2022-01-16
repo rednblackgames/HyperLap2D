@@ -21,10 +21,10 @@ package games.rednblack.editor.view.ui.panel;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.renderer.utils.CustomVariables;
 import games.rednblack.h2d.common.UIDraggablePanel;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
@@ -87,7 +87,7 @@ public class CustomVariablesPanel extends UIDraggablePanel {
         invalidateHeight();
     }
 
-    public void updateView(CustomVariables vars) {
+    public void updateView(ObjectMap<String, String> vars) {
         variablesList.clear();
         createAddVariableTable();
 
@@ -96,9 +96,9 @@ public class CustomVariablesPanel extends UIDraggablePanel {
         variablesList.row();
         variablesList.addSeparator().colspan(3).expandX().fillX().row();
 
-        for (Map.Entry<String, String> entry : vars.getHashMap().entrySet()) {
-            final String key = entry.getKey();
-            String value = entry.getValue();
+        for (ObjectMap.Entry<String, String> entry : vars) {
+            String key = entry.key;
+            String value = entry.value;
 
             VisTable keyTbl = new VisTable();
             keyTbl.setBackground(VisUI.getSkin().getDrawable("layer-bg"));

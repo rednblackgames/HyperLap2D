@@ -19,6 +19,7 @@ import games.rednblack.editor.plugin.tiled.view.SpineDrawable;
 import games.rednblack.editor.plugin.tiled.view.tabs.listener.GridTabInputListener;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.h2d.extension.spine.SpineItemType;
 
 public abstract class AbstractGridTilesTab<T extends TextureRegionVO> extends DefaultTab {
 
@@ -115,7 +116,7 @@ public abstract class AbstractGridTilesTab<T extends TextureRegionVO> extends De
     protected void setGridSizeToFirstTileSize(String tileName, int type) {
         float width = 0;
         float height = 0;
-        if (type == EntityFactory.SPINE_TYPE) {
+        if (type == SpineItemType.SPINE_TYPE) {
             SpineDrawable spineDrawable = tiledPlugin.pluginRM.getSpineDrawable(tileName);
             width = spineDrawable.width;
             height = spineDrawable.height;
@@ -157,14 +158,14 @@ public abstract class AbstractGridTilesTab<T extends TextureRegionVO> extends De
             Drawable tileDrawable = null;
             if (i < savedTiles.size) {
                 int t =  savedTiles.get(i).getEntityType();
-                if (t == EntityFactory.SPINE_TYPE) {
+                if (t == SpineItemType.SPINE_TYPE) {
                     tileDrawable = resourcesManager.getSpineDrawable(savedTiles.get(i).getRegionName());
                 } else {
                     tileDrawable = new TextureRegionDrawable(resourcesManager.getTextureRegion(savedTiles.get(i).getRegionName(), t));
                 }
             } else if (!tileName.equals("")) {
                 if (i == tileIndex) {
-                    if (type == EntityFactory.SPINE_TYPE) {
+                    if (type == SpineItemType.SPINE_TYPE) {
                         tileDrawable = resourcesManager.getSpineDrawable(tileName);
                     } else {
                         tileDrawable = new TextureRegionDrawable(resourcesManager.getTextureRegion(tileName, type));

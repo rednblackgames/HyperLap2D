@@ -53,10 +53,12 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
 
         ViewPortComponent viewPortComponent = SandboxComponentRetriever.get(oldEntity, ViewPortComponent.class);
         Viewport currViewport = viewPortComponent.viewPort;
+        int currPPWU = viewPortComponent.pixelsPerWU;
         sandbox.getEngine().edit(oldEntity).remove(ViewPortComponent.class);
 
         ViewPortComponent newViewPortComponent = sandbox.getEngine().edit(entity).create(ViewPortComponent.class);
         newViewPortComponent.viewPort = currViewport;
+        newViewPortComponent.pixelsPerWU = currPPWU;
 
         sandbox.setCurrentViewingEntity(entity);
 
@@ -83,10 +85,12 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
 
         ViewPortComponent viewPortComponent = SandboxComponentRetriever.get(currEntity, ViewPortComponent.class);
         Viewport currViewport = viewPortComponent.viewPort;
+        int currPPWU = viewPortComponent.pixelsPerWU;
         sandbox.getEngine().edit(currEntity).remove(ViewPortComponent.class);
 
         ViewPortComponent newViewPortComponent = sandbox.getEngine().edit(oldEntity).create(ViewPortComponent.class);
         newViewPortComponent.viewPort = currViewport;
+        newViewPortComponent.pixelsPerWU = currPPWU;
         sandbox.setCurrentViewingEntity(oldEntity);
 
         facade.sendNotification(DONE, previousViewEntityId);

@@ -23,8 +23,8 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
-import games.rednblack.editor.renderer.components.CircleShapeComponent;
-import games.rednblack.editor.renderer.components.PolygonComponent;
+import games.rednblack.editor.renderer.components.shape.CircleShapeComponent;
+import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
@@ -40,6 +40,8 @@ import games.rednblack.editor.view.ui.properties.UIAbstractProperties;
 import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
 import games.rednblack.editor.view.ui.properties.panels.*;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.extension.spine.SpineItemType;
+import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelComponent;
 import org.puremvc.java.interfaces.IMediator;
 import org.puremvc.java.interfaces.INotification;
@@ -173,7 +175,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         if (entityType == EntityFactory.SPRITE_TYPE) {
             mediatorNames.add(UISpriteAnimationItemPropertiesMediator.NAME);
         }
-        if (entityType == EntityFactory.SPINE_TYPE) {
+        if (entityType == SpineItemType.SPINE_TYPE) {
             mediatorNames.add(UISpineAnimationItemPropertiesMediator.NAME);
         }
         if (entityType == EntityFactory.LIGHT_TYPE) {
@@ -182,12 +184,12 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         if (entityType == EntityFactory.PARTICLE_TYPE) {
             mediatorNames.add(UIParticlePropertiesMediator.NAME);
         }
-        if (entityType == EntityFactory.TALOS_TYPE) {
+        if (entityType == TalosItemType.TALOS_TYPE) {
             mediatorNames.add(UITalosPropertiesMediator.NAME);
         }
 
         // optional panels based on components
-        PolygonComponent polygonComponent = SandboxComponentRetriever.get(entity, PolygonComponent.class);
+        PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(entity, PolygonShapeComponent.class);
         PhysicsBodyComponent physicsComponent = SandboxComponentRetriever.get(entity, PhysicsBodyComponent.class);
         SensorComponent sensorComponent = SandboxComponentRetriever.get(entity, SensorComponent.class);
         ShaderComponent shaderComponent = SandboxComponentRetriever.get(entity, ShaderComponent.class);
@@ -195,7 +197,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         TypingLabelComponent typingLabelComponent = SandboxComponentRetriever.get(entity, TypingLabelComponent.class);
         CircleShapeComponent circleShapeComponent = SandboxComponentRetriever.get(entity, CircleShapeComponent.class);
 
-        if (polygonComponent != null) {
+        if (polygonShapeComponent != null) {
             mediatorNames.add(UIPolygonComponentPropertiesMediator.NAME);
         }
         if (physicsComponent != null) {

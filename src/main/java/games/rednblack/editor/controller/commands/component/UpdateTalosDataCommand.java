@@ -2,8 +2,7 @@ package games.rednblack.editor.controller.commands.component;
 
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
-import games.rednblack.editor.renderer.components.particle.TalosDataComponent;
-import games.rednblack.editor.renderer.data.TalosVO;
+import games.rednblack.h2d.extension.talos.TalosVO;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
@@ -22,12 +21,10 @@ public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
         entityId = EntityUtils.getEntityId(entity);
 
         backup = new TalosVO();
-        backup.loadFromEntity(entity, sandbox.getEngine());
-
-        TalosDataComponent dataComponent = SandboxComponentRetriever.get(entity, TalosDataComponent.class);
-        dataComponent.transform = vo.transform;
+        backup.loadFromEntity(entity, sandbox.getEngine(), sandbox.sceneControl.sceneLoader.getEntityFactory());
 
         TalosComponent talosComponent = SandboxComponentRetriever.get(entity, TalosComponent.class);
+        talosComponent.transform = vo.transform;
         talosComponent.effect.setPosition(0, 0);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
@@ -37,11 +34,9 @@ public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
     public void undoAction() {
         int entity = EntityUtils.getByUniqueId(entityId);
 
-        TalosDataComponent particleComponent = SandboxComponentRetriever.get(entity, TalosDataComponent.class);
-        particleComponent.transform = backup.transform;
-
         TalosComponent talosComponent = SandboxComponentRetriever.get(entity, TalosComponent.class);
         talosComponent.effect.setPosition(0, 0);
+        talosComponent.transform = backup.transform;
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

@@ -18,6 +18,8 @@ import games.rednblack.editor.view.stage.tools.TextTool;
 import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.factory.IFactory;
+import games.rednblack.h2d.extension.spine.SpineItemType;
+import games.rednblack.h2d.extension.talos.TalosItemType;
 
 import java.util.HashMap;
 
@@ -142,7 +144,7 @@ public class ItemFactory implements IFactory {
         }
         data.data = animationName;
 
-        createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.SPINE_TYPE, data);
+        createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), SpineItemType.SPINE_TYPE, data);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         Pools.free(data);
@@ -155,7 +157,10 @@ public class ItemFactory implements IFactory {
             Pools.free(data);
             return false;
         }
-        data.data = shape.clone().polygons;
+        Object[] params = new Object[5];
+        data.data = params;
+        params[0] = shape.clone().vertices;
+        params[1] = shape.clone().polygonizedVertices;
         createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.COLOR_PRIMITIVE, data);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
         Pools.free(data);
@@ -168,8 +173,7 @@ public class ItemFactory implements IFactory {
         HashMap<String, CompositeItemVO> libraryItems = projectManager.currentProjectInfoVO.libraryItems;
 
         CompositeItemVO itemVO = libraryItems.get(libraryName);
-        itemVO.uniqueId = -1;
-        PasteItemsCommand.forceIdChange(itemVO.composite);
+        itemVO.cleanIds();
         createdEntity = createCompositeItem(itemVO, position);
 
         if (createdEntity == -1) return false;
@@ -188,7 +192,7 @@ public class ItemFactory implements IFactory {
 
         int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), vo);
         EntityFactory factory = sceneLoader.getEntityFactory();
-        factory.initAllChildren(entity, vo.composite);
+        factory.initAllChildren(entity, vo);
 
         return entity;
     }
@@ -245,7 +249,7 @@ public class ItemFactory implements IFactory {
             return -1;
         }
         data.data = particleName;
-        int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.TALOS_TYPE, data);
+        int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), TalosItemType.TALOS_TYPE, data);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
 

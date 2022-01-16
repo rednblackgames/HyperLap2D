@@ -18,6 +18,7 @@
 
 package games.rednblack.editor.view.ui.box;
 
+import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -46,7 +47,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
     private static final String TAG = UILayerBoxMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
-    private ArrayList<LayerItemVO> layers;
+    private Array<LayerItemVO> layers;
 
     public UILayerBoxMediator() {
         super(NAME, new UILayerBox());
@@ -214,7 +215,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
 
     private void setSelectedByName(String name) {
         String deletedLayerName = name;
-        for (int i = 0; i < layers.size(); i++) {
+        for (int i = 0; i < layers.size; i++) {
             if (layers.get(i).layerName.equals(deletedLayerName)) {
                 viewComponent.setCurrentSelectedLayer(i);
                 viewComponent.currentSelectedLayerIndex = i;
@@ -289,7 +290,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
     }
 
     private int findLayerByName(String name) {
-        for (int i = 0; i < layers.size(); i++) {
+        for (int i = 0; i < layers.size; i++) {
             if (layers.get(i).layerName.equals(name)) {
                 return i;
             }
@@ -299,7 +300,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
     }
 
     private boolean checkIfNameIsUnique(String name) {
-        for (int i = 0; i < layers.size(); i++) {
+        for (int i = 0; i < layers.size; i++) {
             if (layers.get(i).layerName.equals(name)) {
                 return false;
             }
@@ -309,7 +310,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
     }
 
     private int getFirstFreeLayer() {
-        for(int i = 0; i < layers.size(); i++) {
+        for(int i = 0; i < layers.size; i++) {
             if(!layers.get(i).isLocked) {
                 return i;
             }
@@ -325,7 +326,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
 
         viewComponent.clearItems();
 
-        for (int i = (layers.size()-1); i >=0; i--) {
+        for (int i = (layers.size-1); i >=0; i--) {
             viewComponent.addItem(layers.get(i));
         }
     }

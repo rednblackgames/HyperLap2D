@@ -30,6 +30,8 @@ import games.rednblack.editor.renderer.components.*;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.components.physics.SensorComponent;
+import games.rednblack.editor.renderer.components.shape.CircleShapeComponent;
+import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.runtime.ComponentCloner;
 import games.rednblack.editor.utils.runtime.EntityUtils;
@@ -75,7 +77,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
 
     @Override
     public void onRegister() {
-        componentClassMap.put(POLYGON_COMPONENT_KEY, PolygonComponent.class);
+        componentClassMap.put(POLYGON_COMPONENT_KEY, PolygonShapeComponent.class);
         componentClassMap.put(CIRCLE_SHAPE_COMPONENT_KEY, CircleShapeComponent.class);
         componentClassMap.put(PHYSICS_COMPONENT_KEY, PhysicsBodyComponent.class);
         componentClassMap.put(SENSOR_COMPONENT_KEY, SensorComponent.class);

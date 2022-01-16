@@ -17,11 +17,12 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
+import games.rednblack.h2d.common.vo.ExportMapperVO;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class ImageAsset extends Asset {
 
@@ -128,11 +129,10 @@ public class ImageAsset extends Asset {
         }
 
         for (SceneVO scene : projectManager.currentProjectInfoVO.scenes) {
-            CompositeItemVO tmpVo = new CompositeItemVO();
             SceneVO loadedScene = resourceManager.getSceneVO(scene.sceneName);
-            tmpVo.composite = loadedScene.composite;
+            CompositeItemVO tmpVo = new CompositeItemVO(loadedScene.composite);
             deleteAllImagesOfItem(tmpVo, imageName);
-            loadedScene.composite = tmpVo.composite;
+            loadedScene.composite = tmpVo;
             SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
             sceneDataManager.saveScene(loadedScene);
         }
@@ -145,23 +145,25 @@ public class ImageAsset extends Asset {
 
     private void deleteCurrentItemImage(CompositeItemVO compositeItemVO, String imageName) {
         tmpImageList.clear();
-        if (compositeItemVO.composite != null && compositeItemVO.composite.sImages.size() != 0) {
-            ArrayList<SimpleImageVO> simpleImageVOs = compositeItemVO.composite.sImages;
-            tmpImageList.addAll(simpleImageVOs
-                    .stream()
-                    .filter(simpleImageVO -> simpleImageVO.imageName.equals(imageName))
-                    .collect(Collectors.toList()));
-            simpleImageVOs.removeAll(tmpImageList);
+        if (compositeItemVO != null && compositeItemVO.getElementsArray(SimpleImageVO.class).size != 0) {
+            Array<SimpleImageVO> simpleImageVOs = compositeItemVO.getElementsArray(SimpleImageVO.class);
+
+            for (SimpleImageVO simpleImageVO : simpleImageVOs)
+                if (simpleImageVO.getResourceName().equals(imageName))
+                    tmpImageList.add(simpleImageVO);
+
+            simpleImageVOs.removeAll(tmpImageList, true);
         }
 
         tmpImageList.clear();
-        if (compositeItemVO.composite != null && compositeItemVO.composite.sImage9patchs.size() != 0) {
-            ArrayList<Image9patchVO> simple9PatchesVOs = compositeItemVO.composite.sImage9patchs;
-            tmpImageList.addAll(simple9PatchesVOs
-                    .stream()
-                    .filter(simple9PatchVO -> simple9PatchVO.imageName.equals(imageName))
-                    .collect(Collectors.toList()));
-            simple9PatchesVOs.removeAll(tmpImageList);
+        if (compositeItemVO != null && compositeItemVO.getElementsArray(Image9patchVO.class).size != 0) {
+            Array<Image9patchVO> simple9PatchesVOs = compositeItemVO.getElementsArray(Image9patchVO.class);
+
+            for (Image9patchVO simpleImageVO : simple9PatchesVOs)
+                if (simpleImageVO.getResourceName().equals(imageName))
+                    tmpImageList.add(simpleImageVO);
+
+            simple9PatchesVOs.removeAll(tmpImageList, true);
         }
     }
 
@@ -180,5 +182,21 @@ public class ImageAsset extends Asset {
         };
         EntityUtils.applyActionRecursivelyOnEntities(rootEntity, action);
         EntityUtils.removeEntities(tmpEntityList);
+    }
+
+    @Override
+    public boolean exportAsset(MainItemVO item, ExportMapperVO exportMapperVO, File tmpDir) throws IOException {
+        super.exportAsset(item, exportMapperVO, tmpDir);
+        if (item instanceof SimpleImageVO imageVO) {
+            File fileSrc = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + imageVO.imageName + ".png");
+            FileUtils.copyFileToDirectory(fileSrc, tmpDir);
+            exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_IMAGE, fileSrc.getName()));
+        } else if (item instanceof Image9patchVO imageVO) {
+            File fileSrc = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + imageVO.imageName + ".9.png");
+            FileUtils.copyFileToDirectory(fileSrc, tmpDir);
+            exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_IMAGE, fileSrc.getName()));
+        }
+
+        return true;
     }
 }

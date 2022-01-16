@@ -20,11 +20,11 @@ package games.rednblack.editor.view.ui;
 
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBarMediator;
 import games.rednblack.editor.view.ui.box.*;
 import games.rednblack.editor.view.ui.widget.H2DLogo;
+import org.apache.commons.lang3.SystemUtils;
 
 public class UIMainTable extends VisTable {
     private final VisTable topTable, middleTable;
@@ -47,8 +47,6 @@ public class UIMainTable extends VisTable {
         initToolsPanel();
         initLeftBoxesPanel();
         initRightBoxesPanel();
-
-        HyperLap2DUtils.setWindowDragListener(topTable);
     }
 
 	private void initMenuBar() {
@@ -56,16 +54,20 @@ public class UIMainTable extends VisTable {
 
         HyperLap2DMenuBarMediator hyperlap2DMenuBarMediator = facade.retrieveMediator(HyperLap2DMenuBarMediator.NAME);
         HyperLap2DMenuBar menuBar = hyperlap2DMenuBarMediator.getViewComponent();
-		topTable.add(menuBar.getTable()).height(32).growX();
 
-		//TODO Undecorated window is cool but too much glitches
-        /*UIWindowTitleMediator uiWindowTitleMediator = facade.retrieveMediator(UIWindowTitleMediator.NAME);
-        UIWindowTitle uiWindowTitle = uiWindowTitleMediator.getViewComponent();
-        topTable.add(uiWindowTitle).growX().fillY();
+		if (SystemUtils.IS_OS_WINDOWS) {
+            topTable.add(menuBar.getTable()).height(32);
 
-        UIWindowActionMediator uiWindowActionMediator = facade.retrieveMediator(UIWindowActionMediator.NAME);
-        UIWindowAction uiWindowAction = uiWindowActionMediator.getViewComponent();
-        topTable.add(uiWindowAction).padTop(-1).fillY();*/
+            UIWindowTitleMediator uiWindowTitleMediator = facade.retrieveMediator(UIWindowTitleMediator.NAME);
+            UIWindowTitle uiWindowTitle = uiWindowTitleMediator.getViewComponent();
+            topTable.add(uiWindowTitle).growX().fillY();
+
+            UIWindowActionMediator uiWindowActionMediator = facade.retrieveMediator(UIWindowActionMediator.NAME);
+            UIWindowAction uiWindowAction = uiWindowActionMediator.getViewComponent();
+            topTable.add(uiWindowAction).padTop(-1).fillY();
+        } else {
+            topTable.add(menuBar.getTable()).growX().height(32);
+        }
 	}
 
     private void initSupportMenus() {

@@ -66,7 +66,7 @@ public class AutoTileDrawStrategy extends BasicDrawStrategy {
         if (!checkValidTile(entity)) return;
         
         MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class, tiledPlugin.getAPI().getEngine());
-        if (tiledPlugin.getSelectedAutoTileName().equals(mainItemComponent.customVariables.getStringVariable(TiledPlugin.ORIG_AUTO_TILE))) {
+        if (tiledPlugin.getSelectedAutoTileName().equals(mainItemComponent.customVariables.get(TiledPlugin.ORIG_AUTO_TILE))) {
         	// we only allow an update when the auto-tiles is different
         	// firstly, it does not make any sense to randomly reselect another alternative tile
         	// secondly, when dragging it constantly reselects between the alternative, making rare tiles even rarer

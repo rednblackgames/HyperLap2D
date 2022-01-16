@@ -2,12 +2,11 @@ package games.rednblack.editor.controller.commands.component;
 
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
-import games.rednblack.editor.renderer.components.SpineDataComponent;
-import games.rednblack.editor.renderer.data.SpineVO;
+import games.rednblack.h2d.extension.spine.SpineVO;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.h2d.extension.spine.SpineObjectComponent;
+import games.rednblack.h2d.extension.spine.SpineComponent;
 
 public class UpdateSpineDataCommand extends EntityModifyRevertibleCommand {
 
@@ -22,13 +21,12 @@ public class UpdateSpineDataCommand extends EntityModifyRevertibleCommand {
         entityId = EntityUtils.getEntityId(entity);
 
         backup = new SpineVO();
-        backup.loadFromEntity(entity, sandbox.getEngine());
+        backup.loadFromEntity(entity, sandbox.getEngine(), sandbox.sceneControl.sceneLoader.getEntityFactory());
 
-        SpineDataComponent spineDataComponent = SandboxComponentRetriever.get(entity, SpineDataComponent.class);
-        SpineObjectComponent spineObjectComponent = SandboxComponentRetriever.get(entity, SpineObjectComponent.class);
+        SpineComponent spineComponent = SandboxComponentRetriever.get(entity, SpineComponent.class);
 
-        spineDataComponent.currentAnimationName = vo.currentAnimationName;
-        spineObjectComponent.setAnimation(vo.currentAnimationName);
+        spineComponent.currentAnimationName = vo.currentAnimationName;
+        spineComponent.setAnimation(vo.currentAnimationName);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
@@ -36,11 +34,10 @@ public class UpdateSpineDataCommand extends EntityModifyRevertibleCommand {
     @Override
     public void undoAction() {
         int entity = EntityUtils.getByUniqueId(entityId);
-        SpineDataComponent spineDataComponent = SandboxComponentRetriever.get(entity, SpineDataComponent.class);
-        SpineObjectComponent spineObjectComponent = SandboxComponentRetriever.get(entity, SpineObjectComponent.class);
+        SpineComponent spineComponent = SandboxComponentRetriever.get(entity, SpineComponent.class);
 
-        spineDataComponent.currentAnimationName = backup.currentAnimationName;
-        spineObjectComponent.setAnimation(backup.currentAnimationName);
+        spineComponent.currentAnimationName = backup.currentAnimationName;
+        spineComponent.setAnimation(backup.currentAnimationName);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

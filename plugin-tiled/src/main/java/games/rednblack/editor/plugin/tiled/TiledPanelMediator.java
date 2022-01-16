@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import games.rednblack.editor.renderer.data.TexturePackVO;
+import games.rednblack.h2d.extension.spine.SpineItemType;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 
@@ -197,7 +198,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                     height = r.getRegionHeight() / TiledPlugin.AUTO_TILE_ROWS;
                 } else {
                     TileVO t = tiledPlugin.dataToSave.getTile(notification.getBody());
-	                if (t.entityType == EntityFactory.SPINE_TYPE) {
+	                if (t.entityType == SpineItemType.SPINE_TYPE) {
 	                    SpineDrawable spineDrawable = tiledPlugin.pluginRM.getSpineDrawable(t.regionName);
 	                    width = spineDrawable.width;
 	                    height = spineDrawable.height;
@@ -404,7 +405,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
         else if (className.endsWith(".SpriteResource"))
             return EntityFactory.SPRITE_TYPE;
         else if (className.endsWith(".SpineResource"))
-            return EntityFactory.SPINE_TYPE;
+            return SpineItemType.SPINE_TYPE;
 
         return EntityFactory.UNKNOWN_TYPE;
     }

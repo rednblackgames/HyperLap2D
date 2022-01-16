@@ -21,19 +21,17 @@ package games.rednblack.editor.view.ui.properties.panels;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.Animation;
 import games.rednblack.editor.controller.commands.component.UpdateSpineDataCommand;
-import games.rednblack.editor.renderer.components.SpineDataComponent;
-import games.rednblack.editor.renderer.data.SpineVO;
+import games.rednblack.h2d.extension.spine.SpineVO;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.h2d.extension.spine.SpineObjectComponent;
+import games.rednblack.h2d.extension.spine.SpineComponent;
 
 public class UISpineAnimationItemPropertiesMediator extends UIItemPropertiesMediator<UISpineAnimationItemProperties> {
     private static final String TAG = UISpineAnimationItemPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
-    private SpineDataComponent spineDataComponent;
-    private SpineObjectComponent spineObjectComponent;
+    private SpineComponent spineComponent;
 
     public UISpineAnimationItemPropertiesMediator() {
         super(NAME, new UISpineAnimationItemProperties());
@@ -41,16 +39,15 @@ public class UISpineAnimationItemPropertiesMediator extends UIItemPropertiesMedi
 
     @Override
     protected void translateObservableDataToView(int entity) {
-        spineObjectComponent = SandboxComponentRetriever.get(entity, SpineObjectComponent.class);
-        spineDataComponent = SandboxComponentRetriever.get(entity, SpineDataComponent.class);
+        spineComponent = SandboxComponentRetriever.get(entity, SpineComponent.class);
     	
         Array<String> animations = new Array<>();
-        for (Animation animation : spineObjectComponent.getAnimations()) {
+        for (Animation animation : spineComponent.getAnimations()) {
             animations.add(animation.getName());
         }
 
         viewComponent.setAnimations(animations);
-        viewComponent.setSelectedAnimation(spineDataComponent.currentAnimationName);
+        viewComponent.setSelectedAnimation(spineComponent.currentAnimationName);
     }
 
     @Override

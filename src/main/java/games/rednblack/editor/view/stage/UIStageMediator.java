@@ -18,6 +18,7 @@
 
 package games.rednblack.editor.view.stage;
 
+import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import games.rednblack.editor.HyperLap2DFacade;
@@ -74,7 +75,7 @@ public class UIStageMediator extends Mediator<UIStage> {
                 });
                 break;
             case MsgAPI.SAVE_EDITOR_CONFIG:
-                getViewComponent().updateViewportDensity();
+                Gdx.app.postRunnable(() -> getViewComponent().updateViewportDensity());
                 break;
         }
     }

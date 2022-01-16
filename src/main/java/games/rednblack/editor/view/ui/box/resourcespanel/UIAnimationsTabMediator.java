@@ -78,7 +78,7 @@ public class UIAnimationsTabMediator extends UIResourcesTabMediator<UIAnimations
         animationBoxes.clear();
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
-        if (new SpineItemType().getTypeId() == EntityFactory.SPINE_TYPE) {
+        if (new SpineItemType().getTypeId() == SpineItemType.SPINE_TYPE) {
             createAnimationResources(resourceManager.getProjectSpineAnimationsList().keySet(), SpineResource.class, ItemFactory.get()::createSpineAnimation, searchText);
         }
         createAnimationResources(resourceManager.getProjectSpriteAnimationsList().keySet(), SpriteResource.class, ItemFactory.get()::createSpriteAnimation, searchText);
@@ -89,7 +89,7 @@ public class UIAnimationsTabMediator extends UIResourcesTabMediator<UIAnimations
     private void createAnimationResources(Set<String> strings, Class<? extends BoxItemResource> resourceClass, BiFunction<String, Vector2, Boolean> factoryFunction, String searchText) {
         for (String animationName : strings) {
             if (!animationName.toLowerCase().contains(searchText)
-                    || filterResource(animationName, resourceClass == SpineResource.class ? EntityFactory.SPINE_TYPE : EntityFactory.SPRITE_TYPE))
+                    || filterResource(animationName, resourceClass == SpineResource.class ? SpineItemType.SPINE_TYPE : EntityFactory.SPRITE_TYPE))
                 continue;
 
             try {

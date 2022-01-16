@@ -1,11 +1,12 @@
 package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.SandboxCommand;
-import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
-import games.rednblack.editor.renderer.components.PolygonComponent;
+import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
+import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
@@ -31,27 +32,29 @@ public class DeletePolygonVertexCommand extends SandboxCommand {
         PolygonFollower follower = (PolygonFollower) payload[0];
         int anchor = (int) payload[1];
 
-        PolygonComponent polygonComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonComponent.class);
-        if(polygonComponent == null || polygonComponent.vertices == null || polygonComponent.vertices.length == 0) return;
-        if(follower.getOriginalPoints().size() <= 3) return;
+        PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonShapeComponent.class);
+        if(polygonShapeComponent == null || polygonShapeComponent.vertices == null || polygonShapeComponent.vertices.size == 0) return;
+        if(polygonShapeComponent.vertices.size <= 3) return;
 
-        Vector2[][] polygonBackup = polygonComponent.vertices.clone();
-        Object[] currentCommandPayload = UpdatePolygonDataCommand.payloadInitialState(follower.getEntity());
+        Vector2[][] poligonyzedBackup = UpdatePolygonVerticesCommand.cloneData(polygonShapeComponent.polygonizedVertices);
+        Array<Vector2> verticesBackup = UpdatePolygonVerticesCommand.cloneData(polygonShapeComponent.vertices);
 
-        follower.getOriginalPoints().remove(anchor);
-        follower.getSelectedAnchorId(anchor-1);
-        Vector2[] points = follower.getOriginalPoints().toArray(new Vector2[0]);
-        polygonComponent.vertices = PolygonUtils.polygonize(points);
+        Object[] currentCommandPayload = UpdatePolygonVerticesCommand.payloadInitialState(follower.getEntity());
 
-        if(polygonComponent.vertices == null) {
+        polygonShapeComponent.vertices.removeIndex(anchor);
+        follower.setSelectedAnchor(0);
+        polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(polygonShapeComponent.vertices.toArray());
+
+        if(polygonShapeComponent.polygonizedVertices == null) {
             // restore from backup
-            polygonComponent.vertices = polygonBackup.clone();
+            polygonShapeComponent.vertices = verticesBackup;
+            polygonShapeComponent.polygonizedVertices = poligonyzedBackup;
             follower.update();
         }
 
-        UpdatePolygonDataCommand.payload(currentCommandPayload, polygonComponent.vertices);
+        UpdatePolygonVerticesCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
 
-        follower.updateDraw();
+        follower.update();
     }
 }

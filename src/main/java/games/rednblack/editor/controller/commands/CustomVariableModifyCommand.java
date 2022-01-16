@@ -48,7 +48,7 @@ public class CustomVariableModifyCommand extends EntityModifyRevertibleCommand {
     private void removeVariable(String key) {
         int entity = EntityUtils.getByUniqueId(entityId);
         MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
-        value = mainItemComponent.customVariables.getStringVariable(key); //storing the backup
+        value = mainItemComponent.customVariables.get(key); //storing the backup
         mainItemComponent.removeCustomVars(key);
     }
 

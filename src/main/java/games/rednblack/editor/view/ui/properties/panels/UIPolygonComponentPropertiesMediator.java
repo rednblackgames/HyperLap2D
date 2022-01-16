@@ -19,11 +19,12 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
-import games.rednblack.editor.controller.commands.component.UpdatePolygonDataCommand;
+import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
-import games.rednblack.editor.renderer.components.PolygonComponent;
+import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.AutoTraceDialog;
@@ -40,7 +41,7 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
     private static final String TAG = UIPolygonComponentPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
-    private PolygonComponent polygonComponent;
+    private PolygonShapeComponent polygonShapeComponent;
 
     public UIPolygonComponentPropertiesMediator() {
         super(NAME, new UIPolygonComponentProperties());
@@ -78,42 +79,55 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
                 pasteMesh();
                 break;
             case UIPolygonComponentProperties.CLOSE_CLICKED:
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, PolygonComponent.class));
+                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, PolygonShapeComponent.class));
                 break;
         }
     }
 
     @Override
     protected void translateObservableDataToView(int item) {
-        polygonComponent = SandboxComponentRetriever.get(item, PolygonComponent.class);
-        if(polygonComponent.vertices != null) {
-            viewComponent.initView();
+        polygonShapeComponent = SandboxComponentRetriever.get(item, PolygonShapeComponent.class);
+        if (polygonShapeComponent.vertices == null && polygonShapeComponent.polygonizedVertices == null) {
+            viewComponent.initEmptyView();
+            return;
+        }
+
+        viewComponent.initView();
+        viewComponent.setOpenPath(polygonShapeComponent.openEnded);
+
+        if(polygonShapeComponent.polygonizedVertices != null) {
             int verticesCount = 0;
-            for(int i = 0; i < polygonComponent.vertices.length; i++) {
-                for(int j = 0; j < polygonComponent.vertices[i].length; j++) {
+            for(int i = 0; i < polygonShapeComponent.polygonizedVertices.length; i++) {
+                for(int j = 0; j < polygonShapeComponent.polygonizedVertices[i].length; j++) {
                     verticesCount++;
                 }
             }
             viewComponent.setVerticesCount(verticesCount);
-
-        } else {
-            viewComponent.initEmptyView();
         }
     }
 
     @Override
     protected void translateViewToItemData() {
+        if (polygonShapeComponent.vertices == null && polygonShapeComponent.polygonizedVertices == null) {
+            return;
+        }
 
+        Object[] payload = new Object[2];
+        payload[0] = observableReference;
+        payload[1] = viewComponent.isOpenEnded();
+
+        if (viewComponent.isOpenEnded() != polygonShapeComponent.openEnded)
+            facade.sendNotification(MsgAPI.ACTION_UPDATE_POLYGON_DATA, payload);
     }
 
     private void addDefaultMesh() {
         DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(observableReference, DimensionsComponent.class);
         if(dimensionsComponent.boundBox != null) { // If the bound box is not null we have a Composite Item!
-            polygonComponent.makeRectangle( dimensionsComponent.boundBox.x, dimensionsComponent.boundBox.y, dimensionsComponent.boundBox.width, dimensionsComponent.boundBox.height);
+            polygonShapeComponent.makeRectangle( dimensionsComponent.boundBox.x, dimensionsComponent.boundBox.y, dimensionsComponent.boundBox.width, dimensionsComponent.boundBox.height);
         }
         else // Otherwise its a normal item
         {
-            polygonComponent.makeRectangle( dimensionsComponent.width, dimensionsComponent.height );
+            polygonShapeComponent.makeRectangle( dimensionsComponent.width, dimensionsComponent.height );
         }
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, observableReference);
@@ -124,15 +138,20 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
     }
 
     private void copyMesh() {
-        polygonComponent =  SandboxComponentRetriever.get(observableReference, PolygonComponent.class);
-        Sandbox.getInstance().copyToLocalClipboard("meshData", polygonComponent.vertices);
+        polygonShapeComponent = SandboxComponentRetriever.get(observableReference, PolygonShapeComponent.class);
+        Object[] param = new Object[2];
+        param[0] = polygonShapeComponent.polygonizedVertices;
+        param[1] = polygonShapeComponent.vertices;
+        Sandbox.getInstance().copyToLocalClipboard("meshData", param);
     }
 
     private void pasteMesh() {
-        Vector2[][] vertices = (Vector2[][]) Sandbox.getInstance().retrieveFromLocalClipboard("meshData");
+        Object[] param = (Object[]) Sandbox.getInstance().retrieveFromLocalClipboard("meshData");
+        Vector2[][] polygonizedVertices = (Vector2[][]) param[0];
+        Array<Vector2> vertices = (Array<Vector2>) param[1];
         if(vertices == null) return;
-        Object[] payload = UpdatePolygonDataCommand.payloadInitialState(observableReference);
-        payload = UpdatePolygonDataCommand.payload(payload, vertices);
+        Object[] payload = UpdatePolygonVerticesCommand.payloadInitialState(observableReference);
+        UpdatePolygonVerticesCommand.payload(payload, vertices, polygonizedVertices);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, payload);
     }
 }

@@ -23,6 +23,7 @@ package games.rednblack.editor.utils.poly.earclipping.bayazit;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
 
 import java.security.InvalidParameterException;
 
@@ -613,7 +614,7 @@ class SimplifyTools {
          return;
       int currIndex = 0;
       // Copy the vertices to a new list and clear the old
-      Array<Vector2> oldVertices = new Array<Vector2>(vertices);
+      Array<Vector2> oldVertices = UpdatePolygonVerticesCommand.cloneData(vertices);
       vertices.clear();
       for (int i = 0; i < oldVertices.size; ++i) {
          if (mergeMe[i] || newNVertices == 0 || currIndex == newNVertices)

@@ -3,7 +3,7 @@ package games.rednblack.editor.view.ui.properties.panels;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdateCircleShapeCommand;
-import games.rednblack.editor.renderer.components.CircleShapeComponent;
+import games.rednblack.editor.renderer.components.shape.CircleShapeComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;

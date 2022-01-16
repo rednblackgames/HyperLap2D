@@ -23,7 +23,13 @@ public class CenterOriginPointCommand extends EntityModifyRevertibleCommand {
 
         TransformCommandBuilder commandBuilder = new TransformCommandBuilder();
         commandBuilder.begin(entity, sandbox.getEngine());
-        commandBuilder.setOrigin(dimensionsComponent.width / 2f, dimensionsComponent.height / 2f);
+        float originX = dimensionsComponent.width * 0.5f;
+        float originY = dimensionsComponent.height * 0.5f;
+        if (dimensionsComponent.polygon != null) {
+            originX = dimensionsComponent.polygon.getBoundingRectangle().width * 0.5f;
+            originY = dimensionsComponent.polygon.getBoundingRectangle().height * 0.5f;
+        }
+        commandBuilder.setOrigin(originX, originY);
         commandBuilder.execute(HyperLap2DFacade.getInstance());
     }
 

@@ -2,7 +2,6 @@ package games.rednblack.editor.system;
 
 import com.artemis.annotations.All;
 import com.talosvfx.talos.runtime.ParticleEffectInstance;
-import games.rednblack.editor.renderer.components.particle.TalosDataComponent;
 import games.rednblack.h2d.extension.talos.TalosComponent;
 import games.rednblack.h2d.extension.talos.TalosSystem;
 
@@ -11,7 +10,7 @@ import games.rednblack.h2d.extension.talos.TalosSystem;
  * This system will make sure they look continuous while in editor, so user will find and see them easily.
  *
  */
-@All({TalosComponent.class, TalosDataComponent.class})
+@All({TalosComponent.class})
 public class TalosContinuousSystem extends TalosSystem {
 
     @Override

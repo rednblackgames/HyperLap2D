@@ -20,11 +20,13 @@ package games.rednblack.editor.proxy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
-import games.rednblack.editor.renderer.data.CompositeVO;
+import games.rednblack.editor.renderer.data.MainItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
+import games.rednblack.editor.renderer.utils.HyperJson;
 import org.apache.commons.io.FileUtils;
 import org.puremvc.java.patterns.proxy.Proxy;
 
@@ -121,7 +123,7 @@ public class SceneDataManager extends Proxy {
         try {
             for (File scene : scenesDirectoryHandle.file().listFiles()) {
                 File fileTarget = new File(targetPath + File.separator + scenesDirectoryHandle.name() + File.separator + scene.getName());
-                Json json = new Json();
+                Json json = HyperJson.getJson();
                 SceneVO sceneToExport = json.fromJson(SceneVO.class, FileUtils.readFileToString(scene, "utf-8"));
                 clearCompositesForExport(sceneToExport.composite);
                 FileUtils.writeStringToFile(fileTarget, sceneToExport.constructJsonString(), "utf-8");
@@ -137,13 +139,17 @@ public class SceneDataManager extends Proxy {
         }
     }
 
-    private void clearCompositesForExport(CompositeVO compositeVO) {
+    private void clearCompositesForExport(CompositeItemVO compositeVO) {
         if (compositeVO == null)
             return;
 
         compositeVO.sStickyNotes.clear();
-        for (CompositeItemVO c : compositeVO.sComposites) {
-            clearCompositesForExport(c.composite);
+        Array<MainItemVO> sComposites = compositeVO.content.get(CompositeItemVO.class.getName());
+        if (sComposites != null) {
+            for (MainItemVO mainItemVO : sComposites) {
+                CompositeItemVO c = (CompositeItemVO) mainItemVO;
+                clearCompositesForExport(c);
+            }
         }
     }
 }

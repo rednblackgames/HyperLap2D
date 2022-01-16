@@ -7,6 +7,7 @@ import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.Image9patchVO;
 import games.rednblack.editor.renderer.data.LabelVO;
 import games.rednblack.editor.renderer.data.MainItemVO;
+import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.h2d.common.ProgressHandler;
@@ -34,7 +35,7 @@ public class HyperLap2DInternalLibraryAsset extends Asset {
     @Override
     public void importAsset(Array<FileHandle> files, ProgressHandler progressHandler, boolean skipRepack) {
         for (FileHandle handle : new Array.ArrayIterator<>(files)) {
-            Json json = new Json();
+            Json json = HyperJson.getJson();
             String projectInfoContents = null;
             try {
                 projectInfoContents = FileUtils.readFileToString(handle.file(), "utf-8");
@@ -58,7 +59,7 @@ public class HyperLap2DInternalLibraryAsset extends Asset {
 
     private void adjustPPWCoordinates(CompositeItemVO compositeItemVO) {
         int ppwu = projectManager.getCurrentProjectInfoVO().pixelToWorld;
-        for (MainItemVO item : compositeItemVO.composite.getAllItems()) {
+        for (MainItemVO item : compositeItemVO.getAllItems()) {
             item.originX = item.originX / ppwu;
             item.originY = item.originY / ppwu;
             item.x = item.x / ppwu;

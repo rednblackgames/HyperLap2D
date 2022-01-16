@@ -8,6 +8,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.utils.AppConfig;
+import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -54,27 +55,26 @@ public class HyperLap2DApp extends ApplicationAdapter {
 
         splashWindow = app.newWindow(new SplashScreenAdapter(), config2);
 
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                hyperlap2D = new HyperLap2D(settingsManager);
+        Gdx.app.postRunnable(() -> {
+            hyperlap2D = new HyperLap2D(settingsManager);
 
-                Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-                config.setTitle("HyperLap2D - Public Alpha v" + AppConfig.getInstance().versionString);
-                config.setResizable(true);
+            Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+            config.setTitle("HyperLap2D - Beta v" + AppConfig.getInstance().versionString);
+            config.setResizable(true);
+            if (!SystemUtils.IS_OS_WINDOWS)
                 config.setWindowedMode((int) (windowWidth), (int) (windowHeight));
-                config.setIdleFPS(60);
-                config.setForegroundFPS(settingsManager.editorConfigVO.fpsLimit);
-                config.useVsync(false);
-                config.setInitialVisible(false);
-                config.setMaximized(true);
-                config.setWindowIcon("hyperlap_icon_96.png");
-                config.setWindowSizeLimits(920, 800, -1, -1);
-                if (SystemUtils.IS_OS_WINDOWS)
-                    config.setWindowPosition(0, (int) (windowHeight * .04));
+            config.setIdleFPS(60);
+            config.setForegroundFPS(settingsManager.editorConfigVO.fpsLimit);
+            config.useVsync(false);
+            config.setInitialVisible(false);
+            config.setMaximized(true);
+            config.setWindowIcon("hyperlap_icon_96.png");
+            config.setWindowSizeLimits(920, 800, -1, -1);
 
-                mainWindow = app.newWindow(hyperlap2D, config);
-                mainWindow.setWindowListener(hyperlap2D);
+            mainWindow = app.newWindow(hyperlap2D, config);
+            mainWindow.setWindowListener(hyperlap2D);
+            if (SystemUtils.IS_OS_WINDOWS) {
+                Gdx.app.postRunnable(() -> HyperLap2DUtils.overwriteWindowProc2(mainWindow.getWindowHandle()));
             }
         });
     }

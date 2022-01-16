@@ -73,6 +73,8 @@ public class UILayerBox extends UICollapsibleBox {
         facade = HyperLap2DFacade.getInstance();
 
         setMovable(false);
+        setKeepWithinParent(false);
+        setKeepWithinStage(false);
         contentTable = new VisTable();
 
         layersTable = new VisTable();

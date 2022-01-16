@@ -40,7 +40,8 @@ public class ComponentCloner {
             Field[] sourceFields = source.getClass().getDeclaredFields();
             Field[] targetFields = target.getClass().getDeclaredFields();
             for(int i = 0; i < targetFields.length; i++) {
-                if(Modifier.isPublic(targetFields[i].getModifiers())) {
+                int modifiers = targetFields[i].getModifiers();
+                if(Modifier.isPublic(modifiers) && !Modifier.isStatic(modifiers) && !Modifier.isFinal(modifiers)) {
                     targetFields[i].set(target, sourceFields[i].get(source));
                 }
             }

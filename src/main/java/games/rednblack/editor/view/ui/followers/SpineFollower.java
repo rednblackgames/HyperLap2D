@@ -7,17 +7,17 @@ import com.badlogic.gdx.math.Matrix4;
 import com.esotericsoftware.spine.SkeletonRendererDebug;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.h2d.extension.spine.SpineObjectComponent;
+import games.rednblack.h2d.extension.spine.SpineComponent;
 
 public class SpineFollower extends NormalSelectionFollower {
-    private final SpineObjectComponent spineObjectComponent;
+    private final SpineComponent spineObjectComponent;
     private final SkeletonRendererDebug skeletonRendererDebug;
 
     private final Matrix4 matrix = new Matrix4();
 
     public SpineFollower(int entity) {
         super(entity);
-        spineObjectComponent = SandboxComponentRetriever.get(entity, SpineObjectComponent.class);
+        spineObjectComponent = SandboxComponentRetriever.get(entity, SpineComponent.class);
         skeletonRendererDebug = new SkeletonRendererDebug();
         skeletonRendererDebug.setScale(2f);
         skeletonRendererDebug.setBoundingBoxes(false);

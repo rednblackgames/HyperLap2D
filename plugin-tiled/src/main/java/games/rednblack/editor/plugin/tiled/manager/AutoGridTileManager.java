@@ -30,8 +30,8 @@ public class AutoGridTileManager {
     		if (!mainItemComponent.tags.contains(TiledPlugin.AUTO_TILE_TAG)) {
     			continue;
     		}
-    		int col = mainItemComponent.customVariables.getIntegerVariable(TiledPlugin.COLUMN);
-    		int row = mainItemComponent.customVariables.getIntegerVariable(TiledPlugin.ROW);
+    		int col = Integer.parseInt(mainItemComponent.customVariables.get(TiledPlugin.COLUMN));
+    		int row = Integer.parseInt(mainItemComponent.customVariables.get(TiledPlugin.ROW));
 
     		int c = 0;
     		int val = 0;
@@ -78,7 +78,7 @@ public class AutoGridTileManager {
     		
     		int index = getIndex(c, val);
 
-            String region = mainItemComponent.customVariables.getStringVariable(TiledPlugin.REGION) + index;
+            String region = mainItemComponent.customVariables.get(TiledPlugin.REGION) + index;
             replaceRegionCommandBuilder.begin(entity);
             replaceRegionCommandBuilder.setRegion(tiledPlugin.getAPI().getSceneLoader().getRm().getTextureRegion(region));
             replaceRegionCommandBuilder.setRegionName(region);

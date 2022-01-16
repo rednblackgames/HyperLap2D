@@ -4,14 +4,18 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
+import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
 import com.talosvfx.talos.runtime.ParticleEmitterDescriptor;
+import com.talosvfx.talos.runtime.modules.*;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.SceneDataManager;
-import games.rednblack.editor.renderer.components.particle.TalosDataComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
+import games.rednblack.editor.renderer.data.MainItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
-import games.rednblack.editor.renderer.data.TalosVO;
+import games.rednblack.h2d.common.vo.ExportMapperVO;
+import games.rednblack.h2d.extension.talos.TalosComponent;
+import games.rednblack.h2d.extension.talos.TalosVO;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
@@ -24,7 +28,6 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.function.Consumer;
 
 public class TalosVFXAsset extends Asset {
@@ -200,11 +203,10 @@ public class TalosVFXAsset extends Asset {
         }
 
         for (SceneVO scene : projectManager.currentProjectInfoVO.scenes) {
-            CompositeItemVO tmpVo = new CompositeItemVO();
             SceneVO loadedScene = resourceManager.getSceneVO(scene.sceneName);
-            tmpVo.composite = loadedScene.composite;
+            CompositeItemVO tmpVo = new CompositeItemVO(loadedScene.composite);
             deleteAllParticles(tmpVo, name);
-            loadedScene.composite = tmpVo.composite;
+            loadedScene.composite = tmpVo;
             SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
             sceneDataManager.saveScene(loadedScene);
         }
@@ -217,26 +219,64 @@ public class TalosVFXAsset extends Asset {
 
     private void getParticles(CompositeItemVO compositeItemVO, String name) {
         tmpImageList.clear();
-        if (compositeItemVO.composite != null && compositeItemVO.composite.sTalosVFX.size() != 0) {
-            ArrayList<TalosVO> particleEffectList = compositeItemVO.composite.sTalosVFX;
-            for (TalosVO particleEffectVO : particleEffectList) {
-                if (particleEffectVO.particleName.equals(name)) {
-                    tmpImageList.add(particleEffectVO);
-                }
-            }
-            particleEffectList.removeAll(tmpImageList);
+        if (compositeItemVO != null && compositeItemVO.getElementsArray(TalosVO.class).size != 0) {
+            Array<TalosVO> particleEffectList = compositeItemVO.getElementsArray(TalosVO.class);
+
+            for (TalosVO spriteVO :particleEffectList)
+                if (spriteVO.getResourceName().equals(name))
+                    tmpImageList.add(spriteVO);
+
+            particleEffectList.removeAll(tmpImageList, true);
         }
     }
 
     private void deleteEntitiesWithParticleEffects(int rootEntity, String particleName) {
         tmpEntityList.clear();
         Consumer<Integer> action = (root) -> {
-            TalosDataComponent particleComponent = SandboxComponentRetriever.get(root, TalosDataComponent.class);
+            TalosComponent particleComponent = SandboxComponentRetriever.get(root, TalosComponent.class);
             if (particleComponent != null && particleComponent.particleName.equals(particleName)) {
                 tmpEntityList.add(root);
             }
         };
         EntityUtils.applyActionRecursivelyOnEntities(rootEntity, action);
         EntityUtils.removeEntities(tmpEntityList);
+    }
+
+    @Override
+    public boolean exportAsset(MainItemVO item, ExportMapperVO exportMapperVO, File tmpDir) throws IOException {
+        super.exportAsset(item, exportMapperVO, tmpDir);
+        TalosVO talosVO = (TalosVO) item;
+        File fileSrc = new File(currentProjectPath + ProjectManager.TALOS_VFX_DIR_PATH + File.separator + talosVO.particleName);
+        FileUtils.copyFileToDirectory(fileSrc, tmpDir);
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_TALOS_VFX, fileSrc.getName()));
+        ParticleEffectDescriptor particleEffect = resourceManager.getProjectTalosList().get(talosVO.particleName);
+        for (ParticleEmitterDescriptor emitter : new Array.ArrayIterator<>(particleEffect.emitterModuleGraphs)) {
+            for (AbstractModule module : new Array.ArrayIterator<>(emitter.getModules())) {
+                if (module instanceof TextureModule) {
+                    String path = ((TextureModule) module).regionName + ".png";
+                    File f = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + path);
+                    FileUtils.copyFileToDirectory(f, tmpDir);
+                }
+
+                if (module instanceof PolylineModule) {
+                    String path = ((PolylineModule) module).regionName + ".png";
+                    File f = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + path);
+                    FileUtils.copyFileToDirectory(f, tmpDir);
+                }
+
+                if (module instanceof FlipbookModule) {
+                    String path = ((FlipbookModule) module).regionName + ".png";
+                    File f = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + path);
+                    FileUtils.copyFileToDirectory(f, tmpDir);
+                }
+
+                if (module instanceof ShadedSpriteModule) {
+                    String path = ((ShadedSpriteModule) module).shdrFileName;
+                    File f = new File(currentProjectPath + ProjectManager.TALOS_VFX_DIR_PATH + File.separator + path);
+                    FileUtils.copyFileToDirectory(f, tmpDir);
+                }
+            }
+        }
+        return true;
     }
 }

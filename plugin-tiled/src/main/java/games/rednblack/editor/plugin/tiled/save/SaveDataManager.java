@@ -3,6 +3,7 @@ package games.rednblack.editor.plugin.tiled.save;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
+import games.rednblack.editor.renderer.utils.HyperJson;
 
 /**
  * Created by mariam on 3/24/16.
@@ -16,7 +17,7 @@ public class SaveDataManager {
 
 
     public SaveDataManager(String projectPath) {
-        json = new Json();
+        json = HyperJson.getJson();
         fileHandle = Gdx.files.absolute(projectPath + "/tiled_plugin.dt");
         load();
     }

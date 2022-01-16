@@ -19,10 +19,12 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.utils.Align;
+import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.ButtonToNotificationListener;
+import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
@@ -45,6 +47,7 @@ public class UIPolygonComponentProperties extends UIRemovableProperties {
     private VisLabel verticesCountLbl;
     private VisTextButton copyBtn;
     private VisTextButton pasteBtn;
+    private VisCheckBox openEndedCheckbox;
 
     public UIPolygonComponentProperties() {
         super("Polygon Shape");
@@ -57,18 +60,28 @@ public class UIPolygonComponentProperties extends UIRemovableProperties {
 
         copyBtn = new VisTextButton("Copy");
         pasteBtn = new VisTextButton("Paste");
+        openEndedCheckbox = StandardWidgetsFactory.createCheckBox("Open Ended");
 
         mainTable.add(new VisLabel("Vertices: ", Align.left)).left().padRight(3);
         mainTable.add(verticesCountLbl).left().width(67);
         mainTable.add(copyBtn).right().padRight(4);
         mainTable.add(pasteBtn).right().padRight(4);
         mainTable.row();
+        mainTable.add(openEndedCheckbox).left().colspan(4).padTop(5).row();
 
         initListeners();
     }
 
     public void setVerticesCount(int count) {
         verticesCountLbl.setText(count+"");
+    }
+
+    public void setOpenPath(boolean openPath) {
+        openEndedCheckbox.setChecked(openPath);
+    }
+
+    public boolean isOpenEnded() {
+        return openEndedCheckbox.isChecked();
     }
 
     public void initEmptyView() {
@@ -88,6 +101,7 @@ public class UIPolygonComponentProperties extends UIRemovableProperties {
     private void initListeners() {
         copyBtn.addListener(new ButtonToNotificationListener(COPY_BUTTON_CLICKED));
         pasteBtn.addListener(new ButtonToNotificationListener(PASTE_BUTTON_CLICKED));
+        openEndedCheckbox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
     }
 
     private void initEmptyViewListeners() {

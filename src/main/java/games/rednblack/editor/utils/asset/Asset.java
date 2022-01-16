@@ -6,13 +6,16 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.ResourceManager;
-import games.rednblack.editor.renderer.data.MainItemVO;
-import games.rednblack.editor.renderer.data.SceneVO;
+import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
+import games.rednblack.h2d.common.vo.ExportMapperVO;
+import org.apache.commons.io.FileUtils;
 import org.puremvc.java.patterns.facade.Facade;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,7 +28,9 @@ public abstract class Asset implements IAsset {
     protected ResourceManager resourceManager;
 
     protected final ArrayList<Integer> tmpEntityList = new ArrayList<>();
-    protected final ArrayList<MainItemVO> tmpImageList = new ArrayList<>();
+    protected final Array tmpImageList = new Array<>();
+
+    protected String currentProjectPath;
 
     public Asset() {
         facade = HyperLap2DFacade.getInstance();
@@ -71,5 +76,26 @@ public abstract class Asset implements IAsset {
             progressHandler.progressComplete();
         });
         executor.shutdown();
+    }
+
+    @Override
+    public boolean exportAsset(MainItemVO item, ExportMapperVO exportMapperVO, File tmpDir) throws IOException {
+        currentProjectPath = projectManager.getCurrentProjectPath() + File.separator;
+        copyShader(item.shaderName, tmpDir, exportMapperVO);
+        return true;
+    }
+
+    private void copyShader(String shaderName, File tmpDir, ExportMapperVO exportMapperVO) throws IOException {
+        if (shaderName.equals(""))
+            return;
+
+        File f = new File(currentProjectPath + ProjectManager.SHADER_DIR_PATH + File.separator + shaderName + ".frag");
+        FileUtils.copyFileToDirectory(f, tmpDir);
+
+        File v = new File(currentProjectPath + ProjectManager.SHADER_DIR_PATH + File.separator + shaderName + ".vert");
+        FileUtils.copyFileToDirectory(v, tmpDir);
+
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_SHADER, shaderName + ".frag"));
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_SHADER, shaderName + ".vert"));
     }
 }

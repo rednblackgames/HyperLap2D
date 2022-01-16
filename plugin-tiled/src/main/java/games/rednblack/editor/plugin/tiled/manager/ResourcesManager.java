@@ -8,13 +8,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.esotericsoftware.spine.Skeleton;
 import com.esotericsoftware.spine.SkeletonData;
-import com.esotericsoftware.spine.SkeletonJson;
 import com.esotericsoftware.spine.SkeletonRenderer;
 import com.google.common.io.ByteStreams;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.plugin.tiled.view.SpineDrawable;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.h2d.extension.spine.ResourceRetrieverAttachmentLoader;
+import games.rednblack.h2d.extension.spine.SpineDataObject;
+import games.rednblack.h2d.extension.spine.SpineItemType;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -96,9 +96,8 @@ public class ResourcesManager {
 
     public SpineDrawable getSpineDrawable(String name) {
         if (spineDrawableCache.get(name) == null) {
-            ResourceRetrieverAttachmentLoader atlasAttachmentLoader = new ResourceRetrieverAttachmentLoader(name, tiledPlugin.getAPI().getSceneLoader().getRm());
-            SkeletonJson skeletonJson = new SkeletonJson(atlasAttachmentLoader);
-            SkeletonData skeletonData = skeletonJson.readSkeletonData(tiledPlugin.getAPI().getSceneLoader().getRm().getSkeletonJSON(name));
+            SpineDataObject spineDataObject = (SpineDataObject) tiledPlugin.getAPI().getSceneLoader().getRm().getExternalItemType(SpineItemType.SPINE_TYPE, name);
+            SkeletonData skeletonData = spineDataObject.skeletonData;
             Skeleton skeleton = new Skeleton(skeletonData);
 
             spineDrawableCache.put(name, new SpineDrawable(skeleton, skeletonRenderer));
