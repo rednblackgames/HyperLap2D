@@ -64,7 +64,7 @@ public class Main {
         ShaderProgram.prependFragmentCode = "#version 100\n";
         ShaderProgram.prependVertexCode = "#version 100\n";
         if (settingsManager.editorConfigVO.useOpenGL3)
-            config.useOpenGL3(true, 3, 2);
+            config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 3, 2);
         config.setBackBufferConfig(8,8,8,8,16,8, settingsManager.editorConfigVO.msaaSamples);
 
         new Lwjgl3Application(HyperLap2DApp.initInstance(dm.width, dm.height, settingsManager), config);
