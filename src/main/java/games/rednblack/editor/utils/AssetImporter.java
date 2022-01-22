@@ -105,10 +105,8 @@ public class AssetImporter {
         viewComponent.setImportingView(type, count);
     }
 
-    private final Array<FileHandle> tmp = new Array<>();
-
     public void importInternalResource(FileHandle file, ProgressHandler progressHandler) {
-        tmp.clear();
+        Array<FileHandle> tmp = new Array<>();
         tmp.add(file);
 
         for (Asset asset : new Array.ArrayIterator<>(assetDescriptors)) {

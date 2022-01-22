@@ -4,6 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
+import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.components.MainItemComponent;
@@ -50,8 +51,9 @@ public class HyperLap2DLibraryAsset extends Asset {
         return exists;
     }
 
-    private ProgressHandler recursiveProgressHandler = null;
-    private int recursiveProgressIndex = 0;
+    private final Object lock = new Object();
+    private int importedLibraries = 0;
+    private int scheduledLibraries = 0;
 
     @Override
     public void asyncImport(Array<FileHandle> files, ProgressHandler progressHandler, boolean skipRepack) {
@@ -65,64 +67,102 @@ public class HyperLap2DLibraryAsset extends Asset {
         SceneVO vo = Sandbox.getInstance().sceneVoFromItems();
         projectManager.saveCurrentProject(vo);
 
-        recursiveProgressIndex = 0;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             File tmpDir = new File(projectManager.getCurrentProjectPath() + "/assets/tmp/");
             try {
+                FileUtils.deleteDirectory(tmpDir);
+                FileUtils.forceMkdir(tmpDir);
+
+                importedLibraries = 0;
+                scheduledLibraries = files.size;
+                boolean importStarted = false;
                 for (FileHandle fileHandle : new Array.ArrayIterator<>(files)) {
-                    FileUtils.deleteDirectory(tmpDir);
-                    FileUtils.forceMkdir(tmpDir);
-                    FileHandle mapper = ZipUtils.saveZipContent(fileHandle.file(), tmpDir);
+                    File libTmpDir = new File(tmpDir.getPath() + File.separator + fileHandle.nameWithoutExtension());
+                    FileUtils.deleteDirectory(libTmpDir);
+                    FileUtils.forceMkdir(libTmpDir);
+                    FileHandle mapper = ZipUtils.saveZipContent(fileHandle.file(), libTmpDir);
                     Json json = HyperJson.getJson();
                     ExportMapperVO exportMapperVO = json.fromJson(ExportMapperVO.class, mapper);
                     if (!exportMapperVO.projectVersion.equals(projectManager.currentProjectVO.projectVersion)) {
-                        //TODO migrate library version if necessary
+                        Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                                "\nCould not import '" + fileHandle.name() + "'.\nLibrary version does not match current Project version.")
+                                .padBottom(20).pack();
+                        scheduledLibraries--;
+                        continue;
                     }
 
-                    recursiveProgressHandler = new ProgressHandler() {
+                    ProgressHandler recursiveProgressHandler = new ProgressHandler() {
+                        private int recursiveProgressIndex = 0;
+
                         @Override
                         public void progressStarted() { }
                         @Override
                         public void progressChanged(float value) { }
                         @Override
                         public void progressComplete() {
+                            forwardImport();
+                        }
+                        @Override
+                        public void progressFailed() {
+                            forwardImport();
+                        }
+
+                        private void forwardImport() {
                             recursiveProgressIndex++;
                             if (recursiveProgressIndex < exportMapperVO.mapper.size) {
                                 progressHandler.progressChanged(80f * recursiveProgressIndex / (exportMapperVO.mapper.size - 1));
                                 ExportMapperVO.ExportedAsset asset = exportMapperVO.mapper.get(recursiveProgressIndex);
-                                FileHandle file = new FileHandle(tmpDir.getPath() + File.separator + asset.fileName);
-                                AssetImporter.getInstance().importInternalResource(file, recursiveProgressHandler);
+                                FileHandle file = new FileHandle(libTmpDir.getPath() + File.separator + asset.fileName);
+                                AssetImporter.getInstance().importInternalResource(file, this);
                             } else {
                                 try {
-                                    FileUtils.deleteDirectory(tmpDir);
+                                    FileUtils.deleteDirectory(libTmpDir);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
 
-                                ResolutionManager resolutionManager = HyperLap2DFacade.getInstance().retrieveProxy(ResolutionManager.NAME);
-                                resolutionManager.rePackProjectImagesForAllResolutionsSync();
+                                synchronized (lock) {
+                                    importedLibraries++;
 
-                                progressHandler.progressChanged(100);
-                                try {
-                                    Thread.sleep(500);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                    if (importedLibraries == scheduledLibraries) {
+                                        try {
+                                            FileUtils.deleteDirectory(tmpDir);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        ResolutionManager resolutionManager = HyperLap2DFacade.getInstance().retrieveProxy(ResolutionManager.NAME);
+                                        resolutionManager.rePackProjectImagesForAllResolutionsSync();
+
+                                        progressHandler.progressChanged(100);
+
+                                        progressHandler.progressComplete();
+                                        executor.shutdown();
+                                    }
                                 }
-
-                                progressHandler.progressComplete();
-                                executor.shutdown();
                             }
                         }
-                        @Override
-                        public void progressFailed() { }
                     };
 
-                    if (recursiveProgressIndex < exportMapperVO.mapper.size) {
-                        ExportMapperVO.ExportedAsset asset = exportMapperVO.mapper.get(recursiveProgressIndex);
-                        FileHandle file = new FileHandle(tmpDir.getPath() + File.separator + asset.fileName);
+                    if (exportMapperVO.mapper.size > 0) {
+                        importStarted = true;
+                        ExportMapperVO.ExportedAsset asset = exportMapperVO.mapper.get(0);
+                        FileHandle file = new FileHandle(libTmpDir.getPath() + File.separator + asset.fileName);
                         AssetImporter.getInstance().importInternalResource(file, recursiveProgressHandler);
                     }
+                }
+
+                if (!importStarted) {
+                    try {
+                        FileUtils.deleteDirectory(tmpDir);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    progressHandler.progressChanged(100);
+                    progressHandler.progressComplete();
+                    executor.shutdown();
                 }
             } catch (IOException e) {
                 e.printStackTrace();

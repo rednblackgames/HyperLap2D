@@ -1,12 +1,10 @@
 package games.rednblack.editor.utils.asset.impl;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import games.rednblack.editor.renderer.data.CompositeItemVO;
-import games.rednblack.editor.renderer.data.Image9patchVO;
-import games.rednblack.editor.renderer.data.LabelVO;
-import games.rednblack.editor.renderer.data.MainItemVO;
+import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.ImportUtils;
 import games.rednblack.editor.utils.asset.Asset;
@@ -59,11 +57,50 @@ public class HyperLap2DInternalLibraryAsset extends Asset {
 
     private void adjustPPWCoordinates(CompositeItemVO compositeItemVO) {
         int ppwu = projectManager.getCurrentProjectInfoVO().pixelToWorld;
+        compositeItemVO.width /= ppwu;
+        compositeItemVO.height /= ppwu;
+
         for (MainItemVO item : compositeItemVO.getAllItems()) {
             item.originX = item.originX / ppwu;
             item.originY = item.originY / ppwu;
             item.x = item.x / ppwu;
             item.y = item.y / ppwu;
+
+            if (item.shape != null) {
+                PolygonShapeVO shapeVO = item.shape;
+                if (shapeVO.vertices != null) {
+                    for (Vector2 vector2 : shapeVO.vertices) {
+                        vector2.x /= ppwu;
+                        vector2.y /= ppwu;
+                    }
+                }
+
+                if (shapeVO.polygonizedVertices != null) {
+                    for (Vector2[] array : shapeVO.polygonizedVertices) {
+                        for (Vector2 vector2 : array) {
+                            vector2.x /= ppwu;
+                            vector2.y /= ppwu;
+                        }
+                    }
+                }
+            }
+
+            if (item.physics != null) {
+                PhysicsBodyDataVO physicsBodyDataVO = item.physics;
+                physicsBodyDataVO.centerOfMass.x /= ppwu;
+                physicsBodyDataVO.centerOfMass.y /= ppwu;
+            }
+
+            if (item.light != null) {
+                LightBodyDataVO lightBodyDataVO = item.light;
+                lightBodyDataVO.distance /= ppwu;
+            }
+
+            if (item.circle != null) {
+                item.circle.x /= ppwu;
+                item.circle.y /= ppwu;
+                item.circle.radius /= ppwu;
+            }
 
             if (item instanceof CompositeItemVO) {
                 ((CompositeItemVO) item).width = ((CompositeItemVO) item).width / ppwu;
@@ -78,6 +115,10 @@ public class HyperLap2DInternalLibraryAsset extends Asset {
             if (item instanceof LabelVO) {
                 ((LabelVO) item).width = ((LabelVO) item).width / ppwu;
                 ((LabelVO) item).height = ((LabelVO) item).height / ppwu;
+            }
+
+            if (item instanceof LightVO) {
+                ((LightVO) item).distance /= ppwu;
             }
         }
     }
