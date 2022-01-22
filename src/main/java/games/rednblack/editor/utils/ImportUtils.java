@@ -28,7 +28,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ImportUtils {
@@ -53,22 +52,9 @@ public class ImportUtils {
     public static final int TYPE_TALOS_VFX = 13;
     public static final int TYPE_HYPERLAP2D_ACTION = 14;
 
-    private final ArrayList<Integer> supportedTypes = new ArrayList<>();
     private final FileTypeFilter fileTypeFilter;
 
     private ImportUtils() {
-        supportedTypes.add(TYPE_IMAGE);
-        supportedTypes.add(TYPE_ANIMATION_PNG_SEQUENCE);
-        supportedTypes.add(TYPE_SPRITE_ANIMATION_ATLAS);
-        supportedTypes.add(TYPE_SPINE_ANIMATION);
-        supportedTypes.add(TYPE_PARTICLE_EFFECT);
-        supportedTypes.add(TYPE_TALOS_VFX);
-        supportedTypes.add(TYPE_SHADER);
-        supportedTypes.add(TYPE_HYPERLAP2D_LIBRARY);
-        supportedTypes.add(TYPE_HYPERLAP2D_ACTION);
-        // TODO: not supported yet
-        //supportedTypes.add(TYPE_TEXTURE_ATLAS);
-
         fileTypeFilter = new FileTypeFilter(false);
 
         fileTypeFilter.addRule("All Supported (*.png, *.atlas, *.p, *.json, *.vert, *.frag, *.h2dlib, *.h2daction)", "png", "atlas", "p", "json", "vert", "frag", "h2dlib", "h2daction");

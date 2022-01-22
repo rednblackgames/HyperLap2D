@@ -2,10 +2,11 @@ package games.rednblack.editor.utils;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.SettingsManager;
-import games.rednblack.editor.renderer.data.MainItemVO;
+import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.asset.impl.*;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -13,6 +14,8 @@ import games.rednblack.editor.view.ui.panel.ImportPanel;
 import games.rednblack.editor.view.ui.panel.ImportPanelMediator;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
+import games.rednblack.h2d.extension.spine.SpineVO;
+import games.rednblack.h2d.extension.talos.TalosVO;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +27,7 @@ public class AssetImporter {
     private ImportPanel viewComponent;
 
     private final Array<Asset> assetDescriptors = new Array<>();
+    private final ObjectMap<Class<? extends  MainItemVO>, Integer> dataClassExportMap = new ObjectMap<>();
 
     public static AssetImporter getInstance() {
         if (sInstance == null) {
@@ -39,6 +43,13 @@ public class AssetImporter {
             sInstance.assetDescriptors.add(new HyperLap2DInternalLibraryAsset());
             sInstance.assetDescriptors.add(new HyperLap2DLibraryAsset());
             sInstance.assetDescriptors.add(new HyperLap2DActionAsset());
+
+            sInstance.dataClassExportMap.put(SimpleImageVO.class, ImportUtils.TYPE_IMAGE);
+            sInstance.dataClassExportMap.put(Image9patchVO.class, ImportUtils.TYPE_IMAGE);
+            sInstance.dataClassExportMap.put(SpineVO.class, ImportUtils.TYPE_SPINE_ANIMATION);
+            sInstance.dataClassExportMap.put(SpriteAnimationVO.class, ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS);
+            sInstance.dataClassExportMap.put(ParticleEffectVO.class, ImportUtils.TYPE_PARTICLE_EFFECT);
+            sInstance.dataClassExportMap.put(TalosVO.class, ImportUtils.TYPE_TALOS_VFX);
         }
         return sInstance;
     }
@@ -138,6 +149,10 @@ public class AssetImporter {
                 return true;
         }
         return false;
+    }
+
+    public boolean exportAsset(MainItemVO itemVO, ExportMapperVO exportMapperVO, File tmpDir) throws IOException {
+        return exportAsset(dataClassExportMap.get(itemVO.getClass()), itemVO, exportMapperVO, tmpDir);
     }
 
     public boolean exportAsset(int type, MainItemVO itemVO, ExportMapperVO exportMapperVO, File tmpDir) throws IOException {

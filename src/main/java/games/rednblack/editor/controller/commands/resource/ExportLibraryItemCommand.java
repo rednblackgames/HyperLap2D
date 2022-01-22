@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.controller.commands.NonRevertibleCommand;
-import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.AssetImporter;
@@ -13,8 +12,6 @@ import games.rednblack.editor.utils.ZipUtils;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.h2d.common.vo.ExportMapperVO.ExportedAsset;
-import games.rednblack.h2d.extension.spine.SpineVO;
-import games.rednblack.h2d.extension.talos.TalosVO;
 import org.apache.commons.io.FileUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
@@ -31,15 +28,11 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
     public static final String DONE = CLASS_NAME + "DONE";
     private final Json json = HyperJson.getJson();
 
-    private final String currentProjectPath;
-    private final ResourceManager resourceManager;
     private final ExportMapperVO exportMapperVO;
 
     public ExportLibraryItemCommand() {
         cancel();
         setShowConfirmDialog(false);
-        currentProjectPath = projectManager.getCurrentProjectPath() + File.separator;
-        resourceManager = facade.retrieveProxy(ResourceManager.NAME);
         exportMapperVO = new ExportMapperVO();
     }
 
@@ -102,7 +95,9 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
 
         FileUtils.writeStringToFile(new File(tempDir.getPath() + File.separator + libraryItemName + ".lib"), json.toJson(compositeItemVO), "utf-8");
 
-        exportAllAssets(compositeItemVO, tempDir);
+        for (MainItemVO itemVO : compositeItemVO.getAllItems()) {
+            AssetImporter.getInstance().exportAsset(itemVO, exportMapperVO, tempDir);
+        }
 
         exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_HYPERLAP2D_INTERNAL_LIBRARY, libraryItemName + ".lib"));
 
@@ -110,36 +105,6 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
 
         ZipUtils.pack(tempDir.getPath(), destFile + ".h2dlib");
         FileUtils.deleteDirectory(tempDir);
-    }
-
-    private void exportAllAssets(CompositeItemVO compositeVO, File tmpDir) throws IOException {
-        for (SimpleImageVO imageVO : compositeVO.getElementsArray(SimpleImageVO.class)) {
-            AssetImporter.getInstance().exportAsset(ImportUtils.TYPE_IMAGE, imageVO, exportMapperVO, tmpDir);
-        }
-
-        for (Image9patchVO imageVO : compositeVO.getElementsArray(Image9patchVO.class)) {
-            AssetImporter.getInstance().exportAsset(ImportUtils.TYPE_IMAGE, imageVO, exportMapperVO, tmpDir);
-        }
-
-        for (SpineVO imageVO : compositeVO.getElementsArray(SpineVO.class)) {
-            AssetImporter.getInstance().exportAsset(ImportUtils.TYPE_SPINE_ANIMATION, imageVO, exportMapperVO, tmpDir);
-        }
-
-        for (SpriteAnimationVO imageVO : compositeVO.getElementsArray(SpriteAnimationVO.class)) {
-            AssetImporter.getInstance().exportAsset(ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS, imageVO, exportMapperVO, tmpDir);
-        }
-
-        for (ParticleEffectVO imageVO : compositeVO.getElementsArray(ParticleEffectVO.class)) {
-            AssetImporter.getInstance().exportAsset(ImportUtils.TYPE_PARTICLE_EFFECT, imageVO, exportMapperVO, tmpDir);
-        }
-
-        for (TalosVO imageVO : compositeVO.getElementsArray(TalosVO.class)) {
-            AssetImporter.getInstance().exportAsset(ImportUtils.TYPE_TALOS_VFX, imageVO, exportMapperVO, tmpDir);
-        }
-
-        for (CompositeItemVO compositeItemVO : compositeVO.getElementsArray(CompositeItemVO.class)) {
-            exportAllAssets(compositeItemVO, tmpDir);
-        }
     }
 
 	private void adjustPPWCoordinates(CompositeItemVO compositeItemVO) {
