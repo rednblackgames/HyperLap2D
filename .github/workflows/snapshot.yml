@@ -23,7 +23,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build JAR dist files
-        run: ./gradlew dist
+        env:
+          WORKFLOW_RUN: ${{ github.run_number }}
+        run: ./gradlew dist -PSNAPSHOT=true
       - name: Build deb package
         env:
           WORKFLOW_RUN: ${{ github.run_number }}
@@ -55,7 +57,9 @@ jobs:
         with:
           java-version: 16
       - name: Build JAR dist files
-        run: ./gradlew.bat dist
+        env:
+          WORKFLOW_RUN: ${{ github.run_number }}
+        run: ./gradlew.bat dist -PSNAPSHOT=true
       - name: Build msi package
         env:
           WORKFLOW_RUN: ${{ github.run_number }}
@@ -83,7 +87,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build JAR dist files
-        run: ./gradlew dist
+        env:
+          WORKFLOW_RUN: ${{ github.run_number }}
+        run: ./gradlew dist -PSNAPSHOT=true
       - name: Build dmg package
         env:
           WORKFLOW_RUN: ${{ github.run_number }}

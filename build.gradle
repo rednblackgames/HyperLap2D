@@ -52,6 +52,17 @@ mainClassName = "games.rednblack.editor.Main"
 project.ext.assetsDir = new File("assets/");
 def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
 
+def getBuildVersion = {
+    if (osName.contains('mac')) {
+        return getVersion().toString().replaceAll("0\\.", "")
+    }
+    if (project.hasProperty('SNAPSHOT')) {
+        return getVersion() + (project.hasProperty('WORKFLOW_RUN') ? WORKFLOW_RUN : "$System.env.WORKFLOW_RUN")
+    } else {
+        return getVersion()
+    }
+}
+
 task runHyperLap2D(dependsOn: classes, type: JavaExec) {
     mainClass = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
@@ -61,6 +72,8 @@ task runHyperLap2D(dependsOn: classes, type: JavaExec) {
 }
 
 task dist(type: Jar) {
+    archiveVersion.set(getBuildVersion())
+
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     from files(sourceSets.main.output.classesDirs)
     from files(sourceSets.main.output.resourcesDir)
@@ -119,17 +132,6 @@ dependencies {
     implementation 'net.mountainblade:modular:1.0'
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
-}
-
-def getBuildVersion = {
-    if (osName.contains('mac')) {
-        return getVersion().toString().replaceAll("0\\.", "")
-    }
-    if (project.hasProperty('SNAPSHOT')) {
-        return getVersion() + (project.hasProperty('WORKFLOW_RUN') ? WORKFLOW_RUN : "$System.env.WORKFLOW_RUN")
-    } else {
-        return getVersion()
-    }
 }
 
 task deleteInstallerTemp(type: Delete) {
