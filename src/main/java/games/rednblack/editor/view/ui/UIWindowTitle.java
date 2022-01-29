@@ -17,6 +17,7 @@ public class UIWindowTitle extends VisTable {
         title = StandardWidgetsFactory.createLabel("HyperLap2D - Beta v" + AppConfig.getInstance().versionString, "default", Align.center);
         title.setEllipsis(true);
         title.setWrap(true);
+        title.setTouchable(Touchable.disabled);
         add(title).growX();
         setTouchable(Touchable.enabled);
     }

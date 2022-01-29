@@ -119,8 +119,8 @@ public class HyperLap2DUtils {
                         int glfwX = getX();
                         int glfwY = getY();
 
-                        uiWindowTitle.screenToLocalCoordinates(tmp.set(glfwX, glfwY));
-                        if (uiWindowTitle.hit(tmp.x, tmp.y, true) != null) {
+                        uiWindowTitle.getStage().screenToStageCoordinates(tmp.set(glfwX, glfwY));
+                        if (uiWindowTitle.getStage().hit(tmp.x, tmp.y, true) == uiWindowTitle) {
                             return User32.HTCAPTION;
                         }
 
