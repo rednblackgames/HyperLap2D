@@ -2,6 +2,9 @@ package games.rednblack.editor.utils;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.UIWindowTitle;
 import games.rednblack.editor.view.ui.UIWindowTitleMediator;
@@ -9,9 +12,12 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang3.SystemUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWNativeCocoa;
 import org.lwjgl.glfw.GLFWNativeWin32;
 import org.lwjgl.system.JNI;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.SharedLibrary;
+import org.lwjgl.system.macosx.ObjCRuntime;
 import org.lwjgl.system.windows.RECT;
 import org.lwjgl.system.windows.User32;
 import org.lwjgl.system.windows.WINDOWPLACEMENT;
@@ -20,6 +26,7 @@ import org.lwjgl.system.windows.WindowProc;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
 
 public class HyperLap2DUtils {
     public static final FilenameFilter PNG_FILTER = new SuffixFileFilter(".png");
@@ -44,6 +51,114 @@ public class HyperLap2DUtils {
 
     private static String getMyDocumentsLocation() {
         return System.getProperty("user.home") + File.separator + "Documents";
+    }
+
+    /**
+     * Fairly based on this article: http://svenandersson.se/2016/rendering-to-full-size-of-an-nswindow-using-glfw3.html
+     * Still not finished (Window dragging is not working) but useful stuff here to interact with native OS
+     *
+     * @param lwjglWindow lwjgl pointer to window object
+     * @param FullSizeContentView apply the FullSizeContentView styleMask
+     */
+    public static void setCocoaCustomTitleBar(long lwjglWindow, boolean FullSizeContentView) {
+        System.out.println(lwjglWindow);
+        long nswindow = GLFWNativeCocoa.glfwGetCocoaWindow(lwjglWindow);
+        System.out.println(nswindow);
+        SharedLibrary objc = ObjCRuntime.getLibrary();
+        long objc_msgSend = objc.getFunctionAddress("objc_msgSend");
+
+        boolean bool = JNI.invokePPZ(nswindow, ObjCRuntime.sel_getUid("titlebarAppearsTransparent"), objc_msgSend);
+        System.out.println("titlebarAppearsTransparent = " + bool);
+
+        JNI.invokePPV(nswindow, ObjCRuntime.sel_getUid("setTitlebarAppearsTransparent:"), true, objc_msgSend);
+        JNI.invokePPV(nswindow, ObjCRuntime.sel_getUid("setMovableByWindowBackground:"), true, objc_msgSend);
+
+        bool = JNI.invokePPZ(nswindow, ObjCRuntime.sel_getUid("titlebarAppearsTransparent"), objc_msgSend);
+        System.out.println("titlebarAppearsTransparent = " + bool);
+
+        long NSColor = ObjCRuntime.objc_getClass("NSColor");
+        long darkGrayColor = JNI.invokePPP(NSColor, ObjCRuntime.sel_getUid("darkGrayColor"), objc_msgSend);
+        JNI.invokePPPV(nswindow, ObjCRuntime.sel_getUid("setBackgroundColor:"), darkGrayColor, objc_msgSend);
+        //0 - visible
+        //1 - hidden
+        JNI.invokePPV(nswindow, ObjCRuntime.sel_getUid("setTitleVisibility:"), 1, objc_msgSend);
+
+        if (FullSizeContentView) {
+            //Borderless             - 0b0000000000000000
+            //Titled                 - 0b0000000000000001
+            //Closable               - 0b0000000000000010
+            //Miniaturizable         - 0b0000000000000100
+            //Resizable              - 0b0000000000001000
+            //UtilityWindow          - 0b0000000000010000
+            //DocumentModalWindow    - 0b0000000001000000
+            //NonActivatingPanel     - 0b0000000010000000
+            //Textured               - 0b0000000100000000
+            //UnifiedTitleAndToolbar - 0b0001000000000000
+            //HudWindow              - 0b0010000000000000
+            //FullScreen             - 0b0100000000000000
+            //FullSizeContentView    - 0b1000000000010010
+            JNI.invokePPV(nswindow, ObjCRuntime.sel_getUid("setStyleMask:"), 0b1001000000001111, objc_msgSend);
+
+            int defaultMask = JNI.invokePPI(nswindow, ObjCRuntime.sel_getUid("styleMask"), objc_msgSend);
+            System.out.println("styleMask = " + defaultMask);
+
+            GLFW.glfwMaximizeWindow(lwjglWindow);
+
+            /**
+             *         NSView* glView = [wnd contentView];
+             *         Method originalMethod = class_getInstanceMethod([glView class], @selector(mouseDownCanMoveWindow));
+             *         Method categoryMethod = class_getInstanceMethod(FakeView.class, @selector(fakeMouseDownCanMoveWindow));
+             *         method_exchangeImplementations(originalMethod, categoryMethod);
+             */
+
+            /*long glView = JNI.invokePPP(nswindow, ObjCRuntime.sel_getUid("contentView"), objc_msgSend);
+            System.out.println("glView: " + glView);
+            long glViewClass = ObjCRuntime.object_getClass(glView);
+            System.out.println("glViewClass: " + glViewClass);
+            long originalMethod = ObjCRuntime.class_getInstanceMethod(glViewClass, ObjCRuntime.sel_getUid("mouseDownCanMoveWindow"));
+            System.out.println("originalMethod: " + originalMethod);
+
+            //TODO Missing a way to create the categoryMethod
+
+            ObjCRuntime.method_exchangeImplementations(originalMethod, categoryMethod);
+            */
+        }
+    }
+
+    public static void setWindowDragListener(Actor actor) {
+        actor.addListener(new InputListener() {
+            private final long context = GLFW.glfwGetCurrentContext();
+            private float startX = 0;
+            private float startY = 0;
+            private final DoubleBuffer cursorX = BufferUtils.createDoubleBuffer(1);
+            private final DoubleBuffer cursorY = BufferUtils.createDoubleBuffer(1);
+            private final IntBuffer windowX = BufferUtils.createIntBuffer(1);
+            private final IntBuffer windowY = BufferUtils.createIntBuffer(1);
+
+            private int getX() {
+                return MathUtils.floor((float) cursorX.get(0));
+            }
+            private int getY() {
+                return MathUtils.floor((float) cursorY.get(0));
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                GLFW.glfwGetCursorPos(context, cursorX, cursorY);
+                startX = getX();
+                startY = getY();
+                return true;
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                GLFW.glfwGetCursorPos(context, cursorX, cursorY);
+                float offsetX = getX() - startX;
+                float offsetY = getY() - startY;
+                GLFW.glfwGetWindowPos(context, windowX, windowY);
+                GLFW.glfwSetWindowPos(context, (int)(windowX.get(0) + offsetX), (int)(windowY.get(0) + offsetY));
+            }
+        });
     }
 
     /**

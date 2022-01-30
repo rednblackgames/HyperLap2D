@@ -118,7 +118,7 @@ public class FontManager extends Proxy {
                     systemFontMap.put(f.getName(), file.getAbsolutePath());
                 }
             } catch (FontFormatException | IOException e) {
-                e.printStackTrace();
+                System.err.println("Could not load " + file.getName() + " font file.");
             }
         }
 

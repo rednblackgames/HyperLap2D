@@ -20,6 +20,7 @@ package games.rednblack.editor.view.ui;
 
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBarMediator;
 import games.rednblack.editor.view.ui.box.*;
@@ -65,6 +66,13 @@ public class UIMainTable extends VisTable {
             UIWindowActionMediator uiWindowActionMediator = facade.retrieveMediator(UIWindowActionMediator.NAME);
             UIWindowAction uiWindowAction = uiWindowActionMediator.getViewComponent();
             topTable.add(uiWindowAction).padTop(-1).fillY();
+        } else if (SystemUtils.IS_OS_MAC) {
+            topTable.add(menuBar.getTable()).height(32);
+
+            UIWindowTitleMediator uiWindowTitleMediator = facade.retrieveMediator(UIWindowTitleMediator.NAME);
+            UIWindowTitle uiWindowTitle = uiWindowTitleMediator.getViewComponent();
+            HyperLap2DUtils.setWindowDragListener(uiWindowTitle);
+            topTable.add(uiWindowTitle).growX().fillY();
         } else {
             topTable.add(menuBar.getTable()).growX().height(32);
         }

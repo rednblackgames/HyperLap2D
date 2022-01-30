@@ -76,6 +76,9 @@ public class HyperLap2DApp extends ApplicationAdapter {
             if (SystemUtils.IS_OS_WINDOWS) {
                 Gdx.app.postRunnable(() -> HyperLap2DUtils.overwriteWindowProc2(mainWindow.getWindowHandle()));
             }
+            if (SystemUtils.IS_OS_MAC) {
+               Gdx.app.postRunnable(() -> HyperLap2DUtils.setCocoaCustomTitleBar(mainWindow.getWindowHandle(), true));
+            }
         });
     }
 
