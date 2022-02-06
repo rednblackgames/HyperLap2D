@@ -114,6 +114,42 @@ public class VersionMigTo100 implements IVersionMigrator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try {
+            FileUtils.moveDirectory(new File(projectPath + File.separator + "assets" + File.separator + "orig" + File.separator + "particles"),
+                    new File(projectPath + File.separator + "assets" + File.separator + "particles"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            FileUtils.moveDirectory(new File(projectPath + File.separator + "assets" + File.separator + "orig" + File.separator + "spine-animations"),
+                    new File(projectPath + File.separator + "assets" + File.separator + "spine-animations"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            FileUtils.moveDirectory(new File(projectPath + File.separator + "assets" + File.separator + "orig" + File.separator + "sprite-animations"),
+                    new File(projectPath + File.separator + "assets" + File.separator + "sprite-animations"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            FileUtils.moveDirectory(new File(projectPath + File.separator + "assets" + File.separator + "orig" + File.separator + "talos-vfx"),
+                    new File(projectPath + File.separator + "assets" + File.separator + "talos-vfx"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            FileUtils.moveDirectory(new File(projectPath + File.separator + "assets" + File.separator + "orig" + File.separator + "freetypefonts"),
+                    new File(projectPath + File.separator + "assets" + File.separator + "freetypefonts"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return true;
     }
 

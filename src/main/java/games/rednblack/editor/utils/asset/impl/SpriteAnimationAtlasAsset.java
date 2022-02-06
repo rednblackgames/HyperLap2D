@@ -56,7 +56,8 @@ public class SpriteAnimationAtlasAsset extends Asset {
             try {
                 String fileNameWithoutExt = ImportUtils.getAtlasName(fileHandle);
 
-                String targetPath = projectManager.getCurrentProjectPath() + "/assets/orig/sprite-animations" + File.separator + fileNameWithoutExt;
+                String targetPath = projectManager.getCurrentProjectPath() + File.separator
+                        + ProjectManager.SPRITE_DIR_PATH + File.separator + fileNameWithoutExt;
                 File targetDir = new File(targetPath);
                 if (targetDir.exists()) {
                     FileUtils.deleteDirectory(targetDir);
@@ -112,7 +113,7 @@ public class SpriteAnimationAtlasAsset extends Asset {
     }
 
     private boolean deleteSpriteAnimation(String resolutionName, String spriteName) {
-        String spritePath = projectManager.getCurrentProjectPath() + "/assets/" + resolutionName + "/sprite-animations" + File.separator;
+        String spritePath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.SPRITE_DIR_PATH + File.separator;
         String filePath = spritePath + spriteName;
         FileHandle imagesPath = new FileHandle(projectManager.getCurrentProjectPath() + "/assets/" + resolutionName + "/images" + File.separator);
         String prefix = spriteName + "_";

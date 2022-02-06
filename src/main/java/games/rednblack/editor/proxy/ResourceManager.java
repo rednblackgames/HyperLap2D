@@ -219,12 +219,12 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     public void loadCurrentProjectData(String projectPath, String curResolution) {
         packResolutionName = curResolution;
         loadCurrentProjectAssets(projectPath + "/assets/" + curResolution + "/pack");
-        loadCurrentProjectParticles(projectPath + "/assets/orig/particles");
-        loadCurrentProjectTalosVFXs(projectPath + "/assets/orig/talos-vfx");
-        loadCurrentProjectSpineAnimations(projectPath + "/assets/", curResolution);
-        loadCurrentProjectSpriteAnimations(projectPath + "/assets/", curResolution);
-        loadCurrentProjectBitmapFonts(projectPath, curResolution);
-        loadCurrentProjectShaders(projectPath + "/assets/shaders/");
+        loadCurrentProjectParticles(projectPath + File.separator + ProjectManager.PARTICLE_DIR_PATH);
+        loadCurrentProjectTalosVFXs(projectPath + File.separator + ProjectManager.TALOS_VFX_DIR_PATH);
+        loadCurrentProjectSpineAnimations(projectPath + File.separator + ProjectManager.SPINE_DIR_PATH);
+        loadCurrentProjectSpriteAnimations(projectPath + File.separator + ProjectManager.SPRITE_DIR_PATH);
+        loadCurrentProjectBitmapFonts();
+        loadCurrentProjectShaders(projectPath + File.separator + ProjectManager.SHADER_DIR_PATH);
 
         removeInvalidResourceReferences();
     }
@@ -299,9 +299,9 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return asset;
     }
 
-    private void loadCurrentProjectSpineAnimations(String path, String curResolution) {
+    private void loadCurrentProjectSpineAnimations(String path) {
         spineAnimAtlases.clear();
-        FileHandle sourceDir = new FileHandle(path + "orig/spine-animations");
+        FileHandle sourceDir = new FileHandle(path);
         SpineDrawableLogic spineDrawableLogic = (SpineDrawableLogic) Sandbox.getInstance().sceneControl.sceneLoader.getExternalItemType(SpineItemType.SPINE_TYPE).getDrawable();
         for (FileHandle entry : sourceDir.list()) {
             if (entry.file().isDirectory()) {
@@ -318,9 +318,9 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     }
 
-    private void loadCurrentProjectSpriteAnimations(String path, String curResolution) {
+    private void loadCurrentProjectSpriteAnimations(String path) {
         spriteAnimAtlases.clear();
-        FileHandle sourceDir = new FileHandle(path + "orig" + File.separator + "sprite-animations");
+        FileHandle sourceDir = new FileHandle(path);
         for (FileHandle entry : sourceDir.list()) {
             if (entry.file().isDirectory()) {
                 String animName = FilenameUtils.removeExtension(entry.file().getName());
@@ -369,7 +369,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return result;
     }
 
-    public void loadCurrentProjectBitmapFonts(String path, String curResolution) {
+    public void loadCurrentProjectBitmapFonts() {
         bitmapFonts.clear();
 
         ArrayList<FontSizePair> requiredFonts = getProjectRequiredFontsList();
@@ -400,6 +400,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     		it.remove(); 
     	}
         shaderPrograms.clear();
+        path += File.separator;
         FileHandle sourceDir = new FileHandle(path);
         for (FileHandle entry : sourceDir.list()) {
             File file = entry.file();

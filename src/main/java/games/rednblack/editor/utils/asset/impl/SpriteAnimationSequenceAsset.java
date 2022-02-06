@@ -57,7 +57,8 @@ public class SpriteAnimationSequenceAsset extends SpriteAnimationAtlasAsset {
             noFileNameWithoutFrame = true;
         }
 
-        String targetPath = projectManager.getCurrentProjectPath() + "/assets/orig/sprite-animations" + File.separator + fileNameWithoutFrame;
+        String targetPath = projectManager.getCurrentProjectPath() + File.separator
+                + ProjectManager.SPRITE_DIR_PATH + File.separator + fileNameWithoutFrame;
         File targetDir = new File(targetPath);
         try {
             FileUtils.forceMkdir(targetDir);

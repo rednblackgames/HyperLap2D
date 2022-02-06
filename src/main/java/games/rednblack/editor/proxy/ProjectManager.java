@@ -73,11 +73,12 @@ public class ProjectManager extends Proxy {
     public static final String PROJECT_DATA_UPDATED = EVENT_PREFIX + ".PROJECT_DATA_UPDATED";
 
     public static final String IMAGE_DIR_PATH = "assets/orig/images";
-    public static final String SPINE_DIR_PATH = "assets/orig/spine-animations";
-    public static final String SPRITE_DIR_PATH = "assets/orig/sprite-animations";
-    public static final String PARTICLE_DIR_PATH = "assets/orig/particles";
-    public static final String TALOS_VFX_DIR_PATH = "assets/orig/talos-vfx";
+    public static final String SPINE_DIR_PATH = "assets/spine-animations";
+    public static final String SPRITE_DIR_PATH = "assets/sprite-animations";
+    public static final String PARTICLE_DIR_PATH = "assets/particles";
+    public static final String TALOS_VFX_DIR_PATH = "assets/talos-vfx";
     public static final String SHADER_DIR_PATH = "assets/shaders";
+    public static final String FONTS_DIR_PATH = "assets/freetypefonts";
 
     public ProjectVO currentProjectVO;
     public ProjectInfoVO currentProjectInfoVO;
@@ -124,7 +125,6 @@ public class ProjectManager extends Proxy {
         FileUtils.forceMkdir(new File(projPath + File.separator + "scenes"));
         FileUtils.forceMkdir(new File(projPath + File.separator + "assets/orig"));
         FileUtils.forceMkdir(new File(projPath + File.separator + "assets/orig/images"));
-        FileUtils.forceMkdir(new File(projPath + File.separator + "assets/orig/particles"));
         FileUtils.forceMkdir(new File(projPath + File.separator + "assets/orig/pack"));
 
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
@@ -415,7 +415,7 @@ public class ProjectManager extends Proxy {
     }
 
     public String getFreeTypeFontPath() {
-        return currentProjectPath + "/assets/orig/freetypefonts";
+        return currentProjectPath + File.separator + FONTS_DIR_PATH;
     }
 
     public void exportProject() {
@@ -464,7 +464,7 @@ public class ProjectManager extends Proxy {
     }
 
     private void exportParticles(String targetPath) {
-        String srcPath = currentProjectPath + "/assets/orig";
+        String srcPath = currentProjectPath + "/assets";
         FileHandle origDirectoryHandle = Gdx.files.absolute(srcPath);
         FileHandle particlesDirectory = origDirectoryHandle.child("particles");
         File fileTarget = new File(targetPath + "/" + particlesDirectory.name());
@@ -475,19 +475,20 @@ public class ProjectManager extends Proxy {
     }
 
     private void exportTalosVFX(String targetPath) {
-        String srcPath = currentProjectPath + "/assets/orig";
+        String srcPath = currentProjectPath + "/assets";
         FileHandle origDirectoryHandle = Gdx.files.absolute(srcPath);
         FileHandle particlesDirectory = origDirectoryHandle.child("talos-vfx");
-        File fileTarget = new File(targetPath + "/" + particlesDirectory.name());
+        File fileTarget = new File(targetPath + "/" + "talos-vfx");
         try {
-            FileUtils.copyDirectory(particlesDirectory.file(), fileTarget);
+            FileFilter talosSuffixFilter = new RecursiveFileSuffixFilter(".p", ".shdr", ".fga");
+            FileUtils.copyDirectory(particlesDirectory.file(), fileTarget, talosSuffixFilter);
         } catch (IOException ignore) {
         }
     }
 
     private void prepareFontsForExport() {
         FontManager fontManager = facade.retrieveProxy(FontManager.NAME);
-        String srcPath = currentProjectPath + "/assets/orig";
+        String srcPath = currentProjectPath + "/assets";
         FileHandle origDirectoryHandle = Gdx.files.absolute(srcPath);
         FileHandle fontsDirectory = origDirectoryHandle.child("freetypefonts");
 
@@ -513,7 +514,7 @@ public class ProjectManager extends Proxy {
     }
 
     private void exportFonts(String targetPath) {
-        String srcPath = currentProjectPath + "/assets/orig";
+        String srcPath = currentProjectPath + "/assets";
         FileHandle origDirectoryHandle = Gdx.files.absolute(srcPath);
         FileHandle fontsDirectory = origDirectoryHandle.child("freetypefonts");
         File fileTarget = new File(targetPath + "/" + fontsDirectory.name());
@@ -524,18 +525,15 @@ public class ProjectManager extends Proxy {
     }
 
     private void exportAnimations(String targetPath) {
-        exportSpineAnimationForResolution("orig", targetPath);
-        /*for (ResolutionEntryVO resolutionEntryVO : currentProjectInfoVO.resolutions) {
-            exportSpineAnimationForResolution(resolutionEntryVO.name, targetPath);
-        }*/
+        exportSpineAnimationForResolution(targetPath);
     }
 
-    private void exportSpineAnimationForResolution(String res, String targetPath) {
-        String spineSrcPath = currentProjectPath + "/assets/" + res + File.separator + "spine-animations";
+    private void exportSpineAnimationForResolution(String targetPath) {
+        String spineSrcPath = currentProjectPath + "/assets" + File.separator + "spine-animations";
         try {
-            FileUtils.forceMkdir(new File(targetPath + File.separator + res + File.separator + "spine_animations"));
+            FileUtils.forceMkdir(new File(targetPath + File.separator + "spine-animations"));
             File fileSrc = new File(spineSrcPath);
-            String finalTarget = targetPath + File.separator + res + File.separator + "spine_animations";
+            String finalTarget = targetPath + File.separator + "spine-animations";
 
             File fileTargetSpine = new File(finalTarget);
 

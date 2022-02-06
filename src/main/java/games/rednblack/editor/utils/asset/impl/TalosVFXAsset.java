@@ -67,7 +67,7 @@ public class TalosVFXAsset extends Asset {
             json.addClassTag(clazz.getSimpleName(), TalosResources.Module.class);
         }
 
-        final String targetPath = projectManager.getCurrentProjectPath() + "/assets/orig/talos-vfx";
+        final String targetPath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.TALOS_VFX_DIR_PATH;
         Array<FileHandle> images = new Array<>();
         Array<FileHandle> assetsRes = new Array<>();
         for (FileHandle fileHandle : new Array.ArrayIterator<>(files)) {

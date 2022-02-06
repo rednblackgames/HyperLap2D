@@ -104,7 +104,7 @@ public class SpineAsset extends Asset {
                 sourcePath = animationFileSource.path();
 
                 animationDataPath = FilenameUtils.getFullPathNoEndSeparator(sourcePath);
-                targetPath = projectManager.getCurrentProjectPath() + "/assets/orig/spine-animations" + File.separator + fileNameWithOutExt;
+                targetPath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.SPINE_DIR_PATH + File.separator + fileNameWithOutExt;
                 FileHandle atlasFileSource = new FileHandle(animationDataPath + File.separator + fileNameWithOutExt + ".atlas");
                 if (!atlasFileSource.exists()) {
                     Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
@@ -175,7 +175,7 @@ public class SpineAsset extends Asset {
     }
 
     private boolean deleteSpineAnimation(String resolutionName, String spineName) {
-        String spinePath = projectManager.getCurrentProjectPath() + "/assets/" + resolutionName + "/spine-animations" + File.separator;
+        String spinePath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.SPINE_DIR_PATH + File.separator;
         String filePath = spinePath + spineName;
         FileHandle jsonPath = new FileHandle(filePath + File.separator + spineName + ".json");
 

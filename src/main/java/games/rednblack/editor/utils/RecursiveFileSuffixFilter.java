@@ -13,6 +13,10 @@ public class RecursiveFileSuffixFilter implements FileFilter {
         types.add(suffix);
     }
 
+    public RecursiveFileSuffixFilter(String... types) {
+        this.types.addAll(types);
+    }
+
     public RecursiveFileSuffixFilter(Array<String> types) {
         this.types.addAll(types);
     }
