@@ -2,7 +2,6 @@ package games.rednblack.editor.controller.commands;
 
 import com.artemis.Component;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.renderer.components.RemovableObject;
 import games.rednblack.editor.utils.runtime.ComponentCloner;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
@@ -23,15 +22,12 @@ public class RemoveComponentFromItemCommand extends EntityModifyRevertibleComman
         Object[] payload = getNotification().getBody();
         entity = (int) payload[0];
         componentClass = (Class<? extends Component>) payload[1];
-        component = ComponentCloner.get(SandboxComponentRetriever.get(entity, componentClass));
+        component = ComponentCloner.get(SandboxComponentRetriever.get(entity, componentClass), true);
     }
 
     @Override
     public void doAction() {
         collectData();
-        if (component instanceof RemovableObject) {
-            ((RemovableObject) component).onRemove();
-        }
         sandbox.getEngine().edit(entity).remove(component.getClass());
         sandbox.getEngine().process();
 

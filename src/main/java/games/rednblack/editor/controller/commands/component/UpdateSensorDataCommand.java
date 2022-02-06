@@ -43,8 +43,6 @@ public class UpdateSensorDataCommand extends EntityModifyRevertibleCommand {
         sensorComponent.rightSpanPercent = vo.rightSpanPercent;
         sensorComponent.topSpanPercent = vo.topSpanPercent;
 
-        sensorComponent.scheduleRefresh();
-
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
@@ -62,8 +60,6 @@ public class UpdateSensorDataCommand extends EntityModifyRevertibleCommand {
         sensorComponent.leftSpanPercent = backup.leftSpanPercent;
         sensorComponent.rightSpanPercent = backup.rightSpanPercent;
         sensorComponent.topSpanPercent = backup.topSpanPercent;
-        
-        sensorComponent.scheduleRefresh();
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

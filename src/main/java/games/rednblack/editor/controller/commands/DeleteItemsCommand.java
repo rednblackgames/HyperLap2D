@@ -76,6 +76,7 @@ public class DeleteItemsCommand extends EntityModifyRevertibleCommand {
     public void undoAction() {
         Json json = HyperJson.getJson();
         CompositeItemVO compositeVO = json.fromJson(CompositeItemVO.class, backup);
+        compositeVO.cleanIds();
         Set<Integer> newEntitiesList = PasteItemsCommand.createEntitiesFromVO(compositeVO);
 
         sandbox.getEngine().process();

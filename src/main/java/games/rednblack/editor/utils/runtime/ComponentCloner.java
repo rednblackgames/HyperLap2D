@@ -32,7 +32,7 @@ import java.util.Collection;
  */
 public class ComponentCloner {
 
-    public static <E extends Component> E get(E source) {
+    public static <E extends Component> E get(E source, boolean ignoreTransient) {
         Class<?> eClass = source.getClass();
         E target = null;
         try {
@@ -42,6 +42,9 @@ public class ComponentCloner {
             for(int i = 0; i < targetFields.length; i++) {
                 int modifiers = targetFields[i].getModifiers();
                 if(Modifier.isPublic(modifiers) && !Modifier.isStatic(modifiers) && !Modifier.isFinal(modifiers)) {
+                    if (ignoreTransient && Modifier.isTransient(modifiers))
+                        continue;
+
                     targetFields[i].set(target, sourceFields[i].get(source));
                 }
             }
@@ -50,6 +53,9 @@ public class ComponentCloner {
         }
 
         return target;
+    }
+    public static <E extends Component> E get(E source) {
+        return get(source, false);
     }
 
 
