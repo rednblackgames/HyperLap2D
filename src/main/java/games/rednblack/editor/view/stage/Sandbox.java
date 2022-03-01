@@ -35,6 +35,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.util.ToastManager;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.*;
+import games.rednblack.editor.renderer.ExternalTypesConfiguration;
 import games.rednblack.editor.renderer.SceneConfiguration;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.components.ViewPortComponent;
@@ -135,12 +136,15 @@ public class Sandbox {
         UIStageMediator uiStageMediator = facade.retrieveMediator(UIStageMediator.NAME);
         uiStage = uiStageMediator.getViewComponent();
 
+        ExternalTypesConfiguration externalItemTypes = new ExternalTypesConfiguration();
+        //Add external item types
+        externalItemTypes.addExternalItemType(new SpineItemType());
+        externalItemTypes.addExternalItemType(new TalosItemType());
+        externalItemTypes.addExternalItemType(new TypingLabelItemType());
+
         SceneConfiguration config = new SceneConfiguration();
         config.setResourceRetriever(resourceManager);
-        // adding spine as external component
-        config.addExternalItemType(new SpineItemType());
-        config.addExternalItemType(new TalosItemType());
-        config.addExternalItemType(new TypingLabelItemType());
+        config.setExternalItemTypes(externalItemTypes);
 
         //Remove Physics System and add Adjusting System for box2d objects to follow items and stop world tick
         config.removeSystem(PhysicsSystem.class);

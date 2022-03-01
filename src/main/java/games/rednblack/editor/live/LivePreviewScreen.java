@@ -15,6 +15,7 @@ import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.ResourceManager;
+import games.rednblack.editor.renderer.ExternalTypesConfiguration;
 import games.rednblack.editor.renderer.SceneConfiguration;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.components.additional.ButtonComponent;
@@ -53,11 +54,17 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
 
         viewport = new ExtendViewport(worldSizeVO.getWorldWidth(), worldSizeVO.getWorldHeight());
         mCamera = (OrthographicCamera) viewport.getCamera();
+
+        ExternalTypesConfiguration externalItemTypes = new ExternalTypesConfiguration();
+        //Add external item types
+        externalItemTypes.addExternalItemType(new SpineItemType());
+        externalItemTypes.addExternalItemType(new TalosItemType());
+        externalItemTypes.addExternalItemType(new TypingLabelItemType());
+
         SceneConfiguration config = new SceneConfiguration();
         config.setResourceRetriever(resourceManager);
-        config.addExternalItemType(new SpineItemType());
-        config.addExternalItemType(new TalosItemType());
-        config.addExternalItemType(new TypingLabelItemType());
+        config.setExternalItemTypes(externalItemTypes);
+
         config.addTagTransmuter("button", ButtonComponent.class);
         sceneLoader = new SceneLoader(config);
 

@@ -1,5 +1,5 @@
 [0.1.0]
-- [WIP - BREAK CHANGE] Update Project version to `1.0.0`
+- [BREAK CHANGE] Update Project version to `1.0.0`
 - Extensions are completely detached from base runtime
 - Custom Variables are stored in JSON format
 - Bug fixes and stability improvements
