@@ -460,14 +460,9 @@ public class Sandbox {
     }
 
     public Vector2 screenToWorld(Vector2 vector) {
-        return screenToWorld(vector, true);
-    }
-
-    public Vector2 screenToWorld(Vector2 vector, boolean scaleDensity) {
         Viewport viewport = getViewport();
         if (viewport != null) {
-            if (scaleDensity)
-                vector.scl(1f / getUIStage().getUIScaleDensity());
+            vector.scl(1f / getUIStage().getUIScaleDensity());
             vector.y = Gdx.graphics.getHeight() - vector.y;
             vector = viewport.unproject(vector);
         }

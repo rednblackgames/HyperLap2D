@@ -352,8 +352,7 @@ public class PolygonFollower extends SubFollower {
 
     private void transformActorCoordIntoEntity(Actor actor, Vector2 coord) {
         actor.localToScreenCoordinates(coord);
-        coord.y = Gdx.graphics.getHeight() - coord.y;
-        Sandbox.getInstance().screenToWorld(coord, false);
+        Sandbox.getInstance().getViewport().unproject(coord);
         TransformMathUtils.sceneToLocalCoordinates(entity, coord, transformCM, parentNodeCM);
     }
 }
