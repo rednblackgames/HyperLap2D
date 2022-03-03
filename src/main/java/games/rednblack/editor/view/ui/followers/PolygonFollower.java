@@ -31,8 +31,8 @@ public class PolygonFollower extends SubFollower {
     private final int pixelsPerWU;
     private final OrthographicCamera runtimeCamera = Sandbox.getInstance().getCamera();
 
-    ComponentMapper<TransformComponent> transformCM;
-    ComponentMapper<ParentNodeComponent> parentNodeCM;
+    private ComponentMapper<TransformComponent> transformCM;
+    private ComponentMapper<ParentNodeComponent> parentNodeCM;
     private TransformComponent transformComponent;
     private PolygonShapeComponent polygonShapeComponent;
     private DimensionsComponent dimensionsComponent;
@@ -340,7 +340,6 @@ public class PolygonFollower extends SubFollower {
             super.touchUp(event, x, y, pointer, button);
 
             PolyVertex vertex = (PolyVertex) event.getListenerActor();
-            draggingAnchorId = vertex.getIndex();
 
             Vector2 coord = Pools.obtain(Vector2.class).set(x, y);
             transformActorCoordIntoEntity(vertex, coord);
@@ -354,7 +353,7 @@ public class PolygonFollower extends SubFollower {
     private void transformActorCoordIntoEntity(Actor actor, Vector2 coord) {
         actor.localToScreenCoordinates(coord);
         coord.y = Gdx.graphics.getHeight() - coord.y;
-        Sandbox.getInstance().screenToWorld(coord);
+        Sandbox.getInstance().screenToWorld(coord, false);
         TransformMathUtils.sceneToLocalCoordinates(entity, coord, transformCM, parentNodeCM);
     }
 }
