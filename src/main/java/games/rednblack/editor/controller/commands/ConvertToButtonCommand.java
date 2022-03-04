@@ -33,12 +33,16 @@ import java.util.HashSet;
  */
 public class ConvertToButtonCommand extends ConvertToCompositeCommand {
 
-
     @Override
     public void doAction() {
         int entity;
 
         HashSet<Integer> entities = (HashSet<Integer>) sandbox.getSelector().getSelectedItems();
+        if (entities.size() == 0) {
+            cancel();
+            return;
+        }
+
         int item = entities.iterator().next();
 
         if(entities.size() == 1 && EntityUtils.getType(item) == EntityFactory.COMPOSITE_TYPE) {
