@@ -340,6 +340,7 @@ public class PolygonFollower extends SubFollower {
             super.touchUp(event, x, y, pointer, button);
 
             PolyVertex vertex = (PolyVertex) event.getListenerActor();
+            if(button == Input.Buttons.RIGHT) draggingAnchorId = vertex.getIndex();
 
             Vector2 coord = Pools.obtain(Vector2.class).set(x, y);
             transformActorCoordIntoEntity(vertex, coord);
