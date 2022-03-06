@@ -216,6 +216,7 @@ public class VersionMigTo100 implements IVersionMigrator {
         target.itemIdentifier = vo.itemIdentifier;
         target.itemName = vo.itemName;
         if(vo.tags != null) target.tags = Arrays.copyOf(vo.tags, vo.tags.length);
+        target.customVariables.putAll(vo.customVariables);
         target.x = vo.x;
         target.y = vo.y;
         target.rotation = vo.rotation;
