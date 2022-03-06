@@ -100,12 +100,21 @@ public class MainPanelMediator extends Mediator<MainPanel> {
     private void addSplitsToImageInAtlas(String textureRegionName, int[] splits) {
         FileHandle packAtlas = Gdx.files.internal(plugin.getAPI().getProjectPath() + "/assets/orig/pack/pack.atlas");
         String content = packAtlas.readString();
-        int regionIndex = content.indexOf(textureRegionName);
-        int splitEnd = content.indexOf("orig: ", regionIndex);
-        String splitStr = "split: "+splits[0]+", "+splits[1]+", "+splits[2]+", "+splits[3]+"\n  ";
-        String newContent = content.substring(0, splitEnd) + splitStr + content.substring(splitEnd, content.length());
-        File test = new File(plugin.getAPI().getProjectPath() + "/assets/orig/pack/pack.atlas");
-        writeFile(newContent, test);
+        if (plugin.getAPI().getCurrentProjectVO().texturePackerVO.legacy) {
+            int regionIndex = content.indexOf(textureRegionName);
+            int splitEnd = content.indexOf("orig: ", regionIndex);
+            String splitStr = "split: "+splits[0]+", "+splits[1]+", "+splits[2]+", "+splits[3]+"\n  ";
+            String newContent = content.substring(0, splitEnd) + splitStr + content.substring(splitEnd);
+            File test = new File(plugin.getAPI().getProjectPath() + "/assets/orig/pack/pack.atlas");
+            writeFile(newContent, test);
+        } else {
+            int regionIndex = content.indexOf(textureRegionName);
+            String splitStr = "split: " + splits[0] + ", " + splits[1] + ", " + splits[2] + ", " + splits[3] + "\n\t";
+            int splitEnd = content.indexOf("bounds: ", regionIndex);
+            String newContent = content.substring(0, splitEnd) + splitStr + content.substring(splitEnd);
+            File test = new File(plugin.getAPI().getProjectPath() + "/assets/orig/pack/pack.atlas");
+            writeFile(newContent, test);
+        }
     }
 
     private void applyNewSplits(String textureRegionName, int[] splits) {
@@ -120,11 +129,22 @@ public class MainPanelMediator extends Mediator<MainPanel> {
         String content = packAtlas.readString();
         int regionIndex = content.indexOf(textureRegionName);
         int splitStart = content.indexOf("split: ", regionIndex) + "split: ".length();
-        int splitEnd = content.indexOf("orig: ", splitStart);
-        String splitStr = splits[0]+", "+splits[1]+", "+splits[2]+", "+splits[3]+"\n  ";
-        String newContent = content.substring(0, splitStart) + splitStr + content.substring(splitEnd, content.length());
-        File test = new File(plugin.getAPI().getProjectPath() + "/assets/orig/pack/pack.atlas");
-        writeFile(newContent, test);
+
+        if (plugin.getAPI().getCurrentProjectVO().texturePackerVO.legacy) {
+            int splitEnd = content.indexOf("orig: ", splitStart);
+            String splitStr = splits[0]+", "+splits[1]+", "+splits[2]+", "+splits[3]+"\n  ";
+            String newContent = content.substring(0, splitStart) + splitStr + content.substring(splitEnd);
+            File test = new File(plugin.getAPI().getProjectPath() + "/assets/orig/pack/pack.atlas");
+            writeFile(newContent, test);
+        } else {
+            String splitStr = splits[0] + ", " + splits[1] + ", " + splits[2] + ", " + splits[3];
+            int splitEnd = content.indexOf("\n", splitStart);
+            String newContent = content.substring(0, splitStart) + splitStr;
+            if (splitEnd != -1)
+                newContent = newContent + content.substring(splitEnd);
+            File test = new File(plugin.getAPI().getProjectPath() + "/assets/orig/pack/pack.atlas");
+            writeFile(newContent, test);
+        }
 
         // reload
         plugin.getAPI().reLoadProject();

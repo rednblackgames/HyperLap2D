@@ -84,7 +84,7 @@ public class ImageAsset extends Asset {
         }
 
         for (FileHandle handle : new Array.ArrayIterator<>(files)) {
-            projectManager.getCurrentProjectInfoVO().imagesPacks.get("main").regions.add(handle.nameWithoutExtension());
+            projectManager.getCurrentProjectInfoVO().imagesPacks.get("main").regions.add(handle.nameWithoutExtension().replace(".9", ""));
         }
     }
 
