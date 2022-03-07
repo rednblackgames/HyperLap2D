@@ -21,7 +21,7 @@ package games.rednblack.editor.view;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
-import games.rednblack.editor.renderer.systems.render.HyperLap2dRenderer;
+import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.ui.widget.actors.basic.SandboxBackUI;
 import games.rednblack.h2d.common.MsgAPI;
@@ -78,9 +78,7 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
                 break;
             case MsgAPI.SCENE_LOADED:
                 facade = HyperLap2DFacade.getInstance();
-                sandboxMediator = facade.retrieveMediator(SandboxMediator.NAME);
-                engine = sandboxMediator.getViewComponent().getEngine();
-                SandboxBackUI sandboxBackUI = new SandboxBackUI(engine.getSystem(HyperLap2dRenderer.class).getBatch());
+                SandboxBackUI sandboxBackUI = new SandboxBackUI(Sandbox.getInstance().getUIStage().getBatch());
                 getViewComponent().setBackUI(sandboxBackUI);
                 getViewComponent().disableDrawingBgLogo();
                 break;
