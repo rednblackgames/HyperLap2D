@@ -43,10 +43,8 @@ public class Main {
         config.useVsync(false);
         config.setTitle("HyperLap2D");
         config.setWindowIcon("hyperlap_icon_96.png");
-        ShaderProgram.prependFragmentCode = "#version 120\n";
-        ShaderProgram.prependVertexCode = "#version 120\n";
         if (settingsManager.editorConfigVO.useOpenGL3)
-            config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 3, 2);
+            config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20, 3, 2);
         config.setBackBufferConfig(8,8,8,8,16,8, settingsManager.editorConfigVO.msaaSamples);
 
         new Lwjgl3Application(HyperLap2DApp.initInstance(dm.width, dm.height, settingsManager), config);

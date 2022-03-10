@@ -97,6 +97,7 @@ dependencies {
         exclude group: 'com.badlogicgames.gdx', module: 'gdx-backend-lwjgl'
     }
     implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-lwjgl3-angle:$gdxVersion"
     implementation "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
     implementation "net.onedaybeard.artemis:artemis-odb-serializer-json-libgdx:$artemisVersion"
 
