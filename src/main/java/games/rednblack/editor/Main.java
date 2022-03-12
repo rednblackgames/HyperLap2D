@@ -3,7 +3,6 @@ package games.rednblack.editor;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import games.rednblack.editor.proxy.SettingsManager;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -43,7 +42,7 @@ public class Main {
         config.useVsync(false);
         config.setTitle("HyperLap2D");
         config.setWindowIcon("hyperlap_icon_96.png");
-        if (settingsManager.editorConfigVO.useOpenGL3)
+        if (settingsManager.editorConfigVO.useANGLEGLES2)
             config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20, 3, 2);
         config.setBackBufferConfig(8,8,8,8,16,8, settingsManager.editorConfigVO.msaaSamples);
 
