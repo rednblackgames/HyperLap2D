@@ -16,7 +16,7 @@ import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.h2d.extension.talos.TalosComponent;
 import games.rednblack.h2d.extension.talos.TalosVO;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -44,7 +44,7 @@ public class TalosVFXAsset extends Asset {
 
     @Override
     public int getType() {
-        return ImportUtils.TYPE_TALOS_VFX;
+        return AssetsUtils.TYPE_TALOS_VFX;
     }
 
     @Override
@@ -248,7 +248,7 @@ public class TalosVFXAsset extends Asset {
         TalosVO talosVO = (TalosVO) item;
         File fileSrc = new File(currentProjectPath + ProjectManager.TALOS_VFX_DIR_PATH + File.separator + talosVO.particleName);
         FileUtils.copyFileToDirectory(fileSrc, tmpDir);
-        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_TALOS_VFX, fileSrc.getName()));
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(AssetsUtils.TYPE_TALOS_VFX, fileSrc.getName()));
         ParticleEffectDescriptor particleEffect = resourceManager.getProjectTalosList().get(talosVO.particleName);
         for (ParticleEmitterDescriptor emitter : new Array.ArrayIterator<>(particleEffect.emitterModuleGraphs)) {
             for (AbstractModule module : new Array.ArrayIterator<>(emitter.getModules())) {

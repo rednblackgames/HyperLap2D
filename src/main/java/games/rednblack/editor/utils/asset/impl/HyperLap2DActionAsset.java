@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.renderer.data.GraphVO;
 import games.rednblack.editor.renderer.utils.HyperJson;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.h2d.common.ProgressHandler;
 
@@ -21,7 +21,7 @@ public class HyperLap2DActionAsset extends Asset {
 
     @Override
     public int getType() {
-        return ImportUtils.TYPE_HYPERLAP2D_ACTION;
+        return AssetsUtils.TYPE_HYPERLAP2D_ACTION;
     }
 
     @Override

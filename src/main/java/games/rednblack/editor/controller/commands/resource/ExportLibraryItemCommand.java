@@ -7,8 +7,8 @@ import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.controller.commands.NonRevertibleCommand;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.utils.HyperJson;
-import games.rednblack.editor.utils.AssetImporter;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetIOManager;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.utils.ZipUtils;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
@@ -97,10 +97,11 @@ public class ExportLibraryItemCommand extends NonRevertibleCommand {
         FileUtils.writeStringToFile(new File(tempDir.getPath() + File.separator + libraryItemName + ".lib"), json.toJson(compositeItemVO), "utf-8");
 
         for (MainItemVO itemVO : compositeItemVO.getAllItems()) {
-            AssetImporter.getInstance().exportAsset(itemVO, exportMapperVO, tempDir);
+            if (itemVO instanceof CompositeItemVO) continue;
+            AssetIOManager.getInstance().exportAsset(itemVO, exportMapperVO, tempDir);
         }
 
-        exportMapperVO.mapper.add(new ExportedAsset(ImportUtils.TYPE_HYPERLAP2D_INTERNAL_LIBRARY, libraryItemName + ".lib"));
+        exportMapperVO.mapper.add(new ExportedAsset(AssetsUtils.TYPE_HYPERLAP2D_INTERNAL_LIBRARY, libraryItemName + ".lib"));
 
         FileUtils.writeStringToFile(new File(tempDir.getPath() + File.separator + "mapper"), json.toJson(exportMapperVO), "utf-8");
 

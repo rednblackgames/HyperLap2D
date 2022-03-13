@@ -11,7 +11,7 @@ import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.utils.Version;
 import games.rednblack.editor.utils.HyperLap2DUtils;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -46,7 +46,7 @@ public class SpineAsset extends Asset {
 
     @Override
     public int getType() {
-        return ImportUtils.TYPE_SPINE_ANIMATION;
+        return AssetsUtils.TYPE_SPINE_ANIMATION;
     }
 
     @Override
@@ -141,7 +141,7 @@ public class SpineAsset extends Asset {
                 if (tmpDir.exists())
                     FileUtils.forceDelete(tmpDir.file());
                 FileUtils.forceMkdir(tmpDir.file());
-                ImportUtils.unpackAtlasIntoTmpFolder(atlasFileSource.file(), fileNameWithOutExt, tmpDir.path());
+                AssetsUtils.unpackAtlasIntoTmpFolder(atlasFileSource.file(), fileNameWithOutExt, tmpDir.path());
                 Array<FileHandle> images = new Array<>(tmpDir.list());
                 projectManager.copyImageFilesForAllResolutionsIntoProject(images, true, progressHandler);
                 FileUtils.forceDelete(tmpDir.file());
@@ -189,7 +189,7 @@ public class SpineAsset extends Asset {
                 }
             }
         }
-        return ImportUtils.deleteDirectory(filePath);
+        return AssetsUtils.deleteDirectory(filePath);
     }
 
     private boolean deleteSingleImage(String resolutionName, String imageName) {
@@ -259,7 +259,7 @@ public class SpineAsset extends Asset {
         SpineVO spineVO = (SpineVO) item;
         File fileSrc = new File(currentProjectPath + ProjectManager.SPINE_DIR_PATH + File.separator + spineVO.animationName);
         FileUtils.copyDirectory(fileSrc, tmpDir);
-        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_SPINE_ANIMATION, fileSrc.getName() + ".json"));
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(AssetsUtils.TYPE_SPINE_ANIMATION, fileSrc.getName() + ".json"));
         return true;
     }
 }

@@ -4,7 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.proxy.ProjectManager;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.h2d.common.ProgressHandler;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -21,7 +21,7 @@ public class SpriteAnimationSequenceAsset extends SpriteAnimationAtlasAsset {
         for (int i = 0; i < files.size; i++) {
             names[i] = files.get(i).nameWithoutExtension();
         }
-        return ImportUtils.isAnimationSequence(names) ? getType() : ImportUtils.TYPE_UNKNOWN;
+        return AssetsUtils.isAnimationSequence(names) ? getType() : AssetsUtils.TYPE_UNKNOWN;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class SpriteAnimationSequenceAsset extends SpriteAnimationAtlasAsset {
 
     @Override
     public int getType() {
-        return ImportUtils.TYPE_ANIMATION_PNG_SEQUENCE;
+        return AssetsUtils.TYPE_ANIMATION_PNG_SEQUENCE;
     }
 
     @Override

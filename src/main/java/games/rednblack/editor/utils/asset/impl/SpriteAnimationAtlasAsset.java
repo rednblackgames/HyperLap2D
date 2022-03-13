@@ -7,7 +7,7 @@ import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
 import games.rednblack.editor.renderer.data.*;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -25,7 +25,7 @@ public class SpriteAnimationAtlasAsset extends Asset {
     protected boolean matchMimeType(FileHandle file) {
         try {
             TextureAtlas.TextureAtlasData atlas = new TextureAtlas.TextureAtlasData(file, file.parent(), false);
-            return ImportUtils.isAtlasAnimationSequence(atlas.getRegions());
+            return AssetsUtils.isAtlasAnimationSequence(atlas.getRegions());
         } catch (Exception ignore) {
         }
         return false;
@@ -33,7 +33,7 @@ public class SpriteAnimationAtlasAsset extends Asset {
 
     @Override
     public int getType() {
-        return ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS;
+        return AssetsUtils.TYPE_SPRITE_ANIMATION_ATLAS;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class SpriteAnimationAtlasAsset extends Asset {
             String newAnimName;
 
             try {
-                String fileNameWithoutExt = ImportUtils.getAtlasName(fileHandle);
+                String fileNameWithoutExt = AssetsUtils.getAtlasName(fileHandle);
 
                 String targetPath = projectManager.getCurrentProjectPath() + File.separator
                         + ProjectManager.SPRITE_DIR_PATH + File.separator + fileNameWithoutExt;
@@ -67,7 +67,7 @@ public class SpriteAnimationAtlasAsset extends Asset {
                 if (tmpDir.exists())
                     FileUtils.forceDelete(tmpDir.file());
                 FileUtils.forceMkdir(tmpDir.file());
-                ImportUtils.unpackAtlasIntoTmpFolder(fileHandle.file(), null, tmpDir.path());
+                AssetsUtils.unpackAtlasIntoTmpFolder(fileHandle.file(), null, tmpDir.path());
                 Array<FileHandle> images = new Array<>(tmpDir.list());
                 projectManager.copyImageFilesForAllResolutionsIntoProject(images, true, progressHandler);
                 FileUtils.forceDelete(tmpDir.file());
@@ -123,7 +123,7 @@ public class SpriteAnimationAtlasAsset extends Asset {
             }
         }
         projectManager.deleteRegionFromPack(projectManager.getCurrentProjectInfoVO().animationsPacks, spriteName);
-        return ImportUtils.deleteDirectory(filePath);
+        return AssetsUtils.deleteDirectory(filePath);
     }
 
     protected void postDeleteSpriteAnimation(int root, String spriteAnimationName) {
@@ -182,7 +182,7 @@ public class SpriteAnimationAtlasAsset extends Asset {
         SpriteAnimationVO spriteAnimationVO = (SpriteAnimationVO) item;
         File fileSrc = new File(currentProjectPath + ProjectManager.SPRITE_DIR_PATH + File.separator + spriteAnimationVO.animationName);
         FileUtils.copyDirectory(fileSrc, tmpDir);
-        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS, fileSrc.getName() + ".atlas"));
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(AssetsUtils.TYPE_SPRITE_ANIMATION_ATLAS, fileSrc.getName() + ".atlas"));
         return true;
     }
 }

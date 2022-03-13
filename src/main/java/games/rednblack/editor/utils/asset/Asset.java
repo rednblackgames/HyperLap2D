@@ -7,7 +7,7 @@ import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.data.*;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
@@ -43,7 +43,7 @@ public abstract class Asset implements IAsset {
     public int matchType(Array<FileHandle> files) {
         for (FileHandle file : new Array.ArrayIterator<>(files)) {
             if (!matchMimeType(file))
-                return ImportUtils.TYPE_UNKNOWN;
+                return AssetsUtils.TYPE_UNKNOWN;
         }
         return getType();
     }
@@ -95,7 +95,7 @@ public abstract class Asset implements IAsset {
         File v = new File(currentProjectPath + ProjectManager.SHADER_DIR_PATH + File.separator + shaderName + ".vert");
         FileUtils.copyFileToDirectory(v, tmpDir);
 
-        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_SHADER, shaderName + ".frag"));
-        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_SHADER, shaderName + ".vert"));
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(AssetsUtils.TYPE_SHADER, shaderName + ".frag"));
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(AssetsUtils.TYPE_SHADER, shaderName + ".vert"));
     }
 }

@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.utils.HyperJson;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.h2d.common.ProgressHandler;
 import org.apache.commons.io.FileUtils;
@@ -22,7 +22,7 @@ public class HyperLap2DInternalLibraryAsset extends Asset {
 
     @Override
     public int getType() {
-        return ImportUtils.TYPE_HYPERLAP2D_INTERNAL_LIBRARY;
+        return AssetsUtils.TYPE_HYPERLAP2D_INTERNAL_LIBRARY;
     }
 
     @Override

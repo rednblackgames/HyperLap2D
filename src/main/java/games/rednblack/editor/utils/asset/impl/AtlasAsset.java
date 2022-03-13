@@ -4,7 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.data.TexturePackVO;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.ProgressHandler;
@@ -17,7 +17,7 @@ public class AtlasAsset extends Asset {
 
     @Override
     public int getType() {
-        return ImportUtils.TYPE_TEXTURE_ATLAS;
+        return AssetsUtils.TYPE_TEXTURE_ATLAS;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class AtlasAsset extends Asset {
         if (!file.extension().equals("atlas")) return false;
         try {
             TextureAtlas.TextureAtlasData atlas = new TextureAtlas.TextureAtlasData(file, file.parent(), false);
-            return !ImportUtils.isAtlasAnimationSequence(atlas.getRegions());
+            return !AssetsUtils.isAtlasAnimationSequence(atlas.getRegions());
         } catch (Exception ignore) {
         }
         return false;
@@ -45,7 +45,7 @@ public class AtlasAsset extends Asset {
                 if (tmpDir.exists())
                     FileUtils.forceDelete(tmpDir.file());
                 FileUtils.forceMkdir(tmpDir.file());
-                ImportUtils.unpackAtlasIntoTmpFolder(fileHandle.file(), null, tmpDir.path());
+                AssetsUtils.unpackAtlasIntoTmpFolder(fileHandle.file(), null, tmpDir.path());
                 Array<FileHandle> images = new Array<>(tmpDir.list());
                 projectManager.copyImageFilesForAllResolutionsIntoProject(images, true, progressHandler);
                 FileUtils.forceDelete(tmpDir.file());

@@ -25,8 +25,8 @@ import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
-import games.rednblack.editor.utils.AssetImporter;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetIOManager;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.view.menu.ResourcesMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -53,8 +53,8 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
     public void onRegister() {
         super.onRegister();
         facade = HyperLap2DFacade.getInstance();
-        AssetImporter.getInstance().setProgressHandler(new AssetsImportProgressHandler());
-        AssetImporter.getInstance().setViewComponent(viewComponent);
+        AssetIOManager.getInstance().setProgressHandler(new AssetsImportProgressHandler());
+        AssetIOManager.getInstance().setViewComponent(viewComponent);
     }
 
     @Override
@@ -82,12 +82,12 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
             case MsgAPI.ACTION_FILES_DROPPED:
                 ImportPanel.DropBundle bundle = notification.getBody();
                 if (viewComponent.checkDropRegionHit(bundle.pos)) {
-                    AssetImporter.getInstance().setProgressHandler(new AssetsImportProgressHandler());
-                    AssetImporter.getInstance().postPathObtainAction(bundle.paths);
+                    AssetIOManager.getInstance().setProgressHandler(new AssetsImportProgressHandler());
+                    AssetIOManager.getInstance().postPathObtainAction(bundle.paths);
                 }
                 break;
             case ImportPanel.IMPORT_FAILED:
-                viewComponent.showError(ImportUtils.TYPE_FAILED);
+                viewComponent.showError(AssetsUtils.TYPE_FAILED);
                 break;
         }
     }
@@ -97,7 +97,7 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try (MemoryStack stack = MemoryStack.stackPush()) {
-                FileTypeFilter.Rule allSupportedRule = ImportUtils.getInstance().getFileTypeFilter().getRules().get(0);
+                FileTypeFilter.Rule allSupportedRule = AssetsUtils.getInstance().getFileTypeFilter().getRules().get(0);
                 PointerBuffer aFilterPatterns = stack.mallocPointer(allSupportedRule.getExtensions().size);
                 for (String ext : new Array.ArrayIterator<>(allSupportedRule.getExtensions())) {
                     aFilterPatterns.put(stack.UTF8("*." + ext));
@@ -114,8 +114,8 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
                     if (files != null) {
                         String[] paths = files.split("\\|");
                         if(paths.length > 0) {
-                            AssetImporter.getInstance().setProgressHandler(new AssetsImportProgressHandler());
-                            AssetImporter.getInstance().postPathObtainAction(paths);
+                            AssetIOManager.getInstance().setProgressHandler(new AssetsImportProgressHandler());
+                            AssetIOManager.getInstance().postPathObtainAction(paths);
                         }
                     }
                 });

@@ -2,7 +2,7 @@ package games.rednblack.editor.controller.commands.resource;
 
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.SceneVO;
-import games.rednblack.editor.utils.AssetImporter;
+import games.rednblack.editor.utils.AssetIOManager;
 import games.rednblack.editor.view.ui.BoxItemResourceSelectionUIMediator;
 
 public class DeleteMultipleResources extends DeleteResourceCommand {
@@ -19,7 +19,7 @@ public class DeleteMultipleResources extends DeleteResourceCommand {
     public void doAction() {
         BoxItemResourceSelectionUIMediator boxSelection = facade.retrieveMediator(BoxItemResourceSelectionUIMediator.NAME);
         for (String resource : boxSelection.boxResourceSelectedSet) {
-            if (!AssetImporter.getInstance().deleteAsset(sandbox.getRootEntity(), resource))
+            if (!AssetIOManager.getInstance().deleteAsset(sandbox.getRootEntity(), resource))
                 cancel();
         }
 

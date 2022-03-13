@@ -13,7 +13,7 @@ import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.MainItemVO;
 import games.rednblack.editor.renderer.data.ParticleEffectVO;
 import games.rednblack.editor.renderer.data.SceneVO;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -33,7 +33,7 @@ public class ParticleEffectAsset extends Asset {
 
     @Override
     public int getType() {
-        return ImportUtils.TYPE_PARTICLE_EFFECT;
+        return AssetsUtils.TYPE_PARTICLE_EFFECT;
     }
 
     @Override
@@ -206,7 +206,7 @@ public class ParticleEffectAsset extends Asset {
         ParticleEffectVO particleEffectVO = (ParticleEffectVO) item;
         File fileSrc = new File(currentProjectPath + ProjectManager.PARTICLE_DIR_PATH + File.separator + particleEffectVO.particleName);
         FileUtils.copyFileToDirectory(fileSrc, tmpDir);
-        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_PARTICLE_EFFECT, fileSrc.getName()));
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(AssetsUtils.TYPE_PARTICLE_EFFECT, fileSrc.getName()));
         ParticleEffect particleEffect = new ParticleEffect(resourceManager.getParticleEffect(particleEffectVO.particleName));
         for (ParticleEmitter emitter : particleEffect.getEmitters()) {
             for (String path : emitter.getImagePaths()) {

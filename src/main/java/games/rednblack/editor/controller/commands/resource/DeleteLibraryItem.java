@@ -1,7 +1,7 @@
 package games.rednblack.editor.controller.commands.resource;
 
-import games.rednblack.editor.utils.AssetImporter;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetIOManager;
+import games.rednblack.editor.utils.AssetsUtils;
 
 /**
  * Created by azakhary on 11/29/2015.
@@ -20,7 +20,7 @@ public class DeleteLibraryItem extends DeleteResourceCommand {
     public void doAction() {
         String libraryItemName = notification.getBody();
 
-        AssetImporter.getInstance().deleteAsset(ImportUtils.TYPE_HYPERLAP2D_LIBRARY, sandbox.getRootEntity(), libraryItemName);
+        AssetIOManager.getInstance().deleteAsset(AssetsUtils.TYPE_HYPERLAP2D_LIBRARY, sandbox.getRootEntity(), libraryItemName);
 
         facade.sendNotification(DONE, libraryItemName);
     }

@@ -11,7 +11,7 @@ import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.renderer.components.NinePatchComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.data.*;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -33,12 +33,12 @@ public class ImageAsset extends Asset {
             names[i] = files.get(i).nameWithoutExtension();
         }
 
-        return ImportUtils.isAnimationSequence(names) ? ImportUtils.TYPE_UNKNOWN : super.matchType(files);
+        return AssetsUtils.isAnimationSequence(names) ? AssetsUtils.TYPE_UNKNOWN : super.matchType(files);
     }
 
     @Override
     public int getType() {
-        return ImportUtils.TYPE_IMAGE;
+        return AssetsUtils.TYPE_IMAGE;
     }
 
     @Override
@@ -190,11 +190,11 @@ public class ImageAsset extends Asset {
         if (item instanceof SimpleImageVO imageVO) {
             File fileSrc = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + imageVO.imageName + ".png");
             FileUtils.copyFileToDirectory(fileSrc, tmpDir);
-            exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_IMAGE, fileSrc.getName()));
+            exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(AssetsUtils.TYPE_IMAGE, fileSrc.getName()));
         } else if (item instanceof Image9patchVO imageVO) {
             File fileSrc = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + imageVO.imageName + ".9.png");
             FileUtils.copyFileToDirectory(fileSrc, tmpDir);
-            exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(ImportUtils.TYPE_IMAGE, fileSrc.getName()));
+            exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(AssetsUtils.TYPE_IMAGE, fileSrc.getName()));
         }
 
         return true;

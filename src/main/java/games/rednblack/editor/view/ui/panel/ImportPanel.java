@@ -32,7 +32,7 @@ import com.kotcrab.vis.ui.widget.VisProgressBar;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.UIDraggablePanel;
 
@@ -91,18 +91,18 @@ public class ImportPanel extends UIDraggablePanel {
     private void fillTypeNames() {
         typeNames.clear();
 
-        typeNames.put(ImportUtils.TYPE_ANIMATION_PNG_SEQUENCE, "PNG Sequence Animation");
-        typeNames.put(ImportUtils.TYPE_BITMAP_FONT, "Bitmap Font");
-        typeNames.put(ImportUtils.TYPE_IMAGE, "Texture");
-        typeNames.put(ImportUtils.TYPE_TEXTURE_ATLAS, "Texture Atlas");
-        typeNames.put(ImportUtils.TYPE_PARTICLE_EFFECT, "Particle Effect");
-        typeNames.put(ImportUtils.TYPE_SPINE_ANIMATION, "Spine Animation");
-        typeNames.put(ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS, "Animation Atlas Pack");
-        typeNames.put(ImportUtils.TYPE_TTF_FONT, "TTF Font");
-        typeNames.put(ImportUtils.TYPE_HYPERLAP2D_LIBRARY, "HyperLap2D Library");
-        typeNames.put(ImportUtils.TYPE_HYPERLAP2D_ACTION, "HyperLap2D Action");
-        typeNames.put(ImportUtils.TYPE_SHADER, "Shader");
-        typeNames.put(ImportUtils.TYPE_TALOS_VFX, "Talos VFX");
+        typeNames.put(AssetsUtils.TYPE_ANIMATION_PNG_SEQUENCE, "PNG Sequence Animation");
+        typeNames.put(AssetsUtils.TYPE_BITMAP_FONT, "Bitmap Font");
+        typeNames.put(AssetsUtils.TYPE_IMAGE, "Texture");
+        typeNames.put(AssetsUtils.TYPE_TEXTURE_ATLAS, "Texture Atlas");
+        typeNames.put(AssetsUtils.TYPE_PARTICLE_EFFECT, "Particle Effect");
+        typeNames.put(AssetsUtils.TYPE_SPINE_ANIMATION, "Spine Animation");
+        typeNames.put(AssetsUtils.TYPE_SPRITE_ANIMATION_ATLAS, "Animation Atlas Pack");
+        typeNames.put(AssetsUtils.TYPE_TTF_FONT, "TTF Font");
+        typeNames.put(AssetsUtils.TYPE_HYPERLAP2D_LIBRARY, "HyperLap2D Library");
+        typeNames.put(AssetsUtils.TYPE_HYPERLAP2D_ACTION, "HyperLap2D Action");
+        typeNames.put(AssetsUtils.TYPE_SHADER, "Shader");
+        typeNames.put(AssetsUtils.TYPE_TALOS_VFX, "Talos VFX");
     }
 
     public static class DropBundle {
@@ -190,21 +190,21 @@ public class ImportPanel extends UIDraggablePanel {
 
     public void showError(int type) {
         String text = "";
-        if(type == ImportUtils.TYPE_UNSUPPORTED || type == ImportUtils.TYPE_UNKNOWN) {
+        if(type == AssetsUtils.TYPE_UNSUPPORTED || type == AssetsUtils.TYPE_UNKNOWN) {
             text = "unsupported file type/types";
         }
-        if(type == ImportUtils.TYPE_MIXED) {
+        if(type == AssetsUtils.TYPE_MIXED) {
             text = "Multiple import types, please use one";
         }
         switch (type) {
-            case ImportUtils.TYPE_UNSUPPORTED:
-            case ImportUtils.TYPE_UNKNOWN:
+            case AssetsUtils.TYPE_UNSUPPORTED:
+            case AssetsUtils.TYPE_UNKNOWN:
                 text = "Unsupported file type/types";
                 break;
-            case ImportUtils.TYPE_MIXED:
+            case AssetsUtils.TYPE_MIXED:
                 text = "Multiple import types, please use one";
                 break;
-            case ImportUtils.TYPE_FAILED:
+            case AssetsUtils.TYPE_FAILED:
                 text = "Import has failed";
                 break;
         }

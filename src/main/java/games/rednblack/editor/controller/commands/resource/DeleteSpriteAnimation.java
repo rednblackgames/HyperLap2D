@@ -2,8 +2,8 @@ package games.rednblack.editor.controller.commands.resource;
 
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.SceneVO;
-import games.rednblack.editor.utils.AssetImporter;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetIOManager;
+import games.rednblack.editor.utils.AssetsUtils;
 
 /**
  * Created by Sasun Poghosyan on 5/12/2016.
@@ -21,7 +21,7 @@ public class DeleteSpriteAnimation extends DeleteResourceCommand {
     @Override
     public void doAction() {
         String spriteAnimationName = notification.getBody();
-        if (AssetImporter.getInstance().deleteAsset(ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS, sandbox.getRootEntity(), spriteAnimationName)) {
+        if (AssetIOManager.getInstance().deleteAsset(AssetsUtils.TYPE_SPRITE_ANIMATION_ATLAS, sandbox.getRootEntity(), spriteAnimationName)) {
             ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
             resolutionManager.rePackProjectImagesForAllResolutions(true);
 

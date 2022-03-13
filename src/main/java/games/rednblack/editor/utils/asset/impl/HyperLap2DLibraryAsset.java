@@ -11,8 +11,8 @@ import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.utils.HyperJson;
-import games.rednblack.editor.utils.AssetImporter;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetIOManager;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.utils.ZipUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
@@ -36,7 +36,7 @@ public class HyperLap2DLibraryAsset extends Asset {
 
     @Override
     public int getType() {
-        return ImportUtils.TYPE_HYPERLAP2D_LIBRARY;
+        return AssetsUtils.TYPE_HYPERLAP2D_LIBRARY;
     }
 
     @Override
@@ -114,7 +114,7 @@ public class HyperLap2DLibraryAsset extends Asset {
                                 progressHandler.progressChanged(80f * recursiveProgressIndex / (exportMapperVO.mapper.size - 1));
                                 ExportMapperVO.ExportedAsset asset = exportMapperVO.mapper.get(recursiveProgressIndex);
                                 FileHandle file = new FileHandle(libTmpDir.getPath() + File.separator + asset.fileName);
-                                AssetImporter.getInstance().importInternalResource(file, this);
+                                AssetIOManager.getInstance().importInternalResource(file, this);
                             } else {
                                 try {
                                     FileUtils.deleteDirectory(libTmpDir);
@@ -149,7 +149,7 @@ public class HyperLap2DLibraryAsset extends Asset {
                         importStarted = true;
                         ExportMapperVO.ExportedAsset asset = exportMapperVO.mapper.get(0);
                         FileHandle file = new FileHandle(libTmpDir.getPath() + File.separator + asset.fileName);
-                        AssetImporter.getInstance().importInternalResource(file, recursiveProgressHandler);
+                        AssetIOManager.getInstance().importInternalResource(file, recursiveProgressHandler);
                     }
                 }
 

@@ -1,21 +1,3 @@
-/*
- * ******************************************************************************
- *  * Copyright 2015 See AUTHORS file.
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *   http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
- *  *****************************************************************************
- */
-
 package games.rednblack.editor.utils;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -30,9 +12,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
-public class ImportUtils {
+public class AssetsUtils {
 
-    private static ImportUtils instance;
+    private static AssetsUtils instance;
 
     public static final int TYPE_FAILED = -3;
     public static final int TYPE_MIXED = -2;
@@ -54,7 +36,7 @@ public class ImportUtils {
 
     private final FileTypeFilter fileTypeFilter;
 
-    private ImportUtils() {
+    private AssetsUtils() {
         fileTypeFilter = new FileTypeFilter(false);
 
         fileTypeFilter.addRule("All Supported (*.png, *.atlas, *.p, *.json, *.vert, *.frag, *.h2dlib, *.h2daction)", "png", "atlas", "p", "json", "vert", "frag", "h2dlib", "h2daction");
@@ -67,9 +49,9 @@ public class ImportUtils {
         fileTypeFilter.addRule("HyperLap2D Action (*.h2daction)", "h2daction");
     }
 
-    public static ImportUtils getInstance() {
+    public static AssetsUtils getInstance() {
         if (instance == null) {
-            instance = new ImportUtils();
+            instance = new AssetsUtils();
         }
 
         return instance;

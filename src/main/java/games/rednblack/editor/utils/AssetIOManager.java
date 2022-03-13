@@ -20,18 +20,18 @@ import games.rednblack.h2d.extension.talos.TalosVO;
 import java.io.File;
 import java.io.IOException;
 
-public class AssetImporter {
+public class AssetIOManager {
 
-    private static AssetImporter sInstance;
+    private static AssetIOManager sInstance;
     private ImportPanelMediator.AssetsImportProgressHandler progressHandler;
     private ImportPanel viewComponent;
 
     private final Array<Asset> assetDescriptors = new Array<>();
     private final ObjectMap<Class<? extends  MainItemVO>, Integer> dataClassExportMap = new ObjectMap<>();
 
-    public static AssetImporter getInstance() {
+    public static AssetIOManager getInstance() {
         if (sInstance == null) {
-            sInstance = new AssetImporter();
+            sInstance = new AssetIOManager();
             sInstance.assetDescriptors.add(new ImageAsset());
             sInstance.assetDescriptors.add(new AtlasAsset());
             sInstance.assetDescriptors.add(new ParticleEffectAsset());
@@ -44,17 +44,17 @@ public class AssetImporter {
             sInstance.assetDescriptors.add(new HyperLap2DLibraryAsset());
             sInstance.assetDescriptors.add(new HyperLap2DActionAsset());
 
-            sInstance.dataClassExportMap.put(SimpleImageVO.class, ImportUtils.TYPE_IMAGE);
-            sInstance.dataClassExportMap.put(Image9patchVO.class, ImportUtils.TYPE_IMAGE);
-            sInstance.dataClassExportMap.put(SpineVO.class, ImportUtils.TYPE_SPINE_ANIMATION);
-            sInstance.dataClassExportMap.put(SpriteAnimationVO.class, ImportUtils.TYPE_SPRITE_ANIMATION_ATLAS);
-            sInstance.dataClassExportMap.put(ParticleEffectVO.class, ImportUtils.TYPE_PARTICLE_EFFECT);
-            sInstance.dataClassExportMap.put(TalosVO.class, ImportUtils.TYPE_TALOS_VFX);
+            sInstance.dataClassExportMap.put(SimpleImageVO.class, AssetsUtils.TYPE_IMAGE);
+            sInstance.dataClassExportMap.put(Image9patchVO.class, AssetsUtils.TYPE_IMAGE);
+            sInstance.dataClassExportMap.put(SpineVO.class, AssetsUtils.TYPE_SPINE_ANIMATION);
+            sInstance.dataClassExportMap.put(SpriteAnimationVO.class, AssetsUtils.TYPE_SPRITE_ANIMATION_ATLAS);
+            sInstance.dataClassExportMap.put(ParticleEffectVO.class, AssetsUtils.TYPE_PARTICLE_EFFECT);
+            sInstance.dataClassExportMap.put(TalosVO.class, AssetsUtils.TYPE_TALOS_VFX);
         }
         return sInstance;
     }
 
-    private AssetImporter() {
+    private AssetIOManager() {
 
     }
 
@@ -67,7 +67,7 @@ public class AssetImporter {
     }
 
     public void postPathObtainAction(String[] paths) {
-        int fileType = ImportUtils.TYPE_UNKNOWN;
+        int fileType = AssetsUtils.TYPE_UNKNOWN;
 
         Array<FileHandle> files = getFilesFromPaths(paths);
         for (Asset asset : assetDescriptors) {
@@ -100,7 +100,7 @@ public class AssetImporter {
         SettingsManager settingsManager = HyperLap2DFacade.getInstance().retrieveProxy(SettingsManager.NAME);
         settingsManager.setLastImportedPath(files.get(0).parent().path());
 
-        int count = (type != ImportUtils.TYPE_ANIMATION_PNG_SEQUENCE) ? files.size : 1;
+        int count = (type != AssetsUtils.TYPE_ANIMATION_PNG_SEQUENCE) ? files.size : 1;
 
         viewComponent.setImportingView(type, count);
     }
@@ -149,8 +149,12 @@ public class AssetImporter {
         return false;
     }
 
-    public boolean exportAsset(MainItemVO itemVO, ExportMapperVO exportMapperVO, File tmpDir) throws IOException {
-        return exportAsset(dataClassExportMap.get(itemVO.getClass()), itemVO, exportMapperVO, tmpDir);
+    public boolean exportAsset(MainItemVO itemVO, ExportMapperVO exportMapperVO, File tmpDir) {
+        try {
+            return exportAsset(dataClassExportMap.get(itemVO.getClass()), itemVO, exportMapperVO, tmpDir);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public boolean exportAsset(int type, MainItemVO itemVO, ExportMapperVO exportMapperVO, File tmpDir) throws IOException {

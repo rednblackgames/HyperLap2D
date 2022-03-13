@@ -3,7 +3,7 @@ package games.rednblack.editor.utils.asset.impl;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.proxy.ProjectManager;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.h2d.common.ProgressHandler;
 import org.apache.commons.io.FileUtils;
@@ -20,7 +20,7 @@ public class ShaderAsset extends Asset {
 
     @Override
     public int getType() {
-        return ImportUtils.TYPE_SHADER;
+        return AssetsUtils.TYPE_SHADER;
     }
 
     @Override

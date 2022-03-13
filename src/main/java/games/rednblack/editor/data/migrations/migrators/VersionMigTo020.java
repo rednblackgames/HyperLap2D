@@ -12,7 +12,7 @@ import games.rednblack.editor.data.migrations.IVersionMigrator;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.data.TexturePackVO;
-import games.rednblack.editor.utils.ImportUtils;
+import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -67,7 +67,7 @@ public class VersionMigTo020 implements IVersionMigrator {
                 }
 
                 try {
-                    ImportUtils.unpackAtlasIntoTmpFolder(atlasTargetPath.file(), null,projectPath + File.separator + ProjectManager.IMAGE_DIR_PATH);
+                    AssetsUtils.unpackAtlasIntoTmpFolder(atlasTargetPath.file(), null,projectPath + File.separator + ProjectManager.IMAGE_DIR_PATH);
                 } catch (Exception ignore) {
                 }
             }
@@ -87,7 +87,7 @@ public class VersionMigTo020 implements IVersionMigrator {
                 }
 
                 try {
-                    ImportUtils.unpackAtlasIntoTmpFolder(atlasTargetPath.file(), animName, projectPath + File.separator + ProjectManager.IMAGE_DIR_PATH);
+                    AssetsUtils.unpackAtlasIntoTmpFolder(atlasTargetPath.file(), animName, projectPath + File.separator + ProjectManager.IMAGE_DIR_PATH);
                 } catch (Exception ignore) {
                 }
             }
