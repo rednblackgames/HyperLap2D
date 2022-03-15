@@ -144,7 +144,6 @@ public class Sandbox {
         externalItemTypes.addExternalItemType(new TalosItemType());
         externalItemTypes.addExternalItemType(new TypingLabelItemType());
 
-        TextureArrayPolygonSpriteBatch.FORCE_UNROLLED = true;
         SceneConfiguration config = new SceneConfiguration(new TextureArrayCpuPolygonSpriteBatch(10_000));
         config.setResourceRetriever(resourceManager);
         config.setExternalItemTypes(externalItemTypes);

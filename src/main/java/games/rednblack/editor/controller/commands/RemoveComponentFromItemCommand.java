@@ -4,6 +4,7 @@ import com.artemis.Component;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.utils.runtime.ComponentCloner;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
+import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 
 /**
@@ -33,6 +34,8 @@ public class RemoveComponentFromItemCommand extends EntityModifyRevertibleComman
 
         HyperLap2DFacade.getInstance().sendNotification(DONE, entity);
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+
+        Sandbox.getInstance().getSceneControl().sceneLoader.getRenderer().removeSpecialEntity(entity);
     }
 
     @Override
