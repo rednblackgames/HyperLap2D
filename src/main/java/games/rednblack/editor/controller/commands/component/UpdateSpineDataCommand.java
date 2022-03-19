@@ -26,7 +26,9 @@ public class UpdateSpineDataCommand extends EntityModifyRevertibleCommand {
         SpineComponent spineComponent = SandboxComponentRetriever.get(entity, SpineComponent.class);
 
         spineComponent.currentAnimationName = vo.currentAnimationName;
+        spineComponent.currentSkinName = vo.currentSkinName;
         spineComponent.setAnimation(vo.currentAnimationName);
+        spineComponent.setSkin(vo.currentSkinName);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
@@ -37,7 +39,9 @@ public class UpdateSpineDataCommand extends EntityModifyRevertibleCommand {
         SpineComponent spineComponent = SandboxComponentRetriever.get(entity, SpineComponent.class);
 
         spineComponent.currentAnimationName = backup.currentAnimationName;
+        spineComponent.currentSkinName = backup.currentSkinName;
         spineComponent.setAnimation(backup.currentAnimationName);
+        spineComponent.setSkin(backup.currentSkinName);
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

@@ -30,13 +30,20 @@ import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
  */
 public class UISpineAnimationItemProperties extends UIItemCollapsibleProperties {
 
-    private VisSelectBox<String> animationsSelectBox;
+    private VisSelectBox<String> animationsSelectBox, skinSelectBox;
 
     public UISpineAnimationItemProperties() {
         super("Spine Animations");
         animationsSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
-        mainTable.add(StandardWidgetsFactory.createLabel("Animations:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(animationsSelectBox).width(120).colspan(2);
+        skinSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
+
+        mainTable.add(StandardWidgetsFactory.createLabel("Animation:", Align.right)).padRight(5).colspan(2).fillX();
+        mainTable.add(animationsSelectBox).width(120).colspan(2).row();
+
+        mainTable.add().padTop(7).colspan(4).row();
+
+        mainTable.add(StandardWidgetsFactory.createLabel("Skin:", Align.right)).padRight(5).colspan(2).fillX();
+        mainTable.add(skinSelectBox).width(120).colspan(2).row();
         setListeners();
     }
 
@@ -44,16 +51,32 @@ public class UISpineAnimationItemProperties extends UIItemCollapsibleProperties 
         return animationsSelectBox.getItems();
     }
 
+    public Array<String> getSkins() {
+        return skinSelectBox.getItems();
+    }
+
     public void setAnimations(Array<String> animations) {
         animationsSelectBox.setItems(animations);
     }
 
-    public String getSelected() {
+    public void setSkins(Array<String> animations) {
+        skinSelectBox.setItems(animations);
+    }
+
+    public String getSelectedAnimation() {
         return animationsSelectBox.getSelected();
+    }
+
+    public String getSelectedSkin() {
+        return skinSelectBox.getSelected();
     }
 
     public void setSelectedAnimation(String currentAnimationName) {
         animationsSelectBox.setSelected(currentAnimationName);
+    }
+
+    public void setSelectedSkin(String currentSkinName) {
+        skinSelectBox.setSelected(currentSkinName);
     }
 
     @Override
@@ -63,5 +86,6 @@ public class UISpineAnimationItemProperties extends UIItemCollapsibleProperties 
 
     private void setListeners() {
         animationsSelectBox.addListener(new SelectBoxChangeListener(getUpdateEventName()));
+        skinSelectBox.addListener(new SelectBoxChangeListener(getUpdateEventName()));
     }
 }
