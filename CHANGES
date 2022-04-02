@@ -2,6 +2,8 @@
 - [BREAK CHANGE] Update Project version to `1.0.0`
 - Extensions are completely detached from base runtime
 - Custom Variables are stored in JSON format
+- Support Spine's Skins
+- Particle Effects auto start flag
 - Bug fixes and stability improvements (as usual...)
 
 = Editor =
@@ -13,6 +15,7 @@
 = Runtime =
 - Rework Assets management
 - Implement `TextureArrayCpuPolygonSpriteBatch` and `TextureArrayPolygonSpriteBatch` (For GLES 2.0)
+- Fix Particle Effects Memory leaks
 
 [0.0.8]
 - [BREAK CHANGE] Rework runtime code, replaced Ashley ECS with Artemis-odb
