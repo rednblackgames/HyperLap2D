@@ -52,7 +52,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private static final String TAG = ResourceManager.class.getCanonicalName();
     public static final String NAME = TAG;
 
-    private final HashMap<String, ParticleEffect> particleEffects = new HashMap<>(1);
+    private final HashMap<String, ParticleEffectPool> particleEffects = new HashMap<>(1);
     private final HashMap<String, ParticleEffectDescriptor> talosVFXs = new HashMap<>(1);
     private HashMap<String, TextureAtlas> currentProjectAtlas = new HashMap<>(1);
 
@@ -152,7 +152,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     @Override
     public ParticleEffect getParticleEffect(String name) {
-        return new ParticleEffect(particleEffects.get(name));
+        return particleEffects.get(name).obtain();
     }
 
     /**
@@ -245,7 +245,8 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                     break;
                 } catch (Exception ignore) { }
             }
-            particleEffects.put(filename, particleEffect);
+            ParticleEffectPool effectPool = new ParticleEffectPool(particleEffect, 1, games.rednblack.editor.renderer.resources.ResourceManager.PARTICLE_POOL_SIZE);
+            particleEffects.put(filename, effectPool);
         }
     }
 
@@ -505,7 +506,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return spriteAnimAtlases;
     }
 
-    public HashMap<String, ParticleEffect> getProjectParticleList() {
+    public HashMap<String, ParticleEffectPool> getProjectParticleList() {
         return particleEffects;
     }
 
