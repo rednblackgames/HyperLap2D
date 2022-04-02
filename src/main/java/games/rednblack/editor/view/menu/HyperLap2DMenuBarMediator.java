@@ -22,6 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.editor.controller.commands.ShowNotificationCommand;
 import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -82,7 +83,8 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
                 //General
                 ProjectManager.PROJECT_OPENED,
                 HyperLap2DMenuBar.RECENT_LIST_MODIFIED,
-                MsgAPI.CREATE
+                MsgAPI.CREATE,
+                MsgAPI.AUTO_SAVE_PROJECT
         };
     }
 
@@ -113,12 +115,18 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
     }
 
     private void handleGeneralNotification(INotification notification) {
+        Sandbox sandbox = Sandbox.getInstance();
         switch (notification.getName()) {
             case ProjectManager.PROJECT_OPENED:
                 onProjectOpened();
                 break;
             case MsgAPI.CREATE:
                 viewComponent.setProjectOpen(false);
+                break;
+            case MsgAPI.AUTO_SAVE_PROJECT:
+                SceneVO vo = sandbox.sceneVoFromItems();
+                projectManager.saveCurrentProject(vo);
+                facade.sendNotification(MsgAPI.SHOW_NOTIFICATION, "Auto Save successfully", ShowNotificationCommand.TYPE_CLEAR_STACK);
                 break;
         }
     }

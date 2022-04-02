@@ -33,7 +33,7 @@ import java.util.HashMap;
 /**
  * Created by azakhary on 6/15/2015.
  */
-public abstract class EntityModifyRevertibleCommand extends RevertibleCommand {
+public abstract class EntityModifyRevertibleCommand extends HistoricRevertibleCommand {
 
     @Override
     public void callDoAction() {

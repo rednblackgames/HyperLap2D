@@ -6,7 +6,7 @@ import org.puremvc.java.interfaces.INotification;
 /**
  * Created by CyberJoe on 7/25/2015.
  */
-public abstract class TransactiveCommand extends RevertibleCommand {
+public abstract class TransactiveCommand extends HistoricRevertibleCommand {
 
     protected Array<RevertibleCommand> commands = new Array();
 

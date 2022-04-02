@@ -31,7 +31,7 @@ import java.util.HashMap;
 /**
  * Created by azakhary on 4/28/2015.
  */
-public class AddToLibraryCommand extends RevertibleCommand {
+public class AddToLibraryCommand extends HistoricRevertibleCommand {
 
     private String createdLibraryItemName;
     private CompositeItemVO overwritten;

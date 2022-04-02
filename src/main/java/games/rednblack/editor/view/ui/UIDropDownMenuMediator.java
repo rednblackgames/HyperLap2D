@@ -96,6 +96,7 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
         actionSets.get(LIBRARY_ACTION_ACTION_SET).add(MsgAPI.ACTION_DUPLICATE_LIBRARY_ACTION);
         actionSets.get(LIBRARY_ACTION_ACTION_SET).add(MsgAPI.ACTION_DELETE_LIBRARY_ACTION);
         actionSets.get(LIBRARY_ACTION_ACTION_SET).add(MsgAPI.ACTION_EXPORT_ACTION_ITEM);
+        actionSets.get(LIBRARY_ACTION_ACTION_SET).add(MsgAPI.ACTION_RENAME_ACTION_ITEM);
 
         actionSets.put(PARTICLE_ACTION_SET, new Array<>());
         actionSets.get(PARTICLE_ACTION_SET).add(MsgAPI.ACTION_DELETE_PARTICLE_EFFECT);

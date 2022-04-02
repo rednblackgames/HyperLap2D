@@ -19,11 +19,9 @@
 package games.rednblack.editor.proxy;
 
 import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
+import games.rednblack.editor.controller.commands.HistoricRevertibleCommand;
 import games.rednblack.editor.controller.commands.RevertibleCommand;
-import games.rednblack.editor.controller.commands.TransactiveCommand;
-import games.rednblack.editor.view.menu.FileMenu;
-import games.rednblack.h2d.common.MenuAPI;
+import games.rednblack.h2d.common.MsgAPI;
 import org.puremvc.java.patterns.proxy.Proxy;
 
 import java.util.ArrayList;
@@ -54,8 +52,7 @@ public class CommandManager extends Proxy {
         }
         commands.add(revertibleCommand);
         cursor = commands.indexOf(revertibleCommand);
-        if (revertibleCommand instanceof EntityModifyRevertibleCommand
-                || revertibleCommand instanceof TransactiveCommand) {
+        if (revertibleCommand instanceof HistoricRevertibleCommand) {
             modifiedCursor++;
             autoSave();
         }
@@ -75,8 +72,7 @@ public class CommandManager extends Proxy {
         }
         cursor--;
 
-        if (command instanceof EntityModifyRevertibleCommand
-                || command instanceof TransactiveCommand) {
+        if (command instanceof HistoricRevertibleCommand) {
             modifiedCursor--;
             autoSave();
         }
@@ -105,8 +101,7 @@ public class CommandManager extends Proxy {
             command.callDoAction();
             command.setStateDone(true);
 
-            if (command instanceof EntityModifyRevertibleCommand
-                    || command instanceof TransactiveCommand) {
+            if (command instanceof HistoricRevertibleCommand) {
                 modifiedCursor++;
                 autoSave();
             }
@@ -131,6 +126,6 @@ public class CommandManager extends Proxy {
     private void autoSave() {
         SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
         if (settingsManager.editorConfigVO.autoSave)
-            facade.sendNotification(FileMenu.SAVE_PROJECT, null, MenuAPI.FILE_MENU);
+            facade.sendNotification(MsgAPI.AUTO_SAVE_PROJECT);
     }
 }
