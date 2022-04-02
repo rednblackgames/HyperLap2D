@@ -25,6 +25,7 @@ public class UpdateParticleDataCommand extends EntityModifyRevertibleCommand {
 
         ParticleComponent particleComponent = SandboxComponentRetriever.get(entity, ParticleComponent.class);
         particleComponent.transform = vo.transform;
+        particleComponent.autoStart = vo.autoStart;
 
         particleComponent.particleEffect.setPosition(0, 0);
 
@@ -37,6 +38,7 @@ public class UpdateParticleDataCommand extends EntityModifyRevertibleCommand {
 
         ParticleComponent particleComponent = SandboxComponentRetriever.get(entity, ParticleComponent.class);
         particleComponent.transform = backup.transform;
+        particleComponent.autoStart = backup.autoStart;
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

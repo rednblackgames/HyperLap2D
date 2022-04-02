@@ -18,13 +18,16 @@ public class UIParticlePropertiesMediator extends UIItemPropertiesMediator<UIPar
 
     @Override
     protected void translateObservableDataToView(int item) {
-        viewComponent.setMatrixTransformEnabled(SandboxComponentRetriever.get(item, ParticleComponent.class).transform);
+        ParticleComponent particleComponent = SandboxComponentRetriever.get(item, ParticleComponent.class);
+        viewComponent.setMatrixTransformEnabled(particleComponent.transform);
+        viewComponent.setAutoStartEnabled(particleComponent.autoStart);
     }
 
     @Override
     protected void translateViewToItemData() {
         ParticleEffectVO payloadVo = new ParticleEffectVO();
         payloadVo.transform = viewComponent.isMatrixTransformEnabled();
+        payloadVo.autoStart = viewComponent.isAutoStartEnabled();
 
         Object payload = UpdateParticleDataCommand.payload(observableReference, payloadVo);
         facade.sendNotification(MsgAPI.ACTION_UPDATE_PARTICLE_DATA, payload);
