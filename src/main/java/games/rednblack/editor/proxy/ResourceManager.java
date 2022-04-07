@@ -24,6 +24,7 @@ import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.editor.renderer.utils.H2DSkinLoader;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.renderer.utils.ShadedDistanceFieldFont;
+import games.rednblack.editor.renderer.utils.ShaderCompiler;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.h2d.extension.spine.ResourceRetrieverAttachmentLoader;
@@ -409,7 +410,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
             if (file.isDirectory() || filename.endsWith(".DS_Store") || shaderPrograms.containsKey(filename)) continue;
             // check if pair exists.
             if(Gdx.files.internal(path + filename + ".vert").exists() && Gdx.files.internal(path + filename + ".frag").exists()) {
-                ShaderProgram shaderProgram = new ShaderProgram(Gdx.files.internal(path + filename + ".vert"), Gdx.files.internal(path + filename + ".frag"));
+                ShaderProgram shaderProgram = ShaderCompiler.compileShader(Gdx.files.internal(path + filename + ".vert"), Gdx.files.internal(path + filename + ".frag"));
                 if (!shaderProgram.isCompiled()) {
                     System.out.println("Error compiling shader: " + shaderProgram.getLog());
                 }
@@ -425,7 +426,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 + ProjectManager.SHADER_DIR_PATH + File.separator + shaderName;
 
         if(Gdx.files.internal(shader + ".vert").exists() && Gdx.files.internal(shader + ".frag").exists()) {
-            ShaderProgram shaderProgram = new ShaderProgram(Gdx.files.internal(shader + ".vert"), Gdx.files.internal(shader + ".frag"));
+            ShaderProgram shaderProgram = ShaderCompiler.compileShader(Gdx.files.internal(shader + ".vert"), Gdx.files.internal(shader + ".frag"));
             if (shaderProgram.isCompiled()) {
                 shaderPrograms.remove(shaderName);
                 shaderPrograms.put(shaderName, shaderProgram);
