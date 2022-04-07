@@ -15,7 +15,7 @@ public abstract class DeleteResourceCommand extends NonRevertibleCommand {
     @Override
     protected String confirmDialogMessage() {
         String resourceName = notification.getBody();
-        return "Are you sure you want to delete '" + resourceName +"'?";
+        return "Are you sure you want to delete '" + resourceName +"'?\nAction cannot be undone.";
     }
 
     @Override

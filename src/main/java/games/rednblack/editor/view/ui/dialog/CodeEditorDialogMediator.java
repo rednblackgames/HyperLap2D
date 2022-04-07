@@ -47,6 +47,7 @@ public class CodeEditorDialogMediator extends Mediator<CodeEditorDialog> {
                 viewComponent.setSyntax((Highlighter) payload[0]);
                 viewComponent.setText((String) payload[1]);
                 viewComponent.setNotificationCallback((String) payload[2]);
+                viewComponent.setNotificationCallbackType((String) payload[4]);
                 viewComponent.show(uiStage);
 
                 observedFile = (File) payload[3];
@@ -75,12 +76,13 @@ public class CodeEditorDialogMediator extends Mediator<CodeEditorDialog> {
         }
     }
 
-    public static Object[] openCodeEditorPayload(Highlighter syntax, String text, String notificationCallback, File file) {
-        Object[] payload = new Object[4];
+    public static Object[] openCodeEditorPayload(Highlighter syntax, String text, String notificationCallback, File file, String type) {
+        Object[] payload = new Object[5];
         payload[0] = syntax;
         payload[1] = text;
         payload[2] = notificationCallback;
         payload[3] = file;
+        payload[4] = type;
         return payload;
     }
 }

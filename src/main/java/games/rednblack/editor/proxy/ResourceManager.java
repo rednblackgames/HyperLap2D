@@ -527,6 +527,10 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 		return shaderPrograms.get(shaderName);
 	}
 
+    public void removeShaderProgram(String shaderName) {
+        shaderPrograms.remove(shaderName);
+    }
+
     public HashMap<String, ShaderProgram> getShaders() {
         return shaderPrograms;
     }

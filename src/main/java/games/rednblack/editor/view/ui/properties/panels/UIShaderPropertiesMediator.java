@@ -80,7 +80,7 @@ public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<UIShade
                 if (!viewComponent.getShader().equals("Default")) {
                     File shader = new File(projectManager.getCurrentProjectPath() + File.separator
                             + ProjectManager.SHADER_DIR_PATH + File.separator + viewComponent.getShader() + ".frag");
-                    Object[] payload = CodeEditorDialogMediator.openCodeEditorPayload(glslSyntax, "", UIShaderProperties.EDIT_SHADER_DONE, shader);
+                    Object[] payload = CodeEditorDialogMediator.openCodeEditorPayload(glslSyntax, "", UIShaderProperties.EDIT_SHADER_DONE, shader, "");
                     facade.sendNotification(MsgAPI.OPEN_CODE_EDITOR, payload);
                 }
                 break;

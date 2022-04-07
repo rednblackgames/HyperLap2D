@@ -302,7 +302,7 @@ public class AtlasesPackDialog extends H2DDialog {
         }
         currentList.clear();
         for (String item : regions)
-            currentList.addAll(item);
+            currentList.add(item);
         currentList.sort();
         if (currentPackAdapter.getSelection().size > 0) {
             selectCurrentItem(currentList.contains(toSelect, false) ? toSelect : null);
@@ -325,7 +325,7 @@ public class AtlasesPackDialog extends H2DDialog {
         }
         mainList.clear();
         for (String item : regions)
-            mainList.addAll(item);
+            mainList.add(item);
         mainList.sort();
 
         mainPackAdapter.itemsChanged();

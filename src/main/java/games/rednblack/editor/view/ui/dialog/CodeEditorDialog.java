@@ -17,7 +17,7 @@ import games.rednblack.h2d.common.view.ui.listener.ScrollFocusListener;
 public class CodeEditorDialog extends H2DDialog {
 
     private final HighlightTextArea textArea;
-    private String notificationCallback;
+    private String notificationCallback, notificationCallbackType;
 
     private boolean smartIndent = false;
 
@@ -75,7 +75,7 @@ public class CodeEditorDialog extends H2DDialog {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                HyperLap2DFacade.getInstance().sendNotification(notificationCallback, textArea.getText());
+                HyperLap2DFacade.getInstance().sendNotification(notificationCallback, textArea.getText(), notificationCallbackType);
                 close();
             }
         });
@@ -103,6 +103,10 @@ public class CodeEditorDialog extends H2DDialog {
 
     public void setNotificationCallback(String notificationCallback) {
         this.notificationCallback = notificationCallback;
+    }
+
+    public void setNotificationCallbackType(String notificationCallbackType) {
+        this.notificationCallbackType = notificationCallbackType;
     }
 
     @Override
