@@ -20,12 +20,16 @@ public class ShaderManagerDialog extends H2DDialog {
     private final SimpleListAdapter<String> shadersListAdapter;
     private final Array<String> shaderItems = new Array<>();
 
+    private final VisSelectBox<String> newShaderTypeSelectBox;
+
     public static final String prefix = "games.rednblack.editor.view.ui.dialog.ShaderManagerDialog";
 
     public static final String EDIT_FRAGMENT_SHADER = prefix + ".EDIT_FRAGMENT_SHADER";
     public static final String EDIT_VERTEX_SHADER = prefix + ".EDIT_VERTEX_SHADER";
     public static final String EDIT_FRAGMENT_SHADER_DONE = prefix + ".EDIT_FRAGMENT_SHADER_DONE";
     public static final String EDIT_VERTEX_SHADER_DONE = prefix + ".EDIT_VERTEX_SHADER_DONE";
+
+    public static final String CREATE_NEW_SHADER = prefix + ".CREATE_NEW_SHADER";
 
     public ShaderManagerDialog() {
         super("Shader Manager");
@@ -43,27 +47,29 @@ public class ShaderManagerDialog extends H2DDialog {
         getContentTable().add(shaderList.getMainTable()).uniformX().grow();
 
         VisTextField newShaderName = StandardWidgetsFactory.createTextField();
-        newShaderName.setMessageText("Create New Shader");
+        newShaderName.setMessageText("New Shader Name");
         getButtonsTable().add(newShaderName).growX();
 
-        VisTextButton newShaderButton = StandardWidgetsFactory.createTextButton("Simple");
+        VisTextButton newShaderButton = StandardWidgetsFactory.createTextButton("Create");
         newShaderButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (newShaderName.getText().isEmpty()) return;
 
+                Object[] payload = new Object[2];
+                payload[0] = newShaderName.getText();
+                payload[1] = newShaderTypeSelectBox.getSelectedIndex();
+
+                HyperLap2DFacade.getInstance().sendNotification(CREATE_NEW_SHADER, payload);
             }
         });
 
-        VisTextButton newScreenReadingShaderButton = StandardWidgetsFactory.createTextButton("Screen Reading");
-        newShaderButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
+        String[] data = {"Simple", "Simple Array", "Screen Reading", "Screen Reading Array"};
+        newShaderTypeSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
+        newShaderTypeSelectBox.setItems(data);
 
-            }
-        });
-
+        getButtonsTable().add(newShaderTypeSelectBox);
         getButtonsTable().add(newShaderButton).pad(2);
-        getButtonsTable().add(newScreenReadingShaderButton).pad(2);
         getCell(getButtonsTable()).growX();
     }
 

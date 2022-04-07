@@ -1,14 +1,18 @@
 package games.rednblack.editor.view.ui.dialog;
 
+import com.badlogic.gdx.files.FileHandle;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.code.syntax.GLSLSyntax;
 import games.rednblack.editor.controller.commands.resource.DeleteShaderCommand;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
+import games.rednblack.editor.renderer.utils.DefaultShaders;
+import games.rednblack.editor.renderer.utils.ShaderCompiler;
 import games.rednblack.editor.view.menu.ResourcesMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.MsgAPI;
+import org.apache.commons.io.FileUtils;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
 
@@ -43,6 +47,7 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
                 ShaderManagerDialog.EDIT_VERTEX_SHADER_DONE,
                 ShaderManagerDialog.EDIT_FRAGMENT_SHADER,
                 ShaderManagerDialog.EDIT_VERTEX_SHADER,
+                ShaderManagerDialog.CREATE_NEW_SHADER,
                 DeleteShaderCommand.DONE
         };
     }
@@ -103,6 +108,48 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
                     e.printStackTrace();
                 }
                 break;
+            case ShaderManagerDialog.CREATE_NEW_SHADER:
+                payload = notification.getBody();
+                createNewShader((String) payload[0], (int) payload[1]);
+                break;
+        }
+    }
+
+    private void createNewShader(String name, int type) {
+        String vertex = null;
+        String fragment = null;
+
+        switch (type) {
+            case 0:
+                vertex = DefaultShaders.DEFAULT_VERTEX_SHADER;
+                fragment = DefaultShaders.DEFAULT_FRAGMENT_SHADER;
+                break;
+            case 1:
+                vertex = DefaultShaders.DEFAULT_ARRAY_VERTEX_SHADER;
+                fragment = DefaultShaders.DEFAULT_ARRAY_FRAGMENT_SHADER;
+                break;
+            case 2:
+            case 3:
+                break;
+        }
+
+        if (vertex == null || fragment == null) return;
+
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        ResourceManager rm = facade.retrieveProxy(ResourceManager.NAME);
+
+        FileHandle vert = new FileHandle(projectManager.getCurrentProjectPath() + File.separator
+                + ProjectManager.SHADER_DIR_PATH + File.separator + name + ".vert");
+        FileHandle frag = new FileHandle(projectManager.getCurrentProjectPath() + File.separator
+                + ProjectManager.SHADER_DIR_PATH + File.separator + name + ".frag");
+
+        try {
+            FileUtils.writeStringToFile(vert.file(), vertex, "utf-8");
+            FileUtils.writeStringToFile(frag.file(), fragment, "utf-8");
+            rm.addShaderProgram(name, ShaderCompiler.compileShader(vertex, fragment));
+            viewComponent.updateShaderList(rm.getShaders().keySet());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
