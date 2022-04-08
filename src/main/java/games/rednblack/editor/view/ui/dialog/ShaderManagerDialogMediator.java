@@ -6,8 +6,11 @@ import games.rednblack.editor.code.syntax.GLSLSyntax;
 import games.rednblack.editor.controller.commands.resource.DeleteShaderCommand;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
+import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.renderer.utils.DefaultShaders;
 import games.rednblack.editor.renderer.utils.ShaderCompiler;
+import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.menu.ResourcesMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -19,6 +22,7 @@ import org.puremvc.java.patterns.mediator.Mediator;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.function.Consumer;
 
 public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
 
@@ -26,6 +30,9 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
     private static final String NAME = TAG;
 
     private final GLSLSyntax glslSyntax = new GLSLSyntax();
+
+    private ResourceManager resourceManager;
+    private ProjectManager projectManager;
 
     public ShaderManagerDialogMediator() {
         super(NAME, new ShaderManagerDialog());
@@ -35,6 +42,9 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
     public void onRegister() {
         super.onRegister();
         facade = HyperLap2DFacade.getInstance();
+
+        resourceManager = facade.retrieveProxy(ResourceManager.NAME);
+        projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
     }
 
     @Override
@@ -54,8 +64,6 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
 
     @Override
     public void handleNotification(INotification notification) {
-        ResourceManager rm = facade.retrieveProxy(ResourceManager.NAME);
-        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
         Sandbox sandbox = Sandbox.getInstance();
         UIStage uiStage = sandbox.getUIStage();
 
@@ -70,7 +78,7 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
             case ProjectManager.PROJECT_DATA_UPDATED:
             case DeleteShaderCommand.DONE:
             case ProjectManager.PROJECT_OPENED:
-                viewComponent.updateShaderList(rm.getShaders().keySet());
+                viewComponent.updateShaderList(resourceManager.getShaders().keySet());
                 break;
             case ShaderManagerDialog.EDIT_FRAGMENT_SHADER:
                 shaderName = notification.getBody();
@@ -91,8 +99,8 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
                         + ProjectManager.SHADER_DIR_PATH + File.separator + notification.getType() + ".frag");
                 try {
                     Files.writeString(shader.toPath(), notification.getBody());
-                    rm.reloadShader(notification.getType());
-                    //TODO Refresh entities with this shader
+                    resourceManager.reloadShader(notification.getType());
+                    updateEntitiesShaders(sandbox.getRootEntity(), notification.getType());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -102,8 +110,8 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
                         + ProjectManager.SHADER_DIR_PATH + File.separator + notification.getType() + ".vert");
                 try {
                     Files.writeString(shader.toPath(), notification.getBody());
-                    rm.reloadShader(notification.getType());
-                    //TODO Refresh entities with this shader
+                    resourceManager.reloadShader(notification.getType());
+                    updateEntitiesShaders(sandbox.getRootEntity(), notification.getType());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -113,6 +121,17 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
                 createNewShader((String) payload[0], (int) payload[1]);
                 break;
         }
+    }
+
+    private void updateEntitiesShaders(int root, String shaderName) {
+        Consumer<Integer> action = (item) -> {
+            ShaderComponent shaderComponent = SandboxComponentRetriever.get(item, ShaderComponent.class);
+            if (shaderComponent != null && shaderComponent.shaderName.equals(shaderName)) {
+                shaderComponent.setShader(shaderName, resourceManager.getShaderProgram(shaderName));
+            }
+        };
+
+        EntityUtils.applyActionRecursivelyOnEntities(root, action);
     }
 
     private void createNewShader(String name, int type) {
