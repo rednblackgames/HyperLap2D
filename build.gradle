@@ -165,7 +165,7 @@ runtime {
         installerOptions += ['--license-file', 'LICENSE']
         if (osName.contains('windows')) {
             imageOptions += ["--icon", file("icons/icon.ico")]
-            installerType = 'msi'
+            installerType = 'exe'
             installerOptions += ['--win-dir-chooser', '--win-menu', '--win-menu-group', 'HyperLap2D',
                                  '--win-shortcut', '--win-shortcut-prompt',  '--vendor', 'Red & Black Games',
                                  '--description', 'HyperLap2D Editor',

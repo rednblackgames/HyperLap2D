@@ -62,17 +62,17 @@ jobs:
         env:
           WORKFLOW_RUN: ${{ github.run_number }}
         run: ./gradlew.bat dist -PSNAPSHOT=true
-      - name: Build msi package
+      - name: Build exe package
         env:
           WORKFLOW_RUN: ${{ github.run_number }}
         run: ./gradlew.bat jpackage -PSNAPSHOT=true
       - name: Fix file names
-        run: mv build/jpackage/*.msi Windows.HyperLap2D-SNAPSHOT.msi
-      - name: Upload msi artifact
+        run: mv build/jpackage/*.exe Windows.HyperLap2D-SNAPSHOT.exe
+      - name: Upload exe artifact
         uses: actions/upload-artifact@v2
         with:
-          name: Windows.HyperLap2D-SNAPSHOT.msi
-          path: Windows.HyperLap2D-SNAPSHOT.msi
+          name: Windows.HyperLap2D-SNAPSHOT.exe
+          path: Windows.HyperLap2D-SNAPSHOT.exe
 
   macOS:
     if: "!contains(github.event.head_commit.message, 'cd skip')"
