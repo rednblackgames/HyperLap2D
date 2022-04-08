@@ -4,6 +4,7 @@
 - Custom Variables are stored in JSON format
 - Support Spine's Skins
 - Particle Effects auto start flag
+- Add support to Bitmap Fonts (.fnt)
 - Bug fixes and stability improvements (as usual...)
 
 = Editor =
