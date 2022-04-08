@@ -25,7 +25,7 @@ import com.kotcrab.vis.ui.util.ToastManager;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.SettingsManager;
-import games.rednblack.editor.renderer.utils.CpuPolygonSpriteBatch;
+import games.rednblack.editor.renderer.utils.TextureArrayCpuPolygonSpriteBatch;
 import games.rednblack.editor.view.ui.*;
 import games.rednblack.h2d.common.proxy.CursorManager;
 
@@ -44,7 +44,7 @@ public class UIStage extends Stage {
 	public Group midUI;
 
     public UIStage() {
-        super(new ScreenViewport(), new CpuPolygonSpriteBatch());
+        super(new ScreenViewport(), new TextureArrayCpuPolygonSpriteBatch());
 
         facade = HyperLap2DFacade.getInstance();
 
