@@ -79,6 +79,7 @@ public class ProjectManager extends Proxy {
     public static final String TALOS_VFX_DIR_PATH = "assets/talos-vfx";
     public static final String SHADER_DIR_PATH = "assets/shaders";
     public static final String FONTS_DIR_PATH = "assets/freetypefonts";
+    public static final String BITMAP_FONTS_DIR_PATH = "assets/bitmapfonts";
 
     public ProjectVO currentProjectVO;
     public ProjectInfoVO currentProjectInfoVO;
@@ -445,6 +446,12 @@ public class ProjectManager extends Proxy {
         if (!currentProjectVO.projectMainExportPath.isEmpty()) {
             exportFonts(currentProjectVO.projectMainExportPath);
         }
+
+        exportBitmapFonts(defaultBuildPath);
+        if (!currentProjectVO.projectMainExportPath.isEmpty()) {
+            exportBitmapFonts(currentProjectVO.projectMainExportPath);
+        }
+
         SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
         sceneDataManager.buildScenes(defaultBuildPath);
         if (!currentProjectVO.projectMainExportPath.isEmpty()) {
@@ -510,6 +517,17 @@ public class ProjectManager extends Proxy {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void exportBitmapFonts(String targetPath) {
+        String srcPath = currentProjectPath + "/assets";
+        FileHandle origDirectoryHandle = Gdx.files.absolute(srcPath);
+        FileHandle fontsDirectory = origDirectoryHandle.child("bitmapfonts");
+        File fileTarget = new File(targetPath + "/" + fontsDirectory.name());
+        try {
+            FileUtils.copyDirectory(fontsDirectory.file(), fileTarget);
+        } catch (IOException ignore) {
         }
     }
 

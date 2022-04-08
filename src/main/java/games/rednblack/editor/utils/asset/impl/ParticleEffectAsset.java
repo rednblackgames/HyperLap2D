@@ -59,7 +59,7 @@ public class ParticleEffectAsset extends Asset {
 
     @Override
     public void importAsset(Array<FileHandle> files, ProgressHandler progressHandler, boolean skipRepack) {
-        final String targetPath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.PARTICLE_DIR_PATH ;
+        final String targetPath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.PARTICLE_DIR_PATH;
 
         Array<FileHandle> images = new Array<>();
         for (FileHandle fileHandle : new Array.ArrayIterator<>(files)) {

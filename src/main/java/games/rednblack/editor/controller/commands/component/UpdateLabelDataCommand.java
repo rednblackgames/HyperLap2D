@@ -44,6 +44,7 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
     Label.LabelStyle prevStyle;
     boolean prevWrap;
     boolean prevMono;
+    String prevBitmapFont;
 
     @Override
     public void doAction() {
@@ -61,22 +62,34 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
         this.prevText = (String) payload[5];
         this.prevWrap = labelComponent.wrap;
         this.prevMono = labelComponent.mono;
+        this.prevBitmapFont = labelComponent.bitmapFont;
 
         labelComponent.fontName = (String) payload[1];
         labelComponent.fontSize = (int) payload[2];
         labelComponent.setAlignment((Integer) payload[3]);
         labelComponent.setText((String) payload[4]);
-        labelComponent.setStyle(getNewStyle(labelComponent.fontName, labelComponent.fontSize, labelComponent.mono));
         labelComponent.setWrap((Boolean) payload[6]);
         labelComponent.mono = (Boolean) payload[7];
+        labelComponent.bitmapFont = (String) payload[8];
+
+        if (labelComponent.bitmapFont != null) {
+            labelComponent.setStyle(getNewStyle(labelComponent.bitmapFont));
+        } else {
+            labelComponent.setStyle(getNewStyle(labelComponent.fontName, labelComponent.fontSize, labelComponent.mono));
+        }
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+    }
+
+    private Label.LabelStyle getNewStyle(String fontName) {
+        IResourceRetriever rm = Sandbox.getInstance().getSceneControl().sceneLoader.getRm();
+        return LabelComponentFactory.generateStyle(rm, fontName);
     }
 
     private Label.LabelStyle getNewStyle(String fontName, int fontSize, boolean mono) {
 
         IResourceRetriever rm = Sandbox.getInstance().getSceneControl().sceneLoader.getRm();
-        final boolean hasBitmapFont = rm.getBitmapFont(fontName, fontSize, mono) != null;
+        final boolean hasBitmapFont = rm.getFont(fontName, fontSize, mono) != null;
 
         if(!hasBitmapFont) {
             games.rednblack.editor.proxy.ResourceManager resourceManager = facade.retrieveProxy(games.rednblack.editor.proxy.ResourceManager.NAME);
@@ -97,6 +110,7 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
         labelComponent.setStyle(prevStyle);
         labelComponent.setWrap(prevWrap);
         labelComponent.mono = prevMono;
+        labelComponent.bitmapFont = prevBitmapFont;
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

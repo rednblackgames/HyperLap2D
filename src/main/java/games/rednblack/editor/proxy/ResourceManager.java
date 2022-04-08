@@ -56,7 +56,8 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     private final HashMap<String, SpineDataObject> spineAnimAtlases = new HashMap<>();
     private final HashMap<String, Array<TextureAtlas.AtlasRegion>> spriteAnimAtlases = new HashMap<>();
-    private final HashMap<FontSizePair, BitmapFont> bitmapFonts = new HashMap<>();
+    private final HashMap<FontSizePair, BitmapFont> fonts = new HashMap<>();
+    private final HashMap<String, BitmapFont> bitmapFonts = new HashMap<>();
     private final HashMap<String, ShaderProgram> shaderPrograms = new HashMap<>(1);
 
     private TextureAtlas.AtlasRegion defaultRegion;
@@ -183,13 +184,16 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return spriteAnimAtlases.get(animationName);
     }
 
-
     @Override
-    public BitmapFont getBitmapFont(String fontName, int fontSize, boolean mono) {
+    public BitmapFont getFont(String fontName, int fontSize, boolean mono) {
         FontSizePair pair = new FontSizePair(fontName, fontSize, mono);
-        return bitmapFonts.get(pair);
+        return fonts.get(pair);
     }
 
+    @Override
+    public BitmapFont getBitmapFont(String fontName) {
+        return bitmapFonts.get(fontName);
+    }
 
     @Override
     public boolean hasTextureRegion(String regionName) {
@@ -205,7 +209,6 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         return projectManager.getCurrentProjectInfoVO();
     }
-
 
     @Override
     public SceneVO getSceneVO(String name) {
@@ -223,10 +226,24 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         loadCurrentProjectTalosVFXs(projectPath + File.separator + ProjectManager.TALOS_VFX_DIR_PATH);
         loadCurrentProjectSpineAnimations(projectPath + File.separator + ProjectManager.SPINE_DIR_PATH);
         loadCurrentProjectSpriteAnimations(projectPath + File.separator + ProjectManager.SPRITE_DIR_PATH);
-        loadCurrentProjectBitmapFonts();
+        loadCurrentProjectBitmapFonts(projectPath + File.separator + ProjectManager.BITMAP_FONTS_DIR_PATH);
+        loadCurrentProjectFonts();
         loadCurrentProjectShaders(projectPath + File.separator + ProjectManager.SHADER_DIR_PATH);
 
         removeInvalidResourceReferences();
+    }
+
+    public void loadCurrentProjectBitmapFonts(String path) {
+        bitmapFonts.clear();
+        FileHandle sourceDir = new FileHandle(path);
+        for (FileHandle entry : sourceDir.list()) {
+            File file = entry.file();
+            String filename = file.getName();
+            if (file.isDirectory() || filename.endsWith(".DS_Store")) continue;
+
+            BitmapFont bitmapFont = new BitmapFont(Gdx.files.internal(file.getAbsolutePath()), getTextureRegion(entry.nameWithoutExtension()));
+            bitmapFonts.put(bitmapFont.getData().name, bitmapFont);
+        }
     }
 
     private void loadCurrentProjectParticles(String path) {
@@ -370,8 +387,8 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return result;
     }
 
-    public void loadCurrentProjectBitmapFonts() {
-        bitmapFonts.clear();
+    public void loadCurrentProjectFonts() {
+        fonts.clear();
 
         ArrayList<FontSizePair> requiredFonts = getProjectRequiredFontsList();
         for (int i = 0; i < requiredFonts.size(); i++) {
@@ -386,7 +403,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 BitmapFont font = generator.generateFont(parameter);
                 font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
                 font.setUseIntegerPositions(false);
-                bitmapFonts.put(pair, font);
+                fonts.put(pair, font);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -456,24 +473,20 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return expectedFile;
     }
 
-    public void addBitmapFont(String name, int size, BitmapFont font, boolean mono) {
-        bitmapFonts.put(new FontSizePair(name, size, mono), font);
-    }
-
     public void flushAllUnusedFonts() {
         //List of fonts that are required to be in memory
         ArrayList<FontSizePair> requiredFonts = getProjectRequiredFontsList();
-        ArrayList<FontSizePair> fontsInMemory = new ArrayList<>(bitmapFonts.keySet());
+        ArrayList<FontSizePair> fontsInMemory = new ArrayList<>(fonts.keySet());
 
         for (FontSizePair font : fontsInMemory) {
             if (!requiredFonts.contains(font)) {
-                bitmapFonts.remove(font);
+                fonts.remove(font);
             }
         }
     }
 
     public boolean isFontLoaded(String shortName, int fontSize, boolean mono) {
-        return bitmapFonts.containsKey(new FontSizePair(shortName, fontSize, mono));
+        return fonts.containsKey(new FontSizePair(shortName, fontSize, mono));
     }
 
     public void prepareEmbeddingFont(String fontfamily, int fontSize, boolean mono) {
@@ -495,7 +508,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         font.setUseIntegerPositions(false);
         if (mono)
             font.setFixedWidthGlyphs(FreeTypeFontGenerator.DEFAULT_CHARS);
-        addBitmapFont(fontfamily, parameter.size, font, mono);
+        fonts.put(new FontSizePair(fontfamily, parameter.size, mono), font);
     }
 
     public HashMap<String, SpineDataObject> getProjectSpineAnimationsList() {
@@ -512,6 +525,10 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     public HashMap<String, ParticleEffectDescriptor> getProjectTalosList() {
         return talosVFXs;
+    }
+
+    public HashMap<String, BitmapFont> getBitmapFontList() {
+        return bitmapFonts;
     }
 
     @Override

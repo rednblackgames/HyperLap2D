@@ -40,6 +40,7 @@ public class AssetIOManager {
             sInstance.assetDescriptors.add(new SpriteAnimationAtlasAsset());
             sInstance.assetDescriptors.add(new SpriteAnimationSequenceAsset());
             sInstance.assetDescriptors.add(new ShaderAsset());
+            sInstance.assetDescriptors.add(new BitmapFontAsset());
             sInstance.assetDescriptors.add(new HyperLap2DInternalLibraryAsset());
             sInstance.assetDescriptors.add(new HyperLap2DLibraryAsset());
             sInstance.assetDescriptors.add(new HyperLap2DActionAsset());
@@ -50,6 +51,7 @@ public class AssetIOManager {
             sInstance.dataClassExportMap.put(SpriteAnimationVO.class, AssetsUtils.TYPE_SPRITE_ANIMATION_ATLAS);
             sInstance.dataClassExportMap.put(ParticleEffectVO.class, AssetsUtils.TYPE_PARTICLE_EFFECT);
             sInstance.dataClassExportMap.put(TalosVO.class, AssetsUtils.TYPE_TALOS_VFX);
+            sInstance.dataClassExportMap.put(LabelVO.class, AssetsUtils.TYPE_BITMAP_FONT);
         }
         return sInstance;
     }

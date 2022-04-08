@@ -2,6 +2,7 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.FontManager;
+import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.components.label.LabelComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
@@ -17,6 +18,7 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
     private String prevText = null;
 
     private FontManager fontManager;
+    private ResourceManager resourceManager;
 
     public UILabelItemPropertiesMediator() {
         super(NAME, new UILabelItemProperties());
@@ -26,8 +28,10 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
     public void onRegister() {
         facade = HyperLap2DFacade.getInstance();
         fontManager = facade.retrieveProxy(FontManager.NAME);
+        resourceManager = facade.retrieveProxy(ResourceManager.NAME);
         lockUpdates = true;
         viewComponent.setFontFamilyList(fontManager.getFontNamesFromMap());
+        viewComponent.setBitmapFontList(resourceManager.getBitmapFontList());
         lockUpdates = false;
     }
 
@@ -71,6 +75,7 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
         viewComponent.setText(labelComponent.text.toString().replace("\\n", "\n"));
         viewComponent.setWrap(labelComponent.wrap);
         viewComponent.setMono(labelComponent.mono);
+        viewComponent.setBitmapFontFamily(labelComponent.bitmapFont != null ? labelComponent.bitmapFont : UILabelItemProperties.NONE_BITMAP_FONT);
 
         if(prevText == null) this.prevText = viewComponent.getText();
     }
@@ -79,7 +84,7 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
     protected void translateViewToItemData() {
         final String newText = viewComponent.getText();
 
-        Object[] payload = new Object[8];
+        Object[] payload = new Object[9];
         payload[0] = observableReference;
         payload[1] = viewComponent.getFontFamily();
         payload[2] = viewComponent.getFontSize();
@@ -88,6 +93,7 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
         payload[5] = prevText;
         payload[6] = viewComponent.isWrap();
         payload[7] = viewComponent.isMono();
+        payload[8] = viewComponent.getBitmapFont().equals(UILabelItemProperties.NONE_BITMAP_FONT) ? null : viewComponent.getBitmapFont();
         sendNotification(MsgAPI.ACTION_UPDATE_LABEL_DATA, payload);
 
         this.prevText = newText;

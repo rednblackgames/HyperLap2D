@@ -1,5 +1,6 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
@@ -30,13 +31,14 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
 
     public static final String LABEL_TEXT_CHAR_TYPED = prefix + ".LABEL_TEXT_CHANGED";
     public static final String LABEL_TEXT_EXPAND_SAVED = prefix + ".LABEL_TEXT_EXPAND_SAVED";
+    public static final String NONE_BITMAP_FONT = "<None>";
 
     private HashMap<Integer, String> alignMap = new HashMap<>();
     private Array<String> alignNames = new Array<>();
 
     private HyperLap2DFacade facade;
 
-    private VisSelectBox<String> fontFamilySelectBox;
+    private VisSelectBox<String> fontFamilySelectBox, bitmapFontSelectBox;
     private VisSelectBox<String> alignSelectBox;
     private VisCheckBox boldCheckBox;
     private VisCheckBox wrapCheckBox;
@@ -49,6 +51,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
         super("Label");
         facade = HyperLap2DFacade.getInstance();
 
+        bitmapFontSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
         fontFamilySelectBox = StandardWidgetsFactory.createSelectBox(String.class);
         alignSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
         boldCheckBox = StandardWidgetsFactory.createCheckBox();
@@ -64,6 +67,10 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
         ExpandableTextArea textAreaTable = new ExpandableTextArea(facade, LABEL_TEXT_EXPAND_SAVED);
         textAreaTable.setSyntax(new TypingLabelSyntax());
         textArea = textAreaTable.getTextArea();
+
+        mainTable.add(StandardWidgetsFactory.createLabel("Bitmap Font", Align.right)).padRight(5).width(90).left();
+        mainTable.add(bitmapFontSelectBox).width(90).padRight(5);
+        mainTable.row().padTop(5);
 
         mainTable.add(StandardWidgetsFactory.createLabel("Font Family", Align.right)).padRight(5).width(90).left();
         mainTable.add(fontFamilySelectBox).width(90).padRight(5);
@@ -92,6 +99,10 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
 
         setListeners();
         setAlignList();
+    }
+
+    public String getBitmapFont() {
+        return bitmapFontSelectBox.getSelected();
     }
 
     public String getFontFamily() {
@@ -180,6 +191,18 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
         fontFamilySelectBox.setSelected(name);
     }
 
+    public void setBitmapFontList(HashMap<String, BitmapFont> fontFamilies) {
+        Array<String> tmp = new Array<>();
+        tmp.add(NONE_BITMAP_FONT);
+        for (String name : fontFamilies.keySet())
+            tmp.add(name);
+        bitmapFontSelectBox.setItems(tmp);
+    }
+
+    public void setBitmapFontFamily(String name) {
+        bitmapFontSelectBox.setSelected(name);
+    }
+
     public void setStyle(boolean bold, boolean italic) {
         boldCheckBox.setChecked(bold);
         italicCheckBox.setChecked(italic);
@@ -200,6 +223,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
 
     private void setListeners() {
         final String eventName = getUpdateEventName();
+        bitmapFontSelectBox.addListener(new SelectBoxChangeListener(eventName));
         fontFamilySelectBox.addListener(new SelectBoxChangeListener(eventName));
         alignSelectBox.addListener(new SelectBoxChangeListener(eventName));
         boldCheckBox.addListener(new CheckBoxChangeListener(eventName));
