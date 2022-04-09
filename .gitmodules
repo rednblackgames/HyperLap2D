@@ -13,3 +13,6 @@
 [submodule "h2d-libgdx-typinglabel-extension"]
 	path = h2d-libgdx-typinglabel-extension
 	url = https://github.com/rednblackgames/h2d-libgdx-typinglabel-extension.git
+[submodule "h2d-libgdx-tinyvg-extension"]
+	path = h2d-libgdx-tinyvg-extension
+	url = https://github.com/rednblackgames/h2d-libgdx-tinyvg-extension.git
