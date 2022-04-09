@@ -37,6 +37,7 @@ import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.extension.spine.SpineItemType;
 import games.rednblack.h2d.extension.talos.TalosItemType;
+import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -62,6 +63,7 @@ public class EntityUtils {
         itemTypeNameMap.put(SPRITE_TYPE, "Sprite Animation");
         itemTypeNameMap.put(COLOR_PRIMITIVE, "Primitive");
         itemTypeNameMap.put(TalosItemType.TALOS_TYPE, "Talos VFX");
+        itemTypeNameMap.put(TinyVGItemType.TINYVG_TYPE, "TinyVG Image");
 
         itemTypeIconMap.put(UNKNOWN_TYPE, "icon-unknown");
         itemTypeIconMap.put(COMPOSITE_TYPE, "icon-composite2");
@@ -74,6 +76,7 @@ public class EntityUtils {
         itemTypeIconMap.put(SPRITE_TYPE, "icon-animation");
         itemTypeIconMap.put(COLOR_PRIMITIVE, "icon-image");
         itemTypeIconMap.put(TalosItemType.TALOS_TYPE, "icon-talos");
+        itemTypeIconMap.put(TinyVGItemType.TINYVG_TYPE, "icon-image");
     }
 
     public static String getItemName(int entity) {

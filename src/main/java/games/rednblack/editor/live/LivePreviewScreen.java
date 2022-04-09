@@ -22,6 +22,7 @@ import games.rednblack.editor.renderer.components.additional.ButtonComponent;
 import games.rednblack.editor.renderer.utils.TextureArrayCpuPolygonSpriteBatch;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.extension.talos.TalosItemType;
+import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelItemType;
 import games.rednblack.h2d.extension.spine.SpineItemType;
 import org.puremvc.java.interfaces.IFacade;
@@ -60,6 +61,7 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
         //Add external item types
         externalItemTypes.addExternalItemType(new SpineItemType());
         externalItemTypes.addExternalItemType(new TalosItemType());
+        externalItemTypes.addExternalItemType(new TinyVGItemType());
         externalItemTypes.addExternalItemType(new TypingLabelItemType());
 
         SceneConfiguration config = new SceneConfiguration(new TextureArrayCpuPolygonSpriteBatch());

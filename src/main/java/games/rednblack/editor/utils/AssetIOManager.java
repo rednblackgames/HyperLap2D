@@ -16,6 +16,7 @@ import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.h2d.extension.spine.SpineVO;
 import games.rednblack.h2d.extension.talos.TalosVO;
+import games.rednblack.h2d.extension.tinyvg.TinyVGVO;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class AssetIOManager {
             sInstance.assetDescriptors.add(new AtlasAsset());
             sInstance.assetDescriptors.add(new ParticleEffectAsset());
             sInstance.assetDescriptors.add(new TalosVFXAsset());
+            sInstance.assetDescriptors.add(new TinyVGAsset());
             sInstance.assetDescriptors.add(new SpineAsset());
             sInstance.assetDescriptors.add(new SpriteAnimationAtlasAsset());
             sInstance.assetDescriptors.add(new SpriteAnimationSequenceAsset());
@@ -52,6 +54,7 @@ public class AssetIOManager {
             sInstance.dataClassExportMap.put(ParticleEffectVO.class, AssetsUtils.TYPE_PARTICLE_EFFECT);
             sInstance.dataClassExportMap.put(TalosVO.class, AssetsUtils.TYPE_TALOS_VFX);
             sInstance.dataClassExportMap.put(LabelVO.class, AssetsUtils.TYPE_BITMAP_FONT);
+            sInstance.dataClassExportMap.put(TinyVGVO.class, AssetsUtils.TYPE_TINY_VG);
         }
         return sInstance;
     }

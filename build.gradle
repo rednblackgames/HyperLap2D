@@ -121,12 +121,14 @@ dependencies {
     implementation project(":h2d-libgdx-spine-extension")
     implementation project(":h2d-libgdx-talos-extension")
     implementation project(":h2d-libgdx-typinglabel-extension")
+    implementation project(":h2d-libgdx-tinyvg-extension")
 
     implementation "com.talosvfx:talos-libgdx:$talosVersion"
     implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
     implementation "com.rafaskoberg.gdx:typing-label:$typingLabelVersion"
     implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
     implementation "com.esotericsoftware.spine:spine-libgdx:$spineVersion"
+    implementation "com.github.lyze237:gdx-TinyVG:$gdxTinyVGVersion"
     implementation "com.mortennobel:java-image-scaling:0.8.6"
     implementation "org.apache.commons:commons-lang3:3.12.0"
     implementation "commons-io:commons-io:2.7"

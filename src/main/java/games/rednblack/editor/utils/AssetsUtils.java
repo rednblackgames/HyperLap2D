@@ -33,19 +33,21 @@ public class AssetsUtils {
     public static final int TYPE_HYPERLAP2D_INTERNAL_LIBRARY = 12;
     public static final int TYPE_TALOS_VFX = 13;
     public static final int TYPE_HYPERLAP2D_ACTION = 14;
+    public static final int TYPE_TINY_VG = 15;
 
     private final FileTypeFilter fileTypeFilter;
 
     private AssetsUtils() {
         fileTypeFilter = new FileTypeFilter(false);
 
-        fileTypeFilter.addRule("All Supported (*.png, *.atlas, *.p, *.json, *.vert, *.frag, *.fnt, *.h2dlib, *.h2daction)", "png", "atlas", "p", "json", "vert", "frag", "fnt", "h2dlib", "h2daction");
+        fileTypeFilter.addRule("All Supported (*.png, *.atlas, *.p, *.json, *.vert, *.frag, *.fnt, *.h2dlib, *.h2daction)", "png", "atlas", "p", "json", "vert", "frag", "fnt", "tvg", "h2dlib", "h2daction");
         fileTypeFilter.addRule("PNG File (*.png)", "png");
         fileTypeFilter.addRule("Sprite Animation Atlas File (*.atlas)", "atlas");
         fileTypeFilter.addRule("libGDX/Talos Particle Effect (*.p)", "p");
         fileTypeFilter.addRule("Spine Animation (*.json)", "json");
         fileTypeFilter.addRule("Shader (*.vert, *.frag)", "vert", "frag");
         fileTypeFilter.addRule("BitmapFont (*.fnt)", "fnt");
+        fileTypeFilter.addRule("TinyVG (*.tvg)", "tvg");
         fileTypeFilter.addRule("HyperLap2D Library (*.h2dlib)", "h2dlib");
         fileTypeFilter.addRule("HyperLap2D Action (*.h2daction)", "h2daction");
     }

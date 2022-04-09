@@ -20,6 +20,7 @@ import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.factory.IFactory;
 import games.rednblack.h2d.extension.spine.SpineItemType;
 import games.rednblack.h2d.extension.talos.TalosItemType;
+import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
 
 import java.util.HashMap;
 
@@ -214,6 +215,25 @@ public class ItemFactory implements IFactory {
 
         HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
 
+        Pools.free(data);
+        return entity;
+    }
+
+    public boolean tryCreateTinyVGItem(String name, Vector2 position) {
+        int entity = createTinyVGItem(name, position);
+        return entity != -1;
+    }
+
+    public int createTinyVGItem(String name, Vector2 position) {
+        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
+        if(!setEssentialData(data, position)) {
+            Pools.free(data);
+            return -1;
+        }
+        data.data = name;
+        int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), TinyVGItemType.TINYVG_TYPE, data);
+
+        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
         Pools.free(data);
         return entity;
     }

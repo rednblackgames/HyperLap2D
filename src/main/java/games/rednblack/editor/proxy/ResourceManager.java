@@ -17,6 +17,7 @@ import com.kotcrab.vis.ui.VisUI;
 import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
 import com.talosvfx.talos.runtime.utils.ShaderDescriptor;
 import com.talosvfx.talos.runtime.utils.VectorField;
+import dev.lyze.gdxtinyvg.TinyVG;
 import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.resources.FontSizePair;
@@ -30,6 +31,9 @@ import games.rednblack.h2d.extension.spine.SpineDrawableLogic;
 import games.rednblack.h2d.extension.spine.SpineItemType;
 import games.rednblack.h2d.extension.talos.ResourceRetrieverAssetProvider;
 import games.rednblack.h2d.extension.talos.TalosItemType;
+import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
+import games.rednblack.h2d.extension.tinyvg.TinyVGUtils;
+import games.rednblack.h2d.extension.tinyvg.TinyVGVO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.puremvc.java.patterns.proxy.Proxy;
@@ -59,6 +63,8 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private final HashMap<FontSizePair, BitmapFont> fonts = new HashMap<>();
     private final HashMap<String, BitmapFont> bitmapFonts = new HashMap<>();
     private final HashMap<String, ShaderProgram> shaderPrograms = new HashMap<>(1);
+    private final HashMap<String, TinyVG> tinyVGs = new HashMap<>(1);
+    private final HashMap<String, TinyVG> originalTinyVGs = new HashMap<>(1);
 
     private TextureAtlas.AtlasRegion defaultRegion;
 
@@ -174,9 +180,15 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 return spineAnimAtlases.get(name);
             case TalosItemType.TALOS_TYPE:
                 return talosVFXs.get(name);
+            case TinyVGItemType.TINYVG_TYPE:
+                return tinyVGs.get(name);
             default:
                 return null;
         }
+    }
+
+    public TinyVG getOriginalTinyVG(String name) {
+        return originalTinyVGs.get(name);
     }
 
     @Override
@@ -227,6 +239,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         loadCurrentProjectSpineAnimations(projectPath + File.separator + ProjectManager.SPINE_DIR_PATH);
         loadCurrentProjectSpriteAnimations(projectPath + File.separator + ProjectManager.SPRITE_DIR_PATH);
         loadCurrentProjectBitmapFonts(projectPath + File.separator + ProjectManager.BITMAP_FONTS_DIR_PATH);
+        loadCurrentProjectTinyVGs(projectPath + File.separator + ProjectManager.TINY_VG_DIR_PATH);
         loadCurrentProjectFonts();
         loadCurrentProjectShaders(projectPath + File.separator + ProjectManager.SHADER_DIR_PATH);
 
@@ -244,6 +257,21 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
             BitmapFont bitmapFont = new BitmapFont(Gdx.files.internal(file.getAbsolutePath()), getTextureRegion(entry.nameWithoutExtension()));
             bitmapFont.setUseIntegerPositions(false);
             bitmapFonts.put(bitmapFont.getData().name, bitmapFont);
+        }
+    }
+
+    public void loadCurrentProjectTinyVGs(String path) {
+        tinyVGs.clear();
+        originalTinyVGs.clear();
+
+        FileHandle sourceDir = new FileHandle(path);
+        for (FileHandle entry : sourceDir.list()) {
+            File file = entry.file();
+            String filename = file.getName();
+            if (file.isDirectory() || filename.endsWith(".DS_Store")) continue;
+
+            tinyVGs.put(entry.nameWithoutExtension(), TinyVGUtils.load(entry));
+            originalTinyVGs.put(entry.nameWithoutExtension(), TinyVGUtils.load(entry));
         }
     }
 
@@ -530,6 +558,10 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     public HashMap<String, BitmapFont> getBitmapFontList() {
         return bitmapFonts;
+    }
+
+    public HashMap<String, TinyVG> getTinyVGList() {
+        return tinyVGs;
     }
 
     @Override

@@ -80,6 +80,7 @@ public class ProjectManager extends Proxy {
     public static final String SHADER_DIR_PATH = "assets/shaders";
     public static final String FONTS_DIR_PATH = "assets/freetypefonts";
     public static final String BITMAP_FONTS_DIR_PATH = "assets/bitmapfonts";
+    public static final String TINY_VG_DIR_PATH = "assets/tinyvg";
 
     public ProjectVO currentProjectVO;
     public ProjectInfoVO currentProjectInfoVO;
@@ -452,6 +453,11 @@ public class ProjectManager extends Proxy {
             exportBitmapFonts(currentProjectVO.projectMainExportPath);
         }
 
+        exportTinyVG(defaultBuildPath);
+        if (!currentProjectVO.projectMainExportPath.isEmpty()) {
+            exportTinyVG(currentProjectVO.projectMainExportPath);
+        }
+
         SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
         sceneDataManager.buildScenes(defaultBuildPath);
         if (!currentProjectVO.projectMainExportPath.isEmpty()) {
@@ -524,6 +530,17 @@ public class ProjectManager extends Proxy {
         String srcPath = currentProjectPath + "/assets";
         FileHandle origDirectoryHandle = Gdx.files.absolute(srcPath);
         FileHandle fontsDirectory = origDirectoryHandle.child("bitmapfonts");
+        File fileTarget = new File(targetPath + "/" + fontsDirectory.name());
+        try {
+            FileUtils.copyDirectory(fontsDirectory.file(), fileTarget);
+        } catch (IOException ignore) {
+        }
+    }
+
+    private void exportTinyVG(String targetPath) {
+        String srcPath = currentProjectPath + "/assets";
+        FileHandle origDirectoryHandle = Gdx.files.absolute(srcPath);
+        FileHandle fontsDirectory = origDirectoryHandle.child("tinyvg");
         File fileTarget = new File(targetPath + "/" + fontsDirectory.name());
         try {
             FileUtils.copyDirectory(fontsDirectory.file(), fileTarget);

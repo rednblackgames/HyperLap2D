@@ -20,14 +20,19 @@ package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
+import dev.lyze.gdxtinyvg.drawers.TinyVGShapeDrawer;
 import games.rednblack.editor.controller.commands.resource.DeleteImageResource;
+import games.rednblack.editor.controller.commands.resource.DeleteTinyVGResource;
 import games.rednblack.editor.factory.ItemFactory;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
+import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.ImageResource;
+import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.TinyVGResource;
+import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 
@@ -45,11 +50,14 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
         super(NAME, new UIImagesTab());
     }
 
+    private TinyVGShapeDrawer drawer;
+
     @Override
     public String[] listNotificationInterests() {
         String[] listNotification = super.listNotificationInterests();
 
         listNotification = ArrayUtils.add(listNotification, DeleteImageResource.DONE);
+        listNotification = ArrayUtils.add(listNotification, DeleteTinyVGResource.DONE);
 
         return listNotification;
     }
@@ -58,6 +66,7 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
         switch (notification.getName()) {
+            case DeleteTinyVGResource.DONE:
             case DeleteImageResource.DONE:
                 initList(viewComponent.searchString);
                 break;
@@ -68,6 +77,9 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
 
     @Override
     protected void initList(String searchText) {
+        if (drawer == null)
+            drawer = new TinyVGShapeDrawer(Sandbox.getInstance().getUIStage().getBatch(), WhitePixel.sharedInstance.textureRegion);
+
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         ProjectInfoVO projectInfoVO = projectManager.getCurrentProjectInfoVO();
@@ -94,6 +106,14 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
                 draggableResource.initDragDrop();
                 thumbnailBoxes.add(draggableResource);
             }
+        }
+
+        for (String name : resourceManager.getTinyVGList().keySet()) {
+            TinyVGResource tinyVGResource = new TinyVGResource(name, resourceManager.getOriginalTinyVG(name), drawer);
+            DraggableResource draggableResource = new DraggableResource(tinyVGResource);
+            draggableResource.setFactoryFunction(ItemFactory.get()::tryCreateTinyVGItem);
+            draggableResource.initDragDrop();
+            thumbnailBoxes.add(draggableResource);
         }
 
         thumbnailBoxes.sort();

@@ -110,6 +110,7 @@ public class BootstrapCommand extends SimpleCommand {
 
         // Resources
         facade.registerCommand(MsgAPI.ACTION_DELETE_IMAGE_RESOURCE, DeleteImageResource::new);
+        facade.registerCommand(MsgAPI.ACTION_DELETE_TINY_VG_RESOURCE, DeleteTinyVGResource::new);
         facade.registerCommand(MsgAPI.ACTION_DELETE_SHADER, DeleteShaderCommand::new);
         facade.registerCommand(MsgAPI.ACTION_DELETE_LIBRARY_ITEM, DeleteLibraryItem::new);
         facade.registerCommand(MsgAPI.ACTION_DELETE_LIBRARY_ACTION, DeleteLibraryAction::new);

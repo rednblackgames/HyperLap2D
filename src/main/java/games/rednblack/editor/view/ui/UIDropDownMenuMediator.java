@@ -53,6 +53,7 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
     public static final Integer LIBRARY_ACTION_ACTION_SET = 12;
     public static final Integer TALOS_ACTION_SET = 13;
     public static final Integer MIX_RESOURCE_BOX_ACTION_SET = 14;
+    public static final Integer TINY_VG_RESOURCE_ACTION_SET = 15;
 
     private Sandbox sandbox;
 
@@ -81,6 +82,9 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
 
         actionSets.put(IMAGE_RESOURCE_ACTION_SET, new Array<>());
         actionSets.get(IMAGE_RESOURCE_ACTION_SET).add(MsgAPI.ACTION_DELETE_IMAGE_RESOURCE);
+
+        actionSets.put(TINY_VG_RESOURCE_ACTION_SET, new Array<>());
+        actionSets.get(TINY_VG_RESOURCE_ACTION_SET).add(MsgAPI.ACTION_DELETE_TINY_VG_RESOURCE);
 
         actionSets.put(SPINE_ANIMATION_ACTION_SET, new Array<>());
         actionSets.get(SPINE_ANIMATION_ACTION_SET).add(MsgAPI.ACTION_DELETE_SPINE_ANIMATION_RESOURCE);
@@ -133,6 +137,7 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
                 MsgAPI.ITEM_RIGHT_CLICK,
                 UIDropDownMenu.ITEM_CLICKED,
                 UIResourcesBoxMediator.IMAGE_RIGHT_CLICK,
+                UIResourcesBoxMediator.TINY_VG_RIGHT_CLICK,
                 UIResourcesBoxMediator.SPINE_ANIMATION_RIGHT_CLICK,
                 UIResourcesBoxMediator.SPRITE_ANIMATION_RIGHT_CLICK,
                 UIResourcesBoxMediator.LIBRARY_ITEM_RIGHT_CLICK,
@@ -187,6 +192,11 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
                 break;
             case UIResourcesBoxMediator.IMAGE_RIGHT_CLICK:
                 tmpActionSet.addAll(actionSets.get(IMAGE_RESOURCE_ACTION_SET));
+                applyResourceBoxMutators(tmpActionSet);
+                showPopup(tmpActionSet, notification.getBody());
+                break;
+            case UIResourcesBoxMediator.TINY_VG_RIGHT_CLICK:
+                tmpActionSet.addAll(actionSets.get(TINY_VG_RESOURCE_ACTION_SET));
                 applyResourceBoxMutators(tmpActionSet);
                 showPopup(tmpActionSet, notification.getBody());
                 break;

@@ -44,7 +44,7 @@ public class UIStage extends Stage {
 	public Group midUI;
 
     public UIStage() {
-        super(new ScreenViewport(), new TextureArrayCpuPolygonSpriteBatch());
+        super(new ScreenViewport(), new TextureArrayCpuPolygonSpriteBatch(10_000));
 
         facade = HyperLap2DFacade.getInstance();
 

@@ -54,6 +54,7 @@ public class UIDropDownMenu extends H2DPopupMenu {
         actionNames.put(MsgAPI.ACTION_EXPORT_ACTION_ITEM, "Export");
         actionNames.put(MsgAPI.ACTION_RENAME_ACTION_ITEM, "Rename");
         actionNames.put(MsgAPI.ACTION_DELETE_IMAGE_RESOURCE, "Delete");
+        actionNames.put(MsgAPI.ACTION_DELETE_TINY_VG_RESOURCE, "Delete");
         actionNames.put(MsgAPI.ACTION_DELETE_LIBRARY_ITEM, "Delete");
         actionNames.put(MsgAPI.ACTION_DELETE_PARTICLE_EFFECT, "Delete");
         actionNames.put(MsgAPI.ACTION_DELETE_TALOS_VFX, "Delete");

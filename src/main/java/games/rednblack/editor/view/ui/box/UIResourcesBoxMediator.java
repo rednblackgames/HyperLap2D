@@ -53,6 +53,7 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
 	public static final String ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT = PREFIX + ".ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT";
 
     public static final String IMAGE_RIGHT_CLICK = PREFIX + ".IMAGE_RIGHT_CLICK";
+    public static final String TINY_VG_RIGHT_CLICK = PREFIX + ".TINY_VG_RIGHT_CLICK";
     public static final String SPINE_ANIMATION_RIGHT_CLICK = PREFIX + ".SPINE_ANIMATION_RIGHT_CLICK";
     public static final String SPRITE_ANIMATION_RIGHT_CLICK = PREFIX + ".SPRITE_ANIMATION_RIGHT_CLICK";
     public static final String LIBRARY_ITEM_RIGHT_CLICK = PREFIX + ".LIBRARY_ITEM_RIGHT_CLICK";
