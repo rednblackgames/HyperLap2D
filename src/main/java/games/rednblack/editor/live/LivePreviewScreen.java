@@ -64,7 +64,7 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
         externalItemTypes.addExternalItemType(new TinyVGItemType());
         externalItemTypes.addExternalItemType(new TypingLabelItemType());
 
-        SceneConfiguration config = new SceneConfiguration(new TextureArrayCpuPolygonSpriteBatch());
+        SceneConfiguration config = new SceneConfiguration(new TextureArrayCpuPolygonSpriteBatch(10_000));
         config.setResourceRetriever(resourceManager);
         config.setExternalItemTypes(externalItemTypes);
 

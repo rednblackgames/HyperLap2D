@@ -17,6 +17,7 @@ public class DeleteTinyVGResource extends DeleteResourceCommand {
     public void doAction() {
         String imageName = notification.getBody();
         if (AssetIOManager.getInstance().deleteAsset(AssetsUtils.TYPE_TINY_VG, sandbox.getRootEntity(), imageName)) {
+            projectManager.loadProjectData(projectManager.getCurrentProjectPath());
             sendNotification(DONE, imageName);
             SceneVO vo = sandbox.sceneVoFromItems();
             projectManager.saveCurrentProject(vo);

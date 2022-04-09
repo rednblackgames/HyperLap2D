@@ -5,6 +5,7 @@
 - Support Spine's Skins
 - Particle Effects auto start flag
 - Add support to Bitmap Fonts (.fnt)
+- Add support to TinyVG (.tvg)
 - Bug fixes and stability improvements (as usual...)
 
 = Editor =

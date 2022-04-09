@@ -109,11 +109,15 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
         }
 
         for (String name : resourceManager.getTinyVGList().keySet()) {
-            TinyVGResource tinyVGResource = new TinyVGResource(name, resourceManager.getOriginalTinyVG(name), drawer);
-            DraggableResource draggableResource = new DraggableResource(tinyVGResource);
-            draggableResource.setFactoryFunction(ItemFactory.get()::tryCreateTinyVGItem);
-            draggableResource.initDragDrop();
-            thumbnailBoxes.add(draggableResource);
+            try {
+                TinyVGResource tinyVGResource = new TinyVGResource(name, resourceManager.getOriginalTinyVG(name), drawer);
+                DraggableResource draggableResource = new DraggableResource(tinyVGResource);
+                draggableResource.setFactoryFunction(ItemFactory.get()::tryCreateTinyVGItem);
+                draggableResource.initDragDrop();
+                thumbnailBoxes.add(draggableResource);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         thumbnailBoxes.sort();

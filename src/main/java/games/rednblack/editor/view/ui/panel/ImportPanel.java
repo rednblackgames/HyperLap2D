@@ -103,6 +103,7 @@ public class ImportPanel extends UIDraggablePanel {
         typeNames.put(AssetsUtils.TYPE_HYPERLAP2D_ACTION, "HyperLap2D Action");
         typeNames.put(AssetsUtils.TYPE_SHADER, "Shader");
         typeNames.put(AssetsUtils.TYPE_TALOS_VFX, "Talos VFX");
+        typeNames.put(AssetsUtils.TYPE_TINY_VG, "TinyVG Image");
     }
 
     public static class DropBundle {
