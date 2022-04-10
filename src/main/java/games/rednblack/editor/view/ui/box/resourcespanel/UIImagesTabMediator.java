@@ -33,6 +33,7 @@ import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableReso
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.ImageResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.TinyVGResource;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
+import games.rednblack.h2d.extension.tinyvg.CpuTinyVGShapeDrawer;
 import org.apache.commons.lang3.ArrayUtils;
 import org.puremvc.java.interfaces.INotification;
 
@@ -78,7 +79,7 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
     @Override
     protected void initList(String searchText) {
         if (drawer == null)
-            drawer = new TinyVGShapeDrawer(Sandbox.getInstance().getUIStage().getBatch(), WhitePixel.sharedInstance.textureRegion);
+            drawer = new CpuTinyVGShapeDrawer(Sandbox.getInstance().getUIStage().getBatch(), WhitePixel.sharedInstance.textureRegion);
 
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
