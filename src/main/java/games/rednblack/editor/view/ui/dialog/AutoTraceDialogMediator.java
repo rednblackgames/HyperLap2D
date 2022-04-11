@@ -82,7 +82,9 @@ public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
 
                     FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
                     BasicFollower follower = followersUIMediator.getFollower(entity);
-                    follower.getSubFollower(PolygonFollower.class).update();
+                    PolygonFollower polygonFollower = (PolygonFollower) follower.getSubFollower(PolygonFollower.class);
+                    if (polygonFollower != null)
+                        polygonFollower.update();
 
                     HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
                 }
