@@ -252,9 +252,7 @@ public class VersionMigTo100 implements IVersionMigrator {
             target.light = new LightBodyDataVO(vo.light);
         }
 
-        target.shaderName = vo.shaderName;
-        target.shaderUniforms.clear();
-        target.shaderUniforms.putAll(vo.shaderUniforms);
+        target.shader.set(vo.shader);
 
         target.renderingLayer = vo.renderingLayer;
     }

@@ -373,13 +373,13 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
             }
         }
 
-        for (Map.Entry<GraphConnection, Shape> connectionEntry : connections.entrySet()) {
+        /*for (Map.Entry<GraphConnection, Shape> connectionEntry : connections.entrySet()) {
             if (connectionEntry.getValue().contains(x, y)) {
                 GraphConnection connection = connectionEntry.getKey();
                 removeConnection(connection);
                 return;
             }
-        }
+        }*/
 
         drawingFromConnector = null;
     }
@@ -682,7 +682,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
             }
         }
 
-        BasicStroke basicStroke = new BasicStroke(7);
+        //BasicStroke basicStroke = new BasicStroke(7);
         Vector2 to = new Vector2();
         for (GraphConnection graphConnection : graphConnections) {
             NodeConnector fromNode = getNodeInfo(graphConnection.getNodeFrom(), graphConnection.getFieldFrom());
@@ -694,9 +694,9 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
             GraphBoxInputConnector<T> input = getGraphBoxById(toNode.getNodeId()).getInputs().get(toNode.getFieldId());
             calculateConnection(to, toWindow, input);
 
-            Shape shape = basicStroke.createStrokedShape(new Line2D.Float(from.x, from.y, to.x, to.y));
+            //Shape shape = basicStroke.createStrokedShape(new Line2D.Float(from.x, from.y, to.x, to.y));
 
-            connections.put(graphConnection, shape);
+            //connections.put(graphConnection, shape);
         }
     }
 

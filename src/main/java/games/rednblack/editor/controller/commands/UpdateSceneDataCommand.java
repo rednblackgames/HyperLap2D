@@ -3,6 +3,7 @@ package games.rednblack.editor.controller.commands;
 import games.rednblack.editor.renderer.data.LightsPropertiesVO;
 import games.rednblack.editor.renderer.data.PhysicsPropertiesVO;
 import games.rednblack.editor.renderer.data.SceneVO;
+import games.rednblack.editor.renderer.data.ShaderVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 
@@ -11,6 +12,7 @@ public class UpdateSceneDataCommand extends EntityModifyRevertibleCommand {
     private SceneVO sceneVO;
     private PhysicsPropertiesVO physicsBackup;
     private LightsPropertiesVO lightsBackup;
+    private ShaderVO shaderBackup;
 
     @Override
     public void doAction() {
@@ -18,9 +20,11 @@ public class UpdateSceneDataCommand extends EntityModifyRevertibleCommand {
         sceneVO = (SceneVO) payload[0];
         PhysicsPropertiesVO physicsPropertiesVO = (PhysicsPropertiesVO) payload[1];
         LightsPropertiesVO lightsPropertiesVO = (LightsPropertiesVO) payload[2];
+        ShaderVO shaderVO = (ShaderVO) payload[3];
 
         physicsBackup = new PhysicsPropertiesVO(sceneVO.physicsPropertiesVO);
         lightsBackup = new LightsPropertiesVO(sceneVO.lightsPropertiesVO);
+        shaderBackup = new ShaderVO(sceneVO.shaderVO);
 
         PhysicsPropertiesVO physicsVO = sceneVO.physicsPropertiesVO;
         physicsVO.gravityX = physicsPropertiesVO.gravityX;
@@ -45,6 +49,9 @@ public class UpdateSceneDataCommand extends EntityModifyRevertibleCommand {
 
         lightsVO.enabled = lightsPropertiesVO.enabled;
         lightsVO.pseudo3d = lightsPropertiesVO.pseudo3d;
+
+        ShaderVO shader = sceneVO.shaderVO;
+        shader.shaderName = shaderVO.shaderName;
 
         Sandbox.getInstance().sceneControl.updateAmbientLights();
 
@@ -77,16 +84,20 @@ public class UpdateSceneDataCommand extends EntityModifyRevertibleCommand {
         lightsVO.enabled = lightsBackup.enabled;
         lightsVO.pseudo3d = lightsBackup.pseudo3d;
 
+        ShaderVO shader = sceneVO.shaderVO;
+        shader.shaderName = shaderBackup.shaderName;
+
         Sandbox.getInstance().sceneControl.updateAmbientLights();
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED);
     }
 
-    public static Object payload(SceneVO scene, PhysicsPropertiesVO physicsPropertiesVO, LightsPropertiesVO lightsPropertiesVO) {
-        Object[] payload = new Object[3];
+    public static Object payload(SceneVO scene, PhysicsPropertiesVO physicsPropertiesVO, LightsPropertiesVO lightsPropertiesVO, ShaderVO shaderVO) {
+        Object[] payload = new Object[4];
         payload[0] = scene;
         payload[1] = physicsPropertiesVO;
         payload[2] = lightsPropertiesVO;
+        payload[3] = shaderVO;
 
         return payload;
     }

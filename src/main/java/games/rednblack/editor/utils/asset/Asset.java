@@ -81,21 +81,21 @@ public abstract class Asset implements IAsset {
     @Override
     public boolean exportAsset(MainItemVO item, ExportMapperVO exportMapperVO, File tmpDir) throws IOException {
         currentProjectPath = projectManager.getCurrentProjectPath() + File.separator;
-        copyShader(item.shaderName, tmpDir, exportMapperVO);
+        copyShader(item.shader, tmpDir, exportMapperVO);
         return true;
     }
 
-    private void copyShader(String shaderName, File tmpDir, ExportMapperVO exportMapperVO) throws IOException {
-        if (shaderName.equals(""))
+    private void copyShader(ShaderVO shaderVO, File tmpDir, ExportMapperVO exportMapperVO) throws IOException {
+        if (shaderVO.shaderName.equals(""))
             return;
 
-        File f = new File(currentProjectPath + ProjectManager.SHADER_DIR_PATH + File.separator + shaderName + ".frag");
+        File f = new File(currentProjectPath + ProjectManager.SHADER_DIR_PATH + File.separator + shaderVO.shaderName + ".frag");
         FileUtils.copyFileToDirectory(f, tmpDir);
 
-        File v = new File(currentProjectPath + ProjectManager.SHADER_DIR_PATH + File.separator + shaderName + ".vert");
+        File v = new File(currentProjectPath + ProjectManager.SHADER_DIR_PATH + File.separator + shaderVO.shaderName + ".vert");
         FileUtils.copyFileToDirectory(v, tmpDir);
 
-        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(AssetsUtils.TYPE_SHADER, shaderName + ".frag"));
-        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(AssetsUtils.TYPE_SHADER, shaderName + ".vert"));
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(AssetsUtils.TYPE_SHADER, shaderVO.shaderName + ".frag"));
+        exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(AssetsUtils.TYPE_SHADER, shaderVO.shaderName + ".vert"));
     }
 }

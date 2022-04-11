@@ -99,8 +99,8 @@ public class ShaderAsset extends Asset {
             Array<MainItemVO> items = compositeItemVO.getAllItems();
 
             for (MainItemVO itemVO : items)
-                if (itemVO.shaderName.equals(shaderName))
-                    itemVO.shaderName = "";
+                if (itemVO.shader.shaderName.equals(shaderName))
+                    itemVO.shader.shaderName = "";
         }
     }
 

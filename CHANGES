@@ -6,6 +6,7 @@
 - Particle Effects auto start flag
 - Add support to Bitmap Fonts (.fnt)
 - Add support to TinyVG (.tvg)
+- Add support for global scene shader
 - Bug fixes and stability improvements (as usual...)
 
 = Editor =

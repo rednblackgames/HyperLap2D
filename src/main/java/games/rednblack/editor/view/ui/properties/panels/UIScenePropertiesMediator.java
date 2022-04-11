@@ -23,10 +23,8 @@ import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
 import games.rednblack.editor.controller.commands.UpdateSceneDataCommand;
 import games.rednblack.editor.proxy.ResolutionManager;
-import games.rednblack.editor.renderer.data.LightsPropertiesVO;
-import games.rednblack.editor.renderer.data.PhysicsPropertiesVO;
-import games.rednblack.editor.renderer.data.ResolutionEntryVO;
-import games.rednblack.editor.renderer.data.SceneVO;
+import games.rednblack.editor.proxy.ResourceManager;
+import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
@@ -41,6 +39,8 @@ import org.puremvc.java.interfaces.INotification;
 public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<SceneVO, UISceneProperties> {
     private static final String TAG = UIScenePropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
+
+    private final ResourceManager resourceManager;
 
     private final ColorPicker picker = new HyperLapColorPicker();
     private final ColorPickerAdapter ambientColorListener = new ColorPickerAdapter() {
@@ -70,14 +70,19 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
 
     public UIScenePropertiesMediator() {
         super(NAME, new UISceneProperties());
+
+        resourceManager = facade.retrieveProxy(ResourceManager.NAME);
+        viewComponent.initShader(resourceManager.getShaders());
     }
 
     @Override
     public String[] listNotificationInterests() {
         String[] defaultNotifications = super.listNotificationInterests();
-        String[] notificationInterests = new String[]{
+        String[] notificationInterests = new String[] {
                 UISceneProperties.AMBIENT_COLOR_BUTTON_CLICKED,
-                UISceneProperties.DIRECTIONAL_COLOR_BUTTON_CLICKED
+                UISceneProperties.DIRECTIONAL_COLOR_BUTTON_CLICKED,
+                UISceneProperties.EDIT_SHADER_BUTTON_CLICKED,
+                UISceneProperties.UNIFORMS_SHADER_BUTTON_CLICKED
         };
 
         return ArrayUtils.addAll(defaultNotifications, notificationInterests);
@@ -108,6 +113,10 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
                 picker.setListener(directionalColorListener);
                 Sandbox.getInstance().getUIStage().addActor(picker.fadeIn());
                 break;
+            case UISceneProperties.EDIT_SHADER_BUTTON_CLICKED:
+                break;
+            case UISceneProperties.UNIFORMS_SHADER_BUTTON_CLICKED:
+                break;
             default:
                 break;
         }
@@ -135,6 +144,8 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
         viewComponent.setLightsEnabled(lightsVO.enabled);
         viewComponent.setPseudo3DLightsEnabled(lightsVO.pseudo3d);
         viewComponent.setLightType(lightsVO.lightType);
+
+        viewComponent.setSelectedShader(item.shaderVO.shaderName);
     }
 
     @Override
@@ -165,7 +176,10 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
         lightsVO.enabled = viewComponent.isLightsEnabled();
         lightsVO.pseudo3d = viewComponent.isPseudo3DLightsEnabled();
 
-        Object payload = UpdateSceneDataCommand.payload(observableReference, physicsVO, lightsVO);
+        ShaderVO shaderVO = new ShaderVO();
+        shaderVO.shaderName = viewComponent.getShader();
+
+        Object payload = UpdateSceneDataCommand.payload(observableReference, physicsVO, lightsVO, shaderVO);
         facade.sendNotification(MsgAPI.ACTION_UPDATE_SCENE_DATA, payload);
     }
 }

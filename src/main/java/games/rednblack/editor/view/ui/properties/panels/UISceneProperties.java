@@ -19,27 +19,32 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.spinner.Spinner;
-import games.rednblack.editor.event.CheckBoxChangeListener;
-import games.rednblack.editor.event.KeyboardListener;
-import games.rednblack.editor.event.NumberSelectorOverlapListener;
-import games.rednblack.editor.event.SelectBoxChangeListener;
+import games.rednblack.editor.event.*;
 import games.rednblack.editor.view.ui.properties.UIAbstractProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
+
+import java.util.HashMap;
 
 public class UISceneProperties extends UIAbstractProperties {
 
     public static final String prefix = "games.rednblack.editor.view.ui.properties.panels.UISceneProperties";
     public static final String AMBIENT_COLOR_BUTTON_CLICKED = prefix + ".AMBIENT_COLOR_BUTTON_CLICKED";
     public static final String DIRECTIONAL_COLOR_BUTTON_CLICKED = prefix + ".DIRECTIONAL_COLOR_BUTTON_CLICKED";
+
+    public static final String EDIT_SHADER_BUTTON_CLICKED = prefix + ".EDIT_SHADER_BUTTON_CLICKED";
+    public static final String EDIT_SHADER_DONE = prefix + ".EDIT_SHADER_DONE";
+    public static final String UNIFORMS_SHADER_BUTTON_CLICKED = prefix + ".UNIFORMS_SHADER_BUTTON_CLICKED";
 
     final private VisLabel pixelsPerWorldUnitField;
     final private VisLabel worldSizeField;
@@ -56,6 +61,7 @@ public class UISceneProperties extends UIAbstractProperties {
     final private VisTextField directionalDegreeTextField;
     final private VisTextField directionalHeightTextField;
     final private TintButton directionalLightColor;
+    private final VisSelectBox<String> shadersSelector;
 
     VisTable directionalTable = new VisTable();
 
@@ -88,6 +94,16 @@ public class UISceneProperties extends UIAbstractProperties {
         add(new VisLabel("World size:", Align.right)).padRight(5).width(115);
         add(worldSizeField).width(30).left().padLeft(7);
         row().padTop(5);
+        addSeparator().colspan(2).padTop(5).padBottom(5);
+        shadersSelector = StandardWidgetsFactory.createSelectBox(String.class);
+        add(new VisLabel("Scene Shader: ", Align.right)).padRight(5).width(75).right();
+        add(shadersSelector).width(100).left().row();
+        //TextButton editButton = StandardWidgetsFactory.createTextButton("Edit");
+        //editButton.addListener(new ButtonToNotificationListener(EDIT_SHADER_BUTTON_CLICKED));
+        //add(editButton).padTop(5).padRight(3);
+        //TextButton uniformsButton = StandardWidgetsFactory.createTextButton("Uniforms");
+        //uniformsButton.addListener(new ButtonToNotificationListener(UNIFORMS_SHADER_BUTTON_CLICKED));
+        //add(uniformsButton).padTop(5).row();
         addSeparator().colspan(2).padTop(5).padBottom(5);
         add(new VisLabel("Physics enabled:", Align.right)).padRight(5).width(115);
         add(physicsEnabledCheckBox).padLeft(1).left();
@@ -260,6 +276,22 @@ public class UISceneProperties extends UIAbstractProperties {
         worldSizeField.setText((resolutionWidth / value) + " x " + (resolutionHeight / value));
     }
 
+    public void initShader(HashMap<String, ShaderProgram> shaders) {
+        Array<String> shaderNames = new Array<>();
+        shaderNames.add("Default");
+        shaders.keySet().forEach(shaderNames::add);
+
+        shadersSelector.setItems(shaderNames);
+    }
+
+    public String getShader() {
+        return shadersSelector.getSelected();
+    }
+
+    public void setSelectedShader(String currShaderName) {
+        shadersSelector.setSelected(currShaderName);
+    }
+
     @Override
     public String getPrefix() {
         return this.getClass().getCanonicalName();
@@ -298,5 +330,6 @@ public class UISceneProperties extends UIAbstractProperties {
                     facade.sendNotification(DIRECTIONAL_COLOR_BUTTON_CLICKED, directionalLightColor.getColorValue(), null);
             }
         });
+        shadersSelector.addListener(new SelectBoxChangeListener(getUpdateEventName()));
     }
 }
