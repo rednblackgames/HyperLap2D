@@ -14,6 +14,7 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -100,7 +101,7 @@ public class BitmapFontAsset extends Asset {
         exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(AssetsUtils.TYPE_BITMAP_FONT, fileSrc.getName()));
         BitmapFont.BitmapFontData bitmapFontData = new BitmapFont.BitmapFontData(new FileHandle(fileSrc), false);
         for (String textureName : bitmapFontData.imagePaths) {
-            File f = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + textureName);
+            File f = new File(currentProjectPath + ProjectManager.IMAGE_DIR_PATH + File.separator + FilenameUtils.getName(textureName));
             FileUtils.copyFileToDirectory(f, tmpDir);
         }
         return true;

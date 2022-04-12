@@ -254,8 +254,12 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
             String filename = file.getName();
             if (file.isDirectory() || filename.endsWith(".DS_Store")) continue;
 
-            BitmapFont bitmapFont = new BitmapFont(Gdx.files.internal(file.getAbsolutePath()), getTextureRegion(entry.nameWithoutExtension()));
-            bitmapFont.setUseIntegerPositions(false);
+            Array<TextureRegion> pages = new Array<>();
+            BitmapFont.BitmapFontData bitmapFontData = new BitmapFont.BitmapFontData(Gdx.files.internal(file.getAbsolutePath()), false);
+            for (String page : bitmapFontData.imagePaths) {
+                pages.add(getTextureRegion(FilenameUtils.getBaseName(page)));
+            }
+            BitmapFont bitmapFont = new BitmapFont(bitmapFontData, pages, false);
             bitmapFonts.put(bitmapFont.getData().name, bitmapFont);
         }
     }
