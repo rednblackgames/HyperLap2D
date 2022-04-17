@@ -2,9 +2,9 @@ package games.rednblack.editor.plugin.performance;
 
 import com.artemis.Aspect;
 import com.artemis.EntitySubscription;
-import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.h2d.common.UIDraggablePanel;
@@ -16,10 +16,11 @@ public class PerformancePanel extends UIDraggablePanel {
 
     private final VisTable mainTable;
 
-    private VisLabel entitiesCount, memoryLabel, fpsLbl, glCalls, drawCalls, shaderSwitch, textureBind, vertexCount;
+    private VisLabel entitiesCount, memoryLabel, fpsLbl, glCalls, drawCalls, shaderSwitch, textureBind, vertexCount, renderTime;
 
     private EntitySubscription entitySubscription;
     private final GLProfiler profiler;
+    private long time;
 
     public PerformancePanel() {
         super("Performance");
@@ -44,6 +45,7 @@ public class PerformancePanel extends UIDraggablePanel {
         shaderSwitch = new VisLabel();
         textureBind = new VisLabel();
         vertexCount = new VisLabel();
+        renderTime = new VisLabel();
 
         mainTable.add(new VisLabel("Entity count: ")).right();
         mainTable.add(entitiesCount).left().padLeft(4);
@@ -51,6 +53,10 @@ public class PerformancePanel extends UIDraggablePanel {
 
         mainTable.add(new VisLabel("FPS: ")).right();
         mainTable.add(fpsLbl).left().padLeft(4);
+        mainTable.row();
+
+        mainTable.add(new VisLabel("Render Time: ")).right();
+        mainTable.add(renderTime).left().padLeft(4);
         mainTable.row();
 
         mainTable.add(new VisLabel("Memory: ")).right();
@@ -104,10 +110,13 @@ public class PerformancePanel extends UIDraggablePanel {
         shaderSwitch.setText(profiler.getShaderSwitches());
         textureBind.setText(profiler.getTextureBindings());
         vertexCount.setText((int) profiler.getVertexCount().total);
+        renderTime.setText((int) (TimeUtils.nanosToMillis(TimeUtils.nanoTime() - time)));
+        renderTime.getText().append(" ms");
     }
 
 
     public void render() {
+        time = TimeUtils.nanoTime();
         profiler.reset();
     }
 

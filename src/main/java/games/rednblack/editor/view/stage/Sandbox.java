@@ -48,7 +48,6 @@ import games.rednblack.editor.renderer.systems.ParticleSystem;
 import games.rednblack.editor.renderer.systems.PhysicsSystem;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.renderer.utils.TextureArrayCpuPolygonSpriteBatch;
-import games.rednblack.editor.renderer.utils.TextureArrayPolygonSpriteBatch;
 import games.rednblack.editor.system.ParticleContinuousSystem;
 import games.rednblack.editor.system.PhysicsAdjustSystem;
 import games.rednblack.editor.system.TalosContinuousSystem;
@@ -146,7 +145,7 @@ public class Sandbox {
         externalItemTypes.addExternalItemType(new TinyVGItemType());
         externalItemTypes.addExternalItemType(new TypingLabelItemType());
 
-        SceneConfiguration config = new SceneConfiguration(new TextureArrayCpuPolygonSpriteBatch(10_000));
+        SceneConfiguration config = new SceneConfiguration(new TextureArrayCpuPolygonSpriteBatch(10_000), true);
         config.setResourceRetriever(resourceManager);
         config.setExternalItemTypes(externalItemTypes);
 
