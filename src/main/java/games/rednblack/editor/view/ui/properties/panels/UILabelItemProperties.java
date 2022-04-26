@@ -1,6 +1,8 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
@@ -224,6 +226,13 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
     private void setListeners() {
         final String eventName = getUpdateEventName();
         bitmapFontSelectBox.addListener(new SelectBoxChangeListener(eventName));
+        bitmapFontSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                fontFamilySelectBox.setDisabled(bitmapFontSelectBox.getSelectedIndex() != 0);
+                fontSizeField.setDisabled(bitmapFontSelectBox.getSelectedIndex() != 0);
+            }
+        });
         fontFamilySelectBox.addListener(new SelectBoxChangeListener(eventName));
         alignSelectBox.addListener(new SelectBoxChangeListener(eventName));
         boldCheckBox.addListener(new CheckBoxChangeListener(eventName));

@@ -142,6 +142,7 @@
     default: {
       font: default-font,
       fontColor: white,
+      disabledFontColor: grey,
       background: default-select,
       backgroundOver: default-select-over,
       scrollStyle: default,
