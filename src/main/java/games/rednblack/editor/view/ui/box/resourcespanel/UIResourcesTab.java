@@ -48,7 +48,7 @@ public abstract class UIResourcesTab extends ImageTab {
         contentTable.padTop(8).padLeft(7);
         contentTable.add(StandardWidgetsFactory.createLabel("Search:")).padLeft(1).padBottom(6);
         contentTable.add(createTextField()).padLeft(0).padRight(7).fillX().padBottom(4);
-        contentTable.add(createFilterButton()).padRight(7);
+        contentTable.add(createFilterButton()).padRight(7).padTop(-4);
         contentTable.row();
 
         VisScrollPane scrollPane = crateScrollPane();
