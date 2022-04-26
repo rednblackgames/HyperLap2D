@@ -76,7 +76,7 @@ public class EntityUtils {
         itemTypeIconMap.put(SPRITE_TYPE, "icon-animation");
         itemTypeIconMap.put(COLOR_PRIMITIVE, "icon-image");
         itemTypeIconMap.put(TalosItemType.TALOS_TYPE, "icon-talos");
-        itemTypeIconMap.put(TinyVGItemType.TINYVG_TYPE, "icon-image");
+        itemTypeIconMap.put(TinyVGItemType.TINYVG_TYPE, "icon-tinyvg");
     }
 
     public static String getItemName(int entity) {
