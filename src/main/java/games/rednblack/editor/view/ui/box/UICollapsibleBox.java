@@ -20,6 +20,7 @@ package games.rednblack.editor.view.ui.box;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -49,10 +50,14 @@ public class UICollapsibleBox extends VisWindow {
         mainTable.top();
         setStyle(VisUI.getSkin().get("box", WindowStyle.class));
         collapsibleButton = new VisImageButton("close-box");
+        collapsibleButton.setOrigin(Align.center);
+        collapsibleButton.setTransform(true);
         collapsibleButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                collapsibleButton.clearActions();
+                collapsibleButton.addAction(Actions.rotateTo(collapsibleWidget.isCollapsed() ? 0 : -90, .1f));
                 collapsibleWidget.setCollapsed(!collapsibleWidget.isCollapsed());
             }
         });

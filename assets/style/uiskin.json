@@ -512,8 +512,7 @@
       imageUp: icon-close
     },
     close-box: {
-      imageUp: box-colapse-on,
-      imageChecked: box-colapse-off
+      up: box-colapse-on
     },
     tool-SELECTION_TOOL: {
       down: toolbar-down,
