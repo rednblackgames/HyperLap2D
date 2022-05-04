@@ -437,6 +437,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
                 font.setUseIntegerPositions(false);
                 fonts.put(pair, font);
+                generator.dispose();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -542,6 +543,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         if (mono)
             font.setFixedWidthGlyphs(FreeTypeFontGenerator.DEFAULT_CHARS);
         fonts.put(new FontSizePair(fontfamily, parameter.size, mono), font);
+        generator.dispose();
     }
 
     public HashMap<String, SpineDataObject> getProjectSpineAnimationsList() {
