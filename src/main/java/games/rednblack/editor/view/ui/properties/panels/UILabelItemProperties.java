@@ -74,7 +74,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
         mainTable.add(bitmapFontSelectBox).width(90).padRight(5);
         mainTable.row().padTop(5);
 
-        mainTable.add(StandardWidgetsFactory.createLabel("Font Family", Align.right)).padRight(5).width(90).left();
+        mainTable.add(StandardWidgetsFactory.createLabel("Font Name", Align.right)).padRight(5).width(90).left();
         mainTable.add(fontFamilySelectBox).width(90).padRight(5);
         mainTable.row().padTop(5);
 

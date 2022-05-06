@@ -33,7 +33,6 @@ import games.rednblack.h2d.extension.talos.ResourceRetrieverAssetProvider;
 import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
 import games.rednblack.h2d.extension.tinyvg.TinyVGUtils;
-import games.rednblack.h2d.extension.tinyvg.TinyVGVO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.puremvc.java.patterns.proxy.Proxy;
