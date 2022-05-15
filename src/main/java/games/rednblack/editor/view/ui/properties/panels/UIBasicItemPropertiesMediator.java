@@ -20,6 +20,7 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import com.artemis.Component;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
@@ -156,8 +157,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
         super.setItem(item);
         lockUpdates = true;
         int entityType = EntityUtils.getType(observableReference);
-        if (entityType == EntityFactory.COLOR_PRIMITIVE
-                || entityType == EntityFactory.LABEL_TYPE
+        if (entityType == EntityFactory.LABEL_TYPE
                 || entityType == EntityFactory.COMPOSITE_TYPE
                 || entityType == EntityFactory.NINE_PATCH) {
             viewComponent.setWidthHeightDisabled(false);
@@ -196,8 +196,15 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
         viewComponent.setXValue(String.format(Locale.ENGLISH, "%.2f", transformComponent.x));
         viewComponent.setYValue(String.format(Locale.ENGLISH, "%.2f", transformComponent.y));
 
-        viewComponent.setWidthValue(String.format(Locale.ENGLISH, "%.2f", dimensionComponent.width));
-        viewComponent.setHeightValue(String.format(Locale.ENGLISH, "%.2f", dimensionComponent.height));
+        if (dimensionComponent.polygon != null) {
+            Rectangle rectangle = dimensionComponent.polygon.getBoundingRectangle();
+            viewComponent.setWidthValue(String.format(Locale.ENGLISH, "%.2f", rectangle.width));
+            viewComponent.setHeightValue(String.format(Locale.ENGLISH, "%.2f", rectangle.height));
+        } else {
+            viewComponent.setWidthValue(String.format(Locale.ENGLISH, "%.2f", dimensionComponent.width));
+            viewComponent.setHeightValue(String.format(Locale.ENGLISH, "%.2f", dimensionComponent.height));
+        }
+
         viewComponent.setRotationValue(transformComponent.rotation + "");
         viewComponent.setScaleXValue(transformComponent.scaleX + "");
         viewComponent.setScaleYValue(transformComponent.scaleY + "");
