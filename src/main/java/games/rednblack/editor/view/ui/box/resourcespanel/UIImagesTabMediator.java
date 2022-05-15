@@ -92,6 +92,7 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
             Array<TextureAtlas.AtlasRegion> atlasRegions = atlas.getRegions();
 
             for (TextureAtlas.AtlasRegion region : new Array.ArrayIterator<>(atlasRegions)) {
+                if (region.name.equals("white-pixel")) continue;
                 if(!projectInfoVO.imagesPacks.get(atlasName).regions.contains(region.name)
                         || !region.name.toLowerCase().contains(searchText)
                         || filterResource(region.name, EntityFactory.IMAGE_TYPE)) continue;
