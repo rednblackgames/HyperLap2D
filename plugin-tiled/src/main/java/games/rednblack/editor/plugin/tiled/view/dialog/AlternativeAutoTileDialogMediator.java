@@ -75,6 +75,8 @@ public class AlternativeAutoTileDialogMediator extends Mediator<AlternativeAutoT
      * @param at The auto-tile to recalculate, or if <code>null</code> then all auto-tiles.
      */
     private void recalculatePercent(AutoTileVO at) {
+		if (at.alternativeAutoTileList.size() == 0) return;
+
     	float total = 0;
     	for (AlternativeAutoTileVO aat : at.alternativeAutoTileList) {
 			if (!"".equals(aat.region)) {
