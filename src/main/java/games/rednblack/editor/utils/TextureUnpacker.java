@@ -11,6 +11,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Matcher;
 
 /** Unpacks a texture atlas into individual image files.
  * @author Geert Konijnendijk
@@ -98,6 +99,7 @@ public class TextureUnpacker {
 
                     // check if the parent directories of this image file exist and create them if not
                     File imgOutput;
+                    region.name = region.name.replaceAll("/", Matcher.quoteReplacement("$"));
                     if (prefix != null) {
                         imgOutput = new File(outputDirFile,
                                 String.format("%s%s.%s", prefix, region.index == -1 ? region.name : region.name + "_" + region.index, extension));

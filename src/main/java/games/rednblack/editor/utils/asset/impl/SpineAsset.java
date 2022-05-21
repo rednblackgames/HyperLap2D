@@ -184,6 +184,7 @@ public class SpineAsset extends Asset {
             for (JsonValue slotEntry = skinMap.getChild("attachments"); slotEntry != null; slotEntry = slotEntry.next) {
                 for (JsonValue entry = slotEntry.child; entry != null; entry = entry.next) {
                     String name = spineName + entry.getString("name", entry.name);
+                    name = name.replaceAll("/", Matcher.quoteReplacement("$"));
                     deleteSingleImage(resolutionName, name);
                     projectManager.deleteRegionFromPack(projectManager.getCurrentProjectInfoVO().animationsPacks, name);
                 }
