@@ -38,6 +38,15 @@ jobs:
         with:
           name: Linux.HyperLap2D-SNAPSHOT.deb
           path: Linux.HyperLap2D-SNAPSHOT.deb
+      - name: Sync files with server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.DEPLOY_SSH_HOST }}
+          username: ${{ secrets.DEPLOY_SSH_USERNAME }}
+          password: ${{ secrets.DEPLOY_SSH_PASSWORD }}
+          port: ${{ secrets.DEPLOY_SSH_PORT }}
+          source: "Linux.HyperLap2D-SNAPSHOT.deb"
+          target: ${{ secrets.DEPLOY_SSH_TARGET_PATH }}
       - name: Publish SNAPSHOT artifacts
         if: "!contains(github.event.head_commit.message, 'editor only')"
         env:
@@ -73,6 +82,15 @@ jobs:
         with:
           name: Windows.HyperLap2D-SNAPSHOT.exe
           path: Windows.HyperLap2D-SNAPSHOT.exe
+      - name: Sync files with server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.DEPLOY_SSH_HOST }}
+          username: ${{ secrets.DEPLOY_SSH_USERNAME }}
+          password: ${{ secrets.DEPLOY_SSH_PASSWORD }}
+          port: ${{ secrets.DEPLOY_SSH_PORT }}
+          source: "Windows.HyperLap2D-SNAPSHOT.exe"
+          target: ${{ secrets.DEPLOY_SSH_TARGET_PATH }}
 
   macOS:
     if: "!contains(github.event.head_commit.message, 'cd skip')"
@@ -104,3 +122,12 @@ jobs:
         with:
           name: macOS.HyperLap2D-SNAPSHOT.dmg
           path: macOS.HyperLap2D-SNAPSHOT.dmg
+      - name: Sync files with server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.DEPLOY_SSH_HOST }}
+          username: ${{ secrets.DEPLOY_SSH_USERNAME }}
+          password: ${{ secrets.DEPLOY_SSH_PASSWORD }}
+          port: ${{ secrets.DEPLOY_SSH_PORT }}
+          source: "macOS.HyperLap2D-SNAPSHOT.dmg"
+          target: ${{ secrets.DEPLOY_SSH_TARGET_PATH }}
