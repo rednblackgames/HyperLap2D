@@ -161,7 +161,7 @@ public class SpineAsset extends Asset {
     private Version getSpineVersion(FileHandle fileHandle) {
         Version version;
 
-        String regex = "\"spine\" *: *\"(\\d+\\.\\d+\\.?\\d*)\"";
+        String regex = "\"spine\" *: *\"(\\d+\\.\\d+\\.?\\d*)";
         Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(fileHandle.readString());
 
