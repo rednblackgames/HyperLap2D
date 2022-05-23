@@ -21,6 +21,11 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
+      - name: Add build info
+        env:
+          WORKFLOW_RUN: ${{ github.run_number }}
+        run: |
+          echo "build=$WORKFLOW_RUN" >> assets/configs/app.properties
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build JAR dist files
@@ -81,6 +86,11 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
+      - name: Add build info
+        env:
+          WORKFLOW_RUN: ${{ github.run_number }}
+        run: |
+          echo "build=$WORKFLOW_RUN" >> assets/configs/app.properties
       - name: Build JAR dist files
         env:
           WORKFLOW_RUN: ${{ github.run_number }}
@@ -119,6 +129,11 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
+      - name: Add build info
+        env:
+          WORKFLOW_RUN: ${{ github.run_number }}
+        run: |
+          echo "build=$WORKFLOW_RUN" >> assets/configs/app.properties
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build JAR dist files

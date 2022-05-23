@@ -30,6 +30,7 @@ public class AppConfig  {
 
     public String versionString;
     public Version version;
+    public String build;
 
     public Properties properties;
 
@@ -67,6 +68,7 @@ public class AppConfig  {
                 properties.load(propertiesInput);
                 versionString = properties.getProperty("version");
                 version = new Version(versionString.replaceAll("[^0-9\\\\.]", ""));
+                build = properties.getProperty("build");
             } catch (IOException e) {
                 e.printStackTrace();
             }

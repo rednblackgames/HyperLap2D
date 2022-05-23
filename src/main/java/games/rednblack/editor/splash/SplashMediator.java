@@ -8,6 +8,7 @@ import games.rednblack.editor.renderer.utils.Version;
 import games.rednblack.editor.utils.AppConfig;
 import games.rednblack.h2d.common.network.HttpDownloadUtility;
 import games.rednblack.h2d.common.network.model.GithubReleaseData;
+import games.rednblack.h2d.common.network.model.SnapshotReleaseData;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
 import org.puremvc.java.interfaces.INotification;
 import org.puremvc.java.patterns.mediator.Mediator;
@@ -53,18 +54,29 @@ public class SplashMediator extends Mediator<Object> {
                 executor.execute(() -> {
                     splash.setProgressStatus("Checking for updates...");
                     try {
-                        String data = HttpDownloadUtility.downloadToString("https://api.github.com/repos/rednblackgames/HyperLap2D/releases/latest");
-                        Json json = new Json();
-                        json.setIgnoreUnknownFields(true);
-                        GithubReleaseData jsonData = json.fromJson(GithubReleaseData.class, data);
-                        Version latestVer = new Version(jsonData.tag_name.replace("v", ""));
-                        Version currVer = AppConfig.getInstance().version;
+                        Version latestVer, currVer;
+                        if (AppConfig.getInstance().build != null) {
+                            String data = HttpDownloadUtility.downloadToString("https://hyperlap2d.rednblack.games/upload/snapshots/snapshot.json");
+                            Json json = new Json();
+                            json.setIgnoreUnknownFields(true);
+                            SnapshotReleaseData jsonData = json.fromJson(SnapshotReleaseData.class, data);
+                            latestVer = new Version(String.valueOf(jsonData.build));
+                            currVer = new Version(AppConfig.getInstance().build);
+                        } else {
+                            String data = HttpDownloadUtility.downloadToString("https://api.github.com/repos/rednblackgames/HyperLap2D/releases/latest");
+                            Json json = new Json();
+                            json.setIgnoreUnknownFields(true);
+                            GithubReleaseData jsonData = json.fromJson(GithubReleaseData.class, data);
+                            latestVer = new Version(jsonData.tag_name.replace("v", ""));
+                            currVer = AppConfig.getInstance().version;
+                        }
+
                         if (latestVer.compareTo(currVer) > 0) {
                             boolean result = TinyFileDialogs.tinyfd_messageBox("New update found!",
-                                    "A new version of HyperLap2D has found '" + latestVer.get() + "' (current: '" + currVer.get() + "'), would you like to download it?",
+                                    "A new version of HyperLap2D has been found " + latestVer.get() + " (current: " + currVer.get() + "), would you like to download it?",
                                     "yesno", "info", true);
                             if (result) {
-                                Gdx.net.openURI("https://github.com/rednblackgames/HyperLap2D/releases");
+                                Gdx.net.openURI("https://hyperlap2d.rednblack.games/download");
                             }
                         }
                     } catch (Exception e) {
