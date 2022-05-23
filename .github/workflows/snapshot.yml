@@ -90,7 +90,7 @@ jobs:
         env:
           WORKFLOW_RUN: ${{ github.run_number }}
         run: |
-          echo "build=$WORKFLOW_RUN" >> assets/configs/app.properties
+          echo "build=$Env:WORKFLOW_RUN" >> assets/configs/app.properties
       - name: Build JAR dist files
         env:
           WORKFLOW_RUN: ${{ github.run_number }}
