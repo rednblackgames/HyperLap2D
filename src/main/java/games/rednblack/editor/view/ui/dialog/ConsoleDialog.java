@@ -49,7 +49,7 @@ public class ConsoleDialog extends H2DDialog {
     private Color lastBackgroundColor = Color.CLEAR;
     private H2DHighlight.TextFormat lastTextFormat = H2DHighlight.TextFormat.NORMAL;
 
-    public static int MAX_TEXT_LENGTH = 5000;
+    public static int MAX_TEXT_LENGTH = 10000;
 
     public ConsoleDialog() {
         super("Console", "console");

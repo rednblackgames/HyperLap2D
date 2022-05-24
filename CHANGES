@@ -5,6 +5,8 @@
 - Fixed import Spine animations exported in compatibility mode
 - Add support to path as atlas region name
 - Hide `white-pixel` resource because mandatory
+- Check updates for Snapshot builds
+- Sprite Sheet to Animation splitter
 
 **Runtime**
 - [BREAK CHANGE] Improve `ActionEventListener` with `entity` parameter
