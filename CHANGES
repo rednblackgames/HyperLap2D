@@ -9,6 +9,7 @@
 - Hide `white-pixel` resource because mandatory
 - Check updates for Snapshot builds
 - Sprite Sheet to Animation splitter
+- Improve lights follower
 
 **Runtime**
 - [BREAK CHANGE] Improve `ActionEventListener` with `entity` parameter
