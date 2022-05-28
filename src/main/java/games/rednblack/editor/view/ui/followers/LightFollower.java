@@ -22,20 +22,30 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.kotcrab.vis.ui.VisUI;
+import games.rednblack.editor.renderer.components.light.LightObjectComponent;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.view.ui.widget.actors.CircleActor;
+import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
+import space.earlygrey.shapedrawer.ShapeDrawer;
 
 /**
  * Created by azakhary on 5/20/2015.
  */
 public class LightFollower extends BasicFollower {
-
+    protected LightObjectComponent lightObjectComponent;
+    private CircleActor circleActor;
     private Image icon;
+    OrthographicCamera camera;
+    int pixelPerWU;
 
     public LightFollower(int entity) {
         super(entity);
+        lightObjectComponent = SandboxComponentRetriever.get(entity, LightObjectComponent.class);
     }
 
     @Override
@@ -43,22 +53,40 @@ public class LightFollower extends BasicFollower {
         icon = new Image(VisUI.getSkin().getDrawable("tool-sphericlight"));
         icon.setTouchable(Touchable.disabled);
         addActor(icon);
+        pixelPerWU = Sandbox.getInstance().sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
+        camera = Sandbox.getInstance().getCamera();
+    }
+
+    @Override
+    protected void setStage(Stage stage) {
+        super.setStage(stage);
+        if (stage != null) {
+            ShapeDrawer shapeDrawer = new ShapeDrawer(stage.getBatch(), WhitePixel.sharedInstance.textureRegion){
+                /* OPTIONAL: Ensuring a certain smoothness. */
+                @Override
+                protected int estimateSidesRequired(float radiusX, float radiusY) {
+                    return 200;
+                }
+            };
+            float radius = lightObjectComponent.distance * pixelPerWU / camera.zoom;
+            circleActor = new CircleActor(shapeDrawer, radius);
+            circleActor.setColor( 1, 1, 1, 0.5f);
+            addActor(circleActor);
+        }
     }
 
     @Override
     public void act(float delta) {
         setVisible(!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
         super.act(delta);
+        float radius = lightObjectComponent.distance * pixelPerWU / camera.zoom;
+        circleActor.setRadius(radius);
+        circleActor.setPosition(getWidth() / 2, getHeight() / 2);
     }
 
     @Override
     public void update() {
         super.update();
-        Sandbox sandbox = Sandbox.getInstance();
-        OrthographicCamera camera = Sandbox.getInstance().getCamera();
-
-        int pixelPerWU = sandbox.sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
-
         float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
         float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
 
