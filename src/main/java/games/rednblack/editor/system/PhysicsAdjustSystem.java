@@ -28,16 +28,18 @@ public class PhysicsAdjustSystem extends PhysicsSystem {
 
 		if(physicsBodyComponent.body == null) return;
 
-		transformVec.x = transformComponent.originX;
-		transformVec.y = transformComponent.originY;
 		int parentEntity = parentNodeComponentMapper.get(entity).parentEntity;
 		ParentNodeComponent rootParentNode = parentNodeComponentMapper.get(parentEntity);
+		float rotation = transformComponent.rotation;
 		if (rootParentNode != null) {
+			transformVec.x = transformComponent.originX;
+			transformVec.y = transformComponent.originY;
 			TransformMathUtils.localToSceneCoordinates(entity, transformVec, transformComponentMapper, parentNodeComponentMapper);
+			rotation = TransformMathUtils.localToSceneRotation(entity, transformComponentMapper, parentNodeComponentMapper);
 		} else {
 			transformVec.x = transformComponent.x + transformComponent.originX;
 			transformVec.y = transformComponent.y + transformComponent.originY;
 		}
-		physicsBodyComponent.body.setTransform(transformVec, transformComponent.rotation * MathUtils.degreesToRadians);
+		physicsBodyComponent.body.setTransform(transformVec, rotation * MathUtils.degreesToRadians);
 	}
 }
