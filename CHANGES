@@ -1,5 +1,5 @@
 [0.1.1]
-- Allow Box2D bodies inside composite items. Must uncheck composite's automatic resize if a dynamic object is inside.
+- Allow Box2D bodies inside composite items. Must uncheck composite's automatic resize.
 
 **Editor**
 - Fixed polygon entities dimensions
