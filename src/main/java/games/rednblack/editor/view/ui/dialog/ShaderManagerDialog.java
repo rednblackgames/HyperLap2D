@@ -64,7 +64,7 @@ public class ShaderManagerDialog extends H2DDialog {
             }
         });
 
-        String[] data = {"Simple", "Simple Array", "Distance Field"};
+        String[] data = {"Simple", "Simple Array", "Distance Field", "Screen Reading"};
         newShaderTypeSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
         newShaderTypeSelectBox.setItems(data);
 

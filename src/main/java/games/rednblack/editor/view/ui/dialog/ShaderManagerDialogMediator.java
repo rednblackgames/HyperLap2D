@@ -151,6 +151,10 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
                 vertex = DefaultShaders.DISTANCE_FIELD_VERTEX_SHADER;
                 fragment = DefaultShaders.DISTANCE_FIELD_FRAGMENT_SHADER;
                 break;
+            case 3:
+                vertex = DefaultShaders.DEFAULT_SCREE_READING_VERTEX_SHADER;
+                fragment = DefaultShaders.DEFAULT_SCREE_READING_FRAGMENT_SHADER;
+                break;
         }
 
         if (vertex == null || fragment == null) return;
