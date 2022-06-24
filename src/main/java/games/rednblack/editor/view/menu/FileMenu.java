@@ -1,12 +1,16 @@
 package games.rednblack.editor.view.menu;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
 import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.event.MenuItemListener;
+import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.h2d.common.view.ui.widget.H2DPopupMenu;
+import games.rednblack.h2d.common.vo.ProjectVO;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -61,9 +65,20 @@ public class FileMenu extends H2DMenu {
     }
 
     public String getFolderNameAndPath(String path) {
-        File path1 = new File(path);
-        File path2 = new File(path1.getParent());
-        return path2.getName() + " - [ " + path + "]";
+        String title = "";
+        try {
+            String projectContents = FileUtils.readFileToString(new File(path), "utf-8");
+            Json json = HyperJson.getJson();
+            json.setIgnoreUnknownFields(true);
+            ProjectVO vo = json.fromJson(ProjectVO.class, projectContents);
+            title = vo.projectName + " - [ " + path + "]";
+        } catch (Exception e) {
+            File path1 = new File(path);
+            File path2 = new File(path1.getParent());
+            title = path2.getName() + " - [ " + path + "]";
+        }
+
+        return title;
     }
 
     public void addRecent(ArrayList<String> paths) {
