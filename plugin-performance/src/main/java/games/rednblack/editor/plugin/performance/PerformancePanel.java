@@ -95,8 +95,10 @@ public class PerformancePanel extends UIDraggablePanel {
     @Override
     public void act(float delta) {
         super.act(delta);
+
         entitiesCount.setText(entitySubscription.getEntities().size());
         fpsLbl.setText(Gdx.graphics.getFramesPerSecond());
+
         MemoryUsage memoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
         long usedMemory = memoryUsage.getUsed() / (1024 * 1024);
         long allocatedMemory = memoryUsage.getCommitted() / (1024 * 1024);
@@ -105,13 +107,19 @@ public class PerformancePanel extends UIDraggablePanel {
         memoryLabel.getText().append(" of ");
         memoryLabel.getText().append(allocatedMemory);
         memoryLabel.getText().append(" MB");
+        memoryLabel.invalidateHierarchy();
+
         glCalls.setText(profiler.getCalls());
         drawCalls.setText(profiler.getDrawCalls());
         shaderSwitch.setText(profiler.getShaderSwitches());
         textureBind.setText(profiler.getTextureBindings());
         vertexCount.setText((int) profiler.getVertexCount().total);
-        renderTime.setText((int) (TimeUtils.nanosToMillis(TimeUtils.nanoTime() - time)));
+
+        long ms = TimeUtils.nanosToMillis(TimeUtils.nanoTime() - time);
+        renderTime.getText().clear();
+        renderTime.getText().append(ms);
         renderTime.getText().append(" ms");
+        renderTime.invalidateHierarchy();
     }
 
 
