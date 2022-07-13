@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.VisUI;
@@ -55,10 +56,7 @@ public class UICollapsibleBox extends VisWindow {
         collapsibleButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                collapsibleButton.clearActions();
-                collapsibleButton.addAction(Actions.rotateTo(collapsibleWidget.isCollapsed() ? 0 : -90, .1f));
-                collapsibleWidget.setCollapsed(!collapsibleWidget.isCollapsed());
+                toggle();
             }
         });
         getTitleLabel().setAlignment(Align.left);
@@ -69,6 +67,22 @@ public class UICollapsibleBox extends VisWindow {
         // by default all collapsible panels are not visible
         setVisible(false);
         padTop(32);
+
+        setKeepWithinParent(false);
+        setKeepWithinStage(false);
+
+        getTitleTable().addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                if (count == 2) toggle();
+            }
+        });
+    }
+
+    protected void toggle() {
+        collapsibleButton.clearActions();
+        collapsibleButton.addAction(Actions.rotateTo(collapsibleWidget.isCollapsed() ? 0 : -90, .1f));
+        collapsibleWidget.setCollapsed(!collapsibleWidget.isCollapsed());
     }
 
     protected void createCollapsibleWidget(Table table) {

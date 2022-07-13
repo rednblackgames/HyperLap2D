@@ -69,7 +69,7 @@ public class HyperLap2DApp extends ApplicationAdapter {
             config.setInitialVisible(false);
             config.setMaximized(true);
             config.setWindowIcon("hyperlap_icon_96.png");
-            config.setWindowSizeLimits(920, 800, -1, -1);
+            config.setWindowSizeLimits(920, 720, -1, -1);
 
             mainWindow = app.newWindow(hyperlap2D, config);
             mainWindow.setWindowListener(hyperlap2D);
