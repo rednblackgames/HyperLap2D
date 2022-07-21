@@ -51,9 +51,10 @@ public class SpineActor extends Actor {
             float[] vertices = null;
             Attachment attachment = slot.getAttachment();
             if (attachment instanceof RegionAttachment) {
+                RegionAttachment region = (RegionAttachment)attachment;
                 verticesLength = 8;
                 vertices = temp.setSize(8);
-                ((RegionAttachment)attachment).computeWorldVertices(slot.getBone(), vertices, 0, 2);
+                region.computeWorldVertices(slot, vertices, 0, 2);
             } else if (attachment instanceof MeshAttachment) {
                 MeshAttachment mesh = (MeshAttachment)attachment;
                 verticesLength = mesh.getWorldVerticesLength();
