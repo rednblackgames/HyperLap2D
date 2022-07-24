@@ -94,7 +94,7 @@ public class UIMainTable extends VisTable {
 		//TreeView
 		UIItemsTreeBoxMediator uiItemsTreeBoxMediator = facade.retrieveMediator(UIItemsTreeBoxMediator.NAME);
 		UIItemsTreeBox itemsBox = uiItemsTreeBoxMediator.getViewComponent();
-		leftBoxesPanel.add(itemsBox).width(180).fillX().maxHeight(620).top();
+		leftBoxesPanel.add(itemsBox).fillX().maxHeight(620).top();
 		middleTable.add(leftBoxesPanel).top().left().expand().padTop(15).padLeft(16);
 	}
 

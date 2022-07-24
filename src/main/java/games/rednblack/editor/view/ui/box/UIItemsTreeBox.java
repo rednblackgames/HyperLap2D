@@ -20,6 +20,7 @@ package games.rednblack.editor.view.ui.box;
 
 import com.artemis.ComponentMapper;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
@@ -65,6 +66,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     private Sandbox sandbox;
 
     private final ZIndexComparator zIndexComparator = new ZIndexComparator();
+    private final Vector2 tmp = new Vector2();
 
     public UIItemsTreeBox() {
         super("Items Tree", 180);
@@ -107,7 +109,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         tree = new VisTree<>();
         scroller = StandardWidgetsFactory.createScrollPane(tree);
         scroller.setFlickScroll(false);
-        treeTable.add(scroller).width(170).padTop(5).padLeft(5).maxHeight(550).colspan(2);
+        treeTable.add(scroller).width(170).padTop(5).maxHeight(550).colspan(2);
         //
         rootTreeNode = addTreeRoot(rootScene, null);
         rootTreeNode.setExpanded(true);
@@ -234,8 +236,11 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         }
 
         if (tree.getSelection().size() > 0) {
+            tree.validate();
             Actor firstSelected = tree.getSelection().first().getActor();
-            scroller.scrollTo(0, firstSelected.getY(), firstSelected.getWidth(), firstSelected.getHeight());
+            tmp.set(0, firstSelected.getHeight());
+            firstSelected.localToParentCoordinates(tmp);
+            scroller.scrollTo(tmp.x, tmp.y, firstSelected.getWidth(), firstSelected.getHeight());
         }
     }
 
