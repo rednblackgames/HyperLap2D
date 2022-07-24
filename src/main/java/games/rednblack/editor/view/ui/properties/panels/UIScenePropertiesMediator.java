@@ -178,6 +178,9 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
 
         ShaderVO shaderVO = new ShaderVO();
         shaderVO.shaderName = viewComponent.getShader();
+        if (shaderVO.shaderName.equals("Default")) {
+            shaderVO.shaderName = "";
+        }
 
         Object payload = UpdateSceneDataCommand.payload(observableReference, physicsVO, lightsVO, shaderVO);
         facade.sendNotification(MsgAPI.ACTION_UPDATE_SCENE_DATA, payload);
