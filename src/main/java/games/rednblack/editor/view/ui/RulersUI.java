@@ -201,9 +201,10 @@ public class RulersUI extends Actor {
         gridMeasureToDisplayScale = getStage().getWidth() / viewMeasurableWidth;
 
         gridMeasuringSize = viewMeasurableWidth / separatorsCount;
-        if (gridMeasuringSize <= 10) {
+        if (gridMeasuringSize <= 0.5) {
+            gridMeasuringSize = roundToFirstDecimal(gridMeasuringSize);
+        } else if (gridMeasuringSize <= 10) {
             gridMeasuringSize = Math.round(gridMeasuringSize);
-
         } else if (gridMeasuringSize > 10 && gridMeasuringSize <= 20) {
             gridMeasuringSize = Math.round(gridMeasuringSize / 5) * 5;
         } else {
@@ -302,7 +303,13 @@ public class RulersUI extends Actor {
             VisLabel label = Pools.obtain(VisLabel.class);
             label.setPosition(gridCurrPoint.x + 2, horizontalRect.y + 7);
             label.setColor(TEXT_COLOR);
-            label.setText((int) Math.abs(worldStartPointCpy.x + iterator * gridMeasuringSize) + postFix);
+            label.getText().clear();
+            if (gridMeasuringSize < 1) {
+                label.getText().append(roundToFirstDecimal(Math.abs(worldStartPointCpy.x + iterator * gridMeasuringSize)));
+            } else {
+                label.getText().append((int) Math.abs(worldStartPointCpy.x + iterator * gridMeasuringSize));
+            }
+            label.getText().append(postFix);
             label.setWrap(false);
             labels.add(label);
 
@@ -406,6 +413,10 @@ public class RulersUI extends Actor {
         }
 
         return labelVerticalBuilder.toString();
+    }
+
+    private float roundToFirstDecimal(float value) {
+        return Math.round(value * 10f) / 10f;
     }
 
     @Override
