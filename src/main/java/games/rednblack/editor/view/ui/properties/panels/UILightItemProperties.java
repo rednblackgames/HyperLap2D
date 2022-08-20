@@ -18,6 +18,8 @@
 
 package games.rednblack.editor.view.ui.properties.panels;
 
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
@@ -30,14 +32,15 @@ import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.NumberSelectorOverlapListener;
 import games.rednblack.editor.renderer.components.light.LightObjectComponent;
-import games.rednblack.editor.renderer.data.LightVO;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * Created by azakhary on 4/28/2015.
  */
 public class UILightItemProperties extends UIItemCollapsibleProperties {
+    private final Vector3 tmp = new Vector3();
 
     private VisCheckBox isStaticCheckBox;
     private VisCheckBox isXRayCheckBox;
@@ -47,6 +50,7 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
     private VisValidatableTextField coneInnerAngleField;
     private VisValidatableTextField heightField;
     private VisValidatableTextField intensityField;
+    private VisValidatableTextField constantFalloffField, linearFalloffField, quadraticFalloffField;
     private VisValidatableTextField coneDistanceField;
     private VisValidatableTextField coneDirectionField;
     private VisValidatableTextField softnessLengthField;
@@ -67,13 +71,16 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
         isActiveCheckBox = StandardWidgetsFactory.createCheckBox("Active");
         rayCountSelector = StandardWidgetsFactory.createNumberSelector(4, 4, 5000);
         lightTypeLabel = new VisLabel();
-        pointLightRadiusField = new VisValidatableTextField(floatValidator);
-        coneInnerAngleField = new VisValidatableTextField(floatValidator);
-        coneDistanceField = new VisValidatableTextField(floatValidator);
-        softnessLengthField = new VisValidatableTextField(floatValidator);
-        coneDirectionField =  new VisValidatableTextField(floatValidator);
-        heightField = new VisValidatableTextField(floatValidator);
-        intensityField = new VisValidatableTextField(floatValidator);
+        pointLightRadiusField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        coneInnerAngleField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        coneDistanceField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        softnessLengthField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        coneDirectionField =  StandardWidgetsFactory.createValidableTextField(floatValidator);
+        heightField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        intensityField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        constantFalloffField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        linearFalloffField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        quadraticFalloffField = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
         secondaryTable = new VisTable();
 
@@ -84,13 +91,20 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
         mainTable.add(rayCountSelector).left();
         mainTable.row().padTop(5);
         mainTable.add(new VisLabel("Softness length: ", Align.right)).padRight(5).width(110).right();
-        mainTable.add(softnessLengthField).width(70).left();
+        mainTable.add(softnessLengthField).width(92).left();
         mainTable.row().padTop(5);
         mainTable.add(new VisLabel("Height: ", Align.right)).padRight(5).width(110).right();
-        mainTable.add(heightField).width(70).left();
+        mainTable.add(heightField).width(92).left();
         mainTable.row().padTop(5);
         mainTable.add(new VisLabel("Intensity: ", Align.right)).padRight(5).width(110).right();
-        mainTable.add(intensityField).width(70).left();
+        mainTable.add(intensityField).width(92).left();
+        mainTable.row().padTop(5);
+        mainTable.add(new VisLabel("Falloff:", Align.right)).padRight(5).width(110).right();
+        Table falloffTable = new Table();
+        falloffTable.add(constantFalloffField).width(30).padRight(1);
+        falloffTable.add(linearFalloffField).width(30).padRight(1);
+        falloffTable.add(quadraticFalloffField).width(30);
+        mainTable.add(falloffTable).width(100).width(92).left();
         mainTable.row().padTop(5);
 
         mainTable.add(secondaryTable).colspan(2);
@@ -120,13 +134,13 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
         secondaryTable.clear();
 
         secondaryTable.add(new VisLabel("Distance: ", Align.right)).padRight(5).width(110).right();
-        secondaryTable.add(coneDistanceField).width(70).left();
+        secondaryTable.add(coneDistanceField).width(92).left();
         secondaryTable.row().padTop(5);
         secondaryTable.add(new VisLabel("Angle: ", Align.right)).padRight(5).width(110).right();
-        secondaryTable.add(coneInnerAngleField).width(70).left();
+        secondaryTable.add(coneInnerAngleField).width(92).left();
         secondaryTable.row().padTop(5);
         secondaryTable.add(new VisLabel("Direction: ", Align.right)).padRight(5).width(110).right();
-        secondaryTable.add(coneDirectionField).width(70).left();
+        secondaryTable.add(coneDirectionField).width(92).left();
         secondaryTable.row().padTop(5);
     }
 
@@ -241,6 +255,19 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
         return this.getClass().getCanonicalName();
     }
 
+    public void setFalloff(Vector3 falloff) {
+        constantFalloffField.setText(falloff.x + "");
+        linearFalloffField.setText(falloff.y + "");
+        quadraticFalloffField.setText(falloff.z + "");
+    }
+
+    public Vector3 getFalloff() {
+        tmp.x = NumberUtils.toFloat(constantFalloffField.getText());
+        tmp.y = NumberUtils.toFloat(linearFalloffField.getText());
+        tmp.z = NumberUtils.toFloat(quadraticFalloffField.getText());
+        return tmp;
+    }
+
     private void setListeners() {
         isStaticCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         isXRayCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
@@ -254,5 +281,8 @@ public class UILightItemProperties extends UIItemCollapsibleProperties {
         coneDirectionField.addListener(new KeyboardListener(getUpdateEventName()));
         isSoftCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         isActiveCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
+        constantFalloffField.addListener(new KeyboardListener(getUpdateEventName()));
+        linearFalloffField.addListener(new KeyboardListener(getUpdateEventName()));
+        quadraticFalloffField.addListener(new KeyboardListener(getUpdateEventName()));
     }
 }

@@ -1,7 +1,9 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -16,6 +18,7 @@ import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
 
@@ -27,8 +30,10 @@ public class UILightBodyProperties extends UIRemovableProperties {
 
     private HashMap<Integer, String> directionTypes = new HashMap<>();
 
+    private final Vector3 tmp = new Vector3();
+
     private Spinner raysTextSelector;
-    private VisTextField distanceTextField, intensityField;
+    private VisTextField distanceTextField, intensityField, constantFalloffField, linearFalloffField, quadraticFalloffField;
     private TintButton lightColor;
     private VisValidatableTextField softnessLengthField;
     private VisCheckBox isStaticCheckBox;
@@ -61,6 +66,9 @@ public class UILightBodyProperties extends UIRemovableProperties {
         raysTextSelector = StandardWidgetsFactory.createNumberSelector(4, 4, 5000);
         distanceTextField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         intensityField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        constantFalloffField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        linearFalloffField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        quadraticFalloffField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         softnessLengthField = new VisValidatableTextField(floatValidator);
         heightField = new VisValidatableTextField(floatValidator);
         isStaticCheckBox = StandardWidgetsFactory.createCheckBox("Static");
@@ -86,6 +94,13 @@ public class UILightBodyProperties extends UIRemovableProperties {
         mainTable.row().padTop(5);
         mainTable.add(new VisLabel("Intensity:", Align.right)).padRight(5).colspan(2).fillX();
         mainTable.add(intensityField).width(100).colspan(2);
+        mainTable.row().padTop(5);
+        mainTable.add(new VisLabel("Falloff:", Align.right)).padRight(5).colspan(2).fillX();
+        Table falloffTable = new Table();
+        falloffTable.add(constantFalloffField).width(30).padRight(1);
+        falloffTable.add(linearFalloffField).width(30).padRight(1);
+        falloffTable.add(quadraticFalloffField).width(30);
+        mainTable.add(falloffTable).width(100).colspan(2);
         mainTable.row().padTop(5);
         mainTable.add(new VisLabel("Softness length: ", Align.right)).padRight(5).colspan(2).fillX();
         mainTable.add(softnessLengthField).width(100).colspan(2);
@@ -123,6 +138,19 @@ public class UILightBodyProperties extends UIRemovableProperties {
 
     public String getLightIntensity() {
         return intensityField.getText();
+    }
+
+    public void setFalloff(Vector3 falloff) {
+        constantFalloffField.setText(falloff.x + "");
+        linearFalloffField.setText(falloff.y + "");
+        quadraticFalloffField.setText(falloff.z + "");
+    }
+
+    public Vector3 getFalloff() {
+        tmp.x = NumberUtils.toFloat(constantFalloffField.getText());
+        tmp.y = NumberUtils.toFloat(linearFalloffField.getText());
+        tmp.z = NumberUtils.toFloat(quadraticFalloffField.getText());
+        return tmp;
     }
 
     public void setSoftnessLength(String rays) {
@@ -199,6 +227,9 @@ public class UILightBodyProperties extends UIRemovableProperties {
         intensityField.addListener(new KeyboardListener(getUpdateEventName()));
         softnessLengthField.addListener(new KeyboardListener(getUpdateEventName()));
         heightField.addListener(new KeyboardListener(getUpdateEventName()));
+        constantFalloffField.addListener(new KeyboardListener(getUpdateEventName()));
+        linearFalloffField.addListener(new KeyboardListener(getUpdateEventName()));
+        quadraticFalloffField.addListener(new KeyboardListener(getUpdateEventName()));
 
         lightColor.addListener(new ClickListener() {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {

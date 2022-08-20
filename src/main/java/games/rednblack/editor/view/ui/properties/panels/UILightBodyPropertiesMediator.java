@@ -94,6 +94,7 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<UILi
         viewComponent.setXRay(lightComponent.isXRay);
         viewComponent.setActive(lightComponent.isActive);
         viewComponent.setLightColor(new Color(lightComponent.color[0], lightComponent.color[1], lightComponent.color[2], lightComponent.color[3]));
+        viewComponent.setFalloff(lightComponent.falloff);
     }
 
     @Override
@@ -114,6 +115,7 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<UILi
         payloadVo.isSoft = viewComponent.isSoft();
         payloadVo.isStatic = viewComponent.isStatic();
         payloadVo.isXRay = viewComponent.isXRay();
+        payloadVo.falloff.set(viewComponent.getFalloff());
         Color color = viewComponent.getLightColor();
         payloadVo.color[0] = color.r;
         payloadVo.color[1] = color.g;

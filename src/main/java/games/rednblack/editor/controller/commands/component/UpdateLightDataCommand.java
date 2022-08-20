@@ -52,6 +52,7 @@ public class UpdateLightDataCommand extends EntityModifyRevertibleCommand {
         lightObjectComponent.directionDegree = vo.directionDegree;
         lightObjectComponent.height = vo.height;
         lightObjectComponent.intensity = vo.intensity;
+        lightObjectComponent.falloff.set(vo.falloff);
         lightObjectComponent.isSoft = vo.isSoft;
         lightObjectComponent.isActive = vo.isActive;
 
@@ -69,6 +70,7 @@ public class UpdateLightDataCommand extends EntityModifyRevertibleCommand {
         lightObjectComponent.coneDegree = backup.coneDegree;
         lightObjectComponent.height = backup.height;
         lightObjectComponent.intensity = backup.intensity;
+        lightObjectComponent.falloff.set(backup.falloff);
         lightObjectComponent.distance = backup.distance;
         lightObjectComponent.softnessLength  = backup.softnessLength;
         lightObjectComponent.directionDegree = backup.directionDegree;
