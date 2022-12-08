@@ -112,6 +112,7 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
             while (iterator.hasNext()) {
                 entity = iterator.next();
                 mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
+                if (mainItemComponent == null) continue;
                 toRetain.clear();
                 for (String tag : mainItemComponent.tags)
                     toRetain.add(tag);

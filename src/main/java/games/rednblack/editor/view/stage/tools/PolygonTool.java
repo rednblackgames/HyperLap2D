@@ -112,6 +112,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
         Set<Integer> selectedEntities = sandbox.getSelector().getSelectedItems();
         for(int entity: selectedEntities) {
             BasicFollower follower = followersUIMediator.getFollower(entity);
+            if (follower == null) continue;
             follower.update();
             follower.removeSubFollower(PolygonFollower.class);
             PolygonFollower meshFollower = new PolygonFollower(entity);
