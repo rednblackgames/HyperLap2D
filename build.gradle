@@ -68,6 +68,7 @@ task runHyperLap2D(dependsOn: classes, type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
+    jvmArgs = ['-verbose:gc','-XX:+UseZGC','-Xms128m']
     ignoreExitValue = true
 }
 
@@ -165,6 +166,7 @@ runtime {
         mainJar = dist.archiveFileName.get()
         imageOptions += ['--app-version', getBuildVersion(), '--vendor', 'Red & Black Games', '--description', 'HyperLap2D Editor', '--name', 'HyperLap2D']
         installerOptions += ['--license-file', 'LICENSE']
+        jvmArgs = ['-verbose:gc','-XX:+UseZGC','-Xms128m']
         if (osName.contains('windows')) {
             imageOptions += ["--icon", file("icons/icon.ico")]
             installerType = 'exe'
@@ -188,7 +190,7 @@ runtime {
         } else if (osName.contains('mac')) {
             imageOptions += ['--copyright', '(c) 2022, Red &amp; Black Games', "--icon", file("icons/icon.icns")
                              , '--resource-dir', "${projectDir}/resources-macos"]
-            jvmArgs = ['-XstartOnFirstThread', '-Djava.awt.headless=true']
+            jvmArgs += ['-XstartOnFirstThread', '-Djava.awt.headless=true']
             installerOptions += ['--verbose','--app-version', getBuildVersion(), '--vendor', 'Red & Black Games', '--resource-dir', "${projectDir}/resources-macos" ]
             installerType = 'dmg'
             resourceDir = file("resources-macos")
