@@ -137,6 +137,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
             case MsgAPI.RESIZE:
                 int[] data = notification.getBody();
                 viewComponent.resize(data[0], data[1]);
+                facade.sendNotification(MsgAPI.UPDATE_ALL_FOLLOWERS);
                 break;
             case MsgAPI.DISPOSE:
                 viewComponent.dispose();

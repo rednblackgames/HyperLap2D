@@ -160,6 +160,8 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         screenSize.set(width, height);
 
         updateCameraPosition();
+
+        updateActorSize();
     }
 
     public void updateActorSize() {
@@ -191,7 +193,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
         if (!isDrawingBgLogo) {
             bgLogo.clearActions();
-            bgLogo.addAction(Actions.sequence(Actions.alpha(0, .2f, Interpolation.smooth), Actions.removeActor()));
+            bgLogo.addAction(Actions.sequence(Actions.alpha(0, .2f, Interpolation.smooth), Actions.scaleTo(uiStage.getUIScaleDensity(), uiStage.getUIScaleDensity()), Actions.removeActor()));
         }
     }
 

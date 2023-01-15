@@ -556,5 +556,7 @@ public class Sandbox {
             return;
 
         sceneLoader.resize(width, height);
+        if (getViewport() != null)
+            getCamera().update();
     }
 }
