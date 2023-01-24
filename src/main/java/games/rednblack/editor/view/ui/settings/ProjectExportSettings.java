@@ -63,7 +63,7 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
     }
 
     private Table getDimensionsTable() {
-        Integer[] data = {512, 1024, 2048, 4096};
+        Integer[] data = {512, 1024, 2048, 4096, 8192};
         VisTable dimensionsTable = new VisTable();
 
         widthSelectBox.setItems(data);
