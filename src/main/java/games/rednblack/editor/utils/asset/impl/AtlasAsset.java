@@ -50,10 +50,13 @@ public class AtlasAsset extends Asset {
                 projectManager.copyImageFilesForAllResolutionsIntoProject(images, true, progressHandler);
                 FileUtils.forceDelete(tmpDir.file());
 
-                TexturePackVO texturePackVO = projectManager.getCurrentProjectInfoVO().imagesPacks.get(fileHandle.nameWithoutExtension());
+                String name = fileHandle.nameWithoutExtension();
+                if (name.equals("pack")) name = name + "Import";
+
+                TexturePackVO texturePackVO = projectManager.getCurrentProjectInfoVO().imagesPacks.get(name);
                 if (texturePackVO == null) {
                     texturePackVO = new TexturePackVO();
-                    texturePackVO.name = fileHandle.nameWithoutExtension();
+                    texturePackVO.name = name;
 
                     projectManager.getCurrentProjectInfoVO().imagesPacks.put(texturePackVO.name, texturePackVO);
                 }
