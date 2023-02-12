@@ -1,6 +1,7 @@
 [0.1.2]
-- [BREAK CHANGE] Update Spine support to `4.1.0`
+- [BREAK CHANGE] Update Spine runtime support to `4.1.0`
 - Support custom lights falloff using Constant-Linear-Quadratic coefficients
+- Release months of bug fixing and cross platform stability improvements
 
 [0.1.1]
 - Allow Box2D bodies inside composite items. Must uncheck composite's automatic resize.
