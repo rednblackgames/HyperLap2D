@@ -1,7 +1,7 @@
 package games.rednblack.editor.view.ui.box.bottom;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationGLESFix;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
@@ -86,7 +86,7 @@ public class UILivePreviewBoxMediator extends Mediator<UILivePreviewBox> {
 		config.useVsync(false);
 		config.setWindowIcon("hyperlap_icon_96.png");
 
-		Lwjgl3Application app = (Lwjgl3Application) Gdx.app;
+		Lwjgl3ApplicationGLESFix app = (Lwjgl3ApplicationGLESFix) Gdx.app;
 
 		LiveScreenAdapter liveScreenAdapter = new LiveScreenAdapter();
 

@@ -21,7 +21,7 @@ package games.rednblack.editor.view.stage;
 import com.artemis.io.JsonArtemisSerializer;
 import com.artemis.managers.WorldSerializationManager;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationGLESFix;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Interpolation;
@@ -512,7 +512,7 @@ public class Sandbox {
         payload[0] = new Vector2(Sandbox.getInstance().getCamera().position.x,Sandbox.getInstance().getCamera().position.y);
         payload[1] = data;
 
-        Lwjgl3Application app = (Lwjgl3Application) Gdx.app;
+        Lwjgl3ApplicationGLESFix app = (Lwjgl3ApplicationGLESFix) Gdx.app;
         Json json = HyperJson.getJson();
         try {
             app.getClipboard().setContents(json.toJson(payload));
@@ -523,7 +523,7 @@ public class Sandbox {
     }
 
     public static Object retrieveFromClipboard() {
-        Lwjgl3Application app = (Lwjgl3Application) Gdx.app;
+        Lwjgl3ApplicationGLESFix app = (Lwjgl3ApplicationGLESFix) Gdx.app;
         Json json = HyperJson.getJson();
         Object[] data = null;
         try {

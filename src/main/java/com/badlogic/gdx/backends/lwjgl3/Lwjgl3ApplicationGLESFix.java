@@ -57,7 +57,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 import org.lwjgl.system.Configuration;
 
-public class Lwjgl3Application implements Lwjgl3ApplicationBase {
+public class Lwjgl3ApplicationGLESFix implements Lwjgl3ApplicationBase {
     private final Lwjgl3ApplicationConfiguration config;
     final Array<Lwjgl3Window> windows = new Array<Lwjgl3Window>();
     private volatile Lwjgl3Window currentWindow;
@@ -129,11 +129,11 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
         }
     }
 
-    public Lwjgl3Application (ApplicationListener listener) {
+    public Lwjgl3ApplicationGLESFix(ApplicationListener listener) {
         this(listener, new Lwjgl3ApplicationConfiguration());
     }
 
-    public Lwjgl3Application (ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
+    public Lwjgl3ApplicationGLESFix(ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
         if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) loadANGLE();
         initializeGlfw();
         setApplicationLogger(new Lwjgl3ApplicationLogger());
@@ -597,8 +597,13 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
         }
 
         if (config.debug) {
-            glDebugCallback = GLUtil.setupDebugMessageCallback(config.debugStream);
-            setGLDebugMessageControl(GLDebugMessageSeverity.NOTIFICATION, false);
+            if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) {
+                glDebugCallback = GLESUtil.setupDebugMessageCallback(config.debugStream);
+                GLESUtil.setGLESDebugMessageControl(GLDebugMessageSeverity.NOTIFICATION, false);
+            } else {
+                glDebugCallback = GLUtil.setupDebugMessageCallback(config.debugStream);
+                setGLDebugMessageControl(GLDebugMessageSeverity.NOTIFICATION, false);
+            }
         }
 
         return windowHandle;
@@ -631,12 +636,10 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
     }
 
     public enum GLDebugMessageSeverity {
-        HIGH(GL43.GL_DEBUG_SEVERITY_HIGH, KHRDebug.GL_DEBUG_SEVERITY_HIGH, ARBDebugOutput.GL_DEBUG_SEVERITY_HIGH_ARB,
-                AMDDebugOutput.GL_DEBUG_SEVERITY_HIGH_AMD), MEDIUM(GL43.GL_DEBUG_SEVERITY_MEDIUM, KHRDebug.GL_DEBUG_SEVERITY_MEDIUM,
-                ARBDebugOutput.GL_DEBUG_SEVERITY_MEDIUM_ARB, AMDDebugOutput.GL_DEBUG_SEVERITY_MEDIUM_AMD), LOW(
-                GL43.GL_DEBUG_SEVERITY_LOW, KHRDebug.GL_DEBUG_SEVERITY_LOW, ARBDebugOutput.GL_DEBUG_SEVERITY_LOW_ARB,
-                AMDDebugOutput.GL_DEBUG_SEVERITY_LOW_AMD), NOTIFICATION(GL43.GL_DEBUG_SEVERITY_NOTIFICATION,
-                KHRDebug.GL_DEBUG_SEVERITY_NOTIFICATION, -1, -1);
+        HIGH(GL43.GL_DEBUG_SEVERITY_HIGH, KHRDebug.GL_DEBUG_SEVERITY_HIGH, ARBDebugOutput.GL_DEBUG_SEVERITY_HIGH_ARB, AMDDebugOutput.GL_DEBUG_SEVERITY_HIGH_AMD),
+        MEDIUM(GL43.GL_DEBUG_SEVERITY_MEDIUM, KHRDebug.GL_DEBUG_SEVERITY_MEDIUM, ARBDebugOutput.GL_DEBUG_SEVERITY_MEDIUM_ARB, AMDDebugOutput.GL_DEBUG_SEVERITY_MEDIUM_AMD),
+        LOW(GL43.GL_DEBUG_SEVERITY_LOW, KHRDebug.GL_DEBUG_SEVERITY_LOW, ARBDebugOutput.GL_DEBUG_SEVERITY_LOW_ARB, AMDDebugOutput.GL_DEBUG_SEVERITY_LOW_AMD),
+        NOTIFICATION(GL43.GL_DEBUG_SEVERITY_NOTIFICATION, KHRDebug.GL_DEBUG_SEVERITY_NOTIFICATION, -1, -1);
 
         final int gl43, khr, arb, amd;
 
