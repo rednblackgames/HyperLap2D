@@ -49,10 +49,10 @@ public class ImageAsset extends Asset {
                 int width = image.getWidth();
                 int height = image.getHeight();
                 TexturePacker.Settings settings = projectManager.getTexturePackerSettings();
-                if (width >= settings.maxWidth - settings.paddingX || height >= settings.maxHeight - settings.paddingY) {
+                if (width > settings.maxWidth - settings.paddingX || height > settings.maxHeight - settings.paddingY) {
                     Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
-                            "Provided image exceeds atlas limits (" + settings.maxWidth + "x" + settings.maxHeight
-                                    + ")\nPlease, resize images to the correct scale.").padBottom(20).pack();
+                            "Provided image exceeds atlas limits (" + (settings.maxWidth - settings.paddingX) + "x" + (settings.maxHeight - settings.paddingY)
+                                    + ")\nPlease, resize images to the correct size.").padBottom(20).pack();
                     return false;
                 }
                 return true;
