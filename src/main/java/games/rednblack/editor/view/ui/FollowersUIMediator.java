@@ -151,9 +151,10 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
         removeAllfollowers();
         Sandbox sandbox = Sandbox.getInstance();
         NodeComponent nodeComponent = SandboxComponentRetriever.get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
-
-        for (int entity: nodeComponent.children) {
-            createFollower(entity);
+        if (nodeComponent != null) {
+            for (int entity: nodeComponent.children) {
+                createFollower(entity);
+            }
         }
     }
 
