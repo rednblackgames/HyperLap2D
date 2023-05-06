@@ -114,12 +114,16 @@ public class AssetIOManager {
         Array<FileHandle> tmp = new Array<>();
         tmp.add(file);
 
+        boolean assetFound = false;
         for (Asset asset : new Array.ArrayIterator<>(assetDescriptors)) {
             if (asset.matchType(tmp) > 0) {
                 asset.asyncImport(tmp, progressHandler, true);
+                assetFound = true;
                 break;
             }
         }
+
+        if (!assetFound) progressHandler.progressFailed();
     }
 
     private  Array<FileHandle> getFilesFromPaths(String[] paths) {
