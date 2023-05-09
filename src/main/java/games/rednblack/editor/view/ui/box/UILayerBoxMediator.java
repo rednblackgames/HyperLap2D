@@ -74,7 +74,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                 DeleteLayerCommand.DONE,
                 DeleteLayerCommand.UNDONE,
                 NewLayerCommand.DONE,
-                LayerSwapCommand.DONE,
+                LayerJumpCommand.DONE,
                 RenameLayerCommand.DONE
 
 
@@ -136,9 +136,9 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                 });
                 break;
             case UILayerBox.LAYER_DROPPED:
-                facade.sendNotification(MsgAPI.ACTION_SWAP_LAYERS, notification.getBody());
+                facade.sendNotification(MsgAPI.ACTION_JUMP_LAYERS, notification.getBody());
                 break;
-            case LayerSwapCommand.DONE:
+            case LayerJumpCommand.DONE:
                 int index = viewComponent.getCurrentSelectedLayerIndex();
                 initLayerData();
                 viewComponent.setCurrentSelectedLayer(index);

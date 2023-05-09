@@ -53,6 +53,7 @@ public class BootstrapCommand extends SimpleCommand {
         facade.registerCommand(MsgAPI.ACTION_DELETE_LAYER, DeleteLayerCommand::new);
         facade.registerCommand(MsgAPI.ACTION_NEW_LAYER, NewLayerCommand::new);
         facade.registerCommand(MsgAPI.ACTION_SWAP_LAYERS, LayerSwapCommand::new);
+        facade.registerCommand(MsgAPI.ACTION_JUMP_LAYERS, LayerJumpCommand::new);
         facade.registerCommand(MsgAPI.ACTION_RENAME_LAYER, RenameLayerCommand::new);
 
         facade.registerCommand(MsgAPI.ACTION_ADD_COMPONENT, AddComponentToItemCommand::new);
