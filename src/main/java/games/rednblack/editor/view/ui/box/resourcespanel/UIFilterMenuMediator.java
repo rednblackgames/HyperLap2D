@@ -3,8 +3,9 @@ package games.rednblack.editor.view.ui.box.resourcespanel;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 public class UIFilterMenuMediator extends Mediator<UIFilterMenu> {
 
@@ -16,11 +17,9 @@ public class UIFilterMenuMediator extends Mediator<UIFilterMenu> {
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                UIFilterMenu.SHOW_FILTER_MENU,
-                MsgAPI.ADD_RESOURCES_BOX_FILTER
-        };
+    public void listNotificationInterests(Interests interests) {
+        interests.add(UIFilterMenu.SHOW_FILTER_MENU,
+                MsgAPI.ADD_RESOURCES_BOX_FILTER);
     }
 
     @Override

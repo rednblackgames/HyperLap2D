@@ -3,8 +3,6 @@ package games.rednblack.editor.factory;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pools;
-import games.rednblack.editor.HyperLap2DFacade;
-import games.rednblack.editor.controller.commands.PasteItemsCommand;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.SceneLoader;
@@ -21,6 +19,7 @@ import games.rednblack.h2d.common.factory.IFactory;
 import games.rednblack.h2d.extension.spine.SpineItemType;
 import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
+import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
 
@@ -48,7 +47,7 @@ public class ItemFactory implements IFactory {
     }
 
     private boolean setEssentialData(MainItemVO vo, Vector2 position) {
-        UILayerBoxMediator layerBoxMediator = HyperLap2DFacade.getInstance().retrieveMediator(UILayerBoxMediator.NAME);
+        UILayerBoxMediator layerBoxMediator = Facade.getInstance().retrieveMediator(UILayerBoxMediator.NAME);
         String layerName = layerBoxMediator.getCurrentSelectedLayerName();
 
         if(layerName == null) return false;
@@ -66,7 +65,7 @@ public class ItemFactory implements IFactory {
     }
 
     private boolean setEssentialData(ComponentFactory.InitialData vo, Vector2 position) {
-        UILayerBoxMediator layerBoxMediator = HyperLap2DFacade.getInstance().retrieveMediator(UILayerBoxMediator.NAME);
+        UILayerBoxMediator layerBoxMediator = Facade.getInstance().retrieveMediator(UILayerBoxMediator.NAME);
         String layerName = layerBoxMediator.getCurrentSelectedLayerName();
 
         if(layerName == null) return false;
@@ -94,7 +93,7 @@ public class ItemFactory implements IFactory {
         data.data = regionName;
 
         createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.IMAGE_TYPE, data);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
+        Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         Pools.free(data);
         return true;
@@ -114,7 +113,7 @@ public class ItemFactory implements IFactory {
         data.data = regionName;
 
         createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.NINE_PATCH, data);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
+        Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         Pools.free(data);
         return true;
@@ -130,7 +129,7 @@ public class ItemFactory implements IFactory {
         data.data = animationName;
 
         createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.SPRITE_TYPE, data);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
+        Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         Pools.free(data);
         return true;
@@ -146,7 +145,7 @@ public class ItemFactory implements IFactory {
         data.data = animationName;
 
         createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), SpineItemType.SPINE_TYPE, data);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
+        Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         Pools.free(data);
         return true;
@@ -163,14 +162,14 @@ public class ItemFactory implements IFactory {
         params[0] = shape.clone().vertices;
         params[1] = shape.clone().polygonizedVertices;
         createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.COLOR_PRIMITIVE, data);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
+        Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
         Pools.free(data);
         return true;
     }
 
     @Override
     public boolean createItemFromLibrary(String libraryName, Vector2 position) {
-        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+        ProjectManager projectManager = Facade.getInstance().retrieveProxy(ProjectManager.NAME);
         HashMap<String, CompositeItemVO> libraryItems = projectManager.currentProjectInfoVO.libraryItems;
 
         CompositeItemVO itemVO = libraryItems.get(libraryName);
@@ -183,7 +182,7 @@ public class ItemFactory implements IFactory {
         MainItemComponent mainItemComponent = SandboxComponentRetriever.get(createdEntity, MainItemComponent.class);
         mainItemComponent.libraryLink = libraryName;
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
+        Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
         return true;
     }
@@ -213,7 +212,7 @@ public class ItemFactory implements IFactory {
 
         int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.LIGHT_TYPE, data);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
 
         Pools.free(data);
         return entity;
@@ -233,7 +232,7 @@ public class ItemFactory implements IFactory {
         data.data = name;
         int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), TinyVGItemType.TINYVG_TYPE, data);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
         Pools.free(data);
         return entity;
     }
@@ -252,7 +251,7 @@ public class ItemFactory implements IFactory {
         data.data = particleName;
         int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.PARTICLE_TYPE, data);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
         Pools.free(data);
         return entity;
     }
@@ -271,7 +270,7 @@ public class ItemFactory implements IFactory {
         data.data = particleName;
         int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), TalosItemType.TALOS_TYPE, data);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
 
         Pools.free(data);
         return entity;
@@ -283,7 +282,7 @@ public class ItemFactory implements IFactory {
             Pools.free(data);
             return -1;
         }
-        HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+        Facade facade = Facade.getInstance();
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
         resourceManager.prepareEmbeddingFont(textSettings.getFontFamily(), textSettings.getFontSize(), false);
@@ -298,7 +297,7 @@ public class ItemFactory implements IFactory {
 
         int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.LABEL_TYPE, data);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
         Pools.free(data);
         return entity;
     }

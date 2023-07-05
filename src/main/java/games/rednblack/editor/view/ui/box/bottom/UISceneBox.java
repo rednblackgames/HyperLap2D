@@ -8,12 +8,12 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.box.UIBaseBox;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 public class UISceneBox extends UIBaseBox {
     private static final String prefix = "games.rednblack.editor.view.ui.box.bottom.UISceneBox";
@@ -77,7 +77,7 @@ public class UISceneBox extends UIBaseBox {
                 return;
             }
 
-            HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+            Facade facade = Facade.getInstance();
             if (selectedIndex == 0) {
                 facade.sendNotification(CREATE_NEW_SCENE_BTN_CLICKED);
                 return;

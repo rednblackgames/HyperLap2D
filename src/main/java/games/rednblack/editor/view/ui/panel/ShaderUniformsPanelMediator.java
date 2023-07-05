@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui.panel;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.renderer.data.ShaderUniformVO;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -9,8 +8,9 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.properties.panels.UIShaderProperties;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.util.Set;
 
@@ -27,20 +27,17 @@ public class ShaderUniformsPanelMediator extends Mediator<ShaderUniformsPanel> {
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
         viewComponent.setEmpty();
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.ITEM_SELECTION_CHANGED,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.ITEM_SELECTION_CHANGED,
                 MsgAPI.EMPTY_SPACE_CLICKED,
                 UIShaderProperties.UNIFORMS_BUTTON_CLICKED,
-                WindowMenu.SHADER_UNIFORMS_EDITOR_OPEN,
-                ShaderUniformsPanel.ADD_BUTTON_CLICKED,
-                ShaderUniformsPanel.REMOVE_BUTTON_CLICKED
-        };
+                WindowMenu.SHADER_UNIFORMS_EDITOR_OPEN);
+        interests.add(ShaderUniformsPanel.ADD_BUTTON_CLICKED,
+                ShaderUniformsPanel.REMOVE_BUTTON_CLICKED);
     }
 
     @Override

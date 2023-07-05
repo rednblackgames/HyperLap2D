@@ -20,13 +20,13 @@ package games.rednblack.editor.view.ui.box;
 
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.ui.box.resourcespanel.*;
 import games.rednblack.editor.view.ui.box.resourcespanel.filter.NormalMapFilter;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.util.stream.Stream;
 
@@ -69,7 +69,6 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
         registerTabMediators();
         initTabs();
     }
@@ -79,14 +78,12 @@ public class UIResourcesBoxMediator extends PanelMediator<UIResourcesBox> {
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] parentNotifications = super.listNotificationInterests();
-        return Stream.of(parentNotifications, new String[]{
-                ProjectManager.PROJECT_OPENED,
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(ProjectManager.PROJECT_OPENED,
                 ProjectManager.PROJECT_DATA_UPDATED,
                 MsgAPI.ADD_TARGET,
-                MsgAPI.REMOVE_TARGET
-            }).flatMap(Stream::of).toArray(String[]::new);
+                MsgAPI.REMOVE_TARGET);
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.utils.asset.Asset;
@@ -17,6 +16,7 @@ import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.h2d.extension.spine.SpineVO;
 import games.rednblack.h2d.extension.talos.TalosVO;
 import games.rednblack.h2d.extension.tinyvg.TinyVGVO;
+import games.rednblack.puremvc.Facade;
 
 import java.io.File;
 import java.io.IOException;
@@ -102,7 +102,7 @@ public class AssetIOManager {
     }
 
     private void initImportUI(int type, Array<FileHandle> files) {
-        SettingsManager settingsManager = HyperLap2DFacade.getInstance().retrieveProxy(SettingsManager.NAME);
+        SettingsManager settingsManager = Facade.getInstance().retrieveProxy(SettingsManager.NAME);
         settingsManager.setLastImportedPath(files.get(0).parent().path());
 
         int count = (type != AssetsUtils.TYPE_ANIMATION_PNG_SEQUENCE) ? files.size : 1;

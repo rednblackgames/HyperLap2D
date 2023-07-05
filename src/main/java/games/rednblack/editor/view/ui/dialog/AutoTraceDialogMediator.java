@@ -3,7 +3,6 @@ package games.rednblack.editor.view.ui.dialog;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.utils.poly.PolygonUtils;
@@ -15,8 +14,10 @@ import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.followers.BasicFollower;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.util.stream.Stream;
 
@@ -32,17 +33,9 @@ public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
     }
 
     @Override
-    public void onRegister() {
-        super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
-    }
-
-    @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                AutoTraceDialog.OPEN_DIALOG,
-                AutoTraceDialog.AUTO_TRACE_BUTTON_CLICKED
-        };
+    public void listNotificationInterests(Interests interests) {
+        interests.add(AutoTraceDialog.OPEN_DIALOG,
+                AutoTraceDialog.AUTO_TRACE_BUTTON_CLICKED);
     }
 
     @Override
@@ -80,13 +73,13 @@ public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
                     polygonShapeComponent.vertices = new Array<>(points);
                     polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(points);
 
-                    FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+                    FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
                     BasicFollower follower = followersUIMediator.getFollower(entity);
                     PolygonFollower polygonFollower = (PolygonFollower) follower.getSubFollower(PolygonFollower.class);
                     if (polygonFollower != null)
                         polygonFollower.update();
 
-                    HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+                    Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
                 }
             } else {
                 Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Auto Trace can be performed only for Image type.").padBottom(20).pack();

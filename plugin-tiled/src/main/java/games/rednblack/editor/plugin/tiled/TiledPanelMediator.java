@@ -24,8 +24,6 @@ import java.util.Iterator;
 
 import games.rednblack.editor.renderer.data.TexturePackVO;
 import games.rednblack.h2d.extension.spine.SpineItemType;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -53,6 +51,9 @@ import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.ResourcePayloadObject;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 /**
  * Created by mariam on 2/2/2016.
@@ -77,29 +78,27 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.SCENE_LOADED,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.SCENE_LOADED,
                 TiledPlugin.TILE_ADDED,
                 TiledPlugin.TILE_SELECTED,
-                TiledPlugin.ACTION_DELETE_TILE,
-                TiledPlugin.ACTION_DELETE_TILE_ALL,
+                TiledPlugin.ACTION_DELETE_TILE);
+        interests.add(TiledPlugin.ACTION_DELETE_TILE_ALL,
                 TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST,
                 TiledPlugin.ACTION_SET_OFFSET,
-                TiledPlugin.OPEN_DROP_DOWN,
-                TiledPlugin.AUTO_TILE_SELECTED,
+                TiledPlugin.OPEN_DROP_DOWN);
+        interests.add(TiledPlugin.AUTO_TILE_SELECTED,
                 TiledPlugin.ACTION_DELETE_AUTO_TILE,
                 TiledPlugin.AUTO_OPEN_DROP_DOWN,
-                TiledPlugin.AUTO_FILL_TILES,
-                TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE,
+                TiledPlugin.AUTO_FILL_TILES);
+        interests.add(TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE,
                 TiledPlugin.GRID_CHANGED,
                 SettingsTab.OK_BTN_CLICKED,
-                TiledPlugin.ACTION_SET_GRID_SIZE_FROM_ITEM,
-                MsgAPI.IMAGE_BUNDLE_DROP_SINGLE,
+                TiledPlugin.ACTION_SET_GRID_SIZE_FROM_ITEM);
+        interests.add(MsgAPI.IMAGE_BUNDLE_DROP_SINGLE,
                 MsgAPI.ACTION_DELETE_IMAGE_RESOURCE,
                 MsgAPI.TOOL_SELECTED,
-                MsgAPI.ACTION_KEY_DOWN
-        };
+                MsgAPI.ACTION_KEY_DOWN);
     }
 
     @Override

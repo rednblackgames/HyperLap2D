@@ -23,7 +23,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisImageButton;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.PluginItemCommand;
 import games.rednblack.editor.factory.ItemFactory;
 import games.rednblack.editor.renderer.SceneLoader;
@@ -51,8 +50,8 @@ import games.rednblack.h2d.common.vo.CursorData;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import games.rednblack.h2d.common.vo.SceneConfigVO;
-import org.puremvc.java.interfaces.IFacade;
-import org.puremvc.java.patterns.proxy.Proxy;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.Proxy;
 
 import java.util.*;
 
@@ -69,8 +68,7 @@ public class PluginManager extends Proxy implements PluginAPI {
     private HashSet<Integer> pluginEntities;
 
     public PluginManager() {
-        super(NAME);
-        facade = HyperLap2DFacade.getInstance();
+        super(NAME, null);
     }
 
     public H2DPlugin registerPlugin(H2DPlugin plugin) {
@@ -135,7 +133,7 @@ public class PluginManager extends Proxy implements PluginAPI {
 
     @Override
     public void removeFollower(int entity) {
-        FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+        FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
         followersUIMediator.removeFollower(entity);
     }
 
@@ -206,7 +204,7 @@ public class PluginManager extends Proxy implements PluginAPI {
     }
 
     @Override
-    public IFacade getFacade() {
+    public Facade getFacade() {
         return facade;
     }
 
@@ -258,7 +256,7 @@ public class PluginManager extends Proxy implements PluginAPI {
 
     @Override
     public void setCursor(CursorData cursorData, TextureRegion region) {
-        CursorManager cursorManager = HyperLap2DFacade.getInstance().retrieveProxy(CursorManager.NAME);
+        CursorManager cursorManager = Facade.getInstance().retrieveProxy(CursorManager.NAME);
         cursorManager.setCursor(cursorData, region);
     }
 

@@ -7,9 +7,10 @@ import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.renderer.data.TexturePackVO;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.plugins.PluginAPI;
-import org.puremvc.java.interfaces.IFacade;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.io.File;
 
@@ -19,17 +20,15 @@ public class ImportTileSetDialogMediator extends Mediator<ImportTileSetDialog> {
 
     private final PluginAPI pluginAPI;
 
-    public ImportTileSetDialogMediator(PluginAPI pluginAPI, IFacade facade) {
+    public ImportTileSetDialogMediator(PluginAPI pluginAPI, Facade facade) {
         super(NAME, new ImportTileSetDialog(facade));
         this.pluginAPI = pluginAPI;
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[] {
-                TiledPlugin.IMPORT_TILESET_PANEL_OPEN,
-                ImportTileSetDialog.IMPORT_TILESET
-        };
+    public void listNotificationInterests(Interests interests) {
+        interests.add(TiledPlugin.IMPORT_TILESET_PANEL_OPEN,
+                ImportTileSetDialog.IMPORT_TILESET);
     }
 
     @Override

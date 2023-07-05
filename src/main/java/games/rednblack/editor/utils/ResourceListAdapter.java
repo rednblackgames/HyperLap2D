@@ -8,8 +8,8 @@ import com.badlogic.gdx.utils.Scaling;
 import com.kotcrab.vis.ui.util.adapter.SimpleListAdapter;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResourceManager;
+import games.rednblack.puremvc.Facade;
 
 public class ResourceListAdapter extends SimpleListAdapter<String> {
     public ResourceListAdapter(Array<String> array) {
@@ -26,7 +26,7 @@ public class ResourceListAdapter extends SimpleListAdapter<String> {
 
     @Override
     protected VisTable createView(String item) {
-        ResourceManager rm = HyperLap2DFacade.getInstance().retrieveProxy(ResourceManager.NAME);
+        ResourceManager rm = Facade.getInstance().retrieveProxy(ResourceManager.NAME);
 
         VisTable table = new VisTable();
         table.left();

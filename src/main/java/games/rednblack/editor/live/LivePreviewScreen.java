@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.ResourceManager;
@@ -25,7 +24,7 @@ import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelItemType;
 import games.rednblack.h2d.extension.spine.SpineItemType;
-import org.puremvc.java.interfaces.IFacade;
+import games.rednblack.puremvc.Facade;
 
 public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.GestureListener {
     private final Vector3 vec3Zero = new Vector3(0, 0, 0);
@@ -37,7 +36,7 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
     private final ProjectManager projectManager;
 
     private final Box2DDebugRenderer mBox2DDebugRenderer;
-    private final IFacade facade = HyperLap2DFacade.getInstance();
+    private final Facade facade = Facade.getInstance();
     private final Color bgColor;
     
     private final OrthographicCamera mCamera;

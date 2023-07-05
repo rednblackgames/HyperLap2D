@@ -20,7 +20,7 @@ package games.rednblack.editor.controller.commands;
 
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.proxy.ProjectManager;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.interfaces.INotification;
 
 /**
  * Created by azakhary on 11/12/2015.

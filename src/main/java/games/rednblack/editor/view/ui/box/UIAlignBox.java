@@ -22,8 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by sargis on 4/10/15.
@@ -59,12 +59,12 @@ public class UIAlignBox extends UICollapsibleBox {
     public static final String ALIGN_AT_EDGE_RIGHT_BTN_CLICKED = prefix + ALIGN_AT_EDGE_RIGHT;
 
     //
-    private final HyperLap2DFacade faced;
+    private final Facade faced;
 
     public UIAlignBox() {
         super("Align", 166);
         setMovable(false);
-        faced = HyperLap2DFacade.getInstance();
+        faced = Facade.getInstance();
         VisTable alignButtonsTable = new VisTable();
         //
         alignButtonsTable.row().padTop(6);
@@ -140,7 +140,7 @@ public class UIAlignBox extends UICollapsibleBox {
                     notification = ALIGN_AT_EDGE_RIGHT_BTN_CLICKED;
                     break;
             }
-            HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+            Facade facade = Facade.getInstance();
             facade.sendNotification(notification);
         }
     }

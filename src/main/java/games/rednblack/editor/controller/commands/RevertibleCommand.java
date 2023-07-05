@@ -20,7 +20,8 @@ package games.rednblack.editor.controller.commands;
 
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.proxy.CommandManager;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.Notification;
+import games.rednblack.puremvc.interfaces.INotification;
 
 public abstract class RevertibleCommand extends SandboxCommand {
 
@@ -33,7 +34,7 @@ public abstract class RevertibleCommand extends SandboxCommand {
     @Override
     public void execute(INotification notification) {
         commandManager = facade.retrieveProxy(CommandManager.NAME);
-        this.notification = notification;
+        this.notification = ((Notification) notification).copy();;
         callDoAction();
         stateDone = true;
         if(!isCancelled) commandManager.addCommand(this);

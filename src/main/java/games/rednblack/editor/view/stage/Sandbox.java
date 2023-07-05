@@ -33,7 +33,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.util.ToastManager;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.*;
 import games.rednblack.editor.renderer.ExternalTypesConfiguration;
 import games.rednblack.editor.renderer.SceneConfiguration;
@@ -66,6 +65,7 @@ import games.rednblack.h2d.extension.talos.TalosSystem;
 import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelItemType;
 import games.rednblack.h2d.extension.spine.SpineItemType;
+import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
 
@@ -93,7 +93,7 @@ public class Sandbox {
     public String currentLoadedSceneFileName;
     private UIStage uiStage;
     private ItemSelector selector;
-    private HyperLap2DFacade facade;
+    private Facade facade;
 
     private ProjectManager projectManager;
     private ResourceManager resourceManager;
@@ -131,7 +131,7 @@ public class Sandbox {
     final WorldSerializationManager manager = new WorldSerializationManager();
 
     private void init() {
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
         projectManager = facade.retrieveProxy(ProjectManager.NAME);
         resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 

@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.ui;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
 import games.rednblack.editor.controller.commands.ConvertToCompositeCommand;
 import games.rednblack.editor.renderer.components.NodeComponent;
@@ -30,9 +29,10 @@ import games.rednblack.editor.view.ui.followers.BasicFollower;
 import games.rednblack.editor.view.ui.followers.FollowerFactory;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
-import org.puremvc.java.patterns.observer.Notification;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.Notification;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -51,27 +51,20 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
     }
 
     @Override
-    public void onRegister() {
-        facade = HyperLap2DFacade.getInstance();
-    }
-
-    @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.UPDATE_ALL_FOLLOWERS,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.UPDATE_ALL_FOLLOWERS,
                 MsgAPI.SCENE_LOADED,
                 MsgAPI.ITEM_DATA_UPDATED,
-                MsgAPI.ITEM_SELECTION_CHANGED,
-                MsgAPI.SHOW_SELECTIONS,
+                MsgAPI.ITEM_SELECTION_CHANGED);
+        interests.add(MsgAPI.SHOW_SELECTIONS,
                 MsgAPI.HIDE_SELECTIONS,
                 MsgAPI.NEW_ITEM_ADDED,
-                PanTool.SCENE_PANNED,
-                MsgAPI.TOOL_SELECTED,
+                PanTool.SCENE_PANNED);
+        interests.add(MsgAPI.TOOL_SELECTED,
                 MsgAPI.ITEM_PROPERTY_DATA_FINISHED_MODIFYING,
                 CompositeCameraChangeCommand.DONE,
-                MsgAPI.ZOOM_CHANGED,
-                ConvertToCompositeCommand.DONE
-        };
+                MsgAPI.ZOOM_CHANGED);
+        interests.add(ConvertToCompositeCommand.DONE);
     }
 
     @Override

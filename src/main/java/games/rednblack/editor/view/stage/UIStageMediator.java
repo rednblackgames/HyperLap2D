@@ -21,10 +21,10 @@ package games.rednblack.editor.view.stage;
 import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 /**
  * Created by sargis on 4/20/15.
@@ -40,15 +40,12 @@ public class UIStageMediator extends Mediator<UIStage> {
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.SHOW_ADD_LIBRARY_DIALOG,
-                MsgAPI.SAVE_EDITOR_CONFIG
-        };
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.SHOW_ADD_LIBRARY_DIALOG,
+                MsgAPI.SAVE_EDITOR_CONFIG);
     }
 
     @Override

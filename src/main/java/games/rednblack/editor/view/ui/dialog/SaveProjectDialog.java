@@ -4,11 +4,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
+import games.rednblack.puremvc.Facade;
 
 public class SaveProjectDialog extends H2DDialog {
 
@@ -33,7 +33,7 @@ public class SaveProjectDialog extends H2DDialog {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Sandbox sandbox = Sandbox.getInstance();
-                HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+                Facade facade = Facade.getInstance();
                 ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
                 SceneVO vo = sandbox.sceneVoFromItems();
                 projectManager.saveCurrentProject(vo);

@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
@@ -22,10 +21,11 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.SandboxMediator;
+import games.rednblack.puremvc.Facade;
 
 public class SandboxInputAdapter implements InputProcessor {
 
-	private HyperLap2DFacade facade;
+	private Facade facade;
 	private int rootEntity;
 	private InputListenerComponent inpputListenerComponent;
 	private int target;
@@ -34,7 +34,7 @@ public class SandboxInputAdapter implements InputProcessor {
 	private final EntityBounds tempEntityBounds = new EntityBounds();
 
 	public SandboxInputAdapter() {
-		facade = HyperLap2DFacade.getInstance();
+		facade = Facade.getInstance();
 		SandboxMediator sandboxMediator = facade.retrieveMediator(SandboxMediator.NAME);
 		sandbox = sandboxMediator.getViewComponent();
 	}

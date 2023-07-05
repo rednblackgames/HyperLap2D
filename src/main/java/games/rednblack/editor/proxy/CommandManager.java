@@ -18,11 +18,10 @@
 
 package games.rednblack.editor.proxy;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.HistoricRevertibleCommand;
 import games.rednblack.editor.controller.commands.RevertibleCommand;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.patterns.proxy.Proxy;
+import games.rednblack.puremvc.Proxy;
 
 import java.util.ArrayList;
 
@@ -36,13 +35,7 @@ public class CommandManager extends Proxy {
     final private ArrayList<RevertibleCommand> commands = new ArrayList<>();
 
     public CommandManager() {
-        super(NAME);
-    }
-
-    @Override
-    public void onRegister() {
-        super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
+        super(NAME, null);
     }
 
     public void addCommand(RevertibleCommand revertibleCommand) {

@@ -30,11 +30,11 @@ import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.validator.StringNameValidator;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.InputFileWidget;
+import games.rednblack.puremvc.Facade;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.io.File;
@@ -180,7 +180,7 @@ public class NewProjectDialog extends H2DDialog {
         @Override
         public void clicked(InputEvent event, float x, float y) {
             super.clicked(event, x, y);
-            HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+            Facade facade = Facade.getInstance();
             if (projectName.isInputValid() && pixelsPerWorldUnitField.isInputValid() && originHeightTextField.isInputValid() && originWidthTextField.isInputValid()) {
                 facade.sendNotification(command, workspacePathField.getValue().path() + File.separator + projectName.getText());
             }

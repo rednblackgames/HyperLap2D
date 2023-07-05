@@ -1,12 +1,12 @@
 package games.rednblack.editor.controller.commands.component;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.h2d.extension.talos.TalosVO;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extension.talos.TalosComponent;
+import games.rednblack.puremvc.Facade;
 
 public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
 
@@ -27,7 +27,7 @@ public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
         talosComponent.transform = vo.transform;
         talosComponent.effect.setPosition(0, 0);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
         talosComponent.effect.setPosition(0, 0);
         talosComponent.transform = backup.transform;
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     public static Object payload(int entity, TalosVO vo) {

@@ -1,7 +1,7 @@
 package games.rednblack.editor.view.ui;
 
-import games.rednblack.editor.HyperLap2DFacade;
-import org.puremvc.java.patterns.mediator.Mediator;
+
+import games.rednblack.puremvc.Mediator;
 
 public class UIWindowTitleMediator  extends Mediator<UIWindowTitle> {
 
@@ -11,11 +11,5 @@ public class UIWindowTitleMediator  extends Mediator<UIWindowTitle> {
 
     public UIWindowTitleMediator() {
         super(NAME, new UIWindowTitle());
-    }
-
-    @Override
-    public void onRegister() {
-        super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
     }
 }

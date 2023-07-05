@@ -8,7 +8,6 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddToLibraryAction;
 import games.rednblack.editor.graph.*;
 import games.rednblack.editor.graph.actions.ActionFieldType;
@@ -35,6 +34,7 @@ import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.H2DPopupMenu;
+import games.rednblack.puremvc.Facade;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -144,7 +144,7 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Object[] payload = AddToLibraryAction.getPayload(actionName, graphContainer.serializeGraph());
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_ADD_TO_LIBRARY_ACTION, payload);
+                Facade.getInstance().sendNotification(MsgAPI.ACTION_ADD_TO_LIBRARY_ACTION, payload);
                 close();
             }
         });
@@ -291,7 +291,7 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         graphContainer.clear();
         getTitleLabel().setText(actionName);
 
-        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+        ProjectManager projectManager = Facade.getInstance().retrieveProxy(ProjectManager.NAME);
         HashMap<String, GraphVO> items = projectManager.currentProjectInfoVO.libraryActions;
 
         if (items.get(actionName) != null) {

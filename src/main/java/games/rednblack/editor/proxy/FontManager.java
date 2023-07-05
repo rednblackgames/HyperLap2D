@@ -4,13 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.utils.AppConfig;
 import games.rednblack.editor.utils.NativeDialogs;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.Proxy;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.puremvc.java.patterns.proxy.Proxy;
 
 import java.awt.*;
 import java.io.File;
@@ -34,13 +34,12 @@ public class FontManager extends Proxy {
     private HashMap<String, String> systemFontMap = new HashMap<>();
 
     public FontManager() {
-        super(NAME);
+        super(NAME, null);
     }
 
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
         prefs = Gdx.app.getPreferences(cache_name);
         generateFontsMap();
     }

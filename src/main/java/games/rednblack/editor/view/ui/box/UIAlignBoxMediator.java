@@ -21,7 +21,8 @@ package games.rednblack.editor.view.ui.box;
 import com.badlogic.gdx.utils.Align;
 import games.rednblack.editor.view.stage.ItemSelector;
 import games.rednblack.editor.view.stage.Sandbox;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -39,20 +40,18 @@ public class UIAlignBoxMediator extends PanelMediator<UIAlignBox> {
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] parentNotifications = super.listNotificationInterests();
-        return Stream.of(parentNotifications, new String[]{
-                UIAlignBox.ALIGN_TOP_BTN_CLICKED,
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(UIAlignBox.ALIGN_TOP_BTN_CLICKED,
                 UIAlignBox.ALIGN_LEFT_BTN_CLICKED,
                 UIAlignBox.ALIGN_BOTTOM_BTN_CLICKED,
-                UIAlignBox.ALIGN_RIGHT_BTN_CLICKED,
-                UIAlignBox.ALIGN_CENTER_LEFT_BTN_CLICKED,
+                UIAlignBox.ALIGN_RIGHT_BTN_CLICKED);
+        interests.add(UIAlignBox.ALIGN_CENTER_LEFT_BTN_CLICKED,
                 UIAlignBox.ALIGN_CENTER_BOTTOM_BTN_CLICKED,
                 UIAlignBox.ALIGN_AT_EDGE_TOP_BTN_CLICKED,
-                UIAlignBox.ALIGN_AT_EDGE_LEFT_BTN_CLICKED,
-                UIAlignBox.ALIGN_AT_EDGE_BOTTOM_BTN_CLICKED,
-                UIAlignBox.ALIGN_AT_EDGE_RIGHT_BTN_CLICKED
-        }).flatMap(Stream::of).toArray(String[]::new);
+                UIAlignBox.ALIGN_AT_EDGE_LEFT_BTN_CLICKED);
+        interests.add(UIAlignBox.ALIGN_AT_EDGE_BOTTOM_BTN_CLICKED,
+                UIAlignBox.ALIGN_AT_EDGE_RIGHT_BTN_CLICKED);
     }
 
     @Override

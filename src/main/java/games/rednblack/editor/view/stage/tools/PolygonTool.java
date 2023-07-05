@@ -22,7 +22,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntSet;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
@@ -35,7 +34,8 @@ import games.rednblack.editor.view.ui.followers.BasicFollower;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
 import games.rednblack.editor.view.ui.followers.PolygonTransformationListener;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
 
 import java.util.Set;
 
@@ -80,7 +80,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
     public void initTool() {
         super.initTool();
 
-        followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+        followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
 
         updateSubFollowerList();
     }
@@ -145,7 +145,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
         follower.setProblems(null);
 
         UpdatePolygonVerticesCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
+        Facade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
     }
 
     @Override
@@ -211,7 +211,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
             Object[] payload = new Object[2];
             payload[0] = follower;
             payload[1] = anchor;
-            HyperLap2DFacade.getInstance().sendNotification(PolygonTool.MANUAL_VERTEX_POSITION, payload);
+            Facade.getInstance().sendNotification(PolygonTool.MANUAL_VERTEX_POSITION, payload);
             return;
         }
 
@@ -230,7 +230,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
     }
 
     private PolygonFollower getMeshFollower(int entity) {
-        FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+        FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
         BasicFollower follower = followersUIMediator.getFollower(entity);
 
         PolygonFollower meshFollower = (PolygonFollower) (follower).getSubFollower(PolygonFollower.class);
@@ -262,7 +262,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
             }
 
             UpdatePolygonVerticesCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
+            Facade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
 
             follower.update();
 

@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -10,8 +9,9 @@ import games.rednblack.editor.view.ui.settings.PluginsSettings;
 import games.rednblack.editor.view.ui.settings.SandboxSettings;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 public class SettingsDialogMediator extends Mediator<SettingsDialog> {
 
@@ -25,18 +25,15 @@ public class SettingsDialogMediator extends Mediator<SettingsDialog> {
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                FileMenu.SETTINGS,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(FileMenu.SETTINGS,
                 SettingsDialog.ADD_SETTINGS,
-                MsgAPI.ADD_PLUGIN_SETTINGS
-        };
+                MsgAPI.ADD_PLUGIN_SETTINGS);
     }
 
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
 
         SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
 

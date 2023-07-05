@@ -18,9 +18,8 @@
 
 package games.rednblack.editor.controller;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
-import org.puremvc.java.patterns.command.SimpleCommand;
+import games.rednblack.puremvc.commands.SimpleCommand;
 
 /**
  * Created by azakhary on 4/28/2015.
@@ -31,6 +30,5 @@ public class SandboxCommand extends SimpleCommand {
 
     public SandboxCommand() {
         sandbox = Sandbox.getInstance();
-        facade = HyperLap2DFacade.getInstance();
     }
 }

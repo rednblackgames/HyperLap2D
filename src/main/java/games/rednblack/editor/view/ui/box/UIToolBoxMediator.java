@@ -20,13 +20,13 @@ package games.rednblack.editor.view.ui.box;
 
 import com.kotcrab.vis.ui.widget.Separator;
 import com.kotcrab.vis.ui.widget.VisImageButton;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.stage.tools.*;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.tools.Tool;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.util.HashMap;
 
@@ -43,8 +43,6 @@ public class UIToolBoxMediator extends Mediator<UIToolBox> {
 
     @Override
     public void onRegister() {
-        facade = HyperLap2DFacade.getInstance();
-
         toolList = new HashMap<>();
         initToolList();
         currentTool = SelectionTool.NAME;
@@ -80,11 +78,9 @@ public class UIToolBoxMediator extends Mediator<UIToolBox> {
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.TOOL_CLICKED,
-                SandboxMediator.SANDBOX_TOOL_CHANGED
-        };
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.TOOL_CLICKED,
+                SandboxMediator.SANDBOX_TOOL_CHANGED);
     }
 
     @Override

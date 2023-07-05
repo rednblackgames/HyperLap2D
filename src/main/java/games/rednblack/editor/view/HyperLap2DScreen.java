@@ -29,7 +29,6 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
 import games.rednblack.editor.HyperLap2DApp;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.KeyBindingsLayout;
@@ -43,6 +42,7 @@ import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.h2d.common.MenuAPI;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.vo.SceneConfigVO;
+import games.rednblack.puremvc.Facade;
 
 public class HyperLap2DScreen implements Screen, InputProcessor {
     private static final String TAG = HyperLap2DScreen.class.getCanonicalName();
@@ -51,7 +51,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
     private com.artemis.World engine;
 
-    private final HyperLap2DFacade facade;
+    private final Facade facade;
 
     private Sandbox sandbox;
     private SandboxBackUI sandboxBackUI;
@@ -65,7 +65,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
     private boolean isDrawingBgLogo;
 
     public HyperLap2DScreen() {
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
         defaultBackgroundColor = new Color(0.15f, 0.15f, 0.15f, 1.0f);
         SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
         backgroundColor = settingsManager.editorConfigVO.backgroundColor;
@@ -105,7 +105,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
     }
 
     private void updateCameraPosition() {
-        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+        ProjectManager projectManager = Facade.getInstance().retrieveProxy(ProjectManager.NAME);
         SceneConfigVO sceneConfigVO = projectManager.getCurrentSceneConfigVO();
         if (sceneConfigVO != null)
             sandbox.getCamera().position.set(sceneConfigVO.cameraPosition[0], sceneConfigVO.cameraPosition[1], 0);

@@ -22,11 +22,11 @@ import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.ButtonToNotificationListener;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 7/2/2015.
@@ -111,6 +111,6 @@ public class UIPolygonComponentProperties extends UIRemovableProperties {
 
     @Override
     public void onRemove() {
-        HyperLap2DFacade.getInstance().sendNotification(CLOSE_CLICKED);
+        Facade.getInstance().sendNotification(CLOSE_CLICKED);
     }
 }

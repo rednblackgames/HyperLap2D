@@ -6,13 +6,13 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.renderer.data.PhysicsBodyDataVO;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
 
@@ -268,6 +268,6 @@ public class UIPhysicsProperties extends UIRemovableProperties {
 
     @Override
     public void onRemove() {
-        HyperLap2DFacade.getInstance().sendNotification(CLOSE_CLICKED);
+        Facade.getInstance().sendNotification(CLOSE_CLICKED);
     }
 }

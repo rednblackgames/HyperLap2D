@@ -1,7 +1,7 @@
 package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.utils.Array;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.interfaces.INotification;
 
 /**
  * Created by CyberJoe on 7/25/2015.

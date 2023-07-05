@@ -19,16 +19,16 @@
 package games.rednblack.editor.view.ui.box;
 
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPane;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPaneListener;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 4/17/2015.
  */
 public class UIResourcesBox extends UICollapsibleBox {
-    private HyperLap2DFacade facade;
+    private Facade facade;
 
     private VisTable contentTable;
     private VisTable tabContent;
@@ -37,7 +37,7 @@ public class UIResourcesBox extends UICollapsibleBox {
 
     public UIResourcesBox() {
         super("Resources");
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
 
         setMovable(false);
         contentTable = new VisTable();

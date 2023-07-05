@@ -24,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.kotcrab.vis.ui.widget.VisTextField;
-import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 4/15/2015.
@@ -98,7 +98,7 @@ public class KeyboardListener implements EventListener {
 
         lastValue = target.getText();
 
-        HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+        Facade facade = Facade.getInstance();
         facade.sendNotification(eventName, target.getText());
     }
 }

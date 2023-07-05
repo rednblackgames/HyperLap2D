@@ -26,11 +26,11 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.spinner.IntSpinnerModel;
 import com.kotcrab.vis.ui.widget.spinner.Spinner;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.FrameRange;
 import games.rednblack.editor.view.ui.validator.EmptyOrDefaultValidator;
 import games.rednblack.h2d.common.UIDraggablePanel;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 import java.util.Map;
 
@@ -42,7 +42,7 @@ public class EditSpriteAnimationPanel extends UIDraggablePanel {
     public static final String ADD_BUTTON_PRESSED = PREFIX + ".ADD_BUTTON_PRESSED";
     public static final String DELETE_BUTTON_PRESSED = PREFIX + ".DELETE_BUTTON_PRESSED";
 
-    private final HyperLap2DFacade facade;
+    private final Facade facade;
 
     private VisTextField nameField;
     private Spinner fromFrameField;
@@ -56,7 +56,7 @@ public class EditSpriteAnimationPanel extends UIDraggablePanel {
         super("Edit Sprite Animation Ranges");
         addCloseButton();
 
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
 
         VisTable mainTable = new VisTable();
 

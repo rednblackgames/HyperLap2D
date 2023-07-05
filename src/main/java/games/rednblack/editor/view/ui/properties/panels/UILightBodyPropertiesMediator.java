@@ -3,7 +3,6 @@ package games.rednblack.editor.view.ui.properties.panels;
 import com.badlogic.gdx.graphics.Color;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdateLightBodyDataCommand;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
@@ -13,9 +12,11 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.puremvc.java.interfaces.INotification;
 
 public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<UILightBodyProperties> {
 
@@ -29,14 +30,10 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<UILi
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] defaultNotifications = super.listNotificationInterests();
-        String[] notificationInterests = new String[]{
-                UILightBodyProperties.CLOSE_CLICKED,
-                UILightBodyProperties.LIGHT_COLOR_BUTTON_CLICKED
-        };
-
-        return ArrayUtils.addAll(defaultNotifications, notificationInterests);
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(UILightBodyProperties.CLOSE_CLICKED,
+                UILightBodyProperties.LIGHT_COLOR_BUTTON_CLICKED);
     }
 
     @Override
@@ -45,7 +42,7 @@ public class UILightBodyPropertiesMediator extends UIItemPropertiesMediator<UILi
 
         switch (notification.getName()) {
             case UILightBodyProperties.CLOSE_CLICKED:
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, LightBodyComponent.class));
+                Facade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, LightBodyComponent.class));
                 break;
             case UILightBodyProperties.LIGHT_COLOR_BUTTON_CLICKED:
                 Color prevColor = viewComponent.getLightColor().cpy();

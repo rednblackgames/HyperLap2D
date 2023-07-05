@@ -11,7 +11,7 @@ import com.kotcrab.vis.ui.widget.file.FileChooser;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.InputFileWidget;
-import org.puremvc.java.interfaces.IFacade;
+import games.rednblack.puremvc.Facade;
 
 public class ImportTileSetDialog extends H2DDialog {
     private static final String prefix = "games.rednblack.editor.plugin.tiled.view.dialog.ImportTileSetDialog";
@@ -20,9 +20,9 @@ public class ImportTileSetDialog extends H2DDialog {
     private final VisValidatableTextField width, height;
     private final InputFileWidget imagePathField;
     private final VisTextButton importButton;
-    private final IFacade facade;
+    private final Facade facade;
 
-    public ImportTileSetDialog(IFacade facade) {
+    public ImportTileSetDialog(Facade facade) {
         super("Import TileSet");
         this.facade = facade;
 

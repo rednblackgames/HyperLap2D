@@ -8,11 +8,10 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisValidatableTextField;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.InputFileWidget;
-import org.puremvc.java.interfaces.IFacade;
+import games.rednblack.puremvc.Facade;
 
 public class ImportSpriteSheetDialog extends H2DDialog {
     private static final String prefix = "games.rednblack.editor.view.ui.dialog.ImportSpriteSheetDialog";
@@ -21,13 +20,13 @@ public class ImportSpriteSheetDialog extends H2DDialog {
     private final VisValidatableTextField width, height;
     private final InputFileWidget imagePathField;
     private final VisTextButton importButton;
-    private final IFacade facade;
+    private final Facade facade;
 
     public ImportSpriteSheetDialog() {
         super("Import Sprite Sheet Animation");
         addCloseButton();
 
-        this.facade = HyperLap2DFacade.getInstance();
+        this.facade = Facade.getInstance();
 
         setModal(true);
         VisTable fileTable = new VisTable();

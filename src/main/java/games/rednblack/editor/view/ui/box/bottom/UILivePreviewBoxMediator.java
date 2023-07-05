@@ -5,13 +5,13 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationGLESFix;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.live.LiveScreenAdapter;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 public class UILivePreviewBoxMediator extends Mediator<UILivePreviewBox> {
 	private static final String TAG = UILivePreviewBoxMediator.class.getCanonicalName();
@@ -21,18 +21,15 @@ public class UILivePreviewBoxMediator extends Mediator<UILivePreviewBox> {
 
 	public UILivePreviewBoxMediator() {
 		super(NAME, new UILivePreviewBox());
-		facade = HyperLap2DFacade.getInstance();
 
 		resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
 	}
 
 	@Override
-	public String[] listNotificationInterests() {
-		return new String[]{
-				ProjectManager.PROJECT_OPENED,
+	public void listNotificationInterests(Interests interests) {
+		interests.add(ProjectManager.PROJECT_OPENED,
 				MsgAPI.SCENE_LOADED,
-				UILivePreviewBox.LIVE_PREVIEW_CLICKED
-		};
+				UILivePreviewBox.LIVE_PREVIEW_CLICKED);
 	}
 
 	@Override

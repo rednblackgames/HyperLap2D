@@ -18,13 +18,13 @@
 
 package games.rednblack.editor.controller.commands;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
 
@@ -49,7 +49,7 @@ public class AddToLibraryCommand extends HistoricRevertibleCommand {
         MainItemComponent mainItemComponent = SandboxComponentRetriever.get(item, MainItemComponent.class);
 
         if(createdLibraryItemName.length() > 0) {
-            ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+            ProjectManager projectManager = Facade.getInstance().retrieveProxy(ProjectManager.NAME);
             HashMap<String, CompositeItemVO> libraryItems = projectManager.currentProjectInfoVO.libraryItems;
 
             if (libraryItems.containsKey(createdLibraryItemName)) {
@@ -74,7 +74,7 @@ public class AddToLibraryCommand extends HistoricRevertibleCommand {
 
     @Override
     public void undoAction() {
-        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+        ProjectManager projectManager = Facade.getInstance().retrieveProxy(ProjectManager.NAME);
         HashMap<String, CompositeItemVO> libraryItems = projectManager.currentProjectInfoVO.libraryItems;
 
         if(createdLibraryItemName.length() > 0) {

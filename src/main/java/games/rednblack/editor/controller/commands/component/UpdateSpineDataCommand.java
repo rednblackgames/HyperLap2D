@@ -1,12 +1,12 @@
 package games.rednblack.editor.controller.commands.component;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.h2d.extension.spine.SpineVO;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extension.spine.SpineComponent;
+import games.rednblack.puremvc.Facade;
 
 public class UpdateSpineDataCommand extends EntityModifyRevertibleCommand {
 
@@ -30,7 +30,7 @@ public class UpdateSpineDataCommand extends EntityModifyRevertibleCommand {
         spineComponent.setAnimation(vo.currentAnimationName);
         spineComponent.setSkin(vo.currentSkinName);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class UpdateSpineDataCommand extends EntityModifyRevertibleCommand {
         spineComponent.setAnimation(backup.currentAnimationName);
         spineComponent.setSkin(backup.currentSkinName);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     public static Object payload(int entity, SpineVO vo) {

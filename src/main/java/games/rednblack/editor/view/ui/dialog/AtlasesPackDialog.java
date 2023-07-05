@@ -18,7 +18,6 @@ import com.kotcrab.vis.ui.util.adapter.SimpleListAdapter;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.OptionDialogAdapter;
 import com.kotcrab.vis.ui.widget.*;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.utils.ResourceListAdapter;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
@@ -27,6 +26,7 @@ import games.rednblack.h2d.common.view.ui.listener.ScrollFocusListener;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPane;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPaneListener;
+import games.rednblack.puremvc.Facade;
 
 import java.util.Set;
 
@@ -41,7 +41,7 @@ public class AtlasesPackDialog extends H2DDialog {
     private final VisTextButton insertButton, removeButton;
     private final VisLabel currentSelectedPackLabel;
 
-    private final HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+    private final Facade facade = Facade.getInstance();
 
     private final Array<String> mainList = new Array<>();
     private final Array<String> currentList = new Array<>();

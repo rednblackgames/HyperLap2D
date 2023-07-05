@@ -7,13 +7,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.UIImagesTab;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.BoxItemResource;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,7 +26,7 @@ import java.util.TreeSet;
  * 
  * @author Jan-Thierry Wegener
  */
-public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource>  {
+public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource> {
 	
 	public static final String NAME = BoxItemResourceSelectionUIMediator.class.getCanonicalName();
 	
@@ -39,7 +40,7 @@ public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource
     private BoxItemResource boxResourcePreviousClick;
 
     public BoxItemResourceSelectionUIMediator() {
-        super(NAME);
+        super(NAME, null);
     }
     
     @Override
@@ -47,18 +48,16 @@ public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource
     	super.onRegister();
     }
 
-    @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-				UIResourcesBoxMediator.RESOURCE_BOX_RIGHT_CLICK,
-        		UIResourcesBoxMediator.RESOURCE_BOX_LEFT_CLICK,
+	@Override
+	public void listNotificationInterests(Interests interests) {
+		interests.add(UIResourcesBoxMediator.RESOURCE_BOX_RIGHT_CLICK,
+				UIResourcesBoxMediator.RESOURCE_BOX_LEFT_CLICK,
 				UIResourcesBoxMediator.RESOURCE_BOX_DRAG_START,
-        		MsgAPI.IMAGE_BUNDLE_DROP,
-        		UIResourcesBoxMediator.ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT,
-        		UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_ENTER,
-        		UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_EXIT
-        };
-    }
+				MsgAPI.IMAGE_BUNDLE_DROP);
+		interests.add(UIResourcesBoxMediator.ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT,
+				UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_ENTER,
+				UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_EXIT);
+	}
 
     @Override
     public void handleNotification(INotification notification) {
@@ -93,7 +92,7 @@ public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource
 				namesOrdered.addAll(nameSet.toArray(String[]::new));
 				namesOrdered.sort();
 	        	for (String name : namesOrdered) {
-	        		HyperLap2DFacade.getInstance().sendNotification(MsgAPI.IMAGE_BUNDLE_DROP_SINGLE, new Object[] {name, payloadBody[1], false});
+	        		Facade.getInstance().sendNotification(MsgAPI.IMAGE_BUNDLE_DROP_SINGLE, new Object[] {name, payloadBody[1], false});
 	        	}
 	        	break;
 	        case UIResourcesBoxMediator.ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT:

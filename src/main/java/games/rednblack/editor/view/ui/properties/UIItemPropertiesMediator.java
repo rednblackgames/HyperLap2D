@@ -21,7 +21,7 @@ package games.rednblack.editor.view.ui.properties;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.interfaces.INotification;
 
 /**
  * Created by azakhary on 4/15/2015.

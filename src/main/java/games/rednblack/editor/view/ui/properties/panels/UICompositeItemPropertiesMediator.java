@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.ui.properties.panels;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.component.UpdateCompositeDataCommand;
 import games.rednblack.editor.renderer.components.CompositeTransformComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
@@ -27,6 +26,7 @@ import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -70,6 +70,6 @@ public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<
 
         Set<Integer> entityHashSet = new HashSet<>();
         entityHashSet.add(observableReference);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, entityHashSet);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, entityHashSet);
     }
 }

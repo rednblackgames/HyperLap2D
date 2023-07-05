@@ -7,9 +7,9 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.UIDraggablePanel;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 import java.util.*;
 
@@ -22,7 +22,7 @@ public class TagsPanel extends UIDraggablePanel {
     public static final String ITEM_ADD = prefix + ".ITEM_ADD";
     public static final String ITEM_REMOVED = prefix + ".ITEM_REMOVED";
 
-    private HyperLap2DFacade facade;
+    private Facade facade;
 
     private VisTable mainTable;
     private VisTable tagTable;
@@ -34,7 +34,7 @@ public class TagsPanel extends UIDraggablePanel {
         super("Tags");
         addCloseButton();
 
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
 
         mainTable = new VisTable();
 

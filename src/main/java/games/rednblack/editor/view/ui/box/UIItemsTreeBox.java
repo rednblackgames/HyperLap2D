@@ -30,7 +30,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
@@ -40,6 +39,7 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 import java.util.Comparator;
 import java.util.Set;
@@ -51,7 +51,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     protected ComponentMapper<ZIndexComponent> zIndexComponentMapper;
 
     public static final String ITEMS_SELECTED = "games.rednblack.editor.view.ui.box.UIItemsTreeBox." + ".ITEMS_SELECTED";
-    private final HyperLap2DFacade facade;
+    private final Facade facade;
     private final VisTable treeTable;
     private Tree<UIItemsTreeNode, UIItemsTreeValue> tree;
     private VisScrollPane scroller;
@@ -71,7 +71,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     public UIItemsTreeBox() {
         super("Items Tree", 180);
         setMovable(false);
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
         treeTable = new VisTable();
         treeTable.left();
         zUp = StandardWidgetsFactory.createImageButton("arrow-button");
@@ -271,7 +271,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
                 UIItemsTreeValue selected = selection.first().getValue();
                 int item = EntityUtils.getByUniqueId(selected.entityId);
                 if (EntityUtils.getType(item) == EntityFactory.COMPOSITE_TYPE) {
-                    HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, item);
+                    Facade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, item);
                 }
             }
         }

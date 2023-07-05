@@ -10,7 +10,6 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.spinner.Spinner;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.NumberSelectorOverlapListener;
@@ -18,6 +17,7 @@ import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
+import games.rednblack.puremvc.Facade;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
@@ -241,6 +241,6 @@ public class UILightBodyProperties extends UIRemovableProperties {
 
     @Override
     public void onRemove() {
-        HyperLap2DFacade.getInstance().sendNotification(CLOSE_CLICKED);
+        Facade.getInstance().sendNotification(CLOSE_CLICKED);
     }
 }

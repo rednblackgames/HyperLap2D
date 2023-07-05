@@ -1,13 +1,13 @@
 package games.rednblack.editor.controller.commands.component;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationStateComponent;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by CyberJoe on 6/18/2015.
@@ -41,7 +41,7 @@ public class UpdateSpriteAnimationDataCommand extends EntityModifyRevertibleComm
         spriteAnimationComponent.playMode = playMode;
         spriteAnimationStateComponent.set(spriteAnimationComponent);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class UpdateSpriteAnimationDataCommand extends EntityModifyRevertibleComm
         spriteAnimationComponent.playMode = previousPlayMode;
         spriteAnimationStateComponent.set(spriteAnimationComponent);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     public static Object payload(int entity, int fps, String animName, Animation.PlayMode playMode) {

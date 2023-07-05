@@ -30,8 +30,9 @@ import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableReso
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.ParticleEffectResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.TalosResource;
 import games.rednblack.h2d.extension.talos.TalosItemType;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.ArrayUtils;
-import org.puremvc.java.interfaces.INotification;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -54,11 +55,9 @@ public class UIParticleEffectsTabMediator extends UIResourcesTabMediator<UIParti
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] listNotification = super.listNotificationInterests();
-        listNotification = ArrayUtils.add(listNotification, DeleteParticleEffect.DONE);
-        listNotification = ArrayUtils.add(listNotification, DeleteTalosVFX.DONE);
-        return listNotification;
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(DeleteParticleEffect.DONE, DeleteTalosVFX.DONE);
     }
 
     @Override

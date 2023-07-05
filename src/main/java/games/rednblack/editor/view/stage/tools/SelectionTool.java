@@ -25,7 +25,6 @@ import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.util.OsUtils;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
@@ -38,6 +37,7 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.h2d.common.view.ui.Cursors;
+import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -97,7 +97,7 @@ public class SelectionTool extends SimpleTool {
         sandbox = Sandbox.getInstance();
 
         // set cursor
-        CursorManager cursorManager = HyperLap2DFacade.getInstance().retrieveProxy(CursorManager.NAME);
+        CursorManager cursorManager = Facade.getInstance().retrieveProxy(CursorManager.NAME);
         cursorManager.setCursor(Cursors.NORMAL);
     }
 
@@ -140,7 +140,7 @@ public class SelectionTool extends SimpleTool {
             return;
         ParentNodeComponent parentNodeComponent = SandboxComponentRetriever.get(currentView, ParentNodeComponent.class);
         if (parentNodeComponent != null) {
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, parentNodeComponent.parentEntity);
+            Facade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, parentNodeComponent.parentEntity);
         }
     }
 
@@ -148,7 +148,7 @@ public class SelectionTool extends SimpleTool {
     public boolean itemMouseDown(int entity, float x, float y) {
         isItemDown = true;
         sandbox = Sandbox.getInstance();
-        HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+        Facade facade = Facade.getInstance();
 
         currentTouchedItemWasSelected = sandbox.getSelector().getCurrentSelection().contains(entity);
 
@@ -184,7 +184,7 @@ public class SelectionTool extends SimpleTool {
         dragMouseStartPosition = new Vector2(x, y);
 
         // pining UI to update current item properties tools
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
 
         return true;
     }
@@ -197,8 +197,8 @@ public class SelectionTool extends SimpleTool {
 
         if (!isDragging && (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT))) { // first drag iteration and is copy mode
             // we need to copy/paste the item in place, the set it as selection and draggable, then perform the drag.
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_COPY);
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_PASTE);
+            Facade.getInstance().sendNotification(MsgAPI.ACTION_COPY);
+            Facade.getInstance().sendNotification(MsgAPI.ACTION_PASTE);
 
             dragStartPositions.clear();
             dragTouchDiff.clear();
@@ -212,7 +212,7 @@ public class SelectionTool extends SimpleTool {
             dragMouseStartPosition = new Vector2(x, y);
 
             // pining UI to update current item properties tools
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+            Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
 
         }
 
@@ -267,7 +267,7 @@ public class SelectionTool extends SimpleTool {
                 //value.hide();
 
                 // pining UI to update current item properties tools
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, itemInstance);
+                Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, itemInstance);
             }
         }
 
@@ -288,7 +288,7 @@ public class SelectionTool extends SimpleTool {
 
                 transformComponent.rotation = (transformComponent.rotation + degreeAmount) % 360;
                 // pining UI to update current item properties tools
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, itemInstance);
+                Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, itemInstance);
             }
         }
 
@@ -299,7 +299,7 @@ public class SelectionTool extends SimpleTool {
     public void itemMouseUp(int entity, float x, float y) {
         isItemDown = false;
         sandbox = Sandbox.getInstance();
-        HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+        Facade facade = Facade.getInstance();
 
         if (currentTouchedItemWasSelected && !isDragging) {
             // item was selected (and no dragging was performed), so we need to release it
@@ -328,7 +328,7 @@ public class SelectionTool extends SimpleTool {
                 payloads.add(payload);
             }
 
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_ITEMS_MOVE_TO, payloads);
+            Facade.getInstance().sendNotification(MsgAPI.ACTION_ITEMS_MOVE_TO, payloads);
         }
 
         isDragging = false;
@@ -338,7 +338,7 @@ public class SelectionTool extends SimpleTool {
     @Override
     public void itemMouseDoubleClick(int item, float x, float y) {
         if (sandbox.getSelector().selectionIsComposite()) {
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, item);
+            Facade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, item);
         }
     }
 
@@ -351,7 +351,7 @@ public class SelectionTool extends SimpleTool {
     private void selectionComplete() {
         sandbox = Sandbox.getInstance();
 
-        HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+        Facade facade = Facade.getInstance();
         OrthographicCamera camera = Sandbox.getInstance().getCamera();
         Viewport viewport = Sandbox.getInstance().getViewport();
 
@@ -471,12 +471,12 @@ public class SelectionTool extends SimpleTool {
             }
 
             if (payloads.size > 0)
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_ITEMS_MOVE_TO, payloads);
+                Facade.getInstance().sendNotification(MsgAPI.ACTION_ITEMS_MOVE_TO, payloads);
         }
 
         // Delete
         if (keycode == Input.Keys.DEL || keycode == Input.Keys.FORWARD_DEL) {
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_DELETE);
+            Facade.getInstance().sendNotification(MsgAPI.ACTION_DELETE);
         }
     }
 

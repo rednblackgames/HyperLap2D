@@ -18,10 +18,10 @@
 
 package games.rednblack.editor.view.ui.properties;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 /**
  * Created by azakhary on 4/15/2015.
@@ -37,21 +37,12 @@ public abstract class UIAbstractEntityPropertiesMediator<V extends UIAbstractPro
         super(mediatorName, viewComponent);
 
         sandbox = Sandbox.getInstance();
-        facade = HyperLap2DFacade.getInstance();
     }
 
     @Override
-    public void onRegister() {
-        facade = HyperLap2DFacade.getInstance();
-    }
-
-
-    @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.ITEM_DATA_UPDATED,
-                viewComponent.getUpdateEventName()
-        };
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.ITEM_DATA_UPDATED,
+                viewComponent.getUpdateEventName());
     }
 
     @Override

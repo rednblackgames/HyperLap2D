@@ -21,6 +21,8 @@ dependencies {
 
     implementation "com.esotericsoftware.spine:spine-libgdx:$spineVersion"
 
+    implementation "games.rednblack.puremvc:core:$pureMvcVersion"
+
     implementation 'net.mountainblade:modular:1.0'
 
     implementation project(":hyperlap2d-common-api")

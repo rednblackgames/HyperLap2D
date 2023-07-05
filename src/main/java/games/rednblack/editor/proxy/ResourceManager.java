@@ -18,7 +18,6 @@ import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
 import com.talosvfx.talos.runtime.utils.ShaderDescriptor;
 import com.talosvfx.talos.runtime.utils.VectorField;
 import dev.lyze.gdxtinyvg.TinyVG;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.resources.FontSizePair;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
@@ -33,9 +32,9 @@ import games.rednblack.h2d.extension.talos.ResourceRetrieverAssetProvider;
 import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
 import games.rednblack.h2d.extension.tinyvg.TinyVGUtils;
+import games.rednblack.puremvc.Proxy;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.puremvc.java.patterns.proxy.Proxy;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -72,13 +71,12 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private PixmapPacker fontPacker;
 
     public ResourceManager() {
-        super(NAME);
+        super(NAME, null);
     }
 
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
         resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
         settingsManager = facade.retrieveProxy(SettingsManager.NAME);
 

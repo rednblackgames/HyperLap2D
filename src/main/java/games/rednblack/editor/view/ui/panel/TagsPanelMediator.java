@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui.panel;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.menu.WindowMenu;
@@ -8,8 +7,9 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.properties.panels.UIBasicItemProperties;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,20 +32,17 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
         viewComponent.setEmpty();
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.ITEM_SELECTION_CHANGED,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.ITEM_SELECTION_CHANGED,
                 MsgAPI.EMPTY_SPACE_CLICKED,
                 UIBasicItemProperties.TAGS_BUTTON_CLICKED,
-                WindowMenu.TAGS_EDITOR_OPEN,
-                TagsPanel.ITEM_ADD,
-                TagsPanel.ITEM_REMOVED
-        };
+                WindowMenu.TAGS_EDITOR_OPEN);
+        interests.add(TagsPanel.ITEM_ADD,
+                TagsPanel.ITEM_REMOVED);
     }
 
     @Override

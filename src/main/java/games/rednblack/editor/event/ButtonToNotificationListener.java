@@ -2,7 +2,7 @@ package games.rednblack.editor.event;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 7/2/2015.
@@ -23,6 +23,6 @@ public class ButtonToNotificationListener extends ClickListener{
 
     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
         super.touchUp(event, x, y, pointer, button);
-        HyperLap2DFacade.getInstance().sendNotification(notificationName, payload);
+        Facade.getInstance().sendNotification(notificationName, payload);
     }
 }

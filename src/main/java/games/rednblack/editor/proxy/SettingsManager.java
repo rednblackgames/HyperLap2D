@@ -3,15 +3,15 @@ package games.rednblack.editor.proxy;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.CustomExceptionHandler;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.Main;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.Proxy;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.puremvc.java.patterns.proxy.Proxy;
 
 import java.io.*;
 import java.util.List;
@@ -29,14 +29,13 @@ public class SettingsManager extends Proxy {
     public File cacheDir;
 
     public SettingsManager() {
-        super(NAME);
+        super(NAME, null);
         initWorkspace();
     }
 
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
         KeyBindingsLayout.init();
     }
 

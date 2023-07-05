@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.CompositeTransformComponent;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
@@ -16,7 +15,7 @@ import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 import games.rednblack.editor.view.ui.properties.panels.UIBasicItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
-import org.puremvc.java.patterns.facade.Facade;
+import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +38,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
     private static final float[] tmp1 = new float[3];
     private static final float[] tmp2 = new float[3];
 
-    private final Facade facade = HyperLap2DFacade.getInstance();
+    private final Facade facade = Facade.getInstance();
 
     public void getInitialPositions(int entity) {
         getParentState(entity, parentInitialPosition, parentInitialSize);
@@ -68,7 +67,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
             payloads.add(payload);
         }
         if (!parentFinalPosition.equals(parentInitialPosition) || !parentFinalSize.equals(parentInitialSize))
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_ITEM_AND_CHILDREN_TO, payloads);
+            Facade.getInstance().sendNotification(MsgAPI.ACTION_ITEM_AND_CHILDREN_TO, payloads);
     }
 
     private void setParentState(int entity, Vector2 position, Vector2 size) {

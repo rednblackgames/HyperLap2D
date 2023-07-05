@@ -20,7 +20,6 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
@@ -30,8 +29,9 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.AutoTraceDialog;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
-import org.apache.commons.lang3.ArrayUtils;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 /**
  * Created by azakhary on 7/2/2015.
@@ -48,17 +48,13 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] defaultNotifications = super.listNotificationInterests();
-        String[] notificationInterests = new String[]{
-                UIPolygonComponentProperties.ADD_DEFAULT_MESH_BUTTON_CLICKED,
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(UIPolygonComponentProperties.ADD_DEFAULT_MESH_BUTTON_CLICKED,
                 UIPolygonComponentProperties.COPY_BUTTON_CLICKED,
                 UIPolygonComponentProperties.PASTE_BUTTON_CLICKED,
-                UIPolygonComponentProperties.CLOSE_CLICKED,
-                UIPolygonComponentProperties.ADD_AUTO_TRACE_MESH_BUTTON_CLICKED
-        };
-
-        return ArrayUtils.addAll(defaultNotifications, notificationInterests);
+                UIPolygonComponentProperties.CLOSE_CLICKED);
+        interests.add(UIPolygonComponentProperties.ADD_AUTO_TRACE_MESH_BUTTON_CLICKED);
     }
 
     @Override
@@ -79,7 +75,7 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
                 pasteMesh();
                 break;
             case UIPolygonComponentProperties.CLOSE_CLICKED:
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, PolygonShapeComponent.class));
+                Facade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, PolygonShapeComponent.class));
                 break;
         }
     }
@@ -130,7 +126,7 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
             polygonShapeComponent.makeRectangle( dimensionsComponent.width, dimensionsComponent.height );
         }
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, observableReference);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, observableReference);
     }
 
     private void addAutoTraceMesh() {
@@ -152,6 +148,6 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
         if(vertices == null) return;
         Object[] payload = UpdatePolygonVerticesCommand.payloadInitialState(observableReference);
         UpdatePolygonVerticesCommand.payload(payload, vertices, polygonizedVertices);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, payload);
+        Facade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, payload);
     }
 }

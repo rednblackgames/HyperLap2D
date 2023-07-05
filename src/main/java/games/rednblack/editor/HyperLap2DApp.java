@@ -10,6 +10,7 @@ import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.utils.AppConfig;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 import org.apache.commons.lang3.SystemUtils;
 
 public class HyperLap2DApp extends ApplicationAdapter {
@@ -41,7 +42,7 @@ public class HyperLap2DApp extends ApplicationAdapter {
     public void create() {
         Lwjgl3ApplicationGLESFix app = (Lwjgl3ApplicationGLESFix) Gdx.app;
 
-        StandardWidgetsFactory.init(HyperLap2DFacade.getInstance());
+        StandardWidgetsFactory.init(Facade.getInstance());
 
         Lwjgl3ApplicationConfiguration config2 = new Lwjgl3ApplicationConfiguration();
         config2.setWindowedMode(467, 385);

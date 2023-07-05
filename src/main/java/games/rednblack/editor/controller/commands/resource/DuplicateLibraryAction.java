@@ -3,7 +3,6 @@ package games.rednblack.editor.controller.commands.resource;
 import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddToLibraryAction;
 import games.rednblack.editor.controller.commands.NonRevertibleCommand;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -12,6 +11,7 @@ import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.validator.StringNameValidator;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
 
@@ -25,7 +25,7 @@ public class DuplicateLibraryAction extends NonRevertibleCommand {
     public void doAction() {
         String libraryActionName = notification.getBody();
 
-        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+        ProjectManager projectManager = Facade.getInstance().retrieveProxy(ProjectManager.NAME);
         HashMap<String, GraphVO> libraryActions = projectManager.currentProjectInfoVO.libraryActions;
 
         GraphVO actionToDuplicate = libraryActions.get(libraryActionName);
@@ -41,7 +41,7 @@ public class DuplicateLibraryAction extends NonRevertibleCommand {
                 GraphVO duplicated = json.fromJson(GraphVO.class, json.toJson(actionToDuplicate));
 
                 Object[] payload = AddToLibraryAction.getPayload(input, duplicated);
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_ADD_TO_LIBRARY_ACTION, payload);
+                Facade.getInstance().sendNotification(MsgAPI.ACTION_ADD_TO_LIBRARY_ACTION, payload);
             }
 
             @Override

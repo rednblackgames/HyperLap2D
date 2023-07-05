@@ -28,8 +28,8 @@ import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.dialog.CodeEditorDialogMediator;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
-import org.apache.commons.lang3.ArrayUtils;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,15 +57,11 @@ public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<UIShade
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] defaultNotifications = super.listNotificationInterests();
-        String[] notificationInterests = new String[]{
-                UIShaderProperties.CLOSE_CLICKED,
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(UIShaderProperties.CLOSE_CLICKED,
                 UIShaderProperties.EDIT_BUTTON_CLICKED,
-                UIShaderProperties.EDIT_SHADER_DONE
-        };
-
-        return ArrayUtils.addAll(defaultNotifications, notificationInterests);
+                UIShaderProperties.EDIT_SHADER_DONE);
     }
 
     @Override

@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.ui.panel;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.CustomVariableModifyCommand;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -27,8 +26,9 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.properties.panels.UIBasicItemProperties;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.util.Set;
 
@@ -48,21 +48,18 @@ public class CustomVariablesPanelMediator extends Mediator<CustomVariablesPanel>
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
         viewComponent.setEmptyMsg("No item selected.");
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.ITEM_SELECTION_CHANGED,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.ITEM_SELECTION_CHANGED,
                 MsgAPI.EMPTY_SPACE_CLICKED,
                 UIBasicItemProperties.CUSTOM_VARS_BUTTON_CLICKED,
-                CustomVariablesPanel.ADD_BUTTON_PRESSED,
-                CustomVariablesPanel.DELETE_BUTTON_PRESSED,
+                CustomVariablesPanel.ADD_BUTTON_PRESSED);
+        interests.add(CustomVariablesPanel.DELETE_BUTTON_PRESSED,
                 WindowMenu.CUSTOM_VARIABLES_EDITOR_OPEN,
-                CustomVariableModifyCommand.DONE
-        };
+                CustomVariableModifyCommand.DONE);
     }
 
     @Override

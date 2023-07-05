@@ -19,7 +19,6 @@
 package games.rednblack.editor.view;
 
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.ResourceManager;
@@ -28,6 +27,7 @@ import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Mediates scene communication between editor and current runtime
@@ -36,7 +36,7 @@ import games.rednblack.editor.view.stage.Sandbox;
  */
 public class SceneControlMediator {
 
-	private final HyperLap2DFacade facade;
+	private final Facade facade;
 	private final ProjectManager projectManager;
 	/**
 	 * main holder of the scene
@@ -56,7 +56,7 @@ public class SceneControlMediator {
 
 	public SceneControlMediator(SceneLoader sceneLoader) {
 		this.sceneLoader = sceneLoader;
-		facade = HyperLap2DFacade.getInstance();
+		facade = Facade.getInstance();
 		projectManager = facade.retrieveProxy(ProjectManager.NAME);
 	}
 

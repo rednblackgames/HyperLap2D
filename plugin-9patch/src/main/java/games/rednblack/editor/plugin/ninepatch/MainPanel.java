@@ -10,7 +10,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.h2d.common.H2DDialog;
-import org.puremvc.java.interfaces.IFacade;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 8/18/2015.
@@ -20,7 +20,7 @@ public class MainPanel extends H2DDialog {
 
     public static final String SAVE_CLICKED = CLASS_NAME + ".SAVE_CLICKED";
 
-    private IFacade facade;
+    private Facade facade;
 
     private VisTable mainTable;
     private TextureRegion texture;
@@ -31,7 +31,7 @@ public class MainPanel extends H2DDialog {
     private EditingZone editingZone;
     private PreviewWidget previewWidget;
 
-    public MainPanel(IFacade facade) {
+    public MainPanel(Facade facade) {
         super("Nine Patch", false);
         addCloseButton();
 

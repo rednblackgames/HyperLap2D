@@ -1,15 +1,16 @@
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.resource.DeleteLibraryAction;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.GraphVO;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.LibraryActionResource;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.ArrayUtils;
-import org.puremvc.java.interfaces.INotification;
 
 import java.util.HashMap;
 
@@ -25,13 +26,9 @@ public class UIActionsTabMediator extends UIResourcesTabMediator<UIActionsTab> {
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] listNotification = super.listNotificationInterests();
-
-        listNotification = ArrayUtils.add(listNotification, MsgAPI.LIBRARY_ACTIONS_UPDATED);
-        listNotification = ArrayUtils.add(listNotification, DeleteLibraryAction.DONE);
-
-        return listNotification;
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(MsgAPI.LIBRARY_ACTIONS_UPDATED, DeleteLibraryAction.DONE);
     }
 
     @Override
@@ -50,7 +47,7 @@ public class UIActionsTabMediator extends UIResourcesTabMediator<UIActionsTab> {
     @Override
     protected void initList(String searchText) {
         searchText = searchText.toLowerCase();
-        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+        ProjectManager projectManager = Facade.getInstance().retrieveProxy(ProjectManager.NAME);
         HashMap<String, GraphVO> items = projectManager.currentProjectInfoVO.libraryActions;
 
         itemArray.clear();

@@ -2,7 +2,7 @@ package games.rednblack.editor.event;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by CyberJoe on 4/21/2015.
@@ -14,7 +14,7 @@ public class MenuItemListener extends ChangeListener {
     private final String menuType;
     private final Object data;
 
-    private HyperLap2DFacade facade;
+    private final Facade facade;
 
     public MenuItemListener(String menuCommand) {
         this(menuCommand, null, null);
@@ -29,7 +29,7 @@ public class MenuItemListener extends ChangeListener {
         this.data = data;
         this.menuType = menuType;
 
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
     }
 
     @Override

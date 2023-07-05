@@ -5,7 +5,7 @@ import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.plugins.H2DPluginAdapter;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import org.puremvc.java.interfaces.IFacade;
+import games.rednblack.puremvc.Facade;
 
 public class SkinComposerSettings extends SettingsNodeValue<SkinComposerVO> {
 
@@ -13,7 +13,7 @@ public class SkinComposerSettings extends SettingsNodeValue<SkinComposerVO> {
     private final H2DPluginAdapter plugin;
     private boolean loaded = false;
 
-    public SkinComposerSettings(IFacade facade, H2DPluginAdapter plugin) {
+    public SkinComposerSettings(Facade facade, H2DPluginAdapter plugin) {
         super("Skin Composer", facade);
 
         this.plugin = plugin;

@@ -7,7 +7,6 @@ import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
@@ -15,6 +14,7 @@ import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
 import games.rednblack.h2d.common.vo.ProjectVO;
+import games.rednblack.puremvc.Facade;
 
 public class LivePreviewSettings extends SettingsNodeValue<ProjectVO> {
 
@@ -22,7 +22,7 @@ public class LivePreviewSettings extends SettingsNodeValue<ProjectVO> {
     private final VisCheckBox box2dDebug;
 
     public LivePreviewSettings() {
-        super("Live Preview", HyperLap2DFacade.getInstance());
+        super("Live Preview", Facade.getInstance());
 
         getContentTable().add("Window").left().row();
         getContentTable().addSeparator();

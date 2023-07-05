@@ -1,10 +1,9 @@
 package games.rednblack.editor.proxy;
 
 import com.badlogic.gdx.Gdx;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.UIWindowTitle;
 import games.rednblack.editor.view.ui.UIWindowTitleMediator;
-import org.puremvc.java.patterns.proxy.Proxy;
+import games.rednblack.puremvc.Proxy;
 
 public class WindowTitleManager extends Proxy {
     private static final String TAG = WindowTitleManager.class.getCanonicalName();
@@ -13,13 +12,7 @@ public class WindowTitleManager extends Proxy {
     private String currentWindowTitle = "";
 
     public WindowTitleManager() {
-        super(NAME);
-    }
-
-    @Override
-    public void onRegister() {
-        super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
+        super(NAME, null);
     }
 
     public void setWindowTitle(String title) {

@@ -1,9 +1,9 @@
 package games.rednblack.editor.controller.commands;
 
 import com.artemis.Component;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by CyberJoe on 7/2/2015.
@@ -29,8 +29,8 @@ public class AddComponentToItemCommand extends EntityModifyRevertibleCommand {
         Component newComponent = Sandbox.getInstance().getEngine().edit(entity).create(component);
         sandbox.getEngine().inject(newComponent);
 
-        HyperLap2DFacade.getInstance().sendNotification(DONE, entity);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(DONE, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     @Override
@@ -38,8 +38,8 @@ public class AddComponentToItemCommand extends EntityModifyRevertibleCommand {
         Sandbox.getInstance().getEngine().edit(entity).remove(component);
         Sandbox.getInstance().getEngine().process();
 
-        HyperLap2DFacade.getInstance().sendNotification(DONE, entity);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(DONE, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     public static Object[] payload(int entity, Class<? extends Component> component) {

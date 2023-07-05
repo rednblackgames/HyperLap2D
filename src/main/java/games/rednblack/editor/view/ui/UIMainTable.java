@@ -19,20 +19,20 @@
 package games.rednblack.editor.view.ui;
 
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBarMediator;
 import games.rednblack.editor.view.ui.box.*;
 import games.rednblack.editor.view.ui.widget.H2DLogo;
+import games.rednblack.puremvc.Facade;
 import org.apache.commons.lang3.SystemUtils;
 
 public class UIMainTable extends VisTable {
     private final VisTable topTable, middleTable;
-    private final HyperLap2DFacade facade;
+    private final Facade facade;
 
 	public UIMainTable() {
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
 
         setFillParent(true);
         top();

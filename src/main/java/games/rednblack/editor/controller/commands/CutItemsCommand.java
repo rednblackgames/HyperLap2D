@@ -19,12 +19,12 @@
 package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.utils.Json;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 import java.util.Set;
 
@@ -54,7 +54,7 @@ public class CutItemsCommand extends EntityModifyRevertibleCommand {
 
         sandbox.getEngine().process();
         for (int entity : newEntitiesList) {
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
+            Facade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
         }
 
         sandbox.getSelector().setSelections(newEntitiesList, true);

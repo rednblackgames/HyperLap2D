@@ -5,10 +5,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisValidatableTextField;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.validator.StringNameValidator;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 public class CreatePlaceholderDialog extends H2DDialog {
 
@@ -18,13 +18,13 @@ public class CreatePlaceholderDialog extends H2DDialog {
     private final VisValidatableTextField width, height, name;
     private final VisTextButton generateButton;
 
-    private final HyperLap2DFacade facade;
+    private final Facade facade;
 
     public CreatePlaceholderDialog() {
         super("Create Placeholder");
         addCloseButton();
 
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
 
         name = StandardWidgetsFactory.createValidableTextField(new StringNameValidator());
         getContentTable().add("Name:");

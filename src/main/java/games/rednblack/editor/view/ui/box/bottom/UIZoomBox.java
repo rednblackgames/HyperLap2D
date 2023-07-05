@@ -25,10 +25,10 @@ import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.view.ui.box.UIBaseBox;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by sargis on 4/27/15.
@@ -110,7 +110,7 @@ public class UIZoomBox extends UIBaseBox {
         @Override
         public void clicked(InputEvent event, float x, float y) {
             super.clicked(event, x, y);
-            HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+            Facade facade = Facade.getInstance();
             facade.sendNotification(ZOOM_SHIFT_REQUESTED, zoomDevider);
         }
     }

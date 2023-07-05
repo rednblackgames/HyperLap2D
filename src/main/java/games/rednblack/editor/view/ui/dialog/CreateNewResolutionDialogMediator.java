@@ -18,14 +18,14 @@
 
 package games.rednblack.editor.view.ui.dialog;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.box.bottom.UIResolutionBox;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 /**
  * Created by sargis on 4/9/15.
@@ -39,17 +39,9 @@ public class CreateNewResolutionDialogMediator extends Mediator<CreateNewResolut
     }
 
     @Override
-    public void onRegister() {
-        super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
-    }
-
-    @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                UIResolutionBox.CREATE_NEW_RESOLUTION_BTN_CLICKED,
-                CreateNewResolutionDialog.CREATE_BTN_CLICKED
-        };
+    public void listNotificationInterests(Interests interests) {
+        interests.add(UIResolutionBox.CREATE_NEW_RESOLUTION_BTN_CLICKED,
+                CreateNewResolutionDialog.CREATE_BTN_CLICKED);
     }
 
     @Override

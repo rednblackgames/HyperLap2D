@@ -18,12 +18,11 @@
 
 package games.rednblack.editor.controller;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.*;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.h2d.common.proxy.CursorManager;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.command.SimpleCommand;
+import games.rednblack.puremvc.commands.SimpleCommand;
+import games.rednblack.puremvc.interfaces.INotification;
 
 /**
  * Created by sargis on 4/1/15.
@@ -32,7 +31,7 @@ public class BootstrapProxyCommand extends SimpleCommand {
     @Override
     public void execute(INotification notification) {
         super.execute(notification);
-        facade = HyperLap2DFacade.getInstance();
+
         facade.sendNotification(SplashScreenAdapter.UPDATE_SPLASH, "Loading Proxies...");
 
         facade.registerProxy(new WindowTitleManager());

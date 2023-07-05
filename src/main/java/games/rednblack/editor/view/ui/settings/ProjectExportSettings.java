@@ -7,7 +7,6 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.h2d.common.MsgAPI;
@@ -16,6 +15,7 @@ import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.InputFileWidget;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import games.rednblack.h2d.common.vo.TexturePackerVO;
+import games.rednblack.puremvc.Facade;
 
 public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
 
@@ -29,7 +29,7 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
     private final VisSelectBox<String> filterMinSelectBox;
 
     public ProjectExportSettings() {
-        super("Project Export", HyperLap2DFacade.getInstance());
+        super("Project Export", Facade.getInstance());
         duplicateCheckBox = StandardWidgetsFactory.createCheckBox("Duplicate edge pixels in atlas");
         forceSquareCheckBox = StandardWidgetsFactory.createCheckBox("Force Square");
         legacyCheckBox = StandardWidgetsFactory.createCheckBox("Legacy libGDX format");

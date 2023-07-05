@@ -24,7 +24,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.AddToLibraryCommand;
 import games.rednblack.editor.renderer.components.*;
@@ -42,9 +41,10 @@ import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelComponent;
-import org.apache.commons.lang3.ArrayUtils;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.puremvc.java.interfaces.INotification;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -88,15 +88,11 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] defaultNotifications = super.listNotificationInterests();
-        String[] notificationInterests = new String[]{
-                UIBasicItemProperties.TINT_COLOR_BUTTON_CLICKED,
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(UIBasicItemProperties.TINT_COLOR_BUTTON_CLICKED,
                 UIBasicItemProperties.LINKING_CHANGED,
-                UIBasicItemProperties.ADD_COMPONENT_BUTTON_CLICKED
-        };
-
-        return ArrayUtils.addAll(defaultNotifications, notificationInterests);
+                UIBasicItemProperties.ADD_COMPONENT_BUTTON_CLICKED);
     }
 
     @Override
@@ -263,6 +259,6 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
         Object[] payload = new Object[2];
         payload[0] = entity;
         payload[1] = componentsToUpdate;
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_ITEM_DATA, payload);
+        Facade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_ITEM_DATA, payload);
     }
 }

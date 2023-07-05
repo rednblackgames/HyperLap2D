@@ -1,14 +1,14 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.FontManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.components.label.LabelComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.ArrayUtils;
-import org.puremvc.java.interfaces.INotification;
 
 public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILabelItemProperties> {
 
@@ -26,7 +26,6 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
 
     @Override
     public void onRegister() {
-        facade = HyperLap2DFacade.getInstance();
         fontManager = facade.retrieveProxy(FontManager.NAME);
         resourceManager = facade.retrieveProxy(ResourceManager.NAME);
         lockUpdates = true;
@@ -36,14 +35,10 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] defaultNotifications = super.listNotificationInterests();
-        String[] notificationInterests = new String[]{
-                UILabelItemProperties.LABEL_TEXT_CHAR_TYPED,
-                UILabelItemProperties.LABEL_TEXT_EXPAND_SAVED
-        };
-
-        return ArrayUtils.addAll(defaultNotifications, notificationInterests);
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(UILabelItemProperties.LABEL_TEXT_CHAR_TYPED,
+                UILabelItemProperties.LABEL_TEXT_EXPAND_SAVED);
     }
 
     @Override

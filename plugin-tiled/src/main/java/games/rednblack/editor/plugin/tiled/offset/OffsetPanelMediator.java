@@ -2,8 +2,9 @@ package games.rednblack.editor.plugin.tiled.offset;
 
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 /**
  * Created by mariam on 5/12/16.
@@ -23,12 +24,10 @@ public class OffsetPanelMediator extends Mediator<OffsetPanel> {
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[] {
-                TiledPlugin.ACTION_OPEN_OFFSET_PANEL,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(TiledPlugin.ACTION_OPEN_OFFSET_PANEL,
                 TiledPlugin.TILE_GRID_OFFSET_ADDED,
-                TiledPlugin.TILE_SELECTED
-        };
+                TiledPlugin.TILE_SELECTED);
     }
 
     @Override

@@ -18,8 +18,6 @@
 
 package games.rednblack.editor.plugin.tiled;
 
-import org.puremvc.java.interfaces.IFacade;
-
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -35,6 +33,7 @@ import games.rednblack.h2d.common.UIDraggablePanel;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPane;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPaneListener;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by mariam on 2/2/2016.
@@ -49,7 +48,7 @@ public class TiledPanel extends UIDraggablePanel {
     public static final float SETTINGS_HEIGHT = 150f;
 
     public TiledPlugin tiledPlugin;
-    private IFacade facade;
+    private Facade facade;
 
     protected ImageTabbedPane tabbedPane;
     protected VisTable tabTable; //table inside of each tab
@@ -249,7 +248,7 @@ public class TiledPanel extends UIDraggablePanel {
         this.engine = engine;
     }
 
-    public IFacade getFacade() {
+    public Facade getFacade() {
         return facade;
     }
 }

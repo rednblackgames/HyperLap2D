@@ -19,17 +19,17 @@
 package games.rednblack.editor.view.ui.properties;
 
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 4/15/2015.
  */
 public abstract class UIAbstractProperties extends VisTable {
 
-    protected final HyperLap2DFacade facade;
+    protected final Facade facade;
 
     public UIAbstractProperties() {
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
     }
 
     public String getPrefix() {

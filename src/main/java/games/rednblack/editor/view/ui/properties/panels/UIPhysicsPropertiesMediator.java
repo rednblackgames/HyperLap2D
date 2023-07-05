@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePhysicsDataCommand;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
@@ -8,9 +7,11 @@ import games.rednblack.editor.renderer.data.PhysicsBodyDataVO;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.puremvc.java.interfaces.INotification;
 
 public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<UIPhysicsProperties> {
 
@@ -24,13 +25,9 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<UIPhys
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] defaultNotifications = super.listNotificationInterests();
-        String[] notificationInterests = new String[]{
-                UIPhysicsProperties.CLOSE_CLICKED
-        };
-
-        return ArrayUtils.addAll(defaultNotifications, notificationInterests);
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(UIPhysicsProperties.CLOSE_CLICKED);
     }
 
     @Override
@@ -39,7 +36,7 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<UIPhys
 
         switch (notification.getName()) {
             case UIPhysicsProperties.CLOSE_CLICKED:
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, PhysicsBodyComponent.class));
+                Facade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, PhysicsBodyComponent.class));
                 break;
         }
     }

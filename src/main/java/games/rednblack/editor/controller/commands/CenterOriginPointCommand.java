@@ -1,11 +1,11 @@
 package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.math.Vector2;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
+import games.rednblack.puremvc.Facade;
 
 public class CenterOriginPointCommand extends EntityModifyRevertibleCommand {
 
@@ -30,7 +30,7 @@ public class CenterOriginPointCommand extends EntityModifyRevertibleCommand {
             originY = dimensionsComponent.polygon.getBoundingRectangle().height * 0.5f;
         }
         commandBuilder.setOrigin(originX, originY);
-        commandBuilder.execute(HyperLap2DFacade.getInstance());
+        commandBuilder.execute(Facade.getInstance());
     }
 
     @Override
@@ -38,6 +38,6 @@ public class CenterOriginPointCommand extends EntityModifyRevertibleCommand {
         TransformCommandBuilder commandBuilder = new TransformCommandBuilder();
         commandBuilder.begin(entity, sandbox.getEngine());
         commandBuilder.setOrigin(backupOrigin.x, backupOrigin.y);
-        commandBuilder.execute(HyperLap2DFacade.getInstance());
+        commandBuilder.execute(Facade.getInstance());
     }
 }

@@ -20,7 +20,6 @@ package games.rednblack.editor.view.ui.box;
 
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.renderer.components.shape.CircleShapeComponent;
@@ -43,8 +42,10 @@ import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extension.spine.SpineItemType;
 import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelComponent;
-import org.puremvc.java.interfaces.IMediator;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.IMediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,7 +66,6 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
 
     public UIMultiPropertyBoxMediator() {
         super(NAME, new UIMultiPropertyBox());
-        facade = HyperLap2DFacade.getInstance();
 
         initMap();
     }
@@ -84,18 +84,16 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] parentNotifications = super.listNotificationInterests();
-        return Stream.of(parentNotifications, new String[]{
-                MsgAPI.SCENE_LOADED,
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(MsgAPI.SCENE_LOADED,
                 MsgAPI.EMPTY_SPACE_CLICKED,
                 MsgAPI.ITEM_DATA_UPDATED,
-                MsgAPI.ITEM_SELECTION_CHANGED,
-                MsgAPI.DELETE_ITEMS_COMMAND_DONE,
+                MsgAPI.ITEM_SELECTION_CHANGED);
+        interests.add(MsgAPI.DELETE_ITEMS_COMMAND_DONE,
                 SandboxMediator.SANDBOX_TOOL_CHANGED,
                 AddComponentToItemCommand.DONE,
-                RemoveComponentFromItemCommand.DONE
-        }).flatMap(Stream::of).toArray(String[]::new);
+                RemoveComponentFromItemCommand.DONE);
     }
 
     @Override
@@ -226,7 +224,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
 
         //unregister all current mediators
         for (UIAbstractPropertiesMediator mediator : currentRegisteredPropertyBoxes) {
-            facade.removeMediator(mediator.getMediatorName());
+            facade.removeMediator(mediator.getName());
         }
         currentRegisteredPropertyBoxes.clear();
     }

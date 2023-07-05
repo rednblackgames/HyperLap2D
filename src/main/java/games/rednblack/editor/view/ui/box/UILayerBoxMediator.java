@@ -21,7 +21,6 @@ package games.rednblack.editor.view.ui.box;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.*;
 import games.rednblack.editor.renderer.components.LayerMapComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
@@ -31,9 +30,10 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -51,34 +51,29 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
 
     public UILayerBoxMediator() {
         super(NAME, new UILayerBox());
-        facade = HyperLap2DFacade.getInstance();
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] parentNotifications = super.listNotificationInterests();
-        return Stream.of(parentNotifications, new String[]{
-                MsgAPI.SCENE_LOADED,
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(MsgAPI.SCENE_LOADED,
                 UILayerBox.LAYER_ROW_CLICKED,
                 UILayerBox.CREATE_NEW_LAYER,
-                UILayerBox.CHANGE_LAYER_NAME,
-                UILayerBox.DELETE_LAYER,
+                UILayerBox.CHANGE_LAYER_NAME);
+        interests.add(UILayerBox.DELETE_LAYER,
                 UILayerBox.LOCK_LAYER,
                 UILayerBox.UNLOCK_LAYER,
-                UILayerBox.HIDE_LAYER,
-                UILayerBox.UNHIDE_LAYER,
+                UILayerBox.HIDE_LAYER);
+        interests.add(UILayerBox.UNHIDE_LAYER,
                 CompositeCameraChangeCommand.DONE,
                 MsgAPI.ITEM_SELECTION_CHANGED,
-                MsgAPI.NEW_ITEM_ADDED,
-                UILayerBox.LAYER_DROPPED,
+                MsgAPI.NEW_ITEM_ADDED);
+        interests.add(UILayerBox.LAYER_DROPPED,
                 DeleteLayerCommand.DONE,
                 DeleteLayerCommand.UNDONE,
-                NewLayerCommand.DONE,
-                LayerJumpCommand.DONE,
-                RenameLayerCommand.DONE
-
-
-        }).flatMap(Stream::of).toArray(String[]::new);
+                NewLayerCommand.DONE);
+        interests.add(LayerJumpCommand.DONE,
+                RenameLayerCommand.DONE);
     }
 
     @Override

@@ -17,6 +17,8 @@ dependencies {
 
     implementation 'net.mountainblade:modular:1.0'
 
+    implementation "games.rednblack.puremvc:core:$pureMvcVersion"
+
     implementation project(":hyperlap2d-common-api")
     implementation project(":hyperlap2d-runtime-libgdx")
 

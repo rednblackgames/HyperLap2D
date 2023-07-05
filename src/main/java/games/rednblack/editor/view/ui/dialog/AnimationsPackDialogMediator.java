@@ -1,7 +1,6 @@
 package games.rednblack.editor.view.ui.dialog;
 
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.resource.DeleteImageResource;
 import games.rednblack.editor.controller.commands.resource.DeleteSpineAnimation;
 import games.rednblack.editor.controller.commands.resource.DeleteSpriteAnimation;
@@ -11,8 +10,9 @@ import games.rednblack.editor.view.menu.ResourcesMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 public class AnimationsPackDialogMediator extends Mediator<AtlasesPackDialog> {
     private static final String TAG = AnimationsPackDialogMediator.class.getCanonicalName();
@@ -28,26 +28,18 @@ public class AnimationsPackDialogMediator extends Mediator<AtlasesPackDialog> {
     }
 
     @Override
-    public void onRegister() {
-        super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
-    }
-
-    @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                ResourcesMenu.OPEN_ANIMATIONS_PACK,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(ResourcesMenu.OPEN_ANIMATIONS_PACK,
                 ProjectManager.PROJECT_OPENED,
                 NEW_IMAGES_PACK,
-                MOVE_REGION_TO_PACK,
-                UPDATE_CURRENT_LIST,
+                MOVE_REGION_TO_PACK);
+        interests.add(UPDATE_CURRENT_LIST,
                 REMOVE_PACK,
                 MsgAPI.UPDATE_ATLAS_PACK_LIST,
-                ProjectManager.PROJECT_DATA_UPDATED,
-                DeleteImageResource.DONE,
+                ProjectManager.PROJECT_DATA_UPDATED);
+        interests.add(DeleteImageResource.DONE,
                 DeleteSpineAnimation.DONE,
-                DeleteSpriteAnimation.DONE
-        };
+                DeleteSpriteAnimation.DONE);
     }
 
     @Override

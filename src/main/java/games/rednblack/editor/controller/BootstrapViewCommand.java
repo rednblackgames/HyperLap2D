@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.controller;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.view.HyperLap2DScreenMediator;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBarMediator;
@@ -29,8 +28,8 @@ import games.rednblack.editor.view.ui.box.*;
 import games.rednblack.editor.view.ui.box.bottom.*;
 import games.rednblack.editor.view.ui.dialog.*;
 import games.rednblack.editor.view.ui.panel.*;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.command.SimpleCommand;
+import games.rednblack.puremvc.commands.SimpleCommand;
+import games.rednblack.puremvc.interfaces.INotification;
 
 /**
  * Created by sargis on 4/1/15.
@@ -39,7 +38,7 @@ public class BootstrapViewCommand extends SimpleCommand {
     @Override
     public void execute(INotification notification) {
         super.execute(notification);
-        facade = HyperLap2DFacade.getInstance();
+
         facade.sendNotification(SplashScreenAdapter.UPDATE_SPLASH, "Loading Views...");
 
         facade.registerMediator(new HyperLap2DScreenMediator());

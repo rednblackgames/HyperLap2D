@@ -5,9 +5,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.UIWindowTitle;
 import games.rednblack.editor.view.ui.UIWindowTitleMediator;
+import games.rednblack.puremvc.Facade;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang3.SystemUtils;
 import org.lwjgl.BufferUtils;
@@ -228,7 +228,7 @@ public class HyperLap2DUtils {
                         }
 
                         //Test if the pointer is in Title Bar
-                        UIWindowTitleMediator uiWindowTitleMediator = HyperLap2DFacade.getInstance().retrieveMediator(UIWindowTitleMediator.NAME);
+                        UIWindowTitleMediator uiWindowTitleMediator = Facade.getInstance().retrieveMediator(UIWindowTitleMediator.NAME);
                         UIWindowTitle uiWindowTitle = uiWindowTitleMediator.getViewComponent();
 
                         int glfwX = getX();

@@ -2,7 +2,6 @@ package games.rednblack.editor.view.ui.box;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddSelectionCommand;
 import games.rednblack.editor.controller.commands.ItemsMoveCommand;
 import games.rednblack.editor.controller.commands.ReleaseSelectionCommand;
@@ -12,7 +11,9 @@ import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,21 +31,19 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] parentNotifications = super.listNotificationInterests();
-        return Stream.of(parentNotifications, new String[]{
-                MsgAPI.SCENE_LOADED,
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(MsgAPI.SCENE_LOADED,
                 MsgAPI.NEW_ITEM_ADDED,
                 UIItemsTreeBox.ITEMS_SELECTED,
-                SetSelectionCommand.DONE,
-                AddSelectionCommand.DONE,
+                SetSelectionCommand.DONE);
+        interests.add(AddSelectionCommand.DONE,
                 ReleaseSelectionCommand.DONE,
                 DeleteResourceCommand.DONE,
-                MsgAPI.DELETE_ITEMS_COMMAND_DONE,
-                MsgAPI.ACTION_Z_INDEX_CHANGED,
+                MsgAPI.DELETE_ITEMS_COMMAND_DONE);
+        interests.add(MsgAPI.ACTION_Z_INDEX_CHANGED,
                 MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE,
-                MsgAPI.ITEM_DATA_UPDATED
-        }).flatMap(Stream::of).toArray(String[]::new);
+                MsgAPI.ITEM_DATA_UPDATED);
     }
 
     @Override
@@ -100,6 +99,6 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
 
     private void sendSelectionNotification(Set<Integer> items) {
         Set<Integer> ntfItems = (items.isEmpty())? null : items;
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_SET_SELECTION, ntfItems);
+        Facade.getInstance().sendNotification(MsgAPI.ACTION_SET_SELECTION, ntfItems);
     }
 }

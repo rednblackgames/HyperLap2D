@@ -20,8 +20,8 @@ package games.rednblack.editor.event;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.widget.EditableSelectBox;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 4/30/2015.
@@ -38,7 +38,7 @@ public class EditableSelectBoxChangeListener extends ChangeListener {
 
     @Override
     public void changed(ChangeEvent changeEvent, Actor actor) {
-        HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+        Facade facade = Facade.getInstance();
         String selected = ((EditableSelectBox) actor).getSelected();
         if(!lastSelected.equals(selected)) {
             lastSelected = selected;

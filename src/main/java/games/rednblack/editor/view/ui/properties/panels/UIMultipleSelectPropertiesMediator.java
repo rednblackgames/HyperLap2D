@@ -1,8 +1,9 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.ArrayUtils;
-import org.puremvc.java.interfaces.INotification;
 
 import java.util.Set;
 
@@ -15,12 +16,8 @@ public class UIMultipleSelectPropertiesMediator extends UIAbstractPropertiesMedi
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] defaultNotifications = super.listNotificationInterests();
-        String[] notificationInterests = new String[]{
-        };
-
-        return ArrayUtils.addAll(defaultNotifications, notificationInterests);
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
     }
 
     @Override

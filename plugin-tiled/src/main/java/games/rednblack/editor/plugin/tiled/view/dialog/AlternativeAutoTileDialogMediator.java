@@ -1,11 +1,11 @@
 package games.rednblack.editor.plugin.tiled.view.dialog;
 
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
-
 import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.plugin.tiled.data.AlternativeAutoTileVO;
 import games.rednblack.editor.plugin.tiled.data.AutoTileVO;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 /**
  * The mediator for messages for the alternatives.
@@ -23,14 +23,12 @@ public class AlternativeAutoTileDialogMediator extends Mediator<AlternativeAutoT
         this.tiledPlugin = tiledPlugin;
     }
 
-    @Override
-    public String[] listNotificationInterests() {
-        return new String[] {
-                TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE,
-                TiledPlugin.ACTION_SAVE_ALTERNATIVES_AUTO_TILE,
-                TiledPlugin.ACTION_RECALC_PERCENT_ALTERNATIVES_AUTO_TILE
-        };
-    }
+	@Override
+	public void listNotificationInterests(Interests interests) {
+		interests.add(TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE,
+				TiledPlugin.ACTION_SAVE_ALTERNATIVES_AUTO_TILE,
+				TiledPlugin.ACTION_RECALC_PERCENT_ALTERNATIVES_AUTO_TILE);
+	}
 
     @Override
     public void handleNotification(INotification notification) {

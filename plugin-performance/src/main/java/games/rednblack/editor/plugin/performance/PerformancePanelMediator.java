@@ -1,8 +1,9 @@
 package games.rednblack.editor.plugin.performance;
 
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 public class PerformancePanelMediator extends Mediator<PerformancePanel> {
     private static final String TAG = PerformancePanelMediator.class.getCanonicalName();
@@ -18,12 +19,10 @@ public class PerformancePanelMediator extends Mediator<PerformancePanel> {
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.RENDER,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.RENDER,
                 MsgAPI.SCENE_LOADED,
-                PerformancePlugin.PANEL_OPEN
-        };
+                PerformancePlugin.PANEL_OPEN);
     }
 
     @Override

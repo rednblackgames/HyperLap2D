@@ -34,8 +34,8 @@ import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.ImageReso
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.TinyVGResource;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.h2d.extension.tinyvg.CpuTinyVGShapeDrawer;
-import org.apache.commons.lang3.ArrayUtils;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 /**
  * Created by azakhary on 4/17/2015.
@@ -54,13 +54,9 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
     private TinyVGShapeDrawer drawer;
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] listNotification = super.listNotificationInterests();
-
-        listNotification = ArrayUtils.add(listNotification, DeleteImageResource.DONE);
-        listNotification = ArrayUtils.add(listNotification, DeleteTinyVGResource.DONE);
-
-        return listNotification;
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add( DeleteImageResource.DONE, DeleteTinyVGResource.DONE);
     }
 
     @Override

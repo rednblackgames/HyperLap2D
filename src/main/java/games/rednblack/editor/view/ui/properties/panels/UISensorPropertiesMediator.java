@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdateSensorDataCommand;
 import games.rednblack.editor.renderer.components.physics.SensorComponent;
@@ -8,9 +7,11 @@ import games.rednblack.editor.renderer.data.SensorDataVO;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.puremvc.java.interfaces.INotification;
 
 /**
  * The properties mediator for the sensors.
@@ -29,13 +30,9 @@ public class UISensorPropertiesMediator extends UIItemPropertiesMediator<UISenso
 	}
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] defaultNotifications = super.listNotificationInterests();
-        String[] notificationInterests = new String[]{
-                UISensorProperties.CLOSE_CLICKED
-        };
-
-        return ArrayUtils.addAll(defaultNotifications, notificationInterests);
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(UISensorProperties.CLOSE_CLICKED);
     }
 
     @Override
@@ -44,7 +41,7 @@ public class UISensorPropertiesMediator extends UIItemPropertiesMediator<UISenso
 
         switch (notification.getName()) {
             case UISensorProperties.CLOSE_CLICKED:
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, SensorComponent.class));
+                Facade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, SensorComponent.class));
                 break;
         }
     }

@@ -22,13 +22,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.MainItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.utils.HyperJson;
+import games.rednblack.puremvc.Proxy;
 import org.apache.commons.io.FileUtils;
-import org.puremvc.java.patterns.proxy.Proxy;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,13 +42,7 @@ public class SceneDataManager extends Proxy {
     public static final String NAME = TAG;
 
     public SceneDataManager() {
-        super(NAME);
-    }
-
-    @Override
-    public void onRegister() {
-        super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
+        super(NAME, null);
     }
 
     public SceneVO createNewScene(String name) {

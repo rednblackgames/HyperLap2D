@@ -15,13 +15,13 @@ import com.kotcrab.vis.ui.util.highlight.Highlighter;
 import com.kotcrab.vis.ui.widget.H2DHighlightTextArea;
 import com.kotcrab.vis.ui.widget.HighlightTextArea;
 import com.kotcrab.vis.ui.widget.VisImageButton;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.util.H2DHighlight;
 import games.rednblack.h2d.common.view.ui.Cursors;
 import games.rednblack.h2d.common.view.ui.listener.CursorListener;
 import games.rednblack.h2d.common.view.ui.listener.ScrollFocusListener;
+import games.rednblack.puremvc.Facade;
 import org.apache.commons.lang3.RegExUtils;
 
 import java.util.HashMap;
@@ -95,7 +95,7 @@ public class ConsoleDialog extends H2DDialog {
 
         ScrollPane scrollPane = textArea.createCompatibleScrollPane();
         scrollPane.addListener(new ScrollFocusListener());
-        textArea.addListener(new CursorListener(Cursors.TEXT, HyperLap2DFacade.getInstance()));
+        textArea.addListener(new CursorListener(Cursors.TEXT, Facade.getInstance()));
         getContentTable().add(scrollPane).padTop(5).grow().row();
     }
 

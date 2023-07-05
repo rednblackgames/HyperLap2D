@@ -28,7 +28,7 @@ import games.rednblack.editor.view.stage.tools.TransformTool;
 import games.rednblack.editor.view.ui.widget.EmptyTarget;
 import games.rednblack.editor.view.ui.widget.actors.basic.PixelDashedRectangle;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.interfaces.INotification;
 
 /**
  * Created by azakhary on 5/20/2015.

@@ -10,10 +10,10 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSlider;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisValidatableTextField;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.validator.StringNameValidator;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 public class CreateNoiseDialog extends H2DDialog  {
     private static final String prefix = "games.rednblack.editor.view.ui.dialog.CreateNoiseDialog";
@@ -22,7 +22,7 @@ public class CreateNoiseDialog extends H2DDialog  {
     private final VisValidatableTextField width, height, name;
     private final VisTextButton generateButton;
 
-    private final HyperLap2DFacade facade;
+    private final Facade facade;
 
     private final VisSlider minSlider;
     private final VisLabel minValue;
@@ -34,7 +34,7 @@ public class CreateNoiseDialog extends H2DDialog  {
         super("Create Perlin Noise");
         addCloseButton();
 
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
 
         name = StandardWidgetsFactory.createValidableTextField(new StringNameValidator());
         getContentTable().add("Name:");

@@ -4,7 +4,7 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogAdapter;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.interfaces.INotification;
 
 public class RenameLibraryActionCommand extends SandboxCommand {
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.resource.RenameActionCommand";

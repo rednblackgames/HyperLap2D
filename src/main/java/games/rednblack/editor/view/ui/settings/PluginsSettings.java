@@ -2,17 +2,17 @@ package games.rednblack.editor.view.ui.settings;
 
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.VisLabel;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 import java.io.File;
 
 public class PluginsSettings extends SettingsNodeValue<String> {
 
     public PluginsSettings() {
-        super("Plugins", HyperLap2DFacade.getInstance());
+        super("Plugins", Facade.getInstance());
 
         VisLabel visLabel = StandardWidgetsFactory.createLabel("Choose a PlugIn to change settings", "default", Align.center);
         getContentTable().add(visLabel).center().expand().fill().grow().row();

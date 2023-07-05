@@ -20,15 +20,15 @@ package games.rednblack.editor.view.ui.box.bottom;
 
 import com.badlogic.gdx.math.Vector3;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.CreateNewResolutionDialog;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 /**
  * Created by sargis on 4/8/15.
@@ -45,20 +45,17 @@ public class UIResolutionBoxMediator extends Mediator<UIResolutionBox> {
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
         projectManager = facade.retrieveProxy(ProjectManager.NAME);
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                ProjectManager.PROJECT_OPENED,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(ProjectManager.PROJECT_OPENED,
                 UIResolutionBox.CHANGE_RESOLUTION_BTN_CLICKED,
                 UIResolutionBox.DELETE_RESOLUTION_BTN_CLICKED,
-                MsgAPI.ACTION_REPACK,
-                ResolutionManager.RESOLUTION_LIST_CHANGED,
-				CreateNewResolutionDialog.CLOSE_DIALOG
-        };
+                MsgAPI.ACTION_REPACK);
+        interests.add(ResolutionManager.RESOLUTION_LIST_CHANGED,
+                CreateNewResolutionDialog.CLOSE_DIALOG);
     }
 
     @Override

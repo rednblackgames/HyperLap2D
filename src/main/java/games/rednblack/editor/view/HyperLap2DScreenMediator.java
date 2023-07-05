@@ -18,15 +18,16 @@
 
 package games.rednblack.editor.view;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.ui.widget.actors.basic.SandboxBackUI;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 /**
  * Created by sargis on 3/30/15.
@@ -40,25 +41,17 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
     }
 
     @Override
-    public void onRegister() {
-        super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
-    }
-
-    @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.CREATE,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.CREATE,
                 MsgAPI.PAUSE,
                 MsgAPI.RESUME,
-                MsgAPI.RENDER,
-                MsgAPI.RESIZE,
+                MsgAPI.RENDER);
+        interests.add(MsgAPI.RESIZE,
                 MsgAPI.DISPOSE,
                 MsgAPI.SCENE_LOADED,
-                MsgAPI.SAVE_EDITOR_CONFIG,
-                MsgAPI.SHOW_BLACK_OVERLAY,
-                MsgAPI.HIDE_BLACK_OVERLAY
-        };
+                MsgAPI.SAVE_EDITOR_CONFIG);
+        interests.add(MsgAPI.SHOW_BLACK_OVERLAY,
+                MsgAPI.HIDE_BLACK_OVERLAY);
     }
 
     @Override
@@ -67,8 +60,7 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
         switch (notification.getName()) {
             case MsgAPI.CREATE:
             	setViewComponent(new HyperLap2DScreen());
-            	//TODO this must be changed to Command 
-            	facade = HyperLap2DFacade.getInstance();
+            	//TODO this must be changed to Command
             	SandboxMediator sandboxMediator = facade.retrieveMediator(SandboxMediator.NAME);
 
                 com.artemis.World engine = sandboxMediator.getViewComponent().getEngine();
@@ -77,7 +69,6 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
                 viewComponent.show();
                 break;
             case MsgAPI.SCENE_LOADED:
-                facade = HyperLap2DFacade.getInstance();
                 SandboxBackUI sandboxBackUI = new SandboxBackUI(Sandbox.getInstance().getUIStage().getBatch());
                 getViewComponent().setBackUI(sandboxBackUI);
                 getViewComponent().disableDrawingBgLogo();

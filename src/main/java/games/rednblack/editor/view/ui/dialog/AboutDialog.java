@@ -8,11 +8,11 @@ import com.kotcrab.vis.ui.widget.LinkLabel;
 import com.kotcrab.vis.ui.widget.VisImage;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.AppConfig;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -29,7 +29,7 @@ public class AboutDialog extends H2DDialog {
         super("About HyperLap2D");
         addCloseButton();
 
-        SettingsManager settingsManager = HyperLap2DFacade.getInstance().retrieveProxy(SettingsManager.NAME);
+        SettingsManager settingsManager = Facade.getInstance().retrieveProxy(SettingsManager.NAME);
 
         Date date = new Date(settingsManager.editorConfigVO.totalSpentTime);
         DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
@@ -68,7 +68,7 @@ public class AboutDialog extends H2DDialog {
         contentTable.add(new LinkLabel("- Overlap2D [https://github.com/UnderwaterApps/overlap2d]", "https://github.com/UnderwaterApps/overlap2d")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Artemis-odb [https://github.com/junkdog/artemis-odb]", "https://github.com/junkdog/artemis-odb")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Box2DLights [https://github.com/libgdx/box2dlights]", "https://github.com/libgdx/box2dlights")).padLeft(6).left().row();
-        contentTable.add(new LinkLabel("- PureMVC Framework [https://github.com/PureMVC/puremvc-java-standard-framework]", "https://github.com/PureMVC/puremvc-java-standard-framework")).padLeft(6).left().row();
+        contentTable.add(new LinkLabel("- gdx-puremvc [https://github.com/rednblackgames/gdx-puremvc]", "https://github.com/rednblackgames/gdx-puremvc")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- VisUI [https://github.com/kotcrab/vis-ui]", "https://github.com/kotcrab/vis-ui")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Modular [https://github.com/mountainblade/modular]", "https://github.com/mountainblade/modular")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Spine Runtimes [https://github.com/EsotericSoftware/spine-runtimes]", "https://github.com/EsotericSoftware/spine-runtimes")).padLeft(6).left().row();
@@ -89,7 +89,7 @@ public class AboutDialog extends H2DDialog {
     }
 
     private FileHandle getResourceFileFromJar(String fileName) {
-        SettingsManager settingsManager = HyperLap2DFacade.getInstance().retrieveProxy(SettingsManager.NAME);
+        SettingsManager settingsManager = Facade.getInstance().retrieveProxy(SettingsManager.NAME);
         File tempFile = new File(settingsManager.cacheDir + File.separator + fileName);
 
         try {

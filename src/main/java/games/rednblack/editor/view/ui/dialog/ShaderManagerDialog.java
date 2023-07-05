@@ -6,12 +6,12 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.adapter.AbstractListAdapter;
 import com.kotcrab.vis.ui.util.adapter.SimpleListAdapter;
 import com.kotcrab.vis.ui.widget.*;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.listener.ScrollFocusListener;
+import games.rednblack.puremvc.Facade;
 
 import java.util.Set;
 
@@ -60,7 +60,7 @@ public class ShaderManagerDialog extends H2DDialog {
                 payload[0] = newShaderName.getText();
                 payload[1] = newShaderTypeSelectBox.getSelectedIndex();
 
-                HyperLap2DFacade.getInstance().sendNotification(CREATE_NEW_SHADER, payload);
+                Facade.getInstance().sendNotification(CREATE_NEW_SHADER, payload);
             }
         });
 
@@ -108,7 +108,7 @@ public class ShaderManagerDialog extends H2DDialog {
             editFragment.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    HyperLap2DFacade.getInstance().sendNotification(EDIT_FRAGMENT_SHADER, item);
+                    Facade.getInstance().sendNotification(EDIT_FRAGMENT_SHADER, item);
                 }
             });
             tableButton.add(editFragment).pad(8);
@@ -116,7 +116,7 @@ public class ShaderManagerDialog extends H2DDialog {
             editVertex.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    HyperLap2DFacade.getInstance().sendNotification(EDIT_VERTEX_SHADER, item);
+                    Facade.getInstance().sendNotification(EDIT_VERTEX_SHADER, item);
                 }
             });
             tableButton.add(editVertex).pad(8);
@@ -124,7 +124,7 @@ public class ShaderManagerDialog extends H2DDialog {
             deleteButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_DELETE_SHADER, item);
+                    Facade.getInstance().sendNotification(MsgAPI.ACTION_DELETE_SHADER, item);
                 }
             });
             tableButton.add(deleteButton).pad(8);

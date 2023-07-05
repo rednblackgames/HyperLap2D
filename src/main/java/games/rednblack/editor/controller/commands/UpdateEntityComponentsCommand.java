@@ -20,11 +20,11 @@ package games.rednblack.editor.controller.commands;
 
 import com.artemis.Component;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.utils.runtime.ComponentCloner;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 6/3/2015.
@@ -53,7 +53,7 @@ public class UpdateEntityComponentsCommand extends EntityModifyRevertibleCommand
 
         EntityUtils.refreshComponents(entity);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     @Override

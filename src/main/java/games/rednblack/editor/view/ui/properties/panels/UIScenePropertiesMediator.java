@@ -29,9 +29,10 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.puremvc.java.interfaces.INotification;
 
 /**
  * Created by azakhary on 4/16/2015.
@@ -76,16 +77,12 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] defaultNotifications = super.listNotificationInterests();
-        String[] notificationInterests = new String[] {
-                UISceneProperties.AMBIENT_COLOR_BUTTON_CLICKED,
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(UISceneProperties.AMBIENT_COLOR_BUTTON_CLICKED,
                 UISceneProperties.DIRECTIONAL_COLOR_BUTTON_CLICKED,
                 UISceneProperties.EDIT_SHADER_BUTTON_CLICKED,
-                UISceneProperties.UNIFORMS_SHADER_BUTTON_CLICKED
-        };
-
-        return ArrayUtils.addAll(defaultNotifications, notificationInterests);
+                UISceneProperties.UNIFORMS_SHADER_BUTTON_CLICKED);
     }
 
     @Override

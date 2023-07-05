@@ -31,10 +31,10 @@ import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.view.ui.panel.ImportPanel;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.IProxy;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
-import org.puremvc.java.interfaces.IProxy;
-import org.puremvc.java.patterns.observer.Notification;
 
 import java.nio.IntBuffer;
 
@@ -42,12 +42,10 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
     private static final String TAG = HyperLap2D.class.getCanonicalName();
     public static final String NAME = TAG;
 
-    private HyperLap2DFacade facade;
+    private Facade facade;
     private Object data;
 
-    private final Notification renderNotification;
-
-    public HyperLap2DFacade getFacade() {
+    public Facade getFacade() {
         return facade;
     }
 
@@ -56,20 +54,19 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
     private final SettingsManager settingsManager;
 
     public HyperLap2D(SettingsManager settingsManager) {
-        renderNotification = new Notification(MsgAPI.RENDER, null, null);
         this.settingsManager = settingsManager;
     }
 
     @Override
     public void create() {
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
         facade.registerProxy(settingsManager);
         facade.registerProxy(this);
     }
 
     private void startup() {
-        facade.startup();
-        sendNotification(MsgAPI.CREATE);
+        facade.sendNotification(MsgAPI.STARTUP);
+        facade.sendNotification(MsgAPI.CREATE);
         facade.sendNotification(SplashScreenAdapter.CLOSE_SPLASH, "Initializing...");
         Lwjgl3Graphics graphics = (Lwjgl3Graphics)Gdx.graphics;
 
@@ -79,66 +76,44 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
         int width = w.get(0);
         int height = h.get(0);
 
-        sendNotification(MsgAPI.RESIZE, new int[]{width, height});
+        facade.sendNotification(MsgAPI.RESIZE, new int[]{width, height});
 
         startTime = System.currentTimeMillis();
     }
 
     @Override
     public void pause() {
-        sendNotification(MsgAPI.PAUSE);
+        facade.sendNotification(MsgAPI.PAUSE);
     }
 
     @Override
     public void resume() {
-        sendNotification(MsgAPI.RESUME);
+        facade.sendNotification(MsgAPI.RESUME);
     }
 
     @Override
     public void render() {
-        renderNotification.setBody(Math.min(Gdx.graphics.getDeltaTime(), 0.1f));
-        facade.notifyObservers(renderNotification);
+        facade.sendNotification(MsgAPI.RENDER, Math.min(Gdx.graphics.getDeltaTime(), 0.1f));
     }
 
     @Override
     public void resize(int width, int height) {
-        sendNotification(MsgAPI.RESIZE, new int[]{width, height});
+        facade.sendNotification(MsgAPI.RESIZE, new int[]{width, height});
     }
 
     @Override
     public void dispose() {
-        sendNotification(MsgAPI.DISPOSE);
+        facade.sendNotification(MsgAPI.DISPOSE);
     }
 
     @Override
-    public void sendNotification(String notificationName, Object body, String type) {
-        System.out.println("sendNotification: " + System.currentTimeMillis() + " " + type);
-        facade.sendNotification(notificationName, body, type);
-    }
-
-    @Override
-    public void sendNotification(String notificationName, Object body) {
-        facade.sendNotification(notificationName, body);
-    }
-
-    @Override
-    public void sendNotification(String notificationName) {
-        facade.sendNotification(notificationName);
-    }
-
-    @Override
-    public String getProxyName() {
+    public String getName() {
         return NAME;
     }
 
     @Override
     public Object getData() {
         return data;
-    }
-
-    @Override
-    public void setData(Object data) {
-        this.data = data;
     }
 
     @Override

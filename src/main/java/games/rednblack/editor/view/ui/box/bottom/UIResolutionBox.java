@@ -27,11 +27,11 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.view.ui.box.UIBaseBox;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 public class UIResolutionBox extends UIBaseBox {
 	private static final String prefix = "games.rednblack.editor.view.ui.box.bottom.UIResolutionBox";
@@ -116,7 +116,7 @@ public class UIResolutionBox extends UIBaseBox {
         public void clicked(InputEvent event, float x, float y) {
             super.clicked(event, x, y);
 
-            HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+            Facade facade = Facade.getInstance();
             switch (btnClicked) {
                 case DELETE_RESOLUTION_BTN_CLICKED:
                 	if (!deleteBtn.isDisabled())
@@ -137,7 +137,7 @@ public class UIResolutionBox extends UIBaseBox {
                 return;
             }
 
-            HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+            Facade facade = Facade.getInstance();
             if (selectedIndex == 0) {
                 facade.sendNotification(CREATE_NEW_RESOLUTION_BTN_CLICKED);
                 return;

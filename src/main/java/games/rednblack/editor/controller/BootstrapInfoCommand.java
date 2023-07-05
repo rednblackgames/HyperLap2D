@@ -4,9 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import games.rednblack.editor.utils.AppConfig;
 import games.rednblack.h2d.common.HyperLog;
+import games.rednblack.puremvc.commands.SimpleCommand;
+import games.rednblack.puremvc.interfaces.INotification;
 import org.apache.commons.lang3.SystemUtils;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.command.SimpleCommand;
 
 public class BootstrapInfoCommand extends SimpleCommand {
 

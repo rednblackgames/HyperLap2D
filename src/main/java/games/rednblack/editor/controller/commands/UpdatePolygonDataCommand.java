@@ -2,12 +2,12 @@ package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
 
@@ -29,7 +29,7 @@ public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
 
         checkPolygon(polygonShapeComponent);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
 
         checkPolygon(polygonShapeComponent);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     private void checkPolygon(PolygonShapeComponent polygonShapeComponent) {

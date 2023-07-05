@@ -3,7 +3,12 @@ package games.rednblack.editor;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationGLESFix;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import games.rednblack.editor.controller.StartupCommand;
 import games.rednblack.editor.proxy.SettingsManager;
+import games.rednblack.editor.splash.SplashMediator;
+import games.rednblack.h2d.common.HyperLog;
+import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.*;
@@ -26,7 +31,10 @@ public class Main {
         //Increase default lwjgl stack size
         System.setProperty("org.lwjgl.system.stackSize", "256");
 
-        HyperLap2DFacade.getInstance();
+        Facade instance = Facade.getInstance();
+        instance.registerMediator(new SplashMediator());
+        instance.registerCommand(MsgAPI.STARTUP, StartupCommand.class);
+        HyperLog.setFacade(instance);
 
         Graphics.DisplayMode dm = Lwjgl3ApplicationConfiguration.getDisplayMode();
 

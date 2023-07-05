@@ -19,7 +19,6 @@
 package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.math.Vector2;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.factory.ItemFactory;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
@@ -29,6 +28,7 @@ import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -99,15 +99,15 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
         sandbox.getEngine().process();
 
         //let everyone know
-        HyperLap2DFacade.getInstance().sendNotification(DONE);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
+        Facade.getInstance().sendNotification(DONE);
+        Facade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
         sandbox.getSelector().setSelection(entity, true);
 
     }
 
     @Override
     public void undoAction() {
-        FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+        FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
 
         //get the entity
         int entity = EntityUtils.getByUniqueId(entityId);
@@ -139,7 +139,7 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
         sandbox.getEngine().delete(entity);
         sandbox.getEngine().process();
 
-        HyperLap2DFacade.getInstance().sendNotification(DONE);
+        Facade.getInstance().sendNotification(DONE);
 
         sandbox.getSelector().setSelections(children, true);
 

@@ -24,11 +24,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.UIDraggablePanel;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-
-import java.util.Map;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 5/12/2015.
@@ -38,7 +36,7 @@ public class CustomVariablesPanel extends UIDraggablePanel {
     public static final String ADD_BUTTON_PRESSED = PREFIX + ".ADD_BUTTON_PRESSED";
     public static final String DELETE_BUTTON_PRESSED = PREFIX + ".DELETE_BUTTON_PRESSED";
 
-    private HyperLap2DFacade facade;
+    private Facade facade;
 
     private VisTextField keyField;
     private VisTextField valueField;
@@ -51,7 +49,7 @@ public class CustomVariablesPanel extends UIDraggablePanel {
         super("Custom variables");
         addCloseButton();
 
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
 
         addVariableTable = new VisTable();
         addVariableTable.padTop(4);

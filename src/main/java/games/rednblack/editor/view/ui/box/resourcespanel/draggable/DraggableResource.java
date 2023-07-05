@@ -23,7 +23,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -31,6 +30,7 @@ import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.BoxItemResource;
 import games.rednblack.h2d.common.ResourcePayloadObject;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 import java.util.function.BiFunction;
 
@@ -70,7 +70,7 @@ public class DraggableResource extends DragAndDrop implements Comparable<Draggab
                 setDragActorPosition(dragX, -dragY);
 
                 if (viewComponent instanceof BoxItemResource)
-                    HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.RESOURCE_BOX_DRAG_START, viewComponent, null);
+                    Facade.getInstance().sendNotification(UIResourcesBoxMediator.RESOURCE_BOX_DRAG_START, viewComponent, null);
                 return payload;
             }
         });
@@ -83,7 +83,7 @@ public class DraggableResource extends DragAndDrop implements Comparable<Draggab
             	if (!dragging) {
             		// we only want to send the notification once and not every tick
             		dragging = true;
-            		HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_ENTER, source, null);
+                    Facade.getInstance().sendNotification(UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_ENTER, source, null);
             	}
                 return true;
             }
@@ -99,13 +99,13 @@ public class DraggableResource extends DragAndDrop implements Comparable<Draggab
             	// this method is called when we exit the sandbox, and this is also called when we drop the image into the sandbox
             	// so we only need to look here :)
         		dragging = false;
-        		HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_EXIT, source, null);
+                Facade.getInstance().sendNotification(UIResourcesBoxMediator.SANDBOX_DRAG_IMAGE_EXIT, source, null);
             }
             
         });
 
 
-        HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+        Facade facade = Facade.getInstance();
         UIResourcesBoxMediator resourcesBoxMediator = facade.retrieveMediator(UIResourcesBoxMediator.NAME);
         for (Target t : resourcesBoxMediator.customTargets) {
             addTarget(t);
@@ -118,7 +118,7 @@ public class DraggableResource extends DragAndDrop implements Comparable<Draggab
 
     private void drop(Payload payload, Vector2 vector2) {
         ResourcePayloadObject resourcePayloadObject = (ResourcePayloadObject) payload.getObject();
-        ResourceManager resourceManager = HyperLap2DFacade.getInstance().retrieveProxy(ResourceManager.NAME);
+        ResourceManager resourceManager = Facade.getInstance().retrieveProxy(ResourceManager.NAME);
 
         vector2.sub(resourcePayloadObject.xOffset/resourceManager.getProjectVO().pixelToWorld, resourcePayloadObject.yOffset/resourceManager.getProjectVO().pixelToWorld);
         factoryFunction.apply(resourcePayloadObject.name, vector2);

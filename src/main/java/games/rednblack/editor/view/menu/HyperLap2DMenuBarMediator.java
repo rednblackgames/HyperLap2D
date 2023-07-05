@@ -21,7 +21,6 @@ package games.rednblack.editor.view.menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import games.rednblack.editor.HyperLap2DApp;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.ShowNotificationCommand;
 import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.proxy.CommandManager;
@@ -31,11 +30,12 @@ import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MenuAPI;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -57,35 +57,29 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
         projectManager = facade.retrieveProxy(ProjectManager.NAME);
         settingsManager = facade.retrieveProxy(SettingsManager.NAME);
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                //FILE
-                FileMenu.NEW_PROJECT,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(FileMenu.NEW_PROJECT,
                 FileMenu.OPEN_PROJECT,
                 FileMenu.SAVE_PROJECT,
-                FileMenu.SAVE_PROJECT_AS,
-                FileMenu.EXPORT,
+                FileMenu.SAVE_PROJECT_AS);
+        interests.add(FileMenu.EXPORT,
                 FileMenu.RECENT_PROJECTS,
                 FileMenu.CLEAR_RECENT,
-                FileMenu.EXIT,
-                //EDIT
-                EditMenu.CUT,
+                FileMenu.EXIT);
+        interests.add(EditMenu.CUT,
                 EditMenu.COPY,
                 EditMenu.PASTE,
-                EditMenu.UNDO,
-                EditMenu.REDO,
-                //General
+                EditMenu.UNDO);
+        interests.add(EditMenu.REDO,
                 ProjectManager.PROJECT_OPENED,
                 HyperLap2DMenuBar.RECENT_LIST_MODIFIED,
-                MsgAPI.CREATE,
-                MsgAPI.AUTO_SAVE_PROJECT
-        };
+                MsgAPI.CREATE);
+        interests.add(MsgAPI.AUTO_SAVE_PROJECT);
     }
 
     @Override

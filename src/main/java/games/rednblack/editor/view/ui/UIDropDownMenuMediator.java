@@ -20,7 +20,6 @@ package games.rednblack.editor.view.ui;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.PluginManager;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -28,8 +27,9 @@ import games.rednblack.editor.view.stage.tools.PolygonTool;
 import games.rednblack.editor.view.stage.tools.TransformTool;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.util.HashMap;
 
@@ -126,28 +126,24 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
         actionSets.put(ORIGIN_POINT_ACTION_SET, new Array<>());
         actionSets.get(ORIGIN_POINT_ACTION_SET).add(MsgAPI.ACTION_CHANGE_ORIGIN_POSITION);
         actionSets.get(ORIGIN_POINT_ACTION_SET).add(MsgAPI.ACTION_CENTER_ORIGIN_POSITION);
-
-        facade = HyperLap2DFacade.getInstance();
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.SCENE_RIGHT_CLICK,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.SCENE_RIGHT_CLICK,
                 MsgAPI.ITEM_RIGHT_CLICK,
                 UIDropDownMenu.ITEM_CLICKED,
-                UIResourcesBoxMediator.IMAGE_RIGHT_CLICK,
-                UIResourcesBoxMediator.TINY_VG_RIGHT_CLICK,
+                UIResourcesBoxMediator.IMAGE_RIGHT_CLICK);
+        interests.add(UIResourcesBoxMediator.TINY_VG_RIGHT_CLICK,
                 UIResourcesBoxMediator.SPINE_ANIMATION_RIGHT_CLICK,
                 UIResourcesBoxMediator.SPRITE_ANIMATION_RIGHT_CLICK,
-                UIResourcesBoxMediator.LIBRARY_ITEM_RIGHT_CLICK,
-                UIResourcesBoxMediator.PARTICLE_EFFECT_RIGHT_CLICK,
+                UIResourcesBoxMediator.LIBRARY_ITEM_RIGHT_CLICK);
+        interests.add(UIResourcesBoxMediator.PARTICLE_EFFECT_RIGHT_CLICK,
                 UIResourcesBoxMediator.TALOS_VFX_RIGHT_CLICK,
                 UIResourcesBoxMediator.LIBRARY_ACTION_RIGHT_CLICK,
-                RulersUI.RIGHT_CLICK_RULER,
-                PolygonTool.MANUAL_VERTEX_POSITION,
-                TransformTool.MANUAL_ORIGIN_POSITION
-        };
+                RulersUI.RIGHT_CLICK_RULER);
+        interests.add(PolygonTool.MANUAL_VERTEX_POSITION,
+                TransformTool.MANUAL_ORIGIN_POSITION);
     }
 
     private void applyItemTypeMutators(Array<String> actionsSet) {

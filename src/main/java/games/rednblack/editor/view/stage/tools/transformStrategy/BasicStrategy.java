@@ -3,7 +3,6 @@ package games.rednblack.editor.view.stage.tools.transformStrategy;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.utils.RoundUtils;
@@ -12,7 +11,7 @@ import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 import games.rednblack.editor.view.ui.properties.panels.UIBasicItemPropertiesMediator;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
-import org.puremvc.java.patterns.facade.Facade;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by Sasun Poghosyan on 4/13/2016.
@@ -25,7 +24,7 @@ public class BasicStrategy extends AbstractTransformStrategy {
     private static final float[] tmp1 = new float[3];
     private static final float[] tmp2 = new float[3];
 
-    private final Facade facade = HyperLap2DFacade.getInstance();
+    private final Facade facade = Facade.getInstance();
 
     @Override
     public void calculate(float mouseDx, float mouseDy, int anchor, int entity, TransformCommandBuilder transformCommandBuilder, Vector2 mousePointStage, float lastTransformAngle, float lastEntityAngle) {

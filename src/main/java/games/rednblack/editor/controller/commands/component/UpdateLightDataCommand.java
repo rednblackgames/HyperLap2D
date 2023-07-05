@@ -18,13 +18,13 @@
 
 package games.rednblack.editor.controller.commands.component;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.light.LightObjectComponent;
 import games.rednblack.editor.renderer.data.LightVO;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 public class UpdateLightDataCommand extends EntityModifyRevertibleCommand {
 
@@ -56,7 +56,7 @@ public class UpdateLightDataCommand extends EntityModifyRevertibleCommand {
         lightObjectComponent.isSoft = vo.isSoft;
         lightObjectComponent.isActive = vo.isActive;
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class UpdateLightDataCommand extends EntityModifyRevertibleCommand {
         lightObjectComponent.isActive = backup.isActive;
         lightObjectComponent.isSoft = backup.isSoft;
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     public static Object payload(int entity, LightVO vo) {

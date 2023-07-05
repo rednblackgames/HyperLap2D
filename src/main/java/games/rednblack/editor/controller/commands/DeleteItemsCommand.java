@@ -20,12 +20,12 @@ package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -59,7 +59,7 @@ public class DeleteItemsCommand extends EntityModifyRevertibleCommand {
     public void doAction() {
         backup();
 
-        FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+        FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
         for (Integer entityId : entityIdsToDelete) {
             int item = EntityUtils.getByUniqueId(entityId);
             followersUIMediator.removeFollower(item);
@@ -81,7 +81,7 @@ public class DeleteItemsCommand extends EntityModifyRevertibleCommand {
 
         sandbox.getEngine().process();
         for (int entity : newEntitiesList) {
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
+            Facade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
         }
 
         sandbox.getSelector().setSelections(newEntitiesList, true);

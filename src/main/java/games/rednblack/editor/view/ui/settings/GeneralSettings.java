@@ -4,13 +4,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.*;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.RoundUtils;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
+import games.rednblack.puremvc.Facade;
 
 public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
 
@@ -20,7 +20,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
     private VisSlider uiScaleDensity, msaaSamples, fpsLimit;
 
     public GeneralSettings() {
-        super("General", HyperLap2DFacade.getInstance());
+        super("General", Facade.getInstance());
 
         getContentTable().add("Editor").left().row();
         getContentTable().addSeparator();

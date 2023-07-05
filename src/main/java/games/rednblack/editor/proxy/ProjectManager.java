@@ -27,7 +27,6 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.data.migrations.ProjectVersionMigrator;
 import games.rednblack.editor.renderer.data.*;
@@ -45,6 +44,8 @@ import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import games.rednblack.h2d.common.vo.SceneConfigVO;
 import games.rednblack.h2d.common.vo.TexturePackerVO;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.Proxy;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.monitor.FileAlterationListener;
@@ -52,7 +53,6 @@ import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
-import org.puremvc.java.patterns.proxy.Proxy;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -87,7 +87,7 @@ public class ProjectManager extends Proxy {
     private String currentProjectPath;
 
     public ProjectManager() {
-        super(NAME);
+        super(NAME, null);
     }
 
     private ProjectExportSettings projectExportSettings;
@@ -98,7 +98,6 @@ public class ProjectManager extends Proxy {
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
 
         projectExportSettings = new ProjectExportSettings();
         livePreviewSettings = new LivePreviewSettings();

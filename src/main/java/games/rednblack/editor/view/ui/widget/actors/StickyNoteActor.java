@@ -18,7 +18,6 @@ import com.kotcrab.vis.ui.widget.VisTextArea;
 import com.kotcrab.vis.ui.widget.VisWindow;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.ModifyStickyNoteCommand;
 import games.rednblack.editor.renderer.data.StickyNoteVO;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -27,6 +26,7 @@ import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.H2DPopupMenu;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
+import games.rednblack.puremvc.Facade;
 
 public class StickyNoteActor extends VisWindow {
     public String id;
@@ -36,7 +36,7 @@ public class StickyNoteActor extends VisWindow {
     private float worldX, worldY;
     private final Vector2 tmp = new Vector2();
     private final VisTextArea contentArea;
-    private final HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+    private final Facade facade = Facade.getInstance();
     private final VisImage pinButton;
 
     private int resizeBorder = 8;

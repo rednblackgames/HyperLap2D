@@ -7,7 +7,8 @@ import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.GraphVO;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.Notification;
+import games.rednblack.puremvc.interfaces.INotification;
 
 import java.util.HashMap;
 
@@ -36,7 +37,7 @@ public abstract class NonRevertibleCommand extends SandboxCommand {
     @Override
     public void execute(INotification notification) {
         commandManager = facade.retrieveProxy(CommandManager.NAME);
-        this.notification = notification;
+        this.notification = ((Notification) notification).copy();
         if (showConfirmDialog) {
             Dialogs.showConfirmDialog(sandbox.getUIStage(),
                     confirmDialogTitle(), confirmDialogMessage(),

@@ -4,16 +4,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.box.bottom.*;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 public class UIBottomMenuBar extends VisTable {
-	private final HyperLap2DFacade facade;
+	private final Facade facade;
 
 	public UIBottomMenuBar() {
 		Skin skin = VisUI.getSkin();
-		facade = HyperLap2DFacade.getInstance();
+		facade = Facade.getInstance();
 
 		setBackground(skin.getDrawable("sub-menu-bg"));
 

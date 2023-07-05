@@ -1,15 +1,16 @@
 package games.rednblack.editor.view.ui.box;
 
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 /**
  * Created by CyberJoe on 4/22/2015.
@@ -25,12 +26,10 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.SCENE_LOADED,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.SCENE_LOADED,
                 CompositeCameraChangeCommand.DONE,
-                UICompositeHierarchy.SWITCH_VIEW_COMPOSITE_CLICKED
-        };
+                UICompositeHierarchy.SWITCH_VIEW_COMPOSITE_CLICKED);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
                 break;
             case UICompositeHierarchy.SWITCH_VIEW_COMPOSITE_CLICKED:
                 entityId = notification.getBody();
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, EntityUtils.getByUniqueId(entityId));
+                Facade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, EntityUtils.getByUniqueId(entityId));
                 break;
             default:
                 break;

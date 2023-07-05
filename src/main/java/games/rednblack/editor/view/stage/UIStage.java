@@ -23,11 +23,11 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.util.ToastManager;
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.utils.TextureArrayCpuPolygonSpriteBatch;
 import games.rednblack.editor.view.ui.*;
 import games.rednblack.h2d.common.proxy.CursorManager;
+import games.rednblack.puremvc.Facade;
 
 public class UIStage extends Stage {
 
@@ -35,7 +35,7 @@ public class UIStage extends Stage {
     public static final int SANDBOX_BOTTOM_MARGIN = 38;
     public static final int SANDBOX_LEFT_MARGIN = 40;
 
-    private final HyperLap2DFacade facade;
+    private final Facade facade;
     public Group dummyTarget;
     public UIMainTable uiMainTable;
     public Group contextMenuContainer;
@@ -46,7 +46,7 @@ public class UIStage extends Stage {
     public UIStage() {
         super(new ScreenViewport(), new TextureArrayCpuPolygonSpriteBatch(10_000));
 
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
 
         getViewport().getCamera().position.setZero();
         updateViewportDensity();

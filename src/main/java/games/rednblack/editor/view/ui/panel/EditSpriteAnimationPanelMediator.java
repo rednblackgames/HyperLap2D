@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.ui.panel;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
 import games.rednblack.editor.renderer.data.FrameRange;
 import games.rednblack.editor.renderer.factory.EntityFactory;
@@ -29,8 +28,9 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.properties.panels.UISpriteAnimationItemProperties;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.util.Set;
 
@@ -50,20 +50,17 @@ public class EditSpriteAnimationPanelMediator extends Mediator<EditSpriteAnimati
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
         viewComponent.setEmpty("No item selected");
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.ITEM_SELECTION_CHANGED,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.ITEM_SELECTION_CHANGED,
                 MsgAPI.EMPTY_SPACE_CLICKED,
                 UISpriteAnimationItemProperties.EDIT_ANIMATIONS_CLICKED,
-                EditSpriteAnimationPanel.ADD_BUTTON_PRESSED,
-                EditSpriteAnimationPanel.DELETE_BUTTON_PRESSED,
-                WindowMenu.SPRITE_ANIMATIONS_EDITOR_OPEN
-        };
+                EditSpriteAnimationPanel.ADD_BUTTON_PRESSED);
+        interests.add(EditSpriteAnimationPanel.DELETE_BUTTON_PRESSED,
+                WindowMenu.SPRITE_ANIMATIONS_EDITOR_OPEN);
     }
 
     @Override

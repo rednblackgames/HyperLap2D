@@ -1,13 +1,13 @@
 package games.rednblack.editor.view.ui;
 
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.utils.Guide;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 /**
  * Created by azakhary on 7/18/2015.
@@ -25,17 +25,14 @@ public class RulersUIMediator extends Mediator<RulersUI> {
 
     @Override
     public void onRegister() {
-        facade = HyperLap2DFacade.getInstance();
         viewComponent.setVisible(false);
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.SCENE_LOADED,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.SCENE_LOADED,
                 RulersUI.ACTION_GUIDES_MODIFIED,
-                MsgAPI.LOCK_LINES_CHANGED
-        };
+                MsgAPI.LOCK_LINES_CHANGED);
     }
 
     @Override

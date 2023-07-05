@@ -4,14 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NinePatchComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
@@ -36,12 +36,10 @@ public class MainPanelMediator extends Mediator<MainPanel> {
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                NinePatchPlugin.EDIT_NINE_PATCH,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(NinePatchPlugin.EDIT_NINE_PATCH,
                 NinePatchPlugin.CONVERT_TO_NINE_PATCH,
-                MainPanel.SAVE_CLICKED
-        };
+                MainPanel.SAVE_CLICKED);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package games.rednblack.editor.controller.commands;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.GraphVO;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 public class AddToLibraryAction extends NonRevertibleCommand {
 
@@ -17,7 +17,7 @@ public class AddToLibraryAction extends NonRevertibleCommand {
         GraphVO data = (GraphVO) payload[1];
         libraryActions.put(key, data);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.LIBRARY_ACTIONS_UPDATED);
+        Facade.getInstance().sendNotification(MsgAPI.LIBRARY_ACTIONS_UPDATED);
     }
 
     public static Object[] getPayload(String key, GraphVO data) {

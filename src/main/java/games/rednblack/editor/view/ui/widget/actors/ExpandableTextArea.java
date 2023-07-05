@@ -9,14 +9,14 @@ import com.kotcrab.vis.ui.widget.VisTextArea;
 import games.rednblack.editor.view.ui.dialog.CodeEditorDialogMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import org.puremvc.java.interfaces.IFacade;
+import games.rednblack.puremvc.Facade;
 
 public class ExpandableTextArea extends VisTable {
     public interface OnExpandListener {
         void onExpand(VisTextArea textArea);
     }
 
-    private IFacade facade;
+    private Facade facade;
 
     private OnExpandListener listener;
     private VisTextArea textArea;
@@ -24,7 +24,7 @@ public class ExpandableTextArea extends VisTable {
 
     private Highlighter syntax;
 
-    public ExpandableTextArea(IFacade facade, String notificationCallback) {
+    public ExpandableTextArea(Facade facade, String notificationCallback) {
         this.facade = facade;
 
         textArea = StandardWidgetsFactory.createTextArea();

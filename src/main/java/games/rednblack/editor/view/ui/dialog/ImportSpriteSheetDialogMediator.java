@@ -5,15 +5,15 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.menu.ResourcesMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.io.FileUtils;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,17 +29,9 @@ public class ImportSpriteSheetDialogMediator extends Mediator<ImportSpriteSheetD
     }
 
     @Override
-    public void onRegister() {
-        super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
-    }
-
-    @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                ResourcesMenu.IMPORT_SPRITE_SHEET,
-                ImportSpriteSheetDialog.IMPORT_SPRITE_SHEET
-        };
+    public void listNotificationInterests(Interests interests) {
+        interests.add(ResourcesMenu.IMPORT_SPRITE_SHEET,
+                ImportSpriteSheetDialog.IMPORT_SPRITE_SHEET);
     }
 
     @Override

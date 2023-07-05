@@ -3,8 +3,6 @@ package games.rednblack.editor.plugin.tiled.tools;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.puremvc.java.interfaces.INotification;
-
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,6 +11,7 @@ import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.tools.Tool;
 import games.rednblack.h2d.common.vo.CursorData;
+import games.rednblack.puremvc.interfaces.INotification;
 
 /**
  * Created by mariam on 4/5/16.

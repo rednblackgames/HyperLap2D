@@ -1,7 +1,6 @@
 package games.rednblack.editor.view.ui.dialog;
 
 import com.badlogic.gdx.files.FileHandle;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.code.syntax.GLSLSyntax;
 import games.rednblack.editor.controller.commands.resource.DeleteShaderCommand;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -15,9 +14,11 @@ import games.rednblack.editor.view.menu.ResourcesMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.io.FileUtils;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,25 +42,22 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
 
         resourceManager = facade.retrieveProxy(ResourceManager.NAME);
-        projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+        projectManager = Facade.getInstance().retrieveProxy(ProjectManager.NAME);
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                ResourcesMenu.OPEN_SHADER_MANAGER,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(ResourcesMenu.OPEN_SHADER_MANAGER,
                 ProjectManager.PROJECT_OPENED,
                 ProjectManager.PROJECT_DATA_UPDATED,
-                ShaderManagerDialog.EDIT_FRAGMENT_SHADER_DONE,
-                ShaderManagerDialog.EDIT_VERTEX_SHADER_DONE,
+                ShaderManagerDialog.EDIT_FRAGMENT_SHADER_DONE);
+        interests.add(ShaderManagerDialog.EDIT_VERTEX_SHADER_DONE,
                 ShaderManagerDialog.EDIT_FRAGMENT_SHADER,
                 ShaderManagerDialog.EDIT_VERTEX_SHADER,
-                ShaderManagerDialog.CREATE_NEW_SHADER,
-                DeleteShaderCommand.DONE
-        };
+                ShaderManagerDialog.CREATE_NEW_SHADER);
+        interests.add(DeleteShaderCommand.DONE);
     }
 
     @Override

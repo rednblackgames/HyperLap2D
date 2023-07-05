@@ -5,9 +5,10 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.h2d.common.network.HttpDownloadUtility;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.network.model.GithubReleaseData;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.io.FileUtils;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,11 +28,9 @@ public class SkinComposerMediator extends Mediator<DownloadingDialog> {
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                SkinComposerPlugin.PANEL_OPEN,
-                SkinComposerPlugin.DOWNLOAD_JAR
-        };
+    public void listNotificationInterests(Interests interests) {
+        interests.add(SkinComposerPlugin.PANEL_OPEN,
+                SkinComposerPlugin.DOWNLOAD_JAR);
     }
 
     @Override

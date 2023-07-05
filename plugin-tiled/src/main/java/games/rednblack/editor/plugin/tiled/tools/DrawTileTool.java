@@ -1,7 +1,6 @@
 package games.rednblack.editor.plugin.tiled.tools;
 
 import games.rednblack.h2d.extension.spine.SpineItemType;
-import org.puremvc.java.interfaces.INotification;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,6 +20,7 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.h2d.common.view.tools.Tool;
 import games.rednblack.h2d.common.vo.CursorData;
+import games.rednblack.puremvc.interfaces.INotification;
 
 /**
  * Created by mariam on 3/29/16.

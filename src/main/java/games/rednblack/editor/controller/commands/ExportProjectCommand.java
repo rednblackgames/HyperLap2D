@@ -21,7 +21,7 @@ package games.rednblack.editor.controller.commands;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.interfaces.INotification;
 
 public class ExportProjectCommand extends SandboxCommand {
 

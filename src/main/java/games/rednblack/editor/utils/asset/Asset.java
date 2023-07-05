@@ -2,7 +2,6 @@ package games.rednblack.editor.utils.asset;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.ResourceManager;
@@ -11,8 +10,8 @@ import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
+import games.rednblack.puremvc.Facade;
 import org.apache.commons.io.FileUtils;
-import org.puremvc.java.patterns.facade.Facade;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +32,7 @@ public abstract class Asset implements IAsset {
     protected String currentProjectPath;
 
     public Asset() {
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
         projectManager = facade.retrieveProxy(ProjectManager.NAME);
         resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
         resourceManager = facade.retrieveProxy(ResourceManager.NAME);

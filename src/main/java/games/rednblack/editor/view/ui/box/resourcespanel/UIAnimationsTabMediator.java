@@ -30,8 +30,9 @@ import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.BoxItemRe
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.SpineResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.SpriteResource;
 import games.rednblack.h2d.extension.spine.SpineItemType;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.ArrayUtils;
-import org.puremvc.java.interfaces.INotification;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -53,11 +54,9 @@ public class UIAnimationsTabMediator extends UIResourcesTabMediator<UIAnimations
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] listNotification = super.listNotificationInterests();
-        listNotification = ArrayUtils.add(listNotification, DeleteSpineAnimation.DONE);
-        listNotification = ArrayUtils.add(listNotification, DeleteSpriteAnimation.DONE);
-        return listNotification;
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(DeleteSpineAnimation.DONE, DeleteSpriteAnimation.DONE);
     }
 
     @Override

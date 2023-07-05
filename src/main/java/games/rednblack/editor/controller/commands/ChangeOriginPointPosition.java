@@ -1,6 +1,5 @@
 package games.rednblack.editor.controller.commands;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -8,7 +7,8 @@ import games.rednblack.editor.view.ui.validator.FloatInputValidator;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.h2d.common.view.ui.dialog.MultipleInputDialog;
 import games.rednblack.h2d.common.view.ui.listener.MultipleInputDialogListener;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
 
 public class ChangeOriginPointPosition extends SandboxCommand {
 
@@ -25,7 +25,7 @@ public class ChangeOriginPointPosition extends SandboxCommand {
                 TransformCommandBuilder commandBuilder = new TransformCommandBuilder();
                 commandBuilder.begin(entity, sandbox.getEngine());
                 commandBuilder.setOrigin(Float.parseFloat(input[0]), Float.parseFloat(input[1]));
-                commandBuilder.execute(HyperLap2DFacade.getInstance());
+                commandBuilder.execute(Facade.getInstance());
             }
 
             @Override

@@ -18,14 +18,14 @@
 
 package games.rednblack.editor.view.ui.dialog;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 /**
  * Created by sargis on 4/1/15.
@@ -39,17 +39,14 @@ public class NewProjectDialogMediator extends Mediator<NewProjectDialog> {
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                FileMenu.NEW_PROJECT,
-                NewProjectDialog.CREATE_BTN_CLICKED
-        };
+    public void listNotificationInterests(Interests interests) {
+        interests.add(FileMenu.NEW_PROJECT,
+                NewProjectDialog.CREATE_BTN_CLICKED);
     }
 
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
 
         SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
         viewComponent.setDefaultWorkspacePath(settingsManager.getWorkspacePath().path());

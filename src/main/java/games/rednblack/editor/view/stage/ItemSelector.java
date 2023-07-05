@@ -20,7 +20,6 @@ package games.rednblack.editor.view.stage;
 
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.SnapshotArray;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.utils.Constants;
@@ -31,6 +30,7 @@ import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.SceneControlMediator;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -62,7 +62,7 @@ public class ItemSelector {
         this.sandbox = sandbox;
         sceneControl = sandbox.sceneControl;
 
-        followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+        followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
     }
 
     /***************************** Getters *********************************/
@@ -215,7 +215,7 @@ public class ItemSelector {
 
         currentSelection.add(item);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
     }
 
     /**
@@ -241,18 +241,18 @@ public class ItemSelector {
         currentSelection.clear();
 
         if(items == null) {
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
+            Facade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
             return;
         }
 
         currentSelection.addAll(items.stream().collect(Collectors.toList()));
 
         if (alsoShow) {
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.SHOW_SELECTIONS, currentSelection);
+            Facade.getInstance().sendNotification(MsgAPI.SHOW_SELECTIONS, currentSelection);
         } else {
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.HIDE_SELECTIONS, currentSelection);
+            Facade.getInstance().sendNotification(MsgAPI.HIDE_SELECTIONS, currentSelection);
         }
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
     }
 
     /**
@@ -272,7 +272,7 @@ public class ItemSelector {
     public void releaseSelection(int item) {
         currentSelection.remove(item);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
     }
 
     /**
@@ -281,7 +281,7 @@ public class ItemSelector {
     public void clearSelections() {
         currentSelection.clear();
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
     }
 
 
@@ -520,7 +520,7 @@ public class ItemSelector {
     public void moveSelectedItemsBy(float x, float y) {
         for (int entity : currentSelection) {
             sandbox.itemControl.moveItemBy(entity, x, y);
-            HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+            Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
         }
     }
 

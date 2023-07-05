@@ -3,7 +3,7 @@ package games.rednblack.editor.controller.commands;
 import com.kotcrab.vis.ui.widget.toast.MessageToast;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.h2d.common.HyperLog;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.interfaces.INotification;
 
 public class ShowNotificationCommand extends SandboxCommand {
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.ShowNotificationCommand";

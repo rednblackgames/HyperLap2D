@@ -28,10 +28,10 @@ import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextField;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by sargis on 5/4/15.
@@ -62,7 +62,7 @@ public abstract class UIResourcesTab extends ImageTab {
             @Override
             public void keyTyped(VisTextField textField, char c) {
                 searchString    =   textField.getText();
-                HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+                Facade facade = Facade.getInstance();
                 facade.sendNotification(MsgAPI.UPDATE_RESOURCES_LIST);
             }
         });
@@ -74,7 +74,7 @@ public abstract class UIResourcesTab extends ImageTab {
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+                Facade facade = Facade.getInstance();
                 Vector2 pos = Pools.obtain(Vector2.class);
                 pos.set(0, 0);
                 button.localToStageCoordinates(pos);

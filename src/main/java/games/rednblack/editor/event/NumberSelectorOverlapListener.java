@@ -21,7 +21,7 @@ package games.rednblack.editor.event;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kotcrab.vis.ui.widget.spinner.Spinner;
-import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 6/12/2015.
@@ -36,7 +36,7 @@ public class NumberSelectorOverlapListener extends ChangeListener {
 
     @Override
     public void changed(ChangeEvent event, Actor actor) {
-        HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+        Facade facade = Facade.getInstance();
         facade.sendNotification(eventName, ((Spinner)actor).getTextField().getText());
     }
 }

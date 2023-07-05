@@ -1,11 +1,11 @@
 package games.rednblack.editor.controller.commands;
 
 import com.artemis.Component;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.utils.runtime.ComponentCloner;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by CyberJoe on 7/2/2015.
@@ -32,8 +32,8 @@ public class RemoveComponentFromItemCommand extends EntityModifyRevertibleComman
         sandbox.getEngine().edit(entity).remove(component.getClass());
         sandbox.getEngine().process();
 
-        HyperLap2DFacade.getInstance().sendNotification(DONE, entity);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(DONE, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
 
         Sandbox.getInstance().getSceneControl().sceneLoader.getRenderer().removeSpecialEntity(entity);
     }
@@ -45,8 +45,8 @@ public class RemoveComponentFromItemCommand extends EntityModifyRevertibleComman
             ComponentCloner.set(newComponent, component);
         }
 
-        HyperLap2DFacade.getInstance().sendNotification(DONE, entity);
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(DONE, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     public static Object[] payload(int entity, Class<? extends Component> componentClass) {

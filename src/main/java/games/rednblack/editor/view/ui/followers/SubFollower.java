@@ -1,7 +1,7 @@
 package games.rednblack.editor.view.ui.followers;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.interfaces.INotification;
 
 /**
  * Created by CyberJoe on 7/2/2015.

@@ -27,7 +27,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.kotcrab.vis.ui.FocusManager;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
@@ -43,8 +42,10 @@ import games.rednblack.editor.view.stage.tools.TransformTool;
 import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.tools.Tool;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.util.HashMap;
 
@@ -76,8 +77,6 @@ public class SandboxMediator extends Mediator<Sandbox> {
     public void onRegister() {
         super.onRegister();
 
-        facade = HyperLap2DFacade.getInstance();
-
         stageListener = new SandboxStageEventListener();
         getViewComponent().addListener(stageListener);
 
@@ -99,20 +98,18 @@ public class SandboxMediator extends Mediator<Sandbox> {
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.SCENE_LOADED,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.SCENE_LOADED,
                 MsgAPI.TOOL_SELECTED,
                 MsgAPI.NEW_ITEM_ADDED,
-                MsgAPI.NEW_TOOL_ADDED,
-                MsgAPI.RESIZE,
+                MsgAPI.NEW_TOOL_ADDED);
+        interests.add(MsgAPI.RESIZE,
                 MsgAPI.DISPOSE,
                 CompositeCameraChangeCommand.DONE,
-                AddComponentToItemCommand.DONE,
-                RemoveComponentFromItemCommand.DONE,
+                AddComponentToItemCommand.DONE);
+        interests.add(RemoveComponentFromItemCommand.DONE,
                 MsgAPI.ITEM_SELECTION_CHANGED,
-                PanTool.SCENE_PANNED
-        };
+                PanTool.SCENE_PANNED);
     }
 
     @Override
@@ -233,7 +230,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
             if (button == Input.Buttons.RIGHT) {
                 // if right clicked on an item, drop down for current selection
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_RIGHT_CLICK);
+                Facade.getInstance().sendNotification(MsgAPI.ITEM_RIGHT_CLICK);
             }
         }
 

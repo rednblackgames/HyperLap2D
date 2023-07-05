@@ -1,7 +1,7 @@
 package games.rednblack.editor;
 
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.patterns.facade.Facade;
+import games.rednblack.puremvc.Facade;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -12,7 +12,7 @@ public class ConsoleInterceptor extends PrintStream {
 
     public ConsoleInterceptor(OutputStream out) {
         super(out, true);
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
     }
 
     public void setPrefix(String prefix) {

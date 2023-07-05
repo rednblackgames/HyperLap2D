@@ -22,10 +22,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 4/17/2015.
@@ -41,7 +41,7 @@ public class UIImagesTab extends UIResourcesTab {
     @Override
     protected VisScrollPane crateScrollPane() {
         imagesTable = new VisTable();
-        HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT, imagesTable);
+        Facade.getInstance().sendNotification(UIResourcesBoxMediator.ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT, imagesTable);
         return StandardWidgetsFactory.createScrollPane(imagesTable);
     }
 

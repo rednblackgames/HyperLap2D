@@ -12,10 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.kotcrab.vis.ui.widget.VisLabel;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.utils.Guide;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
+import games.rednblack.puremvc.Facade;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 import java.util.HashMap;
@@ -163,11 +163,11 @@ public class RulersUI extends Actor {
                     } else {
                         if (button == Input.Buttons.RIGHT) {
                             editableDraggingGuide = draggingGuide;
-                            HyperLap2DFacade.getInstance().sendNotification(RIGHT_CLICK_RULER);
+                            Facade.getInstance().sendNotification(RIGHT_CLICK_RULER);
                         }
                     }
 
-                    HyperLap2DFacade.getInstance().sendNotification(ACTION_GUIDES_MODIFIED);
+                    Facade.getInstance().sendNotification(ACTION_GUIDES_MODIFIED);
                 }
                 draggingGuide = null;
             }
@@ -479,7 +479,7 @@ public class RulersUI extends Actor {
     public static void updateGuideManually(float destination) {
         editableDraggingGuide.pos = destination;
 
-        HyperLap2DFacade.getInstance().sendNotification(ACTION_GUIDES_MODIFIED);
+        Facade.getInstance().sendNotification(ACTION_GUIDES_MODIFIED);
     }
 
     public Array<Guide> getGuides() {

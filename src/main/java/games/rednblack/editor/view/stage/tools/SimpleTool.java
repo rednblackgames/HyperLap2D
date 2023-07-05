@@ -1,12 +1,12 @@
 package games.rednblack.editor.view.stage.tools;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.followers.BasicFollower;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 import games.rednblack.h2d.common.view.tools.Tool;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
 
 import java.util.Set;
 
@@ -19,7 +19,7 @@ public abstract class SimpleTool implements Tool {
     public void initTool() {
         Sandbox sandbox = Sandbox.getInstance();
         Set<Integer> currSelection = sandbox.getSelector().getCurrentSelection();
-        FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+        FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
         for(int entity: currSelection) {
             BasicFollower follower = followersUIMediator.getFollower(entity);
             if(follower instanceof NormalSelectionFollower) {

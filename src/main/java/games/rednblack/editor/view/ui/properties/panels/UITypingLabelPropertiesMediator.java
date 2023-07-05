@@ -1,13 +1,14 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelComponent;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.ArrayUtils;
-import org.puremvc.java.interfaces.INotification;
 
 public class UITypingLabelPropertiesMediator extends UIItemPropertiesMediator<UITypingLabelProperties> {
     private static final String TAG = UITypingLabelPropertiesMediator.class.getCanonicalName();
@@ -18,14 +19,10 @@ public class UITypingLabelPropertiesMediator extends UIItemPropertiesMediator<UI
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] defaultNotifications = super.listNotificationInterests();
-        String[] notificationInterests = new String[]{
-                UITypingLabelProperties.CLOSE_CLICKED,
-                UITypingLabelProperties.RESTART_BUTTON_CLICKED
-        };
-
-        return ArrayUtils.addAll(defaultNotifications, notificationInterests);
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(UITypingLabelProperties.CLOSE_CLICKED,
+                UITypingLabelProperties.RESTART_BUTTON_CLICKED);
     }
 
     @Override
@@ -34,7 +31,7 @@ public class UITypingLabelPropertiesMediator extends UIItemPropertiesMediator<UI
 
         switch (notification.getName()) {
             case UITypingLabelProperties.CLOSE_CLICKED:
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, TypingLabelComponent.class));
+                Facade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, TypingLabelComponent.class));
                 break;
             case UITypingLabelProperties.RESTART_BUTTON_CLICKED:
                 restartTypingLabel();

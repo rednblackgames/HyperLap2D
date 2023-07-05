@@ -1,14 +1,15 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdateCircleShapeCommand;
 import games.rednblack.editor.renderer.components.shape.CircleShapeComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.ArrayUtils;
-import org.puremvc.java.interfaces.INotification;
 
 public class UICircleShapePropertiesMediator extends UIItemPropertiesMediator<UICircleShapeProperties> {
     private static final String TAG = UICircleShapePropertiesMediator.class.getCanonicalName();
@@ -19,13 +20,9 @@ public class UICircleShapePropertiesMediator extends UIItemPropertiesMediator<UI
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] defaultNotifications = super.listNotificationInterests();
-        String[] notificationInterests = new String[]{
-                UICircleShapeProperties.CLOSE_CLICKED,
-        };
-
-        return ArrayUtils.addAll(defaultNotifications, notificationInterests);
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(UICircleShapeProperties.CLOSE_CLICKED);
     }
 
     @Override
@@ -34,7 +31,7 @@ public class UICircleShapePropertiesMediator extends UIItemPropertiesMediator<UI
 
         switch (notification.getName()) {
             case UICircleShapeProperties.CLOSE_CLICKED:
-                HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, CircleShapeComponent.class));
+                Facade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, CircleShapeComponent.class));
                 break;
         }
     }

@@ -21,7 +21,7 @@ package games.rednblack.editor.event;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
-import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 4/16/2015.
@@ -41,7 +41,7 @@ public class CheckBoxChangeListener extends ChangeListener {
 
     @Override
     public void changed(ChangeEvent changeEvent, Actor actor) {
-        HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+        Facade facade = Facade.getInstance();
         facade.sendNotification(eventName, ((VisCheckBox) actor).isChecked(), type);
     }
 }

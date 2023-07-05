@@ -9,12 +9,12 @@ import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.validator.StringNameValidator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 public class UIActionsTab extends UIResourcesTab {
 
@@ -41,7 +41,7 @@ public class UIActionsTab extends UIResourcesTab {
                         if (input == null || input.equals("")) {
                             return;
                         }
-                        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.OPEN_NODE_EDITOR, input);
+                        Facade.getInstance().sendNotification(MsgAPI.OPEN_NODE_EDITOR, input);
                     }
 
                     @Override

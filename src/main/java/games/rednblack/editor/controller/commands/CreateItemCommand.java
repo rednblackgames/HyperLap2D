@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.controller.commands;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
@@ -27,6 +26,7 @@ import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -60,7 +60,7 @@ public class CreateItemCommand extends EntityModifyRevertibleCommand {
         zindexComponent.setZIndex(nodeComponent.children.size);
 
         sandbox.getEngine().process();
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
 
         Set<Integer> items = new HashSet<>();
         items.add(entity);
@@ -72,7 +72,7 @@ public class CreateItemCommand extends EntityModifyRevertibleCommand {
         int entity = EntityUtils.getByUniqueId(entityId);
         serializedEntity = EntityUtils.getJsonStringFromEntity(entity);
 
-        FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+        FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
         followersUIMediator.removeFollower(entity);
 
         sandbox.getEngine().delete(entity);

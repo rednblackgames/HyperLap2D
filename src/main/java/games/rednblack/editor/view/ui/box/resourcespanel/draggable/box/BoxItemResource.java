@@ -26,11 +26,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Null;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResourceView;
 import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by sargis on 5/6/15.
@@ -136,17 +136,17 @@ public abstract class BoxItemResource extends Group implements DraggableResource
                     }
 
 	            	if(button == Input.Buttons.LEFT) {
-	            		HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.RESOURCE_BOX_LEFT_CLICK, BoxItemResource.this, eventType);
+                        Facade.getInstance().sendNotification(UIResourcesBoxMediator.RESOURCE_BOX_LEFT_CLICK, BoxItemResource.this, eventType);
 
 	            		if (leftClickEventName != null)
-                            HyperLap2DFacade.getInstance().sendNotification(leftClickEventName, leftClickPayload, eventType);
+                            Facade.getInstance().sendNotification(leftClickEventName, leftClickPayload, eventType);
 	            	}
 
 	                if(button == Input.Buttons.RIGHT) {
-	                    HyperLap2DFacade.getInstance().sendNotification(UIResourcesBoxMediator.RESOURCE_BOX_RIGHT_CLICK, BoxItemResource.this, eventType);
+                        Facade.getInstance().sendNotification(UIResourcesBoxMediator.RESOURCE_BOX_RIGHT_CLICK, BoxItemResource.this, eventType);
 
                         if (rightClickEventName != null)
-                            HyperLap2DFacade.getInstance().sendNotification(rightClickEventName, rightClickPayload, eventType);
+                            Facade.getInstance().sendNotification(rightClickEventName, rightClickPayload, eventType);
 	                }
             	}
             }

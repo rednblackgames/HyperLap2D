@@ -31,10 +31,10 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisProgressBar;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.UIDraggablePanel;
+import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
 
@@ -45,7 +45,7 @@ public class ImportPanel extends UIDraggablePanel {
 
     public static final String IMPORT_FAILED = CLASS_NAME + ".IMPORT_FAILED";
 
-    private HyperLap2DFacade facade;
+    private Facade facade;
 
     private VisTable mainTable;
     private Image dropRegion;
@@ -66,7 +66,7 @@ public class ImportPanel extends UIDraggablePanel {
         setWidth(250);
         setHeight(100);
 
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
 
         fillTypeNames();
 

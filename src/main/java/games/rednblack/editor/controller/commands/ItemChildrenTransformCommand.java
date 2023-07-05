@@ -2,12 +2,12 @@ package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -85,7 +85,7 @@ public class ItemChildrenTransformCommand extends EntityModifyRevertibleCommand 
             transformComponent.x = newPos.x;
             transformComponent.y = newPos.y;
         }
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class ItemChildrenTransformCommand extends EntityModifyRevertibleCommand 
             transformComponent.x = oldPosition.x;
             transformComponent.y = oldPosition.y;
         }
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     private void setState(TransformComponent tC, Vector2 position, DimensionsComponent dC, Vector2 size) {

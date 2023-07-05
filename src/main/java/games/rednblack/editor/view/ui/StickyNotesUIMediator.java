@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
 import games.rednblack.editor.controller.commands.CreateStickyNoteCommand;
 import games.rednblack.editor.controller.commands.ModifyStickyNoteCommand;
@@ -9,8 +8,9 @@ import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.data.StickyNoteVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 public class StickyNotesUIMediator  extends Mediator<StickyNotesUI> {
     private static final String TAG = StickyNotesUIMediator.class.getCanonicalName();
@@ -25,19 +25,16 @@ public class StickyNotesUIMediator  extends Mediator<StickyNotesUI> {
 
     @Override
     public void onRegister() {
-        facade = HyperLap2DFacade.getInstance();
         viewComponent.setVisible(false);
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                MsgAPI.SCENE_LOADED,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(MsgAPI.SCENE_LOADED,
                 CompositeCameraChangeCommand.DONE,
                 CreateStickyNoteCommand.DONE,
-                RemoveStickyNoteCommand.DONE,
-                ModifyStickyNoteCommand.DONE
-        };
+                RemoveStickyNoteCommand.DONE);
+        interests.add(ModifyStickyNoteCommand.DONE);
     }
 
     @Override

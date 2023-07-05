@@ -32,11 +32,11 @@ import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextField;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.utils.InputFilters;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 4/17/2015.
@@ -57,7 +57,7 @@ public class UILayerBox extends UICollapsibleBox {
 
     private final DragAndDrop dragAndDrop;
     public int currentSelectedLayerIndex = 0;
-    private HyperLap2DFacade facade;
+    private Facade facade;
     private VisTable contentTable;
     private VisTable bottomPane;
     private VisScrollPane scrollPane;
@@ -70,7 +70,7 @@ public class UILayerBox extends UICollapsibleBox {
     public UILayerBox() {
         super("Layers");
 
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
 
         setMovable(false);
         contentTable = new VisTable();
@@ -250,7 +250,7 @@ public class UILayerBox extends UICollapsibleBox {
                 // Send notification with the two layers to swap.
                 // TODO - change from swap to repositioning source above target.
                 String[] notificationPayload = {sourceLayer, targetLayer};
-                HyperLap2DFacade.getInstance().sendNotification(LAYER_DROPPED, notificationPayload);
+                Facade.getInstance().sendNotification(LAYER_DROPPED, notificationPayload);
             }
         }
     }

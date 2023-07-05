@@ -2,13 +2,13 @@ package games.rednblack.editor.controller.commands.component;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 public class UpdatePolygonVerticesCommand extends EntityModifyRevertibleCommand {
 
@@ -49,7 +49,7 @@ public class UpdatePolygonVerticesCommand extends EntityModifyRevertibleCommand 
         if (textureRegionComponent != null)
             textureRegionComponent.executeRefresh(entity);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
 
     }
 
@@ -68,7 +68,7 @@ public class UpdatePolygonVerticesCommand extends EntityModifyRevertibleCommand 
         if (textureRegionComponent != null)
             textureRegionComponent.executeRefresh(entity);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     public static Object[] payloadInitialState(int entity) {

@@ -18,13 +18,13 @@
 
 package games.rednblack.editor.view.ui.box.bottom;
 
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
 
 /**
  * Created by sargis on 4/9/15.
@@ -40,19 +40,11 @@ public class UIZoomBoxMediator extends Mediator<UIZoomBox> {
     }
 
     @Override
-    public void onRegister() {
-        facade = HyperLap2DFacade.getInstance();
-    }
-
-
-    @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                ProjectManager.PROJECT_OPENED,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(ProjectManager.PROJECT_OPENED,
                 UIZoomBox.ZOOM_SHIFT_REQUESTED,
                 UIZoomBox.ZOOM_VALUE_CHANGED,
-                MsgAPI.ZOOM_CHANGED
-        };
+                MsgAPI.ZOOM_CHANGED);
     }
 
     @Override

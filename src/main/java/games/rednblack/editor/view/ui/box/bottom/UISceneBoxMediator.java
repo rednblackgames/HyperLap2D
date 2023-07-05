@@ -2,14 +2,14 @@ package games.rednblack.editor.view.ui.box.bottom;
 
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.validator.StringNameValidator;
 import games.rednblack.h2d.common.MsgAPI;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 public class UISceneBoxMediator extends Mediator<UISceneBox> {
     private static final String TAG = UISceneBoxMediator.class.getCanonicalName();
@@ -17,18 +17,15 @@ public class UISceneBoxMediator extends Mediator<UISceneBox> {
 
     public UISceneBoxMediator() {
         super(NAME, new UISceneBox());
-        facade = HyperLap2DFacade.getInstance();
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                ProjectManager.PROJECT_OPENED,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(ProjectManager.PROJECT_OPENED,
                 MsgAPI.SCENE_LOADED,
                 UISceneBox.CHANGE_SCENE_BTN_CLICKED,
-                UISceneBox.CREATE_NEW_SCENE_BTN_CLICKED,
-                UISceneBox.DELETE_CURRENT_SCENE_BTN_CLICKED
-        };
+                UISceneBox.CREATE_NEW_SCENE_BTN_CLICKED);
+        interests.add(UISceneBox.DELETE_CURRENT_SCENE_BTN_CLICKED);
     }
 
     @Override

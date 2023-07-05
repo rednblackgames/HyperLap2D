@@ -22,9 +22,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.view.ui.widget.actors.GridView;
+import games.rednblack.puremvc.Facade;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 /**
@@ -48,7 +48,7 @@ public class SandboxBackUI {
     }
 
     public void render(float delta) {
-        ResourceManager resourceManager = HyperLap2DFacade.getInstance().retrieveProxy(ResourceManager.NAME);
+        ResourceManager resourceManager = Facade.getInstance().retrieveProxy(ResourceManager.NAME);
         batch.begin();
         for (Actor actor : actors) {
             actor.setScale(1f / resourceManager.getProjectVO().pixelToWorld);

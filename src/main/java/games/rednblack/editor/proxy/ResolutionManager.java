@@ -25,7 +25,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.mortennobel.imagescaling.ResampleOp;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.renderer.data.TexturePackVO;
@@ -34,9 +33,10 @@ import games.rednblack.editor.utils.NinePatchUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.ProgressHandler;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.Proxy;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.puremvc.java.patterns.proxy.Proxy;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -63,7 +63,7 @@ public class ResolutionManager extends Proxy {
     private ProgressHandler handler;
 
     public ResolutionManager() {
-        super(NAME);
+        super(NAME, null);
     }
 
     public static BufferedImage imageResize(File file, float ratio) {
@@ -132,7 +132,6 @@ public class ResolutionManager extends Proxy {
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
     }
 
     public void createNewResolution(ResolutionEntryVO resolutionEntryVO) {
@@ -153,7 +152,7 @@ public class ResolutionManager extends Proxy {
             if (resizeWarnings > 0) {
                 Dialogs.showOKDialog(Sandbox.getInstance().getUIStage(), "Warning", resizeWarnings + " images were not resized for smaller resolutions due to already small size ( < 3px )");
             }
-            HyperLap2DFacade.getInstance().sendNotification(RESOLUTION_LIST_CHANGED);
+            Facade.getInstance().sendNotification(RESOLUTION_LIST_CHANGED);
         });
         executor.execute(() -> {
             try {
@@ -371,7 +370,7 @@ public class ResolutionManager extends Proxy {
 
         ProjectInfoVO projectInfo = projectManager.getCurrentProjectInfoVO();
         projectInfo.resolutions.removeValue(resolutionEntryVO, false);
-        HyperLap2DFacade.getInstance().sendNotification(RESOLUTION_LIST_CHANGED);
+        Facade.getInstance().sendNotification(RESOLUTION_LIST_CHANGED);
         projectManager.saveCurrentProject();
         projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath(), "orig");
     }

@@ -1,7 +1,6 @@
 package games.rednblack.editor.controller.commands.component;
 
 import com.esotericsoftware.spine.*;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
@@ -9,6 +8,7 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extension.spine.SpineComponent;
+import games.rednblack.puremvc.Facade;
 
 public class ReplaceSpineCommand extends EntityModifyRevertibleCommand {
 
@@ -55,7 +55,7 @@ public class ReplaceSpineCommand extends EntityModifyRevertibleCommand {
         spineComponent.currentAnimationName = currentAnimName;
         spineComponent.setAnimation(currentAnimName);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     @Override
@@ -85,6 +85,6 @@ public class ReplaceSpineCommand extends EntityModifyRevertibleCommand {
         spineComponent.currentAnimationName = currentAnimName;
         spineComponent.setAnimation(currentAnimName);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 }

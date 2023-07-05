@@ -104,6 +104,8 @@ dependencies {
 
     implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
 
+    implementation "games.rednblack.puremvc:core:$pureMvcVersion"
+
     implementation "org.lwjgl:lwjgl-tinyfd:$lwjgl3Version"
     implementation "org.lwjgl:lwjgl-tinyfd:$lwjgl3Version:natives-linux"
     implementation "org.lwjgl:lwjgl-tinyfd:$lwjgl3Version:natives-linux-arm32"

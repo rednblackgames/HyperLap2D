@@ -20,7 +20,7 @@ package games.rednblack.editor.event;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 4/29/2015.
@@ -35,7 +35,7 @@ public class ClickNotifier extends ClickListener {
 
     @Override
     public void clicked(InputEvent event, float x, float y) {
-        HyperLap2DFacade facade = HyperLap2DFacade.getInstance();
+        Facade facade = Facade.getInstance();
         facade.sendNotification(eventName);
     }
 }

@@ -1,15 +1,15 @@
 package games.rednblack.editor.view.ui.box;
 
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.editor.HyperLap2DFacade;
+import games.rednblack.puremvc.Facade;
 
 public abstract class UIBaseBox extends VisTable {
 
-    protected final HyperLap2DFacade facade;
+    protected final Facade facade;
 
     public UIBaseBox() {
         super();
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
     }
 
     public abstract void update();

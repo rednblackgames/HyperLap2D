@@ -20,21 +20,21 @@ package games.rednblack.editor.view.ui.box.resourcespanel.draggable.list;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.h2d.common.ResourcePayloadObject;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 7/3/2014.
  */
 public class ParticleEffectResource extends ListItemResource {
-    private final HyperLap2DFacade facade;
+    private final Facade facade;
     private final Image payloadImg;
     private final ResourcePayloadObject payload;
 
     public ParticleEffectResource(String particleName) {
         super(particleName, "particle");
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
         payloadImg = new Image(getStyle().resourceOver) {
             @Override
             public void setScale(float scaleXY) {

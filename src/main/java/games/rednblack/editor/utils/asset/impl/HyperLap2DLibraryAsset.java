@@ -5,7 +5,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
@@ -20,6 +19,7 @@ import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
+import games.rednblack.puremvc.Facade;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -132,7 +132,7 @@ public class HyperLap2DLibraryAsset extends Asset {
                                             e.printStackTrace();
                                         }
 
-                                        ResolutionManager resolutionManager = HyperLap2DFacade.getInstance().retrieveProxy(ResolutionManager.NAME);
+                                        ResolutionManager resolutionManager = Facade.getInstance().retrieveProxy(ResolutionManager.NAME);
                                         resolutionManager.rePackProjectImagesForAllResolutionsSync();
 
                                         progressHandler.progressChanged(100);

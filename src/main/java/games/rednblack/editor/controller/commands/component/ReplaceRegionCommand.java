@@ -1,7 +1,6 @@
 package games.rednblack.editor.controller.commands.component;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
@@ -11,6 +10,7 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.Facade;
 
 public class ReplaceRegionCommand extends EntityModifyRevertibleCommand {
 
@@ -44,7 +44,7 @@ public class ReplaceRegionCommand extends EntityModifyRevertibleCommand {
         transformComponent.originX = size.width / 2;
         transformComponent.originY = size.height / 2;
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
     @Override
@@ -65,6 +65,6 @@ public class ReplaceRegionCommand extends EntityModifyRevertibleCommand {
         transformComponent.originX = size.width / 2;
         transformComponent.originY = size.height / 2;
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 }

@@ -11,7 +11,6 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextArea;
 import com.kotcrab.vis.ui.widget.spinner.IntSpinnerModel;
 import com.kotcrab.vis.ui.widget.spinner.Spinner;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.code.syntax.TypingLabelSyntax;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
@@ -20,6 +19,7 @@ import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.editor.view.ui.widget.actors.ExpandableTextArea;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +38,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
     private HashMap<Integer, String> alignMap = new HashMap<>();
     private Array<String> alignNames = new Array<>();
 
-    private HyperLap2DFacade facade;
+    private Facade facade;
 
     private VisSelectBox<String> fontFamilySelectBox, bitmapFontSelectBox;
     private VisSelectBox<String> alignSelectBox;
@@ -51,7 +51,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
 
     public UILabelItemProperties() {
         super("Label");
-        facade = HyperLap2DFacade.getInstance();
+        facade = Facade.getInstance();
 
         bitmapFontSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
         fontFamilySelectBox = StandardWidgetsFactory.createSelectBox(String.class);

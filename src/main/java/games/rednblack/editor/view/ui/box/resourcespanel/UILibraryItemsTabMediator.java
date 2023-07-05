@@ -19,7 +19,6 @@
 package games.rednblack.editor.view.ui.box.resourcespanel;
 
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.controller.commands.resource.DeleteLibraryItem;
 import games.rednblack.editor.controller.commands.resource.ExportLibraryItemCommand;
 import games.rednblack.editor.factory.ItemFactory;
@@ -29,8 +28,9 @@ import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.LibraryItemResource;
 import games.rednblack.h2d.common.MsgAPI;
-import org.apache.commons.lang3.ArrayUtils;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 
 import java.util.HashMap;
 
@@ -49,14 +49,9 @@ public class UILibraryItemsTabMediator extends UIResourcesTabMediator<UILibraryI
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        String[] listNotification = super.listNotificationInterests();
-
-        listNotification = ArrayUtils.add(listNotification, MsgAPI.LIBRARY_LIST_UPDATED);
-        listNotification = ArrayUtils.add(listNotification, DeleteLibraryItem.DONE);
-        listNotification = ArrayUtils.add(listNotification, ExportLibraryItemCommand.DONE);
-
-        return listNotification;
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(MsgAPI.LIBRARY_LIST_UPDATED, DeleteLibraryItem.DONE, ExportLibraryItemCommand.DONE);
     }
 
     @Override
@@ -75,7 +70,7 @@ public class UILibraryItemsTabMediator extends UIResourcesTabMediator<UILibraryI
     @Override
     protected void initList(String searchText) {
         searchText = searchText.toLowerCase();
-        ProjectManager projectManager = HyperLap2DFacade.getInstance().retrieveProxy(ProjectManager.NAME);
+        ProjectManager projectManager = Facade.getInstance().retrieveProxy(ProjectManager.NAME);
         HashMap<String, CompositeItemVO> items = projectManager.currentProjectInfoVO.libraryItems;
 
         itemArray.clear();

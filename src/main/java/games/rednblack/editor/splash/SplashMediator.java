@@ -3,15 +3,15 @@ package games.rednblack.editor.splash;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.HyperLap2DApp;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.utils.Version;
 import games.rednblack.editor.utils.AppConfig;
 import games.rednblack.h2d.common.network.HttpDownloadUtility;
 import games.rednblack.h2d.common.network.model.GithubReleaseData;
 import games.rednblack.h2d.common.network.model.SnapshotReleaseData;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,17 +26,9 @@ public class SplashMediator extends Mediator<Object> {
     }
 
     @Override
-    public void onRegister() {
-        super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
-    }
-
-    @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                SplashScreenAdapter.UPDATE_SPLASH,
-                SplashScreenAdapter.CLOSE_SPLASH
-        };
+    public void listNotificationInterests(Interests interests) {
+        interests.add(SplashScreenAdapter.UPDATE_SPLASH,
+                SplashScreenAdapter.CLOSE_SPLASH);
     }
 
     @Override

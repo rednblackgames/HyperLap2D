@@ -7,12 +7,12 @@ import com.kotcrab.vis.ui.util.highlight.Highlighter;
 import com.kotcrab.vis.ui.widget.H2DHighlightTextArea;
 import com.kotcrab.vis.ui.widget.HighlightTextArea;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.code.syntax.ProgrammingSyntax;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.listener.ScrollFocusListener;
+import games.rednblack.puremvc.Facade;
 
 public class CodeEditorDialog extends H2DDialog {
 
@@ -75,7 +75,7 @@ public class CodeEditorDialog extends H2DDialog {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                HyperLap2DFacade.getInstance().sendNotification(notificationCallback, textArea.getText(), notificationCallbackType);
+                Facade.getInstance().sendNotification(notificationCallback, textArea.getText(), notificationCallbackType);
                 close();
             }
         });

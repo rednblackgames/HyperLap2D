@@ -21,7 +21,6 @@ package games.rednblack.editor.view.stage.tools;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.kotcrab.vis.ui.util.OsUtils;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.KeyBindingsLayout;
@@ -36,7 +35,8 @@ import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.h2d.common.view.ui.Cursors;
-import org.puremvc.java.interfaces.INotification;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -98,7 +98,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
         updateListeners();
 
         // set cursor
-        cursorManager = HyperLap2DFacade.getInstance().retrieveProxy(CursorManager.NAME);
+        cursorManager = Facade.getInstance().retrieveProxy(CursorManager.NAME);
         cursorManager.setCursor(Cursors.CROSS);
     }
 
@@ -136,7 +136,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
     }
 
     private void updateListeners(Set<Integer> entities) {
-        FollowersUIMediator followersUIMediator = HyperLap2DFacade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+        FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
         followersUIMediator.clearAllListeners();
 
         for (int entity : entities) {
@@ -197,11 +197,11 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
         fixCursor = false;
 
         if (anchor == NormalSelectionFollower.ORIGIN && button == Input.Buttons.RIGHT) {
-            HyperLap2DFacade.getInstance().sendNotification(MANUAL_ORIGIN_POSITION, follower.getEntity());
+            Facade.getInstance().sendNotification(MANUAL_ORIGIN_POSITION, follower.getEntity());
             return;
         }
 
-        commandBuilder.execute(HyperLap2DFacade.getInstance());
+        commandBuilder.execute(Facade.getInstance());
         if (transformStrategy == compositeStrategy) {
             compositeStrategy.swapItemFinalAndInitialStates(follower.getEntity());
         }
@@ -218,7 +218,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
         execute(mouseInitialCoordinates, mousePointStage, anchor, follower.getEntity());
         mouseInitialCoordinates.set(mousePointStage.x, mousePointStage.y);
 
-        HyperLap2DFacade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED);
+        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED);
     }
 
     @Override

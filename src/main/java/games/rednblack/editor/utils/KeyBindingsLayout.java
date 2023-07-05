@@ -5,8 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.SettingsManager;
+import games.rednblack.puremvc.Facade;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -108,7 +108,7 @@ public class KeyBindingsLayout {
     private static final Array<KeyMapper> mapping = new Array<>();
 
     public static void init() {
-        SettingsManager settingsManager = HyperLap2DFacade.getInstance().retrieveProxy(SettingsManager.NAME);
+        SettingsManager settingsManager = Facade.getInstance().retrieveProxy(SettingsManager.NAME);
         if (!settingsManager.editorConfigVO.keyBindingLayout.equals("default")) {
             String mapPath = HyperLap2DUtils.getKeyMapPath() + File.separator + settingsManager.editorConfigVO.keyBindingLayout + ".keymap";
             File mapFile = new File(mapPath);

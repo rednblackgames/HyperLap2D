@@ -3,11 +3,11 @@ package games.rednblack.editor.view.stage.tools;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.h2d.common.view.ui.Cursors;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by CyberJoe on 5/1/2015.
@@ -37,7 +37,7 @@ public class PanTool extends SimpleTool {
 
     @Override
     public void initTool() {
-        CursorManager cursorManager = HyperLap2DFacade.getInstance().retrieveProxy(CursorManager.NAME);
+        CursorManager cursorManager = Facade.getInstance().retrieveProxy(CursorManager.NAME);
         cursorManager.setCursor(Cursors.HAND);
     }
 
@@ -94,7 +94,7 @@ public class PanTool extends SimpleTool {
 
     float currX, currY;
     private void doPanning(float x, float y) {
-        ResourceManager resourceManager = HyperLap2DFacade.getInstance().retrieveProxy(ResourceManager.NAME);
+        ResourceManager resourceManager = Facade.getInstance().retrieveProxy(ResourceManager.NAME);
 
         Sandbox sandbox = Sandbox.getInstance();
         OrthographicCamera camera = sandbox.getCamera();
@@ -106,6 +106,6 @@ public class PanTool extends SimpleTool {
 
         lastCoordinates.set(Gdx.input.getX(), Gdx.input.getY());
 
-        HyperLap2DFacade.getInstance().sendNotification(SCENE_PANNED);
+        Facade.getInstance().sendNotification(SCENE_PANNED);
     }
 }

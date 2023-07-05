@@ -22,7 +22,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
-import games.rednblack.editor.HyperLap2DFacade;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.AssetIOManager;
@@ -32,11 +31,12 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.ProgressHandler;
+import games.rednblack.puremvc.Mediator;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
-import org.puremvc.java.interfaces.INotification;
-import org.puremvc.java.patterns.mediator.Mediator;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -52,19 +52,16 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
     @Override
     public void onRegister() {
         super.onRegister();
-        facade = HyperLap2DFacade.getInstance();
         AssetIOManager.getInstance().setProgressHandler(new AssetsImportProgressHandler());
         AssetIOManager.getInstance().setViewComponent(viewComponent);
     }
 
     @Override
-    public String[] listNotificationInterests() {
-        return new String[]{
-                ResourcesMenu.IMPORT_TO_LIBRARY,
+    public void listNotificationInterests(Interests interests) {
+        interests.add(ResourcesMenu.IMPORT_TO_LIBRARY,
                 ImportPanel.BROWSE_BTN_CLICKED,
                 ImportPanel.IMPORT_FAILED,
-                MsgAPI.ACTION_FILES_DROPPED,
-        };
+                MsgAPI.ACTION_FILES_DROPPED);
     }
 
     @Override
