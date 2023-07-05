@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.TimeUtils;
-import games.rednblack.editor.renderer.utils.MathUtilsFix;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 /**
@@ -103,7 +102,7 @@ public class PixelDashedLine extends Actor {
     }
 
     private float getAngle(float x, float y, float toX, float toY) {
-        float angle = MathUtils.radiansToDegrees * (MathUtilsFix.atan2(toX - x, toY - y));
+        float angle = MathUtils.radiansToDegrees * (MathUtils.atan2(toX - x, toY - y));
 
         if (angle < 0) {
             angle += 360;

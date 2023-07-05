@@ -3,7 +3,6 @@ package games.rednblack.editor.view.stage.tools.transformStrategy;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.components.TransformComponent;
-import games.rednblack.editor.renderer.utils.MathUtilsFix;
 import games.rednblack.editor.utils.RoundUtils;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
@@ -23,7 +22,7 @@ public abstract class AbstractTransformStrategy implements ITransformStrategy {
      * @return array of three floats (new float[]{width/height, xComponent, yComponent};)
      */
     float[] calculateSizeAndXyAmount(float mouseDeltaX, float mouseDeltaY, float rotation, float[] result) {
-        float mouseDragAngle = MathUtilsFix.atan2(mouseDeltaY, mouseDeltaX) * MathUtils.radDeg;
+        float mouseDragAngle = MathUtils.atan2(mouseDeltaY, mouseDeltaX) * MathUtils.radDeg;
         float deltaA = rotation - mouseDragAngle;
         float c = (float) Math.sqrt(mouseDeltaX * mouseDeltaX + mouseDeltaY * mouseDeltaY);
         float a = c * MathUtils.cosDeg(deltaA);
