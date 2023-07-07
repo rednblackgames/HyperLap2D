@@ -11,18 +11,22 @@ import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.Notification;
 import games.rednblack.puremvc.interfaces.INotification;
 
 public class DeletePolygonVertexCommand extends SandboxCommand {
 
+    private Notification n;
     @Override
     public void execute(INotification notification) {
         super.execute(notification);
 
+        n = ((Notification) notification).copy();
+
         Dialogs.showConfirmDialog(sandbox.getUIStage(), "Delete Vertex",
                 "Are you sure you want to delete this vertex?", new String[]{"No", "Yes"}, new Integer[]{0, 1}, r -> {
             if (r == 1) {
-                callDoAction(notification);
+                callDoAction(n);
             }
         }).padBottom(20).pack();
     }

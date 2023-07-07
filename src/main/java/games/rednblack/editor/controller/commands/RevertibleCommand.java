@@ -34,7 +34,7 @@ public abstract class RevertibleCommand extends SandboxCommand {
     @Override
     public void execute(INotification notification) {
         commandManager = facade.retrieveProxy(CommandManager.NAME);
-        this.notification = ((Notification) notification).copy();;
+        this.notification = ((Notification) notification).copy();
         callDoAction();
         stateDone = true;
         if(!isCancelled) commandManager.addCommand(this);
