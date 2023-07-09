@@ -43,6 +43,11 @@ public class UpdateSensorDataCommand extends EntityModifyRevertibleCommand {
         sensorComponent.rightSpanPercent = vo.rightSpanPercent;
         sensorComponent.topSpanPercent = vo.topSpanPercent;
 
+        sensorComponent.bottomHeightPercent = vo.bottomHeightPercent;
+        sensorComponent.leftWidthPercent = vo.leftWidthPercent;
+        sensorComponent.rightWidthPercent = vo.rightWidthPercent;
+        sensorComponent.topHeightPercent = vo.topHeightPercent;
+
         Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
@@ -60,6 +65,11 @@ public class UpdateSensorDataCommand extends EntityModifyRevertibleCommand {
         sensorComponent.leftSpanPercent = backup.leftSpanPercent;
         sensorComponent.rightSpanPercent = backup.rightSpanPercent;
         sensorComponent.topSpanPercent = backup.topSpanPercent;
+
+        sensorComponent.bottomHeightPercent = backup.bottomHeightPercent;
+        sensorComponent.leftWidthPercent = backup.leftWidthPercent;
+        sensorComponent.rightWidthPercent = backup.rightWidthPercent;
+        sensorComponent.topHeightPercent = backup.topHeightPercent;
 
         Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

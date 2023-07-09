@@ -59,6 +59,11 @@ public class UISensorPropertiesMediator extends UIItemPropertiesMediator<UISenso
         viewComponent.getSensorSpanPercentLeftTextfield().setText(Float.toString(sensorComponent.leftSpanPercent));
         viewComponent.getSensorSpanPercentRightTextfield().setText(Float.toString(sensorComponent.rightSpanPercent));
         viewComponent.getSensorSpanPercentTopTextfield().setText(Float.toString(sensorComponent.topSpanPercent));
+
+        viewComponent.getSensorHeightPercentBottomTextfield().setText(Float.toString(sensorComponent.bottomHeightPercent));
+        viewComponent.getSensorWidthPercentLeftTextfield().setText(Float.toString(sensorComponent.leftWidthPercent));
+        viewComponent.getSensorWidthPercentRightTextfield().setText(Float.toString(sensorComponent.rightWidthPercent));
+        viewComponent.getSensorHeightPercentTopTextfield().setText(Float.toString(sensorComponent.topHeightPercent));
 	}
 
 	@Override
@@ -79,6 +84,11 @@ public class UISensorPropertiesMediator extends UIItemPropertiesMediator<UISenso
         payloadVo.leftSpanPercent = NumberUtils.toFloat(viewComponent.getSensorSpanPercentLeftTextfield().getText());
         payloadVo.rightSpanPercent = NumberUtils.toFloat(viewComponent.getSensorSpanPercentRightTextfield().getText());
         payloadVo.topSpanPercent = NumberUtils.toFloat(viewComponent.getSensorSpanPercentTopTextfield().getText());
+
+        payloadVo.bottomHeightPercent = NumberUtils.toFloat(viewComponent.getSensorHeightPercentBottomTextfield().getText());
+        payloadVo.leftWidthPercent = NumberUtils.toFloat(viewComponent.getSensorWidthPercentLeftTextfield().getText());
+        payloadVo.rightWidthPercent = NumberUtils.toFloat(viewComponent.getSensorWidthPercentRightTextfield().getText());
+        payloadVo.topHeightPercent = NumberUtils.toFloat(viewComponent.getSensorHeightPercentTopTextfield().getText());
 
         if (!oldPayloadVo.equals(payloadVo)) {
             Object payload = UpdateSensorDataCommand.payload(observableReference, payloadVo);
