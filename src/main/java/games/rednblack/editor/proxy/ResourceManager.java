@@ -88,20 +88,43 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         packer.setTransparentColor(Color.WHITE);
         packer.getTransparentColor().a = 0;
 
+        FreeTypeFontGenerator dejaVuSansGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf"));
         FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/FiraCode-Regular.ttf"));
 
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.characters += "⌘⇧⌥\u25CF\u2022";
         parameter.kerning = true;
-        parameter.renderCount = 3;
+        parameter.renderCount = 1;
         parameter.packer = packer;
-        parameter.minFilter = Texture.TextureFilter.Linear;
-        parameter.magFilter = Texture.TextureFilter.Linear;
+        parameter.minFilter = Texture.TextureFilter.Nearest;
+        parameter.magFilter = Texture.TextureFilter.Nearest;
+        parameter.gamma = 0.6f;
+        parameter.hinting = FreeTypeFontGenerator.Hinting.None;
 
+        parameter.size = (int) (16 / settingsManager.editorConfigVO.uiScaleDensity);
         BitmapFont defaultMono = monoGenerator.generateFont(parameter);
         defaultMono.setFixedWidthGlyphs(parameter.characters);
+        defaultMono.setUseIntegerPositions(false);
+        defaultMono.getData().setScale(settingsManager.editorConfigVO.uiScaleDensity);
 
         monoGenerator.dispose();
+
+        parameter.size = (int) (11 / settingsManager.editorConfigVO.uiScaleDensity);
+        BitmapFont small = dejaVuSansGenerator.generateFont(parameter);
+        small.setUseIntegerPositions(false);
+        small.getData().setScale(settingsManager.editorConfigVO.uiScaleDensity);
+
+        parameter.size = (int) (13 / settingsManager.editorConfigVO.uiScaleDensity);
+        BitmapFont defaultFont = dejaVuSansGenerator.generateFont(parameter);
+        defaultFont.setUseIntegerPositions(false);
+        defaultFont.getData().setScale(settingsManager.editorConfigVO.uiScaleDensity);
+
+        parameter.size = (int) (16 / settingsManager.editorConfigVO.uiScaleDensity);
+        BitmapFont big = dejaVuSansGenerator.generateFont(parameter);
+        big.setUseIntegerPositions(false);
+        big.getData().setScale(settingsManager.editorConfigVO.uiScaleDensity);
+
+        dejaVuSansGenerator.dispose();
 
         TextureRegion dejavuRegion = new TextureRegion(new Texture(Gdx.files.internal("style/default-font-32.png")));
         ShadedDistanceFieldFont smallDistanceField = new ShadedDistanceFieldFont(Gdx.files.internal("style/default-font-32.fnt"), dejavuRegion);
@@ -115,9 +138,9 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         bigDistanceField.getData().setScale(0.5f);
         /* Create the ObjectMap and add the fonts to it */
         ObjectMap<String, Object> fontMap = new ObjectMap<>();
-        fontMap.put("small-font", smallDistanceField);
-        fontMap.put("default-font", defaultDistanceField);
-        fontMap.put("big-font", bigDistanceField);
+        fontMap.put("small-font", small);
+        fontMap.put("default-font", defaultFont);
+        fontMap.put("big-font", big);
         fontMap.put("default-mono-font", defaultMono);
 
         SkinLoader.SkinParameter skinParameter = new SkinLoader.SkinParameter(fontMap);
