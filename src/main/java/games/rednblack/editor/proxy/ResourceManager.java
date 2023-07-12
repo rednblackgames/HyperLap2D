@@ -96,8 +96,8 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         parameter.kerning = true;
         parameter.renderCount = 1;
         parameter.packer = packer;
-        parameter.minFilter = Texture.TextureFilter.Nearest;
-        parameter.magFilter = Texture.TextureFilter.Nearest;
+        parameter.minFilter = Texture.TextureFilter.Linear;
+        parameter.magFilter = Texture.TextureFilter.Linear;
         parameter.gamma = 0.6f;
         parameter.hinting = FreeTypeFontGenerator.Hinting.None;
 
