@@ -39,7 +39,8 @@ public class UISceneBoxMediator extends Mediator<UISceneBox> {
                 viewComponent.update();
                 break;
             case UISceneBox.CHANGE_SCENE_BTN_CLICKED:
-                facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> sandbox.loadScene(notification.getBody()));
+                String newScene = notification.getBody();
+                facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> sandbox.loadScene(newScene));
                 break;
             case UISceneBox.CREATE_NEW_SCENE_BTN_CLICKED:
                 Dialogs.showInputDialog(sandbox.getUIStage(), "Create New Scene", "Scene Name : ", false, new StringNameValidator(), new InputDialogListener() {
