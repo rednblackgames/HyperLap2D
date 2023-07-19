@@ -62,6 +62,6 @@ public class SaveProjectDialog extends H2DDialog {
     public void updateDialog(String projectTitle, Runnable runnable) {
         if (runnable == null) throw new IllegalArgumentException("Runnable action cannot be null");
         action = runnable;
-        messageLabel.setText("Save changes to '" + projectTitle + "' before closing?");
+        messageLabel.setText("Save changes to '" + projectTitle + "'?");
     }
 }

@@ -44,7 +44,7 @@ public class UILivePreviewBoxMediator extends Mediator<UILivePreviewBox> {
 				//TODO
 				break;
 			case UILivePreviewBox.LIVE_PREVIEW_CLICKED:
-				showPreviewWindow();
+				facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) this::showPreviewWindow);
 				break;
 			default:
 				break;
