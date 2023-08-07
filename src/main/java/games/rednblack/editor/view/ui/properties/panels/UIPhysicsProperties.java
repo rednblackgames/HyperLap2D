@@ -41,7 +41,7 @@ public class UIPhysicsProperties extends UIRemovableProperties {
     private VisCheckBox allowSleepBox;
     private VisCheckBox awakeBox;
     private VisCheckBox bulletBox;
-    private VisCheckBox sensor;
+    private VisCheckBox sensor, fineBoundBox;
     private VisCheckBox fixedRotation;
 
     public UIPhysicsProperties() {
@@ -84,6 +84,7 @@ public class UIPhysicsProperties extends UIRemovableProperties {
         awakeBox = StandardWidgetsFactory.createCheckBox("Awake");
         bulletBox = StandardWidgetsFactory.createCheckBox("Bullet");
         sensor = StandardWidgetsFactory.createCheckBox("Sensor");
+        fineBoundBox = StandardWidgetsFactory.createCheckBox("Fine Bound Box");
         fixedRotation = StandardWidgetsFactory.createCheckBox("Fixed Rotation");
 
         mainTable.add(new VisLabel("Body Type:", Align.right)).padRight(5).colspan(2).fillX();
@@ -144,6 +145,8 @@ public class UIPhysicsProperties extends UIRemovableProperties {
 
         bottomTable.add(sensor).padRight(5);
         bottomTable.add(fixedRotation).colspan(2).left();
+        bottomTable.row();
+        bottomTable.add(fineBoundBox).colspan(3);
 
         mainTable.add(bottomTable).padBottom(5).colspan(4);
         mainTable.row().padTop(5);
@@ -182,6 +185,7 @@ public class UIPhysicsProperties extends UIRemovableProperties {
         awakeBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         bulletBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         sensor.addListener(new CheckBoxChangeListener(getUpdateEventName()));
+        fineBoundBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         fixedRotation.addListener(new CheckBoxChangeListener(getUpdateEventName()));
     }
 
@@ -263,6 +267,8 @@ public class UIPhysicsProperties extends UIRemovableProperties {
     }
 
     public VisCheckBox getSensorBox() { return sensor; }
+
+    public VisCheckBox getFineBoundBox() { return fineBoundBox; }
 
     public VisCheckBox getFixedRotationBox() { return fixedRotation; }
 

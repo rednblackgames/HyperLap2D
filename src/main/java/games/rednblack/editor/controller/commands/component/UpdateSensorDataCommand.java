@@ -49,6 +49,7 @@ public class UpdateSensorDataCommand extends EntityModifyRevertibleCommand {
         sensorComponent.topHeightPercent = vo.topHeightPercent;
 
         Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        EntityUtils.refreshComponents(entity);
     }
 
     @Override
@@ -72,6 +73,7 @@ public class UpdateSensorDataCommand extends EntityModifyRevertibleCommand {
         sensorComponent.topHeightPercent = backup.topHeightPercent;
 
         Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        EntityUtils.refreshComponents(entity);
     }
 
     public static Object payload(int entity, SensorDataVO vo) {

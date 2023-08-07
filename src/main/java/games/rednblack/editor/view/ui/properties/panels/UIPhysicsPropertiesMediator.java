@@ -60,6 +60,7 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<UIPhys
         viewComponent.getAwakeBox().setChecked(physicsComponent.awake);
         viewComponent.getBulletBox().setChecked(physicsComponent.bullet);
         viewComponent.getSensorBox().setChecked(physicsComponent.sensor);
+        viewComponent.getFineBoundBox().setChecked(physicsComponent.fineBoundBox);
         viewComponent.getFixedRotationBox().setChecked(physicsComponent.fixedRotation);
         viewComponent.setShapeType(physicsComponent.shapeType);
     }
@@ -91,6 +92,7 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<UIPhys
         payloadVo.awake = viewComponent.getAwakeBox().isChecked();
         payloadVo.bullet = viewComponent.getBulletBox().isChecked();
         payloadVo.sensor = viewComponent.getSensorBox().isChecked();
+        payloadVo.fineBoundBox = viewComponent.getFineBoundBox().isChecked();
         payloadVo.fixedRotation = viewComponent.getFixedRotationBox().isChecked();
         payloadVo.shapeType = viewComponent.getShapeType();
 
