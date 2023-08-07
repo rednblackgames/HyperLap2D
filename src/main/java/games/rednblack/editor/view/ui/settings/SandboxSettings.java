@@ -18,7 +18,7 @@ import games.rednblack.puremvc.Facade;
 
 public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
 
-    private final VisCheckBox disableAmbientComposite;
+    private final VisCheckBox disableAmbientComposite, showBoundBoxes;
     private final TintButton tintButton;
 
     public SandboxSettings() {
@@ -28,6 +28,11 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
         getContentTable().addSeparator();
         disableAmbientComposite = StandardWidgetsFactory.createCheckBox("Disable Ambient light when viewing Composites");
         getContentTable().add(disableAmbientComposite).left().padTop(5).padLeft(8).row();
+
+        getContentTable().add("Debug").left().row();
+        getContentTable().addSeparator();
+        showBoundBoxes = StandardWidgetsFactory.createCheckBox("Show bounding boxes outline");
+        getContentTable().add(showBoundBoxes).left().padTop(5).padLeft(8).row();
 
         getContentTable().add("Background").left().padTop(10).row();
         getContentTable().addSeparator();
@@ -81,12 +86,14 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
     @Override
     public void translateSettingsToView() {
         disableAmbientComposite.setChecked(getSettings().disableAmbientComposite);
+        showBoundBoxes.setChecked(getSettings().showBoundingBoxes);
         tintButton.setColorValue(getSettings().backgroundColor);
     }
 
     @Override
     public void translateViewToSettings() {
         getSettings().disableAmbientComposite = disableAmbientComposite.isChecked();
+        getSettings().showBoundingBoxes = showBoundBoxes.isChecked();
         facade.sendNotification(MsgAPI.SAVE_EDITOR_CONFIG);
     }
 

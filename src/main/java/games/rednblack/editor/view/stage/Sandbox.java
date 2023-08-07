@@ -42,6 +42,7 @@ import games.rednblack.editor.renderer.components.additional.ButtonComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
+import games.rednblack.editor.renderer.systems.CullingSystem;
 import games.rednblack.editor.renderer.systems.LightSystem;
 import games.rednblack.editor.renderer.systems.ParticleSystem;
 import games.rednblack.editor.renderer.systems.PhysicsSystem;
@@ -97,6 +98,7 @@ public class Sandbox {
 
     private ProjectManager projectManager;
     private ResourceManager resourceManager;
+    private SettingsManager settingsManager;
 
     SceneConfigVO sceneConfigVO;
 
@@ -112,6 +114,7 @@ public class Sandbox {
 
     private float timeToCameraPosTarget;
     private Vector2 cameraPosTarget = new Vector2(), cameraPosOrigin = new Vector2();
+    private CullingSystem cullingSystem;
 
     private Sandbox() {
         init();
@@ -133,6 +136,7 @@ public class Sandbox {
     private void init() {
         facade = Facade.getInstance();
         projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        settingsManager = facade.retrieveProxy(SettingsManager.NAME);
         resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
         UIStageMediator uiStageMediator = facade.retrieveMediator(UIStageMediator.NAME);
@@ -169,6 +173,7 @@ public class Sandbox {
         config.addTagTransmuter("button", ButtonComponent.class);
 
         sceneLoader = new SceneLoader(config);
+        cullingSystem = sceneLoader.getEngine().getSystem(CullingSystem.class);
 
         manager.setSerializer(new JsonArtemisSerializer(sceneLoader.getEngine()));
 
@@ -280,6 +285,8 @@ public class Sandbox {
 
             facade.sendNotification(PanTool.SCENE_PANNED);
         }
+
+        cullingSystem.setDebug(settingsManager.editorConfigVO.showBoundingBoxes);
     }
 
     public void adjustCameraInComposites() {
@@ -399,7 +406,6 @@ public class Sandbox {
     public void overrideAmbientLightInComposite() {
         SceneVO sceneVO = sceneControl.getCurrentSceneVO();
 
-        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
         boolean override = !isViewingRootEntity() && settingsManager.editorConfigVO.disableAmbientComposite;
         sceneLoader.setAmbientInfo(sceneVO, override);
     }
