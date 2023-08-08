@@ -10,6 +10,7 @@
 
 **Runtime**
 - Chained Entities and Spine' SkeletonRenderSeparator
+- Improved PhysicsActions. Add `PhysicsActions#transformTo` and `PhysicsActions#transformBy`
 - Fixed physic's step
 
 [0.1.2]
