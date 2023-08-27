@@ -102,6 +102,7 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
 
     @Override
     public void resize(int width, int height) {
+        if (width == 0 || height == 0) return;
         super.resize(width, height);
         sceneLoader.resize(width, height);
     }
