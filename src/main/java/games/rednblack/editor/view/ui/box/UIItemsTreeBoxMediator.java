@@ -2,10 +2,7 @@ package games.rednblack.editor.view.ui.box;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.controller.commands.AddSelectionCommand;
-import games.rednblack.editor.controller.commands.ItemsMoveCommand;
-import games.rednblack.editor.controller.commands.ReleaseSelectionCommand;
-import games.rednblack.editor.controller.commands.SetSelectionCommand;
+import games.rednblack.editor.controller.commands.*;
 import games.rednblack.editor.controller.commands.resource.DeleteResourceCommand;
 import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.utils.runtime.EntityUtils;
@@ -43,7 +40,9 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
                 MsgAPI.DELETE_ITEMS_COMMAND_DONE);
         interests.add(MsgAPI.ACTION_Z_INDEX_CHANGED,
                 MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE,
-                MsgAPI.ITEM_DATA_UPDATED);
+                MsgAPI.ITEM_DATA_UPDATED,
+                LayerJumpCommand.DONE);
+        interests.add(LayerSwapCommand.DONE);
     }
 
     @Override
@@ -64,6 +63,8 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
             case MsgAPI.NEW_ITEM_ADDED:
             case MsgAPI.DELETE_ITEMS_COMMAND_DONE:
             case DeleteResourceCommand.DONE:
+            case LayerJumpCommand.DONE:
+            case LayerSwapCommand.DONE:
                 rootEntity = sandbox.getCurrentViewingEntity();
                 if (notification.getType() == null || !notification.getType().equals(ItemsMoveCommand.TAG))
                     viewComponent.update(rootEntity);

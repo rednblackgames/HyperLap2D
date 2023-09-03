@@ -69,10 +69,11 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     private final Vector2 tmp = new Vector2();
 
     public UIItemsTreeBox() {
-        super("Items Tree", 180);
+        super("Items Tree", 190);
         setMovable(false);
         facade = Facade.getInstance();
         treeTable = new VisTable();
+        treeTable.setFillParent(true);
         treeTable.left();
         zUp = StandardWidgetsFactory.createImageButton("arrow-button");
         StandardWidgetsFactory.addTooltip(zUp, "Move Z-Index Up");
@@ -109,7 +110,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         tree = new VisTree<>();
         scroller = StandardWidgetsFactory.createScrollPane(tree);
         scroller.setFlickScroll(false);
-        treeTable.add(scroller).width(170).padTop(5).maxHeight(550).colspan(2);
+        treeTable.add(scroller).growX().padTop(5).maxHeight(550).colspan(2);
         //
         rootTreeNode = addTreeRoot(rootScene, null);
         rootTreeNode.setExpanded(true);

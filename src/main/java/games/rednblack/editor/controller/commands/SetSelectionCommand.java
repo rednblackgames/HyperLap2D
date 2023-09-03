@@ -34,7 +34,7 @@ import java.util.Set;
 public class SetSelectionCommand extends RevertibleCommand {
 
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.SetSelectionCommand";
-    public static final String DONE = CLASS_NAME + "DONE";
+    public static final String DONE = CLASS_NAME + ".DONE";
 
     private Array<Integer> previousSelectionIds;
 
@@ -44,29 +44,35 @@ public class SetSelectionCommand extends RevertibleCommand {
         HashSet<Integer> previousSelection = new HashSet<>(Sandbox.getInstance().getSelector().getSelectedItems());
         previousSelectionIds = EntityUtils.getEntityId(previousSelection);
 
-        Set<Integer> items = getNotification().getBody();
+        if (getNotification().getBody() instanceof Integer) {
+            int entity = getNotification().getBody();
+            sandbox.getSelector().setSelection(entity, true);
+        } else {
+            Set<Integer> items = getNotification().getBody();
 
-        if(items == null) {
-            // deselect all
-            sandbox.getSelector().setSelections(items, true);
-            facade.sendNotification(DONE);
-            return;
-        }
+            if(items == null) {
+                // deselect all
+                sandbox.getSelector().setSelections(items, true);
+                facade.sendNotification(DONE);
+                return;
+            }
 
-        // check if items are in viewable element, if no - cancel
-        NodeComponent nodeComponent = SandboxComponentRetriever.get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
-        for (Iterator<Integer> iterator = items.iterator(); iterator.hasNext();) {
-            int item = iterator.next();
-            if(!nodeComponent.children.contains(item, false)) {
-                iterator.remove();
+            // check if items are in viewable element, if no - cancel
+            NodeComponent nodeComponent = SandboxComponentRetriever.get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
+            for (Iterator<Integer> iterator = items.iterator(); iterator.hasNext();) {
+                int item = iterator.next();
+                if(!nodeComponent.children.contains(item, false)) {
+                    iterator.remove();
+                }
+            }
+
+            if(items.size() == 0) {
+                cancel();
+            } else {
+                sandbox.getSelector().setSelections(items, true);
             }
         }
 
-        if(items.size() == 0) {
-            cancel();
-        } else {
-            sandbox.getSelector().setSelections(items, true);
-        }
         facade.sendNotification(DONE);
     }
 

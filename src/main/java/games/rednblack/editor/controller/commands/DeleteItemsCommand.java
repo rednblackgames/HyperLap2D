@@ -84,7 +84,7 @@ public class DeleteItemsCommand extends EntityModifyRevertibleCommand {
             Facade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
         }
 
-        sandbox.getSelector().setSelections(newEntitiesList, true);
+        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, newEntitiesList);
     }
 
     public void setItemsToDelete(Set<Integer> entities) {

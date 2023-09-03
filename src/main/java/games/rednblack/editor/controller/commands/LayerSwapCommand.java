@@ -19,6 +19,7 @@
 package games.rednblack.editor.controller.commands;
 
 import games.rednblack.editor.renderer.components.LayerMapComponent;
+import games.rednblack.editor.renderer.systems.LayerSystem;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -52,8 +53,8 @@ public class LayerSwapCommand extends EntityModifyRevertibleCommand {
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
         layerMapComponent.swap(sourceName, targetName);
 
+        Sandbox.getInstance().getEngine().getSystem(LayerSystem.class).process();
         facade.sendNotification(DONE);
-
     }
 
     @Override
@@ -62,6 +63,7 @@ public class LayerSwapCommand extends EntityModifyRevertibleCommand {
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
         layerMapComponent.swap(targetName, sourceName);
 
+        Sandbox.getInstance().getEngine().getSystem(LayerSystem.class).process();
         facade.sendNotification(DONE);
     }
 }

@@ -1,13 +1,14 @@
 package games.rednblack.editor.controller.commands;
 
 import games.rednblack.editor.renderer.components.LayerMapComponent;
+import games.rednblack.editor.renderer.systems.LayerSystem;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 
 public class LayerJumpCommand extends EntityModifyRevertibleCommand {
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.LayerJumpCommand";
-    public static final String DONE = CLASS_NAME + "DONE";
+    public static final String DONE = CLASS_NAME + ".DONE";
 
     private Integer entityId;
 
@@ -31,8 +32,8 @@ public class LayerJumpCommand extends EntityModifyRevertibleCommand {
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
         targetName = layerMapComponent.jump(sourceName, targetName);
 
+        Sandbox.getInstance().getEngine().getSystem(LayerSystem.class).process();
         facade.sendNotification(DONE);
-
     }
 
     @Override
@@ -41,6 +42,7 @@ public class LayerJumpCommand extends EntityModifyRevertibleCommand {
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
         layerMapComponent.jump(sourceName, targetName);
 
+        Sandbox.getInstance().getEngine().getSystem(LayerSystem.class).process();
         facade.sendNotification(DONE);
     }
 }

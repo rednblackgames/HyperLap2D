@@ -101,8 +101,8 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
         //let everyone know
         Facade.getInstance().sendNotification(DONE);
         Facade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
-        sandbox.getSelector().setSelection(entity, true);
 
+        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, entity);
     }
 
     @Override

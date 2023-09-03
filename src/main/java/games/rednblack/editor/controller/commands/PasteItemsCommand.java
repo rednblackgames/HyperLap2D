@@ -26,6 +26,7 @@ import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.MainItemVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
+import games.rednblack.editor.renderer.systems.LayerSystem;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -71,12 +72,13 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
             transformComponent.x += diff.x;
             transformComponent.y += diff.y;
             ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
-//            UILayerBoxMediator layerBoxMediator = facade.retrieveMediator(UILayerBoxMediator.NAME);
             zIndexComponent.layerName = layerBoxMediator.getCurrentSelectedLayerName();
+            Sandbox.getInstance().getEngine().getSystem(LayerSystem.class).process();
             Facade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
             pastedEntityIds.add(EntityUtils.getEntityId(entity));
         }
-        sandbox.getSelector().setSelections(newEntitiesList, true);
+
+        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, newEntitiesList);
     }
 
     @Override
