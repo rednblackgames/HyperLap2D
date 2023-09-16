@@ -36,7 +36,7 @@ public class ItemsMoveCommand extends EntityModifyRevertibleCommand {
 
     public static final String TAG = ItemsMoveCommand.class.getCanonicalName();
 
-    private HashMap<Integer, Vector2> prevLocations = new HashMap<>();
+    private final HashMap<String, Vector2> prevLocations = new HashMap<>();
 
     @Override
     public void doAction() {
@@ -45,7 +45,9 @@ public class ItemsMoveCommand extends EntityModifyRevertibleCommand {
         for(int i = 0; i < payload.size; i++) {
             Object[] itemData = payload.get(i);
 
-            int entity = (int) itemData[0];
+            String entityUniqueId = (String) itemData[0];
+
+            int entity = EntityUtils.getByUniqueId(entityUniqueId);
             Vector2 newLocation = (Vector2) itemData[1];
 
             TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
@@ -66,8 +68,8 @@ public class ItemsMoveCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        for (Map.Entry<Integer, Vector2> entry : prevLocations.entrySet()) {
-            Integer entityUniqueId = entry.getKey();
+        for (Map.Entry<String, Vector2> entry : prevLocations.entrySet()) {
+            String entityUniqueId = entry.getKey();
             Vector2 prevLocation = entry.getValue();
 
             int entity = EntityUtils.getByUniqueId(entityUniqueId);

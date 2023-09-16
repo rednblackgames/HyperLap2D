@@ -17,8 +17,8 @@ import java.util.Map;
  */
 public class ItemChildrenTransformCommand extends EntityModifyRevertibleCommand {
 
-    private HashMap<Integer, Vector2> prevPosMap = new HashMap<>();
-    private HashMap<Integer, PositionSize> parentPositionAndSizeMap = new HashMap<>();
+    private final HashMap<String, Vector2> prevPosMap = new HashMap<>();
+    private final HashMap<String, PositionSize> parentPositionAndSizeMap = new HashMap<>();
     private int entity;
 
     private Vector2 prevLo;
@@ -49,8 +49,8 @@ public class ItemChildrenTransformCommand extends EntityModifyRevertibleCommand 
     }
 
     private void undoActionOnParent() {
-        Map.Entry<Integer, PositionSize> entry = parentPositionAndSizeMap.entrySet().iterator().next();
-        Integer entityUniqueId = entry.getKey();
+        Map.Entry<String, PositionSize> entry = parentPositionAndSizeMap.entrySet().iterator().next();
+        String entityUniqueId = entry.getKey();
         PositionSize positionSize = entry.getValue();
         Vector2 prevLocation = positionSize.position;
         Vector2 prevSize = positionSize.size;
@@ -91,8 +91,8 @@ public class ItemChildrenTransformCommand extends EntityModifyRevertibleCommand 
     @Override
     public void undoAction() {
         undoActionOnParent();
-        for (Map.Entry<Integer, Vector2> entry : prevPosMap.entrySet()) {
-            Integer entityUniqueId = entry.getKey();
+        for (Map.Entry<String, Vector2> entry : prevPosMap.entrySet()) {
+            String entityUniqueId = entry.getKey();
             Vector2 oldPosition = entry.getValue();
             int entity = EntityUtils.getByUniqueId(entityUniqueId);
             TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);

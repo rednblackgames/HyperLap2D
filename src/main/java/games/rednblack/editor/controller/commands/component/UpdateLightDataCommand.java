@@ -28,7 +28,7 @@ import games.rednblack.puremvc.Facade;
 
 public class UpdateLightDataCommand extends EntityModifyRevertibleCommand {
 
-    private Integer entityId;
+    private String entityId;
     private LightVO backup;
 
     @Override

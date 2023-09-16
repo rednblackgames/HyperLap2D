@@ -43,7 +43,7 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
                 buildCompositeTree(sandbox.getRootEntity());
                 break;
             case CompositeCameraChangeCommand.DONE:
-                Integer entityId = notification.getBody();
+                String entityId = notification.getBody();
                 changeComposite(entityId);
                 break;
             case UICompositeHierarchy.SWITCH_VIEW_COMPOSITE_CLICKED:
@@ -84,16 +84,16 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
         }
     }
 
-    private void changeComposite(Integer entityId) {
+    private void changeComposite(String entityId) {
         buildCompositeTree(EntityUtils.getByUniqueId(entityId));
     }
 
     private static class CompositeHierarchyItem {
         String name;
-        int entityId;
+        String entityId;
         boolean isRoot = false;
 
-        public CompositeHierarchyItem(String name, int entityId) {
+        public CompositeHierarchyItem(String name, String entityId) {
             this.entityId = entityId;
             this.name = name;
         }

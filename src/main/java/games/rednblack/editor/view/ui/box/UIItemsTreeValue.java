@@ -1,10 +1,10 @@
 package games.rednblack.editor.view.ui.box;
 
 public class UIItemsTreeValue {
-    public int entityId = -1;
+    public String entityId = null;
     public int zIndex = -1;
 
-    public void setEntityId(int entityId) {
+    public void setEntityId(String entityId) {
         this.entityId = entityId;
     }
 
@@ -13,7 +13,7 @@ public class UIItemsTreeValue {
     }
 
     public void reset() {
-        entityId = -1;
+        entityId = null;
         zIndex = -1;
     }
 }

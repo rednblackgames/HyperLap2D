@@ -25,8 +25,8 @@ import java.util.Map;
  */
 public class CompositeStrategy extends AbstractTransformStrategy {
 
-    private HashMap<Integer, Vector2> childrenInitialPositions = new HashMap<>();
-    private HashMap<Integer, Vector2> childrenFinalPositions = new HashMap<>();
+    private final HashMap<String, Vector2> childrenInitialPositions = new HashMap<>();
+    private final HashMap<String, Vector2> childrenFinalPositions = new HashMap<>();
     private final Array<Object[]> payloads = new Array<>();
 
     private final Vector2 parentInitialPosition = new Vector2();
@@ -60,7 +60,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
     private void sendResizePositionNotification(int entity) {
         payloads.clear();
         payloads.add(parentEntity(entity));
-        for (Map.Entry<Integer, Vector2> entrySet : childrenFinalPositions.entrySet()) {
+        for (Map.Entry<String, Vector2> entrySet : childrenFinalPositions.entrySet()) {
             Object[] payload = new Object[2];
             payload[0] = EntityUtils.getByUniqueId(entrySet.getKey());
             payload[1] = entrySet.getValue();
@@ -88,7 +88,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
         return obj;
     }
 
-    private void getChildrenPositions(int parentEntity, HashMap<Integer, Vector2> entityPos) {
+    private void getChildrenPositions(int parentEntity, HashMap<String, Vector2> entityPos) {
         NodeComponent nodeComponent = SandboxComponentRetriever.get(parentEntity, NodeComponent.class);
         if (nodeComponent != null) {
             for (int entity : nodeComponent.children) {
@@ -99,9 +99,9 @@ public class CompositeStrategy extends AbstractTransformStrategy {
         }
     }
 
-    private void setEntityChildrenAtPositions(HashMap<Integer, Vector2> posMap) {
-        for (Map.Entry<Integer, Vector2> entrySet : posMap.entrySet()) {
-            Integer id = entrySet.getKey();
+    private void setEntityChildrenAtPositions(HashMap<String, Vector2> posMap) {
+        for (Map.Entry<String, Vector2> entrySet : posMap.entrySet()) {
+            String id = entrySet.getKey();
             Vector2 position = entrySet.getValue();
             int entity = EntityUtils.getByUniqueId(id);
             EntityUtils.setPosition(entity, position);

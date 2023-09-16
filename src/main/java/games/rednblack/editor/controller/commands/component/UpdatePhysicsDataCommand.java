@@ -10,7 +10,7 @@ import games.rednblack.puremvc.Facade;
 
 public class UpdatePhysicsDataCommand extends EntityModifyRevertibleCommand {
 
-    private Integer entityId;
+    private String entityId;
     private PhysicsBodyDataVO backup;
 
     @Override

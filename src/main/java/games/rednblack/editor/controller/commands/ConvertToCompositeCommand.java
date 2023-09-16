@@ -41,10 +41,10 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.ConvertToCompositeCommand";
     public static final String DONE = CLASS_NAME + "DONE";
 
-    protected Integer entityId;
-    protected Integer parentEntityId;
+    protected String entityId;
+    protected String parentEntityId;
 
-    protected HashMap<Integer, String> layersBackup;
+    protected HashMap<String, String> layersBackup;
 
     @Override
     public void doAction() {
@@ -57,7 +57,7 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
             layersBackup = new HashMap<>();
             for(int entity: entities) {
                 ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
-                int tmpId = EntityUtils.getEntityId(entity);
+                String tmpId = EntityUtils.getEntityId(entity);
                 layersBackup.put(tmpId, zIndexComponent.layerName);
             }
         }

@@ -10,7 +10,7 @@ import games.rednblack.puremvc.Facade;
 
 public class UpdateSpineDataCommand extends EntityModifyRevertibleCommand {
 
-    private Integer entityId;
+    private String entityId;
     private SpineVO backup;
 
     @Override

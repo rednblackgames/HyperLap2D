@@ -227,9 +227,9 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         if (tree == null || selection == null) return;
         Array<UIItemsTreeNode> allSceneRootNodes = tree.getRootNodes().get(0).getChildren();
 
-        for (int entityId : EntityUtils.getEntityId(selection)) {
+        for (String entityId : EntityUtils.getEntityId(selection)) {
             for (UIItemsTreeNode n : allSceneRootNodes) {
-                if(n.getValue().entityId == entityId) {
+                if(n.getValue().entityId.equals(entityId)) {
                     tree.getSelection().add(n);
                     break;
                 }
@@ -252,9 +252,9 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         if (tree == null || selection == null) return;
         Array<UIItemsTreeNode> allSceneRootNodes = tree.getRootNodes().get(0).getChildren();
 
-        for (int entityId : EntityUtils.getEntityId(selection)) {
+        for (String entityId : EntityUtils.getEntityId(selection)) {
             for (UIItemsTreeNode n : allSceneRootNodes) {
-                if(n.getValue().entityId == entityId) {
+                if(n.getValue().entityId.equals(entityId)) {
                     tree.getSelection().remove(n);
                     break;
                 }

@@ -11,7 +11,7 @@ import games.rednblack.puremvc.Facade;
 
 public class UpdateImageItemDataCommand extends EntityModifyRevertibleCommand {
 
-    private Integer entityId;
+    private String entityId;
     private SimpleImageVO backup;
 
     @Override

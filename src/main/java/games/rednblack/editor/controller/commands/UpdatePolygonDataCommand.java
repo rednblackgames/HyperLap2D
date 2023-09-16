@@ -12,7 +12,7 @@ import games.rednblack.puremvc.Facade;
 public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
 
     private boolean openPathBackup;
-    private int entityId;
+    private String entityId;
 
     @Override
     public void doAction() {

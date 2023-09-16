@@ -31,7 +31,7 @@ public class LayerSwapCommand extends EntityModifyRevertibleCommand {
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.LayerSwapCommand";
     public static final String DONE = CLASS_NAME + "DONE";
 
-    private Integer entityId;
+    private String entityId;
 
     private String sourceName;
     private String targetName;

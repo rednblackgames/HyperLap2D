@@ -10,7 +10,7 @@ import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 
 public class UpdateCompositeDataCommand extends EntityModifyRevertibleCommand {
-    private Integer entityId;
+    private String entityId;
     private CompositeItemVO backup;
 
     @Override

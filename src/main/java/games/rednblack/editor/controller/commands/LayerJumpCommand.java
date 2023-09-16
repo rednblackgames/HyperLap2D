@@ -10,7 +10,7 @@ public class LayerJumpCommand extends EntityModifyRevertibleCommand {
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.LayerJumpCommand";
     public static final String DONE = CLASS_NAME + ".DONE";
 
-    private Integer entityId;
+    private String entityId;
 
     private String sourceName;
     private String targetName;

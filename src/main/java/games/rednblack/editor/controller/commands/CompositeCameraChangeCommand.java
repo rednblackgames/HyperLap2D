@@ -34,8 +34,8 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.CompositeCameraChangeCommand";
     public static final String DONE = CLASS_NAME + "DONE";
 
-    private Integer previousViewEntityId;
-    private Integer enteringInto;
+    private String previousViewEntityId;
+    private String enteringInto;
 
     private boolean wasPrevSelected = false;
 

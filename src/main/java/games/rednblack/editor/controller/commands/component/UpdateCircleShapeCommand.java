@@ -9,7 +9,7 @@ import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 
 public class UpdateCircleShapeCommand extends EntityModifyRevertibleCommand {
-    private int entityId;
+    private String entityId;
     private float radiusBackup;
 
     @Override

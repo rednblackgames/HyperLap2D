@@ -75,7 +75,7 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
                 Set<Integer> items = new HashSet<>();
 
                 for (UIItemsTreeNode node : nodes) {
-                    Integer entityId = node.getValue().entityId;
+                    String entityId = node.getValue().entityId;
                     int item = EntityUtils.getByUniqueId(entityId);
                     //layer lock thing
                     LayerItemVO layerItemVO = EntityUtils.getEntityLayer(item);

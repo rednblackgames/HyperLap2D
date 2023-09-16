@@ -34,7 +34,7 @@ import games.rednblack.h2d.common.MsgAPI;
  */
 public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
 
-    Integer entityId;
+    String entityId;
 
     String prevFontName;
     int prevFontSize;

@@ -12,7 +12,7 @@ public class CustomVariableModifyCommand extends EntityModifyRevertibleCommand {
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.CustomVariableModifyCommand";
     public static final String DONE = CLASS_NAME + "DONE";
 
-    private Integer entityId;
+    private String entityId;
 
     private boolean isAdding;
     private String key;

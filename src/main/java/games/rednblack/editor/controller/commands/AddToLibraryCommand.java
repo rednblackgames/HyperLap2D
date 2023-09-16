@@ -36,14 +36,15 @@ public class AddToLibraryCommand extends HistoricRevertibleCommand {
     private String createdLibraryItemName;
     private CompositeItemVO overwritten;
     private String prevName;
-    private Integer entityId;
+    private String entityId;
 
     @Override
     public void doAction() {
         Object[] payload = getNotification().getBody();
 
         int item = ((int) payload[0]);
-        entityId = EntityUtils.getEntityId(item);
+        if (entityId == null)
+            entityId = EntityUtils.getEntityId(item);
         createdLibraryItemName = (String) payload[1];
 
         MainItemComponent mainItemComponent = SandboxComponentRetriever.get(item, MainItemComponent.class);
@@ -58,7 +59,6 @@ public class AddToLibraryCommand extends HistoricRevertibleCommand {
 
             CompositeItemVO newVO = new CompositeItemVO();
             newVO.loadFromEntity(item, sandbox.getEngine(), sandbox.sceneControl.sceneLoader.getEntityFactory());
-            newVO.cleanIds();
             libraryItems.put(createdLibraryItemName, newVO);
 
             //mark this entity as belonging to library

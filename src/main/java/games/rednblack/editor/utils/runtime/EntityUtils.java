@@ -102,13 +102,13 @@ public class EntityUtils {
         return VisUI.getSkin().getDrawable(icon);
     }
 
-    public static Integer getEntityId(int entity) {
+    public static String getEntityId(int entity) {
         MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
         return mainItemComponent.uniqueId;
     }
 
-    public static Array<Integer> getEntityId(Iterable<Integer> entities) {
-        Array<Integer> entityIds = new Array<>();
+    public static Array<String> getEntityId(Iterable<Integer> entities) {
+        Array<String> entityIds = new Array<>();
         for (int entity : entities) {
             MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
             if (mainItemComponent != null)
@@ -118,13 +118,13 @@ public class EntityUtils {
         return entityIds;
     }
 
-    public static int getByUniqueId(Integer id) {
+    public static int getByUniqueId(String id) {
         return Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory().getEntityByUniqueId(id);
     }
 
-    public static HashSet<Integer> getByUniqueId(Array<Integer> ids) {
+    public static HashSet<Integer> getByUniqueId(Array<String> ids) {
         HashSet<Integer> entities = new HashSet<>();
-        for (Integer id : ids) {
+        for (String id : ids) {
             Integer entity = Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory().getEntityByUniqueId(id);
             entities.add(entity);
         }

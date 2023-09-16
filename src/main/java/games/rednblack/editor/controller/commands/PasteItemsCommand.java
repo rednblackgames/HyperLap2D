@@ -44,7 +44,7 @@ import java.util.Set;
  */
 public class PasteItemsCommand extends EntityModifyRevertibleCommand {
 
-    private Array<Integer> pastedEntityIds = new Array<>();
+    private final Array<String> pastedEntityIds = new Array<>();
 
     @Override
     public void doAction() {
@@ -63,7 +63,6 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
 
         Json json = HyperJson.getJson();
         CompositeItemVO compositeVO = json.fromJson(CompositeItemVO.class, (String) payload[1]);
-        compositeVO.cleanIds();
 
         Set<Integer> newEntitiesList = createEntitiesFromVO(compositeVO);
         sandbox.getEngine().process();
@@ -84,7 +83,7 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
     @Override
     public void undoAction() {
         FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
-        for (Integer entityId : pastedEntityIds) {
+        for (String entityId : pastedEntityIds) {
             int entity = EntityUtils.getByUniqueId(entityId);
             followersUIMediator.removeFollower(entity);
             sandbox.getEngine().delete(entity);

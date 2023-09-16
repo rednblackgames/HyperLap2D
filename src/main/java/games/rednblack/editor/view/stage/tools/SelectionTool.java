@@ -322,7 +322,7 @@ public class SelectionTool extends SimpleTool {
                 Vector2 oldPosition = dragStartPositions.get(itemInstance);
 
                 Object[] payload = new Object[3];
-                payload[0] = itemInstance;
+                payload[0] = EntityUtils.getEntityId(itemInstance);
                 payload[1] = newPosition;
                 payload[2] = oldPosition;
                 payloads.add(payload);
@@ -464,7 +464,7 @@ public class SelectionTool extends SimpleTool {
                     continue;
 
                 Object[] payload = new Object[3];
-                payload[0] = itemInstance;
+                payload[0] = EntityUtils.getEntityId(itemInstance);
                 payload[1] = newPosition;
                 payload[2] = oldPosition;
                 payloads.add(payload);

@@ -212,7 +212,6 @@ public class VersionMigTo100 implements IVersionMigrator {
     }
 
     private void copyMainItemField(MainItemVO vo, MainItemVO target) {
-        target.uniqueId = vo.uniqueId;
         target.itemIdentifier = vo.itemIdentifier;
         target.itemName = vo.itemName;
         if(vo.tags != null) target.tags = Arrays.copyOf(vo.tags, vo.tags.length);

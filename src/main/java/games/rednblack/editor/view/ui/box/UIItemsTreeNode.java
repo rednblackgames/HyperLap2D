@@ -21,7 +21,7 @@ public class UIItemsTreeNode extends Tree.Node<UIItemsTreeNode, UIItemsTreeValue
         setValue(new UIItemsTreeValue());
     }
 
-    public void setNodeValue(int entityId, int zIndex) {
+    public void setNodeValue(String entityId, int zIndex) {
         getValue().setEntityId(entityId);
         getValue().setzIndex(zIndex);
     }

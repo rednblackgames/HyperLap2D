@@ -32,7 +32,7 @@ public class AddSelectionCommand extends RevertibleCommand {
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.AddSelectionCommand";
     public static final String DONE = CLASS_NAME + "DONE";
 
-    private Array<Integer> entityIds;
+    private Array<String> entityIds;
 
     @Override
     public void doAction() {

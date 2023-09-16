@@ -10,7 +10,7 @@ import games.rednblack.puremvc.Facade;
 
 public class UpdateParticleDataCommand extends EntityModifyRevertibleCommand {
 
-    private Integer entityId;
+    private String entityId;
     private ParticleEffectVO backup;
 
     @Override

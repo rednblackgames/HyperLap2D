@@ -16,7 +16,7 @@ public class ItemTransformCommand extends EntityModifyRevertibleCommand {
 
     private Array<Object> payload;
 
-    private Integer entityId;
+    private String entityId;
 
     @Override
     public void doAction() {

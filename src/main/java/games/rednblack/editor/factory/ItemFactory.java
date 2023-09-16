@@ -173,7 +173,6 @@ public class ItemFactory implements IFactory {
         HashMap<String, CompositeItemVO> libraryItems = projectManager.currentProjectInfoVO.libraryItems;
 
         CompositeItemVO itemVO = libraryItems.get(libraryName);
-        itemVO.cleanIds();
         createdEntity = createCompositeItem(itemVO, position);
 
         if (createdEntity == -1) return false;

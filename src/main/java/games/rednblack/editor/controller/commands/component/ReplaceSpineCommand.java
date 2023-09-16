@@ -12,7 +12,7 @@ import games.rednblack.puremvc.Facade;
 
 public class ReplaceSpineCommand extends EntityModifyRevertibleCommand {
 
-    private Integer entityId;
+    private String entityId;
     private String backupAnimName;
     private SkeletonJson backupSkeletonJson;
     private Skeleton backupSkeleton;

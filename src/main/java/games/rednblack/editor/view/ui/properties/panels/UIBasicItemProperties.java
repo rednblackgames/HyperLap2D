@@ -203,7 +203,7 @@ public class UIBasicItemProperties extends UIItemProperties {
         return positionTable;
     }
 
-    public void setItemType(int type, int itemUniqueId) {
+    public void setItemType(int type, String itemUniqueId) {
         itemType.setText(EntityUtils.itemTypeNameMap.get(type) + " ("+itemUniqueId+")");
         itemTypeIcon.setDrawable(VisUI.getSkin().getDrawable(EntityUtils.itemTypeIconMap.get(type)));
         itemTypeIcon.setScaling(Scaling.fit);

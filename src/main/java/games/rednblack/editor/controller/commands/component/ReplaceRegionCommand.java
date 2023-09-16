@@ -14,7 +14,7 @@ import games.rednblack.puremvc.Facade;
 
 public class ReplaceRegionCommand extends EntityModifyRevertibleCommand {
 
-    private Integer entityId;
+    private String entityId;
     private String backupRegionName;
     private TextureRegion backupRegion;
 

@@ -15,7 +15,7 @@ import games.rednblack.puremvc.Facade;
  */
 public class UpdateSensorDataCommand extends EntityModifyRevertibleCommand {
 
-    private Integer entityId;
+    private String entityId;
     private SensorDataVO backup;
     
     public UpdateSensorDataCommand() {

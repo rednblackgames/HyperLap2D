@@ -32,7 +32,7 @@ import games.rednblack.puremvc.Facade;
 public class UpdateEntityComponentsCommand extends EntityModifyRevertibleCommand {
 
     private Array<Component> backupComponents = new Array<>();
-    private Integer entityId;
+    private String entityId;
 
     @Override
     public void doAction() {

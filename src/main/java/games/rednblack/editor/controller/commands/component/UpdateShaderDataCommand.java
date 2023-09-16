@@ -10,7 +10,7 @@ import games.rednblack.h2d.common.MsgAPI;
 
 public class UpdateShaderDataCommand extends EntityModifyRevertibleCommand {
 
-    private Integer entityId;
+    private String entityId;
     private String backupName;
     private MainItemVO.RenderingLayer backupLayer;
 

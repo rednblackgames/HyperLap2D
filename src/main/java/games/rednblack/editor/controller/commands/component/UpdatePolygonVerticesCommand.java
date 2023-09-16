@@ -12,7 +12,7 @@ import games.rednblack.puremvc.Facade;
 
 public class UpdatePolygonVerticesCommand extends EntityModifyRevertibleCommand {
 
-    private Integer entityId;
+    private String entityId;
     private Vector2[][] polygonizedDataFrom;
     private Vector2[][] polygonizedDataTo;
     private Array<Vector2> dataFrom;

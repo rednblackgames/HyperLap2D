@@ -19,7 +19,7 @@ import games.rednblack.puremvc.Facade;
 
 public class ReplaceSpriteAnimationCommand extends EntityModifyRevertibleCommand {
 
-    private Integer entityId;
+    private String entityId;
     private String backupAnimName;
     private Array<TextureAtlas.AtlasRegion> backupAnimRegions;
 

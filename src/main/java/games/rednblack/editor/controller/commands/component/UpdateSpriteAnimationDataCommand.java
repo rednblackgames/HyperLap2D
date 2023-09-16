@@ -14,7 +14,7 @@ import games.rednblack.puremvc.Facade;
  */
 public class UpdateSpriteAnimationDataCommand extends EntityModifyRevertibleCommand {
 
-    private Integer entityId;
+    private String entityId;
 
     private int previousFps;
     private String previousAnimationName;

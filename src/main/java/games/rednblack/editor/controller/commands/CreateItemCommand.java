@@ -36,7 +36,7 @@ import java.util.Set;
  */
 public class CreateItemCommand extends EntityModifyRevertibleCommand {
 
-    private Integer entityId;
+    private String entityId;
     private int entityType;
     private String serializedEntity;
 

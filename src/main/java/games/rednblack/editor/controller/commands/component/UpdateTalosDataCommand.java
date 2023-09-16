@@ -10,7 +10,7 @@ import games.rednblack.puremvc.Facade;
 
 public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
 
-    private Integer entityId;
+    private String entityId;
     private TalosVO backup;
 
     @Override

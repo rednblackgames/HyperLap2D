@@ -32,7 +32,7 @@ public class UICompositeHierarchy extends UIBaseBox {
         row();
     }
 
-    public void addItem(String name, Integer id, boolean isRoot) {
+    public void addItem(String name, String id, boolean isRoot) {
         String classType = "hierarchy-item";
         if(isRoot) classType+="-root";
 
