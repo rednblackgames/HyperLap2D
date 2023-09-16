@@ -54,7 +54,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     private final HashMap<String, ParticleEffectPool> particleEffects = new HashMap<>(1);
     private final HashMap<String, ParticleEffectDescriptor> talosVFXs = new HashMap<>(1);
-    private HashMap<String, TextureAtlas> currentProjectAtlas = new HashMap<>(1);
+    private final HashMap<String, TextureAtlas> currentProjectAtlas = new HashMap<>(1);
 
     private final HashMap<String, SpineDataObject> spineAnimAtlases = new HashMap<>();
     private final HashMap<String, Array<TextureAtlas.AtlasRegion>> spriteAnimAtlases = new HashMap<>();
@@ -408,6 +408,11 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     }
 
     public void loadCurrentProjectAssets(String packFolderPath) {
+        for (TextureAtlas atlas : currentProjectAtlas.values()) {
+            atlas.dispose();
+        }
+        currentProjectAtlas.clear();
+
         FileHandle folder = new FileHandle(packFolderPath);
         for (FileHandle file : folder.list()) {
             if (file.extension().equals("atlas")) {
@@ -498,7 +503,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         if(Gdx.files.internal(shader + ".vert").exists() && Gdx.files.internal(shader + ".frag").exists()) {
             ShaderProgram shaderProgram = ShaderCompiler.compileShader(Gdx.files.internal(shader + ".vert"), Gdx.files.internal(shader + ".frag"));
             if (shaderProgram.isCompiled()) {
-                shaderPrograms.remove(shaderName);
+                shaderPrograms.remove(shaderName).dispose();
                 shaderPrograms.put(shaderName, shaderProgram);
             } else {
                 System.out.println("Error compiling shader: " + shaderProgram.getLog());
