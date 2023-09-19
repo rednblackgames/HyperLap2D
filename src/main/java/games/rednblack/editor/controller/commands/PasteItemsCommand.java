@@ -63,6 +63,7 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
 
         Json json = HyperJson.getJson();
         CompositeItemVO compositeVO = json.fromJson(CompositeItemVO.class, (String) payload[1]);
+        compositeVO.cleanIds();
 
         Set<Integer> newEntitiesList = createEntitiesFromVO(compositeVO);
         sandbox.getEngine().process();

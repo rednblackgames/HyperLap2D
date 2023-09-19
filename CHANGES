@@ -9,7 +9,7 @@
 - Bug fixing and stability improvements
 
 **Runtime**
-- [BREAK CHANGE] New `MainItemComponent#uniqueId` management, change from integer to a non persistent random string
+- [BREAK CHANGE] New `MainItemComponent#uniqueId` management, change from integer to a random string
 - Chained Entities and Spine' SkeletonRenderSeparator
 - Improved PhysicsActions. Add `PhysicsActions#transformTo` and `PhysicsActions#transformBy`
 - Fixed physic's step
