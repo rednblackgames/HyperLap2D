@@ -1,5 +1,6 @@
 package games.rednblack.editor.controller.commands;
 
+import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.renderer.components.LayerMapComponent;
 import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -20,8 +21,19 @@ public class NewLayerCommand extends EntityModifyRevertibleCommand {
         int index = (int) payload[0];
         layerName = (String) payload[1];
 
+        if (layerName.isEmpty()) {
+            cancel();
+            return;
+        }
+
         int viewingEntity = Sandbox.getInstance().getCurrentViewingEntity();
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
+
+        if (layerMapComponent.getLayer(layerName) != null) {
+            cancel();
+            Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Layer name already exists.").padBottom(20).pack();
+            return;
+        }
 
         LayerItemVO vo = new LayerItemVO(layerName);
         vo.isVisible = true;

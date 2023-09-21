@@ -37,7 +37,9 @@ public class RenameLayerCommand extends EntityModifyRevertibleCommand {
         String oldName = payload[0];
         String newName = payload[1];
 
-        if(oldName.equals(newName)) cancel();
+        if(oldName.equals(newName) || newName.isEmpty()) {
+            cancel();
+        }
 
         renameLayer(oldName, newName);
 
@@ -56,6 +58,8 @@ public class RenameLayerCommand extends EntityModifyRevertibleCommand {
     }
 
     private void renameLayer(String fromName, String toName) {
+        if (isCancelled) return;
+
         int viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
         NodeComponent nodeComponent = SandboxComponentRetriever.get(viewEntity, NodeComponent.class);
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewEntity, LayerMapComponent.class);
