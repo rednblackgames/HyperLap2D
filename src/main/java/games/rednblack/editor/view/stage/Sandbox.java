@@ -353,6 +353,10 @@ public class Sandbox {
         return (int) sceneConfigVO.cameraZoom;
     }
 
+    public Vector3 getCameraPosition() {
+        return getCamera().position;
+    }
+
     public void setZoomPercent(float percent, boolean moveCamera) {
         sceneConfigVO.cameraZoom = percent;
 

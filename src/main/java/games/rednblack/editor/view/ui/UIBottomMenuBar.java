@@ -36,6 +36,11 @@ public class UIBottomMenuBar extends VisTable {
 		UIZoomBox uiZoomBox = uiZoomBoxMediator.getViewComponent();
 		mainGroup.add(uiZoomBox);
 
+		//pan
+		UIPanBoxMediator uiPanBoxMediator = facade.retrieveMediator(UIPanBoxMediator.NAME);
+		UIPanBox uiPanBox = uiPanBoxMediator.getViewComponent();
+		mainGroup.add(uiPanBox);
+
 		//resolution box
 		UIResolutionBoxMediator uiResolutionBoxMediator = facade.retrieveMediator(UIResolutionBoxMediator.NAME);
 		UIResolutionBox uiResolutionBox = uiResolutionBoxMediator.getViewComponent();

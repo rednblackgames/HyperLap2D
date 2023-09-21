@@ -37,8 +37,8 @@ public class UIZoomBox extends UIBaseBox {
 
     private static final String prefix = "games.rednblack.editor.view.ui.box.bottom.UIZoomBox";
 
-    public static final String ZOOM_SHIFT_REQUESTED = prefix + "ZOOM_SHIFT_REQUESTED";
-    public static final String ZOOM_VALUE_CHANGED = prefix + "ZOOM_VALUE_CHANGED";
+    public static final String ZOOM_SHIFT_REQUESTED = prefix + ".ZOOM_SHIFT_REQUESTED";
+    public static final String ZOOM_VALUE_CHANGED = prefix + ".ZOOM_VALUE_CHANGED";
 
     private final Skin skin;
     private VisTextField percentValueField;

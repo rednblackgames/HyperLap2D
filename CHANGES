@@ -6,6 +6,8 @@
 - Sensor component custom width/height
 - Improve physics bodies bounding boxes (disabled by default)
 - Enable/disable bounding boxes debug view
+- Improved layers drag and drop
+- Add manual camera pan control
 - Bug fixing and stability improvements
 
 **Runtime**
