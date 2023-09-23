@@ -20,7 +20,8 @@ public class UpdatePolygonVerticesCommand extends EntityModifyRevertibleCommand 
 
     private void collectData() {
         Object[] payload = getNotification().getBody();
-        entityId = EntityUtils.getEntityId((int) payload[0]);
+        if (entityId == null)
+            entityId = EntityUtils.getEntityId((int) payload[0]);
         polygonizedDataFrom = (Vector2[][]) payload[1];
         dataFrom = (Array<Vector2>) payload[2];
         polygonizedDataTo = (Vector2[][]) payload[3];

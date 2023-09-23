@@ -3,7 +3,7 @@ package games.rednblack.editor.controller.commands.resource;
 import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
-import games.rednblack.editor.controller.commands.AddToLibraryAction;
+import games.rednblack.editor.controller.commands.AddToLibraryActionCommand;
 import games.rednblack.editor.controller.commands.NonRevertibleCommand;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.renderer.data.GraphVO;
@@ -40,7 +40,7 @@ public class DuplicateLibraryAction extends NonRevertibleCommand {
                 Json json = HyperJson.getJson();
                 GraphVO duplicated = json.fromJson(GraphVO.class, json.toJson(actionToDuplicate));
 
-                Object[] payload = AddToLibraryAction.getPayload(input, duplicated);
+                Object[] payload = AddToLibraryActionCommand.getPayload(input, duplicated);
                 Facade.getInstance().sendNotification(MsgAPI.ACTION_ADD_TO_LIBRARY_ACTION, payload);
             }
 

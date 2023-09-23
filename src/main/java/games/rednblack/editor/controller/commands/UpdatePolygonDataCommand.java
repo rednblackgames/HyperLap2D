@@ -17,12 +17,14 @@ public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
     @Override
     public void doAction() {
         Object[] payload = notification.getBody();
-        int entity = (int) payload[0];
+        if (entityId == null)
+            entityId = EntityUtils.getEntityId((int) payload[0]);
+        int entity = EntityUtils.getByUniqueId(entityId);
         boolean openPath = (boolean) payload[1];
 
         PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(entity, PolygonShapeComponent.class);
 
-        entityId = EntityUtils.getEntityId(entity);
+
         openPathBackup = polygonShapeComponent.openEnded;
 
         polygonShapeComponent.openEnded = openPath;

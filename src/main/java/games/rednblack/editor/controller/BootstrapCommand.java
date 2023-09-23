@@ -68,7 +68,7 @@ public class BootstrapCommand extends SimpleCommand {
         facade.registerCommand(MsgAPI.ACTION_REPLACE_SPRITE_ANIMATION_DATA, ReplaceSpriteAnimationCommand.class);
         facade.registerCommand(MsgAPI.ACTION_REPLACE_SPINE_ANIMATION_DATA, ReplaceSpineCommand.class);
         facade.registerCommand(MsgAPI.ACTION_ADD_TO_LIBRARY, AddToLibraryCommand.class);
-        facade.registerCommand(MsgAPI.ACTION_ADD_TO_LIBRARY_ACTION, AddToLibraryAction.class);
+        facade.registerCommand(MsgAPI.ACTION_ADD_TO_LIBRARY_ACTION, AddToLibraryActionCommand.class);
         facade.registerCommand(MsgAPI.ACTION_CHANGE_LIBRARY_ACTION, ChangeLibraryActionCommand.class);
         facade.registerCommand(MsgAPI.ACTION_CONVERT_TO_BUTTON, ConvertToButtonCommand.class);
         facade.registerCommand(MsgAPI.ACTION_GROUP_ITEMS, ConvertToCompositeCommand.class);

@@ -8,7 +8,7 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import games.rednblack.editor.controller.commands.AddToLibraryAction;
+import games.rednblack.editor.controller.commands.AddToLibraryActionCommand;
 import games.rednblack.editor.graph.*;
 import games.rednblack.editor.graph.actions.ActionFieldType;
 import games.rednblack.editor.graph.actions.config.*;
@@ -143,7 +143,7 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Object[] payload = AddToLibraryAction.getPayload(actionName, graphContainer.serializeGraph());
+                Object[] payload = AddToLibraryActionCommand.getPayload(actionName, graphContainer.serializeGraph());
                 Facade.getInstance().sendNotification(MsgAPI.ACTION_ADD_TO_LIBRARY_ACTION, payload);
                 close();
             }

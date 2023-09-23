@@ -4,9 +4,9 @@ import games.rednblack.editor.renderer.data.GraphVO;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 
-public class AddToLibraryAction extends NonRevertibleCommand {
+public class AddToLibraryActionCommand extends NonRevertibleCommand {
 
-    public AddToLibraryAction() {
+    public AddToLibraryActionCommand() {
         setShowConfirmDialog(false);
     }
 
