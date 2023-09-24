@@ -317,7 +317,7 @@ public class PolygonFollower extends SubFollower {
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
             if (super.touchDown(event, x, y, pointer, button)) {
-                if(button != Input.Buttons.LEFT) return true;
+                if(button == Input.Buttons.RIGHT) return true;
 
                 PolyVertex vertex = (PolyVertex) event.getListenerActor();
                 draggingAnchorId = vertex.getIndex();
