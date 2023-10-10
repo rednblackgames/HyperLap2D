@@ -88,8 +88,18 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         packer.setTransparentColor(Color.WHITE);
         packer.getTransparentColor().a = 0;
 
-        FreeTypeFontGenerator dejaVuSansGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf"));
-        FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/FiraCode-Regular.ttf"));
+        FreeTypeFontGenerator dejaVuSansGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf")) {
+            @Override
+            protected BitmapFont newBitmapFont(BitmapFont.BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
+                return new ThreadSafeBitmapFont(data, pageRegions, integer);
+            }
+        };
+        FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/FiraCode-Regular.ttf")){
+            @Override
+            protected BitmapFont newBitmapFont(BitmapFont.BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
+                return new ThreadSafeBitmapFont(data, pageRegions, integer);
+            }
+        };
 
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.characters += "⌘⇧⌥\u25CF\u2022";
@@ -126,7 +136,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
         dejaVuSansGenerator.dispose();
 
-        TextureRegion dejavuRegion = new TextureRegion(new Texture(Gdx.files.internal("style/default-font-32.png")));
+        /*TextureRegion dejavuRegion = new TextureRegion(new Texture(Gdx.files.internal("style/default-font-32.png")));
         ShadedDistanceFieldFont smallDistanceField = new ShadedDistanceFieldFont(Gdx.files.internal("style/default-font-32.fnt"), dejavuRegion);
         smallDistanceField.setDistanceFieldSmoothing(6);
         smallDistanceField.getData().setScale(0.35f);
@@ -135,7 +145,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         defaultDistanceField.getData().setScale(0.4f);
         ShadedDistanceFieldFont bigDistanceField = new ShadedDistanceFieldFont(Gdx.files.internal("style/default-font-32.fnt"), dejavuRegion);
         bigDistanceField.setDistanceFieldSmoothing(6);
-        bigDistanceField.getData().setScale(0.5f);
+        bigDistanceField.getData().setScale(0.5f);*/
         /* Create the ObjectMap and add the fonts to it */
         ObjectMap<String, Object> fontMap = new ObjectMap<>();
         fontMap.put("small-font", small);
