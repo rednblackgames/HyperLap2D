@@ -535,7 +535,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 FileUtils.copyFile(source, expectedFile.file());
                 expectedFile = Gdx.files.internal(expectedPath);
             } else {
-                throw new FileNotFoundException();
+                throw new FileNotFoundException(fontName);
             }
         }
 
