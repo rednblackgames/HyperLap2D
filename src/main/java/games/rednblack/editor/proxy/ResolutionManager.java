@@ -343,6 +343,7 @@ public class ResolutionManager extends Proxy {
                     ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
                     ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
                     resourceManager.loadCurrentProjectData(projectManager.getCurrentProjectPath(), currentResolutionName);
+                    Sandbox.getInstance().loadCurrentProject();
                     facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
                 });
             }
