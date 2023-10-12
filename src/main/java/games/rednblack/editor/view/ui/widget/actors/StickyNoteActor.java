@@ -5,13 +5,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Timer;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.VisImage;
 import com.kotcrab.vis.ui.widget.VisTextArea;
@@ -71,9 +70,24 @@ public class StickyNoteActor extends VisWindow {
                 }
             }
         });
+        contentArea.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                saveTask.cancel();
+                Timer.schedule(saveTask, 1);
+            }
+        });
         add(contentArea).padTop(5).padLeft(5).grow();
         setOrigin(Align.topLeft);
     }
+
+    Timer.Task saveTask = new Timer.Task() {
+        @Override
+        public void run() {
+            StickyNoteVO payload = ModifyStickyNoteCommand.payload(StickyNoteActor.this);
+            facade.sendNotification(MsgAPI.ACTION_MODIFY_STICKY_NOTE, payload);
+        }
+    };
 
     @Override
     public void close() {
@@ -316,15 +330,15 @@ public class StickyNoteActor extends VisWindow {
 
     private void showPopupMenu() {
         H2DPopupMenu popupMenu = new H2DPopupMenu();
-        MenuItem rename = new MenuItem("Remove note");
-        rename.addListener(
+        MenuItem remove = new MenuItem("Remove note");
+        remove.addListener(
                 new ClickListener(Input.Buttons.LEFT) {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         facade.sendNotification(MsgAPI.ACTION_REMOVE_STICKY_NOTE, id);
                     }
                 });
-        popupMenu.addItem(rename);
+        popupMenu.addItem(remove);
         MenuItem changeColor = new MenuItem("Change color");
         changeColor.addListener(
                 new ClickListener(Input.Buttons.LEFT) {
