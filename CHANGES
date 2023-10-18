@@ -11,6 +11,7 @@
 - Bug fixing and stability improvements
 
 **Runtime**
+- [BREAK CHANGE] `TextureArrayCpuPolygonSpriteBatch` is now the default batch implementation
 - [BREAK CHANGE] New `MainItemComponent#uniqueId` management, change from integer to a random string
 - Chained Entities and Spine' SkeletonRenderSeparator
 - Improved PhysicsActions. Add `PhysicsActions#transformTo` and `PhysicsActions#transformBy`

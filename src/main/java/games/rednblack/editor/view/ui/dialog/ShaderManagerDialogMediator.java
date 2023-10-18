@@ -138,18 +138,14 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
 
         switch (type) {
             case 0:
-                vertex = DefaultShaders.DEFAULT_VERTEX_SHADER;
-                fragment = DefaultShaders.DEFAULT_FRAGMENT_SHADER;
-                break;
-            case 1:
                 vertex = DefaultShaders.DEFAULT_ARRAY_VERTEX_SHADER;
                 fragment = DefaultShaders.DEFAULT_ARRAY_FRAGMENT_SHADER;
                 break;
-            case 2:
+            case 1:
                 vertex = DefaultShaders.DISTANCE_FIELD_VERTEX_SHADER;
                 fragment = DefaultShaders.DISTANCE_FIELD_FRAGMENT_SHADER;
                 break;
-            case 3:
+            case 2:
                 vertex = DefaultShaders.DEFAULT_SCREE_READING_VERTEX_SHADER;
                 fragment = DefaultShaders.DEFAULT_SCREE_READING_FRAGMENT_SHADER;
                 break;
