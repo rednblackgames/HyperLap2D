@@ -98,7 +98,7 @@ public class KeyBindingsLayout {
         defaultMapper.put(ALIGN_BOTTOM, new KeyMapper(ALIGN_BOTTOM, true, false, false, Input.Keys.NUMPAD_2));
         defaultMapper.put(ALIGN_RIGHT, new KeyMapper(ALIGN_RIGHT, true, false, false, Input.Keys.NUMPAD_6));
 
-        defaultMapper.put(DELETE, new KeyMapper(DELETE, false, false, false, Input.Keys.DEL));
+        defaultMapper.put(DELETE, new KeyMapper(DELETE, false, false, false, Input.Keys.DEL, Input.Keys.FORWARD_DEL));
 
         defaultMapper.put(HIDE_GUI, new KeyMapper(HIDE_GUI, false, false, false, Input.Keys.F12));
         defaultMapper.put(OPEN_CONSOLE, new KeyMapper(OPEN_CONSOLE, false, false, false, Input.Keys.F10));

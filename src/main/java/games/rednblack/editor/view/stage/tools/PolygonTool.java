@@ -26,6 +26,7 @@ import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
+import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -220,7 +221,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
 
     @Override
     public void keyDown(int entity, int keycode) {
-        if(keycode == Input.Keys.DEL || keycode == Input.Keys.FORWARD_DEL) {
+        if(KeyBindingsLayout.mapAction(keycode) == KeyBindingsLayout.DELETE) {
             if(!deleteSelectedAnchor()) {
                 super.keyDown(entity, keycode);
             }

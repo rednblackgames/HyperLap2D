@@ -475,7 +475,7 @@ public class SelectionTool extends SimpleTool {
         }
 
         // Delete
-        if (keycode == Input.Keys.DEL || keycode == Input.Keys.FORWARD_DEL) {
+        if (KeyBindingsLayout.mapAction(keycode) == KeyBindingsLayout.DELETE) {
             Facade.getInstance().sendNotification(MsgAPI.ACTION_DELETE);
         }
     }

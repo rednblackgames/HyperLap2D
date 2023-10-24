@@ -347,15 +347,10 @@ public class SandboxMediator extends Mediator<Sandbox> {
         public boolean keyUp(int entity, int keycode) {
             facade.sendNotification(MsgAPI.ACTION_KEY_UP, keycode);
 
-            Sandbox sandbox = Sandbox.getInstance();
             switch (KeyBindingsLayout.mapAction(keycode)) {
                 case KeyBindingsLayout.PAN_TOOL:
                     // if pan mode is disabled set cursor back
                     toolHotSwapBack();
-                    break;
-                case KeyBindingsLayout.DELETE:
-                    // delete selected item
-                    sandbox.getSelector().removeCurrentSelectedItems();
                     break;
             }
 
