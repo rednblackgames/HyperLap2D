@@ -26,6 +26,7 @@ import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
+import games.rednblack.editor.renderer.utils.poly.PolygonRuntimeUtils;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -132,10 +133,10 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
         if (!polygonShapeComponent.openEnded) {
             IntSet intersections = PolygonUtils.checkForIntersection(vertexIndex, points, intersectionProblems);
             if(intersections == null) {
-                if(PolygonUtils.isPolygonCCW(points.toArray())){
+                if(PolygonRuntimeUtils.isPolygonCCW(points.toArray())){
                     points.reverse();
                 }
-                polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(points.toArray());
+                polygonShapeComponent.polygonizedVertices = PolygonRuntimeUtils.polygonize(points.toArray());
             } else {
                 // restore from backup
                 polygonShapeComponent.vertices = UpdatePolygonVerticesCommand.cloneData(verticesBackup);
@@ -156,7 +157,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
 
         polygonShapeComponent.vertices.insert(vertexIndex, new Vector2(x, y));
         if (!polygonShapeComponent.openEnded)
-            polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(polygonShapeComponent.vertices.toArray());
+            polygonShapeComponent.polygonizedVertices = PolygonRuntimeUtils.polygonize(polygonShapeComponent.vertices.toArray());
         follower.update();
 
         follower.draggingAnchorId = vertexIndex;
@@ -195,7 +196,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
             // check if any of near lines intersect
             IntSet intersections = PolygonUtils.checkForIntersection(anchor, points, intersectionProblems);
             if(intersections == null) {
-                polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(points.toArray());
+                polygonShapeComponent.polygonizedVertices = PolygonRuntimeUtils.polygonize(points.toArray());
                 follower.setProblems(null);
             } else {
                 follower.setProblems(intersections);
@@ -252,7 +253,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
             follower.setSelectedAnchor(follower.getSelectedAnchorId() - 1);
 
             if (!polygonShapeComponent.openEnded) {
-                polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(polygonShapeComponent.vertices.toArray());
+                polygonShapeComponent.polygonizedVertices = PolygonRuntimeUtils.polygonize(polygonShapeComponent.vertices.toArray());
 
                 if(polygonShapeComponent.polygonizedVertices == null) {
                     // restore from backup

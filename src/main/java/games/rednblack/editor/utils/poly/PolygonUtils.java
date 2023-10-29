@@ -24,37 +24,11 @@ import com.badlogic.gdx.utils.*;
 import games.rednblack.editor.utils.Vector2Pool;
 import games.rednblack.editor.view.stage.Sandbox;
 
-import java.util.HashSet;
-
 /**
  *
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class PolygonUtils {
-	public static float getPolygonSignedArea(Vector2[] points) {
-		if (points.length < 3)
-			return 0;
-
-		float sum = 0;
-		for (int i = 0; i < points.length; i++) {
-			Vector2 p1 = points[i];
-			Vector2 p2 = i != points.length-1 ? points[i+1] : points[0];
-			sum += (p1.x * p2.y) - (p1.y * p2.x);
-		}
-		return 0.5f * sum;
-	}
-
-	public static float getPolygonArea(Vector2[] points) {
-		return Math.abs(getPolygonSignedArea(points));
-	}
-
-	public static boolean isPolygonCCW(Vector2[] points) {
-		return getPolygonSignedArea(points) > 0;
-	}
-
-	public static Vector2[][] polygonize(Vector2[] vertices) {
-		return Clipper.polygonize(Clipper.Polygonizer.EWJORDAN, vertices);
-	}
 
 	public static boolean intersectSegments(Array<Vector2> points, int index1, int index2, int index3, int index4) {
 		Vector2 intersectionPoint = Pools.obtain(Vector2.class).set(points.get(index1));

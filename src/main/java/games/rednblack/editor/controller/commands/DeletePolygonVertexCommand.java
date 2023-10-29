@@ -6,7 +6,7 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
-import games.rednblack.editor.utils.poly.PolygonUtils;
+import games.rednblack.editor.renderer.utils.poly.PolygonRuntimeUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
 import games.rednblack.h2d.common.MsgAPI;
@@ -47,7 +47,7 @@ public class DeletePolygonVertexCommand extends SandboxCommand {
 
         polygonShapeComponent.vertices.removeIndex(anchor);
         follower.setSelectedAnchor(0);
-        polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(polygonShapeComponent.vertices.toArray());
+        polygonShapeComponent.polygonizedVertices = PolygonRuntimeUtils.polygonize(polygonShapeComponent.vertices.toArray());
 
         if(polygonShapeComponent.polygonizedVertices == null) {
             // restore from backup

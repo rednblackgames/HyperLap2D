@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
-import games.rednblack.editor.utils.poly.PolygonUtils;
+import games.rednblack.editor.renderer.utils.poly.PolygonRuntimeUtils;
 import games.rednblack.editor.utils.poly.tracer.Tracer;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -71,7 +71,7 @@ public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
                             .flatMap(Stream::of)
                             .toArray(Vector2[]::new);
                     polygonShapeComponent.vertices = new Array<>(points);
-                    polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(points);
+                    polygonShapeComponent.polygonizedVertices = PolygonRuntimeUtils.polygonize(points);
 
                     FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
                     BasicFollower follower = followersUIMediator.getFollower(entity);

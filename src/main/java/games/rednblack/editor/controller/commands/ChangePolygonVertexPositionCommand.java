@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.IntSet;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
+import games.rednblack.editor.renderer.utils.poly.PolygonRuntimeUtils;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
@@ -50,10 +51,10 @@ public class ChangePolygonVertexPositionCommand extends SandboxCommand {
                 Vector2[] pointsArray = points.toArray();
                 IntSet intersections = PolygonUtils.checkForIntersection(anchor, points, intersectionProblems);
                 if(intersections == null) {
-                    if(PolygonUtils.isPolygonCCW(pointsArray)){
+                    if(PolygonRuntimeUtils.isPolygonCCW(pointsArray)){
                         points.reverse();
                     }
-                    polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(polygonShapeComponent.vertices.toArray());
+                    polygonShapeComponent.polygonizedVertices = PolygonRuntimeUtils.polygonize(polygonShapeComponent.vertices.toArray());
 
                     UpdatePolygonVerticesCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
                     Facade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);

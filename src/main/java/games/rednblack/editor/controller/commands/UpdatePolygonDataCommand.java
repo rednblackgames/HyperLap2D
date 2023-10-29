@@ -3,7 +3,7 @@ package games.rednblack.editor.controller.commands;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
-import games.rednblack.editor.utils.poly.PolygonUtils;
+import games.rednblack.editor.renderer.utils.poly.PolygonRuntimeUtils;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
@@ -49,10 +49,10 @@ public class UpdatePolygonDataCommand extends EntityModifyRevertibleCommand {
     private void checkPolygon(PolygonShapeComponent polygonShapeComponent) {
         if (!polygonShapeComponent.openEnded) {
             Array<Vector2> points = polygonShapeComponent.vertices;
-            if(PolygonUtils.isPolygonCCW(points.toArray())){
+            if(PolygonRuntimeUtils.isPolygonCCW(points.toArray())){
                 points.reverse();
             }
-            polygonShapeComponent.polygonizedVertices = PolygonUtils.polygonize(points.toArray());
+            polygonShapeComponent.polygonizedVertices = PolygonRuntimeUtils.polygonize(points.toArray());
         }
     }
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
+import games.rednblack.editor.renderer.utils.poly.PolygonRuntimeUtils;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
@@ -88,11 +89,7 @@ public class UpdatePolygonVerticesCommand extends EntityModifyRevertibleCommand 
     }
 
     public static Array<Vector2> cloneData(Array<Vector2> data) {
-        Array<Vector2> clone = new Array<>(true, data.size, Vector2.class);
-        for (Vector2 vector2 : data) {
-            clone.add(vector2.cpy());
-        }
-        return clone;
+        return PolygonRuntimeUtils.cloneData(data);
     }
     public static Vector2[][] cloneData(Vector2[][] data) {
         Vector2[][] newData = new Vector2[data.length][];

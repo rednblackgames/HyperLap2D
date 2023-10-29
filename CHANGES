@@ -13,6 +13,7 @@
 **Runtime**
 - [BREAK CHANGE] `TextureArrayCpuPolygonSpriteBatch` is now the default batch implementation
 - [BREAK CHANGE] New `MainItemComponent#uniqueId` management, change from integer to a random string
+- First integration of Spine's BoundingBoxAttachment with Box2D for skeletal collision detection
 - Chained Entities and Spine' SkeletonRenderSeparator
 - Improved PhysicsActions. Add `PhysicsActions#transformTo` and `PhysicsActions#transformBy`
 - Fixed physic's step
