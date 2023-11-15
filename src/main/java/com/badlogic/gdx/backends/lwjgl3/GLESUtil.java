@@ -5,8 +5,6 @@ import org.lwjgl.system.Callback;
 
 import java.io.PrintStream;
 
-import static org.lwjgl.opengl.GL11C.glEnable;
-import static org.lwjgl.opengl.GL11C.glGetInteger;
 import static org.lwjgl.opengl.GL30C.GL_CONTEXT_FLAGS;
 import static org.lwjgl.opengl.GL43C.*;
 import static org.lwjgl.opengl.GL43C.GL_DEBUG_SOURCE_OTHER;
@@ -46,9 +44,9 @@ public class GLESUtil {
                 printDetail(stream, "Message", GLDebugMessageCallback.getMessage(length, message));
             });
             GLES32.glDebugMessageCallback(proc, NULL);
-            if ((glGetInteger(GL_CONTEXT_FLAGS) & GL_CONTEXT_FLAG_DEBUG_BIT) == 0) {
+            if ((GLES32.glGetInteger(GL_CONTEXT_FLAGS) & GL_CONTEXT_FLAG_DEBUG_BIT) == 0) {
                 apiLog("[GLES] Warning: A non-debug context may not produce any debug output.");
-                glEnable(GL_DEBUG_OUTPUT);
+                GLES32.glEnable(GL_DEBUG_OUTPUT);
             }
             return proc;
         }

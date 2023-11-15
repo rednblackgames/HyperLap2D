@@ -464,9 +464,9 @@ public class Lwjgl3ApplicationGLESFix implements Lwjgl3ApplicationBase {
         window.setVisible(config.initialVisible);
 
         for (int i = 0; i < 2; i++) {
-            GL11.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g, config.initialBackgroundColor.b,
+            window.getGraphics().gl20.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g, config.initialBackgroundColor.b,
                     config.initialBackgroundColor.a);
-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+            window.getGraphics().gl20.glClear(GL11.GL_COLOR_BUFFER_BIT);
             GLFW.glfwSwapBuffers(windowHandle);
         }
     }
@@ -587,13 +587,14 @@ public class Lwjgl3ApplicationGLESFix implements Lwjgl3ApplicationBase {
         }
 
         initiateGL(config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20);
+        //TODO fix glVersion.getVendorString() to glVersion.getVersionString() in 1.12.2
         if (!glVersion.isVersionEqualToOrHigher(2, 0))
             throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
-                    + GL11.glGetString(GL11.GL_VERSION) + "\n" + glVersion.getDebugVersionString());
+                    + glVersion.getVendorString() + "\n" + glVersion.getDebugVersionString());
 
         if (config.glEmulation != Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20 && !supportsFBO()) {
             throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
-                    + GL11.glGetString(GL11.GL_VERSION) + ", FBO extension: false\n" + glVersion.getDebugVersionString());
+                    + glVersion.getVendorString() + ", FBO extension: false\n" + glVersion.getDebugVersionString());
         }
 
         if (config.debug) {
