@@ -93,9 +93,8 @@ public class SkinComposerMediator extends Mediator<DownloadingDialog> {
                 break;
             case SkinComposerPlugin.DOWNLOAD_JAR:
                 ExecutorService downloader = Executors.newSingleThreadExecutor();
+                GithubReleaseData jsonData = notification.getBody();
                 downloader.execute(() -> {
-                    GithubReleaseData jsonData = notification.getBody();
-
                     viewComponent.setMessage("Downloading " + jsonData.name + " ...");
                     for (GithubReleaseData.GithubReleaseAssetData assetData : jsonData.assets) {
                         if (assetData.name.equals("SkinComposer.jar")) {
