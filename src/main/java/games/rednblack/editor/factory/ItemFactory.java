@@ -50,7 +50,7 @@ public class ItemFactory implements IFactory {
         UILayerBoxMediator layerBoxMediator = Facade.getInstance().retrieveMediator(UILayerBoxMediator.NAME);
         String layerName = layerBoxMediator.getCurrentSelectedLayerName();
 
-        if(layerName == null) return false;
+        if(layerName == null) layerName = "Default";
 
         vo.layerName = layerName;
 
