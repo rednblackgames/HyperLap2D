@@ -4,10 +4,10 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
+import games.rednblack.editor.utils.runtime.TalosExportFormat;
 import games.rednblack.talos.runtime.ParticleEffectDescriptor;
 import games.rednblack.talos.runtime.ParticleEmitterDescriptor;
 import games.rednblack.talos.runtime.modules.*;
-import games.rednblack.talos.runtime.serialization.ExportData;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.SceneDataManager;
@@ -31,6 +31,16 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 public class TalosVFXAsset extends Asset {
+
+    Json talosJson = new Json();
+
+    public TalosVFXAsset() {
+        talosJson.setIgnoreUnknownFields(true);
+        ParticleEmitterDescriptor.registerModules();
+        for (Class clazz: ParticleEmitterDescriptor.registeredModules) {
+            talosJson.addClassTag(clazz.getSimpleName(), TalosExportFormat.Module.class);
+        }
+    }
 
     @Override
     protected boolean matchMimeType(FileHandle file) {
@@ -60,20 +70,13 @@ public class TalosVFXAsset extends Asset {
 
     @Override
     public void importAsset(Array<FileHandle> files, ProgressHandler progressHandler, boolean skipRepack) {
-        Json json = new Json();
-        json.setIgnoreUnknownFields(true);
-        ParticleEmitterDescriptor.registerModules();
-        for (Class clazz: ParticleEmitterDescriptor.registeredModules) {
-            json.addClassTag(clazz.getSimpleName(), clazz);
-        }
-
         final String targetPath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.TALOS_VFX_DIR_PATH;
         Array<FileHandle> images = new Array<>();
         Array<FileHandle> assetsRes = new Array<>();
         for (FileHandle fileHandle : new Array.ArrayIterator<>(files)) {
             if (!fileHandle.isDirectory() && fileHandle.exists()) {
                 try {
-                    ExportData talosResources = json.fromJson(ExportData.class, fileHandle);
+                    TalosExportFormat talosResources = talosJson.fromJson(TalosExportFormat.class, fileHandle);
                     //copy images
                     boolean allImagesFound = addTalosImages(talosResources, fileHandle, images);
                     if (allImagesFound) {
@@ -123,15 +126,26 @@ public class TalosVFXAsset extends Asset {
         String particlePath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.TALOS_VFX_DIR_PATH + File.separator;
         String filePath = particlePath + name;
 
-        if ((new File(filePath)).delete()) {
+        FileHandle fileHandle = new FileHandle(filePath);
+
+        TalosExportFormat talosResources = talosJson.fromJson(TalosExportFormat.class, fileHandle);
+
+        if (fileHandle.delete()) {
             deleteEntitiesWithParticleEffects(root, name); // delete entities from scene
             deleteAllItemsWithParticleName(name);
+
+            Array<String> resources = talosResources.metadata.resources;
+            for (String res : resources) {
+                String resPath = particlePath + res;
+                FileHandle resHandle = new FileHandle(resPath);
+                resHandle.delete();
+            }
             return true;
         }
         return false;
     }
 
-    private boolean addTalosImages(ExportData talosResources, FileHandle fileHandle, Array<FileHandle> imgs) {
+    private boolean addTalosImages(TalosExportFormat talosResources, FileHandle fileHandle, Array<FileHandle> imgs) {
         try {
             Array<String> resources = talosResources.metadata.resources;
             for (String res : resources) {
@@ -157,7 +171,7 @@ public class TalosVFXAsset extends Asset {
         return true;
     }
 
-    private boolean addTalosRes(ExportData talosResources, FileHandle fileHandle, Array<FileHandle> imgs) {
+    private boolean addTalosRes(TalosExportFormat talosResources, FileHandle fileHandle, Array<FileHandle> imgs) {
         try {
             Array<String> resources = talosResources.metadata.resources;
             for (String res : resources) {
@@ -260,7 +274,7 @@ public class TalosVFXAsset extends Asset {
                 }
 
                 if (module instanceof VectorFieldModule) {
-                    String path = ((VectorFieldModule) module).fgaFileName + ".fga";
+                    String path = ((VectorFieldModule) module).fgaFileName;
                     File f = new File(currentProjectPath + ProjectManager.TALOS_VFX_DIR_PATH + File.separator + path);
                     FileUtils.copyFileToDirectory(f, tmpDir);
                 }

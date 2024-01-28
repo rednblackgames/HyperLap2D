@@ -3,6 +3,7 @@ package games.rednblack.editor.controller.commands.resource;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.utils.AssetIOManager;
 import games.rednblack.editor.utils.AssetsUtils;
+import games.rednblack.editor.view.stage.Sandbox;
 
 public class DeleteTalosVFX extends DeleteResourceCommand {
 
@@ -22,6 +23,7 @@ public class DeleteTalosVFX extends DeleteResourceCommand {
             sendNotification(DONE, particleName);
             SceneVO vo = sandbox.sceneVoFromItems();
             projectManager.saveCurrentProject(vo);
+            Sandbox.getInstance().loadCurrentProject();
         } else {
             cancel();
         }
