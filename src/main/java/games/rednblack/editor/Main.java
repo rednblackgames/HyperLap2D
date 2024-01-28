@@ -28,6 +28,7 @@ public class Main {
         }
 
         Thread.currentThread().setUncaughtExceptionHandler(new CustomExceptionHandler());
+        Facade.getInstance().setUncaughtExceptionHandler(new FacadeExceptionHandler());
         //Increase default lwjgl stack size
         System.setProperty("org.lwjgl.system.stackSize", "256");
 
