@@ -17,6 +17,7 @@ group 'games.rednblack'
 version '0.1.4'
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url 'https://jitpack.io' }
@@ -126,7 +127,7 @@ dependencies {
     implementation project(":h2d-libgdx-typinglabel-extension")
     implementation project(":h2d-libgdx-tinyvg-extension")
 
-    implementation "com.talosvfx:talos-libgdx:$talosVersion"
+    implementation "games.rednblack.talos:runtime-libgdx:$talosVersion"
     implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
     implementation "com.rafaskoberg.gdx:typing-label:$typingLabelVersion"
     implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
