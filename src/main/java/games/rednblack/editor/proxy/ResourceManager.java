@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.*;
 import com.esotericsoftware.spine.SkeletonJson;
 import com.kotcrab.vis.ui.VisUI;
 import games.rednblack.talos.runtime.ParticleEffectDescriptor;
+import games.rednblack.talos.runtime.ParticleEffectInstancePool;
 import games.rednblack.talos.runtime.utils.ShaderDescriptor;
 import games.rednblack.talos.runtime.utils.VectorField;
 import dev.lyze.gdxtinyvg.TinyVG;
@@ -53,7 +54,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     public static final String NAME = TAG;
 
     private final HashMap<String, ParticleEffectPool> particleEffects = new HashMap<>(1);
-    private final HashMap<String, ParticleEffectDescriptor> talosVFXs = new HashMap<>(1);
+    private final HashMap<String, ParticleEffectInstancePool> talosVFXs = new HashMap<>(1);
     private final HashMap<String, TextureAtlas> currentProjectAtlas = new HashMap<>(1);
 
     private final HashMap<String, SpineDataObject> spineAnimAtlases = new HashMap<>();
@@ -345,7 +346,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
             ParticleEffectDescriptor effectDescriptor = new ParticleEffectDescriptor();
             effectDescriptor.setAssetProvider(assetProvider);
             effectDescriptor.load(Gdx.files.internal(file.getAbsolutePath()));
-            talosVFXs.put(filename, effectDescriptor);
+            talosVFXs.put(filename, new ParticleEffectInstancePool(effectDescriptor, 1, games.rednblack.editor.renderer.resources.ResourceManager.PARTICLE_POOL_SIZE));
         }
     }
 
@@ -593,7 +594,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return particleEffects;
     }
 
-    public HashMap<String, ParticleEffectDescriptor> getProjectTalosList() {
+    public HashMap<String, ParticleEffectInstancePool> getProjectTalosList() {
         return talosVFXs;
     }
 

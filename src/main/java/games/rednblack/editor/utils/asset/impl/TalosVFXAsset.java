@@ -246,7 +246,7 @@ public class TalosVFXAsset extends Asset {
         File fileSrc = new File(currentProjectPath + ProjectManager.TALOS_VFX_DIR_PATH + File.separator + talosVO.particleName);
         FileUtils.copyFileToDirectory(fileSrc, tmpDir);
         exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(AssetsUtils.TYPE_TALOS_VFX, fileSrc.getName()));
-        ParticleEffectDescriptor particleEffect = resourceManager.getProjectTalosList().get(talosVO.particleName);
+        ParticleEffectDescriptor particleEffect = resourceManager.getProjectTalosList().get(talosVO.particleName).getParticleEffectDescriptor();
         for (ParticleEmitterDescriptor emitter : new Array.ArrayIterator<>(particleEffect.emitterModuleGraphs)) {
             for (AbstractModule module : new Array.ArrayIterator<>(emitter.getModules())) {
                 if (module instanceof TextureModule) {
