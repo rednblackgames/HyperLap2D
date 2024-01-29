@@ -152,4 +152,9 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
     public boolean validateSettings() {
         return exportSettingsInputFileWidget.getValue() != null;
     }
+
+    @Override
+    public boolean requireRestart() {
+        return false;
+    }
 }

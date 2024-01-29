@@ -101,4 +101,9 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
     public boolean validateSettings() {
         return true;
     }
+
+    @Override
+    public boolean requireRestart() {
+        return false;
+    }
 }

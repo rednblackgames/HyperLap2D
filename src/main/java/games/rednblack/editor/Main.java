@@ -28,7 +28,6 @@ public class Main {
         }
 
         Thread.currentThread().setUncaughtExceptionHandler(new CustomExceptionHandler());
-        Facade.getInstance().setUncaughtExceptionHandler(new FacadeExceptionHandler());
         //Increase default lwjgl stack size
         System.setProperty("org.lwjgl.system.stackSize", "256");
 
@@ -53,6 +52,8 @@ public class Main {
         config.setWindowIcon("hyperlap_icon_96.png");
         if (settingsManager.editorConfigVO.useANGLEGLES2)
             config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20, 3, 2);
+        if (settingsManager.editorConfigVO.failSafeException)
+            Facade.getInstance().setUncaughtExceptionHandler(new FacadeExceptionHandler());
         config.setBackBufferConfig(8,8,8,8,16,8, settingsManager.editorConfigVO.msaaSamples);
 
         new Lwjgl3ApplicationGLESFix(HyperLap2DApp.initInstance(dm.width, dm.height, settingsManager), config);
@@ -143,5 +144,45 @@ public class Main {
         }
 
         return true;
+    }
+
+    public static String getMainClassName() {
+        StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+        if (trace.length > 0) {
+            return trace[trace.length - 1].getClassName();
+        }
+        return null;
+    }
+
+    public static void restartJVM() {
+        // restart jvm with -XstartOnFirstThread
+        String separator = System.getProperty("file.separator");
+        String classpath = System.getProperty("java.class.path");
+        String mainClass = getMainClassName();
+        String jvmPath = System.getProperty("java.home") + separator + "bin" + separator + "java";
+
+        List<String> inputArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
+
+        ArrayList<String> jvmArgs = new ArrayList<>();
+
+        jvmArgs.add(jvmPath);
+        if (SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_MAC)
+            jvmArgs.add("-XstartOnFirstThread");
+        jvmArgs.add("-Djava.awt.headless=true");
+        jvmArgs.addAll(inputArguments);
+        jvmArgs.add("-cp");
+        jvmArgs.add(classpath);
+        jvmArgs.add(mainClass);
+
+        // if you don't need console output, just enable these two lines
+        // and delete bits after it. This JVM will then terminate.
+        ProcessBuilder processBuilder = new ProcessBuilder(jvmArgs);
+        try {
+            processBuilder.start();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.exit(0);
     }
 }

@@ -41,4 +41,9 @@ public class SkinComposerSettings extends SettingsNodeValue<SkinComposerVO> {
     public boolean validateSettings() {
         return loaded && getSettings().alwaysCheckUpdates != alwaysCheckUpdates.isChecked();
     }
+
+    @Override
+    public boolean requireRestart() {
+        return false;
+    }
 }

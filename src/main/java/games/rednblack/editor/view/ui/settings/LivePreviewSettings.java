@@ -97,4 +97,9 @@ public class LivePreviewSettings extends SettingsNodeValue<ProjectVO> {
     public boolean validateSettings() {
         return true;
     }
+
+    @Override
+    public boolean requireRestart() {
+        return false;
+    }
 }
