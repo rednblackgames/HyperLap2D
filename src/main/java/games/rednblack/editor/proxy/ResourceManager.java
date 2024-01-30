@@ -14,8 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.*;
 import com.esotericsoftware.spine.SkeletonJson;
 import com.kotcrab.vis.ui.VisUI;
+import games.rednblack.h2d.extension.bvb.BVBDataObject;
 import games.rednblack.talos.runtime.ParticleEffectDescriptor;
 import games.rednblack.talos.runtime.ParticleEffectInstancePool;
+import games.rednblack.talos.runtime.bvb.BVB;
 import games.rednblack.talos.runtime.utils.ShaderDescriptor;
 import games.rednblack.talos.runtime.utils.VectorField;
 import dev.lyze.gdxtinyvg.TinyVG;
@@ -57,7 +59,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private final HashMap<String, ParticleEffectInstancePool> talosVFXs = new HashMap<>(1);
     private final HashMap<String, TextureAtlas> currentProjectAtlas = new HashMap<>(1);
 
-    private final HashMap<String, SpineDataObject> spineAnimAtlases = new HashMap<>();
+    private final HashMap<String, BVBDataObject> spineAnimAtlases = new HashMap<>();
     private final HashMap<String, Array<TextureAtlas.AtlasRegion>> spriteAnimAtlases = new HashMap<>();
     private final HashMap<FontSizePair, BitmapFont> fonts = new HashMap<>();
     private final HashMap<String, BitmapFont> bitmapFonts = new HashMap<>();
@@ -390,9 +392,13 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 String animName = FilenameUtils.removeExtension(entry.file().getName());
                 FileHandle animJsonFile = Gdx.files.internal(entry.file().getAbsolutePath() + File.separator + animName + ".json");
 
-                SpineDataObject spineDataObject = new SpineDataObject();
+                BVBDataObject spineDataObject = new BVBDataObject();
                 spineDataObject.skeletonJson = new SkeletonJson(new ResourceRetrieverAttachmentLoader(animName, this, spineDrawableLogic));
                 spineDataObject.skeletonData = spineDataObject.skeletonJson.readSkeletonData(animJsonFile);
+
+                FileHandle bvb = Gdx.files.internal(entry.file().getAbsolutePath() + File.separator + animName + "-bvb.json");
+                if (bvb.exists())
+                    spineDataObject.bvbData = HyperJson.getJson().fromJson(BVB.class, bvb);
 
                 spineAnimAtlases.put(animName, spineDataObject);
             }
@@ -582,7 +588,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         generator.dispose();
     }
 
-    public HashMap<String, SpineDataObject> getProjectSpineAnimationsList() {
+    public HashMap<String, BVBDataObject> getProjectSpineAnimationsList() {
         return spineAnimAtlases;
     }
 

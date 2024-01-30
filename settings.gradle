@@ -9,4 +9,4 @@ include 'plugin-skin-composer'
 include 'h2d-libgdx-talos-extension'
 include 'h2d-libgdx-typinglabel-extension'
 include 'h2d-libgdx-tinyvg-extension'
-
+include 'h2d-libgdx-bvb-extension'

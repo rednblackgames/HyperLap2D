@@ -106,6 +106,8 @@ dependencies {
     implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
 
     implementation "games.rednblack.puremvc:core:$pureMvcVersion"
+    implementation "games.rednblack.talos:runtime-libgdx:$talosVersion"
+    implementation "games.rednblack.talos:bvb-libgdx:$talosVersion"
 
     implementation "org.lwjgl:lwjgl-tinyfd:$lwjgl3Version"
     implementation "org.lwjgl:lwjgl-tinyfd:$lwjgl3Version:natives-linux"
@@ -126,8 +128,8 @@ dependencies {
     implementation project(":h2d-libgdx-talos-extension")
     implementation project(":h2d-libgdx-typinglabel-extension")
     implementation project(":h2d-libgdx-tinyvg-extension")
+    implementation project(":h2d-libgdx-bvb-extension")
 
-    implementation "games.rednblack.talos:runtime-libgdx:$talosVersion"
     implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
     implementation "com.rafaskoberg.gdx:typing-label:$typingLabelVersion"
     implementation "com.kotcrab.vis:vis-ui:$visuiVersion"

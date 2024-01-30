@@ -61,6 +61,7 @@ import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import games.rednblack.h2d.common.vo.SceneConfigVO;
+import games.rednblack.h2d.extension.bvb.BVBItemType;
 import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.talos.TalosSystem;
 import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
@@ -144,12 +145,12 @@ public class Sandbox {
 
         ExternalTypesConfiguration externalItemTypes = new ExternalTypesConfiguration();
         //Add external item types
-        externalItemTypes.addExternalItemType(new SpineItemType());
+        externalItemTypes.addExternalItemType(new BVBItemType());
         externalItemTypes.addExternalItemType(new TalosItemType());
         externalItemTypes.addExternalItemType(new TinyVGItemType());
         externalItemTypes.addExternalItemType(new TypingLabelItemType());
 
-        SceneConfiguration config = new SceneConfiguration(new TextureArrayCpuPolygonSpriteBatch(10_000), true);
+        SceneConfiguration config = new SceneConfiguration(new TextureArrayCpuPolygonSpriteBatch(32_000), true);
         config.setResourceRetriever(resourceManager);
         config.setExternalItemTypes(externalItemTypes);
 
