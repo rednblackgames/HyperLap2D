@@ -192,8 +192,8 @@ public class UIItemsTreeBox extends UICollapsibleBox {
                 name = EntityUtils.itemTypeNameMap.get(EntityFactory.UNKNOWN_TYPE);
         }
 
-        node.setName(name);
         ZIndexComponent zIndexComponent = zIndexComponentMapper.get(item);
+        node.setName(name, zIndexComponent.layerName);
 
         node.setNodeValue(mainItemComponent.uniqueId, zIndexComponent.getGlobalZIndex());
         if (mainItemComponent.entityType != EntityFactory.COMPOSITE_TYPE)
