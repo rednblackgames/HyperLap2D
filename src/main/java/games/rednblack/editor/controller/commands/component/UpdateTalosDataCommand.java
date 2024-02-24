@@ -25,6 +25,7 @@ public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
 
         TalosComponent talosComponent = SandboxComponentRetriever.get(entity, TalosComponent.class);
         talosComponent.transform = vo.transform;
+        talosComponent.autoStart = vo.autoStart;
         talosComponent.effect.setPosition(0, 0);
 
         Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
@@ -37,6 +38,7 @@ public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
         TalosComponent talosComponent = SandboxComponentRetriever.get(entity, TalosComponent.class);
         talosComponent.effect.setPosition(0, 0);
         talosComponent.transform = backup.transform;
+        talosComponent.autoStart = backup.autoStart;
 
         Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
