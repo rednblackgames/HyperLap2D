@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.renderer.utils.Version;
 import games.rednblack.editor.utils.AppConfig;
+import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.h2d.common.network.HttpDownloadUtility;
 import games.rednblack.h2d.common.network.model.GithubReleaseData;
 import games.rednblack.h2d.common.network.model.SnapshotReleaseData;
@@ -76,7 +77,7 @@ public class SplashMediator extends Mediator<Object> {
                     }
 
                     splash.loadedData();
-                    HyperLap2DApp.getInstance().mainWindow.setVisible(true);
+                    Gdx.app.postRunnable(() -> HyperLap2DApp.getInstance().mainWindow.setVisible(true));
                 });
                 executor.shutdown();
             }
