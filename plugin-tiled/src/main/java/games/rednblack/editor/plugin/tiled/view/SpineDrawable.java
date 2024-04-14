@@ -30,6 +30,10 @@ public class SpineDrawable extends BaseDrawable {
         this.skeleton = skeleton;
         AnimationStateData animationStateData = new AnimationStateData(skeleton.getData());
         animationState = new AnimationState(animationStateData);
+        if (skeleton.getData().getDefaultSkin() == null) {
+            skeleton.setSkin(skeleton.getData().getSkins().get(0));
+            skeleton.setSlotsToSetupPose();
+        }
 
         computeBoundBox();
 
