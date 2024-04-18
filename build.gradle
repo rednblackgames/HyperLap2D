@@ -14,7 +14,10 @@ plugins {
 }
 
 group 'games.rednblack'
-version '0.1.4'
+
+allprojects {
+    version '0.1.4'
+}
 
 repositories {
     mavenLocal()

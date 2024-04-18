@@ -3,7 +3,6 @@ plugins {
 }
 
 group 'games.rednblack'
-version '0.1.4'
 
 repositories {
     mavenCentral()
