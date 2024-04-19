@@ -1,4 +1,5 @@
 [0.1.5]
+- [BREAK CHANGE] Update Spine runtime support to `4.2.0`
 - Add Items Tree search filter
 
 [0.1.4]

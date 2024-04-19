@@ -39,7 +39,7 @@ public class SpineActor extends Actor {
 
     private void computeBoundBox() {
         skeleton.setPosition(0, 0);
-        skeleton.updateWorldTransform();
+        skeleton.updateWorldTransform(Skeleton.Physics.update);
 
         Array<Slot> drawOrder = skeleton.getDrawOrder();
         minX = Float.MAX_VALUE;
@@ -130,7 +130,7 @@ public class SpineActor extends Actor {
 
     @Override
     public void act(float delta) {
-        skeleton.updateWorldTransform(); //
+        skeleton.updateWorldTransform(Skeleton.Physics.update); //
         state.update(delta);
         state.apply(skeleton);
         super.act(delta);
