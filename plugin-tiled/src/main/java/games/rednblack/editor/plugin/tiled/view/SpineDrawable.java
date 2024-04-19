@@ -99,6 +99,7 @@ public class SpineDrawable extends BaseDrawable {
         animationState.update(Gdx.graphics.getDeltaTime());
         animationState.apply(skeleton);
         skeleton.setPosition(x, y - 20);
+        skeleton.update(Gdx.graphics.getDeltaTime());
 
         Color color = skeleton.getColor();
 

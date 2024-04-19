@@ -133,6 +133,7 @@ public class SpineActor extends Actor {
         skeleton.updateWorldTransform(Skeleton.Physics.update); //
         state.update(delta);
         state.apply(skeleton);
+        skeleton.update(delta);
         super.act(delta);
     }
 }
