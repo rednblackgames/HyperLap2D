@@ -42,7 +42,7 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
                 MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE,
                 MsgAPI.ITEM_DATA_UPDATED,
                 LayerJumpCommand.DONE);
-        interests.add(LayerSwapCommand.DONE);
+        interests.add(LayerSwapCommand.DONE, MsgAPI.UPDATE_TREE_ITEMS_FILTER);
     }
 
     @Override
@@ -62,6 +62,7 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
             case MsgAPI.ACTION_Z_INDEX_CHANGED:
             case MsgAPI.NEW_ITEM_ADDED:
             case MsgAPI.DELETE_ITEMS_COMMAND_DONE:
+            case MsgAPI.UPDATE_TREE_ITEMS_FILTER:
             case DeleteResourceCommand.DONE:
             case LayerJumpCommand.DONE:
             case LayerSwapCommand.DONE:

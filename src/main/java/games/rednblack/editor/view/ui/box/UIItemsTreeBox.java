@@ -1,21 +1,3 @@
-/*
- * ******************************************************************************
- *  * Copyright 2015 See AUTHORS file.
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *   http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
- *  *****************************************************************************
- */
-
 package games.rednblack.editor.view.ui.box;
 
 import com.artemis.ComponentMapper;
@@ -68,6 +50,8 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     private final ZIndexComparator zIndexComparator = new ZIndexComparator();
     private final Vector2 tmp = new Vector2();
 
+    public String searchString = "";
+
     public UIItemsTreeBox() {
         super("Items Tree", 190);
         setMovable(false);
@@ -107,6 +91,14 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         sandbox.getEngine().inject(this);
 
         treeTable.clear();
+        VisTextField searchField = StandardWidgetsFactory.createTextField();
+        searchField.setMessageText("Search items...");
+        searchField.setTextFieldListener((textField, c) -> {
+            searchString = textField.getText();
+            facade.sendNotification(MsgAPI.UPDATE_TREE_ITEMS_FILTER);
+        });
+        treeTable.add(searchField).growX().padTop(5).colspan(2).padRight(6).row();
+
         tree = new VisTree<>();
         scroller = StandardWidgetsFactory.createScrollPane(tree);
         scroller.setFlickScroll(false);
@@ -152,12 +144,21 @@ public class UIItemsTreeBox extends UICollapsibleBox {
             setSelection(lastSelection);
     }
 
-    private UIItemsTreeNode addTreeRoot(int entity, UIItemsTreeNode parentNode) {  // was like this addTreeRoot(CompositeItem compoiteItem, Node parentNode)
+    private UIItemsTreeNode addTreeRoot(int entity, UIItemsTreeNode parentNode) {
+        MainItemComponent mainItemComponent = mainItemComponentMapper.get(entity);
+        if (parentNode != null && parentNode == rootNode) {
+            if (mainItemComponent.itemIdentifier.isEmpty()) {
+                if (!EntityUtils.itemTypeNameMap.get(mainItemComponent.entityType).toLowerCase().contains(searchString))
+                    return null;
+            } else if (!mainItemComponent.itemIdentifier.toLowerCase().contains(searchString)) {
+                return null;
+            }
+        }
+
         UIItemsTreeNode node = addTreeNode(entity, parentNode);
         if (parentNode == null) rootNode = node;
 
         NodeComponent nodeComponent = nodeComponentMapper.get(entity);
-        MainItemComponent mainItemComponent = mainItemComponentMapper.get(entity);
 
         if(nodeComponent != null) {
             for (int item : nodeComponent.children) {
