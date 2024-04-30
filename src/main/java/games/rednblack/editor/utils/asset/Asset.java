@@ -60,13 +60,15 @@ public abstract class Asset implements IAsset {
 
         // save before importing
         SceneVO vo = Sandbox.getInstance().sceneVoFromItems();
-        projectManager.saveCurrentProject(vo);
+        if (!skipRepack) //Skip saving if internal resource
+            projectManager.saveCurrentProject(vo);
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> importAsset(files, progressHandler, skipRepack));
         executor.execute(() -> {
             progressHandler.progressChanged(100);
-            projectManager.saveCurrentProject();
+            if (!skipRepack) //Skip saving if internal resource
+                projectManager.saveCurrentProject();
             try {
                 Thread.sleep(300);
             } catch (InterruptedException e) {

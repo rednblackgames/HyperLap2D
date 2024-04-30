@@ -15,11 +15,13 @@ import java.util.Objects;
 
 public class SpriteAnimationSequenceAsset extends SpriteAnimationAtlasAsset {
 
+    private final Array<String> names = new Array<>();
+
     @Override
     public int matchType(Array<FileHandle> files) {
-        String[] names = new String[files.size];
+        names.clear();
         for (int i = 0; i < files.size; i++) {
-            names[i] = files.get(i).nameWithoutExtension();
+            names.add(files.get(i).nameWithoutExtension());
         }
         return AssetsUtils.isAnimationSequence(names) ? getType() : AssetsUtils.TYPE_UNKNOWN;
     }

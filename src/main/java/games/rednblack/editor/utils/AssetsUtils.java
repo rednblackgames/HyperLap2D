@@ -3,6 +3,7 @@ package games.rednblack.editor.utils;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntArray;
 import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import org.apache.commons.io.FileUtils;
 
@@ -10,7 +11,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class AssetsUtils {
 
@@ -64,38 +64,45 @@ public class AssetsUtils {
         return fileTypeFilter;
     }
 
-    public static boolean isAnimationSequence(String[] names) {
-        if (names.length < 2) return false;
-        int[] sequenceArray = new int[names.length];
-        for (int i = 0; i < names.length; i++) {
-            String name = names[i];
+    public static IntArray sequenceArray = new IntArray();
+
+    public static boolean isAnimationSequence(Array<String> files) {
+        if (files.size < 2) return false;
+        sequenceArray.clear();
+        sequenceArray.ensureCapacity(files.size);
+        sequenceArray.size = files.size;
+
+        for (int i = 0; i < files.size; i++) {
+            String name = files.get(i);
             // try to remove extension if any
             if (name.indexOf(".") > 0) name = name.substring(0, name.indexOf("."));
             try {
                 int intValue = Integer.parseInt(name.replaceAll("(.+)_", ""));
-                sequenceArray[i] = intValue;
+                sequenceArray.insert(i, intValue);
             } catch (Exception e) {
-                sequenceArray[i] = -10;
+                sequenceArray.insert(i, -1);
             }
         }
-        Arrays.sort(sequenceArray);
-        if (sequenceArray[0] == 0 && sequenceArray[sequenceArray.length - 1] == sequenceArray.length - 1) {
+        sequenceArray.sort();
+        if (sequenceArray.get(0) == 0 && sequenceArray.get(sequenceArray.size - 1) == sequenceArray.size - 1) {
             return true;
         }
 
-        return sequenceArray[0] == 1 && sequenceArray[sequenceArray.length - 1] == sequenceArray.length;
+        return sequenceArray.get(0) == 1 && sequenceArray.get(sequenceArray.size - 1) == sequenceArray.size;
     }
+
+    private final static Array<String> tmpNames = new Array<>();
 
     public static boolean isAtlasAnimationSequence(Array<TextureAtlas.TextureAtlasData.Region> regions) {
         if (regions.size < 2) return false;
 
+        tmpNames.clear();
         //Check old .atlas format
-        String[] regionNames = new String[regions.size];
         for (int i = 0; i < regions.size; i++) {
-            regionNames[i] = regions.get(i).name;
+            tmpNames.add(regions.get(i).name);
         }
 
-        if (isAnimationSequence(regionNames))
+        if (isAnimationSequence(tmpNames))
             return true;
 
         //New .atlas format

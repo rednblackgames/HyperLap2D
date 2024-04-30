@@ -91,9 +91,11 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
         facade.sendNotification(MsgAPI.RESUME);
     }
 
+    float[] delta = new float[1];
     @Override
     public void render() {
-        facade.sendNotification(MsgAPI.RENDER, Math.min(Gdx.graphics.getDeltaTime(), 0.1f));
+        delta[0] = Math.min(Gdx.graphics.getDeltaTime(), 0.1f);
+        facade.sendNotification(MsgAPI.RENDER, delta);
     }
 
     @Override

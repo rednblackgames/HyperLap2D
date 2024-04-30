@@ -134,6 +134,7 @@ public class HyperLap2DLibraryAsset extends Asset {
 
                                         ResolutionManager resolutionManager = Facade.getInstance().retrieveProxy(ResolutionManager.NAME);
                                         resolutionManager.rePackProjectImagesForAllResolutionsSync();
+                                        projectManager.saveCurrentProject();
 
                                         progressHandler.progressChanged(100);
 

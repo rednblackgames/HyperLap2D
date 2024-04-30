@@ -80,7 +80,8 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
                 viewComponent.resume();
                 break;
             case MsgAPI.RENDER:
-                viewComponent.render(notification.getBody());
+                float[] delta = notification.getBody();
+                viewComponent.render(delta[0]);
                 break;
             case MsgAPI.RESIZE:
                 int[] data = notification.getBody();

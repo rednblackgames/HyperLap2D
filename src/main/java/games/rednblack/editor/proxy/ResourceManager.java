@@ -91,18 +91,18 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         packer.setTransparentColor(Color.WHITE);
         packer.getTransparentColor().a = 0;
 
-        FreeTypeFontGenerator dejaVuSansGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf")) {
+        FreeTypeFontGenerator dejaVuSansGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf")) /*{
             @Override
             protected BitmapFont newBitmapFont(BitmapFont.BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
                 return new ThreadSafeBitmapFont(data, pageRegions, integer);
             }
-        };
-        FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/FiraCode-Regular.ttf")){
+        }*/;
+        FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/FiraCode-Regular.ttf"))/*{
             @Override
             protected BitmapFont newBitmapFont(BitmapFont.BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
                 return new ThreadSafeBitmapFont(data, pageRegions, integer);
             }
-        };
+        }*/;
 
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.characters += "⌘⇧⌥\u25CF\u2022";
