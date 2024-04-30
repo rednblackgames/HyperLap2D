@@ -288,7 +288,7 @@ public class EntityUtils {
         ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(SandboxComponentRetriever.get(entity, ParentNodeComponent.class).parentEntity, LayerMapComponent.class);
 
-        return layerMapComponent.getLayer(zIndexComponent.layerName);
+        return layerMapComponent.getLayer(zIndexComponent.layerHash);
     }
 
     /**

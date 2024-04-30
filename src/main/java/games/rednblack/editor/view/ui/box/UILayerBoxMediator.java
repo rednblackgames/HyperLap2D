@@ -172,7 +172,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                 Set<Integer> selection = notification.getBody();
                 if(selection.size() == 1) {
                     ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(selection.iterator().next(), ZIndexComponent.class);
-                    index = findLayerByName(zIndexComponent.layerName);
+                    index = findLayerByName(zIndexComponent.getLayerName());
                     if(index == -1) {
                         // handle this somehow
                     } else {
@@ -187,7 +187,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                 index = viewComponent.getCurrentSelectedLayerIndex();
                 int item = notification.getBody();
                 ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(item, ZIndexComponent.class);
-                if(zIndexComponent.layerName == null) zIndexComponent.layerName = layers.get(index).layerName;
+                if(zIndexComponent.getLayerName() == null || zIndexComponent.getLayerName().isEmpty()) zIndexComponent.setLayerName(layers.get(index).layerName);
                 break;
             case UILayerBox.CHANGE_LAYER_NAME:
                 String layerName = notification.getBody();
@@ -245,7 +245,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
         int viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewEntity, LayerMapComponent.class);
 
-        layerMapComponent.getLayer(layerName).isLocked = setLocked;
+        layerMapComponent.getLayer(layerName.hashCode()).isLocked = setLocked;
     }
 
     private void selectEntitiesByLayerName(UILayerBox.UILayerItem layerItem) {
@@ -262,7 +262,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
         for(int i=0; i<nodeComponent.children.size; i++){
             int entity = nodeComponent.children.get(i);
             ZIndexComponent childZComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
-            if(childZComponent.layerName.equals(layerName)){
+            if(childZComponent.getLayerName().equals(layerName)){
                 items.add(entity);
             }
         }
@@ -278,7 +278,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
         for(int i=0; i<nodeComponent.children.size; i++){
             int entity = nodeComponent.children.get(i);
             ZIndexComponent childZComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
-            if(childZComponent.layerName.equals(layerName)){
+            if(childZComponent.getLayerName().equals(layerName)){
                 EntityUtils.getEntityLayer(entity).isVisible = setVisible;
             }
         }

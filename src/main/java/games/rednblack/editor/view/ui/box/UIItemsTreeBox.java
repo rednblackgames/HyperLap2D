@@ -177,7 +177,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         ParentNodeComponent parentNodeComponent = parentNodeComponentMapper.get(item);
         MainItemComponent mainItemComponent = mainItemComponentMapper.get(item);
 
-        UIItemsTreeNode node = Pools.get(UIItemsTreeNode.class, 20000).obtain();
+        UIItemsTreeNode node = Pools.get(UIItemsTreeNode.class, 80000).obtain();
         tmpNodes.add(node);
 
         if (parentNodeComponent == null) {
@@ -194,7 +194,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         }
 
         ZIndexComponent zIndexComponent = zIndexComponentMapper.get(item);
-        node.setName(name, zIndexComponent.layerName);
+        node.setName(name, zIndexComponent.getLayerName());
 
         node.setNodeValue(mainItemComponent.uniqueId, zIndexComponent.getGlobalZIndex());
         if (mainItemComponent.entityType != EntityFactory.COMPOSITE_TYPE)

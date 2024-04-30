@@ -29,7 +29,7 @@ public class NewLayerCommand extends EntityModifyRevertibleCommand {
         int viewingEntity = Sandbox.getInstance().getCurrentViewingEntity();
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
 
-        if (layerMapComponent.getLayer(layerName) != null) {
+        if (layerMapComponent.getLayer(layerName.hashCode()) != null) {
             cancel();
             Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Layer name already exists.").padBottom(20).pack();
             return;
