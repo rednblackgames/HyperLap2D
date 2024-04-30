@@ -219,7 +219,7 @@ public class TiledPlugin extends H2DPluginAdapter {
 
     public boolean isOnCurrentSelectedLayer(int entity) {
         ZIndexComponent entityZComponent = ComponentRetriever.get(entity, ZIndexComponent.class, getAPI().getEngine());
-        return entityZComponent.layerName.equals(pluginAPI.getCurrentSelectedLayerName());
+        return entityZComponent.getLayerName().equals(pluginAPI.getCurrentSelectedLayerName());
     }
 
     public void setSelectedTileName (String regionName) {
