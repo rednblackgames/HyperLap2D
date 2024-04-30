@@ -2,7 +2,6 @@ package games.rednblack.editor.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.utils.Pools;
 import games.rednblack.editor.utils.AppConfig;
 import games.rednblack.h2d.common.HyperLog;
 import games.rednblack.puremvc.commands.SimpleCommand;
@@ -22,7 +21,5 @@ public class BootstrapInfoCommand extends SimpleCommand {
         HyperLog.info("Shaders version " + gl20.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION));
 
         HyperLog.info("JVM Version: " + System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ")");
-
-        HyperLog.info(Pools.name());
     }
 }

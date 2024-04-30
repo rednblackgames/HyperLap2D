@@ -76,8 +76,10 @@ public class SplashMediator extends Mediator<Object> {
                         e.printStackTrace();
                     }
 
-                    splash.loadedData();
-                    Gdx.app.postRunnable(() -> HyperLap2DApp.getInstance().mainWindow.setVisible(true));
+                    Gdx.app.postRunnable(() -> {
+                        splash.loadedData();
+                        HyperLap2DApp.getInstance().mainWindow.setVisible(true);
+                    });
                 });
                 executor.shutdown();
             }

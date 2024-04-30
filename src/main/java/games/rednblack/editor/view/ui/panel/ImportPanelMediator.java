@@ -130,7 +130,7 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
 
         @Override
         public void progressChanged(float value) {
-            viewComponent.getProgressBar().setValue(value);
+            Gdx.app.postRunnable(() -> viewComponent.getProgressBar().setValue(value));
         }
 
         @Override

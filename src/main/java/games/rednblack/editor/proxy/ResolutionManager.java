@@ -327,10 +327,10 @@ public class ResolutionManager extends Proxy {
     public void rePackProjectImagesForAllResolutions(boolean reloadProjectData, RepackCallback callback) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
-            facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG);
+            Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG));
             try {
                 rePackProjectImagesForAllResolutionsSync();
-                facade.sendNotification(MsgAPI.HIDE_LOADING_DIALOG);
+                Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.HIDE_LOADING_DIALOG));
                 if (callback != null)
                     callback.onRepack(true);
             } catch (Exception e) {

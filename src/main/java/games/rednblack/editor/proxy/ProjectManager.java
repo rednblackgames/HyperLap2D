@@ -250,17 +250,17 @@ public class ProjectManager extends Proxy {
         FileAlterationListener listener = new FileAlterationListenerAdaptor() {
             @Override
             public void onFileCreate(File file) {
-                facade.sendNotification(MsgAPI.PROJECT_FILE_CREATED, file);
+                Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.PROJECT_FILE_CREATED, file));
             }
 
             @Override
             public void onFileDelete(File file) {
-                facade.sendNotification(MsgAPI.PROJECT_FILE_DELETED, file);
+                Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.PROJECT_FILE_DELETED, file));
             }
 
             @Override
             public void onFileChange(File file) {
-                facade.sendNotification(MsgAPI.PROJECT_FILE_MODIFIED, file);
+                Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.PROJECT_FILE_MODIFIED, file));
             }
         };
         observer.addListener(listener);
