@@ -44,14 +44,9 @@ import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import games.rednblack.h2d.common.vo.SceneConfigVO;
 import games.rednblack.h2d.common.vo.TexturePackerVO;
-import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.Proxy;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.monitor.FileAlterationListener;
-import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
-import org.apache.commons.io.monitor.FileAlterationMonitor;
-import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
 import javax.imageio.ImageIO;
@@ -59,10 +54,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class ProjectManager extends Proxy {
     private static final String TAG = ProjectManager.class.getCanonicalName();
@@ -93,7 +92,7 @@ public class ProjectManager extends Proxy {
     private ProjectExportSettings projectExportSettings;
     private LivePreviewSettings livePreviewSettings;
 
-    private FileAlterationMonitor fileWatcherMonitor;
+    private Thread fileWatcherThread;
 
     @Override
     public void onRegister() {
@@ -241,43 +240,84 @@ public class ProjectManager extends Proxy {
         }
     }
 
-    private void addFileWatcher(String projectPath) throws Exception {
+    private void addFileWatcher(String projectPath) {
         stopFileWatcher();
 
-        fileWatcherMonitor = new FileAlterationMonitor(2000);
+        if (fileWatcherThread != null) return;
 
-        FileAlterationObserver observer = new FileAlterationObserver(projectPath);
-        FileAlterationListener listener = new FileAlterationListenerAdaptor() {
+        Path directory = Paths.get(projectPath);
+
+        fileWatcherThread = new Thread(new Runnable() {
             @Override
-            public void onFileCreate(File file) {
-                Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.PROJECT_FILE_CREATED, file));
-            }
+            public void run() {
+                try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
+                    registerAll(directory, watchService);
 
-            @Override
-            public void onFileDelete(File file) {
-                Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.PROJECT_FILE_DELETED, file));
-            }
+                    while (true) {
+                        WatchKey key;
+                        try {
+                            // Poll for file system events
+                            key = watchService.poll(2, TimeUnit.SECONDS);
+                        } catch (InterruptedException e) {
+                            return;
+                        }
 
-            @Override
-            public void onFileChange(File file) {
-                Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.PROJECT_FILE_MODIFIED, file));
-            }
-        };
-        observer.addListener(listener);
+                        if (key == null) {
+                            // No events within the timeout period
+                            continue;
+                        }
 
-        fileWatcherMonitor.addObserver(observer);
-        fileWatcherMonitor.start();
+                        List<WatchEvent<?>> events = key.pollEvents();
+
+                        for (int i = 0; i < events.size(); i++) {
+                            WatchEvent<?> event = events.get(i);
+                            WatchEvent.Kind<?> kind = event.kind();
+                            Path fileName = (Path) event.context();
+                            Path filePath = ((Path) key.watchable()).resolve(fileName);
+                            File file = filePath.toFile();
+
+                            if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
+                                Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.PROJECT_FILE_CREATED, file));
+                            } else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
+                                Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.PROJECT_FILE_DELETED, file));
+                            } else if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
+                                Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.PROJECT_FILE_MODIFIED, file));
+                            }
+                        }
+
+                        // Reset the key
+                        boolean valid = key.reset();
+                        if (!valid) {
+                            break; // Exit the loop if the key is no longer valid
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "FileWatcherThread");
+
+        fileWatcherThread.setDaemon(true);
+        fileWatcherThread.start();
     }
 
     public void stopFileWatcher() {
-        if (fileWatcherMonitor != null) {
-            try {
-                fileWatcherMonitor.stop();
-            } catch (Exception e) {
-                e.printStackTrace();
+        if (fileWatcherThread == null) return;
+        fileWatcherThread.interrupt();
+        fileWatcherThread = null;
+    }
+
+    private void registerAll(final Path start, final WatchService watchService) throws Exception {
+        // Register the directory and its subdirectories recursively
+        Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                dir.register(watchService, StandardWatchEventKinds.ENTRY_CREATE,
+                        StandardWatchEventKinds.ENTRY_DELETE,
+                        StandardWatchEventKinds.ENTRY_MODIFY);
+                return FileVisitResult.CONTINUE;
             }
-            fileWatcherMonitor = null;
-        }
+        });
     }
 
     private void goThroughVersionMigrationProtocol(String projectPath, ProjectVO projectVo) {

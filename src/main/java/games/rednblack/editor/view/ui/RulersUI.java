@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.Pools;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import games.rednblack.editor.utils.Guide;
@@ -73,7 +74,7 @@ public class RulersUI extends Actor {
     private final Circle tmpCircle = new Circle();
     private final Color tmpColor = new Color();
 
-    private final HashMap<Integer, String> labelTextCache = new HashMap<>();
+    private final IntMap<String> labelTextCache = new IntMap<>();
 
     public RulersUI() {
         horizontalRect = new Rectangle();
@@ -324,7 +325,8 @@ public class RulersUI extends Actor {
             VisLabel label = Pools.obtain(VisLabel.class);
             label.setColor(TEXT_COLOR);
             int textNumber = (int) Math.abs(worldStartPointCpy.y + iterator * gridMeasuringSize);
-            labelTextCache.putIfAbsent(textNumber, "");
+            if (labelTextCache.get(textNumber) == null)
+                labelTextCache.put(textNumber, "");
             String lblText = labelTextCache.get(textNumber);
             if (lblText.equals("")) {
                 lblText = verticalize(textNumber + "");
