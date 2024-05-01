@@ -69,8 +69,6 @@ public class AssetsUtils {
     public static boolean isAnimationSequence(Array<String> files) {
         if (files.size < 2) return false;
         sequenceArray.clear();
-        sequenceArray.ensureCapacity(files.size);
-        sequenceArray.size = files.size;
 
         for (int i = 0; i < files.size; i++) {
             String name = files.get(i);
@@ -78,9 +76,9 @@ public class AssetsUtils {
             if (name.indexOf(".") > 0) name = name.substring(0, name.indexOf("."));
             try {
                 int intValue = Integer.parseInt(name.replaceAll("(.+)_", ""));
-                sequenceArray.insert(i, intValue);
+                sequenceArray.add(intValue);
             } catch (Exception e) {
-                sequenceArray.insert(i, -1);
+                sequenceArray.add(-1);
             }
         }
         sequenceArray.sort();
