@@ -177,6 +177,8 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
             } else {
                 viewComponent.setLinkage(false, "not in library");
             }
+        } else {
+            viewComponent.disableLinkage();
         }
 
         if (entityType == EntityFactory.LIGHT_TYPE) {
