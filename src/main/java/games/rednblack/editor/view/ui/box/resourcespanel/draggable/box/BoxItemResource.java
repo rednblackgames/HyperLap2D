@@ -131,10 +131,10 @@ public abstract class BoxItemResource extends Group implements DraggableResource
                         eventType = UIResourcesBoxMediator.CTRL_EVENT_TYPE;
                     }
 
-                    if(getPressedButton() == Input.Buttons.LEFT && getTapCount() == 2) {
+                    if(getPressedButton() == Input.Buttons.LEFT) {
                         Facade.getInstance().sendNotification(UIResourcesBoxMediator.RESOURCE_BOX_LEFT_CLICK, BoxItemResource.this, eventType);
 
-                        if (doubleClickEventName != null)
+                        if (doubleClickEventName != null && getTapCount() == 2)
                             Facade.getInstance().sendNotification(doubleClickEventName, doubleClickPayload, eventType);
                     }
 
