@@ -4,6 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
+import games.rednblack.editor.renderer.data.TexturePackVO;
 import games.rednblack.editor.utils.runtime.TalosExportFormat;
 import games.rednblack.talos.runtime.ParticleEffectDescriptor;
 import games.rednblack.talos.runtime.ParticleEmitterDescriptor;
@@ -101,7 +102,17 @@ public class TalosVFXAsset extends Asset {
             projectManager.copyImageFilesForAllResolutionsIntoProject(images, false, progressHandler);
 
             for (FileHandle handle : new Array.ArrayIterator<>(images)) {
-                projectManager.getCurrentProjectInfoVO().imagesPacks.get("main").regions.add(handle.nameWithoutExtension());
+                String name = handle.nameWithoutExtension();
+                boolean resDuplicated = false;
+                for (TexturePackVO texturePackVO : projectManager.getCurrentProjectInfoVO().imagesPacks.values()) {
+                    if (texturePackVO.regions.contains(name)) {
+                        resDuplicated = true;
+                        break;
+                    }
+                }
+                if (!resDuplicated) {
+                    projectManager.getCurrentProjectInfoVO().imagesPacks.get("main").regions.add(name);
+                }
             }
         }
         if (assetsRes.size > 0) {
