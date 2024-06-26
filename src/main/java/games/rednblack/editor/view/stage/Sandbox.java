@@ -24,6 +24,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationGLESFix;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -48,6 +49,7 @@ import games.rednblack.editor.renderer.systems.ParticleSystem;
 import games.rednblack.editor.renderer.systems.PhysicsSystem;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.renderer.utils.TextureArrayCpuPolygonSpriteBatch;
+import games.rednblack.editor.system.HyperLap2dRendererMiniMap;
 import games.rednblack.editor.system.ParticleContinuousSystem;
 import games.rednblack.editor.system.PhysicsAdjustSystem;
 import games.rednblack.editor.system.TalosContinuousSystem;
@@ -150,7 +152,8 @@ public class Sandbox {
         externalItemTypes.addExternalItemType(new TinyVGItemType());
         externalItemTypes.addExternalItemType(new TypingLabelItemType());
 
-        SceneConfiguration config = new SceneConfiguration(new TextureArrayCpuPolygonSpriteBatch(32_000), true);
+        Batch batch = new TextureArrayCpuPolygonSpriteBatch(32_767);
+        SceneConfiguration config = new SceneConfiguration(batch, true);
         config.setResourceRetriever(resourceManager);
         config.setExternalItemTypes(externalItemTypes);
 
@@ -167,6 +170,7 @@ public class Sandbox {
         config.addSystem(new ParticleContinuousSystem());
         config.removeSystem(TalosSystem.class);
         config.addSystem(new TalosContinuousSystem());
+        config.setRendererSystem(new HyperLap2dRendererMiniMap(batch, true));
 
         config.addSystem(manager);
 

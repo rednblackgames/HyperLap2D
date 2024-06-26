@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class WhitePixel {
     public static WhitePixel sharedInstance;
@@ -18,6 +19,7 @@ public class WhitePixel {
 
     public Texture texture;
     public TextureRegion textureRegion;
+    public TextureRegionDrawable drawable;
 
     public WhitePixel() {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
@@ -27,6 +29,7 @@ public class WhitePixel {
         texture = new Texture(pixmap, true);
         texture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.MipMapLinearLinear);
         textureRegion = new TextureRegion(texture);
+        drawable = new TextureRegionDrawable(textureRegion);
     }
 
     public void dispose() {
