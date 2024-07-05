@@ -147,7 +147,18 @@ public class SpineAsset extends Asset {
                 FileUtils.forceDelete(tmpDir.file());
 
                 for (TextureAtlas.TextureAtlasData.Region region : new Array.ArrayIterator<>(atlas.getRegions())) {
-                    projectManager.getCurrentProjectInfoVO().animationsPacks.get("main").regions.add(fileNameWithOutExt+region.name);
+                    String name = fileNameWithOutExt+region.name;
+                    name = name.replaceAll("/", Matcher.quoteReplacement("$"));
+                    boolean resDuplicated = false;
+                    for (TexturePackVO texturePackVO : projectManager.getCurrentProjectInfoVO().animationsPacks.values()) {
+                        if (texturePackVO.regions.contains(name)) {
+                            resDuplicated = true;
+                            break;
+                        }
+                    }
+                    if (!resDuplicated) {
+                        projectManager.getCurrentProjectInfoVO().animationsPacks.get("main").regions.add(name);
+                    }
                 }
 
                 return jsonFileTarget;
