@@ -42,6 +42,7 @@ public class HyperLap2dRendererMiniMap extends HyperLap2dRenderer {
 
         minimapCamera.setToOrtho(true, bounds.width, bounds.height);
         minimapCamera.position.set(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2,0);
+        if (bounds.width == 0 || bounds.height == 0) return null;
 
         Gdx.gl.glClearColor(0.318f, 0.318f, 0.318f, 1);
         frameBufferManager.createIfNotExists("minimap", (int) (bounds.width * pixelsPerWU), (int) (bounds.height * pixelsPerWU), false, hasStencilBuffer);

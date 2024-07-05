@@ -49,16 +49,19 @@ public class MiniMapDialog extends Table {
         setBackground(VisUI.getSkin().getDrawable("panel"));
     }
 
-    public void update() {
+    public boolean update() {
         Sandbox sandbox = Sandbox.getInstance();
         HyperLap2dRendererMiniMap rendererMiniMap = sandbox.getEngine().getSystem(HyperLap2dRendererMiniMap.class);
 
         Texture texture = rendererMiniMap.getMiniMapTexture(sandbox.getRootEntity());
+        if (texture == null) return false;
+
         region.setRegion(texture);
         drawable.setRegion(region);
         miniMap.setScaling(Scaling.contain);
         miniMap.setDrawable(drawable);
 
         miniMapBounds = rendererMiniMap.getMiniMapBounds();
+        return true;
     }
 }
