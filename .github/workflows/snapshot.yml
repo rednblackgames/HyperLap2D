@@ -44,28 +44,28 @@ jobs:
           name: Linux.HyperLap2D-SNAPSHOT.deb
           path: Linux.HyperLap2D-SNAPSHOT.deb
       - name: Sync files with production server
-        uses: garygrossgarten/github-action-scp@release
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_SSH_HOST }}
           username: ${{ secrets.DEPLOY_SSH_USERNAME }}
           password: ${{ secrets.DEPLOY_SSH_PASSWORD }}
           port: ${{ secrets.DEPLOY_SSH_PORT }}
-          local: "Linux.HyperLap2D-SNAPSHOT.deb"
-          remote: ${{ format('{0}/{1}', secrets.DEPLOY_SSH_TARGET_PATH, 'Linux.HyperLap2D-SNAPSHOT.deb') }}
+          source: "Linux.HyperLap2D-SNAPSHOT.deb"
+          target: ${{ format('{0}/{1}', secrets.DEPLOY_SSH_TARGET_PATH, 'Linux.HyperLap2D-SNAPSHOT.deb') }}
       - name: Generate build info
         env:
           WORKFLOW_RUN: ${{ github.run_number }}
         run: |
           echo "{ \"build\": $WORKFLOW_RUN }" > snapshot.json
       - name: Sync build info with production server
-        uses: garygrossgarten/github-action-scp@release
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_SSH_HOST }}
           username: ${{ secrets.DEPLOY_SSH_USERNAME }}
           password: ${{ secrets.DEPLOY_SSH_PASSWORD }}
           port: ${{ secrets.DEPLOY_SSH_PORT }}
-          local: "snapshot.json"
-          remote: ${{ format('{0}/{1}', secrets.DEPLOY_SSH_TARGET_PATH, 'snapshot.json') }}
+          source: "snapshot.json"
+          target: ${{ format('{0}/{1}', secrets.DEPLOY_SSH_TARGET_PATH, 'snapshot.json') }}
       - name: Publish SNAPSHOT artifacts
         if: "!contains(github.event.head_commit.message, 'editor only')"
         env:
@@ -107,14 +107,14 @@ jobs:
           name: Windows.HyperLap2D-SNAPSHOT.exe
           path: Windows.HyperLap2D-SNAPSHOT.exe
       - name: Sync files with server
-        uses: garygrossgarten/github-action-scp@release
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_SSH_HOST }}
           username: ${{ secrets.DEPLOY_SSH_USERNAME }}
           password: ${{ secrets.DEPLOY_SSH_PASSWORD }}
           port: ${{ secrets.DEPLOY_SSH_PORT }}
-          local: "Windows.HyperLap2D-SNAPSHOT.exe"
-          remote: ${{ format('{0}/{1}', secrets.DEPLOY_SSH_TARGET_PATH, 'Windows.HyperLap2D-SNAPSHOT.exe') }}
+          source: "Windows.HyperLap2D-SNAPSHOT.exe"
+          target: ${{ format('{0}/{1}', secrets.DEPLOY_SSH_TARGET_PATH, 'Windows.HyperLap2D-SNAPSHOT.exe') }}
 
   macOS:
     if: "!contains(github.event.head_commit.message, 'cd skip')"
@@ -152,11 +152,11 @@ jobs:
           name: macOS.HyperLap2D-SNAPSHOT.dmg
           path: macOS.HyperLap2D-SNAPSHOT.dmg
       - name: Sync files with server
-        uses: garygrossgarten/github-action-scp@release
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_SSH_HOST }}
           username: ${{ secrets.DEPLOY_SSH_USERNAME }}
           password: ${{ secrets.DEPLOY_SSH_PASSWORD }}
           port: ${{ secrets.DEPLOY_SSH_PORT }}
-          local: "macOS.HyperLap2D-SNAPSHOT.dmg"
-          remote: ${{ format('{0}/{1}', secrets.DEPLOY_SSH_TARGET_PATH, 'macOS.HyperLap2D-SNAPSHOT.dmg') }}
+          source: "macOS.HyperLap2D-SNAPSHOT.dmg"
+          target: ${{ format('{0}/{1}', secrets.DEPLOY_SSH_TARGET_PATH, 'macOS.HyperLap2D-SNAPSHOT.dmg') }}
