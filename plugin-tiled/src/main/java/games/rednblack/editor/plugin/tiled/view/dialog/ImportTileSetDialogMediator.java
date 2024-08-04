@@ -45,6 +45,7 @@ public class ImportTileSetDialogMediator extends Mediator<ImportTileSetDialog> {
     }
 
     private void importTileset(FileHandle tileset) {
+        System.out.println("Importing tileset " );
         byte[] image = tileset.readBytes();
         Pixmap pixmap = new Pixmap(image, 0, image.length);
         String name = tileset.nameWithoutExtension();
@@ -65,16 +66,15 @@ public class ImportTileSetDialogMediator extends Mediator<ImportTileSetDialog> {
             for (int y = 0; y < pixmap.getHeight(); y += tileH) {
                 int w = x + tileW <= pixmap.getWidth() ? tileW : pixmap.getWidth() - x;
                 int h = y + tileH <= pixmap.getHeight() ? tileH : pixmap.getHeight() - y;
-                Pixmap tilePixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-                tilePixmap.drawPixmap(pixmap, 0, 0, x, y, w, h);
-
-                String imagesPath = getCurrentRawImagesPath() + File.separator + name + i + ".png";
-                FileHandle path = new FileHandle(imagesPath);
-                PixmapIO.writePNG(path, tilePixmap);
-
-                tilePixmap.dispose();
-                texturePackVO.regions.add(name + i);
-                i++;
+                if( getViewComponent().getBlankTileOption()){
+                    if(!isBlankTile(pixmap, x, y, w, h)) { //check if the tile is blank (empty, if not it can be added)
+                        createTilePixmap(pixmap,x,y,w,h,i,name,texturePackVO);
+                        i++;
+                    }
+                }else{
+                        createTilePixmap(pixmap,x,y,w,h,i,name,texturePackVO);
+                        i++;
+                }
             }
         }
 
@@ -86,7 +86,33 @@ public class ImportTileSetDialogMediator extends Mediator<ImportTileSetDialog> {
         facade.sendNotification(MsgAPI.ACTION_REPACK);
     }
 
+    private void createTilePixmap(Pixmap pixmap, int x, int y, int w, int h, int i, String name, TexturePackVO texturePackVO){
+        Pixmap tilePixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+
+        //insert control
+
+        tilePixmap.drawPixmap(pixmap, 0, 0, x, y, w, h);
+
+        int pix =  pixmap.getPixel(x,y);
+        String imagesPath = getCurrentRawImagesPath() + File.separator + name + i + ".png";
+        FileHandle path = new FileHandle(imagesPath);
+        PixmapIO.writePNG(path, tilePixmap);
+
+        tilePixmap.dispose();
+        texturePackVO.regions.add(name + i);
+    }
+
     public String getCurrentRawImagesPath() {
         return pluginAPI.getProjectPath() + File.separator + "assets" + File.separator + "orig" + File.separator + "images";
+    }
+
+    private boolean isBlankTile(Pixmap pixmap ,int x, int y, int w, int h){
+        System.out.println("buildpixelmap");
+        for(int cx = x; cx < x + w; cx += 1) {
+            for(int cy = y; cy < y + h; cy += 1 ){
+                if(pixmap.getPixel(cx, cy)!= 0) return false;
+            }
+        }
+        return true;
     }
 }

@@ -3,10 +3,7 @@ package games.rednblack.editor.plugin.tiled.view.dialog;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.util.Validators;
-import com.kotcrab.vis.ui.widget.VisLabel;
-import com.kotcrab.vis.ui.widget.VisTable;
-import com.kotcrab.vis.ui.widget.VisTextButton;
-import com.kotcrab.vis.ui.widget.VisValidatableTextField;
+import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
@@ -21,6 +18,7 @@ public class ImportTileSetDialog extends H2DDialog {
     private final InputFileWidget imagePathField;
     private final VisTextButton importButton;
     private final Facade facade;
+    private final VisCheckBox removeBlankTileCheck;
 
     public ImportTileSetDialog(Facade facade) {
         super("Import TileSet");
@@ -40,6 +38,8 @@ public class ImportTileSetDialog extends H2DDialog {
         getContentTable().row().padTop(10);
         //
 
+
+
         Validators.IntegerValidator validator = new Validators.IntegerValidator();
 
         width = StandardWidgetsFactory.createValidableTextField(validator);
@@ -55,6 +55,13 @@ public class ImportTileSetDialog extends H2DDialog {
         sizeTable.add("px");
         getContentTable().add(sizeTable);
 
+        //test
+        getContentTable().row().padTop(10);
+        removeBlankTileCheck = StandardWidgetsFactory.createCheckBox("Remove blank tile");
+        getContentTable().add(removeBlankTileCheck);
+        getContentTable().row().padTop(10);
+
+
         importButton = StandardWidgetsFactory.createTextButton("Import");
         getButtonsTable().add(importButton);
         pack();
@@ -69,6 +76,8 @@ public class ImportTileSetDialog extends H2DDialog {
     public int getTileHeight() {
         return Integer.parseInt(height.getText());
     }
+
+    public Boolean getBlankTileOption(){ return removeBlankTileCheck.isChecked(); }
 
     private void setListeners() {
         importButton.addListener(new ClickListener() {
