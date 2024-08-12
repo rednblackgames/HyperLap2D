@@ -45,7 +45,6 @@ public class ImportTileSetDialogMediator extends Mediator<ImportTileSetDialog> {
     }
 
     private void importTileset(FileHandle tileset) {
-        System.out.println("Importing tileset " );
         byte[] image = tileset.readBytes();
         Pixmap pixmap = new Pixmap(image, 0, image.length);
         String name = tileset.nameWithoutExtension();
@@ -107,7 +106,6 @@ public class ImportTileSetDialogMediator extends Mediator<ImportTileSetDialog> {
     }
 
     private boolean isBlankTile(Pixmap pixmap ,int x, int y, int w, int h){
-        System.out.println("buildpixelmap");
         for(int cx = x; cx < x + w; cx += 1) {
             for(int cy = y; cy < y + h; cy += 1 ){
                 if(pixmap.getPixel(cx, cy)!= 0) return false;
