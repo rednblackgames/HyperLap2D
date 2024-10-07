@@ -58,7 +58,7 @@ jobs:
       - name: Fix dmg file names
         run: mv mac-release/*.dmg macOS.HyperLap2D-SNAPSHOT.dmg
       - name: Fix exe file names
-        run: mv windows-release/*.dmg Windows.HyperLap2D-SNAPSHOT.exe
+        run: mv windows-release/*.exe Windows.HyperLap2D-SNAPSHOT.exe
       - name: Display structure of downloaded files
         run: ls -R
       - name: Upload deb artifact
