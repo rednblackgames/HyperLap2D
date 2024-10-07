@@ -39,7 +39,7 @@ jobs:
       - name: Fix deb file names
         run: mv build/jpackage/*.deb Linux.HyperLap2D-SNAPSHOT.deb
       - name: Upload deb artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: Linux.HyperLap2D-SNAPSHOT.deb
           path: Linux.HyperLap2D-SNAPSHOT.deb
@@ -102,7 +102,7 @@ jobs:
       - name: Fix file names
         run: mv build/jpackage/*.exe Windows.HyperLap2D-SNAPSHOT.exe
       - name: Upload exe artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: Windows.HyperLap2D-SNAPSHOT.exe
           path: Windows.HyperLap2D-SNAPSHOT.exe
@@ -147,7 +147,7 @@ jobs:
       - name: Fix file names
         run: mv build/jpackage/*.dmg macOS.HyperLap2D-SNAPSHOT.dmg
       - name: Upload dmg artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: macOS.HyperLap2D-SNAPSHOT.dmg
           path: macOS.HyperLap2D-SNAPSHOT.dmg
