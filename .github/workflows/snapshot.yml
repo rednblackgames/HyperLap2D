@@ -43,16 +43,10 @@ jobs:
           WORKFLOW_RUN: ${{ github.run_number }}
         run: |
           echo "{ \"build\": $WORKFLOW_RUN }" > snapshot.json
-      - name: Download macOS Release
+      - name: Download macOS and Windows Release
         uses: actions/download-artifact@v4.1.8
-        with:
-          name: macOS.HyperLap2D-SNAPSHOT.dmg
-          path: macOS.HyperLap2D-SNAPSHOT.dmg
-      - name: Download Windows Release
-        uses: actions/download-artifact@v4.1.8
-        with:
-          name: Windows.HyperLap2D-SNAPSHOT.exe
-          path: Windows.HyperLap2D-SNAPSHOT.exe
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Upload deb artifact
         uses: actions/upload-artifact@v4.4.0
         with:
