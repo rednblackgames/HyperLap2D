@@ -53,14 +53,10 @@ jobs:
         with:
           name: Windows.HyperLap2D-SNAPSHOT.exe
           path: windows-release
-      - name: Display structure of downloaded files
-        run: ls -R
       - name: Fix dmg file names
         run: mv mac-release/*.dmg macOS.HyperLap2D-SNAPSHOT.dmg
       - name: Fix exe file names
         run: mv windows-release/*.exe Windows.HyperLap2D-SNAPSHOT.exe
-      - name: Display structure of downloaded files
-        run: ls -R
       - name: Upload deb artifact
         uses: actions/upload-artifact@v4.4.0
         with:
