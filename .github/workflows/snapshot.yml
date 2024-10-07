@@ -152,11 +152,13 @@ jobs:
           name: macOS.HyperLap2D-SNAPSHOT.dmg
           path: macOS.HyperLap2D-SNAPSHOT.dmg
       - name: Sync files with server
-        uses: garygrossgarten/github-action-scp@release
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
-          host: ${{ secrets.DEPLOY_SSH_HOST }}
+          server: ${{ secrets.DEPLOY_SSH_HOST }}
           username: ${{ secrets.DEPLOY_SSH_USERNAME }}
           password: ${{ secrets.DEPLOY_SSH_PASSWORD }}
           port: ${{ secrets.DEPLOY_SSH_PORT }}
-          local: "macOS.HyperLap2D-SNAPSHOT.dmg"
-          remote: ${{ format('{0}/{1}', secrets.DEPLOY_SSH_TARGET_PATH, 'macOS.HyperLap2D-SNAPSHOT.dmg') }}
+          local_path: "macOS.HyperLap2D-SNAPSHOT.dmg"
+          remote_path: ${{ format('{0}/{1}', secrets.DEPLOY_SSH_TARGET_PATH, 'macOS.HyperLap2D-SNAPSHOT.dmg') }}
+          ssh_private_key: ""
+          sftpArgs: '-o ConnectTimeout=15'
