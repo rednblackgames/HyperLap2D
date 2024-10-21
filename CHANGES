@@ -1,5 +1,6 @@
 [0.1.5]
-- [BREAK CHANGE] Update Spine runtime support to `4.2.0`
+- Update libGDX to 1.13.0
+- [BREAK CHANGE] Update Spine runtime support to `4.2.7`
 - Add Items Tree search filter
 - Add Mini Map feature (press and hold keyboard `M` button)
 - Basic folder visualization for different atlas packages
@@ -10,6 +11,7 @@
 - [BREAK CHANGE] Make `ZIndexComponent#layerName` field private
 - Optimize some built-in systems
 - Allow to extend `HyperLap2dRenderer` and use custom rendering systems
+- Bug fixes and performance improvements
 
 [0.1.4]
 - Update libGDX to 1.12.1
