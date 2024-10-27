@@ -9,6 +9,7 @@
 
 **Runtime**
 - [BREAK CHANGE] Make `ZIndexComponent#layerName` field private
+- [BREAK CHANGE] Move TypingLabel extension to TextraTypist
 - Optimize some built-in systems
 - Allow to extend `HyperLap2dRenderer` and use custom rendering systems
 - Bug fixes and performance improvements
