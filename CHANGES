@@ -1,5 +1,5 @@
 [0.1.5]
-- Update libGDX to 1.13.0
+- Update libGDX to 1.13.1
 - [BREAK CHANGE] Update Spine runtime support to `4.2.7`
 - Add Items Tree search filter
 - Add Mini Map feature (press and hold keyboard `M` button)
