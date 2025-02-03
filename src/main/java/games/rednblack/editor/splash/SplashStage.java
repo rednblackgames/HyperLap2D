@@ -58,7 +58,7 @@ public class SplashStage extends Stage {
         companyName.setY(55 - companyName.getHeight() - 7);
         addActor(companyName);
 
-        Label copyright = new Label("Copyright (c) 2024,  All rights reserved.", whiteLabelStyle);
+        Label copyright = new Label("Copyright (c) 2025,  All rights reserved.", whiteLabelStyle);
         copyright.setX(13);
         copyright.setY(companyName.getY() - 20);
         addActor(copyright);
