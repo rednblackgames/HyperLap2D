@@ -652,6 +652,7 @@ public class ProjectManager extends Proxy {
         vo.maxWidth = texturePackerVO.maxWidth;
         vo.square = texturePackerVO.square;
         vo.legacy = texturePackerVO.legacy;
+        vo.fast = texturePackerVO.fast;
     }
 
     public Settings getTexturePackerSettings() {
@@ -665,6 +666,8 @@ public class ProjectManager extends Proxy {
         settings.square = vo.square;
         settings.flattenPaths = true;
         settings.legacyOutput = vo.legacy;
+        settings.fast = vo.fast;
+        settings.limitMemory = false;
         return settings;
     }
 

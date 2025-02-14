@@ -22,6 +22,7 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
     private final InputFileWidget exportSettingsInputFileWidget;
     private final VisCheckBox duplicateCheckBox;
     private final VisCheckBox forceSquareCheckBox;
+    private final VisCheckBox fastCheckBox;
     private final VisCheckBox legacyCheckBox;
     private final VisSelectBox<Integer> widthSelectBox;
     private final VisSelectBox<Integer> heightSelectBox;
@@ -33,6 +34,8 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
         duplicateCheckBox = StandardWidgetsFactory.createCheckBox("Duplicate edge pixels in atlas");
         forceSquareCheckBox = StandardWidgetsFactory.createCheckBox("Force Square");
         legacyCheckBox = StandardWidgetsFactory.createCheckBox("Legacy libGDX format");
+        fastCheckBox = StandardWidgetsFactory.createCheckBox("Fast Packing");
+        StandardWidgetsFactory.addTooltip(fastCheckBox, "Packs your atlas faster, but result may not be efficient and produce extra atlas pages. Do not use for production export.");
         exportSettingsInputFileWidget = new InputFileWidget(FileChooser.Mode.OPEN, FileChooser.SelectionMode.DIRECTORIES, false);
         widthSelectBox = StandardWidgetsFactory.createSelectBox(Integer.class);
         heightSelectBox = StandardWidgetsFactory.createSelectBox(Integer.class);
@@ -54,6 +57,7 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
         texturePackerTable.add("Atlas Filter:").left().top().padRight(5).padTop(10);
         texturePackerTable.add(getFilterTable()).padTop(10).left();
         texturePackerTable.row().padTop(10);
+        texturePackerTable.add(fastCheckBox).left().colspan(2).row();
         texturePackerTable.add(duplicateCheckBox).left().colspan(2).row();
         texturePackerTable.add(legacyCheckBox).left().colspan(2).row();
         texturePackerTable.add(forceSquareCheckBox).left().row();
@@ -107,6 +111,7 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
 
         duplicateCheckBox.setChecked(vo.duplicate);
         legacyCheckBox.setChecked(vo.legacy);
+        fastCheckBox.setChecked(vo.fast);
         forceSquareCheckBox.setChecked(vo.square);
 
         filterMagSelectBox.setSelected(vo.filterMag);
@@ -126,6 +131,7 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
         vo.square = forceSquareCheckBox.isChecked();
         vo.filterMag = filterMagSelectBox.getSelected();
         vo.filterMin = filterMinSelectBox.getSelected();
+        vo.fast = fastCheckBox.isChecked();
 
         boolean packerModified = !vo.equals(backup);
         projectManager.setTexturePackerVO(vo);
