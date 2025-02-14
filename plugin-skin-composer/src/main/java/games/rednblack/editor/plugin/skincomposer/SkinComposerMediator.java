@@ -1,7 +1,7 @@
 package games.rednblack.editor.plugin.skincomposer;
 
 import com.badlogic.gdx.utils.Json;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.network.HttpDownloadUtility;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.network.model.GithubReleaseData;
@@ -71,7 +71,7 @@ public class SkinComposerMediator extends Mediator<DownloadingDialog> {
                         GithubReleaseData jsonData = json.fromJson(GithubReleaseData.class, data);
 
                         if (!new File(jarPath).exists() || plugin.getStorage().get("latest_update") == null || !plugin.getStorage().get("latest_update").equals(jsonData.tag_name)) {
-                            Dialogs.showConfirmDialog(plugin.getAPI().getUIStage(),
+                            H2DDialogs.showConfirmDialog(plugin.getAPI().getUIStage(),
                                     "New update found!", "A new version of Skin Composer has found, would you like to download it?",
                                     new String[]{"Later", "Download Now"}, new Integer[]{0, 1}, r -> {
                                         if (r == 1) {

@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.controller.commands;
 
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.h2d.common.H2DDialogs;

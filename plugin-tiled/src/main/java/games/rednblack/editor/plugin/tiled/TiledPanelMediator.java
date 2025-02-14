@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import games.rednblack.editor.renderer.data.TexturePackVO;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.extension.spine.SpineItemType;
 
 import com.badlogic.gdx.Gdx;
@@ -35,7 +36,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.OptionDialogAdapter;
 
 import games.rednblack.editor.plugin.tiled.data.AlternativeAutoTileVO;
@@ -242,8 +242,8 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 facade.sendNotification(MsgAPI.UPDATE_RESOURCES_LIST);
                 break;
             case TiledPlugin.ACTION_DELETE_TILE_ALL:
-                Dialogs.showOptionDialog(tiledPlugin.getAPI().getUIStage(), "Delete all...", "Do you really want to delete all tiles?",
-                        Dialogs.OptionDialogType.YES_NO, new OptionDialogAdapter() {
+                H2DDialogs.showOptionDialog(tiledPlugin.getAPI().getUIStage(), "Delete all...", "Do you really want to delete all tiles?",
+                        H2DDialogs.OptionDialogType.YES_NO, new OptionDialogAdapter() {
                             @Override
                             public void yes () {
                             	tiledPlugin.dataToSave.removeAllTiles();

@@ -1,10 +1,10 @@
 package games.rednblack.editor.controller.commands;
 
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.renderer.components.LayerMapComponent;
 import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.H2DDialogs;
 
 /**
  * Created by CyberJoe on 7/25/2015.
@@ -31,7 +31,7 @@ public class NewLayerCommand extends EntityModifyRevertibleCommand {
 
         if (layerMapComponent.getLayer(layerName.hashCode()) != null) {
             cancel();
-            Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Layer name already exists.").padBottom(20).pack();
+            H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Layer name already exists.").padBottom(20).pack();
             return;
         }
 

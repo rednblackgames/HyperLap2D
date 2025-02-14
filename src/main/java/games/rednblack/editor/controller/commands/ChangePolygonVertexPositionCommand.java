@@ -68,6 +68,6 @@ public class ChangePolygonVertexPositionCommand extends SandboxCommand {
             }
         });
         dialog.setText(new String[]{points.get(anchor).x+"", points.get(anchor).y+""});
-        sandbox.getUIStage().addActor(dialog.fadeIn());
+        dialog.show(sandbox.getUIStage());
     }
 }

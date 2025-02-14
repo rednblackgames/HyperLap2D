@@ -3,9 +3,9 @@ package games.rednblack.editor.utils.asset.impl;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.renderer.data.TexturePackVO;
 import games.rednblack.editor.utils.runtime.TalosExportFormat;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.talos.runtime.ParticleEffectDescriptor;
 import games.rednblack.talos.runtime.ParticleEmitterDescriptor;
 import games.rednblack.talos.runtime.modules.*;
@@ -168,7 +168,7 @@ public class TalosVFXAsset extends Asset {
                 if (file.exists()) {
                     imgs.add(new FileHandle(file));
                 } else {
-                    Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                    H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
                             "\nCould not find " + file.getName() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
                     imgs.clear();
                     return false;
@@ -191,7 +191,7 @@ public class TalosVFXAsset extends Asset {
                     if (file.exists()) {
                         imgs.add(new FileHandle(file));
                     } else {
-                        Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                        H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
                                 "\nCould not find " + file.getName() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
                         imgs.clear();
                         return false;

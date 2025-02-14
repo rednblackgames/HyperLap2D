@@ -26,7 +26,6 @@ import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.data.manager.PreferencesManager;
 import games.rednblack.editor.data.migrations.ProjectVersionMigrator;
 import games.rednblack.editor.renderer.data.*;
@@ -39,6 +38,7 @@ import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.SettingsDialog;
 import games.rednblack.editor.view.ui.settings.LivePreviewSettings;
 import games.rednblack.editor.view.ui.settings.ProjectExportSettings;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ProjectVO;
@@ -405,7 +405,7 @@ public class ProjectManager extends Proxy {
             totalWarnings += copyImageFilesIntoProject(files, resolutionEntryVO, performResize, handler);
         }
         if (totalWarnings > 0) {
-            Dialogs.showOKDialog(Sandbox.getInstance().getUIStage(), "Warning", totalWarnings + " images were not resized for smaller resolutions due to already small size ( < 3px )");
+            H2DDialogs.showOKDialog(Sandbox.getInstance().getUIStage(), "Warning", totalWarnings + " images were not resized for smaller resolutions due to already small size ( < 3px )");
         }
     }
 

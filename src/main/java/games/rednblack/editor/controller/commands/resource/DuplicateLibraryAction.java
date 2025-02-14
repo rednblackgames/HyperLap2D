@@ -1,7 +1,6 @@
 package games.rednblack.editor.controller.commands.resource;
 
 import com.badlogic.gdx.utils.Json;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import games.rednblack.editor.controller.commands.AddToLibraryActionCommand;
 import games.rednblack.editor.controller.commands.NonRevertibleCommand;
@@ -10,6 +9,7 @@ import games.rednblack.editor.renderer.data.GraphVO;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.validator.StringNameValidator;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 
@@ -30,7 +30,7 @@ public class DuplicateLibraryAction extends NonRevertibleCommand {
 
         GraphVO actionToDuplicate = libraryActions.get(libraryActionName);
 
-        Dialogs.showInputDialog(Sandbox.getInstance().getUIStage(), "Duplicate " + libraryActionName, "New name : ", false, new StringNameValidator(), new InputDialogListener() {
+        H2DDialogs.showInputDialog(Sandbox.getInstance().getUIStage(), "Duplicate " + libraryActionName, "New name : ", false, new StringNameValidator(), new InputDialogListener() {
             @Override
             public void finished(String input) {
                 if (input == null || input.equals("")) {

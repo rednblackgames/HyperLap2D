@@ -19,7 +19,6 @@
 package games.rednblack.editor.view.ui.box;
 
 import com.badlogic.gdx.utils.Array;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import games.rednblack.editor.controller.commands.*;
 import games.rednblack.editor.renderer.components.LayerMapComponent;
@@ -29,14 +28,13 @@ import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.interfaces.INotification;
 import games.rednblack.puremvc.util.Interests;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Stream;
 
 
 /**
@@ -114,14 +112,14 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                 selectEntitiesByLayerName(layerItem);
                 break;
             case UILayerBox.CREATE_NEW_LAYER:
-                Dialogs.showInputDialog(Sandbox.getInstance().getUIStage(), "New Layer", "Please set unique name for your Layer", false, new InputDialogListener() {
+                H2DDialogs.showInputDialog(Sandbox.getInstance().getUIStage(), "New Layer", "Enter unique name for your Layer", false, new InputDialogListener() {
                     @Override
                     public void finished(String input) {
                         if (checkIfNameIsUnique(input)) {
                             Object[] payload = NewLayerCommand.payload(viewComponent.getCurrentSelectedLayerIndex()+1, input);
                             facade.sendNotification(MsgAPI.ACTION_NEW_LAYER, payload);
                         } else {
-                            // show error dialog
+                            H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Layer name already exists.").padBottom(20).pack();
                         }
                     }
                     @Override
@@ -143,7 +141,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                 int deletingLayerIndex = viewComponent.getCurrentSelectedLayerIndex();
                 if(deletingLayerIndex != -1) {
                     String layerName = layers.get(deletingLayerIndex).layerName;
-                    Dialogs.showConfirmDialog(sandbox.getUIStage(),
+                    H2DDialogs.showConfirmDialog(sandbox.getUIStage(),
                             "Delete Layer", "Do you really want to delete '" + layerName + "' layer?",
                             new String[]{"Cancel", "Delete"}, new Integer[]{0, 1}, r -> {
                                 if (r == 1) {

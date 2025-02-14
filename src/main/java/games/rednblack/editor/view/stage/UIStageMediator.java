@@ -19,10 +19,10 @@
 package games.rednblack.editor.view.stage;
 
 import com.badlogic.gdx.Gdx;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Mediator;
 import games.rednblack.puremvc.interfaces.INotification;
@@ -60,7 +60,7 @@ public class UIStageMediator extends Mediator<UIStage> {
 
                 MainItemComponent mainItemComponent = SandboxComponentRetriever.get(item, MainItemComponent.class);
 
-                Dialogs.showInputDialog(sandbox.getUIStage(), "New Library Item", "Unique Name", false, new InputDialogListener() {
+                H2DDialogs.showInputDialog(sandbox.getUIStage(), "New Library Item", "Unique Name", false, new InputDialogListener() {
                     @Override
                     public void finished(String input) {
                         Object[] payload = new Object[2];
