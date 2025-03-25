@@ -48,7 +48,13 @@ task packTextures {
 
 project.ext.assetsDir = new File("assets/pack");
 
+compileJava {
+    dependsOn ':hyperlap2d-runtime-libgdx:dist'
+    dependsOn ':h2d-libgdx-spine-extension:dist'
+}
+
 task dist(type: Jar) {
+    dependsOn classes
     from files(sourceSets.main.output.classesDirs)
     from files(sourceSets.main.output.resourcesDir)
     from files(project.assetsDir)
