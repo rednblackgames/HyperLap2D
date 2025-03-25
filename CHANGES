@@ -1,7 +1,7 @@
 [0.1.6]
 - Update libGDX to 1.13.2-SNAPSHOT
+- Update to Java 21
 - [BREAK CHANGE] Add support `fast` atlas packing format. Enabled by default, but generates a warning during export
-
 
 [0.1.5]
 - Update libGDX to 1.13.1, VisUI to 1.5.5, Talos Legacy to 1.5.1, PureMVC to 1.0.3
