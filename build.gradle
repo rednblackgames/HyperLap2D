@@ -171,7 +171,6 @@ runtime {
                'jdk.unsupported']
 
     jpackage {
-        distDir.set(file(buildDir))
         setVersion(getBuildVersion())
         mainJar = dist.archiveFileName.get()
         imageOptions += ['--app-version', getBuildVersion(), '--vendor', 'Red & Black Games', '--description', 'HyperLap2D Editor', '--name', 'HyperLap2D']
