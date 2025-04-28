@@ -532,27 +532,29 @@ public class Lwjgl3ApplicationGLESFix implements Lwjgl3ApplicationBase {
         Lwjgl3Window.setSizeLimits(windowHandle, config.windowMinWidth, config.windowMinHeight, config.windowMaxWidth,
                 config.windowMaxHeight);
         if (config.fullscreenMode == null) {
-            if (config.windowX == -1 && config.windowY == -1) {
-                int windowWidth = Math.max(config.windowWidth, config.windowMinWidth);
-                int windowHeight = Math.max(config.windowHeight, config.windowMinHeight);
-                if (config.windowMaxWidth > -1) windowWidth = Math.min(windowWidth, config.windowMaxWidth);
-                if (config.windowMaxHeight > -1) windowHeight = Math.min(windowHeight, config.windowMaxHeight);
+            if (GLFW.glfwGetPlatform() != GLFW.GLFW_PLATFORM_WAYLAND) {
+                if (config.windowX == -1 && config.windowY == -1) {
+                    int windowWidth = Math.max(config.windowWidth, config.windowMinWidth);
+                    int windowHeight = Math.max(config.windowHeight, config.windowMinHeight);
+                    if (config.windowMaxWidth > -1) windowWidth = Math.min(windowWidth, config.windowMaxWidth);
+                    if (config.windowMaxHeight > -1) windowHeight = Math.min(windowHeight, config.windowMaxHeight);
 
-                long monitorHandle = GLFW.glfwGetPrimaryMonitor();
-                if (config.windowMaximized && config.maximizedMonitor != null) {
-                    monitorHandle = config.maximizedMonitor.monitorHandle;
+                    long monitorHandle = GLFW.glfwGetPrimaryMonitor();
+                    if (config.windowMaximized && config.maximizedMonitor != null) {
+                        monitorHandle = config.maximizedMonitor.monitorHandle;
+                    }
+
+                    IntBuffer areaXPos = BufferUtils.createIntBuffer(1);
+                    IntBuffer areaYPos = BufferUtils.createIntBuffer(1);
+                    IntBuffer areaWidth = BufferUtils.createIntBuffer(1);
+                    IntBuffer areaHeight = BufferUtils.createIntBuffer(1);
+                    GLFW.glfwGetMonitorWorkarea(monitorHandle, areaXPos, areaYPos, areaWidth, areaHeight);
+
+                    GLFW.glfwSetWindowPos(windowHandle, Math.max(0, areaXPos.get(0) + areaWidth.get(0) / 2 - windowWidth / 2),
+                            Math.max(0, areaYPos.get(0) + areaHeight.get(0) / 2 - windowHeight / 2));
+                } else {
+                    GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
                 }
-
-                IntBuffer areaXPos = BufferUtils.createIntBuffer(1);
-                IntBuffer areaYPos = BufferUtils.createIntBuffer(1);
-                IntBuffer areaWidth = BufferUtils.createIntBuffer(1);
-                IntBuffer areaHeight = BufferUtils.createIntBuffer(1);
-                GLFW.glfwGetMonitorWorkarea(monitorHandle, areaXPos, areaYPos, areaWidth, areaHeight);
-
-                GLFW.glfwSetWindowPos(windowHandle, Math.max(0, areaXPos.get(0) + areaWidth.get(0) / 2 - windowWidth / 2),
-                        Math.max(0, areaYPos.get(0) + areaHeight.get(0) / 2 - windowHeight / 2));
-            } else {
-                GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
             }
 
             if (config.windowMaximized) {
