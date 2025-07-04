@@ -36,3 +36,9 @@ jobs:
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         run:
           ./gradlew clean build publish -PRELEASE=true -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
+      - name: Trigger manual upload to Central Repository
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer $(echo -n '${{ secrets.NEXUS_USERNAME }}:${{ secrets.NEXUS_PASSWORD }}' | base64)" \
+            -H "Content-Type: application/json" \
+            https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/games.rednblack
