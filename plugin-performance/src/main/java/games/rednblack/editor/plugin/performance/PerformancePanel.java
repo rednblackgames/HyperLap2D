@@ -9,9 +9,6 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.h2d.common.UIDraggablePanel;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryUsage;
-
 public class PerformancePanel extends UIDraggablePanel {
 
     private final VisTable mainTable;
@@ -99,9 +96,9 @@ public class PerformancePanel extends UIDraggablePanel {
         entitiesCount.setText(entitySubscription.getEntities().size());
         fpsLbl.setText(Gdx.graphics.getFramesPerSecond());
 
-        MemoryUsage memoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-        long usedMemory = memoryUsage.getUsed() / (1024 * 1024);
-        long allocatedMemory = memoryUsage.getCommitted() / (1024 * 1024);
+        long used = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        long usedMemory = used / (1024 * 1024);
+        long allocatedMemory = Runtime.getRuntime().totalMemory() / (1024 * 1024);
         memoryLabel.getText().clear();
         memoryLabel.getText().append(usedMemory);
         memoryLabel.getText().append(" of ");

@@ -6,10 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.utils.Pool;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.widget.H2DTextTooltip;
 
 public class UIItemsTreeNode extends Tree.Node<UIItemsTreeNode, UIItemsTreeValue, VisTable> implements Pool.Poolable {
     VisLabel label;
     Cell<VisLabel> lblCell;
+    H2DTextTooltip tooltip;
 
     public UIItemsTreeNode() {
         super(new VisTable());
@@ -19,6 +22,8 @@ public class UIItemsTreeNode extends Tree.Node<UIItemsTreeNode, UIItemsTreeValue
         lblCell = getActor().add(label);
 
         setValue(new UIItemsTreeValue());
+
+        tooltip = StandardWidgetsFactory.addTooltip(getActor(), "");
     }
 
     public void setNodeValue(String entityId, int zIndex) {
@@ -34,8 +39,9 @@ public class UIItemsTreeNode extends Tree.Node<UIItemsTreeNode, UIItemsTreeValue
         label.setColor(r, g, b, a);
     }
 
-    public void setName(String name) {
+    public void setName(String name, String layer) {
         label.setText(name);
+        tooltip.setText(layer);
     }
 
     public void setPad(float top, float left, float bottom, float right) {

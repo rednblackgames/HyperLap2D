@@ -262,19 +262,28 @@ public class ShaderUniformsPanel extends UIDraggablePanel {
 
             switch (uniformVO.getType()) {
                 case "int" -> {
-                    uniformsTable.add(new CellBody(String.valueOf(uniformVO.intValue))).colspan(4);
+                    uniformsTable.add(new CellBody(String.valueOf(uniformVO.intValue)));
+                    uniformsTable.add(new CellBody(""));
+                    uniformsTable.add(new CellBody(""));
+                    uniformsTable.add(new CellBody(""));
                 }
                 case "float" -> {
-                    uniformsTable.add(new CellBody(String.valueOf(uniformVO.floatValue))).colspan(4);
+                    uniformsTable.add(new CellBody(String.valueOf(uniformVO.floatValue)));
+                    uniformsTable.add(new CellBody(""));
+                    uniformsTable.add(new CellBody(""));
+                    uniformsTable.add(new CellBody(""));
                 }
                 case "vec2" -> {
                     uniformsTable.add(new CellBody(String.valueOf(uniformVO.floatValue)));
                     uniformsTable.add(new CellBody(String.valueOf(uniformVO.floatValue2)));
+                    uniformsTable.add(new CellBody(""));
+                    uniformsTable.add(new CellBody(""));
                 }
                 case "vec3" -> {
                     uniformsTable.add(new CellBody(String.valueOf(uniformVO.floatValue)));
                     uniformsTable.add(new CellBody(String.valueOf(uniformVO.floatValue2)));
                     uniformsTable.add(new CellBody(String.valueOf(uniformVO.floatValue3)));
+                    uniformsTable.add(new CellBody(""));
                 }
                 case "vec4" -> {
                     uniformsTable.add(new CellBody(String.valueOf(uniformVO.floatValue)));

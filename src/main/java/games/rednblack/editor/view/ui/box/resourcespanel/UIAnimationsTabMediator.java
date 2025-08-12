@@ -77,9 +77,7 @@ public class UIAnimationsTabMediator extends UIResourcesTabMediator<UIAnimations
         animationBoxes.clear();
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
-        if (new SpineItemType().getTypeId() == SpineItemType.SPINE_TYPE) {
-            createAnimationResources(resourceManager.getProjectSpineAnimationsList().keySet(), SpineResource.class, ItemFactory.get()::createSpineAnimation, searchText);
-        }
+        createAnimationResources(resourceManager.getProjectSpineAnimationsList().keySet(), SpineResource.class, ItemFactory.get()::createSpineAnimation, searchText);
         createAnimationResources(resourceManager.getProjectSpriteAnimationsList().keySet(), SpriteResource.class, ItemFactory.get()::createSpriteAnimation, searchText);
         animationBoxes.sort();
         viewComponent.setThumbnailBoxes(animationBoxes);

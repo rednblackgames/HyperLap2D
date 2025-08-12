@@ -72,7 +72,7 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
             transformComponent.x += diff.x;
             transformComponent.y += diff.y;
             ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
-            zIndexComponent.layerName = layerBoxMediator.getCurrentSelectedLayerName();
+            zIndexComponent.setLayerName(layerBoxMediator.getCurrentSelectedLayerName());
             Sandbox.getInstance().getEngine().getSystem(LayerSystem.class).process();
             Facade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
             pastedEntityIds.add(EntityUtils.getEntityId(entity));

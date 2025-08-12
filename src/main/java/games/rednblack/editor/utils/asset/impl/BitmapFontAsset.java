@@ -3,7 +3,6 @@ package games.rednblack.editor.utils.asset.impl;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.Array;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.LabelVO;
@@ -11,6 +10,7 @@ import games.rednblack.editor.renderer.data.MainItemVO;
 import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import org.apache.commons.io.FileUtils;
@@ -59,7 +59,7 @@ public class BitmapFontAsset extends Asset {
                 for (String textureName : font.getImagePaths()) {
                     FileHandle tmp = new FileHandle(textureName);
                     if (!tmp.exists()) {
-                        Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                        H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
                                 "\nAll PNG files needs to have same location as the font file.").padBottom(20).pack();
                         return;
                     }

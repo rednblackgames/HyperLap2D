@@ -78,11 +78,9 @@ public class UIParticleEffectsTabMediator extends UIResourcesTabMediator<UIParti
         particlesList.clear();
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
-        if (new TalosItemType().getTypeId() == TalosItemType.TALOS_TYPE) {
-            createParticleResources(resourceManager.getProjectTalosList().keySet(), TalosResource.class, ItemFactory.get()::tryCreateTalosItem, searchText);
-        }
-
+        createParticleResources(resourceManager.getProjectTalosList().keySet(), TalosResource.class, ItemFactory.get()::tryCreateTalosItem, searchText);
         createParticleResources(resourceManager.getProjectParticleList().keySet(), ParticleEffectResource.class, ItemFactory.get()::tryCreateParticleItem, searchText);
+
         particlesList.sort();
         viewComponent.setItems(particlesList);
     }

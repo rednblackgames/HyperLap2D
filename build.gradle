@@ -10,13 +10,17 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'org.beryx.runtime' version '1.12.2'
+    id 'org.beryx.runtime' version '1.13.1'
 }
 
 group 'games.rednblack'
-version '0.1.4'
+
+allprojects {
+    version '0.1.6'
+}
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url 'https://jitpack.io' }
@@ -73,6 +77,7 @@ task runHyperLap2D(dependsOn: classes, type: JavaExec) {
 }
 
 task dist(type: Jar) {
+    dependsOn classes
     archiveVersion.set(getBuildVersion())
 
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -85,7 +90,7 @@ task dist(type: Jar) {
         attributes 'Main-Class': project.mainClassName
     }
 
-    destinationDirectory = file("$buildDir/lib")
+    destinationDirectory = file("$buildDir/../distBuld/lib")
 }
 
 jpackageImage.dependsOn dist
@@ -105,11 +110,14 @@ dependencies {
     implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
 
     implementation "games.rednblack.puremvc:core:$pureMvcVersion"
+    implementation "games.rednblack.talos:runtime-libgdx:$talosVersion"
+    implementation "games.rednblack.talos:bvb-libgdx:$talosVersion"
 
     implementation "org.lwjgl:lwjgl-tinyfd:$lwjgl3Version"
     implementation "org.lwjgl:lwjgl-tinyfd:$lwjgl3Version:natives-linux"
     implementation "org.lwjgl:lwjgl-tinyfd:$lwjgl3Version:natives-linux-arm32"
     implementation "org.lwjgl:lwjgl-tinyfd:$lwjgl3Version:natives-linux-arm64"
+    //implementation "org.lwjgl:lwjgl-tinyfd:$lwjgl3Version:natives-linux-riscv64"
     implementation "org.lwjgl:lwjgl-tinyfd:$lwjgl3Version:natives-macos"
     implementation "org.lwjgl:lwjgl-tinyfd:$lwjgl3Version:natives-macos-arm64"
     implementation "org.lwjgl:lwjgl-tinyfd:$lwjgl3Version:natives-windows"
@@ -125,25 +133,29 @@ dependencies {
     implementation project(":h2d-libgdx-talos-extension")
     implementation project(":h2d-libgdx-typinglabel-extension")
     implementation project(":h2d-libgdx-tinyvg-extension")
+    implementation project(":h2d-libgdx-bvb-extension")
 
-    implementation "com.talosvfx:talos-libgdx:$talosVersion"
     implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
-    implementation "com.rafaskoberg.gdx:typing-label:$typingLabelVersion"
+    implementation "com.github.tommyettinger:textratypist:$textratypistVersion"
     implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
     implementation "com.esotericsoftware.spine:spine-libgdx:$spineVersion"
     implementation "com.github.lyze237:gdx-TinyVG:$gdxTinyVGVersion"
     implementation "com.mortennobel:java-image-scaling:0.8.6"
     implementation "org.apache.commons:commons-lang3:3.12.0"
-    implementation "commons-io:commons-io:2.7"
+    implementation "commons-io:commons-io:2.16.1"
     implementation 'net.mountainblade:modular:1.0'
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
 task deleteInstallerTemp(type: Delete) {
-    delete "$buildDir/installer"
+    delete "$buildDir/../distBuld/installer"
 }
 jpackage.dependsOn deleteInstallerTemp
+
+startScripts {
+    dependsOn dist
+}
 
 runtime {
     javaHome.set(System.getProperty("java.home"))
@@ -161,9 +173,9 @@ runtime {
                'jdk.crypto.cryptoki',
                'jdk.crypto.ec',
                'jdk.unsupported']
-    distDir = file(buildDir)
 
     jpackage {
+        distDir.set(file("$buildDir/../distBuld"))
         setVersion(getBuildVersion())
         mainJar = dist.archiveFileName.get()
         imageOptions += ['--app-version', getBuildVersion(), '--vendor', 'Red & Black Games', '--description', 'HyperLap2D Editor', '--name', 'HyperLap2D']
@@ -175,7 +187,7 @@ runtime {
             installerOptions += ['--win-dir-chooser', '--win-menu', '--win-menu-group', 'HyperLap2D',
                                  '--win-shortcut', '--win-shortcut-prompt',  '--vendor', 'Red & Black Games',
                                  '--description', 'HyperLap2D Editor',
-                                 '--temp', "$buildDir/installer",
+                                 '--temp', "$buildDir/../distBuld/installer",
                                  '--win-upgrade-uuid', 'e5f64fb6-111f-41f3-8f33-03b90e1a3a32',
                                  "--icon", file("icons/icon.ico")]
             resourceDir = file("resources-windows")

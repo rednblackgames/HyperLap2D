@@ -175,6 +175,10 @@ public class UIBasicItemProperties extends UIItemProperties {
         libraryLinkLabel.setText(text);
     }
 
+    public void disableLinkage() {
+        linkageContainer.setVisible(false);
+    }
+
     private Table getTintTable() {
         VisTable tintTable = new VisTable();
         tintTable.add(StandardWidgetsFactory.createLabel("Tint:")).growX().padRight(3);

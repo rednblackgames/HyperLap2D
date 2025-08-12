@@ -2,13 +2,13 @@ package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.utils.poly.PolygonRuntimeUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.Notification;
@@ -23,7 +23,7 @@ public class DeletePolygonVertexCommand extends SandboxCommand {
 
         n = ((Notification) notification).copy();
 
-        Dialogs.showConfirmDialog(sandbox.getUIStage(), "Delete Vertex",
+        H2DDialogs.showConfirmDialog(sandbox.getUIStage(), "Delete Vertex",
                 "Are you sure you want to delete this vertex?", new String[]{"No", "Yes"}, new Integer[]{0, 1}, r -> {
             if (r == 1) {
                 callDoAction(n);

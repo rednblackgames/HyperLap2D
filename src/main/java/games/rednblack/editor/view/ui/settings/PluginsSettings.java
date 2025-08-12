@@ -40,4 +40,9 @@ public class PluginsSettings extends SettingsNodeValue<String> {
     public boolean validateSettings() {
         return true;
     }
+
+    @Override
+    public boolean requireRestart() {
+        return false;
+    }
 }

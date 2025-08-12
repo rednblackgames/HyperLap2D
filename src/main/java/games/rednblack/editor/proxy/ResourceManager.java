@@ -14,9 +14,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.*;
 import com.esotericsoftware.spine.SkeletonJson;
 import com.kotcrab.vis.ui.VisUI;
-import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
-import com.talosvfx.talos.runtime.utils.ShaderDescriptor;
-import com.talosvfx.talos.runtime.utils.VectorField;
+import games.rednblack.h2d.extension.bvb.BVBDataObject;
+import games.rednblack.talos.runtime.ParticleEffectDescriptor;
+import games.rednblack.talos.runtime.ParticleEffectInstancePool;
+import games.rednblack.talos.runtime.bvb.BVB;
+import games.rednblack.talos.runtime.utils.ShaderDescriptor;
+import games.rednblack.talos.runtime.utils.VectorField;
 import dev.lyze.gdxtinyvg.TinyVG;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.resources.FontSizePair;
@@ -53,10 +56,10 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     public static final String NAME = TAG;
 
     private final HashMap<String, ParticleEffectPool> particleEffects = new HashMap<>(1);
-    private final HashMap<String, ParticleEffectDescriptor> talosVFXs = new HashMap<>(1);
+    private final HashMap<String, ParticleEffectInstancePool> talosVFXs = new HashMap<>(1);
     private final HashMap<String, TextureAtlas> currentProjectAtlas = new HashMap<>(1);
 
-    private final HashMap<String, SpineDataObject> spineAnimAtlases = new HashMap<>();
+    private final HashMap<String, BVBDataObject> spineAnimAtlases = new HashMap<>();
     private final HashMap<String, Array<TextureAtlas.AtlasRegion>> spriteAnimAtlases = new HashMap<>();
     private final HashMap<FontSizePair, BitmapFont> fonts = new HashMap<>();
     private final HashMap<String, BitmapFont> bitmapFonts = new HashMap<>();
@@ -88,18 +91,18 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         packer.setTransparentColor(Color.WHITE);
         packer.getTransparentColor().a = 0;
 
-        FreeTypeFontGenerator dejaVuSansGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf")) {
+        FreeTypeFontGenerator dejaVuSansGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/DejaVuSans.ttf")) /*{
             @Override
             protected BitmapFont newBitmapFont(BitmapFont.BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
                 return new ThreadSafeBitmapFont(data, pageRegions, integer);
             }
-        };
-        FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/FiraCode-Regular.ttf")){
+        }*/;
+        FreeTypeFontGenerator monoGenerator = new FreeTypeFontGenerator(Gdx.files.internal("freetypefonts/FiraCode-Regular.ttf"))/*{
             @Override
             protected BitmapFont newBitmapFont(BitmapFont.BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
                 return new ThreadSafeBitmapFont(data, pageRegions, integer);
             }
-        };
+        }*/;
 
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.characters += "⌘⇧⌥\u25CF\u2022";
@@ -345,7 +348,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
             ParticleEffectDescriptor effectDescriptor = new ParticleEffectDescriptor();
             effectDescriptor.setAssetProvider(assetProvider);
             effectDescriptor.load(Gdx.files.internal(file.getAbsolutePath()));
-            talosVFXs.put(filename, effectDescriptor);
+            talosVFXs.put(filename, new ParticleEffectInstancePool(effectDescriptor, 1, games.rednblack.editor.renderer.resources.ResourceManager.PARTICLE_POOL_SIZE));
         }
     }
 
@@ -389,9 +392,13 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 String animName = FilenameUtils.removeExtension(entry.file().getName());
                 FileHandle animJsonFile = Gdx.files.internal(entry.file().getAbsolutePath() + File.separator + animName + ".json");
 
-                SpineDataObject spineDataObject = new SpineDataObject();
+                BVBDataObject spineDataObject = new BVBDataObject();
                 spineDataObject.skeletonJson = new SkeletonJson(new ResourceRetrieverAttachmentLoader(animName, this, spineDrawableLogic));
                 spineDataObject.skeletonData = spineDataObject.skeletonJson.readSkeletonData(animJsonFile);
+
+                FileHandle bvb = Gdx.files.internal(entry.file().getAbsolutePath() + File.separator + animName + "-bvb.json");
+                if (bvb.exists())
+                    spineDataObject.bvbData = HyperJson.getJson().fromJson(BVB.class, bvb);
 
                 spineAnimAtlases.put(animName, spineDataObject);
             }
@@ -581,7 +588,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         generator.dispose();
     }
 
-    public HashMap<String, SpineDataObject> getProjectSpineAnimationsList() {
+    public HashMap<String, BVBDataObject> getProjectSpineAnimationsList() {
         return spineAnimAtlases;
     }
 
@@ -593,7 +600,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return particleEffects;
     }
 
-    public HashMap<String, ParticleEffectDescriptor> getProjectTalosList() {
+    public HashMap<String, ParticleEffectInstancePool> getProjectTalosList() {
         return talosVFXs;
     }
 

@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
+import games.rednblack.editor.view.ui.validator.GreaterThanIntegerValidator;
 import games.rednblack.editor.view.ui.validator.StringNameValidator;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
@@ -52,7 +53,7 @@ public class NewProjectDialog extends H2DDialog {
     private VisValidatableTextField originHeightTextField;
     private String defaultWorkspacePath;
     private VisValidatableTextField pixelsPerWorldUnitField;
-    private VisLabel worldSizeLabel;
+    private final VisLabel worldSizeLabel;
 
     NewProjectDialog() {
         super("Create New Project");
@@ -119,7 +120,7 @@ public class NewProjectDialog extends H2DDialog {
         dimensionsTable.add(originHeightTextField).width(45).height(21).left();
         dimensionsTable.add("px").left();
         dimensionsTable.row().padTop(10);
-        pixelsPerWorldUnitField = StandardWidgetsFactory.createValidableTextField(DEFAULT_PPWU, "light", new Validators.IntegerValidator(), digitsOnlyFilter);
+        pixelsPerWorldUnitField = StandardWidgetsFactory.createValidableTextField(DEFAULT_PPWU, "light", new GreaterThanIntegerValidator(1, true), digitsOnlyFilter);
         pixelsPerWorldUnitField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -166,8 +167,11 @@ public class NewProjectDialog extends H2DDialog {
         int originH = NumberUtils.toInt(getOriginHeight());
 
         int ppwu = NumberUtils.toInt(getPixelPerWorldUnit(), 1);
-
-        worldSizeLabel.setText(originW / ppwu + " x " + originH / ppwu);
+        if (ppwu < 1) {
+            worldSizeLabel.setText("World Unit cannot be < 1");
+        } else {
+            worldSizeLabel.setText(originW / ppwu + " x " + originH / ppwu);
+        }
     }
 
     private class BtnClickListener extends ClickListener {

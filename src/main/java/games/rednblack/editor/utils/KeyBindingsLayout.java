@@ -61,6 +61,8 @@ public class KeyBindingsLayout {
 
     public static final int TOGGLE_FULL_SCREEN = 29;
 
+    public static final int SHOW_MINI_MAP = 30;
+
     private static final ObjectMap<Integer, KeyMapper> defaultMapper = new ObjectMap<>();
     static {
         defaultMapper.put(NEW_PROJECT, new KeyMapper(NEW_PROJECT, true, false, false, Input.Keys.N));
@@ -103,6 +105,7 @@ public class KeyBindingsLayout {
         defaultMapper.put(HIDE_GUI, new KeyMapper(HIDE_GUI, false, false, false, Input.Keys.F12));
         defaultMapper.put(OPEN_CONSOLE, new KeyMapper(OPEN_CONSOLE, false, false, false, Input.Keys.F10));
         defaultMapper.put(TOGGLE_FULL_SCREEN, new KeyMapper(TOGGLE_FULL_SCREEN, false, false, false, Input.Keys.F11));
+        defaultMapper.put(SHOW_MINI_MAP, new KeyMapper(SHOW_MINI_MAP, false, false, false, Input.Keys.M));
     }
 
     private static final Array<KeyMapper> mapping = new Array<>();

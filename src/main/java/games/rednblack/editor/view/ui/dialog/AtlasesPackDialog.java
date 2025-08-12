@@ -15,12 +15,12 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.adapter.AbstractListAdapter;
 import com.kotcrab.vis.ui.util.adapter.SimpleListAdapter;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.OptionDialogAdapter;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.utils.ResourceListAdapter;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.listener.ScrollFocusListener;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
@@ -62,8 +62,8 @@ public class AtlasesPackDialog extends H2DDialog {
         tabbedPane = new ImageTabbedPane("chip") {
             @Override
             public boolean remove(ImageTab tab, boolean ignoreTabDirty) {
-                Dialogs.showOptionDialog(Sandbox.getInstance().getUIStage(), "Remove Pack", "Are you sure to remove this pack?",
-                        Dialogs.OptionDialogType.YES_NO_CANCEL, new OptionDialogAdapter() {
+                H2DDialogs.showOptionDialog(Sandbox.getInstance().getUIStage(), "Remove Pack", "Are you sure to remove this pack?",
+                        H2DDialogs.OptionDialogType.YES_NO_CANCEL, new OptionDialogAdapter() {
                             @Override
                             public void yes () {
                                 facade.sendNotification(removeNotification, ((PackTab) tab).getName());

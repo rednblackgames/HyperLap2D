@@ -1,5 +1,6 @@
 package games.rednblack.editor;
 
+import com.badlogic.gdx.Gdx;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 
@@ -88,73 +89,83 @@ public class ConsoleInterceptor extends PrintStream {
 
     private void sendToConsole(String s) {
         if (prefix != null) {
-            facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, prefix);
+            sendNotification(prefix);
         }
 
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, s);
+        sendNotification(s);
 
         if (suffix != null) {
-            facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, suffix);
+            sendNotification(suffix);
         }
     }
 
     @Override
     public void println() {
         super.println();
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, "\n");
+        sendNotification("\n");
     }
 
     @Override
     public void println(String s) {
         super.println(s);
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, "\n");
+        sendNotification("\n");
     }
 
     @Override
     public void println(int x) {
         super.println(x);
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, "\n");
+        sendNotification("\n");
     }
 
     @Override
     public void println(char x) {
         super.println(x);
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, "\n");
+        sendNotification("\n");
     }
 
     @Override
     public void println(long x) {
         super.println(x);
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, "\n");
+        sendNotification("\n");
     }
 
     @Override
     public void println(float x) {
         super.println(x);
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, "\n");
+        sendNotification("\n");
     }
 
     @Override
     public void println(char[] x) {
         super.println(x);
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, "\n");
+        sendNotification("\n");
     }
 
     @Override
     public void println(double x) {
         super.println(x);
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, "\n");
+        sendNotification("\n");
     }
 
     @Override
     public void println(Object x) {
         super.println(x);
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, "\n");
+        sendNotification("\n");
     }
 
     @Override
     public void println(boolean x) {
         super.println(x);
-        facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, "\n");
+        sendNotification("\n");
+    }
+
+    private void sendNotification(String body) {
+        long tid = Thread.currentThread().getId();
+        if (tid != 1) {
+            if (Gdx.app != null)
+                Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, body));
+        } else {
+            facade.sendNotification(MsgAPI.WRITE_TO_CONSOLE, body);
+        }
     }
 }

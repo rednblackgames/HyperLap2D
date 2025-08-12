@@ -241,6 +241,9 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
             case KeyBindingsLayout.OPEN_CONSOLE:
                 facade.sendNotification(MsgAPI.OPEN_CONSOLE);
                 break;
+            case KeyBindingsLayout.SHOW_MINI_MAP:
+                facade.sendNotification(MsgAPI.SHOW_MINI_MAP);
+                break;
         }
         return false;
     }
@@ -250,6 +253,9 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         switch (KeyBindingsLayout.mapAction(keycode)) {
             case KeyBindingsLayout.HIDE_GUI:
                 uiStage.addAction(Actions.parallel(Actions.touchable(Touchable.enabled), Actions.fadeIn(0.1f)));
+                break;
+            case KeyBindingsLayout.SHOW_MINI_MAP:
+                facade.sendNotification(MsgAPI.HIDE_MINI_MAP);
                 break;
         }
         return false;

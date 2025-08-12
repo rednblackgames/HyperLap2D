@@ -26,7 +26,7 @@ public class CodeEditorDialogMediator extends Mediator<CodeEditorDialog> {
     @Override
     public void listNotificationInterests(Interests interests) {
         interests.add(MsgAPI.OPEN_CODE_EDITOR,
-                MsgAPI.PROJECT_FILE_MODIFIED);
+                MsgAPI.PROJECT_FILE_MODIFIED, MsgAPI.PROJECT_FILE_CREATED);
     }
 
     @Override
@@ -47,6 +47,7 @@ public class CodeEditorDialogMediator extends Mediator<CodeEditorDialog> {
                     readObservedFile();
                 }
                 break;
+            case MsgAPI.PROJECT_FILE_CREATED:
             case MsgAPI.PROJECT_FILE_MODIFIED:
                 if (!viewComponent.hasParent())
                     break;
