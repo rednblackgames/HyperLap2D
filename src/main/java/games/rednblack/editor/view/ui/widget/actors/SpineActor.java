@@ -34,11 +34,12 @@ public class SpineActor extends Actor {
         this.renderer = new SkeletonRenderer();
         this.animationName = animationName;
         initSkeletonData();
-        initSpine();
+        scaleChanged();
     }
 
     private void computeBoundBox() {
-        skeleton.updateWorldTransform();
+        skeleton.setPosition(0, 0);
+        skeleton.updateWorldTransform(Skeleton.Physics.update);
 
         Array<Slot> drawOrder = skeleton.getDrawOrder();
         minX = Float.MAX_VALUE;
@@ -79,15 +80,15 @@ public class SpineActor extends Actor {
         SpineDataObject spineDataObject = (SpineDataObject) irr.getExternalItemType(SpineItemType.SPINE_TYPE, animationName);
         skeletonJson = spineDataObject.skeletonJson;
         skeletonData = spineDataObject.skeletonData;
-    }
-
-    private void initSpine() {
-        skeleton = new Skeleton(skeletonData);
-        skeleton.setScale(getScaleX(), getScaleY());
         AnimationStateData stateData = new AnimationStateData(skeletonData);
         state = new AnimationState(stateData);
-        computeBoundBox();
+        skeleton = new Skeleton(skeletonData);
+
         setAnimation(skeletonData.getAnimations().get(0).getName());
+        if (skeletonData.getDefaultSkin() == null) {
+            skeleton.setSkin(skeletonData.getSkins().get(0));
+            skeleton.setSlotsToSetupPose();
+        }
     }
 
     public Array<Animation> getAnimations() {
@@ -103,9 +104,9 @@ public class SpineActor extends Actor {
     }
 
     @Override
-    public void setScale(float scale) {
-        super.setScale(scale);
-        initSpine();
+    protected void scaleChanged() {
+        skeleton.setScale(getScaleX(), getScaleY());
+        computeBoundBox();
     }
 
     @Override
@@ -123,11 +124,16 @@ public class SpineActor extends Actor {
     }
 
     @Override
+    protected void positionChanged() {
+        skeleton.setPosition(getX() - minX, getY() - minY);
+    }
+
+    @Override
     public void act(float delta) {
-        skeleton.updateWorldTransform(); //
+        skeleton.updateWorldTransform(Skeleton.Physics.update); //
         state.update(delta);
         state.apply(skeleton);
-        skeleton.setPosition(getX() - minX, getY() - minY);
+        skeleton.update(delta);
         super.act(delta);
     }
 }

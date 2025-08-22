@@ -18,6 +18,8 @@
 
 package games.rednblack.editor.view.ui.box;
 
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
@@ -42,15 +44,11 @@ import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extension.spine.SpineItemType;
 import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelComponent;
-import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.interfaces.IMediator;
 import games.rednblack.puremvc.interfaces.INotification;
 import games.rednblack.puremvc.util.Interests;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Set;
-import java.util.stream.Stream;
 
 /**
  * Created by azakhary on 4/15/2015.
@@ -60,9 +58,14 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
     private static final String TAG = UIMultiPropertyBoxMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
-    private HashMap<String, ArrayList<String>> classToMediatorMap;
+    private ObjectMap<String, Array<String>> classToMediatorMap;
 
-    private ArrayList<UIAbstractPropertiesMediator> currentRegisteredPropertyBoxes = new ArrayList<>();
+    private final Array<UIAbstractPropertiesMediator> currentRegisteredPropertyBoxes = new Array<>();
+
+    private final ObjectMap<String, IMediator> mediatorMap = new ObjectMap<>();
+    private final Array<String> mediatorNames = new Array<>();
+
+    private UIMultipleSelectPropertiesMediator multipleSelectPropertiesMediator;
 
     public UIMultiPropertyBoxMediator() {
         super(NAME, new UIMultiPropertyBox());
@@ -71,15 +74,15 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
     }
 
     private void initMap() {
-        classToMediatorMap = new HashMap<>();
+        classToMediatorMap = new ObjectMap<>();
 
-        classToMediatorMap.put(Integer.class.getName(), new ArrayList<>());
+        classToMediatorMap.put(Integer.class.getName(), new Array<>());
         classToMediatorMap.get(Integer.class.getName()).add(UIBasicItemPropertiesMediator.NAME);
 
-        classToMediatorMap.put(SceneVO.class.getName(), new ArrayList<>());
+        classToMediatorMap.put(SceneVO.class.getName(), new Array<>());
         classToMediatorMap.get(SceneVO.class.getName()).add(UIScenePropertiesMediator.NAME);
 
-        classToMediatorMap.put(TextTool.class.getName(), new ArrayList<>());
+        classToMediatorMap.put(TextTool.class.getName(), new Array<>());
         classToMediatorMap.get(TextTool.class.getName()).add(UITextToolPropertiesMediator.NAME);
     }
 
@@ -134,7 +137,8 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         if (classToMediatorMap.get(mapName) == null) return;
 
         // retrieve a list of property panels to show
-        ArrayList<String> mediatorNames = new ArrayList<>(classToMediatorMap.get(mapName));
+        mediatorNames.clear();
+        mediatorNames.addAll(classToMediatorMap.get(mapName));
 
         // TODO: this is not uber cool, gotta think a new way to make this class know nothing about entities
         if (observable instanceof Integer) {
@@ -143,9 +147,15 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
 
         clearPropertyBoxes();
 
-        for (String mediatorName : mediatorNames) {
+        for (int i = 0; i < mediatorNames.size; i++) {
+            String mediatorName = mediatorNames.get(i);
             try {
-                facade.registerMediator((IMediator) ClassReflection.newInstance(ClassReflection.forName(mediatorName)));
+                IMediator mediator = mediatorMap.get(mediatorName);
+                if (mediator == null) {
+                    mediator = (IMediator) ClassReflection.newInstance(ClassReflection.forName(mediatorName));
+                    mediatorMap.put(mediatorName, mediator);
+                }
+                facade.registerMediator(mediator);
 
                 UIAbstractPropertiesMediator<Object, UIAbstractProperties> propertyBoxMediator = facade.retrieveMediator(mediatorName);
                 currentRegisteredPropertyBoxes.add(propertyBoxMediator);
@@ -157,7 +167,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         }
     }
 
-    private void initEntityProperties(ArrayList<String> mediatorNames, int entity) {
+    private void initEntityProperties(Array<String> mediatorNames, int entity) {
         int entityType = EntityUtils.getType(entity);
 
         if (entityType == EntityFactory.IMAGE_TYPE) {
@@ -223,18 +233,20 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         viewComponent.clearAll();
 
         //unregister all current mediators
-        for (UIAbstractPropertiesMediator mediator : currentRegisteredPropertyBoxes) {
+        for (int i = 0; i < currentRegisteredPropertyBoxes.size; i++) {
+            UIAbstractPropertiesMediator mediator = currentRegisteredPropertyBoxes.get(i);
             facade.removeMediator(mediator.getName());
         }
         currentRegisteredPropertyBoxes.clear();
     }
 
     private void initMultipleSelectionPropertyBox(Set<Integer> selection) {
+        if (multipleSelectPropertiesMediator == null) multipleSelectPropertiesMediator = new UIMultipleSelectPropertiesMediator();
+
         clearPropertyBoxes();
-        UIMultipleSelectPropertiesMediator mediator = new UIMultipleSelectPropertiesMediator();
-        facade.registerMediator(mediator);
-        currentRegisteredPropertyBoxes.add(mediator);
-        mediator.setItem(selection);
-        viewComponent.addPropertyBox(mediator.getViewComponent());
+        facade.registerMediator(multipleSelectPropertiesMediator);
+        currentRegisteredPropertyBoxes.add(multipleSelectPropertiesMediator);
+        multipleSelectPropertiesMediator.setItem(selection);
+        viewComponent.addPropertyBox(multipleSelectPropertiesMediator.getViewComponent());
     }
 }

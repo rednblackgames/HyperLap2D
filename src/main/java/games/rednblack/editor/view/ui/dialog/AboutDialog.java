@@ -54,7 +54,7 @@ public class AboutDialog extends H2DDialog {
         leftTable.add("Total Time").padTop(20).row();
         leftTable.add(totalTimeSpent).row();
 
-        contentTable.add("Copyright \u00A9 2023 Red & Black Games").left().row();
+        contentTable.add("Copyright \u00A9 2025 Red & Black Games").left().row();
         contentTable.add("").row();
         contentTable.add("Dedicated to game lovers. Create something awesome!").left().row();
         contentTable.add("").row();

@@ -4,7 +4,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.utils.Array;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.SceneDataManager;
@@ -18,6 +17,7 @@ import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import org.apache.commons.io.FileUtils;
@@ -73,7 +73,7 @@ public class ParticleEffectAsset extends Asset {
                         File target = new File(targetPath + "/" + newName);
                         FileUtils.copyFile(fileHandle.file(), target);
                     } else {
-                        Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                        H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
                                 "\nAll PNG files needs to have same location as the particle file.").padBottom(20).pack();
                     }
                 } catch (IllegalArgumentException e) {

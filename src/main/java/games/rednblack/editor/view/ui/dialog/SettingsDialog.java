@@ -8,7 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.*;
+import games.rednblack.editor.Main;
 import games.rednblack.h2d.common.H2DDialog;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
@@ -103,17 +105,28 @@ public class SettingsDialog extends H2DDialog {
     }
 
     private void applyAllSettings() {
+        boolean askToRestart = false;
         for (SettingsNode node : settingsTree.getRootNodes()) {
             if (node.getValue().validateSettings()) {
+                if (node.getValue().requireRestart()) askToRestart = true;
                 node.getValue().translateViewToSettings();
             }
             if (node.getChildren().size > 0) {
                 for (SettingsNode child : node.getChildren()) {
                     if (child.getValue().validateSettings()) {
+                        if (child.getValue().requireRestart()) askToRestart = true;
                         child.getValue().translateViewToSettings();
                     }
                 }
             }
+        }
+        if (askToRestart) {
+            H2DDialogs.showConfirmDialog(getStage(), "Restart is required", "Some changes needs to restart the editor,\nwould you like to do it now?",
+                    new String[]{"Yes, restart now", "Cancel"}, new Integer[]{0, 1}, r -> {
+                        if (r == 0) {
+                            Main.restartJVM();
+                        }
+                    }).padBottom(20).pack();
         }
     }
 

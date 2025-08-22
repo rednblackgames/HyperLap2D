@@ -1,11 +1,11 @@
 package games.rednblack.editor.view.ui.box.bottom;
 
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.validator.StringNameValidator;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Mediator;
 import games.rednblack.puremvc.interfaces.INotification;
@@ -43,7 +43,7 @@ public class UISceneBoxMediator extends Mediator<UISceneBox> {
                 facade.sendNotification(MsgAPI.CHECK_EDITS_ACTION, (Runnable) () -> sandbox.loadScene(newScene));
                 break;
             case UISceneBox.CREATE_NEW_SCENE_BTN_CLICKED:
-                Dialogs.showInputDialog(sandbox.getUIStage(), "Create New Scene", "Scene Name : ", false, new StringNameValidator(), new InputDialogListener() {
+                H2DDialogs.showInputDialog(sandbox.getUIStage(), "Create New Scene", "Scene Name : ", false, new StringNameValidator(), new InputDialogListener() {
                     @Override
                     public void finished(String input) {
                         if (input == null || input.equals("")) {
@@ -62,7 +62,7 @@ public class UISceneBoxMediator extends Mediator<UISceneBox> {
                 });
                 break;
             case UISceneBox.DELETE_CURRENT_SCENE_BTN_CLICKED:
-                Dialogs.showConfirmDialog(sandbox.getUIStage(),
+                H2DDialogs.showConfirmDialog(sandbox.getUIStage(),
                         "Delete Scene", "Do you really want to delete '" + notification.getBody() + "' scene?",
                         new String[]{"Cancel", "Delete"}, new Integer[]{0, 1}, result -> {
                             if (result == 1) {

@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.HashMap;
 
-public class TalosResources {
+public class TalosExportFormat {
 
     public Metadata metadata = new Metadata();
 

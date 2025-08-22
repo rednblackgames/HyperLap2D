@@ -137,7 +137,9 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
                     points.reverse();
                 }
                 polygonShapeComponent.polygonizedVertices = PolygonRuntimeUtils.polygonize(points.toArray());
-            } else {
+            }
+
+            if (intersections != null || polygonShapeComponent.polygonizedVertices == null) {
                 // restore from backup
                 polygonShapeComponent.vertices = UpdatePolygonVerticesCommand.cloneData(verticesBackup);
                 polygonShapeComponent.polygonizedVertices = UpdatePolygonVerticesCommand.cloneData(polygonizedVerticesBackup);

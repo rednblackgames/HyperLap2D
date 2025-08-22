@@ -3,10 +3,12 @@ package games.rednblack.editor.utils.asset.impl;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
-import com.talosvfx.talos.runtime.ParticleEffectDescriptor;
-import com.talosvfx.talos.runtime.ParticleEmitterDescriptor;
-import com.talosvfx.talos.runtime.modules.*;
+import games.rednblack.editor.renderer.data.TexturePackVO;
+import games.rednblack.editor.utils.runtime.TalosExportFormat;
+import games.rednblack.h2d.common.H2DDialogs;
+import games.rednblack.talos.runtime.ParticleEffectDescriptor;
+import games.rednblack.talos.runtime.ParticleEmitterDescriptor;
+import games.rednblack.talos.runtime.modules.*;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.SceneDataManager;
@@ -20,7 +22,6 @@ import games.rednblack.editor.utils.AssetsUtils;
 import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.editor.utils.runtime.TalosResources;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.ProgressHandler;
 import org.apache.commons.io.FileUtils;
@@ -31,6 +32,16 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 public class TalosVFXAsset extends Asset {
+
+    Json talosJson = new Json();
+
+    public TalosVFXAsset() {
+        talosJson.setIgnoreUnknownFields(true);
+        ParticleEmitterDescriptor.registerModules();
+        for (Class clazz: ParticleEmitterDescriptor.registeredModules) {
+            talosJson.addClassTag(clazz.getSimpleName(), TalosExportFormat.Module.class);
+        }
+    }
 
     @Override
     protected boolean matchMimeType(FileHandle file) {
@@ -60,20 +71,13 @@ public class TalosVFXAsset extends Asset {
 
     @Override
     public void importAsset(Array<FileHandle> files, ProgressHandler progressHandler, boolean skipRepack) {
-        Json json = new Json();
-        json.setIgnoreUnknownFields(true);
-        ParticleEmitterDescriptor.registerModules();
-        for (Class clazz: ParticleEmitterDescriptor.registeredModules) {
-            json.addClassTag(clazz.getSimpleName(), TalosResources.Module.class);
-        }
-
         final String targetPath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.TALOS_VFX_DIR_PATH;
         Array<FileHandle> images = new Array<>();
         Array<FileHandle> assetsRes = new Array<>();
         for (FileHandle fileHandle : new Array.ArrayIterator<>(files)) {
             if (!fileHandle.isDirectory() && fileHandle.exists()) {
                 try {
-                    TalosResources talosResources = json.fromJson(TalosResources.class, fileHandle);
+                    TalosExportFormat talosResources = talosJson.fromJson(TalosExportFormat.class, fileHandle);
                     //copy images
                     boolean allImagesFound = addTalosImages(talosResources, fileHandle, images);
                     if (allImagesFound) {
@@ -98,7 +102,17 @@ public class TalosVFXAsset extends Asset {
             projectManager.copyImageFilesForAllResolutionsIntoProject(images, false, progressHandler);
 
             for (FileHandle handle : new Array.ArrayIterator<>(images)) {
-                projectManager.getCurrentProjectInfoVO().imagesPacks.get("main").regions.add(handle.nameWithoutExtension());
+                String name = handle.nameWithoutExtension();
+                boolean resDuplicated = false;
+                for (TexturePackVO texturePackVO : projectManager.getCurrentProjectInfoVO().imagesPacks.values()) {
+                    if (texturePackVO.regions.contains(name)) {
+                        resDuplicated = true;
+                        break;
+                    }
+                }
+                if (!resDuplicated) {
+                    projectManager.getCurrentProjectInfoVO().imagesPacks.get("main").regions.add(name);
+                }
             }
         }
         if (assetsRes.size > 0) {
@@ -123,19 +137,30 @@ public class TalosVFXAsset extends Asset {
         String particlePath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.TALOS_VFX_DIR_PATH + File.separator;
         String filePath = particlePath + name;
 
-        if ((new File(filePath)).delete()) {
+        FileHandle fileHandle = new FileHandle(filePath);
+
+        TalosExportFormat talosResources = talosJson.fromJson(TalosExportFormat.class, fileHandle);
+
+        if (fileHandle.delete()) {
             deleteEntitiesWithParticleEffects(root, name); // delete entities from scene
             deleteAllItemsWithParticleName(name);
+
+            Array<String> resources = talosResources.metadata.resources;
+            for (String res : resources) {
+                String resPath = particlePath + res;
+                FileHandle resHandle = new FileHandle(resPath);
+                resHandle.delete();
+            }
             return true;
         }
         return false;
     }
 
-    private boolean addTalosImages(TalosResources talosResources, FileHandle fileHandle, Array<FileHandle> imgs) {
+    private boolean addTalosImages(TalosExportFormat talosResources, FileHandle fileHandle, Array<FileHandle> imgs) {
         try {
             Array<String> resources = talosResources.metadata.resources;
             for (String res : resources) {
-                if (res.endsWith(".fga"))
+                if (res.endsWith(".fga") || res.endsWith(".shdr"))
                     continue;
 
                 res += ".png";
@@ -143,7 +168,7 @@ public class TalosVFXAsset extends Asset {
                 if (file.exists()) {
                     imgs.add(new FileHandle(file));
                 } else {
-                    Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                    H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
                             "\nCould not find " + file.getName() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
                     imgs.clear();
                     return false;
@@ -157,36 +182,19 @@ public class TalosVFXAsset extends Asset {
         return true;
     }
 
-    private boolean addTalosRes(TalosResources talosResources, FileHandle fileHandle, Array<FileHandle> imgs) {
+    private boolean addTalosRes(TalosExportFormat talosResources, FileHandle fileHandle, Array<FileHandle> imgs) {
         try {
             Array<String> resources = talosResources.metadata.resources;
             for (String res : resources) {
-                if (res.endsWith(".fga")) {
+                if (res.endsWith(".fga") || res.endsWith(".shdr")) {
                     File file = new File(FilenameUtils.getFullPath(fileHandle.path()) + res);
                     if (file.exists()) {
                         imgs.add(new FileHandle(file));
                     } else {
-                        Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                        H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
                                 "\nCould not find " + file.getName() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
                         imgs.clear();
                         return false;
-                    }
-                }
-            }
-
-            for (TalosResources.Emitter emitter : talosResources.emitters) {
-                for (TalosResources.Module module : emitter.modules) {
-                    if (module.get("shdrAssetName") != null) {
-                        String assetName = module.get("shdrAssetName").toString();
-                        File file = new File(FilenameUtils.getFullPath(fileHandle.path()) + assetName);
-                        if (file.exists()) {
-                            imgs.add(new FileHandle(file));
-                        } else {
-                            Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
-                                    "\nCould not find " + file.getName() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
-                            imgs.clear();
-                            return false;
-                        }
                     }
                 }
             }
@@ -249,7 +257,7 @@ public class TalosVFXAsset extends Asset {
         File fileSrc = new File(currentProjectPath + ProjectManager.TALOS_VFX_DIR_PATH + File.separator + talosVO.particleName);
         FileUtils.copyFileToDirectory(fileSrc, tmpDir);
         exportMapperVO.mapper.add(new ExportMapperVO.ExportedAsset(AssetsUtils.TYPE_TALOS_VFX, fileSrc.getName()));
-        ParticleEffectDescriptor particleEffect = resourceManager.getProjectTalosList().get(talosVO.particleName);
+        ParticleEffectDescriptor particleEffect = resourceManager.getProjectTalosList().get(talosVO.particleName).getParticleEffectDescriptor();
         for (ParticleEmitterDescriptor emitter : new Array.ArrayIterator<>(particleEffect.emitterModuleGraphs)) {
             for (AbstractModule module : new Array.ArrayIterator<>(emitter.getModules())) {
                 if (module instanceof TextureModule) {
@@ -272,6 +280,12 @@ public class TalosVFXAsset extends Asset {
 
                 if (module instanceof ShadedSpriteModule) {
                     String path = ((ShadedSpriteModule) module).shdrFileName;
+                    File f = new File(currentProjectPath + ProjectManager.TALOS_VFX_DIR_PATH + File.separator + path);
+                    FileUtils.copyFileToDirectory(f, tmpDir);
+                }
+
+                if (module instanceof VectorFieldModule) {
+                    String path = ((VectorFieldModule) module).fgaFileName;
                     File f = new File(currentProjectPath + ProjectManager.TALOS_VFX_DIR_PATH + File.separator + path);
                     FileUtils.copyFileToDirectory(f, tmpDir);
                 }

@@ -1,8 +1,8 @@
 package games.rednblack.editor.controller.commands;
 
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogAdapter;
 import games.rednblack.editor.controller.SandboxCommand;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.interfaces.INotification;
 
@@ -16,7 +16,7 @@ public class RenameLibraryActionCommand extends SandboxCommand {
 
         String libraryActionName = notification.getBody();
 
-        Dialogs.showInputDialog(sandbox.getUIStage(), "Rename Action", "Name", false, new InputDialogAdapter() {
+        H2DDialogs.showInputDialog(sandbox.getUIStage(), "Rename Action", "Name", false, new InputDialogAdapter() {
             @Override
             public void finished(String input) {
                 String[] payload = new String[2];

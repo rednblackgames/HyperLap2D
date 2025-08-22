@@ -23,7 +23,6 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.FocusManager;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.InputValidator;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.VisImageButton;
@@ -39,6 +38,7 @@ import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.view.ui.widget.H2DPopupMenu;
 import space.earlygrey.shapedrawer.JoinType;
 import space.earlygrey.shapedrawer.ShapeDrawer;
@@ -132,7 +132,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                                         new ClickListener(Input.Buttons.LEFT) {
                                             @Override
                                             public void clicked(InputEvent event, float x, float y) {
-                                                Dialogs.showInputDialog(getStage(), "Enter group name", "Name",
+                                                H2DDialogs.showInputDialog(getStage(), "Enter group name", "Name",
                                                         new InputValidator() {
                                                             @Override
                                                             public boolean validateInput(String input) {
@@ -991,7 +991,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
                     return;
             }
 
-            Dialogs.showInputDialog(getStage(), "Enter group name", "Name",
+            H2DDialogs.showInputDialog(getStage(), "Enter group name", "Name",
                     new InputValidator() {
                         @Override
                         public boolean validateInput(String input) {

@@ -46,7 +46,7 @@ public class DeleteLayerCommand extends TransactiveCommand {
         for(int i = 0; i < nodeComponent.children.size; i++) {
             int child = nodeComponent.children.get(i);
             ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(child, ZIndexComponent.class);
-            if(zIndexComponent.layerName.equals(layerName)) {
+            if(zIndexComponent.getLayerName().equals(layerName)) {
                 result.add(child);
             }
         }

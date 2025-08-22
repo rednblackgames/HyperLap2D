@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.renderer.data.*;
@@ -16,6 +15,7 @@ import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.h2d.extension.spine.SpineComponent;
@@ -107,7 +107,7 @@ public class SpineAsset extends Asset {
                 targetPath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.SPINE_DIR_PATH + File.separator + fileNameWithOutExt;
                 FileHandle atlasFileSource = new FileHandle(animationDataPath + File.separator + fileNameWithOutExt + ".atlas");
                 if (!atlasFileSource.exists()) {
-                    Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                    H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
                             "\nCould not find '" + atlasFileSource.name() +"'.\nCheck if the file exists in the same directory.").padBottom(20).pack();
                     return null;
                 }
@@ -115,7 +115,7 @@ public class SpineAsset extends Asset {
                 TextureAtlas.TextureAtlasData atlas = new TextureAtlas.TextureAtlasData(atlasFileSource, atlasFileSource.parent(), false);
                 for (TextureAtlas.TextureAtlasData.Page imageFile : new Array.ArrayIterator<>(atlas.getPages())) {
                     if (!imageFile.textureFile.exists()) {
-                        Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                        H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
                                 "\nCould not find " + imageFile.textureFile.name() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
                         return null;
                     }
@@ -123,7 +123,7 @@ public class SpineAsset extends Asset {
 
                 Version spineVersion = getSpineVersion(animationFileSource);
                 if (spineVersion.compareTo(SpineItemType.SUPPORTED_SPINE_VERSION) < 0) {
-                    Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                    H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
                             "\nCould not import Spine Animation.\nRequired version >=" + SpineItemType.SUPPORTED_SPINE_VERSION.get() + " found " + spineVersion.get()).padBottom(20).pack();
                     return null;
                 }
@@ -147,7 +147,18 @@ public class SpineAsset extends Asset {
                 FileUtils.forceDelete(tmpDir.file());
 
                 for (TextureAtlas.TextureAtlasData.Region region : new Array.ArrayIterator<>(atlas.getRegions())) {
-                    projectManager.getCurrentProjectInfoVO().animationsPacks.get("main").regions.add(fileNameWithOutExt+region.name);
+                    String name = fileNameWithOutExt+region.name;
+                    name = name.replaceAll("/", Matcher.quoteReplacement("$"));
+                    boolean resDuplicated = false;
+                    for (TexturePackVO texturePackVO : projectManager.getCurrentProjectInfoVO().animationsPacks.values()) {
+                        if (texturePackVO.regions.contains(name)) {
+                            resDuplicated = true;
+                            break;
+                        }
+                    }
+                    if (!resDuplicated) {
+                        projectManager.getCurrentProjectInfoVO().animationsPacks.get("main").regions.add(name);
+                    }
                 }
 
                 return jsonFileTarget;

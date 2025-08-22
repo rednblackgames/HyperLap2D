@@ -19,12 +19,12 @@
 package games.rednblack.editor.view.ui.box.bottom;
 
 import com.badlogic.gdx.math.Vector3;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.CreateNewResolutionDialog;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Mediator;
 import games.rednblack.puremvc.interfaces.INotification;
@@ -83,7 +83,7 @@ public class UIResolutionBoxMediator extends Mediator<UIResolutionBox> {
                 break;
             case UIResolutionBox.DELETE_RESOLUTION_BTN_CLICKED:
                 resolutionEntryVO = notification.getBody();
-                Dialogs.showConfirmDialog(sandbox.getUIStage(),
+                H2DDialogs.showConfirmDialog(sandbox.getUIStage(),
                         "Delete Resolution",
                         "Are you sure you want to delete '" + resolutionEntryVO.name + "' resolution?",
                         new String[]{"Cancel", "Delete"}, new Integer[]{0, 1},

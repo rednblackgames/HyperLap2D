@@ -72,6 +72,7 @@ public class CustomVariablesPanelMediator extends Mediator<CustomVariablesPanel>
         switch (notification.getName()) {
             case WindowMenu.CUSTOM_VARIABLES_EDITOR_OPEN:
             case UIBasicItemProperties.CUSTOM_VARS_BUTTON_CLICKED:
+                if (observable == -1) setObservable(Sandbox.getInstance().getRootEntity());
                 viewComponent.show(uiStage);
                 break;
             case MsgAPI.ITEM_SELECTION_CHANGED:
@@ -79,11 +80,15 @@ public class CustomVariablesPanelMediator extends Mediator<CustomVariablesPanel>
                 if (selection.size() == 1) {
                     setObservable(selection.iterator().next());
                 } else {
-                    viewComponent.setEmptyMsg(selection.size() == 0 ? "No item selected." : "Multiple items selected.");
+                    if (selection.isEmpty()) {
+                        setObservable(Sandbox.getInstance().getRootEntity());
+                    } else {
+                        viewComponent.setEmptyMsg("Multiple items selected.");
+                    }
                 }
                 break;
             case MsgAPI.EMPTY_SPACE_CLICKED:
-                setObservable(-1);
+                setObservable(Sandbox.getInstance().getRootEntity());
                 break;
             case CustomVariablesPanel.ADD_BUTTON_PRESSED:
                 setVariable();

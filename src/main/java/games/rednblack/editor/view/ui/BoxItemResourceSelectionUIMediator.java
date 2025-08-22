@@ -216,9 +216,11 @@ public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource
      */
     private void setSelected(BoxItemResource boxResource, boolean isSelected) {
     	if (isSelected) {
-			boxResource.switchToMouseOverColor();
-			boxResource.setHighlightWhenMouseOver(false);
-			boxResourceSelectedSet.add(boxResource.getPayloadData().name);
+			if (boxResource.getPayloadData().className != null) {
+				boxResource.switchToMouseOverColor();
+				boxResource.setHighlightWhenMouseOver(false);
+				boxResourceSelectedSet.add(boxResource.getPayloadData().name);
+			}
     	} else {
 			boxResource.switchToStandardColor();
 			boxResource.setHighlightWhenMouseOver(true);

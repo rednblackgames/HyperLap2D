@@ -3,7 +3,6 @@ package games.rednblack.editor.utils;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.utils.asset.Asset;
@@ -11,6 +10,7 @@ import games.rednblack.editor.utils.asset.impl.*;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.panel.ImportPanel;
 import games.rednblack.editor.view.ui.panel.ImportPanelMediator;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.h2d.extension.spine.SpineVO;
@@ -80,7 +80,7 @@ public class AssetIOManager {
             if (fileType > 0) {
                 if (asset.checkExistence(files)) {
                     int type = fileType;
-                    Dialogs.showConfirmDialog(Sandbox.getInstance().getUIStage(),
+                    H2DDialogs.showConfirmDialog(Sandbox.getInstance().getUIStage(),
                             "Duplicate file", "You have already an asset with this name,\nwould you like to overwrite it?",
                             new String[]{"Overwrite", "Cancel"}, new Integer[]{0, 1}, result -> {
                                 if (result == 0) {

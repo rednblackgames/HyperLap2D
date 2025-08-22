@@ -30,6 +30,7 @@ import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
+import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.AtlasResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.ImageResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.box.TinyVGResource;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
@@ -42,8 +43,9 @@ import games.rednblack.puremvc.util.Interests;
  */
 public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
 
-    private static final String TAG = UIImagesTabMediator.class.getCanonicalName();
+    private static final String TAG = "games.rednblack.editor.view.ui.box.resourcespanel.UIImagesTabMediator";
     public static final String NAME = TAG;
+    public static final String CHANGE_FOLDER = NAME + ".CHANGE_FOLDER";
 
     private final Array<DraggableResource> thumbnailBoxes = new Array<>();
 
@@ -53,10 +55,12 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
 
     private TinyVGShapeDrawer drawer;
 
+    private String currentAtlas = "main";
+
     @Override
     public void listNotificationInterests(Interests interests) {
         super.listNotificationInterests(interests);
-        interests.add( DeleteImageResource.DONE, DeleteTinyVGResource.DONE);
+        interests.add( DeleteImageResource.DONE, DeleteTinyVGResource.DONE, CHANGE_FOLDER);
     }
 
     @Override
@@ -65,6 +69,10 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
         switch (notification.getName()) {
             case DeleteTinyVGResource.DONE:
             case DeleteImageResource.DONE:
+                initList(viewComponent.searchString);
+                break;
+            case CHANGE_FOLDER:
+                currentAtlas = notification.getBody();
                 initList(viewComponent.searchString);
                 break;
             default:
@@ -83,38 +91,54 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
 
         thumbnailBoxes.clear();
 
-        for (String atlasName : projectInfoVO.imagesPacks.keySet()) {
-            TextureAtlas atlas = resourceManager.getTextureAtlas(atlasName);
-            Array<TextureAtlas.AtlasRegion> atlasRegions = atlas.getRegions();
+        if (currentAtlas.equals("main")) {
+            for (String atlasName : projectInfoVO.imagesPacks.keySet()) {
+                if (atlasName.equals("main") || !atlasName.toLowerCase().contains(searchText)) continue;
 
-            for (TextureAtlas.AtlasRegion region : new Array.ArrayIterator<>(atlasRegions)) {
-                if (region.name.equals("white-pixel")) continue;
-                if(!projectInfoVO.imagesPacks.get(atlasName).regions.contains(region.name)
-                        || !region.name.toLowerCase().contains(searchText)
-                        || filterResource(region.name, EntityFactory.IMAGE_TYPE)) continue;
-
-                boolean is9patch = region.findValue("split") != null;
-                ImageResource imageResource = new ImageResource(region, true);
-                DraggableResource draggableResource = new DraggableResource(imageResource);
-                if (is9patch) {
-                    draggableResource.setFactoryFunction(ItemFactory.get()::create9Patch);
-                } else {
-                    draggableResource.setFactoryFunction(ItemFactory.get()::createSimpleImage);
-                }
-                draggableResource.initDragDrop();
+                TextureAtlas atlas = resourceManager.getTextureAtlas(atlasName);
+                AtlasResource atlasResource = new AtlasResource(atlas, atlasName);
+                DraggableResource draggableResource = new DraggableResource(atlasResource);
                 thumbnailBoxes.add(draggableResource);
             }
+        } else {
+            TextureAtlas atlas = resourceManager.getTextureAtlas("main");
+            AtlasResource atlasResource = new AtlasResource(atlas, "main");
+            DraggableResource draggableResource = new DraggableResource(atlasResource);
+            thumbnailBoxes.add(draggableResource);
         }
 
-        for (String name : resourceManager.getTinyVGList().keySet()) {
-            try {
-                TinyVGResource tinyVGResource = new TinyVGResource(name, resourceManager.getOriginalTinyVG(name), drawer);
-                DraggableResource draggableResource = new DraggableResource(tinyVGResource);
-                draggableResource.setFactoryFunction(ItemFactory.get()::tryCreateTinyVGItem);
-                draggableResource.initDragDrop();
-                thumbnailBoxes.add(draggableResource);
-            } catch (Exception e) {
-                e.printStackTrace();
+        TextureAtlas atlas = resourceManager.getTextureAtlas(currentAtlas);
+        Array<TextureAtlas.AtlasRegion> atlasRegions = atlas.getRegions();
+
+        for (TextureAtlas.AtlasRegion region : new Array.ArrayIterator<>(atlasRegions)) {
+            if (region.name.equals("white-pixel")) continue;
+            if(!projectInfoVO.imagesPacks.get(currentAtlas).regions.contains(region.name)
+                    || !region.name.toLowerCase().contains(searchText)
+                    || filterResource(region.name, EntityFactory.IMAGE_TYPE)) continue;
+
+            boolean is9patch = region.findValue("split") != null;
+            ImageResource imageResource = new ImageResource(region, true);
+            DraggableResource draggableResource = new DraggableResource(imageResource);
+            if (is9patch) {
+                draggableResource.setFactoryFunction(ItemFactory.get()::create9Patch);
+            } else {
+                draggableResource.setFactoryFunction(ItemFactory.get()::createSimpleImage);
+            }
+            draggableResource.initDragDrop();
+            thumbnailBoxes.add(draggableResource);
+        }
+
+        if (currentAtlas.equals("main")) {
+            for (String name : resourceManager.getTinyVGList().keySet()) {
+                try {
+                    TinyVGResource tinyVGResource = new TinyVGResource(name, resourceManager.getOriginalTinyVG(name), drawer);
+                    DraggableResource draggableResource = new DraggableResource(tinyVGResource);
+                    draggableResource.setFactoryFunction(ItemFactory.get()::tryCreateTinyVGItem);
+                    draggableResource.initDragDrop();
+                    thumbnailBoxes.add(draggableResource);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 

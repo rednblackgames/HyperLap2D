@@ -4,7 +4,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.Array;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.SceneDataManager;
@@ -16,6 +15,7 @@ import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import org.apache.commons.io.FileUtils;
@@ -26,11 +26,13 @@ import java.util.function.Consumer;
 
 public class ImageAsset extends Asset {
 
+    private final Array<String> names = new Array<>();
+
     @Override
     public int matchType(Array<FileHandle> files) {
-        String[] names = new String[files.size];
+        names.clear();
         for (int i = 0; i < files.size; i++) {
-            names[i] = files.get(i).nameWithoutExtension();
+            names.add(files.get(i).nameWithoutExtension());
         }
 
         return AssetsUtils.isAnimationSequence(names) ? AssetsUtils.TYPE_UNKNOWN : super.matchType(files);
@@ -50,7 +52,7 @@ public class ImageAsset extends Asset {
                 int height = image.getHeight();
                 TexturePacker.Settings settings = projectManager.getTexturePackerSettings();
                 if (width > settings.maxWidth - settings.paddingX || height > settings.maxHeight - settings.paddingY) {
-                    Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                    H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
                             "Provided image exceeds atlas limits (" + (settings.maxWidth - settings.paddingX) + "x" + (settings.maxHeight - settings.paddingY)
                                     + ")\nPlease, resize images to the correct size.").padBottom(20).pack();
                     return false;

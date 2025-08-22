@@ -3,7 +3,6 @@ plugins {
 }
 
 group 'games.rednblack'
-version '0.1.4'
 
 repositories {
     mavenCentral()
@@ -25,11 +24,16 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
+compileJava {
+    dependsOn ':hyperlap2d-runtime-libgdx:dist' // Explicit dependency
+}
+
 task dist(type: Jar) {
+    dependsOn classes
     from files(sourceSets.main.output.classesDirs)
     from files(sourceSets.main.output.resourcesDir)
 
-    destinationDirectory = file("../build/lib/plugins")
+    destinationDirectory = file("../distBuld/lib/plugins")
 
     doLast {
         def jarToCopy = archiveFileName.get()

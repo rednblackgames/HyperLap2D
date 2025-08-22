@@ -7,10 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
@@ -41,7 +41,7 @@ public abstract class UIRemovableProperties extends UIItemCollapsibleProperties 
         closeButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
-                Dialogs.showConfirmDialog(Sandbox.getInstance().getUIStage(),
+                H2DDialogs.showConfirmDialog(Sandbox.getInstance().getUIStage(),
                         "Delete Component", "Do you want to delete this component?",
                         new String[]{"Cancel", "Delete"}, new Integer[]{0, 1}, r -> {
                             if (r == 1) {

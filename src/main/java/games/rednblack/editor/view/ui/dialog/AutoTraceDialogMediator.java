@@ -2,7 +2,6 @@ package games.rednblack.editor.view.ui.dialog;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.utils.poly.PolygonRuntimeUtils;
@@ -13,6 +12,7 @@ import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.followers.BasicFollower;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.Mediator;
@@ -82,7 +82,7 @@ public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
                     Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
                 }
             } else {
-                Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Auto Trace can be performed only for Image type.").padBottom(20).pack();
+                H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Auto Trace can be performed only for Image type.").padBottom(20).pack();
             }
         }
     }

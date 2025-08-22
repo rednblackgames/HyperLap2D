@@ -30,6 +30,10 @@ public class SpineDrawable extends BaseDrawable {
         this.skeleton = skeleton;
         AnimationStateData animationStateData = new AnimationStateData(skeleton.getData());
         animationState = new AnimationState(animationStateData);
+        if (skeleton.getData().getDefaultSkin() == null) {
+            skeleton.setSkin(skeleton.getData().getSkins().get(0));
+            skeleton.setSlotsToSetupPose();
+        }
 
         computeBoundBox();
 
@@ -52,7 +56,7 @@ public class SpineDrawable extends BaseDrawable {
     }
 
     private void computeBoundBox() {
-        skeleton.updateWorldTransform();
+        skeleton.updateWorldTransform(Skeleton.Physics.update);
 
         Array<Slot> drawOrder = skeleton.getDrawOrder();
         minX = Float.MAX_VALUE;
@@ -91,10 +95,11 @@ public class SpineDrawable extends BaseDrawable {
 
     @Override
     public void draw(Batch batch, float x, float y, float width, float height) {
-        skeleton.updateWorldTransform();
+        skeleton.updateWorldTransform(Skeleton.Physics.update);
         animationState.update(Gdx.graphics.getDeltaTime());
         animationState.apply(skeleton);
         skeleton.setPosition(x, y - 20);
+        skeleton.update(Gdx.graphics.getDeltaTime());
 
         Color color = skeleton.getColor();
 

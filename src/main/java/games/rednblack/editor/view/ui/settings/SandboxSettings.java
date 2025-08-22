@@ -1,12 +1,14 @@
 package games.rednblack.editor.view.ui.settings;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.kotcrab.vis.ui.widget.VisCheckBox;
-import com.kotcrab.vis.ui.widget.VisTable;
-import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.badlogic.gdx.utils.Align;
+import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
+import games.rednblack.editor.utils.RoundUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
@@ -20,16 +22,19 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
 
     private final VisCheckBox disableAmbientComposite, showBoundBoxes;
     private final TintButton tintButton;
+    private VisSlider scrollVelocity;
 
     public SandboxSettings() {
         super("Sandbox", Facade.getInstance());
 
-        getContentTable().add("Composites").left().row();
+        getContentTable().add("Behavior").left().row();
         getContentTable().addSeparator();
         disableAmbientComposite = StandardWidgetsFactory.createCheckBox("Disable Ambient light when viewing Composites");
         getContentTable().add(disableAmbientComposite).left().padTop(5).padLeft(8).row();
 
-        getContentTable().add("Debug").left().row();
+        getContentTable().add(getScrollVelocityTable()).left().padTop(10).row();
+
+        getContentTable().add("Debug").left().padTop(10).row();
         getContentTable().addSeparator();
         showBoundBoxes = StandardWidgetsFactory.createCheckBox("Show bounding boxes outline");
         getContentTable().add(showBoundBoxes).left().padTop(5).padLeft(8).row();
@@ -83,22 +88,52 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
         getContentTable().add(tintTable).padLeft(8).left().row();
     }
 
+    private Actor getScrollVelocityTable() {
+        VisTable scaleTable = new VisTable();
+
+        scaleTable.add("Scroll Velocity:").padLeft(8);
+        scrollVelocity = StandardWidgetsFactory.createSlider(30, 400, 1);
+        scaleTable.add(scrollVelocity).padLeft(8);
+        VisLabel labelFactor = StandardWidgetsFactory.createLabel("", "default", Align.left);
+        scaleTable.add(labelFactor).padLeft(8);
+        labelFactor.setText(String.valueOf(getScrollVelocity()));
+        scrollVelocity.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                labelFactor.setText(String.valueOf(getScrollVelocity()));
+            }
+        });
+
+        return scaleTable;
+    }
+
+    private float getScrollVelocity() {
+        return RoundUtils.round(scrollVelocity.getValue(), 0);
+    }
+
     @Override
     public void translateSettingsToView() {
         disableAmbientComposite.setChecked(getSettings().disableAmbientComposite);
         showBoundBoxes.setChecked(getSettings().showBoundingBoxes);
         tintButton.setColorValue(getSettings().backgroundColor);
+        scrollVelocity.setValue(getSettings().scrollVelocity);
     }
 
     @Override
     public void translateViewToSettings() {
         getSettings().disableAmbientComposite = disableAmbientComposite.isChecked();
         getSettings().showBoundingBoxes = showBoundBoxes.isChecked();
+        getSettings().scrollVelocity = getScrollVelocity();
         facade.sendNotification(MsgAPI.SAVE_EDITOR_CONFIG);
     }
 
     @Override
     public boolean validateSettings() {
         return true;
+    }
+
+    @Override
+    public boolean requireRestart() {
+        return false;
     }
 }

@@ -4,7 +4,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
@@ -17,6 +16,7 @@ import games.rednblack.editor.utils.asset.Asset;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.ProgressHandler;
 import games.rednblack.h2d.common.vo.ExportMapperVO;
 import games.rednblack.puremvc.Facade;
@@ -85,7 +85,7 @@ public class HyperLap2DLibraryAsset extends Asset {
                     Json json = HyperJson.getJson();
                     ExportMapperVO exportMapperVO = json.fromJson(ExportMapperVO.class, mapper);
                     if (!exportMapperVO.projectVersion.equals(projectManager.currentProjectVO.projectVersion)) {
-                        Dialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                        H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
                                 "\nCould not import '" + fileHandle.name() + "'.\nLibrary version does not match current Project version.")
                                 .padBottom(20).pack();
                         scheduledLibraries--;
@@ -134,6 +134,7 @@ public class HyperLap2DLibraryAsset extends Asset {
 
                                         ResolutionManager resolutionManager = Facade.getInstance().retrieveProxy(ResolutionManager.NAME);
                                         resolutionManager.rePackProjectImagesForAllResolutionsSync();
+                                        projectManager.saveCurrentProject();
 
                                         progressHandler.progressChanged(100);
 

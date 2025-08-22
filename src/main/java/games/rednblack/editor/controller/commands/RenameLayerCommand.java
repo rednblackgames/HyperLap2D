@@ -64,7 +64,7 @@ public class RenameLayerCommand extends EntityModifyRevertibleCommand {
         NodeComponent nodeComponent = SandboxComponentRetriever.get(viewEntity, NodeComponent.class);
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewEntity, LayerMapComponent.class);
 
-        if (layerMapComponent.getLayer(toName) != null) {
+        if (layerMapComponent.getLayer(toName.hashCode()) != null) {
             cancel();
             return;
         }
@@ -73,8 +73,8 @@ public class RenameLayerCommand extends EntityModifyRevertibleCommand {
 
         for(int childEntity: nodeComponent.children) {
             ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(childEntity, ZIndexComponent.class);
-            if(zIndexComponent.layerName.equals(fromName)) {
-                zIndexComponent.layerName = toName;
+            if(zIndexComponent.getLayerName().equals(fromName)) {
+                zIndexComponent.setLayerName(toName);
             }
         }
     }

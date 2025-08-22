@@ -3,6 +3,7 @@ package games.rednblack.editor.controller.commands;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntSet;
+import com.kotcrab.vis.ui.util.Validators;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
@@ -10,7 +11,6 @@ import games.rednblack.editor.renderer.utils.poly.PolygonRuntimeUtils;
 import games.rednblack.editor.utils.poly.PolygonUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.followers.PolygonFollower;
-import games.rednblack.editor.view.ui.validator.FloatInputValidator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.dialog.MultipleInputDialog;
 import games.rednblack.h2d.common.view.ui.listener.MultipleInputDialogListener;
@@ -35,7 +35,7 @@ public class ChangePolygonVertexPositionCommand extends SandboxCommand {
         Vector2 backup = points.get(anchor).cpy();
         currentCommandPayload = UpdatePolygonVerticesCommand.payloadInitialState(follower.getEntity());
 
-        MultipleInputDialog dialog = new MultipleInputDialog("Vertex Position", new String[]{"X : ", "Y : "}, false, new FloatInputValidator(), new MultipleInputDialogListener() {
+        MultipleInputDialog dialog = new MultipleInputDialog("Vertex Position", new String[]{"X : ", "Y : "}, false, new Validators.FloatValidator(), new MultipleInputDialogListener() {
             @Override
             public void finished(String[] input) {
                 Array<Vector2> points = polygonShapeComponent.vertices;
@@ -68,6 +68,6 @@ public class ChangePolygonVertexPositionCommand extends SandboxCommand {
             }
         });
         dialog.setText(new String[]{points.get(anchor).x+"", points.get(anchor).y+""});
-        sandbox.getUIStage().addActor(dialog.fadeIn());
+        dialog.show(sandbox.getUIStage());
     }
 }

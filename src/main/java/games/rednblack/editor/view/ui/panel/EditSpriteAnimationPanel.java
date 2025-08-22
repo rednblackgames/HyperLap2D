@@ -20,6 +20,7 @@ package games.rednblack.editor.view.ui.panel;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -50,7 +51,6 @@ public class EditSpriteAnimationPanel extends UIDraggablePanel {
     private VisTextButton addButton;
 
     private final VisTable animationsList;
-    private final VisTable newAnimationTable;
 
     public EditSpriteAnimationPanel() {
         super("Edit Sprite Animation Ranges");
@@ -61,61 +61,72 @@ public class EditSpriteAnimationPanel extends UIDraggablePanel {
         VisTable mainTable = new VisTable();
 
         animationsList = new VisTable();
-        newAnimationTable = new VisTable();
 
         createNewAnimationTable(100);
 
-        mainTable.add(newAnimationTable);
         mainTable.row();
-        mainTable.add(animationsList);
+        mainTable.add(animationsList).fillX();
         mainTable.row();
 
         getContentTable().add(mainTable).pad(10);
     }
 
     private void createNewAnimationTable(int maxFrame) {
-        newAnimationTable.clear();
         nameField = StandardWidgetsFactory.createValidableTextField(new EmptyOrDefaultValidator());
         fromFrameField = StandardWidgetsFactory.createNumberSelector(0, maxFrame);
         toFrameField = StandardWidgetsFactory.createNumberSelector(0, maxFrame);
         addButton = new VisTextButton("Add");
 
-        newAnimationTable.add(nameField).width(120);
-        newAnimationTable.add(fromFrameField).padLeft(5);
-        newAnimationTable.add(toFrameField).padLeft(5);
-        newAnimationTable.add(addButton).padLeft(7).padRight(3);
-        newAnimationTable.row();
+        animationsList.add(nameField).width(120);
+        animationsList.add(fromFrameField).padLeft(5);
+        animationsList.add(toFrameField).padLeft(5);
+        animationsList.add(addButton).padLeft(7).padRight(3);
+        animationsList.row().padTop(5);
         initListeners();
     }
 
     public void setEmpty(String text) {
         animationsList.clear();
         animationsList.add(text).row();
-        newAnimationTable.clear();
         invalidateHeight();
     }
 
     public void updateView(Map<String, FrameRange> frameRangeMap) {
-        createNewAnimationTable(frameRangeMap.get("Default").endFrame);
         animationsList.clear();
+        createNewAnimationTable(frameRangeMap.get("Default").endFrame);
+
+        animationsList.add("Animation Name").expandX();
+        animationsList.add("Start").expandX();
+        animationsList.add("End").expandX();
+        animationsList.add("").expandX();
+        animationsList.row();
+        animationsList.addSeparator().colspan(4).expandX().fillX().row();
 
         for (Map.Entry<String, FrameRange> entry : frameRangeMap.entrySet()) {
             String animationName = entry.getKey();
             FrameRange range = entry.getValue();
 
-            VisTable row = new VisTable();
+            VisTable nameTbl = new VisTable();
+            nameTbl.setBackground(VisUI.getSkin().getDrawable("layer-bg"));
+            nameTbl.add(StandardWidgetsFactory.createLabel(animationName)).left();
+            VisTable startTbl = new VisTable();
+            startTbl.setBackground(VisUI.getSkin().getDrawable("layer-bg"));
+            startTbl.add(StandardWidgetsFactory.createLabel(range.startFrame + "")).left();
+            VisTable endTbl = new VisTable();
+            endTbl.setBackground(VisUI.getSkin().getDrawable("layer-bg"));
+            endTbl.add(StandardWidgetsFactory.createLabel(range.endFrame + "")).left();
 
             VisImageButton trashBtn = new VisImageButton("trash-button");
 
-            row.add(StandardWidgetsFactory.createLabel(animationName)).width(120).left();
-            row.add(StandardWidgetsFactory.createLabel(range.startFrame + "")).width(50).left();
-            row.add(StandardWidgetsFactory.createLabel(range.endFrame + "")).width(50).left();
-            if (!animationName.equals("Default"))
-                row.add(trashBtn).padLeft(10);
-            row.row();
+            animationsList.add(nameTbl).height(20).expandX().fillX();
+            animationsList.add(startTbl).height(20).expandX().fillX();
+            animationsList.add(endTbl).height(20).expandX().fillX();
 
-            animationsList.add(row).left();
-            animationsList.row();
+            if (!animationName.equals("Default"))
+                animationsList.add(trashBtn).padLeft(10);
+            else
+                animationsList.add();
+            animationsList.row().padBottom(2);
 
             trashBtn.addListener(new ClickListener() {
                 @Override
