@@ -1,0 +1,107 @@
+#include "MyCharacter.h"
+#include "GameFramework/PlayerController.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/InputComponent.h"
+#include "Engine/World.h"
+
+AMyCharacter::AMyCharacter()
+{
+    PrimaryActorTick.bCanEverTick = true;
+    bIsFlying = false;
+    bIsBoosting = false;
+    CurrentVerticalInput = 0.0f;
+}
+
+void AMyCharacter::BeginPlay()
+{
+    Super::BeginPlay();
+}
+
+void AMyCharacter::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    if (bIsFlying)
+    {
+        UpdateFlightMovement(DeltaTime);
+    }
+}
+
+void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+    Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+    PlayerInputComponent->BindAxis("MoveForward", this, &AMyCharacter::MoveForward);
+    PlayerInputComponent->BindAxis("MoveRight", this, &AMyCharacter::MoveRight);
+    PlayerInputComponent->BindAxis("FlyUp", this, &AMyCharacter::FlyUp);
+
+    PlayerInputComponent->BindAction("ToggleFly", IE_Pressed, this, &AMyCharacter::ToggleFlyMode);
+    PlayerInputComponent->BindAction("FlyBoost", IE_Pressed, this, &AMyCharacter::FlyBoostPressed);
+    PlayerInputComponent->BindAction("FlyBoost", IE_Released, this, &AMyCharacter::FlyBoostReleased);
+}
+
+void AMyCharacter::ToggleFlyMode()
+{
+    bIsFlying = !bIsFlying;
+
+    if (bIsFlying)
+    {
+        GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
+        GetCharacterMovement()->GravityScale = 0.0f;
+    }
+    else
+    {
+        GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+        GetCharacterMovement()->GravityScale = 1.0f;
+        CurrentVerticalInput = 0.0f;
+    }
+}
+
+void AMyCharacter::MoveForward(float Value)
+{
+    if (Controller && Value != 0.0f)
+    {
+        const FRotator Rotation = Controller->GetControlRotation();
+        const FVector Direction = FRotationMatrix(FRotator(0, Rotation.Yaw, 0)).GetUnitAxis(EAxis::X);
+        AddMovementInput(Direction, Value);
+    }
+}
+
+void AMyCharacter::MoveRight(float Value)
+{
+    if (Controller && Value != 0.0f)
+    {
+        const FRotator Rotation = Controller->GetControlRotation();
+        const FVector Direction = FRotationMatrix(FRotator(0, Rotation.Yaw, 0)).GetUnitAxis(EAxis::Y);
+        AddMovementInput(Direction, Value);
+    }
+}
+
+void AMyCharacter::FlyUp(float Value)
+{
+    CurrentVerticalInput = Value;
+}
+
+void AMyCharacter::FlyBoostPressed()
+{
+    bIsBoosting = true;
+}
+
+void AMyCharacter::FlyBoostReleased()
+{
+    bIsBoosting = false;
+}
+
+void AMyCharacter::UpdateFlightMovement(float DeltaTime)
+{
+    if (CurrentVerticalInput != 0.0f)
+    {
+        const FVector VerticalMove = FVector::UpVector * CurrentVerticalInput * FlyVerticalSpeed * DeltaTime;
+        AddMovementInput(VerticalMove, 1.0f);
+    }
+
+    // Adjust fly speed
+    float Speed = bIsBoosting ? BoostedFlySpeed : BaseFlySpeed;
+    GetCharacterMovement()->MaxFlySpeed = Speed;
+}
+
