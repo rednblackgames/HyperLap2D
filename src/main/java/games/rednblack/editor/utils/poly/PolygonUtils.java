@@ -29,34 +29,35 @@ import games.rednblack.editor.view.stage.Sandbox;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class PolygonUtils {
+    protected static PoolManager POOLS = new PoolManager(Vector2::new);
 
 	public static boolean intersectSegments(Array<Vector2> points, int index1, int index2, int index3, int index4) {
-		Vector2 intersectionPoint = Pools.obtain(Vector2.class).set(points.get(index1));
+		Vector2 intersectionPoint = POOLS.obtain(Vector2.class).set(points.get(index1));
 		boolean isIntersecting = Intersector.intersectSegments(points.get(index1), points.get(index2), points.get(index3), points.get(index4), intersectionPoint);
 		if(isIntersecting
 				&& !isSamePoint(intersectionPoint, points.get(index1))
 				&& !isSamePoint(intersectionPoint, points.get(index2))
 				&& !isSamePoint(intersectionPoint, points.get(index3))
 				&& !isSamePoint(intersectionPoint, points.get(index4))) {
-			Pools.free(intersectionPoint);
+            POOLS.free(intersectionPoint);
 			return true;
 		}
-		Pools.free(intersectionPoint);
+        POOLS.free(intersectionPoint);
 		return false;
 	}
 
 	public static boolean isSamePoint(Vector2 point1, Vector2 point2) {
 		int pixelsPerWU = Sandbox.getInstance().getPixelPerWU();
 		int precision = 1000 * pixelsPerWU;
-		Vector2 pointA = Pools.obtain(Vector2.class).set(point1);
-		Vector2 pointB = Pools.obtain(Vector2.class).set(point2);
+		Vector2 pointA = POOLS.obtain(Vector2.class).set(point1);
+		Vector2 pointB = POOLS.obtain(Vector2.class).set(point2);
 		pointA.x = Math.round(point1.x * precision) / (float)precision;
 		pointA.y = Math.round(point1.y * precision) / (float)precision;
 		pointB.x = Math.round(point2.x * precision) / (float)precision;
 		pointB.y = Math.round(point2.y * precision) / (float)precision;
 		boolean res = pointA.equals(pointB);
-		Pools.free(pointA);
-		Pools.free(pointB);
+        POOLS.free(pointA);
+        POOLS.free(pointB);
 		return res;
 	}
 

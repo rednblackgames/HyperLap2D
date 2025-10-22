@@ -21,6 +21,7 @@ import games.rednblack.editor.view.ui.widget.actors.polygon.PolyVertex;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class PolygonFollower extends SubFollower {
+    protected static PoolManager POOLS = new PoolManager(Vector2::new);
 
     private static final Color innerColor = new Color(200f / 255f, 200f / 255f, 200f / 255f, 0.2f);
     public static final Color outlineColor = new Color(200f / 255f, 156f / 255f, 71f / 255f, 1f);
@@ -220,7 +221,7 @@ public class PolygonFollower extends SubFollower {
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
                 super.touchDragged(event, x, y, pointer);
 
-                Vector2 coord = Pools.obtain(Vector2.class).set(x, y);
+                Vector2 coord = POOLS.obtain(Vector2.class).set(x, y);
                 transformActorCoordIntoEntity(PolygonFollower.this, coord);
                 int anchorId = draggingAnchorId;
 
@@ -228,7 +229,7 @@ public class PolygonFollower extends SubFollower {
                     listener.anchorDragged(PolygonFollower.this, anchorId, coord.x, coord.y);
                 }
 
-                Pools.free(coord);
+                POOLS.free(coord);
             }
         });
     }
@@ -263,12 +264,12 @@ public class PolygonFollower extends SubFollower {
             if (super.touchDown(event, x, y, pointer, button)) {
                 PolyLine line = (PolyLine) event.getListenerActor();
 
-                Vector2 coord = Pools.obtain(Vector2.class).set(x, y);
+                Vector2 coord = POOLS.obtain(Vector2.class).set(x, y);
                 transformActorCoordIntoEntity(line, coord);
 
                 listener.vertexDown(PolygonFollower.this, line.getIndex(), coord.x, coord.y);
 
-                Pools.free(coord);
+                POOLS.free(coord);
                 return true;
             } else {
                 return false;
@@ -280,13 +281,13 @@ public class PolygonFollower extends SubFollower {
             super.touchUp(event, x, y, pointer, button);
             PolyLine line = (PolyLine) event.getListenerActor();
 
-            Vector2 coord = Pools.obtain(Vector2.class).set(x, y);
+            Vector2 coord = POOLS.obtain(Vector2.class).set(x, y);
             transformActorCoordIntoEntity(line, coord);
 
             listener.vertexUp(PolygonFollower.this, line.getIndex(), coord.x, coord.y);
 
             draggingAnchorId = -1;
-            Pools.free(coord);
+            POOLS.free(coord);
         }
 
         @Override
@@ -321,13 +322,13 @@ public class PolygonFollower extends SubFollower {
                 PolyVertex vertex = (PolyVertex) event.getListenerActor();
                 draggingAnchorId = vertex.getIndex();
 
-                Vector2 coord = Pools.obtain(Vector2.class).set(x, y);
+                Vector2 coord = POOLS.obtain(Vector2.class).set(x, y);
                 transformActorCoordIntoEntity(vertex, coord);
 
                 setSelectedAnchor(draggingAnchorId);
                 listener.anchorDown(PolygonFollower.this, draggingAnchorId, coord.x, coord.y);
 
-                Pools.free(coord);
+                POOLS.free(coord);
                 return true;
             } else {
                 return false;
@@ -341,12 +342,12 @@ public class PolygonFollower extends SubFollower {
             PolyVertex vertex = (PolyVertex) event.getListenerActor();
             if(button == Input.Buttons.RIGHT) draggingAnchorId = vertex.getIndex();
 
-            Vector2 coord = Pools.obtain(Vector2.class).set(x, y);
+            Vector2 coord = POOLS.obtain(Vector2.class).set(x, y);
             transformActorCoordIntoEntity(vertex, coord);
 
             listener.anchorUp(PolygonFollower.this, draggingAnchorId, button,coord.x, coord.y);
             draggingAnchorId = -1;
-            Pools.free(coord);
+            POOLS.free(coord);
         }
     }
 

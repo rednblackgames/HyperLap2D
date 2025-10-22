@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui.panel;
 
-import com.badlogic.gdx.utils.Pools;
 import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.renderer.data.ShaderUniformVO;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -95,7 +94,7 @@ public class ShaderUniformsPanelMediator extends Mediator<ShaderUniformsPanel> {
 
     private void addNewUniform(Object[] payload) {
         String name = (String) payload[0];
-        ShaderUniformVO vo = Pools.get(ShaderUniformVO.class, ShaderComponent.UNIFORMS_POOL_SIZE).obtain();
+        ShaderUniformVO vo = ShaderComponent.POOLS.obtain(ShaderUniformVO.class);
         switch (payload.length) {
             case 2:
                 if (payload[1] instanceof Integer)
@@ -123,7 +122,7 @@ public class ShaderUniformsPanelMediator extends Mediator<ShaderUniformsPanel> {
     private void removeUniform(String uniform) {
         ShaderComponent shaderComponent = SandboxComponentRetriever.get(observable, ShaderComponent.class);
         ShaderUniformVO vo = shaderComponent.customUniforms.remove(uniform);
-        Pools.free(vo);
+        ShaderComponent.POOLS.free(vo);
 
         updateView();
     }

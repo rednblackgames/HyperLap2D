@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.FlushablePool;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.renderer.components.MainItemComponent;
@@ -27,6 +27,13 @@ import java.util.Comparator;
 import java.util.Set;
 
 public class UIItemsTreeBox extends UICollapsibleBox {
+    protected FlushablePool<UIItemsTreeNode> uiItemsTreeNodePool = new FlushablePool<>() {
+        @Override
+        protected UIItemsTreeNode newObject() {
+            return new UIItemsTreeNode();
+        }
+    };
+
     protected ComponentMapper<NodeComponent> nodeComponentMapper;
     protected ComponentMapper<ParentNodeComponent> parentNodeComponentMapper;
     protected ComponentMapper<MainItemComponent> mainItemComponentMapper;
@@ -39,7 +46,6 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     private VisScrollPane scroller;
     private UIItemsTreeNode rootTreeNode;
 
-    private final Array<UIItemsTreeNode> tmpNodes = new Array<>();
     private UIItemsTreeNode rootNode;
     private Set<Integer> lastSelection;
 
@@ -128,8 +134,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     }
 
     public void update(int rootScene) {
-        Pools.freeAll(tmpNodes);
-        tmpNodes.clear();
+        uiItemsTreeNodePool.flush();
 
         tree.clearChildren();
         tree.setOverNode(null);
@@ -178,8 +183,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         ParentNodeComponent parentNodeComponent = parentNodeComponentMapper.get(item);
         MainItemComponent mainItemComponent = mainItemComponentMapper.get(item);
 
-        UIItemsTreeNode node = Pools.get(UIItemsTreeNode.class, 80000).obtain();
-        tmpNodes.add(node);
+        UIItemsTreeNode node = uiItemsTreeNodePool.obtain();
 
         if (parentNodeComponent == null) {
             node.setColor(Color.WHITE);

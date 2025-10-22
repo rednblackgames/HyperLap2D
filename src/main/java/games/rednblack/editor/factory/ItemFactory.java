@@ -2,7 +2,7 @@ package games.rednblack.editor.factory;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.PoolManager;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.SceneLoader;
@@ -24,6 +24,7 @@ import games.rednblack.puremvc.Facade;
 import java.util.HashMap;
 
 public class ItemFactory implements IFactory {
+    protected PoolManager POOLS = new PoolManager(ComponentFactory.InitialData::new);
 
     private final EntityFactory entityFactory;
     private final SceneLoader sceneLoader;
@@ -84,9 +85,9 @@ public class ItemFactory implements IFactory {
 
     @Override
     public boolean createSimpleImage(String regionName, Vector2 position) {
-        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
+        ComponentFactory.InitialData data = POOLS.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
-            Pools.free(data);
+            POOLS.free(data);
             return false;
         }
 
@@ -95,7 +96,7 @@ public class ItemFactory implements IFactory {
         createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.IMAGE_TYPE, data);
         Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
-        Pools.free(data);
+        POOLS.free(data);
         return true;
     }
 
@@ -105,9 +106,9 @@ public class ItemFactory implements IFactory {
     }
 
     public boolean create9Patch(String regionName, Vector2 position) {
-        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
+        ComponentFactory.InitialData data = POOLS.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
-            Pools.free(data);
+            POOLS.free(data);
             return false;
         }
         data.data = regionName;
@@ -115,15 +116,15 @@ public class ItemFactory implements IFactory {
         createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.NINE_PATCH, data);
         Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
-        Pools.free(data);
+        POOLS.free(data);
         return true;
     }
 
     @Override
     public boolean createSpriteAnimation(String animationName, Vector2 position) {
-        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
+        ComponentFactory.InitialData data = POOLS.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
-            Pools.free(data);
+            POOLS.free(data);
             return false;
         }
         data.data = animationName;
@@ -131,15 +132,15 @@ public class ItemFactory implements IFactory {
         createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.SPRITE_TYPE, data);
         Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
-        Pools.free(data);
+        POOLS.free(data);
         return true;
     }
 
     @Override
     public boolean createSpineAnimation(String animationName, Vector2 position) {
-        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
+        ComponentFactory.InitialData data = POOLS.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
-            Pools.free(data);
+            POOLS.free(data);
             return false;
         }
         data.data = animationName;
@@ -147,14 +148,14 @@ public class ItemFactory implements IFactory {
         createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), SpineItemType.SPINE_TYPE, data);
         Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
 
-        Pools.free(data);
+        POOLS.free(data);
         return true;
     }
 
     public boolean createPrimitive(Vector2 position, PolygonShapeVO shape) {
-        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
+        ComponentFactory.InitialData data = POOLS.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
-            Pools.free(data);
+            POOLS.free(data);
             return false;
         }
         Object[] params = new Object[5];
@@ -163,7 +164,7 @@ public class ItemFactory implements IFactory {
         params[1] = shape.clone().polygonizedVertices;
         createdEntity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.COLOR_PRIMITIVE, data);
         Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, createdEntity);
-        Pools.free(data);
+        POOLS.free(data);
         return true;
     }
 
@@ -203,9 +204,9 @@ public class ItemFactory implements IFactory {
     }
 
     public int createLightItem(LightVO vo, Vector2 position) {
-        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
+        ComponentFactory.InitialData data = POOLS.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
-            Pools.free(data);
+            POOLS.free(data);
             return -1;
         }
         data.data = vo.type;
@@ -214,7 +215,7 @@ public class ItemFactory implements IFactory {
 
         Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
 
-        Pools.free(data);
+        POOLS.free(data);
         return entity;
     }
 
@@ -224,16 +225,16 @@ public class ItemFactory implements IFactory {
     }
 
     public int createTinyVGItem(String name, Vector2 position) {
-        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
+        ComponentFactory.InitialData data = POOLS.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
-            Pools.free(data);
+            POOLS.free(data);
             return -1;
         }
         data.data = name;
         int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), TinyVGItemType.TINYVG_TYPE, data);
 
         Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
-        Pools.free(data);
+        POOLS.free(data);
         return entity;
     }
 
@@ -243,16 +244,16 @@ public class ItemFactory implements IFactory {
     }
 
     public int createParticleItem(String particleName, Vector2 position) {
-        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
+        ComponentFactory.InitialData data = POOLS.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
-            Pools.free(data);
+            POOLS.free(data);
             return -1;
         }
         data.data = particleName;
         int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.PARTICLE_TYPE, data);
 
         Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
-        Pools.free(data);
+        POOLS.free(data);
         return entity;
     }
 
@@ -262,9 +263,9 @@ public class ItemFactory implements IFactory {
     }
 
     public int createTalosItem(String particleName, Vector2 position) {
-        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
+        ComponentFactory.InitialData data = POOLS.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
-            Pools.free(data);
+            POOLS.free(data);
             return -1;
         }
         data.data = particleName;
@@ -272,14 +273,14 @@ public class ItemFactory implements IFactory {
 
         Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
 
-        Pools.free(data);
+        POOLS.free(data);
         return entity;
     }
 
     public int createLabel(TextTool textSettings, Vector2 position) {
-        ComponentFactory.InitialData data = Pools.obtain(ComponentFactory.InitialData.class);
+        ComponentFactory.InitialData data = POOLS.obtain(ComponentFactory.InitialData.class);
         if(!setEssentialData(data, position)) {
-            Pools.free(data);
+            POOLS.free(data);
             return -1;
         }
         Facade facade = Facade.getInstance();
@@ -298,7 +299,7 @@ public class ItemFactory implements IFactory {
         int entity = entityFactory.createEntity(sandbox.getCurrentViewingEntity(), EntityFactory.LABEL_TYPE, data);
 
         Facade.getInstance().sendNotification(MsgAPI.ACTION_CREATE_ITEM, entity);
-        Pools.free(data);
+        POOLS.free(data);
         return entity;
     }
 }

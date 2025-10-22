@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
-import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.PoolManager;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import games.rednblack.editor.utils.Guide;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -25,7 +25,7 @@ import java.util.HashMap;
  * Created by azakhary on 7/18/2015.
  */
 public class RulersUI extends Actor {
-
+    protected PoolManager POOLS = new PoolManager(VisLabel::new);
     private static final String CLASS_NAME = "games.rednblack.editor.view.ui.RulersUI";
     public static final String ACTION_GUIDES_MODIFIED = CLASS_NAME + ".ACTION_GUIDES_MODIFIED";
     public static final String RIGHT_CLICK_RULER = CLASS_NAME + ".RIGHT_CLICK_RULER";
@@ -301,7 +301,7 @@ public class RulersUI extends Actor {
             shapeDrawer.line(gridCurrPoint.x, horizontalRect.y, gridCurrPoint.x, horizontalRect.y + rulerBoxSize, 1f);
             shapeDrawer.line(gridCurrPoint.x + gridSize / 2, horizontalRect.y, gridCurrPoint.x + gridSize / 2, horizontalRect.y + rulerBoxSize / 2f, 1f);
 
-            VisLabel label = Pools.obtain(VisLabel.class);
+            VisLabel label = POOLS.obtain(VisLabel.class);
             label.setPosition(gridCurrPoint.x + 2, horizontalRect.y + 7);
             label.setColor(TEXT_COLOR);
             label.getText().clear();
@@ -322,7 +322,7 @@ public class RulersUI extends Actor {
             shapeDrawer.line(verticalRect.x + verticalRect.getWidth(), gridCurrPoint.y, verticalRect.x + verticalRect.getWidth() - rulerBoxSize, gridCurrPoint.y, 1f);
             shapeDrawer.line(verticalRect.x + verticalRect.getWidth(), gridCurrPoint.y + gridSize / 2, verticalRect.x + verticalRect.getWidth() - rulerBoxSize / 2f, gridCurrPoint.y + gridSize / 2, 1f);
 
-            VisLabel label = Pools.obtain(VisLabel.class);
+            VisLabel label = POOLS.obtain(VisLabel.class);
             label.setColor(TEXT_COLOR);
             int textNumber = (int) Math.abs(worldStartPointCpy.y + iterator * gridMeasuringSize);
             if (labelTextCache.get(textNumber) == null)
@@ -375,7 +375,7 @@ public class RulersUI extends Actor {
     public void drawBatch(Batch batch, float parentAlpha) {
         for (int i = 0; i < labels.size; i++) {
             labels.get(i).draw(batch, parentAlpha);
-            Pools.free(labels.get(i));
+            POOLS.free(labels.get(i));
         }
         labels.clear();
 

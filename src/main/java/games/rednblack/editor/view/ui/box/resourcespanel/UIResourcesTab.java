@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.PoolManager;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -19,6 +19,7 @@ import games.rednblack.puremvc.Facade;
  * Created by sargis on 5/4/15.
  */
 public abstract class UIResourcesTab extends ImageTab {
+    protected PoolManager POOLS = new PoolManager(Vector2::new);
 
     protected final VisTable contentTable;
 
@@ -54,12 +55,12 @@ public abstract class UIResourcesTab extends ImageTab {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Facade facade = Facade.getInstance();
-                Vector2 pos = Pools.obtain(Vector2.class);
+                Vector2 pos = POOLS.obtain(Vector2.class);
                 pos.set(0, 0);
                 button.localToStageCoordinates(pos);
                 Object[] payload = new Object[]{pos.x, pos.y, getTabTitle()};
                 facade.sendNotification(UIFilterMenu.SHOW_FILTER_MENU, payload);
-                Pools.free(pos);
+                POOLS.free(pos);
             }
         });
         return button;
