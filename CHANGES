@@ -1,5 +1,5 @@
 [0.1.6]
-- Update libGDX to 1.13.2-SNAPSHOT
+- Update libGDX to 1.14.0
 - Update to Java 21
 - [BREAK CHANGE] Add support `fast` atlas packing format. Enabled by default, but generates a warning during export
 
