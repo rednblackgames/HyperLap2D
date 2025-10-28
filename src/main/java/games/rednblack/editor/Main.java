@@ -104,7 +104,7 @@ public class Main {
         // restart jvm with -XstartOnFirstThread
         String separator = System.getProperty("file.separator");
         String classpath = System.getProperty("java.class.path");
-        String mainClass = System.getenv("JAVA_MAIN_CLASS_" + pid);
+        String mainClass = getMainClassName();
         String jvmPath = System.getProperty("java.home") + separator + "bin" + separator + "java";
 
         List<String> inputArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
