@@ -58,7 +58,7 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
             for(int entity: entities) {
                 ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
                 String tmpId = EntityUtils.getEntityId(entity);
-                layersBackup.put(tmpId, zIndexComponent.layerName);
+                layersBackup.put(tmpId, zIndexComponent.getLayerName());
             }
         }
 
@@ -83,7 +83,7 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
 
             // put it on default layer
             ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(childEntity, ZIndexComponent.class);
-            zIndexComponent.layerName = "Default";
+            zIndexComponent.setLayerName("Default");
 
         }
         // recalculate composite size
@@ -94,7 +94,7 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
         dimensionsComponent.boundBox.set(0, 0, newSize.x, newSize.y);
 
         ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
-        zIndexComponent.layerName = layerBoxMediator.getCurrentSelectedLayerName();
+        zIndexComponent.setLayerName(layerBoxMediator.getCurrentSelectedLayerName());
 
         sandbox.getEngine().process();
 
@@ -131,7 +131,7 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
 
             // put layer data back
             ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
-            zIndexComponent.layerName = layersBackup.get(EntityUtils.getEntityId(tmpEntity));
+            zIndexComponent.setLayerName(layersBackup.get(EntityUtils.getEntityId(tmpEntity)));
         }
 
         // remove composite

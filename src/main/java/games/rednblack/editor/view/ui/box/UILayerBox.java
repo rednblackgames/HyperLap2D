@@ -247,8 +247,7 @@ public class UILayerBox extends UICollapsibleBox {
                     uiLayerBox.currentSelectedLayerIndex = uiLayerBox.rows.size - uiLayerBox.rows.indexOf(uiLayerItemSlotTarget, true) - 1;
                 }
 
-                // Send notification with the two layers to swap.
-                // TODO - change from swap to repositioning source above target.
+                // Send notification with the two layers to jump.
                 String[] notificationPayload = {sourceLayer, targetLayer};
                 Facade.getInstance().sendNotification(LAYER_DROPPED, notificationPayload);
             }

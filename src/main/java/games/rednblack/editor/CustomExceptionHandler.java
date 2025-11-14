@@ -27,10 +27,20 @@ public class CustomExceptionHandler implements UncaughtExceptionHandler {
         writeToFile(stacktrace);
         printWriter.close();
 
-        showErrorDialog(stacktrace);
+        showErrorDialog(t, stacktrace);
     }
 
-    public static void showErrorDialog(String stacktrace) {
+    public static void showErrorDialog(Throwable e) {
+        final Writer result = new StringWriter();
+        final PrintWriter printWriter = new PrintWriter(result);
+        e.printStackTrace(printWriter);
+        e.printStackTrace();
+        String stacktrace = result.toString();
+
+        showErrorDialog(null, stacktrace);
+    }
+
+    public static void showErrorDialog(Thread t, String stacktrace) {
         File localPath = new File(HyperLap2DUtils.getRootPath()
                 + File.separator + "crash" + File.separator + "java-hyperlog.txt");
         stacktrace = stacktrace.replace("<", "");
@@ -44,7 +54,8 @@ public class CustomExceptionHandler implements UncaughtExceptionHandler {
                         + "\n\n System: " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " (HyperLap2D v" + AppConfig.getInstance().versionString + ")"
                         + "\n\n" + stacktrace,
                 "ok", "error", true);
-        System.exit(-1);
+        if (t != null)
+            System.exit(-1);
     }
 
     private void writeToFile(String stacktrace) {

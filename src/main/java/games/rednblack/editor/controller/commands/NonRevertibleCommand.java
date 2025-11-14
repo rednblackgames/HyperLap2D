@@ -1,12 +1,12 @@
 package games.rednblack.editor.controller.commands;
 
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.GraphVO;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.puremvc.Notification;
 import games.rednblack.puremvc.interfaces.INotification;
 
@@ -39,7 +39,7 @@ public abstract class NonRevertibleCommand extends SandboxCommand {
         commandManager = facade.retrieveProxy(CommandManager.NAME);
         this.notification = ((Notification) notification).copy();
         if (showConfirmDialog) {
-            Dialogs.showConfirmDialog(sandbox.getUIStage(),
+            H2DDialogs.showConfirmDialog(sandbox.getUIStage(),
                     confirmDialogTitle(), confirmDialogMessage(),
                     new String[]{"Cancel", confirmAction()}, new Integer[]{0, 1}, r -> {
                         if (r == 1) {

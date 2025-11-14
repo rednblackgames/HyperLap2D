@@ -31,6 +31,7 @@ import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.proxy.CommandManager;
+import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -69,6 +70,8 @@ public class SandboxMediator extends Mediator<Sandbox> {
     private static final Vector3 temp = new Vector3();
     private static final Vector2 tmp = new Vector2();
 
+    private SettingsManager settingsManager;
+
     public SandboxMediator() {
         super(NAME, Sandbox.getInstance());
     }
@@ -81,6 +84,8 @@ public class SandboxMediator extends Mediator<Sandbox> {
         getViewComponent().addListener(stageListener);
 
         initTools();
+
+        settingsManager = facade.retrieveProxy(SettingsManager.NAME);
     }
 
     private void initTools() {
@@ -443,7 +448,8 @@ public class SandboxMediator extends Mediator<Sandbox> {
             } else {
                 if (currentSelectedTool != null
                         && !currentSelectedTool.stageMouseScrolled(amountX, amountY)) {
-                    float scale = 30f / sandbox.getPixelPerWU();
+
+                    float scale = settingsManager.editorConfigVO.scrollVelocity / sandbox.getPixelPerWU();
                     viewComponent.panSceneBy(amountX * scale, -amountY * scale);
                 }
             }

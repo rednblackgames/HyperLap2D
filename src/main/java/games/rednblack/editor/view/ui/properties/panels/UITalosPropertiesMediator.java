@@ -18,13 +18,16 @@ public class UITalosPropertiesMediator extends UIItemPropertiesMediator<UITalosP
 
     @Override
     protected void translateObservableDataToView(int item) {
-        viewComponent.setMatrixTransformEnabled(SandboxComponentRetriever.get(item, TalosComponent.class).transform);
+        TalosComponent talosComponent = SandboxComponentRetriever.get(item, TalosComponent.class);
+        viewComponent.setMatrixTransformEnabled(talosComponent.transform);
+        viewComponent.setAutoStartEnabled(talosComponent.autoStart);
     }
 
     @Override
     protected void translateViewToItemData() {
         TalosVO payloadVo = new TalosVO();
         payloadVo.transform = viewComponent.isMatrixTransformEnabled();
+        payloadVo.autoStart = viewComponent.isAutoStartEnabled();
 
         Object payload = UpdateTalosDataCommand.payload(observableReference, payloadVo);
         facade.sendNotification(MsgAPI.ACTION_UPDATE_TALOS_DATA, payload);

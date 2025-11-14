@@ -51,7 +51,7 @@ public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<UIShade
         super(NAME, new UIShaderProperties());
 
         resourceManager = facade.retrieveProxy(ResourceManager.NAME);
-        viewComponent.initView(resourceManager.getShaders());
+        viewComponent.initView();
 
         projectManager = facade.retrieveProxy(ProjectManager.NAME);
     }
@@ -97,6 +97,8 @@ public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<UIShade
 
     @Override
     protected void translateObservableDataToView(int item) {
+        viewComponent.initShaders(resourceManager.getShaders());
+
         ShaderComponent shaderComponent = SandboxComponentRetriever.get(item, ShaderComponent.class);
         String currShaderName = shaderComponent.shaderName;
         viewComponent.setSelected(currShaderName);

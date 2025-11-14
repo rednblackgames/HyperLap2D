@@ -58,7 +58,7 @@ public class SettingsManager extends Proxy {
             e.printStackTrace(printWriter);
             e.printStackTrace();
             String stacktrace = result.toString();
-            CustomExceptionHandler.showErrorDialog(stacktrace);
+            CustomExceptionHandler.showErrorDialog(null, stacktrace);
         }
     }
 

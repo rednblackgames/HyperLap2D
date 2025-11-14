@@ -73,7 +73,6 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
         super(NAME, new UISceneProperties());
 
         resourceManager = facade.retrieveProxy(ResourceManager.NAME);
-        viewComponent.initShader(resourceManager.getShaders());
     }
 
     @Override
@@ -121,6 +120,8 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
 
     @Override
     protected void translateObservableDataToView(SceneVO item) {
+        viewComponent.initShader(resourceManager.getShaders());
+
         PhysicsPropertiesVO physicsVO = item.physicsPropertiesVO;
         LightsPropertiesVO lightsVO = item.lightsPropertiesVO;
         ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);

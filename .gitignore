@@ -1,6 +1,7 @@
 .DS_Store
 .idea/
 /build/
+/dstBuild/
 .gradle/
 h2d-libgdx-spine-extension/build/
 hyperlap2d-common-api/build/

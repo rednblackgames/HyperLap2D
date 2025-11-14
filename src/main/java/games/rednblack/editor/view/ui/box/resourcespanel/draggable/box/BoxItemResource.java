@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Null;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -110,22 +110,18 @@ public abstract class BoxItemResource extends Group implements DraggableResource
      *
      * Will be fired {@link UIResourcesBoxMediator#RESOURCE_BOX_LEFT_CLICK} and {@link UIResourcesBoxMediator#RESOURCE_BOX_RIGHT_CLICK}.
      * 
-     * @param leftClickEventName The event name in case of a left-click.
-     * @param leftClickPayload The payload for the left-click.
+     * @param doubleClickEventName The event name in case of a left-click.
+     * @param doubleClickPayload The payload for the left-click.
      * @param rightClickEventName The event name in case of a right-click.
      * @param rightClickPayload The payload for the right-click.
      */
-    public void setClickEvent(String leftClickEventName, Object leftClickPayload, String rightClickEventName, Object rightClickPayload) {
-        addListener(new InputListener() {
-        	private boolean isOver;
+    public void setClickEvent(String doubleClickEventName, Object doubleClickPayload, String rightClickEventName, Object rightClickPayload) {
+        addListener(new ClickListener(-1) {
+            private boolean isOver;
             @Override
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-            @Override
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-            	// we only care for the event if the mouse is still in this resource
-            	if (isOver && !event.isTouchFocusCancel()) {
+            public void clicked(InputEvent event, float x, float y) {
+                // we only care for the event if the mouse is still in this resource
+                if (isOver && !event.isTouchFocusCancel()) {
                     String eventType = UIResourcesBoxMediator.NORMAL_CLICK_EVENT_TYPE;
                     if (UIUtils.shift() && UIUtils.ctrl()) {
                         eventType = UIResourcesBoxMediator.SHIFT_CTRL_EVENT_TYPE;
@@ -135,38 +131,39 @@ public abstract class BoxItemResource extends Group implements DraggableResource
                         eventType = UIResourcesBoxMediator.CTRL_EVENT_TYPE;
                     }
 
-	            	if(button == Input.Buttons.LEFT) {
+                    if(getPressedButton() == Input.Buttons.LEFT) {
                         Facade.getInstance().sendNotification(UIResourcesBoxMediator.RESOURCE_BOX_LEFT_CLICK, BoxItemResource.this, eventType);
 
-	            		if (leftClickEventName != null)
-                            Facade.getInstance().sendNotification(leftClickEventName, leftClickPayload, eventType);
-	            	}
+                        if (doubleClickEventName != null && getTapCount() == 2)
+                            Facade.getInstance().sendNotification(doubleClickEventName, doubleClickPayload, eventType);
+                    }
 
-	                if(button == Input.Buttons.RIGHT) {
+                    if(getPressedButton() == Input.Buttons.RIGHT) {
                         Facade.getInstance().sendNotification(UIResourcesBoxMediator.RESOURCE_BOX_RIGHT_CLICK, BoxItemResource.this, eventType);
 
                         if (rightClickEventName != null)
                             Facade.getInstance().sendNotification(rightClickEventName, rightClickPayload, eventType);
-	                }
-            	}
+                    }
+                }
             }
+
             @Override
             public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-            	// mouse is in the resource
-            	isOver = true;
-            	// check if we have to change the color
-            	if (highlightWhenMouseOver) {
-            		switchToMouseOverColor();
-            	}
+                // mouse is in the resource
+                isOver = true;
+                // check if we have to change the color
+                if (highlightWhenMouseOver) {
+                    switchToMouseOverColor();
+                }
             }
             @Override
             public void exit (InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-            	// mouse no longer in the resource
-            	isOver = false;
-            	// check if we have to revert the color
-            	if (highlightWhenMouseOver) {
+                // mouse no longer in the resource
+                isOver = false;
+                // check if we have to revert the color
+                if (highlightWhenMouseOver) {
                     switchToStandardColor();
-            	}
+                }
             }
         });
     }

@@ -1,9 +1,9 @@
 package games.rednblack.editor.controller.commands;
 
 import com.kotcrab.vis.ui.util.InputValidator;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import games.rednblack.editor.view.ui.RulersUI;
+import games.rednblack.h2d.common.H2DDialogs;
 
 public class ChangeRulerPositionCommand extends RevertibleCommand {
 
@@ -14,7 +14,7 @@ public class ChangeRulerPositionCommand extends RevertibleCommand {
         previousPosition = RulersUI.getPreviousGuide().pos;
         String direction = RulersUI.getPreviousGuide().isVertical ? "X" : "Y";
 
-        Dialogs.showInputDialog(sandbox.getUIStage(), "Manual " + direction + " Position", direction + " : ", false, new MyInputValidator(), new InputDialogListener() {
+        H2DDialogs.showInputDialog(sandbox.getUIStage(), "Manual " + direction + " Position", direction + " : ", false, new MyInputValidator(), new InputDialogListener() {
             @Override
             public void finished(String input) {
                 RulersUI.updateGuideManually(Float.parseFloat(input));

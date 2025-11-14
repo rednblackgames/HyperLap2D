@@ -1,9 +1,9 @@
 package games.rednblack.editor.controller.commands;
 
+import com.kotcrab.vis.ui.util.Validators;
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.editor.view.ui.validator.FloatInputValidator;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.h2d.common.view.ui.dialog.MultipleInputDialog;
 import games.rednblack.h2d.common.view.ui.listener.MultipleInputDialogListener;
@@ -19,7 +19,7 @@ public class ChangeOriginPointPosition extends SandboxCommand {
         int entity = notification.getBody();
         TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
 
-        MultipleInputDialog dialog = new MultipleInputDialog("Origin Position", new String[]{"X : ", "Y : "}, false, new FloatInputValidator(), new MultipleInputDialogListener() {
+        MultipleInputDialog dialog = new MultipleInputDialog("Origin Position", new String[]{"X : ", "Y : "}, false, new Validators.FloatValidator(), new MultipleInputDialogListener() {
             @Override
             public void finished(String[] input) {
                 TransformCommandBuilder commandBuilder = new TransformCommandBuilder();

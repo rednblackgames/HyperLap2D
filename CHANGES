@@ -1,3 +1,39 @@
+[0.1.6]
+- Update libGDX to 1.13.2-SNAPSHOT
+- Update to Java 21
+- [BREAK CHANGE] Add support `fast` atlas packing format. Enabled by default, but generates a warning during export
+
+[0.1.5]
+- Update libGDX to 1.13.1, VisUI to 1.5.5, Talos Legacy to 1.5.1, PureMVC to 1.0.3
+- [BREAK CHANGE] Update Spine runtime support to `4.2.7`
+- Add Items Tree search filter
+- Add Mini Map feature (press and hold keyboard `M` button)
+- Basic folder visualization for different atlas packages
+- Fix many editor memory leaks
+- Fix common crashes related to multi-thread issues
+
+**Runtime**
+- [BREAK CHANGE] Make `ZIndexComponent#layerName` field private
+- [BREAK CHANGE] Move TypingLabel extension to TextraTypist
+- Optimize some built-in systems
+- Allow to extend `HyperLap2dRenderer` and use custom rendering systems
+- Bug fixes and performance improvements
+
+[0.1.4]
+- Update libGDX to 1.12.1
+- Update VisUI to 1.5.3
+- Experimental support to fail safe exceptions
+- Add tooltip for layer name in the items tree
+- Bug fixing and stability improvements
+
+**Runtime**
+- Hotfix GWT compilation
+- [BREAK CHANGE] Add entity parameter `ButtonListener`
+- Improved buttons system: Allow to disable buttons, do not fire `click` when touch up is outside the entity bounds
+- Fix shared layers instances with different library items instances
+- Move to Legacy version of Talos VFX (Pool particles and stability improvements)
+- Support for BVB runtime
+
 [0.1.3]
 - Update libGDX to 1.12.0
 - Update gradle to 7.6

@@ -64,14 +64,8 @@ public class UIShaderProperties extends UIRemovableProperties {
         renderingLaterSelector.setItems(renderingLayerMap.keySet().toArray(new String[0]));
     }
 
-    public void initView(HashMap<String, ShaderProgram> shaders) {
+    public void initView() {
         mainTable.clear();
-
-        Array<String> shaderNames = new Array<>();
-        shaderNames.add("Default");
-        shaders.keySet().forEach(shaderNames::add);
-
-        shadersSelector.setItems(shaderNames);
 
         mainTable.add(new VisLabel("Shader: ", Align.right)).padRight(5).width(75).right();
         mainTable.add(shadersSelector).width(100).left().row();
@@ -87,6 +81,14 @@ public class UIShaderProperties extends UIRemovableProperties {
         mainTable.addSeparator().padTop(5).padBottom(5).colspan(2);
         mainTable.add(StandardWidgetsFactory.createLabel("Rendering Layer:")).padRight(5).right();
         mainTable.add(renderingLaterSelector).width(100).left().row();
+    }
+
+    public void initShaders(HashMap<String, ShaderProgram> shaders) {
+        Array<String> shaderNames = new Array<>();
+        shaderNames.add("Default");
+        shaders.keySet().forEach(shaderNames::add);
+
+        shadersSelector.setItems(shaderNames);
     }
 
     @Override

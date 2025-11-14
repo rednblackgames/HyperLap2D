@@ -46,6 +46,10 @@ public class DraggableResource extends DragAndDrop implements Comparable<Draggab
     public DraggableResource(DraggableResourceView viewComponent) {
         this.viewComponent = viewComponent;
         sandbox = Sandbox.getInstance();
+
+        if (viewComponent instanceof BoxItemResource) {
+            StandardWidgetsFactory.addTooltip((Actor) viewComponent, viewComponent.getPayloadData().name);
+        }
     }
 
     public void initDragDrop() {
@@ -110,10 +114,6 @@ public class DraggableResource extends DragAndDrop implements Comparable<Draggab
         for (Target t : resourcesBoxMediator.customTargets) {
             addTarget(t);
         }
-
-        if (viewComponent instanceof BoxItemResource) {
-            StandardWidgetsFactory.addTooltip((Actor) viewComponent, viewComponent.getPayloadData().name);
-        }
     }
 
     private void drop(Payload payload, Vector2 vector2) {
@@ -134,6 +134,14 @@ public class DraggableResource extends DragAndDrop implements Comparable<Draggab
 
     @Override
     public int compareTo(DraggableResource o) {
-        return viewComponent.getPayloadData().name.compareTo(o.viewComponent.getPayloadData().name);
+        ResourcePayloadObject payload = viewComponent.getPayloadData();
+        ResourcePayloadObject payload1 = o.viewComponent.getPayloadData();
+        if (payload.className == null && payload1.className != null) {
+            return -1;
+        } else if (payload.className != null && payload1.className == null) {
+            return 1;
+        }
+
+        return payload.name.compareTo(payload1.name);
     }
 }

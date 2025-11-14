@@ -5,7 +5,7 @@
             <![CDATA[
         var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
         var hyperlap2dRoot = fileSystem.GetFolder(".").ParentFolder.ParentFolder.ParentFolder.ParentFolder.Path;
-        var installerConfig = hyperlap2dRoot + "/build/installer/config/";
+        var installerConfig = hyperlap2dRoot + "/distBuld/installer/config/";
         // Copy image resources
         fileSystem.CopyFile(hyperlap2dRoot + "/resources-windows/dlgbmp.bmp", installerConfig);
         fileSystem.CopyFile(hyperlap2dRoot + "/resources-windows/bannrbmp.bmp", installerConfig);

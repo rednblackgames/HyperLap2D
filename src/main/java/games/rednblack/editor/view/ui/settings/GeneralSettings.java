@@ -14,7 +14,7 @@ import games.rednblack.puremvc.Facade;
 
 public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
 
-    private final VisCheckBox autoSaving, useANGLEGLES2;
+    private final VisCheckBox autoSaving, useANGLEGLES2, failSafeException;
     private final VisCheckBox enablePlugins;
     private VisSelectBox<String> filterKeyMapping;
     private VisSlider uiScaleDensity, msaaSamples, fpsLimit;
@@ -27,13 +27,16 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         autoSaving = StandardWidgetsFactory.createCheckBox("Save changes automatically [EXPERIMENTAL]");
         getContentTable().add(autoSaving).left().padTop(5).padLeft(8).row();
 
+        failSafeException = StandardWidgetsFactory.createCheckBox("Keep alive on exceptions [EXPERIMENTAL]");
+        getContentTable().add(failSafeException).left().padTop(5).padLeft(8).row();
+
         getContentTable().add(getKeyMappingTable()).left().padTop(5).row();
 
         getContentTable().add(getUiScaleDensityTable()).left().padTop(5).row();
 
         getContentTable().add("Plugins").left().padTop(10).row();
         getContentTable().addSeparator();
-        enablePlugins = StandardWidgetsFactory.createCheckBox("Enable plugins [Require restart]");
+        enablePlugins = StandardWidgetsFactory.createCheckBox("Enable plugins");
         getContentTable().add(enablePlugins).left().padTop(5).padLeft(8).row();
 
         getContentTable().add("Performance").left().padTop(10).row();
@@ -41,7 +44,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         getContentTable().add(getMassSamplesTable()).left().padTop(5).row();
         getContentTable().add(getFPSLimitTable()).left().padTop(5).row();
 
-        useANGLEGLES2 = StandardWidgetsFactory.createCheckBox("Use ANGLE OpenGL ES 2 API [Require restart]");
+        useANGLEGLES2 = StandardWidgetsFactory.createCheckBox("Use ANGLE OpenGL ES 2 API");
         getContentTable().add(useANGLEGLES2).left().padTop(5).padLeft(8).row();
     }
 
@@ -53,7 +56,6 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         filterKeyMapping = StandardWidgetsFactory.createSelectBox(String.class);
         filterKeyMapping.setItems(settingsManager.getKeyMappingFiles());
         mappingTable.add(filterKeyMapping).padLeft(8);
-        mappingTable.add("[Require restart]").padLeft(8);
 
         return mappingTable;
     }
@@ -89,7 +91,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         msaaSamples.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                labelFactor.setText(getMsaaSamples() + " [Require restart]");
+                labelFactor.setText(getMsaaSamples());
             }
         });
 
@@ -111,7 +113,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
                 if (getFPSLimit() == 0)
                     labelFactor.setText("Unlimited");
                 else
-                    labelFactor.setText(getFPSLimit() + " [Require restart]");
+                    labelFactor.setText(getFPSLimit());
             }
         });
 
@@ -134,6 +136,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
     public void translateSettingsToView() {
         autoSaving.setChecked(getSettings().autoSave);
         useANGLEGLES2.setChecked(getSettings().useANGLEGLES2);
+        failSafeException.setChecked(getSettings().failSafeException);
         enablePlugins.setChecked(getSettings().enablePlugins);
         filterKeyMapping.setSelected(getSettings().keyBindingLayout);
         uiScaleDensity.setValue(getSettings().uiScaleDensity);
@@ -145,6 +148,7 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
     public void translateViewToSettings() {
         getSettings().autoSave = autoSaving.isChecked();
         getSettings().useANGLEGLES2 = useANGLEGLES2.isChecked();
+        getSettings().failSafeException = failSafeException.isChecked();
         getSettings().enablePlugins = enablePlugins.isChecked();
         getSettings().keyBindingLayout = filterKeyMapping.getSelected();
         getSettings().uiScaleDensity = getUIScaleDensity();
@@ -157,9 +161,20 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
     public boolean validateSettings() {
         return getSettings().autoSave != autoSaving.isChecked()
                 || getSettings().useANGLEGLES2 != useANGLEGLES2.isChecked()
+                || getSettings().failSafeException != failSafeException.isChecked()
                 || getSettings().enablePlugins != enablePlugins.isChecked()
                 || !getSettings().keyBindingLayout.equals(filterKeyMapping.getSelected())
                 || getSettings().uiScaleDensity != getUIScaleDensity()
+                || getSettings().msaaSamples != getMsaaSamples()
+                || getSettings().fpsLimit != getFPSLimit();
+    }
+
+    @Override
+    public boolean requireRestart() {
+        return getSettings().useANGLEGLES2 != useANGLEGLES2.isChecked()
+                || getSettings().failSafeException != failSafeException.isChecked()
+                || getSettings().enablePlugins != enablePlugins.isChecked()
+                || !getSettings().keyBindingLayout.equals(filterKeyMapping.getSelected())
                 || getSettings().msaaSamples != getMsaaSamples()
                 || getSettings().fpsLimit != getFPSLimit();
     }
