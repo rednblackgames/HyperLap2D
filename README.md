@@ -3,7 +3,7 @@
 [![GitHub Actions Build Status](https://img.shields.io/github/actions/workflow/status/rednblackgames/HyperLap2D/snapshot.yml?branch=master&label=GitHub%20Actions)](https://github.com/rednblackgames/HyperLap2D/actions?query=workflow%3A%22SNAPSHOT+Build%22)
 
 [![release](https://img.shields.io/github/v/release/rednblackgames/HyperLap2D)](https://github.com/rednblackgames/HyperLap2D/releases)
-[![snapshot](https://img.shields.io/nexus/s/games.rednblack.hyperlap2d/runtime-libgdx?label=snapshot&server=https%3A%2F%2Foss.sonatype.org)](https://github.com/rednblackgames/HyperLap2D/actions?query=workflow%3A%22SNAPSHOT+Build%22)
+[![snapshot](https://img.shields.io/maven-metadata/v?label=snapshot&metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fgames%2Frednblack%2Fhyperlap2d%2Fruntime-libgdx%2Fmaven-metadata.xml)](https://github.com/rednblackgames/HyperLap2D/actions?query=workflow%3A%22SNAPSHOT+Build%22)
 
 [![Discord](https://img.shields.io/discord/740954840259362826?label=Discord&logo=discord)](https://discord.gg/p69rPNF)
 
