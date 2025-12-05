@@ -90,7 +90,7 @@ task dist(type: Jar) {
         attributes 'Main-Class': project.mainClassName
     }
 
-    destinationDirectory = file("$buildDir/../distBuld/lib")
+    destinationDirectory = file("$buildDir/../distBuild/lib")
 }
 
 jpackageImage.dependsOn dist
@@ -149,7 +149,7 @@ dependencies {
 }
 
 task deleteInstallerTemp(type: Delete) {
-    delete "$buildDir/../distBuld/installer"
+    delete "$buildDir/../distBuild/installer"
 }
 jpackage.dependsOn deleteInstallerTemp
 
@@ -175,7 +175,7 @@ runtime {
                'jdk.unsupported']
 
     jpackage {
-        distDir.set(file("$buildDir/../distBuld"))
+        distDir.set(file("$buildDir/../distBuild"))
         setVersion(getBuildVersion())
         mainJar = dist.archiveFileName.get()
         imageOptions += ['--app-version', getBuildVersion(), '--vendor', 'Red & Black Games', '--description', 'HyperLap2D Editor', '--name', 'HyperLap2D']
@@ -187,7 +187,7 @@ runtime {
             installerOptions += ['--win-dir-chooser', '--win-menu', '--win-menu-group', 'HyperLap2D',
                                  '--win-shortcut', '--win-shortcut-prompt',  '--vendor', 'Red & Black Games',
                                  '--description', 'HyperLap2D Editor',
-                                 '--temp', "$buildDir/../distBuld/installer",
+                                 '--temp', "$buildDir/../distBuild/installer",
                                  '--win-upgrade-uuid', 'e5f64fb6-111f-41f3-8f33-03b90e1a3a32',
                                  "--icon", file("icons/icon.ico")]
             resourceDir = file("resources-windows")

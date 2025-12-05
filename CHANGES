@@ -1,4 +1,10 @@
 [0.1.6]
+- Update Spine to 4.2.10
+
+**Runtime**
+- [BREAK CHANGE] Fix physics fixed time step, fix micro-stuttering, systems now have a proper logic, replaced `RendererSystem` with `LogicSystem` interface to run systems with fixed time step, by default systems will runs as rendering at variable delta time
+
+[0.1.6]
 - Update libGDX to 1.14.0
 - Update editor to Java 21
 - [BREAK CHANGE] Add support `fast` atlas packing format. Enabled by default, but generates a warning during export
