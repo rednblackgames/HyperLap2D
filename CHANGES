@@ -1,8 +1,10 @@
-[0.1.6]
+[0.1.7]
 - Update Spine to 4.2.10
 
 **Runtime**
 - [BREAK CHANGE] Fix physics fixed time step, fix micro-stuttering, systems now have a proper logic, replaced `RendererSystem` with `FixedTimestep` annotation to run systems with fixed time step, by default systems will runs as rendering at variable delta time
+- [BREAK CHANGE] Rename `HyperLap2dInvocationStrategy#setTimeStep` -> `HyperLap2dInvocationStrategy#setFixedTimeStep` to match new behavior
+- [BREAK CHANGE] Fixed time step is set to 60hz by default
 
 [0.1.6]
 - Update libGDX to 1.14.0
