@@ -43,6 +43,16 @@ public class BasicStrategy extends AbstractTransformStrategy {
         deltaW = horizontal[0];
         deltaH = vertical[0];
 
+        if (isShiftPressed()) {
+            deltaW *= 2;
+            deltaH *= 2;
+
+            horizontal[1] *= 2;
+            horizontal[2] *= 2;
+            vertical[1] *= 2;
+            vertical[2] *= 2;
+        }
+
         switch (anchor) {
             case NormalSelectionFollower.L:
                 positionHorizontally(transformComponent, dimensionsComponent, horizontal, true);
@@ -104,32 +114,53 @@ public class BasicStrategy extends AbstractTransformStrategy {
         EntityUtils.refreshComponents(entity);
     }
 
-    private void positionHorizontally(TransformComponent t, DimensionsComponent d, float[] horizontal, boolean inverse) {
-        if (isShiftPressed()) {
-            deltaW *= 2;
-        } else {
-            float originX = t.originX / d.width;
-            originX = inverse ? 1f - originX : originX;
-            float originY = t.originY / d.height;
-            originY = inverse ? 1f - originY : originY;
+    private void positionHorizontally(TransformComponent t, DimensionsComponent d, float[] vectorData, boolean inverse) {
+        float localAnchorX;
 
-            t.x += horizontal[1] * originX;
-            t.y += horizontal[2] * originY;
+        if (isShiftPressed()) {
+            localAnchorX = d.width / 2f;
+        } else {
+            localAnchorX = inverse ? d.width : 0;
         }
+
+        float distFromOrigin = localAnchorX - t.originX;
+
+        float ratio = distFromOrigin / d.width;
+
+        float vecX = vectorData[1];
+        float vecY = vectorData[2];
+
+        if (inverse) {
+            vecX = -vecX;
+            vecY = -vecY;
+        }
+
+        t.x -= vecX * ratio;
+        t.y -= vecY * ratio;
     }
 
-    private void positionVertically(TransformComponent t, DimensionsComponent d, float[] vertical, boolean inverse) {
-        if (isShiftPressed()) {
-            deltaH *= 2;
-        } else {
-            float originX = t.originX / d.width;
-            originX = inverse ? 1f - originX : originX;
-            float originY = t.originY / d.height;
-            originY = inverse ? 1f - originY : originY;
+    private void positionVertically(TransformComponent t, DimensionsComponent d, float[] vectorData, boolean inverse) {
+        float localAnchorY;
 
-            t.x += vertical[1] * originX;
-            t.y += vertical[2] * originY;
+        if (isShiftPressed()) {
+            localAnchorY = d.height / 2f;
+        } else {
+            localAnchorY = inverse ? d.height : 0;
         }
+
+        float distFromOrigin = localAnchorY - t.originY;
+        float ratio = distFromOrigin / d.height;
+
+        float vecX = vectorData[1];
+        float vecY = vectorData[2];
+
+        if (inverse) {
+            vecX = -vecX;
+            vecY = -vecY;
+        }
+
+        t.x -= vecX * ratio;
+        t.y -= vecY * ratio;
     }
 
     private boolean isShiftPressed() {
