@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
+import games.rednblack.editor.renderer.systems.strategy.HyperLap2dInvocationStrategy;
 import games.rednblack.editor.utils.RoundUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
@@ -22,7 +23,7 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
 
     private final VisCheckBox disableAmbientComposite, showBoundBoxes;
     private final TintButton tintButton;
-    private VisSlider scrollVelocity;
+    private VisSlider scrollVelocity, timeScale;
 
     public SandboxSettings() {
         super("Sandbox", Facade.getInstance());
@@ -38,6 +39,8 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
         getContentTable().addSeparator();
         showBoundBoxes = StandardWidgetsFactory.createCheckBox("Show bounding boxes outline");
         getContentTable().add(showBoundBoxes).left().padTop(5).padLeft(8).row();
+
+        getContentTable().add(getTimeScaleTable()).left().padTop(10).row();
 
         getContentTable().add("Background").left().padTop(10).row();
         getContentTable().addSeparator();
@@ -107,8 +110,32 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
         return scaleTable;
     }
 
+    private Actor getTimeScaleTable() {
+        VisTable scaleTable = new VisTable();
+
+        scaleTable.add("Time Scale:").padLeft(8);
+        timeScale = StandardWidgetsFactory.createSlider(0.1f, 2f, 0.1f);
+        scaleTable.add(timeScale).padLeft(8);
+        VisLabel labelFactor = StandardWidgetsFactory.createLabel("", "default", Align.left);
+        scaleTable.add(labelFactor).padLeft(8);
+        labelFactor.setText(String.valueOf(getTimeScale()));
+        timeScale.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                labelFactor.setText(String.valueOf(getTimeScale()));
+                HyperLap2dInvocationStrategy.setTimeScale(getTimeScale());
+            }
+        });
+
+        return scaleTable;
+    }
+
     private float getScrollVelocity() {
         return RoundUtils.round(scrollVelocity.getValue(), 0);
+    }
+
+    private float getTimeScale() {
+        return RoundUtils.round(timeScale.getValue(), 1);
     }
 
     @Override
@@ -117,6 +144,7 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
         showBoundBoxes.setChecked(getSettings().showBoundingBoxes);
         tintButton.setColorValue(getSettings().backgroundColor);
         scrollVelocity.setValue(getSettings().scrollVelocity);
+        timeScale.setValue(1);
     }
 
     @Override
