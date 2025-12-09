@@ -6,6 +6,8 @@
 - [BREAK CHANGE] Rename `HyperLap2dInvocationStrategy#setTimeStep` -> `HyperLap2dInvocationStrategy#setFixedTimeStep` to match new behavior
 - [BREAK CHANGE] Fixed time step is set to 60hz by default
 - [BREAK CHANGE] Rework lights system, batch lights and shadows, full support to pseudo3d lights
+- Add `PhysicsBodyScript` API to wait script initialization until box2d body is fully available
+- Add `HyperLap2dInvocationStrategy#setTimeScale` for slow motion/fast forward effects
 
 [0.1.6]
 - Update libGDX to 1.14.0
