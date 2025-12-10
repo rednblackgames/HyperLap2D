@@ -1,5 +1,6 @@
 [0.1.7]
 - Update Spine to 4.2.10
+- Allow to scale down lights and shadow resolution
 
 **Runtime**
 - [BREAK CHANGE] Fix physics fixed time step, fix micro-stuttering, systems now have a proper logic, replaced `RendererSystem` with `FixedTimestep` annotation to run systems with fixed time step, by default systems will runs as rendering at variable delta time
@@ -7,7 +8,7 @@
 - [BREAK CHANGE] Fixed time step is set to 60hz by default
 - [BREAK CHANGE] Rework lights system, batch lights and shadows, full support to pseudo3d lights
 - Add `PhysicsBodyScript` API to wait script initialization until box2d body is fully available
-- Add `HyperLap2dInvocationStrategy#setTimeScale` for slow motion/fast forward effects
+- Add `HyperLap2dInvocationStrategy#setTimeScale` for slow/fast motion effects
 
 [0.1.6]
 - Update libGDX to 1.14.0
