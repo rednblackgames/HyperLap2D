@@ -53,6 +53,7 @@ public class UISceneProperties extends UIAbstractProperties {
     final private VisTextField gravityYTextField;
     final private VisTextField sleepVelocityTextField;
     final private VisTextField blurNumTextField;
+    final private VisTextField lightMapScaleTextField;
     final private VisCheckBox enableLightsCheckBox;
     final private VisCheckBox enablePseudo3DLightsCheckBox;
     final private TintButton ambientColorComponent;
@@ -76,6 +77,7 @@ public class UISceneProperties extends UIAbstractProperties {
         gravityYTextField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         sleepVelocityTextField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         blurNumTextField = StandardWidgetsFactory.createValidableTextField(integerValidator);
+        lightMapScaleTextField = StandardWidgetsFactory.createValidableTextField(integerValidator);
         enableLightsCheckBox = StandardWidgetsFactory.createCheckBox();
         enablePseudo3DLightsCheckBox = StandardWidgetsFactory.createCheckBox();
         ambientColorComponent = StandardWidgetsFactory.createTintButton();
@@ -126,6 +128,9 @@ public class UISceneProperties extends UIAbstractProperties {
         row().padTop(5);
         add(new VisLabel("Shadows Blur:", Align.right)).padRight(5).width(115);
         add(blurNumTextField).width(100);
+        row().padTop(5);
+        add(new VisLabel("Scale Quality:", Align.right)).padRight(5).width(115);
+        add(lightMapScaleTextField).width(100);
         row().padTop(5);
         add(new VisLabel("Ambient Color:", Align.right)).padRight(5).width(115);
         add(ambientColorComponent).padLeft(1).left();
@@ -231,8 +236,16 @@ public class UISceneProperties extends UIAbstractProperties {
         this.blurNumTextField.setText(blurNum);
     }
 
+    public void setLightMapScale(String scale) {
+        this.lightMapScaleTextField.setText(scale);
+    }
+
     public String getBlurNumValue() {
         return blurNumTextField.getText();
+    }
+
+    public String getLightMapScaleValue() {
+        return lightMapScaleTextField.getText();
     }
 
     public boolean isLightsEnabled() {
@@ -305,6 +318,7 @@ public class UISceneProperties extends UIAbstractProperties {
         enableLightsCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         enablePseudo3DLightsCheckBox.addListener(new CheckBoxChangeListener(getUpdateEventName()));
         blurNumTextField.addListener(new KeyboardListener(getUpdateEventName()));
+        lightMapScaleTextField.addListener(new KeyboardListener(getUpdateEventName()));
         directionalRays.addListener(new NumberSelectorOverlapListener(getUpdateEventName()));
         directionalDegreeTextField.addListener(new KeyboardListener(getUpdateEventName()));
         directionalHeightTextField.addListener(new KeyboardListener(getUpdateEventName()));

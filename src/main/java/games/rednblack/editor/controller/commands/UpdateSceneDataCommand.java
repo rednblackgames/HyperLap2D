@@ -38,6 +38,7 @@ public class UpdateSceneDataCommand extends EntityModifyRevertibleCommand {
         lightsVO.ambientColor[2] = lightsPropertiesVO.ambientColor[2];
         lightsVO.ambientColor[3] = lightsPropertiesVO.ambientColor[3];
         lightsVO.blurNum = lightsPropertiesVO.blurNum;
+        lightsVO.lightMapScale = lightsPropertiesVO.lightMapScale;
         lightsVO.lightType = lightsPropertiesVO.lightType;
         lightsVO.directionalDegree = lightsPropertiesVO.directionalDegree;
         lightsVO.directionalHeight = lightsPropertiesVO.directionalHeight;
@@ -72,6 +73,7 @@ public class UpdateSceneDataCommand extends EntityModifyRevertibleCommand {
         lightsVO.ambientColor[2] = lightsBackup.ambientColor[2];
         lightsVO.ambientColor[3] = lightsBackup.ambientColor[3];
         lightsVO.blurNum = lightsBackup.blurNum;
+        lightsVO.lightMapScale = lightsBackup.lightMapScale;
         lightsVO.lightType = lightsBackup.lightType;
         lightsVO.directionalDegree = lightsBackup.directionalDegree;
         lightsVO.directionalHeight = lightsBackup.directionalHeight;
