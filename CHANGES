@@ -9,6 +9,7 @@
 - [BREAK CHANGE] Rework lights system, batch lights and shadows, full support to pseudo3d lights
 - Add `PhysicsBodyScript` API to wait script initialization until box2d body is fully available
 - Add `HyperLap2dInvocationStrategy#setTimeScale` for slow/fast motion effects
+- Add support for MSAA in FrameBuffers (enable in SceneConfiguration, requires GL30)
 
 [0.1.6]
 - Update libGDX to 1.14.0

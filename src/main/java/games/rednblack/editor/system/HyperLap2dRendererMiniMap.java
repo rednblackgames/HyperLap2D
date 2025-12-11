@@ -22,8 +22,8 @@ public class HyperLap2dRendererMiniMap extends HyperLap2dRenderer {
 
     private final OrthographicCamera minimapCamera = new OrthographicCamera();
 
-    public HyperLap2dRendererMiniMap(Batch batch, boolean hasStencilBuffer) {
-        super(batch, hasStencilBuffer);
+    public HyperLap2dRendererMiniMap(Batch batch, boolean hasStencilBuffer, int samples) {
+        super(batch, hasStencilBuffer, samples);
     }
 
     public Texture getMiniMapTexture(int rootEntity) {

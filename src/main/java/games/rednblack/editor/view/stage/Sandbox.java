@@ -153,7 +153,7 @@ public class Sandbox {
         externalItemTypes.addExternalItemType(new TypingLabelItemType());
 
         Batch batch = new TextureArrayCpuPolygonSpriteBatch(32_767);
-        SceneConfiguration config = new SceneConfiguration(batch, true);
+        SceneConfiguration config = new SceneConfiguration(batch, true, settingsManager.editorConfigVO.msaaSamples);
         config.setResourceRetriever(resourceManager);
         config.setExternalItemTypes(externalItemTypes);
 
@@ -170,7 +170,7 @@ public class Sandbox {
         config.addSystem(new ParticleContinuousSystem());
         config.removeSystem(TalosSystem.class);
         config.addSystem(new TalosContinuousSystem());
-        config.setRendererSystem(new HyperLap2dRendererMiniMap(batch, true));
+        config.setRendererSystem(new HyperLap2dRendererMiniMap(batch, true, config.getMsaaSamples()));
 
         config.addSystem(manager);
 

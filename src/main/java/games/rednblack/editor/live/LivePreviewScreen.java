@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.ResourceManager;
+import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.ExternalTypesConfiguration;
 import games.rednblack.editor.renderer.SceneConfiguration;
 import games.rednblack.editor.renderer.SceneLoader;
@@ -24,7 +25,6 @@ import games.rednblack.h2d.extension.bvb.BVBItemType;
 import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelItemType;
-import games.rednblack.h2d.extension.spine.SpineItemType;
 import games.rednblack.puremvc.Facade;
 
 public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.GestureListener {
@@ -46,6 +46,7 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
         projectManager = facade.retrieveProxy(ProjectManager.NAME);
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
         ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
+        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
 
         int previewWidth = resolutionManager.getOriginalResolution().width;
         int previewHeight = resolutionManager.getOriginalResolution().height;
@@ -64,7 +65,7 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
         externalItemTypes.addExternalItemType(new TinyVGItemType());
         externalItemTypes.addExternalItemType(new TypingLabelItemType());
 
-        SceneConfiguration config = new SceneConfiguration(new TextureArrayCpuPolygonSpriteBatch(10_000), true);
+        SceneConfiguration config = new SceneConfiguration(new TextureArrayCpuPolygonSpriteBatch(32_767), true, settingsManager.editorConfigVO.msaaSamples);
         config.setResourceRetriever(resourceManager);
         config.setExternalItemTypes(externalItemTypes);
 
