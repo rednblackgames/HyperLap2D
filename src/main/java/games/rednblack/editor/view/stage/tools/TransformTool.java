@@ -35,6 +35,7 @@ import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.h2d.common.view.ui.Cursors;
+import games.rednblack.h2d.common.vo.CursorData;
 import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.interfaces.INotification;
 
@@ -223,53 +224,102 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
 
     @Override
     public void anchorMouseEnter(NormalSelectionFollower follower, int anchor, float x, float y) {
-        if (fixCursor){
+        if (fixCursor) {
             cursorManager.displayCustomCursor();
             return;
         }
 
-        switch (anchor) {
-            case NormalSelectionFollower.ROTATION_LB:
-                cursorManager.setCursor(Cursors.ROTATION_LB);
-                break;
-            case NormalSelectionFollower.ROTATION_LT:
-                cursorManager.setCursor(Cursors.ROTATION_LT);
-                break;
-            case NormalSelectionFollower.ROTATION_RT:
-                cursorManager.setCursor(Cursors.ROTATION_RT);
-                break;
-            case NormalSelectionFollower.ROTATION_RB:
-                cursorManager.setCursor(Cursors.ROTATION_RB);
-                break;
-            case NormalSelectionFollower.LB:
-                cursorManager.setCursor(Cursors.TRANSFORM_LEFT_RIGHT);
-                break;
-            case NormalSelectionFollower.L:
-                cursorManager.setCursor(Cursors.TRANSFORM_HORIZONTAL);
-                break;
-            case NormalSelectionFollower.LT:
-                cursorManager.setCursor(Cursors.TRANSFORM_RIGHT_LEFT);
-                break;
-            case NormalSelectionFollower.T:
-                cursorManager.setCursor(Cursors.TRANSFORM_VERTICAL);
-                break;
-            case NormalSelectionFollower.RT:
-                cursorManager.setCursor(Cursors.TRANSFORM_LEFT_RIGHT);
-                break;
-            case NormalSelectionFollower.R:
-                cursorManager.setCursor(Cursors.TRANSFORM_HORIZONTAL);
-                break;
-            case NormalSelectionFollower.RB:
-                cursorManager.setCursor(Cursors.TRANSFORM_RIGHT_LEFT);
-                break;
-            case NormalSelectionFollower.B:
-                cursorManager.setCursor(Cursors.TRANSFORM_VERTICAL);
-                break;
-            default:
-                cursorManager.setCursor(Cursors.NORMAL);
-                break;
+        TransformComponent transformComponent = SandboxComponentRetriever.get(follower.getEntity(), TransformComponent.class);
+        float entityRotation = transformComponent.rotation;
+
+        // Determine if we are operating on a rotation cursor or a resizing cursor
+        boolean isRotationTool = (anchor >= NormalSelectionFollower.ROTATION_LT && anchor <= NormalSelectionFollower.ROTATION_LB);
+
+        // Map the logical anchor (e.g., "Top") to its base angle (e.g., 90 degrees)
+        float baseAngle = getBaseAngleForAnchor(anchor);
+        CursorData cursorId = Cursors.NORMAL;
+        if (baseAngle >= 0) {
+            // Calculate the final visual angle by adding the entity's rotation
+            float visualAngle = baseAngle + entityRotation;
+            // Get the correct cursor based on the resulting visual angle
+            cursorId = getCursorForAngle(visualAngle, isRotationTool);
         }
+
+        cursorManager.setCursor(cursorId);
         cursorManager.displayCustomCursor();
+    }
+
+    /**
+     * Converts the anchor ID to its standard polar angle (0 = Right, 90 = Top, etc.)
+     */
+    private float getBaseAngleForAnchor(int anchor) {
+        switch (anchor) {
+            case NormalSelectionFollower.R:
+                return 0;
+            case NormalSelectionFollower.RT:
+            case NormalSelectionFollower.ROTATION_RT:
+                return 45;
+            case NormalSelectionFollower.T:
+                return 90;
+            case NormalSelectionFollower.LT:
+            case NormalSelectionFollower.ROTATION_LT:
+                return 135;
+            case NormalSelectionFollower.L:
+                return 180;
+            case NormalSelectionFollower.LB:
+            case NormalSelectionFollower.ROTATION_LB:
+                return 225;
+            case NormalSelectionFollower.B:
+                return 270;
+            case NormalSelectionFollower.RB:
+            case NormalSelectionFollower.ROTATION_RB:
+                return 315;
+            default:
+                return -1;
+        }
+    }
+
+    /**
+     * Calculates which cursor to display based on the actual visual angle on screen.
+     */
+    private CursorData getCursorForAngle(float angle, boolean isRotation) {
+        // Normalize the angle between 0 and 360
+        float normalized = angle % 360;
+        if (normalized < 0) normalized += 360;
+
+        // Divide the wheel into 8 sectors of 45 degrees each.
+        // Add 22.5 to rotate the snapping grid so that 0 degrees is the center of sector 0.
+        int sector = (int) ((normalized + 22.5f) / 45f) % 8;
+
+        if (isRotation) {
+            // Mapping for rotation cursors (curved icons)
+            // Sectors: 0=R, 1=RT, 2=T, 3=LT, 4=L, 5=LB, 6=B, 7=RB
+            // We map sectors to the 4 available rotation corner cursors.
+            switch (sector) {
+                case 0: // Right -> Use RB or RT?
+                case 1: return Cursors.ROTATION_RT; // North-East
+                case 2: // Top
+                case 3: return Cursors.ROTATION_LT; // North-West
+                case 4: // Left
+                case 5: return Cursors.ROTATION_LB; // South-West
+                case 6: // Bottom
+                case 7: return Cursors.ROTATION_RB; // South-East
+                default: return Cursors.ROTATION_RB;
+            }
+        } else {
+            // Mapping for resizing cursors (arrows)
+            switch (sector) {
+                case 0: return Cursors.TRANSFORM_HORIZONTAL; // 0 degrees (Right)
+                case 1: return Cursors.TRANSFORM_LEFT_RIGHT; // 45 degrees (Top-Right / Bottom-Left) [ / ]
+                case 2: return Cursors.TRANSFORM_VERTICAL;   // 90 degrees (Top)
+                case 3: return Cursors.TRANSFORM_RIGHT_LEFT; // 135 degrees (Top-Left / Bottom-Right) [ \ ]
+                case 4: return Cursors.TRANSFORM_HORIZONTAL; // 180 degrees (Left)
+                case 5: return Cursors.TRANSFORM_LEFT_RIGHT; // 225 degrees [ / ]
+                case 6: return Cursors.TRANSFORM_VERTICAL;   // 270 degrees (Bottom)
+                case 7: return Cursors.TRANSFORM_RIGHT_LEFT; // 315 degrees [ \ ]
+                default: return Cursors.NORMAL;
+            }
+        }
     }
 
     @Override

@@ -33,7 +33,7 @@ public class AnchorListener extends ClickListener {
 
     protected NormalSelectionFollower follower;
     
-    private Vector2 localTOglobal = new Vector2();
+    private final Vector2 localTOglobal = new Vector2();
 
     public AnchorListener(NormalSelectionFollower follower, int anchorId) {
         this.anchorId = anchorId;
