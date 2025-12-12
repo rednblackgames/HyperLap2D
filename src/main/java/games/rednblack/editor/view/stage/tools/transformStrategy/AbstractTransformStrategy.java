@@ -48,16 +48,27 @@ public abstract class AbstractTransformStrategy implements ITransformStrategy {
 
     void origin(float mouseDx, float mouseDy, int anchor, TransformComponent transformComponent, TransformCommandBuilder transformCommandBuilder) {
         if (anchor == NormalSelectionFollower.ORIGIN) {
-            float newOriginX = transformComponent.originX;
-            float newOriginY = transformComponent.originY;
+            float sX = Math.max(transformComponent.scaleX, 0.001f) * (transformComponent.flipX ? -1 : 1);
+            float sY = Math.max(transformComponent.scaleY, 0.001f) * (transformComponent.flipY ? -1 : 1);
 
-            newOriginX = newOriginX + mouseDx;
-            newOriginY = newOriginY + mouseDy;
+            float trueOriginDeltaX = mouseDx / sX;
+            float trueOriginDeltaY = mouseDy / sY;
 
-            transformComponent.originX = newOriginX;
-            transformComponent.originY = newOriginY;
+            transformComponent.originX += trueOriginDeltaX;
+            transformComponent.originY += trueOriginDeltaY;
 
-            transformCommandBuilder.setOrigin(RoundUtils.round(newOriginX, 2), RoundUtils.round(newOriginY, 2));
+            float rot = transformComponent.rotation;
+            float cos = MathUtils.cosDeg(rot);
+            float sin = MathUtils.sinDeg(rot);
+
+            float worldPivotDx = mouseDx * cos - mouseDy * sin;
+            float worldPivotDy = mouseDx * sin + mouseDy * cos;
+
+            transformComponent.x += worldPivotDx - trueOriginDeltaX;
+            transformComponent.y += worldPivotDy - trueOriginDeltaY;
+
+            transformCommandBuilder.setOrigin(RoundUtils.round(transformComponent.originX, 2), RoundUtils.round(transformComponent.originY, 2));
+            transformCommandBuilder.setPos(RoundUtils.round(transformComponent.x, 2), RoundUtils.round(transformComponent.y, 2));
         }
     }
 }
