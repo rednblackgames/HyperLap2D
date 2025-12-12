@@ -20,9 +20,6 @@ import games.rednblack.puremvc.Facade;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Sasun Poghosyan on 4/13/2016.
- */
 public class CompositeStrategy extends AbstractTransformStrategy {
 
     private final HashMap<String, Vector2> childrenInitialPositions = new HashMap<>();
@@ -115,108 +112,108 @@ public class CompositeStrategy extends AbstractTransformStrategy {
 
         float[] horizontal = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation, tmp1);
         float[] vertical = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation + 90, tmp2);
-        float deltaW = horizontal[0] / transformComponent.scaleX;
-        float deltaH = vertical[0] / transformComponent.scaleY;
+
+        float visualDeltaW = horizontal[0];
+        float visualDeltaH = vertical[0];
+
+        if (isShiftPressed()) {
+            visualDeltaW *= 2;
+            visualDeltaH *= 2;
+
+            horizontal[1] *= 2;
+            horizontal[2] *= 2;
+            vertical[1] *= 2;
+            vertical[2] *= 2;
+        }
 
         if (!component.automaticResize) {
             DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+            float sX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
+            float sY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
+
+            if (sX == 0) sX = 0.0001f;
+            if (sY == 0) sY = 0.0001f;
+
+            float localDeltaW = visualDeltaW / sX;
+            float localDeltaH = visualDeltaH / sY;
 
             float newWidth = dimensionsComponent.width;
             float newHeight = dimensionsComponent.height;
 
             switch (anchor) {
                 case NormalSelectionFollower.L:
-                    float x = horizontal[1];
-                    float y = horizontal[2];
-                    move(entity, -deltaW, 0);
-                    if (isShiftPressed()) {
-                        deltaW *= 2;
-                    }
-                    newWidth = dimensionsComponent.width - deltaW;
-                    transformComponent.x += x;
-                    transformComponent.y += y;
+                    move(entity, -localDeltaW, 0);
+                    newWidth = dimensionsComponent.width - localDeltaW;
+
+                    transformComponent.x += horizontal[1];
+                    transformComponent.y += horizontal[2];
                     break;
                 case NormalSelectionFollower.R:
                     if (isShiftPressed()) {
-                        move(entity, deltaW, 0);
-                        deltaW *= 2;
+                        move(entity, localDeltaW, 0);
                         transformComponent.x -= horizontal[1];
                         transformComponent.y -= horizontal[2];
                     }
-                    newWidth = dimensionsComponent.width + deltaW;
+                    newWidth = dimensionsComponent.width + localDeltaW;
                     break;
                 case NormalSelectionFollower.B:
-                    float x1 = vertical[1];
-                    float y1 = vertical[2];
-                    move(entity, 0, -deltaH);
-                    if (isShiftPressed()) {
-                        deltaH *= 2;
-                    }
-                    newHeight = dimensionsComponent.height - deltaH;
-                    transformComponent.x += x1;
-                    transformComponent.y += y1;
+                    move(entity, 0, -localDeltaH);
+                    newHeight = dimensionsComponent.height - localDeltaH;
+
+                    transformComponent.x += vertical[1];
+                    transformComponent.y += vertical[2];
                     break;
                 case NormalSelectionFollower.T:
                     if (isShiftPressed()) {
-                        move(entity, 0, deltaH);
-                        deltaH *= 2;
+                        move(entity, 0, localDeltaH);
                         transformComponent.x -= vertical[1];
                         transformComponent.y -= vertical[2];
                     }
-                    newHeight = dimensionsComponent.height + deltaH;
+                    newHeight = dimensionsComponent.height + localDeltaH;
                     break;
                 case NormalSelectionFollower.LT:
                     if (isShiftPressed()) {
-                        move(entity, -deltaW, deltaH);
-                        deltaW *= 2;
-                        deltaH *= 2;
+                        move(entity, -localDeltaW, localDeltaH);
                         transformComponent.x -= vertical[1];
                         transformComponent.y -= vertical[2];
                     } else {
-                        move(entity, -deltaW, 0);
+                        move(entity, -localDeltaW, 0);
                     }
-                    newWidth = dimensionsComponent.width - deltaW;
-                    newHeight = dimensionsComponent.height + deltaH;
+                    newWidth = dimensionsComponent.width - localDeltaW;
+                    newHeight = dimensionsComponent.height + localDeltaH;
+
                     transformComponent.x += horizontal[1];
                     transformComponent.y += horizontal[2];
-
                     break;
                 case NormalSelectionFollower.RT:
                     if (isShiftPressed()) {
-                        move(entity, deltaW, deltaH);
-                        deltaH *= 2;
-                        deltaW *= 2;
+                        move(entity, localDeltaW, localDeltaH);
                         transformComponent.x -= horizontal[1];
                         transformComponent.y -= horizontal[2];
                         transformComponent.x -= vertical[1];
                         transformComponent.y -= vertical[2];
                     }
-                    newWidth = dimensionsComponent.width + deltaW;
-                    newHeight = dimensionsComponent.height + deltaH;
+                    newWidth = dimensionsComponent.width + localDeltaW;
+                    newHeight = dimensionsComponent.height + localDeltaH;
                     break;
                 case NormalSelectionFollower.RB:
                     if (isShiftPressed()) {
-                        move(entity, deltaW, -deltaH);
-                        deltaW *= 2;
-                        deltaH *= 2;
+                        move(entity, localDeltaW, -localDeltaH);
                         transformComponent.x -= horizontal[1];
                         transformComponent.y -= horizontal[2];
                     } else {
-                        move(entity, 0, -deltaH);
+                        move(entity, 0, -localDeltaH);
                     }
-                    newWidth = dimensionsComponent.width + deltaW;
-                    newHeight = dimensionsComponent.height - deltaH;
+                    newWidth = dimensionsComponent.width + localDeltaW;
+                    newHeight = dimensionsComponent.height - localDeltaH;
                     transformComponent.x += vertical[1];
                     transformComponent.y += vertical[2];
                     break;
                 case NormalSelectionFollower.LB:
-                    move(entity, -deltaW, -deltaH);
-                    if (isShiftPressed()) {
-                        deltaW *= 2;
-                        deltaH *= 2;
-                    }
-                    newWidth = dimensionsComponent.width - deltaW;
-                    newHeight = dimensionsComponent.height - deltaH;
+                    move(entity, -localDeltaW, -localDeltaH);
+                    newWidth = dimensionsComponent.width - localDeltaW;
+                    newHeight = dimensionsComponent.height - localDeltaH;
+
                     transformComponent.x += horizontal[1];
                     transformComponent.y += horizontal[2];
                     transformComponent.x += vertical[1];
@@ -230,7 +227,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
         }
 
         // Origin
-        origin(deltaW, deltaH, anchor, transformComponent, transformCommandBuilder);
+        origin(visualDeltaW, visualDeltaH, anchor, transformComponent, transformCommandBuilder);
 
         // Rotating
         rotating(anchor, transformCommandBuilder, mousePointStage, lastTransformAngle, lastEntityAngle, transformComponent);

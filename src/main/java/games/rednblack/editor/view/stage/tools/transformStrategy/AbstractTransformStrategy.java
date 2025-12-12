@@ -48,8 +48,10 @@ public abstract class AbstractTransformStrategy implements ITransformStrategy {
 
     void origin(float mouseDx, float mouseDy, int anchor, TransformComponent transformComponent, TransformCommandBuilder transformCommandBuilder) {
         if (anchor == NormalSelectionFollower.ORIGIN) {
-            float sX = Math.max(transformComponent.scaleX, 0.001f) * (transformComponent.flipX ? -1 : 1);
-            float sY = Math.max(transformComponent.scaleY, 0.001f) * (transformComponent.flipY ? -1 : 1);
+            float sX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
+            float sY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
+            if (sX == 0) sX = 0.001f;
+            if (sY == 0) sY = 0.001f;
 
             float trueOriginDeltaX = mouseDx / sX;
             float trueOriginDeltaY = mouseDy / sY;

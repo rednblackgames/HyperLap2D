@@ -61,7 +61,6 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
     private final CompositeStrategy compositeStrategy = new CompositeStrategy();
     private final NinePatchStrategy ninePatchStrategy = new NinePatchStrategy();
     private final LabelStrategy labelStrategy = new LabelStrategy();
-    private final ColorPrimitiveStrategy colorPrimitiveStrategy = new ColorPrimitiveStrategy();
     private ITransformStrategy transformStrategy;
 
     private boolean fixCursor = false;
@@ -239,6 +238,18 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
         float baseAngle = getBaseAngleForAnchor(anchor);
         CursorData cursorId = Cursors.NORMAL;
         if (baseAngle >= 0) {
+            // If Flip X is active, mirror the angle horizontally (across Y-axis): 45 becomes 135.
+            float sX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
+            float sY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
+            if (sX < 0) {
+                baseAngle = 180f - baseAngle;
+            }
+
+            // If Flip Y is active, mirror the angle vertically (across X-axis): 45 becomes -45 (315).
+            if (sY < 0) {
+                baseAngle = -baseAngle;
+            }
+
             // Calculate the final visual angle by adding the entity's rotation
             float visualAngle = baseAngle + entityRotation;
             // Get the correct cursor based on the resulting visual angle

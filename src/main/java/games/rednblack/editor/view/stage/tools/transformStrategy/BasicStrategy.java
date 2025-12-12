@@ -13,13 +13,7 @@ import games.rednblack.editor.view.ui.properties.panels.UIBasicItemPropertiesMed
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.puremvc.Facade;
 
-/**
- * Created by Sasun Poghosyan on 4/13/2016.
- */
 public class BasicStrategy extends AbstractTransformStrategy {
-
-    private float deltaW;
-    private float deltaH;
 
     private static final float[] tmp1 = new float[3];
     private static final float[] tmp2 = new float[3];
@@ -40,8 +34,8 @@ public class BasicStrategy extends AbstractTransformStrategy {
         float[] horizontal = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation, tmp1);
         float[] vertical = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation + 90, tmp2);
 
-        deltaW = horizontal[0];
-        deltaH = vertical[0];
+        float deltaW = horizontal[0];
+        float deltaH = vertical[0];
 
         if (isShiftPressed()) {
             deltaW *= 2;
