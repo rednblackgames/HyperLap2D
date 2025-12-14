@@ -2,6 +2,7 @@ package games.rednblack.editor.view.stage.tools.transformStrategy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
@@ -28,8 +29,16 @@ public class BasicStrategy extends AbstractTransformStrategy {
         float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
         float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
 
-        float newWidth = dimensionsComponent.width * scaleX;
-        float newHeight = dimensionsComponent.height * scaleY;
+        float dWidth = dimensionsComponent.width;
+        float dHeight = dimensionsComponent.height;
+        if (dimensionsComponent.polygon != null) {
+            Rectangle b = dimensionsComponent.polygon.getBoundingRectangle();
+            dWidth = b.width;
+            dHeight = b.height;
+        }
+
+        float newWidth = dWidth * scaleX;
+        float newHeight = dHeight * scaleY;
 
         float[] horizontal = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation, tmp1);
         float[] vertical = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation + 90, tmp2);
@@ -50,43 +59,43 @@ public class BasicStrategy extends AbstractTransformStrategy {
         switch (anchor) {
             case NormalSelectionFollower.L:
                 positionHorizontally(transformComponent, dimensionsComponent, horizontal, true);
-                newWidth = dimensionsComponent.width * scaleX - deltaW;
+                newWidth = dWidth * scaleX - deltaW;
                 break;
             case NormalSelectionFollower.R:
                 positionHorizontally(transformComponent, dimensionsComponent, horizontal, false);
-                newWidth = dimensionsComponent.width * scaleX + deltaW;
+                newWidth = dWidth * scaleX + deltaW;
                 break;
             case NormalSelectionFollower.B:
                 positionVertically(transformComponent, dimensionsComponent, vertical, true);
-                newHeight = dimensionsComponent.height * scaleY - deltaH;
+                newHeight = dHeight * scaleY - deltaH;
                 break;
             case NormalSelectionFollower.T:
                 positionVertically(transformComponent, dimensionsComponent, vertical, false);
-                newHeight = dimensionsComponent.height * scaleY + deltaH;
+                newHeight = dHeight * scaleY + deltaH;
                 break;
             case NormalSelectionFollower.LT:
                 positionHorizontally(transformComponent, dimensionsComponent, horizontal, true);
                 positionVertically(transformComponent, dimensionsComponent, vertical, false);
-                newWidth = dimensionsComponent.width * scaleX - deltaW;
-                newHeight = dimensionsComponent.height * scaleY + deltaH;
+                newWidth = dWidth * scaleX - deltaW;
+                newHeight = dHeight * scaleY + deltaH;
                 break;
             case NormalSelectionFollower.RT:
                 positionHorizontally(transformComponent, dimensionsComponent, horizontal, false);
                 positionVertically(transformComponent, dimensionsComponent, vertical, false);
-                newWidth = dimensionsComponent.width * scaleX + deltaW;
-                newHeight = dimensionsComponent.height * scaleY + deltaH;
+                newWidth = dWidth * scaleX + deltaW;
+                newHeight = dHeight * scaleY + deltaH;
                 break;
             case NormalSelectionFollower.RB:
                 positionHorizontally(transformComponent, dimensionsComponent, horizontal, false);
                 positionVertically(transformComponent, dimensionsComponent, vertical, true);
-                newWidth = dimensionsComponent.width * scaleX + deltaW;
-                newHeight = dimensionsComponent.height * scaleY - deltaH;
+                newWidth = dWidth * scaleX + deltaW;
+                newHeight = dHeight * scaleY - deltaH;
                 break;
             case NormalSelectionFollower.LB:
                 positionHorizontally(transformComponent, dimensionsComponent, horizontal, true);
                 positionVertically(transformComponent, dimensionsComponent, vertical, true);
-                newWidth = dimensionsComponent.width * scaleX - deltaW;
-                newHeight = dimensionsComponent.height * scaleY - deltaH;
+                newWidth = dWidth * scaleX - deltaW;
+                newHeight = dHeight * scaleY - deltaH;
                 break;
         }
 
@@ -96,8 +105,8 @@ public class BasicStrategy extends AbstractTransformStrategy {
         // Rotating
         rotating(anchor, transformCommandBuilder, mousePointStage, lastTransformAngle, lastEntityAngle, transformComponent);
 
-        float newScaleX = newWidth / dimensionsComponent.width;
-        float newScaleY = isShiftPressed() ? newScaleX : newHeight / dimensionsComponent.height;
+        float newScaleX = newWidth / dWidth;
+        float newScaleY = isShiftPressed() ? newScaleX : newHeight / dHeight;
         newScaleX *= (transformComponent.flipX ? -1 : 1);
         newScaleY *= (transformComponent.flipY ? -1 : 1);
 
@@ -109,17 +118,23 @@ public class BasicStrategy extends AbstractTransformStrategy {
     }
 
     private void positionHorizontally(TransformComponent t, DimensionsComponent d, float[] vectorData, boolean inverse) {
+        float dWidth = d.width;
+        if (d.polygon != null) {
+            Rectangle b = d.polygon.getBoundingRectangle();
+            dWidth = b.width;
+        }
+
         float localAnchorX;
 
         if (isShiftPressed()) {
-            localAnchorX = d.width / 2f;
+            localAnchorX = dWidth / 2f;
         } else {
-            localAnchorX = inverse ? d.width : 0;
+            localAnchorX = inverse ? dWidth : 0;
         }
 
         float distFromOrigin = localAnchorX - t.originX;
 
-        float ratio = distFromOrigin / d.width;
+        float ratio = distFromOrigin / dWidth;
 
         float vecX = vectorData[1];
         float vecY = vectorData[2];
@@ -134,16 +149,22 @@ public class BasicStrategy extends AbstractTransformStrategy {
     }
 
     private void positionVertically(TransformComponent t, DimensionsComponent d, float[] vectorData, boolean inverse) {
+        float dHeight = d.height;
+        if (d.polygon != null) {
+            Rectangle b = d.polygon.getBoundingRectangle();
+            dHeight = b.height;
+        }
+
         float localAnchorY;
 
         if (isShiftPressed()) {
-            localAnchorY = d.height / 2f;
+            localAnchorY = dHeight / 2f;
         } else {
-            localAnchorY = inverse ? d.height : 0;
+            localAnchorY = inverse ? dHeight : 0;
         }
 
         float distFromOrigin = localAnchorY - t.originY;
-        float ratio = distFromOrigin / d.height;
+        float ratio = distFromOrigin / dHeight;
 
         float vecX = vectorData[1];
         float vecY = vectorData[2];

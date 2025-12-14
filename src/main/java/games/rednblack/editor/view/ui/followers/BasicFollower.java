@@ -84,8 +84,8 @@ public abstract class BasicFollower extends Group {
         TransformMathUtils.localToAscendantCoordinates(sandbox.getCurrentViewingEntity(), entity, position, transformMapper, parentNodeMapper);
         position = Sandbox.getInstance().worldToScreen(position);
 
-        setX( ( int ) ( position.x ) );
-        setY( ( int ) ( position.y ) );
+        setX(position.x);
+        setY(position.y);
 
         polygonOffsetX = 0;
         polygonOffsetY = 0;
@@ -108,11 +108,11 @@ public abstract class BasicFollower extends Group {
             setHeight(pixelPerWU * (dimensionsComponent.boundBox.y + dimensionsComponent.boundBox.height) * scaleY / camera.zoom);
         } else if (dimensionsComponent.polygon != null) {
             Rectangle b = dimensionsComponent.polygon.getBoundingRectangle();
-            setWidth (pixelPerWU * (b.width) * scaleX / camera.zoom);
-            setHeight(pixelPerWU * (b.height) * scaleY / camera.zoom);
+            setWidth (pixelPerWU * b.width * scaleX / camera.zoom);
+            setHeight(pixelPerWU * b.height * scaleY / camera.zoom);
 
-            polygonOffsetX = pixelPerWU * (b.x) * scaleX / camera.zoom;
-            polygonOffsetY = pixelPerWU * (b.y) * scaleY / camera.zoom;
+            polygonOffsetX = pixelPerWU * b.x / camera.zoom;
+            polygonOffsetY = pixelPerWU * b.y / camera.zoom;
 
             setX(getX() + polygonOffsetX);
             setY(getY() + polygonOffsetY);
