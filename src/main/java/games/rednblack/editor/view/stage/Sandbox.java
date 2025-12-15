@@ -325,6 +325,10 @@ public class Sandbox {
         return cameraPosTarget;
     }
 
+    public float getCameraZoomTarget() {
+        return cameraZoomTarget;
+    }
+
     /**
      * When an entity is modified their respective VO in memory are not touched, so to save a scene we have to
      * recreate all current SceneVO from root entity state

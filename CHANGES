@@ -2,6 +2,7 @@
 - Update Spine to 4.2.10
 - Allow to scale down lights and shadow resolution
 - Fix all transformation bugs
+- Sandbox grid is now synced with rulers and actually useful instead of just decorative!
 
 **Runtime**
 - [BREAK CHANGE] Fix physics fixed time step, fix micro-stuttering, systems now have a proper logic, replaced `RendererSystem` with `FixedTimestep` annotation to run systems with fixed time step, by default systems will runs as rendering at variable delta time
