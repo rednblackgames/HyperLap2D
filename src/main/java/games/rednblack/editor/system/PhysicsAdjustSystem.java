@@ -2,7 +2,9 @@ package games.rednblack.editor.system;
 
 import com.artemis.annotations.All;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
@@ -25,6 +27,7 @@ public class PhysicsAdjustSystem extends PhysicsSystem {
 		super.process(entity);
 
 		PhysicsBodyComponent physicsBodyComponent = SandboxComponentRetriever.get(entity, PhysicsBodyComponent.class);
+		DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
 
 		if(physicsBodyComponent.body == null) return;
 
@@ -39,6 +42,31 @@ public class PhysicsAdjustSystem extends PhysicsSystem {
 		} else {
 			transformVec.x = transformComponent.x + transformComponent.originX;
 			transformVec.y = transformComponent.y + transformComponent.originY;
+		}
+		if (dimensionsComponent.polygon != null) {
+			Rectangle rect = dimensionsComponent.polygon.getBoundingRectangle();
+			if (rect.x != 0 || rect.y != 0) {
+				float sX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
+				float sY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
+
+				transformVec.x -= (sX - 1.0f) * rect.x;
+				transformVec.y -= (sY - 1.0f) * rect.y;
+
+				float targetX = rect.x * sX;
+				float targetY = rect.y * sY;
+
+				float rad = rotation * MathUtils.degreesToRadians;
+				float cos = MathUtils.cos(rad);
+				float sin = MathUtils.sin(rad);
+
+				float rotatedX = targetX * cos - targetY * sin;
+				float rotatedY = targetX * sin + targetY * cos;
+
+				float diffX = targetX - rotatedX;
+				float diffY = targetY - rotatedY;
+
+				transformVec.add(diffX, diffY);
+			}
 		}
 		physicsBodyComponent.body.setTransform(transformVec, rotation * MathUtils.degreesToRadians);
 	}
