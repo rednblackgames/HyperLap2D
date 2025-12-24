@@ -31,43 +31,43 @@ public class PhysicsAdjustSystem extends PhysicsSystem {
 
 		if(physicsBodyComponent.body == null) return;
 
+		transformVec.x = transformComponent.x + transformComponent.originX;
+		transformVec.y = transformComponent.y + transformComponent.originY;
+
+		applyPolygonOffset(dimensionsComponent, transformComponent);
+
 		int parentEntity = parentNodeComponentMapper.get(entity).parentEntity;
-		ParentNodeComponent rootParentNode = parentNodeComponentMapper.get(parentEntity);
-		float rotation = transformComponent.rotation;
-		if (rootParentNode != null) {
-			transformVec.x = transformComponent.originX;
-			transformVec.y = transformComponent.originY;
-			TransformMathUtils.localToSceneCoordinates(entity, transformVec, transformComponentMapper, parentNodeComponentMapper);
-			rotation = TransformMathUtils.localToSceneRotation(entity, transformComponentMapper, parentNodeComponentMapper);
-		} else {
-			transformVec.x = transformComponent.x + transformComponent.originX;
-			transformVec.y = transformComponent.y + transformComponent.originY;
+		if (parentEntity != -1) {
+			TransformMathUtils.localToAscendantCoordinates(-1, parentEntity, transformVec, transformComponentMapper, parentNodeComponentMapper);
 		}
+
+		float rotation = TransformMathUtils.localToSceneRotation(entity, transformComponentMapper, parentNodeComponentMapper);
+
+		physicsBodyComponent.body.setTransform(transformVec, rotation * MathUtils.degreesToRadians);
+	}
+
+	private void applyPolygonOffset(DimensionsComponent dimensionsComponent, TransformComponent transformComponent) {
 		if (dimensionsComponent.polygon != null) {
 			Rectangle rect = dimensionsComponent.polygon.getBoundingRectangle();
 			if (rect.x != 0 || rect.y != 0) {
 				float sX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
 				float sY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
 
-				transformVec.x -= (sX - 1.0f) * rect.x;
-				transformVec.y -= (sY - 1.0f) * rect.y;
-
 				float targetX = rect.x * sX;
 				float targetY = rect.y * sY;
 
-				float rad = rotation * MathUtils.degreesToRadians;
+				float rad = transformComponent.rotation * MathUtils.degreesToRadians;
 				float cos = MathUtils.cos(rad);
 				float sin = MathUtils.sin(rad);
 
 				float rotatedX = targetX * cos - targetY * sin;
 				float rotatedY = targetX * sin + targetY * cos;
 
-				float diffX = targetX - rotatedX;
-				float diffY = targetY - rotatedY;
+				float diffX = rect.x - rotatedX;
+				float diffY = rect.y - rotatedY;
 
 				transformVec.add(diffX, diffY);
 			}
 		}
-		physicsBodyComponent.body.setTransform(transformVec, rotation * MathUtils.degreesToRadians);
 	}
 }
