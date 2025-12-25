@@ -65,11 +65,30 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
         sandbox.getSelector().clearSelections();
 
         TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
-        TransformComponent previousTransformComponent = SandboxComponentRetriever.get(oldEntity, TransformComponent.class);
-        ParentNodeComponent parentNodeComponent = SandboxComponentRetriever.get(entity, ParentNodeComponent.class);
-        if (parentNodeComponent == null || oldEntity != parentNodeComponent.parentEntity)
-            previousTransformComponent.enableTransform();
         transformComponent.disableTransform();
+        ParentNodeComponent parentNodeComponent = SandboxComponentRetriever.get(entity, ParentNodeComponent.class);
+
+        if (parentNodeComponent == null) {
+            //root entity loop from oldEntity to root
+            ParentNodeComponent previousParentNodeComponent = SandboxComponentRetriever.get(oldEntity, ParentNodeComponent.class);
+            while (previousParentNodeComponent != null) {
+                TransformComponent previousTransformComponent = SandboxComponentRetriever.get(oldEntity, TransformComponent.class);
+                previousTransformComponent.enableTransform();
+                oldEntity = previousParentNodeComponent.parentEntity;
+                previousParentNodeComponent = SandboxComponentRetriever.get(oldEntity, ParentNodeComponent.class);
+            }
+        } else {
+            //Restore only if going outside
+            if (oldEntity != parentNodeComponent.parentEntity) {
+                //loop restore until reach the current entity
+                while (oldEntity != entity) {
+                    parentNodeComponent = SandboxComponentRetriever.get(oldEntity, ParentNodeComponent.class);
+                    TransformComponent previousTransformComponent = SandboxComponentRetriever.get(oldEntity, TransformComponent.class);
+                    previousTransformComponent.enableTransform();
+                    oldEntity = parentNodeComponent.parentEntity;
+                }
+            }
+        }
 
         facade.sendNotification(DONE, enteringInto);
         facade.sendNotification(MsgAPI.EMPTY_SPACE_CLICKED);
