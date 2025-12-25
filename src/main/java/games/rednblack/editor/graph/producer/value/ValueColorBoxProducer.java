@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
 import games.rednblack.editor.graph.*;
@@ -26,7 +27,7 @@ public class ValueColorBoxProducer<T extends FieldType> extends ValueGraphBoxPro
     }
 
     @Override
-    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, Map<String, String> data) {
+    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, ObjectMap<String, String> data) {
         String value = data.get("color");
 
         return createGraphBox(skin, id, value);
@@ -82,7 +83,7 @@ public class ValueColorBoxProducer<T extends FieldType> extends ValueGraphBoxPro
         GraphBoxPartImpl<T> colorPart = new GraphBoxPartImpl<T>(table,
                 new GraphBoxPartImpl.Callback() {
                     @Override
-                    public void serialize(Map<String, String> object) {
+                    public void serialize(ObjectMap<String, String> object) {
                         object.put("color", tintButton.getColorValue().toString());
                     }
                 }) {

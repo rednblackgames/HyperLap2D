@@ -1,8 +1,8 @@
 package games.rednblack.editor.graph;
 
-import java.util.Map;
+import com.badlogic.gdx.utils.ObjectMap;
 
 public interface GraphBoxSerializeCallback {
 
-    void serializeBox(Map<String, String> object);
+    void serializeBox(ObjectMap<String, String> object);
 }

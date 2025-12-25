@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.google.common.base.Supplier;
 import games.rednblack.editor.graph.data.*;
 
@@ -218,8 +219,8 @@ public class GraphBoxImpl<T extends FieldType> implements GraphBox<T> {
     }
 
     @Override
-    public HashMap<String, String> getData() {
-        HashMap<String, String> result = new HashMap<>();
+    public ObjectMap<String, String> getData() {
+        ObjectMap<String, String> result = new ObjectMap<>();
 
         for (GraphBoxPart<T> graphBoxPart : graphBoxParts)
             graphBoxPart.serializePart(result);

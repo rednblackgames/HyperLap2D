@@ -1,6 +1,7 @@
 package games.rednblack.editor.graph.producer;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.ObjectMap;
 import games.rednblack.editor.graph.GraphBoxImpl;
 import games.rednblack.editor.graph.data.FieldType;
 import games.rednblack.editor.graph.data.GraphNodeInput;
@@ -44,7 +45,7 @@ public class GraphBoxProducerImpl<T extends FieldType> implements GraphBoxProduc
     }
 
     @Override
-    public GraphBoxImpl<T> createPipelineGraphBox(Skin skin, String id, Map<String, String> data) {
+    public GraphBoxImpl<T> createPipelineGraphBox(Skin skin, String id, ObjectMap<String, String> data) {
         return createPipelineGraphBoxConfig(skin, id, configuration);
     }
 

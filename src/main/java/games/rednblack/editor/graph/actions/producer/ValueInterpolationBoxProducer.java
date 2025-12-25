@@ -2,6 +2,7 @@ package games.rednblack.editor.graph.actions.producer;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import games.rednblack.editor.graph.GraphBox;
 import games.rednblack.editor.graph.GraphBoxImpl;
@@ -22,7 +23,7 @@ public class ValueInterpolationBoxProducer extends ValueGraphBoxProducer<ActionF
     }
 
     @Override
-    public GraphBox<ActionFieldType> createPipelineGraphBox(Skin skin, String id, Map<String, String> data) {
+    public GraphBox<ActionFieldType> createPipelineGraphBox(Skin skin, String id, ObjectMap<String, String> data) {
         String name = data.get("interpolation");
 
         return createGraphBox(skin, id, name);
@@ -49,7 +50,7 @@ public class ValueInterpolationBoxProducer extends ValueGraphBoxProducer<ActionF
 
         GraphBoxPartImpl<ActionFieldType> addPart = new GraphBoxPartImpl<>(selectBox, new GraphBoxPartImpl.Callback() {
             @Override
-            public void serialize(Map<String, String> object) {
+            public void serialize(ObjectMap<String, String> object) {
                 object.put("interpolation", selectBox.getSelected());
             }
         });

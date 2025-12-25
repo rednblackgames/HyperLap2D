@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.graph.GraphBoxImpl;
 import games.rednblack.editor.graph.GraphBoxPartImpl;
@@ -32,7 +33,7 @@ public class ArrayActionBoxProducer extends GraphBoxProducerImpl<ActionFieldType
     }
 
     @Override
-    public GraphBoxImpl<ActionFieldType> createPipelineGraphBox(Skin skin, String id, Map<String, String> data) {
+    public GraphBoxImpl<ActionFieldType> createPipelineGraphBox(Skin skin, String id, ObjectMap<String, String> data) {
         GraphBoxImpl<ActionFieldType> graphBox = null;
         int pins = Integer.parseInt(data.get("pins"));
         try {
@@ -51,7 +52,7 @@ public class ArrayActionBoxProducer extends GraphBoxProducerImpl<ActionFieldType
 
     @Override
     public GraphBoxImpl<ActionFieldType> createDefault(Skin skin, String id) {
-        Map<String, String> data = new HashMap<>();
+        ObjectMap<String, String> data = new ObjectMap<>();
         data.put("pins", String.valueOf(2));
         return createPipelineGraphBox(skin, id, data);
     }

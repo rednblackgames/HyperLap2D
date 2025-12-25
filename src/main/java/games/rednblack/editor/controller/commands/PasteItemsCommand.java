@@ -102,7 +102,7 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
 
 
         for (String key : compositeVO.content.keys()) {
-            if (key.equals(CompositeItemVO.class.getName())) continue;
+            if (key.equals(HyperJson.getJson().getTag(CompositeItemVO.class))) continue;
 
             Array<MainItemVO> vos = compositeVO.content.get(key);
             for (MainItemVO mainItemVO : vos) {
@@ -111,7 +111,7 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
             }
         }
 
-        Array<MainItemVO> compositeVOs = compositeVO.content.get(CompositeItemVO.class.getName());
+        Array<MainItemVO> compositeVOs = compositeVO.content.get(HyperJson.getJson().getTag(CompositeItemVO.class));
         if (compositeVOs != null) {
             for (MainItemVO mainItemVO : compositeVOs) {
                 CompositeItemVO compositeItemVO = (CompositeItemVO) mainItemVO;

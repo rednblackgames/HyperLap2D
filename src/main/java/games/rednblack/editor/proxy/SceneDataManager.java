@@ -137,7 +137,7 @@ public class SceneDataManager extends Proxy {
             return;
 
         compositeVO.sStickyNotes.clear();
-        Array<MainItemVO> sComposites = compositeVO.content.get(CompositeItemVO.class.getName());
+        Array<MainItemVO> sComposites = compositeVO.content.get(HyperJson.getJson().getTag(CompositeItemVO.class));
         if (sComposites != null) {
             for (MainItemVO mainItemVO : sComposites) {
                 CompositeItemVO c = (CompositeItemVO) mainItemVO;

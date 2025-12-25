@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
@@ -261,7 +262,7 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
             String id = node.id;
             float x = node.x;
             float y = node.y;
-            Map<String, String> data = node.data;
+            ObjectMap<String, String> data = node.data;
 
             GraphBoxProducer<ActionFieldType> producer = findProducerByType(type);
             if (producer == null)

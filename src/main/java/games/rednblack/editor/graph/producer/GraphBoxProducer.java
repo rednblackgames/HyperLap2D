@@ -1,6 +1,7 @@
 package games.rednblack.editor.graph.producer;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.ObjectMap;
 import games.rednblack.editor.graph.GraphBox;
 import games.rednblack.editor.graph.data.FieldType;
 
@@ -15,7 +16,7 @@ public interface GraphBoxProducer<T extends FieldType> {
 
     String getMenuLocation();
 
-    GraphBox<T> createPipelineGraphBox(Skin skin, String id, Map<String, String> data);
+    GraphBox<T> createPipelineGraphBox(Skin skin, String id, ObjectMap<String, String> data);
 
     GraphBox<T> createDefault(Skin skin, String id);
 

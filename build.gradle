@@ -140,12 +140,19 @@ dependencies {
     implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
     implementation "com.esotericsoftware.spine:spine-libgdx:$spineVersion"
     implementation "com.github.lyze237:gdx-TinyVG:$gdxTinyVGVersion"
+    implementation "com.github.victools:jsonschema-generator:$jsonSchemaVersion"
+    implementation "com.github.victools:jsonschema-module-jackson:$jsonSchemaVersion"
     implementation "com.mortennobel:java-image-scaling:0.8.6"
     implementation "org.apache.commons:commons-lang3:3.12.0"
     implementation "commons-io:commons-io:2.16.1"
     implementation 'net.mountainblade:modular:1.0'
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
+}
+
+task generateJsonSchema(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'games.rednblack.editor.tools.SchemaGeneratorTool'
 }
 
 task deleteInstallerTemp(type: Delete) {

@@ -1,4 +1,6 @@
 [0.1.7]
+- [BREAK CHANGE] Update Project version to `1.0.1`
+- Add automatic JSON Schema generator for exported files
 - Update Spine to 4.2.10
 - Allow to scale down lights and shadow resolution
 - Fix all transformation bugs

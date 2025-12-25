@@ -44,7 +44,7 @@ public class ProjectVersionMigrator {
 	/**
 	 * this is the current supported version, change when data format is changed, and add migration script
 	 */
-	public static String dataFormatVersion = "1.0.0";
+	public static String dataFormatVersion = "1.0.1";
 
 	private final Json json = HyperJson.getJson();
 
@@ -109,6 +109,10 @@ public class ProjectVersionMigrator {
 		if (projectVo.projectVersion.equals("0.2.0")) {
 			IVersionMigrator vmt = new VersionMigTo100();
 			doMigration(vmt, "1.0.0");
+		}
+		if (projectVo.projectVersion.equals("1.0.0")) {
+			IVersionMigrator vmt = new VersionMigTo101();
+			doMigration(vmt, "1.0.1");
 		}
 	}
 

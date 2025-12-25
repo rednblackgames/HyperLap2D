@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.FocusManager;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.InputValidator;
@@ -1152,7 +1153,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
             object.x = tmp.x + window.getX();
             object.y = tmp.y + window.getY();
 
-            HashMap<String, String> data = graphBox.getData();
+            ObjectMap<String, String> data = graphBox.getData();
             if (data != null)
                 object.data = data;
 

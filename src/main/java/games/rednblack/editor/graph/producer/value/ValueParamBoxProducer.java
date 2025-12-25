@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.widget.VisValidatableTextField;
 import games.rednblack.editor.graph.*;
 import games.rednblack.editor.graph.data.FieldType;
@@ -20,7 +21,7 @@ public class ValueParamBoxProducer<T extends FieldType> extends ValueGraphBoxPro
     }
 
     @Override
-    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, Map<String, String> data) {
+    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, ObjectMap<String, String> data) {
         String name = data.get("v");
 
         return createGraphBox(skin, id, name);
@@ -61,7 +62,7 @@ public class ValueParamBoxProducer<T extends FieldType> extends ValueGraphBoxPro
         GraphBoxPartImpl<T> colorPart = new GraphBoxPartImpl<T>(horizontalGroup,
                 new GraphBoxPartImpl.Callback() {
                     @Override
-                    public void serialize(Map<String, String> object) {
+                    public void serialize(ObjectMap<String, String> object) {
                         object.put("v", v1Input.getText());
                     }
                 });

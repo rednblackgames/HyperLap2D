@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.ObjectMap;
 import games.rednblack.editor.graph.GraphBox;
 import games.rednblack.editor.graph.GraphBoxImpl;
 import games.rednblack.editor.graph.GraphChangedEvent;
@@ -76,8 +77,8 @@ public class PropertyBoxImpl<T extends FieldType> extends Table implements Prope
         final String name = getName();
         GraphBoxImpl<T> result = new GraphBoxImpl<T>(id, new PropertyNodeConfiguration<T>(name, propertyType), skin) {
             @Override
-            public HashMap<String, String> getData() {
-                HashMap<String, String> result = new HashMap<>();
+            public ObjectMap<String, String> getData() {
+                ObjectMap<String, String> result = new ObjectMap<>();
                 result.put("name", name);
                 result.put("type", propertyType.name());
                 return result;

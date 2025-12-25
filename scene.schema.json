@@ -1,0 +1,1922 @@
+{
+  "$schema" : "https://json-schema.org/draft/2019-09/schema",
+  "$defs" : {
+    "Circle" : {
+      "type" : "object",
+      "properties" : {
+        "radius" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "x" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "y" : {
+          "type" : "number",
+          "default" : 0.0
+        }
+      },
+      "additionalProperties" : false
+    },
+    "ColorPrimitiveVO" : {
+      "type" : "object",
+      "properties" : {
+        "circle" : {
+          "$ref" : "#/$defs/Circle"
+        },
+        "customVariables" : {
+          "$ref" : "#/$defs/MapOfStringToString"
+        },
+        "flipX" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "flipY" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "itemIdentifier" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "itemName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "layerName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "light" : {
+          "$ref" : "#/$defs/LightBodyDataVO"
+        },
+        "originX" : {
+          "type" : "number"
+        },
+        "originY" : {
+          "type" : "number"
+        },
+        "physics" : {
+          "$ref" : "#/$defs/PhysicsBodyDataVO"
+        },
+        "renderingLayer" : {
+          "$ref" : "#/$defs/RenderingLayer",
+          "default" : "SCREEN"
+        },
+        "rotation" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "scaleX" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "scaleY" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "sensor" : {
+          "$ref" : "#/$defs/SensorDataVO"
+        },
+        "shader" : {
+          "$ref" : "#/$defs/ShaderVO"
+        },
+        "shape" : {
+          "$ref" : "#/$defs/PolygonShapeVO"
+        },
+        "tags" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "tint" : {
+          "default" : [ 1.0, 1.0, 1.0, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "uniqueId" : {
+          "type" : "string"
+        },
+        "x" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "y" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "zIndex" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "class" : {
+          "type" : "string",
+          "enum" : [ "ColorPrimitiveVO" ]
+        }
+      },
+      "additionalProperties" : false
+    },
+    "CompositeItemVO" : {
+      "type" : "object",
+      "properties" : {
+        "automaticResize" : {
+          "type" : "boolean",
+          "default" : true
+        },
+        "circle" : {
+          "$ref" : "#/$defs/Circle"
+        },
+        "content" : {
+          "type" : "object",
+          "properties" : {
+            "SpriteAnimationVO" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/$defs/SpriteAnimationVO"
+              }
+            },
+            "ColorPrimitiveVO" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/$defs/ColorPrimitiveVO"
+              }
+            },
+            "Image9patchVO" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/$defs/Image9patchVO"
+              }
+            },
+            "ParticleEffectVO" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/$defs/ParticleEffectVO"
+              }
+            },
+            "CompositeItemVO" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/$defs/CompositeItemVO"
+              }
+            },
+            "TalosVO" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/$defs/TalosVO"
+              }
+            },
+            "LabelVO" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/$defs/LabelVO"
+              }
+            },
+            "SpineVO" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/$defs/SpineVO"
+              }
+            },
+            "TinyVGVO" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/$defs/TinyVGVO"
+              }
+            },
+            "SimpleImageVO" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/$defs/SimpleImageVO"
+              }
+            },
+            "LightVO" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/$defs/LightVO"
+              }
+            }
+          },
+          "additionalProperties" : false
+        },
+        "customVariables" : {
+          "$ref" : "#/$defs/MapOfStringToString"
+        },
+        "flipX" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "flipY" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "height" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "itemIdentifier" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "itemName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "layerName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "layers" : {
+          "$ref" : "#/$defs/LayerItemVOArray"
+        },
+        "light" : {
+          "$ref" : "#/$defs/LightBodyDataVO"
+        },
+        "originX" : {
+          "type" : "number"
+        },
+        "originY" : {
+          "type" : "number"
+        },
+        "physics" : {
+          "$ref" : "#/$defs/PhysicsBodyDataVO"
+        },
+        "renderToFBO" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "renderingLayer" : {
+          "$ref" : "#/$defs/RenderingLayer",
+          "default" : "SCREEN"
+        },
+        "rotation" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "sStickyNotes" : {
+          "$ref" : "#/$defs/MapOfStringToStickyNoteVO"
+        },
+        "scaleX" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "scaleY" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "scissorsEnabled" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "sensor" : {
+          "$ref" : "#/$defs/SensorDataVO"
+        },
+        "shader" : {
+          "$ref" : "#/$defs/ShaderVO"
+        },
+        "shape" : {
+          "$ref" : "#/$defs/PolygonShapeVO"
+        },
+        "tags" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "tint" : {
+          "default" : [ 1.0, 1.0, 1.0, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "uniqueId" : {
+          "type" : "string"
+        },
+        "width" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "x" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "y" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "zIndex" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "class" : {
+          "type" : "string",
+          "enum" : [ "CompositeItemVO" ]
+        }
+      },
+      "additionalProperties" : false
+    },
+    "FrameRange" : {
+      "type" : "object",
+      "properties" : {
+        "endFrame" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "startFrame" : {
+          "type" : "integer",
+          "default" : 0
+        }
+      },
+      "additionalProperties" : false
+    },
+    "Image9patchVO" : {
+      "type" : "object",
+      "properties" : {
+        "circle" : {
+          "$ref" : "#/$defs/Circle"
+        },
+        "customVariables" : {
+          "$ref" : "#/$defs/MapOfStringToString"
+        },
+        "flipX" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "flipY" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "height" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "imageName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "itemIdentifier" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "itemName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "layerName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "light" : {
+          "$ref" : "#/$defs/LightBodyDataVO"
+        },
+        "originX" : {
+          "type" : "number"
+        },
+        "originY" : {
+          "type" : "number"
+        },
+        "physics" : {
+          "$ref" : "#/$defs/PhysicsBodyDataVO"
+        },
+        "renderingLayer" : {
+          "$ref" : "#/$defs/RenderingLayer",
+          "default" : "SCREEN"
+        },
+        "rotation" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "scaleX" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "scaleY" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "sensor" : {
+          "$ref" : "#/$defs/SensorDataVO"
+        },
+        "shader" : {
+          "$ref" : "#/$defs/ShaderVO"
+        },
+        "shape" : {
+          "$ref" : "#/$defs/PolygonShapeVO"
+        },
+        "tags" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "tint" : {
+          "default" : [ 1.0, 1.0, 1.0, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "uniqueId" : {
+          "type" : "string"
+        },
+        "width" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "x" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "y" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "zIndex" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "class" : {
+          "type" : "string",
+          "enum" : [ "Image9patchVO" ]
+        }
+      },
+      "additionalProperties" : false
+    },
+    "LabelVO" : {
+      "type" : "object",
+      "properties" : {
+        "align" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "bitmapFont" : {
+          "type" : "string"
+        },
+        "circle" : {
+          "$ref" : "#/$defs/Circle"
+        },
+        "customVariables" : {
+          "$ref" : "#/$defs/MapOfStringToString"
+        },
+        "flipX" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "flipY" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "height" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "isTyping" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "itemIdentifier" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "itemName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "layerName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "light" : {
+          "$ref" : "#/$defs/LightBodyDataVO"
+        },
+        "monoSpace" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "originX" : {
+          "type" : "number"
+        },
+        "originY" : {
+          "type" : "number"
+        },
+        "physics" : {
+          "$ref" : "#/$defs/PhysicsBodyDataVO"
+        },
+        "renderingLayer" : {
+          "$ref" : "#/$defs/RenderingLayer",
+          "default" : "SCREEN"
+        },
+        "rotation" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "scaleX" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "scaleY" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "sensor" : {
+          "$ref" : "#/$defs/SensorDataVO"
+        },
+        "shader" : {
+          "$ref" : "#/$defs/ShaderVO"
+        },
+        "shape" : {
+          "$ref" : "#/$defs/PolygonShapeVO"
+        },
+        "size" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "style" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "tags" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "text" : {
+          "type" : "string",
+          "default" : "Label"
+        },
+        "tint" : {
+          "default" : [ 1.0, 1.0, 1.0, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "uniqueId" : {
+          "type" : "string"
+        },
+        "width" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "wrap" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "x" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "y" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "zIndex" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "class" : {
+          "type" : "string",
+          "enum" : [ "LabelVO" ]
+        }
+      },
+      "additionalProperties" : false
+    },
+    "LayerItemVO" : {
+      "type" : "object",
+      "properties" : {
+        "isLocked" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "isVisible" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "layerName" : {
+          "type" : "string",
+          "default" : ""
+        }
+      },
+      "additionalProperties" : false
+    },
+    "LayerItemVOArray" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/$defs/LayerItemVO"
+      }
+    },
+    "LightBodyDataVO" : {
+      "type" : "object",
+      "properties" : {
+        "color" : {
+          "default" : [ 1.0, 1.0, 1.0, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "distance" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "falloff" : {
+          "$ref" : "#/$defs/Vector3",
+          "default" : {
+            "x" : 1.2,
+            "y" : 0.0,
+            "z" : 5.0
+          }
+        },
+        "height" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "intensity" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "isActive" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "isSoft" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "isStatic" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "isXRay" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "rayDirection" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "rays" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "softnessLength" : {
+          "type" : "number",
+          "default" : 0.0
+        }
+      },
+      "additionalProperties" : false
+    },
+    "LightType" : {
+      "type" : "string",
+      "enum" : [ "POINT", "CONE" ]
+    },
+    "LightVO" : {
+      "type" : "object",
+      "properties" : {
+        "circle" : {
+          "$ref" : "#/$defs/Circle"
+        },
+        "coneDegree" : {
+          "type" : "number",
+          "default" : 30.0
+        },
+        "customVariables" : {
+          "$ref" : "#/$defs/MapOfStringToString"
+        },
+        "directionDegree" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "distance" : {
+          "type" : "number",
+          "default" : 300.0
+        },
+        "falloff" : {
+          "$ref" : "#/$defs/Vector3",
+          "default" : {
+            "x" : 1.2,
+            "y" : 0.0,
+            "z" : 5.0
+          }
+        },
+        "flipX" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "flipY" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "height" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "intensity" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "isActive" : {
+          "type" : "boolean",
+          "default" : true
+        },
+        "isSoft" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "isStatic" : {
+          "type" : "boolean",
+          "default" : true
+        },
+        "isXRay" : {
+          "type" : "boolean",
+          "default" : true
+        },
+        "itemIdentifier" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "itemName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "layerName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "light" : {
+          "$ref" : "#/$defs/LightBodyDataVO"
+        },
+        "originX" : {
+          "type" : "number"
+        },
+        "originY" : {
+          "type" : "number"
+        },
+        "physics" : {
+          "$ref" : "#/$defs/PhysicsBodyDataVO"
+        },
+        "rays" : {
+          "type" : "integer",
+          "default" : 12
+        },
+        "renderingLayer" : {
+          "$ref" : "#/$defs/RenderingLayer",
+          "default" : "SCREEN"
+        },
+        "rotation" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "scaleX" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "scaleY" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "sensor" : {
+          "$ref" : "#/$defs/SensorDataVO"
+        },
+        "shader" : {
+          "$ref" : "#/$defs/ShaderVO"
+        },
+        "shape" : {
+          "$ref" : "#/$defs/PolygonShapeVO"
+        },
+        "softnessLength" : {
+          "type" : "number",
+          "default" : -1.0
+        },
+        "tags" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "tint" : {
+          "default" : [ 1.0, 1.0, 1.0, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "type" : {
+          "$ref" : "#/$defs/LightType"
+        },
+        "uniqueId" : {
+          "type" : "string"
+        },
+        "x" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "y" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "zIndex" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "class" : {
+          "type" : "string",
+          "enum" : [ "LightVO" ]
+        }
+      },
+      "additionalProperties" : false
+    },
+    "LightsPropertiesVO" : {
+      "type" : "object",
+      "properties" : {
+        "ambientColor" : {
+          "default" : [ 1.0, 1.0, 1.0, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "blurNum" : {
+          "type" : "integer",
+          "default" : 1
+        },
+        "directionalColor" : {
+          "default" : [ 1.0, 1.0, 1.0, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "directionalDegree" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "directionalHeight" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "directionalRays" : {
+          "type" : "integer",
+          "default" : 12
+        },
+        "enabled" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "lightMapScale" : {
+          "type" : "integer",
+          "default" : 4
+        },
+        "lightType" : {
+          "type" : "string",
+          "default" : "DIFFUSE"
+        },
+        "pseudo3d" : {
+          "type" : "boolean",
+          "default" : false
+        }
+      },
+      "additionalProperties" : false
+    },
+    "MapOfStringToShaderUniformVO" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "$ref" : "#/$defs/ShaderUniformVO"
+      }
+    },
+    "MapOfStringToStickyNoteVO" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "$ref" : "#/$defs/StickyNoteVO"
+      }
+    },
+    "MapOfStringToString" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "type" : "string"
+      }
+    },
+    "ParticleEffectVO" : {
+      "type" : "object",
+      "properties" : {
+        "autoStart" : {
+          "type" : "boolean",
+          "default" : true
+        },
+        "circle" : {
+          "$ref" : "#/$defs/Circle"
+        },
+        "customVariables" : {
+          "$ref" : "#/$defs/MapOfStringToString"
+        },
+        "flipX" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "flipY" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "itemIdentifier" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "itemName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "layerName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "light" : {
+          "$ref" : "#/$defs/LightBodyDataVO"
+        },
+        "originX" : {
+          "type" : "number"
+        },
+        "originY" : {
+          "type" : "number"
+        },
+        "particleName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "physics" : {
+          "$ref" : "#/$defs/PhysicsBodyDataVO"
+        },
+        "renderingLayer" : {
+          "$ref" : "#/$defs/RenderingLayer",
+          "default" : "SCREEN"
+        },
+        "rotation" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "scaleX" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "scaleY" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "sensor" : {
+          "$ref" : "#/$defs/SensorDataVO"
+        },
+        "shader" : {
+          "$ref" : "#/$defs/ShaderVO"
+        },
+        "shape" : {
+          "$ref" : "#/$defs/PolygonShapeVO"
+        },
+        "tags" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "tint" : {
+          "default" : [ 1.0, 1.0, 1.0, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "transform" : {
+          "type" : "boolean",
+          "default" : true
+        },
+        "uniqueId" : {
+          "type" : "string"
+        },
+        "x" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "y" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "zIndex" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "class" : {
+          "type" : "string",
+          "enum" : [ "ParticleEffectVO" ]
+        }
+      },
+      "additionalProperties" : false
+    },
+    "PhysicsBodyDataVO" : {
+      "type" : "object",
+      "properties" : {
+        "allowSleep" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "angularDamping" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "awake" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "bodyType" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "bullet" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "centerOfMass" : {
+          "$ref" : "#/$defs/Vector2",
+          "default" : {
+            "x" : 0.0,
+            "y" : 0.0
+          }
+        },
+        "damping" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "density" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "fineBoundBox" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "fixedRotation" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "friction" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "gravityScale" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "height" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "mass" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "restitution" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "rotationalInertia" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "sensor" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "shapeType" : {
+          "$ref" : "#/$defs/ShapeType",
+          "default" : "POLYGON"
+        }
+      },
+      "additionalProperties" : false
+    },
+    "PhysicsPropertiesVO" : {
+      "type" : "object",
+      "properties" : {
+        "enabled" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "gravityX" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "gravityY" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "sleepVelocity" : {
+          "type" : "number",
+          "default" : 0.0
+        }
+      },
+      "additionalProperties" : false
+    },
+    "PolygonShapeVO" : {
+      "type" : "object",
+      "properties" : {
+        "openEnded" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "polygonizedVertices" : {
+          "type" : "array",
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/$defs/Vector2"
+            }
+          }
+        },
+        "vertices" : {
+          "$ref" : "#/$defs/Vector2Array"
+        }
+      },
+      "additionalProperties" : false
+    },
+    "RenderingLayer" : {
+      "type" : "string",
+      "enum" : [ "SCREEN", "SCREEN_READING" ]
+    },
+    "SensorDataVO" : {
+      "type" : "object",
+      "properties" : {
+        "bottom" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "bottomHeightPercent" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "bottomSpanPercent" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "left" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "leftSpanPercent" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "leftWidthPercent" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "right" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "rightSpanPercent" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "rightWidthPercent" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "top" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "topHeightPercent" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "topSpanPercent" : {
+          "type" : "number",
+          "default" : 0.0
+        }
+      },
+      "additionalProperties" : false
+    },
+    "ShaderUniformVO" : {
+      "type" : "object",
+      "properties" : {
+        "floatValue" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "floatValue2" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "floatValue3" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "floatValue4" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "intValue" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "type" : {
+          "type" : "string"
+        }
+      },
+      "additionalProperties" : false
+    },
+    "ShaderVO" : {
+      "type" : "object",
+      "properties" : {
+        "shaderName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "shaderUniforms" : {
+          "$ref" : "#/$defs/MapOfStringToShaderUniformVO"
+        }
+      },
+      "additionalProperties" : false
+    },
+    "ShapeType" : {
+      "type" : "string",
+      "enum" : [ "POLYGON", "CHAIN", "CHAIN_LOOP", "CIRCLE", "NONE" ]
+    },
+    "SimpleImageVO" : {
+      "type" : "object",
+      "properties" : {
+        "circle" : {
+          "$ref" : "#/$defs/Circle"
+        },
+        "customVariables" : {
+          "$ref" : "#/$defs/MapOfStringToString"
+        },
+        "flipX" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "flipY" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "imageName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "isPolygon" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "isRepeat" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "itemIdentifier" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "itemName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "layerName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "light" : {
+          "$ref" : "#/$defs/LightBodyDataVO"
+        },
+        "originX" : {
+          "type" : "number"
+        },
+        "originY" : {
+          "type" : "number"
+        },
+        "physics" : {
+          "$ref" : "#/$defs/PhysicsBodyDataVO"
+        },
+        "renderingLayer" : {
+          "$ref" : "#/$defs/RenderingLayer",
+          "default" : "SCREEN"
+        },
+        "rotation" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "scaleX" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "scaleY" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "sensor" : {
+          "$ref" : "#/$defs/SensorDataVO"
+        },
+        "shader" : {
+          "$ref" : "#/$defs/ShaderVO"
+        },
+        "shape" : {
+          "$ref" : "#/$defs/PolygonShapeVO"
+        },
+        "tags" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "tint" : {
+          "default" : [ 1.0, 1.0, 1.0, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "uniqueId" : {
+          "type" : "string"
+        },
+        "x" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "y" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "zIndex" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "class" : {
+          "type" : "string",
+          "enum" : [ "SimpleImageVO" ]
+        }
+      },
+      "additionalProperties" : false
+    },
+    "SpineVO" : {
+      "type" : "object",
+      "properties" : {
+        "animationName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "circle" : {
+          "$ref" : "#/$defs/Circle"
+        },
+        "currentAnimationName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "currentSkinName" : {
+          "type" : "string",
+          "default" : "default"
+        },
+        "customVariables" : {
+          "$ref" : "#/$defs/MapOfStringToString"
+        },
+        "flipX" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "flipY" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "itemIdentifier" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "itemName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "layerName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "light" : {
+          "$ref" : "#/$defs/LightBodyDataVO"
+        },
+        "originX" : {
+          "type" : "number"
+        },
+        "originY" : {
+          "type" : "number"
+        },
+        "physics" : {
+          "$ref" : "#/$defs/PhysicsBodyDataVO"
+        },
+        "renderingLayer" : {
+          "$ref" : "#/$defs/RenderingLayer",
+          "default" : "SCREEN"
+        },
+        "rotation" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "scaleX" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "scaleY" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "sensor" : {
+          "$ref" : "#/$defs/SensorDataVO"
+        },
+        "shader" : {
+          "$ref" : "#/$defs/ShaderVO"
+        },
+        "shape" : {
+          "$ref" : "#/$defs/PolygonShapeVO"
+        },
+        "tags" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "tint" : {
+          "default" : [ 1.0, 1.0, 1.0, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "uniqueId" : {
+          "type" : "string"
+        },
+        "x" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "y" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "zIndex" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "class" : {
+          "type" : "string",
+          "enum" : [ "SpineVO" ]
+        }
+      },
+      "additionalProperties" : false
+    },
+    "SpriteAnimationVO" : {
+      "type" : "object",
+      "properties" : {
+        "animationName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "circle" : {
+          "$ref" : "#/$defs/Circle"
+        },
+        "currentAnimation" : {
+          "type" : "string"
+        },
+        "customVariables" : {
+          "$ref" : "#/$defs/MapOfStringToString"
+        },
+        "flipX" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "flipY" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "fps" : {
+          "type" : "integer",
+          "default" : 24
+        },
+        "frameRangeMap" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/$defs/FrameRange"
+          }
+        },
+        "itemIdentifier" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "itemName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "layerName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "light" : {
+          "$ref" : "#/$defs/LightBodyDataVO"
+        },
+        "originX" : {
+          "type" : "number"
+        },
+        "originY" : {
+          "type" : "number"
+        },
+        "physics" : {
+          "$ref" : "#/$defs/PhysicsBodyDataVO"
+        },
+        "playMode" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "renderingLayer" : {
+          "$ref" : "#/$defs/RenderingLayer",
+          "default" : "SCREEN"
+        },
+        "rotation" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "scaleX" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "scaleY" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "sensor" : {
+          "$ref" : "#/$defs/SensorDataVO"
+        },
+        "shader" : {
+          "$ref" : "#/$defs/ShaderVO"
+        },
+        "shape" : {
+          "$ref" : "#/$defs/PolygonShapeVO"
+        },
+        "tags" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "tint" : {
+          "default" : [ 1.0, 1.0, 1.0, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "uniqueId" : {
+          "type" : "string"
+        },
+        "x" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "y" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "zIndex" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "class" : {
+          "type" : "string",
+          "enum" : [ "SpriteAnimationVO" ]
+        }
+      },
+      "additionalProperties" : false
+    },
+    "StickyNoteVO" : {
+      "type" : "object",
+      "properties" : {
+        "content" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "height" : {
+          "type" : "number",
+          "default" : 100.0
+        },
+        "id" : {
+          "type" : "string"
+        },
+        "tint" : {
+          "default" : [ 0.72, 0.98, 0.62, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "width" : {
+          "type" : "number",
+          "default" : 250.0
+        },
+        "x" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "y" : {
+          "type" : "number",
+          "default" : 0.0
+        }
+      },
+      "additionalProperties" : false
+    },
+    "TalosVO" : {
+      "type" : "object",
+      "properties" : {
+        "autoStart" : {
+          "type" : "boolean",
+          "default" : true
+        },
+        "circle" : {
+          "$ref" : "#/$defs/Circle"
+        },
+        "customVariables" : {
+          "$ref" : "#/$defs/MapOfStringToString"
+        },
+        "flipX" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "flipY" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "itemIdentifier" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "itemName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "layerName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "light" : {
+          "$ref" : "#/$defs/LightBodyDataVO"
+        },
+        "originX" : {
+          "type" : "number"
+        },
+        "originY" : {
+          "type" : "number"
+        },
+        "particleName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "physics" : {
+          "$ref" : "#/$defs/PhysicsBodyDataVO"
+        },
+        "renderingLayer" : {
+          "$ref" : "#/$defs/RenderingLayer",
+          "default" : "SCREEN"
+        },
+        "rotation" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "scaleX" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "scaleY" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "sensor" : {
+          "$ref" : "#/$defs/SensorDataVO"
+        },
+        "shader" : {
+          "$ref" : "#/$defs/ShaderVO"
+        },
+        "shape" : {
+          "$ref" : "#/$defs/PolygonShapeVO"
+        },
+        "tags" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "tint" : {
+          "default" : [ 1.0, 1.0, 1.0, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "transform" : {
+          "type" : "boolean",
+          "default" : true
+        },
+        "uniqueId" : {
+          "type" : "string"
+        },
+        "x" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "y" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "zIndex" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "class" : {
+          "type" : "string",
+          "enum" : [ "TalosVO" ]
+        }
+      },
+      "additionalProperties" : false
+    },
+    "TinyVGVO" : {
+      "type" : "object",
+      "properties" : {
+        "circle" : {
+          "$ref" : "#/$defs/Circle"
+        },
+        "customVariables" : {
+          "$ref" : "#/$defs/MapOfStringToString"
+        },
+        "flipX" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "flipY" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "imageName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "itemIdentifier" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "itemName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "layerName" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "light" : {
+          "$ref" : "#/$defs/LightBodyDataVO"
+        },
+        "originX" : {
+          "type" : "number"
+        },
+        "originY" : {
+          "type" : "number"
+        },
+        "physics" : {
+          "$ref" : "#/$defs/PhysicsBodyDataVO"
+        },
+        "renderingLayer" : {
+          "$ref" : "#/$defs/RenderingLayer",
+          "default" : "SCREEN"
+        },
+        "rotation" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "scaleX" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "scaleY" : {
+          "type" : "number",
+          "default" : 1.0
+        },
+        "sensor" : {
+          "$ref" : "#/$defs/SensorDataVO"
+        },
+        "shader" : {
+          "$ref" : "#/$defs/ShaderVO"
+        },
+        "shape" : {
+          "$ref" : "#/$defs/PolygonShapeVO"
+        },
+        "tags" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "tint" : {
+          "default" : [ 1.0, 1.0, 1.0, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "uniqueId" : {
+          "type" : "string"
+        },
+        "x" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "y" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "zIndex" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "class" : {
+          "type" : "string",
+          "enum" : [ "TinyVGVO" ]
+        }
+      },
+      "additionalProperties" : false
+    },
+    "Vector2" : {
+      "type" : "object",
+      "properties" : {
+        "x" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "y" : {
+          "type" : "number",
+          "default" : 0.0
+        }
+      },
+      "additionalProperties" : false
+    },
+    "Vector2Array" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/$defs/Vector2"
+      }
+    },
+    "Vector3" : {
+      "type" : "object",
+      "properties" : {
+        "x" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "y" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "z" : {
+          "type" : "number",
+          "default" : 0.0
+        }
+      },
+      "additionalProperties" : false
+    }
+  },
+  "type" : "object",
+  "properties" : {
+    "composite" : {
+      "$ref" : "#/$defs/CompositeItemVO"
+    },
+    "horizontalGuides" : {
+      "type" : "array",
+      "items" : {
+        "type" : "number"
+      }
+    },
+    "lightsPropertiesVO" : {
+      "$ref" : "#/$defs/LightsPropertiesVO"
+    },
+    "physicsPropertiesVO" : {
+      "$ref" : "#/$defs/PhysicsPropertiesVO"
+    },
+    "sceneName" : {
+      "type" : "string",
+      "default" : ""
+    },
+    "shaderVO" : {
+      "$ref" : "#/$defs/ShaderVO"
+    },
+    "verticalGuides" : {
+      "type" : "array",
+      "items" : {
+        "type" : "number"
+      }
+    }
+  },
+  "additionalProperties" : false
+}

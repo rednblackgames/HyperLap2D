@@ -1,6 +1,7 @@
 package games.rednblack.editor.graph;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.ObjectMap;
 import games.rednblack.editor.graph.data.FieldType;
 import games.rednblack.editor.graph.data.GraphNodeInput;
 import games.rednblack.editor.graph.data.GraphNodeOutput;
@@ -42,7 +43,7 @@ public class GraphBoxPartImpl<T extends FieldType> implements GraphBoxPart<T> {
     }
 
     @Override
-    public void serializePart(Map<String, String> object) {
+    public void serializePart(ObjectMap<String, String> object) {
         if (callback != null)
             callback.serialize(object);
     }
@@ -53,6 +54,6 @@ public class GraphBoxPartImpl<T extends FieldType> implements GraphBoxPart<T> {
     }
 
     public interface Callback {
-        void serialize(Map<String, String> object);
+        void serialize(ObjectMap<String, String> object);
     }
 }

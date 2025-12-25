@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import games.rednblack.editor.graph.*;
 import games.rednblack.editor.graph.data.FieldType;
@@ -19,7 +20,7 @@ public class ValueBooleanBoxProducer<T extends FieldType> extends ValueGraphBoxP
     }
 
     @Override
-    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, Map<String, String> data) {
+    public GraphBox<T> createPipelineGraphBox(Skin skin, String id, ObjectMap<String, String> data) {
         boolean v = data.get("v") != null;
 
         return createGraphBox(skin, id, v);
@@ -53,7 +54,7 @@ public class ValueBooleanBoxProducer<T extends FieldType> extends ValueGraphBoxP
         GraphBoxPartImpl<T> colorPart = new GraphBoxPartImpl<T>(horizontalGroup,
                 new GraphBoxPartImpl.Callback() {
                     @Override
-                    public void serialize(Map<String, String> object) {
+                    public void serialize(ObjectMap<String, String> object) {
                         if (checkBox.isChecked())
                             object.put("v", "t");
                         else

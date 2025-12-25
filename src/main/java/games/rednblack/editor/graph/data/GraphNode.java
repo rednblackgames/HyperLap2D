@@ -1,13 +1,13 @@
 package games.rednblack.editor.graph.data;
 
-import java.util.HashMap;
+import com.badlogic.gdx.utils.ObjectMap;
 
 public interface GraphNode<T extends FieldType> {
     String getId();
 
     String getType();
 
-    HashMap<String, String> getData();
+    ObjectMap<String, String> getData();
 
     boolean isInputField(String fieldId);
 
