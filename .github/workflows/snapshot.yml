@@ -69,11 +69,11 @@ jobs:
       - name: Set up Flatpak Runtimes
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak install --user -y flathub org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08 org.freedesktop.Sdk.Extension.openjdk21//23.08
+          flatpak install --user -y flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08 org.freedesktop.Sdk.Extension.openjdk21//24.08
       - name: Build Flatpak
         run: |
           chmod +x flatpak/hyperlap2d-launcher.sh
-          flatpak-builder --user --install-deps-from=flathub --force-clean build-dir flatpak/games.rednblack.HyperLap2D.yml --repo=repo
+          flatpak-builder --user --install-deps-from=flathub --force-clean --share=network build-dir flatpak/games.rednblack.HyperLap2D.yml --repo=repo
           flatpak build-bundle repo HyperLap2D.flatpak games.rednblack.HyperLap2D master
       - name: Upload Flatpak Artifact
         uses: actions/upload-artifact@v4.4.0

@@ -1,6 +1,6 @@
 app-id: games.rednblack.HyperLap2D
 runtime: org.freedesktop.Platform
-runtime-version: '23.08'
+runtime-version: '24.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.openjdk21
@@ -22,8 +22,11 @@ modules:
   - name: hyperlap2d
     buildsystem: simple
     build-options:
+      append-path: /usr/lib/sdk/openjdk21/bin
       env:
         JAVA_HOME: /usr/lib/sdk/openjdk21
+      build-args:
+        - --share=network
     sources:
       - type: dir
         path: ..
