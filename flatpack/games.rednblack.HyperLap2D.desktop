@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=HyperLap2D
+Comment=Visual Editor for complex 2D worlds and scenes
+Exec=hyperlap2d-launcher
+Icon=games.rednblack.HyperLap2D
+Terminal=false
+Categories=Development;Graphics;

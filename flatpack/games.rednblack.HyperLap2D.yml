@@ -1,0 +1,37 @@
+app-id: games.rednblack.HyperLap2D
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk21
+command: hyperlap2d-launcher
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --device=all
+  - --share=network
+  - --filesystem=host
+
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk21/install.sh
+
+  - name: hyperlap2d
+    buildsystem: simple
+    build-options:
+      env:
+        JAVA_HOME: /usr/lib/sdk/openjdk21
+    sources:
+      - type: dir
+        path: ..
+    build-commands:
+      - ./gradlew dist -PSNAPSHOT=true
+      - mkdir -p /app/share/hyperlap2d/lib
+      - cp -r distBuild/lib/* /app/share/hyperlap2d/lib/
+      - cp -r assets /app/share/hyperlap2d/
+      - install -Dm644 icons/HyperLap2D.png /app/share/icons/hicolor/256x256/apps/games.rednblack.HyperLap2D.png
+      - install -Dm644 flatpak/games.rednblack.HyperLap2D.desktop /app/share/applications/games.rednblack.HyperLap2D.desktop
+      - install -Dm755 flatpak/hyperlap2d-launcher.sh /app/bin/hyperlap2d-launcher

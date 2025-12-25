@@ -62,6 +62,23 @@ jobs:
         with:
           name: Linux.HyperLap2D-SNAPSHOT.deb
           path: Linux.HyperLap2D-SNAPSHOT.deb
+      - name: Install Flatpak Builder
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak-builder
+      - name: Set up Flatpak Runtimes
+        run: |
+          flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          flatpak install --user -y flathub org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08 org.freedesktop.Sdk.Extension.openjdk21//23.08
+      - name: Build Flatpak
+        run: |
+          flatpak-builder --user --install-deps-from=flathub --force-clean build-dir games.rednblack.HyperLap2D.yml --repo=repo
+          flatpak build-bundle repo HyperLap2D.flatpak games.rednblack.HyperLap2D master
+      - name: Upload Flatpak Artifact
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: Linux.HyperLap2D-SNAPSHOT.flatpak
+          path: HyperLap2D.flatpak
       - name: Sync files with production server
         uses: appleboy/scp-action@v0.1.7
         with:
