@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.puremvc.Facade;
@@ -105,7 +106,12 @@ public class KeyBindingsLayout {
         defaultMapper.put(HIDE_GUI, new KeyMapper(HIDE_GUI, false, false, false, Input.Keys.F12));
         defaultMapper.put(OPEN_CONSOLE, new KeyMapper(OPEN_CONSOLE, false, false, false, Input.Keys.F10));
         defaultMapper.put(TOGGLE_FULL_SCREEN, new KeyMapper(TOGGLE_FULL_SCREEN, false, false, false, Input.Keys.F11));
-        defaultMapper.put(SHOW_MINI_MAP, new KeyMapper(SHOW_MINI_MAP, false, false, false, Input.Keys.M));
+        defaultMapper.put(SHOW_MINI_MAP, new KeyMapper(SHOW_MINI_MAP, false, true, false, Input.Keys.M));
+
+        Json json = new Json();
+        json.setOutputType(JsonWriter.OutputType.minimal);
+
+        System.out.println(json.prettyPrint(json.toJson(defaultMapper)));
     }
 
     private static final Array<KeyMapper> mapping = new Array<>();
