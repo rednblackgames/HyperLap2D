@@ -32,7 +32,6 @@ modules:
         path: ..
     build-commands:
       - ./gradlew dist -PSNAPSHOT=true
-      - cp -r /usr/lib/sdk/openjdk21 /app/jre
       - mkdir -p /app/share/hyperlap2d/lib
       - cp -r distBuild/lib/* /app/share/hyperlap2d/lib/
       - cp -r assets /app/share/hyperlap2d/
