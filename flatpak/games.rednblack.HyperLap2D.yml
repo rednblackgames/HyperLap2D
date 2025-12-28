@@ -5,6 +5,11 @@ sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.openjdk21
 command: hyperlap2d-launcher
+add-extensions:
+  org.freedesktop.Platform.Extension.openjdk21:
+    directory: lib/sdk/openjdk21
+    version: '24.08'
+    no-autodownload: false
 finish-args:
   - --share=ipc
   - --socket=x11
