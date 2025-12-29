@@ -20,7 +20,7 @@ public class UIWindowAction extends VisTable {
     public UIWindowAction() {
         setBackground(VisUI.getSkin().getDrawable("menu-bg"));
         align(Align.top);
-        VisImageButton iconifyButton = StandardWidgetsFactory.createImageButton("window-action-iconify");
+        VisImageButton iconifyButton = StandardWidgetsFactory.createImageButton("window-action-iconify", false);
         add(iconifyButton).padRight(-1);
         iconifyButton.addListener(new ChangeListener() {
             @Override
@@ -30,7 +30,7 @@ public class UIWindowAction extends VisTable {
         });
         setListener(iconifyButton);
 
-        maximizeButton = StandardWidgetsFactory.createImageButton("window-action-maximize");
+        maximizeButton = StandardWidgetsFactory.createImageButton("window-action-maximize", false);
         add(maximizeButton).padRight(-1);
         maximizeButton.addListener(new ChangeListener() {
             @Override
@@ -46,7 +46,7 @@ public class UIWindowAction extends VisTable {
         setMaximized(true);
         setListener(maximizeButton);
 
-        VisImageButton closeButton = StandardWidgetsFactory.createImageButton("window-action-close");
+        VisImageButton closeButton = StandardWidgetsFactory.createImageButton("window-action-close", false);
         add(closeButton);
         closeButton.addListener(new ChangeListener() {
             @Override
@@ -69,6 +69,10 @@ public class UIWindowAction extends VisTable {
 
     public boolean isMaximized() {
         return isMaximized;
+    }
+
+    public Actor getMaximizeButton() {
+        return maximizeButton.getImage();
     }
 
     private void setListener(Actor actor) {

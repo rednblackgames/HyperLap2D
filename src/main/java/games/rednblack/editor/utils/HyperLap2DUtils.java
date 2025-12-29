@@ -1,10 +1,13 @@
 package games.rednblack.editor.utils;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import games.rednblack.editor.view.ui.UIWindowActionMediator;
 import games.rednblack.editor.view.ui.UIWindowTitle;
 import games.rednblack.editor.view.ui.UIWindowTitleMediator;
 import games.rednblack.puremvc.Facade;
@@ -217,6 +220,26 @@ public class HyperLap2DUtils {
                     return JNI.callPPPP(hwnd, uMsg, wParam, lParam, pWindowProc);
                 }
 
+                if (uMsg == User32.WM_NCLBUTTONDOWN) {
+                    if (wParam == User32.HTMAXBUTTON) {
+                        int glfwX = getX();
+                        int glfwY = getY();
+
+                        Gdx.input.getInputProcessor().touchDown(glfwX, glfwY, 0, Input.Buttons.LEFT);
+                        return 0;
+                    }
+                }
+
+                if (uMsg == User32.WM_NCLBUTTONUP) {
+                    if (wParam == User32.HTMAXBUTTON) {
+                        int glfwX = getX();
+                        int glfwY = getY();
+
+                        Gdx.input.getInputProcessor().touchUp(glfwX, glfwY, 0, Input.Buttons.LEFT);
+                        return 0;
+                    }
+                }
+
                 if (uMsg == User32.WM_NCHITTEST) {
                     try (MemoryStack stack = MemoryStack.stackPush()) {
                         short x = (short) (lParam & 0xFFFF);
@@ -253,6 +276,9 @@ public class HyperLap2DUtils {
                             return User32.HTRIGHT;
                         }
 
+                        UIWindowActionMediator uiWindowActionMediator = Facade.getInstance().retrieveMediator(UIWindowActionMediator.NAME);
+                        Actor maximizeButton = uiWindowActionMediator.getViewComponent().getMaximizeButton();
+
                         //Test if the pointer is in Title Bar
                         UIWindowTitleMediator uiWindowTitleMediator = Facade.getInstance().retrieveMediator(UIWindowTitleMediator.NAME);
                         UIWindowTitle uiWindowTitle = uiWindowTitleMediator.getViewComponent();
@@ -263,6 +289,13 @@ public class HyperLap2DUtils {
                         uiWindowTitle.getStage().screenToStageCoordinates(tmp.set(glfwX, glfwY));
                         if (uiWindowTitle.getStage().hit(tmp.x, tmp.y, true) == uiWindowTitle) {
                             return User32.HTCAPTION;
+                        }
+
+                        uiWindowTitle.getStage().screenToStageCoordinates(tmp.set(glfwX, glfwY));
+                        Actor hitted = uiWindowTitle.getStage().hit(tmp.x, tmp.y, true);
+                        if (hitted == maximizeButton) {
+                            Gdx.input.getInputProcessor().mouseMoved(glfwX, glfwY);
+                            return User32.HTMAXBUTTON;
                         }
 
                         return JNI.callPPPP(hwnd, uMsg, wParam, lParam, pWindowProc);
