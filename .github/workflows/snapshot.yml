@@ -69,7 +69,7 @@ jobs:
       - name: Set up Flatpak Runtimes
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak install --user -y flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08 org.freedesktop.Sdk.Extension.openjdk25//24.08
+          flatpak install --user -y flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08 org.freedesktop.Sdk.Extension.openjdk25//25.08
       - name: Build Flatpak
         run: |
           chmod +x flatpak/hyperlap2d-launcher.sh
