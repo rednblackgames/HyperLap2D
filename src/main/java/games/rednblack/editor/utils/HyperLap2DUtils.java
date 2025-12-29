@@ -155,6 +155,12 @@ public class HyperLap2DUtils {
         long sharedApp = JNI.invokePPP(nsAppClass, ObjCRuntime.sel_getUid("sharedApplication"), objc_msgSend);
 
         long currentEvent = JNI.invokePPP(sharedApp, ObjCRuntime.sel_getUid("currentEvent"), objc_msgSend);
+        // NSEventTypeLeftMouseDown = 1, NSEventTypeLeftMouseDragged = 6
+        long type = JNI.invokePPJ(currentEvent, ObjCRuntime.sel_getUid("type"), objc_msgSend);
+        if (type != 1 && type != 6) {
+            return;
+        }
+
         long clickCount = JNI.invokePPJ(currentEvent, ObjCRuntime.sel_getUid("clickCount"), objc_msgSend);
 
         if (clickCount == 2) {
