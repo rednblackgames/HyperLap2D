@@ -42,7 +42,7 @@ task dist(type: Jar) {
     doLast {
         def jarToCopy = archiveFileName.get()
         copy {
-            from "../build/lib/plugins/$jarToCopy"
+            from "../distBuild/lib/plugins/$jarToCopy"
             into "../assets/plugins"
         }
     }

@@ -33,6 +33,10 @@ ext {
     packSplash = ["art/splash_textures", "assets/splash/", "splash"]
 }
 
+application {
+    mainClass = 'games.rednblack.editor.Main'
+}
+
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.tools.texturepacker.TexturePacker
 
@@ -52,7 +56,6 @@ task packTextures {
     }
 }
 
-mainClassName = "games.rednblack.editor.Main"
 project.ext.assetsDir = new File("assets/");
 def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
 
@@ -68,11 +71,11 @@ def getBuildVersion = {
 }
 
 task runHyperLap2D(dependsOn: classes, type: JavaExec) {
-    mainClass = project.mainClassName
+    mainClass = application.mainClass
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
-    jvmArgs = ['-verbose:gc','-XX:+UseZGC','-Xms128m']
+    jvmArgs = ['-verbose:gc','-XX:+UseZGC','-Xms128m', '--enable-native-access=ALL-UNNAMED']
     ignoreExitValue = true
 }
 
@@ -87,7 +90,7 @@ task dist(type: Jar) {
     from files(project.assetsDir);
 
     manifest {
-        attributes 'Main-Class': project.mainClassName
+        attributes 'Main-Class': application.mainClass.get()
     }
 
     destinationDirectory = file("$buildDir/../distBuild/lib")
@@ -187,7 +190,7 @@ runtime {
         mainJar = dist.archiveFileName.get()
         imageOptions += ['--app-version', getBuildVersion(), '--vendor', 'Red & Black Games', '--description', 'HyperLap2D Editor', '--name', 'HyperLap2D']
         installerOptions += ['--license-file', 'LICENSE']
-        jvmArgs = ['-verbose:gc','-XX:+UseZGC','-Xms128m']
+        jvmArgs = ['-verbose:gc','-XX:+UseZGC','-Xms128m', '--enable-native-access=ALL-UNNAMED']
         if (osName.contains('windows')) {
             imageOptions += ["--icon", file("icons/icon.ico")]
             installerType = 'exe'
@@ -211,7 +214,7 @@ runtime {
         } else if (osName.contains('mac')) {
             imageOptions += ['--copyright', '(c) 2023, Red &amp; Black Games', "--icon", file("icons/icon.icns")
                              , '--resource-dir', "${projectDir}/resources-macos"]
-            jvmArgs += ['-XstartOnFirstThread', '-Djava.awt.headless=true']
+            jvmArgs += ['-XstartOnFirstThread', '-Djava.awt.headless=true', '--enable-native-access=ALL-UNNAMED']
             installerOptions += ['--verbose','--app-version', getBuildVersion(), '--vendor', 'Red & Black Games', '--resource-dir', "${projectDir}/resources-macos" ]
             installerType = 'dmg'
             resourceDir = file("resources-macos")

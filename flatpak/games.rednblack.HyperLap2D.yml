@@ -3,11 +3,11 @@ runtime: org.freedesktop.Platform
 runtime-version: '24.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.openjdk21
+  - org.freedesktop.Sdk.Extension.openjdk25
 command: hyperlap2d-launcher
 add-extensions:
-  org.freedesktop.Platform.Extension.openjdk21:
-    directory: lib/sdk/openjdk21
+  org.freedesktop.Platform.Extension.openjdk25:
+    directory: lib/sdk/openjdk25
     version: '24.08'
     no-autodownload: false
 finish-args:
@@ -22,14 +22,14 @@ modules:
   - name: openjdk
     buildsystem: simple
     build-commands:
-      - /usr/lib/sdk/openjdk21/install.sh
+      - /usr/lib/sdk/openjdk25/install.sh
 
   - name: hyperlap2d
     buildsystem: simple
     build-options:
-      append-path: /usr/lib/sdk/openjdk21/bin
+      append-path: /usr/lib/sdk/openjdk25/bin
       env:
-        JAVA_HOME: /usr/lib/sdk/openjdk21
+        JAVA_HOME: /usr/lib/sdk/openjdk25
       build-args:
         - --share=network
     sources:

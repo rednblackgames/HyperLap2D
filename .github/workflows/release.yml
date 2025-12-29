@@ -15,11 +15,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
-      - name: Setup Eclipse Temurin OpenJDK 21
+      - name: Setup Eclipse Temurin OpenJDK 25
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: 21
+          java-version: 25
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build JAR dist files

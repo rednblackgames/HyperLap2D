@@ -110,8 +110,6 @@ public class KeyBindingsLayout {
 
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.minimal);
-
-        System.out.println(json.prettyPrint(json.toJson(defaultMapper)));
     }
 
     private static final Array<KeyMapper> mapping = new Array<>();
