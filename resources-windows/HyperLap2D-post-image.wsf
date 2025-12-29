@@ -4,18 +4,32 @@
         <script language="jscript">
             <![CDATA[
         var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
-        var hyperlap2dRoot = fileSystem.GetFolder(".").ParentFolder.ParentFolder.ParentFolder.ParentFolder.Path;
-        var installerConfig = hyperlap2dRoot + "/distBuild/installer/config/";
-        // Copy image resources
-        fileSystem.CopyFile(hyperlap2dRoot + "/resources-windows/dlgbmp.bmp", installerConfig);
-        fileSystem.CopyFile(hyperlap2dRoot + "/resources-windows/bannrbmp.bmp", installerConfig);
+
+        var scriptPath = fileSystem.GetParentFolderName(WScript.ScriptFullName);
+
+        var hyperlap2dRoot = fileSystem.GetFolder(scriptPath).ParentFolder.ParentFolder.ParentFolder.Path;
+        var installerConfig = scriptPath + "\\";
+
+        var bannerSrc = hyperlap2dRoot + "\\resources-windows\\bannrbmp.bmp";
+        var dialogSrc = hyperlap2dRoot + "\\resources-windows\\dlgbmp.bmp";
+
+        try {
+            fileSystem.CopyFile(bannerSrc, installerConfig, true);
+            fileSystem.CopyFile(dialogSrc, installerConfig, true);
+        } catch(e) {
+            WScript.Echo("Critical Error: Unable to copy resource images.");
+            WScript.Echo("Src: " + bannerSrc);
+            WScript.Echo("Error: " + e.message);
+            WScript.Quit(1);
+        }
+
         var wxsFilePath = installerConfig + "main.wxs";
-        wxsFile = fileSystem.OpenTextFile(wxsFilePath, 1);
+
+        var wxsFile = fileSystem.OpenTextFile(wxsFilePath, 1);
         var contents = wxsFile.ReadAll();
         wxsFile.Close();
-        // setup custom images
-        contents = contents.replace("</Product>", "<WixVariable Id=\"WixUIBannerBmp\" Value=\"bannrbmp.bmp\" /></Product>");
-        contents = contents.replace("</Product>", "<WixVariable Id=\"WixUIDialogBmp\" Value=\"dlgbmp.bmp\" /></Product>");
+
+        contents = contents.replace("</Product>", "<WixVariable Id=\"WixUIBannerBmp\" Value=\"bannrbmp.bmp\" /><WixVariable Id=\"WixUIDialogBmp\" Value=\"dlgbmp.bmp\" /></Product>");
 
         wxsFile = fileSystem.OpenTextFile(wxsFilePath, 2, true);
         wxsFile.Write(contents);
