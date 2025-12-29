@@ -1,6 +1,7 @@
 package games.rednblack.editor.view.ui;
 
 import com.kotcrab.vis.ui.widget.VisTable;
+import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBarMediator;
@@ -53,7 +54,7 @@ public class UIMainTable extends VisTable {
 
             UIWindowTitleMediator uiWindowTitleMediator = facade.retrieveMediator(UIWindowTitleMediator.NAME);
             UIWindowTitle uiWindowTitle = uiWindowTitleMediator.getViewComponent();
-            HyperLap2DUtils.setWindowDragListener(uiWindowTitle);
+            HyperLap2DUtils.setCocoaWindowDragListener(uiWindowTitle, HyperLap2DApp.getInstance().mainWindow.getWindowHandle());
             topTable.add(uiWindowTitle).growX().fillY();
         } else {
             topTable.add(menuBar.getTable()).growX().height(32);

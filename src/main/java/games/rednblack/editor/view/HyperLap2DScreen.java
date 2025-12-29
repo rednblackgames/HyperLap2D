@@ -31,6 +31,7 @@ import com.badlogic.gdx.utils.Align;
 import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
+import games.rednblack.editor.utils.FullscreenUtils;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.editor.view.menu.ResourcesMenu;
@@ -231,12 +232,8 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
                 uiStage.addAction(Actions.parallel(Actions.fadeOut(0.1f), Actions.touchable(Touchable.disabled)));
                 break;
             case KeyBindingsLayout.TOGGLE_FULL_SCREEN:
-                boolean fullScreen = Gdx.graphics.isFullscreen();
-                Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
-                if (fullScreen)
-                    Gdx.graphics.setWindowedMode(currentMode.width, currentMode.height);
-                else
-                    Gdx.graphics.setFullscreenMode(currentMode);
+                boolean fullScreen = FullscreenUtils.isFullscreen();
+                FullscreenUtils.setFullscreen(!fullScreen);
                 break;
             case KeyBindingsLayout.OPEN_CONSOLE:
                 facade.sendNotification(MsgAPI.OPEN_CONSOLE);

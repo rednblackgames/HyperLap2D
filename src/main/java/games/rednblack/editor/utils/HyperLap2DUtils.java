@@ -25,8 +25,8 @@ import org.lwjgl.system.windows.WindowProc;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.lang.foreign.*;
 import java.nio.DoubleBuffer;
-import java.nio.IntBuffer;
 
 public class HyperLap2DUtils {
     public static final FilenameFilter PNG_FILTER = new SuffixFileFilter(".png");
@@ -51,6 +51,46 @@ public class HyperLap2DUtils {
 
     private static String getMyDocumentsLocation() {
         return System.getProperty("user.home") + File.separator + "Documents";
+    }
+
+    private final static Linker linker = Linker.nativeLinker();
+    private final static MemorySegment msgSend = SymbolLookup.loaderLookup().find("objc_msgSend").orElseThrow();
+
+    /// Note that this flag is deprecated on macOS for some reason despite being the only way to tell.
+    /// Strange really, but there is nothing besides this mask that I was able to find.
+    private final static long NSFullScreenWindowMask = 1 << 14;
+
+    public static boolean isCocoaFullscreen(long lwjglWindow) {
+        // Because GLFW can't determine this kind of fullscreen on macOS we need to handle it manually.
+        final var nativeWindow = MemorySegment.ofAddress(org.lwjgl.glfw.GLFWNativeCocoa.glfwGetCocoaWindow(lwjglWindow));
+        final var method = MemorySegment.ofAddress(ObjCRuntime.sel_getUid("styleMask"));
+        final var signature = FunctionDescriptor.of(ValueLayout.JAVA_LONG, ValueLayout.ADDRESS, ValueLayout.ADDRESS);
+
+        final var handle = linker.downcallHandle(msgSend, signature);
+
+        try {
+            final var mask = (long) handle.invokeExact(nativeWindow, method);
+            return (mask & NSFullScreenWindowMask) != 0;
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void setCocoaFullscreen(boolean fullscreen, long lwjglWindow) {
+        // macOS only has a toggle method, ensure we don't accidentally mess up our world view.
+        if (fullscreen == isCocoaFullscreen(lwjglWindow)) return;
+
+        final var nativeWindow = MemorySegment.ofAddress(GLFWNativeCocoa.glfwGetCocoaWindow(lwjglWindow));
+        final var method = MemorySegment.ofAddress(ObjCRuntime.sel_getUid("toggleFullScreen:"));
+        final var signature = FunctionDescriptor.ofVoid(ValueLayout.ADDRESS, ValueLayout.ADDRESS);
+
+        final var handle = linker.downcallHandle(msgSend, signature);
+
+        try {
+            handle.invokeExact(nativeWindow, method);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -103,60 +143,35 @@ public class HyperLap2DUtils {
             System.out.println("styleMask = " + defaultMask);
 
             GLFW.glfwMaximizeWindow(lwjglWindow);
-
-            /**
-             *         NSView* glView = [wnd contentView];
-             *         Method originalMethod = class_getInstanceMethod([glView class], @selector(mouseDownCanMoveWindow));
-             *         Method categoryMethod = class_getInstanceMethod(FakeView.class, @selector(fakeMouseDownCanMoveWindow));
-             *         method_exchangeImplementations(originalMethod, categoryMethod);
-             */
-
-            /*long glView = JNI.invokePPP(nswindow, ObjCRuntime.sel_getUid("contentView"), objc_msgSend);
-            System.out.println("glView: " + glView);
-            long glViewClass = ObjCRuntime.object_getClass(glView);
-            System.out.println("glViewClass: " + glViewClass);
-            long originalMethod = ObjCRuntime.class_getInstanceMethod(glViewClass, ObjCRuntime.sel_getUid("mouseDownCanMoveWindow"));
-            System.out.println("originalMethod: " + originalMethod);
-
-            //TODO Missing a way to create the categoryMethod
-
-            ObjCRuntime.method_exchangeImplementations(originalMethod, categoryMethod);
-            */
         }
     }
 
-    public static void setWindowDragListener(Actor actor) {
-        actor.addListener(new InputListener() {
-            private final long context = GLFW.glfwGetCurrentContext();
-            private float startX = 0;
-            private float startY = 0;
-            private final DoubleBuffer cursorX = BufferUtils.createDoubleBuffer(1);
-            private final DoubleBuffer cursorY = BufferUtils.createDoubleBuffer(1);
-            private final IntBuffer windowX = BufferUtils.createIntBuffer(1);
-            private final IntBuffer windowY = BufferUtils.createIntBuffer(1);
+    public static void performCocoaWindowDrag(long lwjglWindow) {
+        long nswindow = GLFWNativeCocoa.glfwGetCocoaWindow(lwjglWindow);
+        SharedLibrary objc = ObjCRuntime.getLibrary();
+        long objc_msgSend = objc.getFunctionAddress("objc_msgSend");
 
-            private int getX() {
-                return MathUtils.floor((float) cursorX.get(0));
-            }
-            private int getY() {
-                return MathUtils.floor((float) cursorY.get(0));
-            }
+        long nsAppClass = ObjCRuntime.objc_getClass("NSApplication");
+        long sharedApp = JNI.invokePPP(nsAppClass, ObjCRuntime.sel_getUid("sharedApplication"), objc_msgSend);
+
+        long currentEvent = JNI.invokePPP(sharedApp, ObjCRuntime.sel_getUid("currentEvent"), objc_msgSend);
+        long clickCount = JNI.invokePPJ(currentEvent, ObjCRuntime.sel_getUid("clickCount"), objc_msgSend);
+
+        if (clickCount == 2) {
+            JNI.invokePPV(nswindow, ObjCRuntime.sel_getUid("zoom:"), 0, objc_msgSend);
+        } else {
+            JNI.invokePPPV(nswindow, ObjCRuntime.sel_getUid("performWindowDragWithEvent:"), currentEvent, objc_msgSend);
+        }
+    }
+
+    public static void setCocoaWindowDragListener(Actor actor, long lwjglWindow) {
+        actor.addListener(new InputListener() {
+            private final long context = lwjglWindow;
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                GLFW.glfwGetCursorPos(context, cursorX, cursorY);
-                startX = getX();
-                startY = getY();
+                performCocoaWindowDrag(context);
                 return true;
-            }
-
-            @Override
-            public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                GLFW.glfwGetCursorPos(context, cursorX, cursorY);
-                float offsetX = getX() - startX;
-                float offsetY = getY() - startY;
-                GLFW.glfwGetWindowPos(context, windowX, windowY);
-                GLFW.glfwSetWindowPos(context, (int)(windowX.get(0) + offsetX), (int)(windowY.get(0) + offsetY));
             }
         });
     }

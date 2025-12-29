@@ -8,6 +8,7 @@
 - Sandbox grid is now synced with rulers and actually useful instead of just decorative!
 - Support snapshots in flatpak package
 - Change Mini Map shortcut to `ALT+M`
+- Improve macOS window gesture
 
 **Runtime**
 - [BREAK CHANGE] Fix physics fixed time step, fix micro-stuttering, systems now have a proper logic, replaced `RendererSystem` with `FixedTimestep` annotation to run systems with fixed time step, by default systems will runs as rendering at variable delta time
