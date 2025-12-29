@@ -54,7 +54,7 @@ public class HyperLap2DUtils {
     }
 
     private final static Linker linker = Linker.nativeLinker();
-    private final static MemorySegment msgSend = SymbolLookup.loaderLookup().find("objc_msgSend").orElseThrow();
+    private final static MemorySegment msgSend = SymbolLookup.loaderLookup().find("objc_msgSend").orElse(null);
 
     /// Note that this flag is deprecated on macOS for some reason despite being the only way to tell.
     /// Strange really, but there is nothing besides this mask that I was able to find.
@@ -212,6 +212,11 @@ public class HyperLap2DUtils {
 
             @Override
             public long invoke(long hwnd, int uMsg, long wParam, long lParam) {
+                long style = User32.GetWindowLongPtr(hwnd, User32.GWL_STYLE);
+                if ((style & User32.WS_POPUP) != 0) {
+                    return JNI.callPPPP(hwnd, uMsg, wParam, lParam, pWindowProc);
+                }
+
                 if (uMsg == User32.WM_NCHITTEST) {
                     try (MemoryStack stack = MemoryStack.stackPush()) {
                         short x = (short) (lParam & 0xFFFF);

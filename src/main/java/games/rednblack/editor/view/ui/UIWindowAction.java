@@ -9,6 +9,7 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.HyperLap2DApp;
+import games.rednblack.editor.utils.FullscreenUtils;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 public class UIWindowAction extends VisTable {
@@ -34,6 +35,7 @@ public class UIWindowAction extends VisTable {
         maximizeButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
+                if (FullscreenUtils.isFullscreen()) return;
                 if (isMaximized) {
                     HyperLap2DApp.getInstance().mainWindow.restoreWindow();
                 } else {
