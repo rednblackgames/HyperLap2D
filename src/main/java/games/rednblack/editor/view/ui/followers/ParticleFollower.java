@@ -21,6 +21,7 @@ package games.rednblack.editor.view.ui.followers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.VisUI;
 import games.rednblack.editor.view.stage.Sandbox;
 
@@ -65,6 +66,8 @@ public class ParticleFollower extends BasicFollower {
 
         setX(getX() - getWidth() / 2f);
         setY(getY() - getHeight() / 2f);
+
+        setOrigin(Align.center);
 
         icon.setX((getWidth() - icon.getWidth()) / 2);
         icon.setY((getHeight() - icon.getHeight()) / 2);

@@ -7,7 +7,6 @@ import games.rednblack.h2d.common.vo.ProjectVO;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class VersionMigTo101 implements IVersionMigrator {
@@ -39,8 +38,9 @@ public class VersionMigTo101 implements IVersionMigrator {
                 newContent = newContent.replace(tinyvg, "");
                 newContent = newContent.replaceAll("\"uniqueId\"\\s*:\\s*(\\d+)", "\"uniqueId\":\"$1\"");
                 FileUtils.writeStringToFile(file, newContent, StandardCharsets.UTF_8);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
+                return false;
             }
         }
         return true;
