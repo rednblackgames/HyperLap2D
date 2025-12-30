@@ -1,6 +1,6 @@
 [0.1.7]
 - [BREAK CHANGE] Update Project version to `1.0.1`
-- Update Spine to 4.2.10
+- Update Spine to 4.2.10, Talos Legacy to 1.5.3, TextraTypist to 2.2.8
 - Update editor to Java 25
 - Add automatic JSON Schema generator for exported files
 - Allow to scale down lights and shadow resolution
