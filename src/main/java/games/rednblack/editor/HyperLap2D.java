@@ -101,6 +101,8 @@ public class HyperLap2D implements IProxy, ApplicationListener, Lwjgl3WindowList
     @Override
     public void resize(int width, int height) {
         facade.sendNotification(MsgAPI.RESIZE, new int[]{width, height});
+        settingsManager.editorConfigVO.lastWindowHeight = height;
+        settingsManager.editorConfigVO.lastWindowWidth = width;
     }
 
     @Override

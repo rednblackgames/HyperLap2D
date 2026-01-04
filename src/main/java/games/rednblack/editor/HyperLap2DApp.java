@@ -62,13 +62,11 @@ public class HyperLap2DApp extends ApplicationAdapter {
             Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
             config.setTitle("HyperLap2D - Beta v" + AppConfig.getInstance().versionString);
             config.setResizable(true);
-            if (!SystemUtils.IS_OS_WINDOWS)
-                config.setWindowedMode((int) (windowWidth), (int) (windowHeight));
+            config.setWindowedMode((int) (windowWidth), (int) (windowHeight));
             config.setIdleFPS(60);
             config.setForegroundFPS(settingsManager.editorConfigVO.fpsLimit);
             config.useVsync(false);
             config.setInitialVisible(false);
-            config.setMaximized(true);
             config.setWindowIcon("hyperlap_icon_96.png");
             config.setWindowSizeLimits(920, 720, -1, -1);
 
