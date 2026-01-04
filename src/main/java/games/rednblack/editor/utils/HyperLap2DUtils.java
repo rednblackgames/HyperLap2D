@@ -144,8 +144,6 @@ public class HyperLap2DUtils {
 
             int defaultMask = JNI.invokePPI(nswindow, ObjCRuntime.sel_getUid("styleMask"), objc_msgSend);
             System.out.println("styleMask = " + defaultMask);
-
-            GLFW.glfwMaximizeWindow(lwjglWindow);
         }
     }
 
