@@ -16,7 +16,6 @@ repositories {
 dependencies {
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
     implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
-    implementation "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
 
     implementation "com.esotericsoftware.spine:spine-libgdx:$spineVersion"
 

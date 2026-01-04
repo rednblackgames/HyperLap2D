@@ -18,8 +18,8 @@
 
 package games.rednblack.editor.view.stage;
 
-import com.artemis.BaseComponentMapper;
-import com.artemis.ComponentMapper;
+import games.rednblack.editor.renderer.ecs.BaseComponentMapper;
+import games.rednblack.editor.renderer.ecs.ComponentMapper;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;

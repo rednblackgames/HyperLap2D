@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import games.rednblack.editor.renderer.data.TexturePackVO;
+import games.rednblack.editor.renderer.ecs.Engine;
 import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.extension.spine.SpineItemType;
 
@@ -116,7 +117,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
 
                 targetGrid = initTarget(targetGrid, viewComponent.getDropTable(), false);
                 targetAutoGrid = initTarget(targetAutoGrid, viewComponent.getAutoGridDropTable(), true);
-                com.artemis.World engine = tiledPlugin.getAPI().getEngine();
+                Engine engine = tiledPlugin.getAPI().getEngine();
                 viewComponent.setEngine(engine);
                 viewComponent.setFixedPosition();
                 break;

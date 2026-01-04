@@ -1,6 +1,6 @@
 package games.rednblack.editor.controller.commands;
 
-import com.artemis.Component;
+import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.utils.runtime.ComponentCloner;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;

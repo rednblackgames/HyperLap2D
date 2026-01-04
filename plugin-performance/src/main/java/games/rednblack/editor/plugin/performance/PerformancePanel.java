@@ -1,12 +1,13 @@
 package games.rednblack.editor.plugin.performance;
 
-import com.artemis.Aspect;
-import com.artemis.EntitySubscription;
+import games.rednblack.editor.renderer.ecs.Aspect;
+import games.rednblack.editor.renderer.ecs.EntitySubscription;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
+import games.rednblack.editor.renderer.ecs.Engine;
 import games.rednblack.h2d.common.UIDraggablePanel;
 
 public class PerformancePanel extends UIDraggablePanel {
@@ -125,7 +126,7 @@ public class PerformancePanel extends UIDraggablePanel {
         profiler.reset();
     }
 
-    public void setEngine(com.artemis.World engine) {
+    public void setEngine(Engine engine) {
         entitySubscription = engine.getAspectSubscriptionManager()
                 .get(Aspect.all());
     }

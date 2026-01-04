@@ -29,6 +29,7 @@ import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.data.SceneVO;
+import games.rednblack.editor.renderer.ecs.Engine;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBarMediator;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -209,7 +210,7 @@ public class PluginManager extends Proxy implements PluginAPI {
     }
 
     @Override
-    public com.artemis.World getEngine() {
+    public Engine getEngine() {
         return getSceneLoader().getEngine();
     }
 

@@ -20,11 +20,11 @@ package games.rednblack.editor.view;
 
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
+import games.rednblack.editor.renderer.ecs.Engine;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.ui.widget.actors.basic.SandboxBackUI;
 import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.Mediator;
 import games.rednblack.puremvc.interfaces.INotification;
 import games.rednblack.puremvc.util.Interests;
@@ -63,7 +63,7 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
             	//TODO this must be changed to Command
             	SandboxMediator sandboxMediator = facade.retrieveMediator(SandboxMediator.NAME);
 
-                com.artemis.World engine = sandboxMediator.getViewComponent().getEngine();
+                Engine engine = sandboxMediator.getViewComponent().getEngine();
 
             	getViewComponent().setEngine(engine);
                 viewComponent.show();

@@ -1,6 +1,6 @@
 package games.rednblack.editor.system;
 
-import com.artemis.annotations.All;
+import games.rednblack.editor.renderer.ecs.annotations.All;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import games.rednblack.editor.renderer.components.particle.ParticleComponent;
 import games.rednblack.editor.renderer.systems.ParticleSystem;

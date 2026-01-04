@@ -29,6 +29,7 @@ import games.rednblack.editor.plugin.tiled.view.tabs.AbstractGridTilesTab;
 import games.rednblack.editor.plugin.tiled.view.tabs.AutoGridTilesTab;
 import games.rednblack.editor.plugin.tiled.view.tabs.GridTilesTab;
 import games.rednblack.editor.plugin.tiled.view.tabs.SettingsTab;
+import games.rednblack.editor.renderer.ecs.Engine;
 import games.rednblack.h2d.common.UIDraggablePanel;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPane;
@@ -58,7 +59,7 @@ public class TiledPanel extends UIDraggablePanel {
     private SettingsTab settingsTab;
     private AutoGridTilesTab autoGridTilesTab;
     private VisTable mainTable;
-    private com.artemis.World engine;
+    private Engine engine;
     private ResourcesManager resourcesManager;
 
     private boolean isAutoGridTabSelected;
@@ -244,7 +245,7 @@ public class TiledPanel extends UIDraggablePanel {
         mainTable.add(new VisLabel("no scenes open")).right();
     }
 
-    public void setEngine(com.artemis.World engine) {
+    public void setEngine(Engine engine) {
         this.engine = engine;
     }
 

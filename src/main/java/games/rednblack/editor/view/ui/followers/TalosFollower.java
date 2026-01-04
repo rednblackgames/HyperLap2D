@@ -1,6 +1,6 @@
 package games.rednblack.editor.view.ui.followers;
 
-import com.artemis.ComponentMapper;
+import games.rednblack.editor.renderer.ecs.ComponentMapper;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;

@@ -18,7 +18,7 @@
 
 package games.rednblack.editor.utils.runtime;
 
-import com.artemis.Component;
+import games.rednblack.editor.renderer.ecs.Component;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 

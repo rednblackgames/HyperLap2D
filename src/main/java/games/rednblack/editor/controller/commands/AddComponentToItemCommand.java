@@ -1,6 +1,6 @@
 package games.rednblack.editor.controller.commands;
 
-import com.artemis.Component;
+import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;

@@ -1,5 +1,6 @@
 package games.rednblack.editor.plugin.performance;
 
+import games.rednblack.editor.renderer.ecs.Engine;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Mediator;
 import games.rednblack.puremvc.interfaces.INotification;
@@ -31,7 +32,7 @@ public class PerformancePanelMediator extends Mediator<PerformancePanel> {
         switch (notification.getName()) {
             case MsgAPI.SCENE_LOADED:
                 viewComponent.initView();
-                com.artemis.World engine = performancePlugin.getAPI().getEngine();
+                Engine engine = performancePlugin.getAPI().getEngine();
                 viewComponent.setEngine(engine);
                 break;
             case PerformancePlugin.PANEL_OPEN:

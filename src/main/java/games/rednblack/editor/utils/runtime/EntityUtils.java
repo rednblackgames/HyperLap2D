@@ -18,11 +18,12 @@
 
 package games.rednblack.editor.utils.runtime;
 
-import com.artemis.Aspect;
-import com.artemis.Component;
-import com.artemis.EntitySubscription;
-import com.artemis.utils.Bag;
-import com.artemis.utils.IntBag;
+import games.rednblack.editor.renderer.ecs.Aspect;
+import games.rednblack.editor.renderer.ecs.Component;
+import games.rednblack.editor.renderer.ecs.EntitySubscription;
+import games.rednblack.editor.renderer.ecs.Engine;
+import games.rednblack.editor.renderer.ecs.utils.Bag;
+import games.rednblack.editor.renderer.ecs.utils.IntBag;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
@@ -326,7 +327,7 @@ public class EntityUtils {
     private static final Bag<Component> tmpComponents = new Bag<>();
 
     public static void refreshComponents(int entity) {
-        com.artemis.World engine = Sandbox.getInstance().getEngine();
+        Engine engine = Sandbox.getInstance().getEngine();
         tmpComponents.clear();
         engine.getComponentManager().getComponentsFor(entity, tmpComponents);
         for (Component component : tmpComponents) {
@@ -342,7 +343,7 @@ public class EntityUtils {
 
     public static String getJsonStringFromEntity(int entity) {
         Json json = HyperJson.getJson();
-        com.artemis.World engine = Sandbox.getInstance().getEngine();
+        Engine engine = Sandbox.getInstance().getEngine();
         EntityFactory entityFactory = Sandbox.getInstance().sceneControl.sceneLoader.getEntityFactory();
         int entityType = SandboxComponentRetriever.get(entity, MainItemComponent.class).entityType;
         try {
@@ -357,7 +358,7 @@ public class EntityUtils {
 
     public static String getJsonStringFromEntities(Set<Integer> entities) {
         CompositeItemVO holderComposite = new CompositeItemVO();
-        com.artemis.World engine = Sandbox.getInstance().getEngine();
+        Engine engine = Sandbox.getInstance().getEngine();
         EntityFactory entityFactory = Sandbox.getInstance().sceneControl.sceneLoader.getEntityFactory();
         for (int entity : entities) {
             int entityType = SandboxComponentRetriever.get(entity, MainItemComponent.class).entityType;

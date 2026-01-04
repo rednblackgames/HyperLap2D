@@ -31,6 +31,7 @@ import com.badlogic.gdx.utils.Align;
 import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
+import games.rednblack.editor.renderer.ecs.Engine;
 import games.rednblack.editor.utils.FullscreenUtils;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.view.menu.FileMenu;
@@ -50,7 +51,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
 
     public UIStage uiStage;
 
-    private com.artemis.World engine;
+    private Engine engine;
 
     private final Facade facade;
 
@@ -293,7 +294,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         return false;
     }
 
-    public void setEngine(com.artemis.World engine) {
+    public void setEngine(Engine engine) {
         this.engine = engine;
     }
 

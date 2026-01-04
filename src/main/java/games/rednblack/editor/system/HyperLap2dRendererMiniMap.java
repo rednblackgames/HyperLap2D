@@ -1,6 +1,6 @@
 package games.rednblack.editor.system;
 
-import com.artemis.annotations.All;
+import games.rednblack.editor.renderer.ecs.annotations.All;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;

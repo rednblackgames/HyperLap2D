@@ -1,6 +1,6 @@
 package games.rednblack.editor.view.ui.box;
 
-import com.artemis.ComponentMapper;
+import games.rednblack.editor.renderer.ecs.ComponentMapper;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;

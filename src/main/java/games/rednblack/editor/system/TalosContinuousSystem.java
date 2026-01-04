@@ -1,6 +1,6 @@
 package games.rednblack.editor.system;
 
-import com.artemis.annotations.All;
+import games.rednblack.editor.renderer.ecs.annotations.All;
 import games.rednblack.talos.runtime.ParticleEffectInstance;
 import games.rednblack.h2d.extension.talos.TalosComponent;
 import games.rednblack.h2d.extension.talos.TalosSystem;

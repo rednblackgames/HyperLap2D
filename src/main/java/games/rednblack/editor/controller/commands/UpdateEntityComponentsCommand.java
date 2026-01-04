@@ -18,7 +18,7 @@
 
 package games.rednblack.editor.controller.commands;
 
-import com.artemis.Component;
+import games.rednblack.editor.renderer.ecs.Component;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.utils.runtime.ComponentCloner;
 import games.rednblack.editor.utils.runtime.EntityUtils;

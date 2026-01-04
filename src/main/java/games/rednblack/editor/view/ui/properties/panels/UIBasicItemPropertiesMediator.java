@@ -18,7 +18,7 @@
 
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.artemis.Component;
+import games.rednblack.editor.renderer.ecs.Component;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;

@@ -1,11 +1,10 @@
 package games.rednblack.editor.system;
 
-import com.artemis.annotations.All;
+import games.rednblack.editor.renderer.ecs.annotations.All;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
-import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.systems.PhysicsSystem;

@@ -1,3 +1,8 @@
+[0.2.0]
+- [BREAK CHANGE] Fork Artemis-ODB into runtime codebase
+- [BREAK CHANGE] Any reference to Artemis' World was changed to `Engine`
+- [BREAK CHANGE] Replaced Artemis Reflection with libGDX Reflection
+
 [0.1.7]
 - [BREAK CHANGE] Update Project version to `1.0.1`
 - Update Spine to 4.2.10, Talos Legacy to 1.5.3, TextraTypist to 2.2.8

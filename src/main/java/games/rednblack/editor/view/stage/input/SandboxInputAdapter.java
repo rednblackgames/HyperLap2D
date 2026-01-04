@@ -1,7 +1,7 @@
 package games.rednblack.editor.view.stage.input;
 
-import com.artemis.BaseComponentMapper;
-import com.artemis.ComponentMapper;
+import games.rednblack.editor.renderer.ecs.BaseComponentMapper;
+import games.rednblack.editor.renderer.ecs.ComponentMapper;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Intersector;

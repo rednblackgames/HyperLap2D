@@ -1,8 +1,7 @@
 package games.rednblack.editor.utils.runtime;
 
-import com.artemis.BaseComponentMapper;
-import com.artemis.Component;
-import com.artemis.World;
+import games.rednblack.editor.renderer.ecs.BaseComponentMapper;
+import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 

@@ -18,8 +18,9 @@
 
 package games.rednblack.editor.view.stage;
 
-import com.artemis.io.JsonArtemisSerializer;
-import com.artemis.managers.WorldSerializationManager;
+import games.rednblack.editor.renderer.ecs.Engine;
+import games.rednblack.editor.renderer.ecs.io.JsonArtemisSerializer;
+import games.rednblack.editor.renderer.ecs.managers.EngineSerializationManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationGLESFix;
 import com.badlogic.gdx.graphics.Color;
@@ -68,7 +69,6 @@ import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.talos.TalosSystem;
 import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelItemType;
-import games.rednblack.h2d.extension.spine.SpineItemType;
 import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
@@ -134,7 +134,7 @@ public class Sandbox {
         return instance;
     }
 
-    final WorldSerializationManager manager = new WorldSerializationManager();
+    final EngineSerializationManager manager = new EngineSerializationManager();
 
     private void init() {
         facade = Facade.getInstance();
@@ -218,7 +218,7 @@ public class Sandbox {
         return sceneControl;
     }
 
-    public com.artemis.World getEngine() {
+    public Engine getEngine() {
         return sceneLoader.getEngine();
     }
 
