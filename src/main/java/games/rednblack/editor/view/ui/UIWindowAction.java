@@ -43,7 +43,7 @@ public class UIWindowAction extends VisTable {
                 }
             }
         });
-        setMaximized(true);
+        setMaximized(false);
         setListener(maximizeButton);
 
         VisImageButton closeButton = StandardWidgetsFactory.createImageButton("window-action-close", false);

@@ -58,7 +58,7 @@ public class Main {
 
         int w = settingsManager.editorConfigVO.lastWindowWidth == -1 ? dm.width : settingsManager.editorConfigVO.lastWindowWidth;
         int h = settingsManager.editorConfigVO.lastWindowHeight == -1 ? dm.height : settingsManager.editorConfigVO.lastWindowHeight;
-        new Lwjgl3ApplicationGLESFix(HyperLap2DApp.initInstance(Math.min(w, dm.width), Math.min(h, dm.height), settingsManager), config);
+        new Lwjgl3ApplicationGLESFix(HyperLap2DApp.initInstance(Math.min(w, dm.width), Math.min(h, dm.height * 0.9), settingsManager), config);
     }
 
     public static String getJarContainingFolder(Class aclass) {
