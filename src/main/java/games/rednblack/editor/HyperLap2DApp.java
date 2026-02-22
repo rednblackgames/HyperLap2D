@@ -45,7 +45,7 @@ public class HyperLap2DApp extends ApplicationAdapter {
         StandardWidgetsFactory.init(Facade.getInstance());
 
         Lwjgl3ApplicationConfiguration config2 = new Lwjgl3ApplicationConfiguration();
-        config2.setWindowedMode(467, 385);
+        config2.setWindowedMode(733, 400);
         config2.setTitle("HyperLap2D");
         config2.setResizable(false);
         config2.setDecorated(false);
@@ -87,7 +87,7 @@ public class HyperLap2DApp extends ApplicationAdapter {
         Lwjgl3ApplicationGLESFix app = (Lwjgl3ApplicationGLESFix) Gdx.app;
 
         Lwjgl3ApplicationConfiguration config2 = new Lwjgl3ApplicationConfiguration();
-        config2.setWindowedMode(467, 385);
+        config2.setWindowedMode(733, 400);
         config2.setTitle("HyperLap2D");
         config2.setResizable(false);
         config2.setDecorated(false);

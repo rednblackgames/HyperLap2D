@@ -197,7 +197,7 @@ runtime {
                                  '--description', 'HyperLap2D Editor',
                                  '--temp', "$buildDir/../distBuild/installer",
                                  '--win-upgrade-uuid', 'e5f64fb6-111f-41f3-8f33-03b90e1a3a32',
-                                 "--icon", file("icons/icon.ico")]
+                                 "--icon", file("icons/install-icon.ico")]
             resourceDir = file("resources-windows")
         } else if (osName.contains('linux')) {
             imageOptions += ["--icon", file("icons/HyperLap2D.png")]
@@ -210,7 +210,7 @@ runtime {
             ]
             resourceDir = file("resources-linux")
         } else if (osName.contains('mac')) {
-            imageOptions += ['--copyright', '(c) 2025, Red &amp; Black Games', "--icon", file("icons/icon.icns")
+            imageOptions += ['--copyright', '(c) 2026, Red &amp; Black Games', "--icon", file("icons/icon.icns")
                              , '--resource-dir', "${projectDir}/resources-macos"]
             jvmArgs += ['-XstartOnFirstThread', '-Djava.awt.headless=true', '--enable-native-access=ALL-UNNAMED']
             installerOptions += ['--verbose','--app-version', getBuildVersion(), '--vendor', 'Red & Black Games', '--resource-dir', "${projectDir}/resources-macos" ]

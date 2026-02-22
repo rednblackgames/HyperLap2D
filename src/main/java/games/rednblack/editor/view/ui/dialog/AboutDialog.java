@@ -54,7 +54,7 @@ public class AboutDialog extends H2DDialog {
         leftTable.add("Total Time").padTop(20).row();
         leftTable.add(totalTimeSpent).row();
 
-        contentTable.add("Copyright \u00A9 2025 Red & Black Games").left().row();
+        contentTable.add("Copyright \u00A9 2026 Red & Black Games").left().row();
         contentTable.add("").row();
         contentTable.add("Dedicated to game lovers. Create something awesome!").left().row();
         contentTable.add("").row();
@@ -73,7 +73,7 @@ public class AboutDialog extends H2DDialog {
         contentTable.add(new LinkLabel("- Modular [https://github.com/mountainblade/modular]", "https://github.com/mountainblade/modular")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Spine Runtimes [https://github.com/EsotericSoftware/spine-runtimes]", "https://github.com/EsotericSoftware/spine-runtimes")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Physics Body Editor [https://www.aurelienribon.com]", "https://www.aurelienribon.com")).padLeft(6).left().row();
-        contentTable.add(new LinkLabel("- Typing Label [https://github.com/rafaskb/typing-label]", "https://github.com/rafaskb/typing-label")).padLeft(6).left().row();
+        contentTable.add(new LinkLabel("- TextraTypist [https://github.com/tommyettinger/textratypist]", "https://github.com/tommyettinger/textratypist")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Shape Drawer [https://github.com/earlygrey/shapedrawer]", "https://github.com/earlygrey/shapedrawer")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Talos VFX [https://github.com/rockbite/talos]", "https://github.com/rockbite/talos")).padLeft(6).left().row();
         contentTable.add("\n").row();
@@ -82,8 +82,6 @@ public class AboutDialog extends H2DDialog {
         legalTable.add(" \u2022 ");
         legalTable.add(new LinkLabel("Open Source Licenses", getResourceFileFromJar("licenses.html").file().toURI().toString()));
         contentTable.add(legalTable).row();
-        contentTable.add("\n").row();
-        contentTable.add("Icon and Art design: Angelo Navarro").left().row();
 
         getContentTable().add(mainTable).padTop(5);
     }

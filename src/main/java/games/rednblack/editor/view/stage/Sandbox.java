@@ -40,7 +40,6 @@ import games.rednblack.editor.renderer.ExternalTypesConfiguration;
 import games.rednblack.editor.renderer.SceneConfiguration;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.components.ViewPortComponent;
-import games.rednblack.editor.renderer.components.additional.ButtonComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
@@ -173,9 +172,6 @@ public class Sandbox {
         config.setRendererSystem(new HyperLap2dRendererMiniMap(batch, true, config.getMsaaSamples()));
 
         config.addSystem(manager);
-
-        // add additional components
-        config.addTagTransmuter("button", ButtonComponent.class);
 
         sceneLoader = new SceneLoader(config);
         cullingSystem = sceneLoader.getEngine().getSystem(CullingSystem.class);

@@ -41,7 +41,7 @@ public class Main {
         SettingsManager settingsManager = new SettingsManager();
 
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-        config.setWindowedMode(467,415);
+        config.setWindowedMode(733,400);
         config.setResizable(false);
         config.setDecorated(false);
         config.setInitialVisible(false);

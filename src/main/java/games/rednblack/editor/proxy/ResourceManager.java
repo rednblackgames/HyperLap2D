@@ -85,8 +85,6 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
         TextureArrayPolygonSpriteBatch.getMaxTextureUnits();
 
-        WhitePixel.initializeShared();
-
         PixmapPacker packer = new PixmapPacker(4096, 4096, Pixmap.Format.RGBA8888, 1, false, new PixmapPacker.SkylineStrategy());
         packer.setTransparentColor(Color.WHITE);
         packer.getTransparentColor().a = 0;

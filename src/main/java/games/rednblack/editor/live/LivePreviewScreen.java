@@ -18,7 +18,6 @@ import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.ExternalTypesConfiguration;
 import games.rednblack.editor.renderer.SceneConfiguration;
 import games.rednblack.editor.renderer.SceneLoader;
-import games.rednblack.editor.renderer.components.additional.ButtonComponent;
 import games.rednblack.editor.renderer.utils.TextureArrayCpuPolygonSpriteBatch;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.extension.bvb.BVBItemType;
@@ -69,7 +68,6 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
         config.setResourceRetriever(resourceManager);
         config.setExternalItemTypes(externalItemTypes);
 
-        config.addTagTransmuter("button", ButtonComponent.class);
         sceneLoader = new SceneLoader(config);
 
         sceneLoader.loadScene(projectManager.getCurrentSceneConfigVO().sceneName, viewport);

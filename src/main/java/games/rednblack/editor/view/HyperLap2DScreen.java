@@ -74,7 +74,7 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
         isDrawingBgLogo = true;
         bgLogo = new Image(new Texture(Gdx.files.internal("style/bglogo.png")));
         bgLogo.setOrigin(Align.center);
-        bgLogo.getColor().a = 0.3f;
+        bgLogo.getColor().a = 0.6f;
         screenSize = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         blackOverlay = new Image(WhitePixel.sharedInstance.texture);
         blackOverlay.setSize(screenSize.x, screenSize.y);

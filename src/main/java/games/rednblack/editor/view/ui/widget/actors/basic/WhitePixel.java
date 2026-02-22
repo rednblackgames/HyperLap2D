@@ -10,7 +10,8 @@ public class WhitePixel {
     public static WhitePixel sharedInstance;
 
     public static void initializeShared() {
-        sharedInstance = new WhitePixel();
+        if (sharedInstance == null)
+            sharedInstance = new WhitePixel();
     }
 
     public static void disposeShared() {
