@@ -352,9 +352,24 @@ public class PolygonFollower extends SubFollower {
     }
 
     private void transformActorCoordIntoEntity(Actor actor, Vector2 coord) {
-        actor.localToScreenCoordinates(coord);
-        Sandbox.getInstance().getViewport().unproject(coord);
-        TransformMathUtils.sceneToLocalCoordinates(entity, coord, transformCM, parentNodeCM);
+        // Convert from actor's local space to this PolygonFollower's local space
+        if (actor != this) {
+            actor.localToAscendantCoordinates(this, coord);
+        }
+
+        // Reverse the scaling applied in computeDrawingObjects
+        float scale = pixelsPerWU / runtimeCamera.zoom;
+        float sX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1) * scale;
+        float sY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1) * scale;
+
+        coord.x /= sX;
+        coord.y /= sY;
+
+        // Remove the polygon bounding rect offset applied in computeDrawingObjects
+        if (dimensionsComponent.polygon != null) {
+            coord.x += dimensionsComponent.polygon.getBoundingRectangle().x;
+            coord.y += dimensionsComponent.polygon.getBoundingRectangle().y;
+        }
     }
 }
 
