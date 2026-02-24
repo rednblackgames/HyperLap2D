@@ -3,6 +3,7 @@
 - [BREAK CHANGE] Fork Artemis-ODB into runtime codebase
 - [BREAK CHANGE] Any reference to Artemis' World was changed to `Engine`
 - [BREAK CHANGE] Replaced Artemis Reflection with libGDX Reflection
+- Auto Constraint Layouts
 
 [0.1.7]
 - [BREAK CHANGE] Update Project version to `1.0.1`

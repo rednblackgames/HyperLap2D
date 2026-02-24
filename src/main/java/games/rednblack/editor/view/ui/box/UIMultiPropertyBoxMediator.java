@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
+import games.rednblack.editor.renderer.components.LayoutComponent;
 import games.rednblack.editor.renderer.components.shape.CircleShapeComponent;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.components.ShaderComponent;
@@ -225,6 +226,11 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         }
         if (circleShapeComponent != null) {
             mediatorNames.add(UICircleShapePropertiesMediator.NAME);
+        }
+
+        LayoutComponent layoutComponent = SandboxComponentRetriever.get(entity, LayoutComponent.class);
+        if (layoutComponent != null) {
+            mediatorNames.add(UILayoutPropertiesMediator.NAME);
         }
     }
 

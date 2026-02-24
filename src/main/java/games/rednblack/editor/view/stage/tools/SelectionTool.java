@@ -25,7 +25,10 @@ import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.util.OsUtils;
+import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
+import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
+import games.rednblack.editor.renderer.components.LayoutComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.data.LayerItemVO;
@@ -34,10 +37,14 @@ import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.view.ui.FollowersUIMediator;
+import games.rednblack.editor.view.ui.followers.BasicFollower;
+import games.rednblack.editor.view.ui.followers.LayoutSubFollower;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.h2d.common.view.ui.Cursors;
 import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.INotification;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,6 +58,8 @@ public class SelectionTool extends SimpleTool {
     public static final String NAME = "SELECTION_TOOL";
 
     protected Sandbox sandbox;
+
+    private FollowersUIMediator followersUIMediator;
 
     private boolean isDragging = false;
     private boolean currentTouchedItemWasSelected = false;
@@ -96,9 +105,40 @@ public class SelectionTool extends SimpleTool {
         super.initTool();
         sandbox = Sandbox.getInstance();
 
+        followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+
         // set cursor
         CursorManager cursorManager = Facade.getInstance().retrieveProxy(CursorManager.NAME);
         cursorManager.setCursor(Cursors.NORMAL);
+
+        if (getName().equals(NAME)) {
+            updateLayoutSubFollowers();
+        }
+    }
+
+    @Override
+    public void handleNotification(INotification notification) {
+        switch (notification.getName()) {
+            case MsgAPI.ITEM_SELECTION_CHANGED:
+            case AddComponentToItemCommand.DONE:
+            case RemoveComponentFromItemCommand.DONE:
+                updateLayoutSubFollowers();
+                break;
+        }
+    }
+
+    private void updateLayoutSubFollowers() {
+        Set<Integer> selectedEntities = sandbox.getSelector().getSelectedItems();
+        for (int entity : selectedEntities) {
+            BasicFollower follower = followersUIMediator.getFollower(entity);
+            if (follower == null) continue;
+            follower.removeSubFollower(LayoutSubFollower.class);
+            LayoutComponent layoutComponent = SandboxComponentRetriever.get(entity, LayoutComponent.class);
+            if (layoutComponent != null) {
+                LayoutSubFollower subFollower = new LayoutSubFollower(entity);
+                follower.addSubfollower(subFollower);
+            }
+        }
     }
 
     @Override

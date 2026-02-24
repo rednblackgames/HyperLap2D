@@ -69,6 +69,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
     public static final String SHADER_COMPONENT_KEY = "Shader";
     public static final String LIGHT_COMPONENT_KEY = "Light";
     public static final String TYPING_LABEL_COMPONENT_KEY = "Typing Label";
+    public static final String LAYOUT_COMPONENT_KEY = "Layout";
 
     final private HashMap<String, Class<? extends Component>> componentClassMap = new HashMap<>();
 
@@ -85,6 +86,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
         componentClassMap.put(SHADER_COMPONENT_KEY, ShaderComponent.class);
         componentClassMap.put(LIGHT_COMPONENT_KEY, LightBodyComponent.class);
         componentClassMap.put(TYPING_LABEL_COMPONENT_KEY, TypingLabelComponent.class);
+        componentClassMap.put(LAYOUT_COMPONENT_KEY, LayoutComponent.class);
     }
 
     @Override
