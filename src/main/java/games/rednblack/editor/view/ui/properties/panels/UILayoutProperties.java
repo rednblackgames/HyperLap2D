@@ -1,6 +1,9 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -11,8 +14,10 @@ import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.renderer.components.LayoutComponent;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
+import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
+import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class UILayoutProperties extends UIRemovableProperties {
 
@@ -49,6 +54,8 @@ public class UILayoutProperties extends UIRemovableProperties {
     private VisValidatableTextField horizontalBiasField;
     private VisValidatableTextField verticalBiasField;
 
+    private ConstraintPreviewWidget previewWidget;
+
     public UILayoutProperties() {
         super("Layout");
         initView();
@@ -66,91 +73,77 @@ public class UILayoutProperties extends UIRemovableProperties {
         verticalSides.add(LayoutComponent.ConstraintSide.BOTTOM.name());
         verticalSides.add(LayoutComponent.ConstraintSide.TOP.name());
 
-        // Left constraint section
-        leftEnabled = StandardWidgetsFactory.createCheckBox("Left");
+        // Preview widget
+        previewWidget = new ConstraintPreviewWidget();
+        mainTable.add(previewWidget).height(120).growX().colspan(4).padBottom(4);
+        mainTable.row();
+
+        // Left constraint - single row
+        leftEnabled = StandardWidgetsFactory.createCheckBox("L");
         leftTarget = StandardWidgetsFactory.createSelectBox(String.class);
         leftSide = StandardWidgetsFactory.createSelectBox(String.class);
         leftSide.setItems(horizontalSides);
         leftSide.setSelected(LayoutComponent.ConstraintSide.LEFT.name());
         leftMargin = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
-        mainTable.add(leftEnabled).left().colspan(4);
+        mainTable.add(leftEnabled).left().width(34);
+        mainTable.add(leftTarget).growX().padLeft(1);
+        mainTable.add(leftSide).width(62).padLeft(1);
+        mainTable.add(leftMargin).width(36).padLeft(1);
         mainTable.row().padTop(2);
-        mainTable.add(new VisLabel("Target:", Align.right)).padRight(5).fillX();
-        mainTable.add(leftTarget).width(100);
-        mainTable.add(new VisLabel("Side:", Align.right)).padRight(5).padLeft(5);
-        mainTable.add(leftSide).width(70);
-        mainTable.row().padTop(2);
-        mainTable.add(new VisLabel("Margin:", Align.right)).padRight(5).fillX();
-        mainTable.add(leftMargin).width(100).colspan(3).left();
-        mainTable.row().padTop(8);
 
-        // Right constraint section
-        rightEnabled = StandardWidgetsFactory.createCheckBox("Right");
+        // Right constraint - single row
+        rightEnabled = StandardWidgetsFactory.createCheckBox("R");
         rightTarget = StandardWidgetsFactory.createSelectBox(String.class);
         rightSide = StandardWidgetsFactory.createSelectBox(String.class);
         rightSide.setItems(horizontalSides);
         rightSide.setSelected(LayoutComponent.ConstraintSide.RIGHT.name());
         rightMargin = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
-        mainTable.add(rightEnabled).left().colspan(4);
+        mainTable.add(rightEnabled).left().width(34);
+        mainTable.add(rightTarget).growX().padLeft(1);
+        mainTable.add(rightSide).width(62).padLeft(1);
+        mainTable.add(rightMargin).width(36).padLeft(1);
         mainTable.row().padTop(2);
-        mainTable.add(new VisLabel("Target:", Align.right)).padRight(5).fillX();
-        mainTable.add(rightTarget).width(100);
-        mainTable.add(new VisLabel("Side:", Align.right)).padRight(5).padLeft(5);
-        mainTable.add(rightSide).width(70);
-        mainTable.row().padTop(2);
-        mainTable.add(new VisLabel("Margin:", Align.right)).padRight(5).fillX();
-        mainTable.add(rightMargin).width(100).colspan(3).left();
-        mainTable.row().padTop(8);
 
-        // Bottom constraint section
-        bottomEnabled = StandardWidgetsFactory.createCheckBox("Bottom");
+        // Bottom constraint - single row
+        bottomEnabled = StandardWidgetsFactory.createCheckBox("B");
         bottomTarget = StandardWidgetsFactory.createSelectBox(String.class);
         bottomSide = StandardWidgetsFactory.createSelectBox(String.class);
         bottomSide.setItems(verticalSides);
         bottomSide.setSelected(LayoutComponent.ConstraintSide.BOTTOM.name());
         bottomMargin = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
-        mainTable.add(bottomEnabled).left().colspan(4);
+        mainTable.add(bottomEnabled).left().width(34);
+        mainTable.add(bottomTarget).growX().padLeft(1);
+        mainTable.add(bottomSide).width(62).padLeft(1);
+        mainTable.add(bottomMargin).width(36).padLeft(1);
         mainTable.row().padTop(2);
-        mainTable.add(new VisLabel("Target:", Align.right)).padRight(5).fillX();
-        mainTable.add(bottomTarget).width(100);
-        mainTable.add(new VisLabel("Side:", Align.right)).padRight(5).padLeft(5);
-        mainTable.add(bottomSide).width(70);
-        mainTable.row().padTop(2);
-        mainTable.add(new VisLabel("Margin:", Align.right)).padRight(5).fillX();
-        mainTable.add(bottomMargin).width(100).colspan(3).left();
-        mainTable.row().padTop(8);
 
-        // Top constraint section
-        topEnabled = StandardWidgetsFactory.createCheckBox("Top");
+        // Top constraint - single row
+        topEnabled = StandardWidgetsFactory.createCheckBox("T");
         topTarget = StandardWidgetsFactory.createSelectBox(String.class);
         topSide = StandardWidgetsFactory.createSelectBox(String.class);
         topSide.setItems(verticalSides);
         topSide.setSelected(LayoutComponent.ConstraintSide.TOP.name());
         topMargin = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
-        mainTable.add(topEnabled).left().colspan(4);
-        mainTable.row().padTop(2);
-        mainTable.add(new VisLabel("Target:", Align.right)).padRight(5).fillX();
-        mainTable.add(topTarget).width(100);
-        mainTable.add(new VisLabel("Side:", Align.right)).padRight(5).padLeft(5);
-        mainTable.add(topSide).width(70);
-        mainTable.row().padTop(2);
-        mainTable.add(new VisLabel("Margin:", Align.right)).padRight(5).fillX();
-        mainTable.add(topMargin).width(100).colspan(3).left();
-        mainTable.row().padTop(8);
+        mainTable.add(topEnabled).left().width(34);
+        mainTable.add(topTarget).growX().padLeft(1);
+        mainTable.add(topSide).width(62).padLeft(1);
+        mainTable.add(topMargin).width(36).padLeft(1);
+        mainTable.row().padTop(5);
 
         // Bias section
         horizontalBiasField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         verticalBiasField = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
-        mainTable.add(new VisLabel("H Bias:", Align.right)).padRight(5).fillX();
-        mainTable.add(horizontalBiasField).width(100);
-        mainTable.add(new VisLabel("V Bias:", Align.right)).padRight(5).padLeft(5);
-        mainTable.add(verticalBiasField).width(70);
-        mainTable.row().padTop(5);
+        mainTable.add(new VisLabel("H Bias:", Align.right)).padRight(2);
+        mainTable.add(horizontalBiasField).growX().colspan(3);
+        mainTable.row().padTop(3);
+        mainTable.add(new VisLabel("V Bias:", Align.right)).padRight(2).padLeft(4);
+        mainTable.add(verticalBiasField).growX().colspan(3);
+        mainTable.row();
 
         updateConstraintFieldsEnabled();
     }
@@ -273,5 +266,102 @@ public class UILayoutProperties extends UIRemovableProperties {
     @Override
     public void onRemove() {
         Facade.getInstance().sendNotification(CLOSE_CLICKED);
+    }
+
+    /**
+     * A small ShapeDrawer-based preview widget that shows the constraint diagram at a glance.
+     * Displays a parent rectangle, a centered entity rectangle, and colored lines/dots for
+     * active constraints.
+     */
+    private class ConstraintPreviewWidget extends Actor {
+        private static final float PAD = 6f;
+
+        private static final float PARENT_ALPHA = 0.25f;
+        private static final float ENTITY_ALPHA = 0.5f;
+        private static final float LINE_WIDTH = 1.5f;
+        private static final float DOT_RADIUS = 3f;
+
+        private final Color hColor = new Color(0.3f, 0.5f, 1f, 0.9f);
+        private final Color vColor = new Color(0.3f, 0.85f, 0.4f, 0.9f);
+        private final Color parentColor = new Color(1f, 1f, 1f, PARENT_ALPHA);
+        private final Color entityColor = new Color(0.8f, 0.8f, 0.8f, ENTITY_ALPHA);
+        private final Color inactiveColor = new Color(1f, 1f, 1f, 0.12f);
+
+        private ShapeDrawer sd;
+
+        @Override
+        protected void setStage(Stage stage) {
+            super.setStage(stage);
+            if (stage != null) {
+                sd = new ShapeDrawer(stage.getBatch(), WhitePixel.sharedInstance.textureRegion);
+            }
+        }
+
+        @Override
+        public void draw(Batch batch, float parentAlpha) {
+            if (sd == null) return;
+            sd.update();
+
+            float x = getX(), y = getY(), w = getWidth(), h = getHeight();
+
+            // Parent bounds
+            float px = x + PAD, py = y + PAD, pw = w - PAD * 2, ph = h - PAD * 2;
+            sd.setColor(parentColor);
+            sd.rectangle(px, py, pw, ph, 1f);
+
+            // Entity rect (centered, proportional)
+            float ew = pw * 0.28f, eh = ph * 0.38f;
+            float ex = x + (w - ew) / 2f;
+            float ey = y + (h - eh) / 2f;
+            sd.setColor(entityColor);
+            sd.filledRectangle(ex, ey, ew, eh);
+            sd.setColor(new Color(1f, 1f, 1f, 0.3f));
+            sd.rectangle(ex, ey, ew, eh, 1f);
+
+            // Edge midpoints
+            float midL = ex;
+            float midR = ex + ew;
+            float midB = ey;
+            float midT = ey + eh;
+            float midY = ey + eh / 2f;
+            float midX = ex + ew / 2f;
+
+            // Draw constraint indicators
+            drawSideIndicator(midL, midY, px, midY, leftEnabled.isChecked(), true);
+            drawSideIndicator(midR, midY, px + pw, midY, rightEnabled.isChecked(), true);
+            drawSideIndicator(midX, midB, midX, py, bottomEnabled.isChecked(), false);
+            drawSideIndicator(midX, midT, midX, py + ph, topEnabled.isChecked(), false);
+        }
+
+        private void drawSideIndicator(float fromX, float fromY, float toX, float toY,
+                                         boolean active, boolean horizontal) {
+            if (active) {
+                sd.setColor(horizontal ? hColor : vColor);
+                drawDashed(fromX, fromY, toX, toY, LINE_WIDTH, 4f);
+                sd.filledCircle(fromX, fromY, DOT_RADIUS);
+                sd.filledCircle(toX, toY, DOT_RADIUS);
+            } else {
+                sd.setColor(inactiveColor);
+                drawDashed(fromX, fromY, toX, toY, 1f, 3f);
+            }
+        }
+
+        private void drawDashed(float x1, float y1, float x2, float y2, float lw, float dashLen) {
+            float dx = x2 - x1, dy = y2 - y1;
+            float dist = (float) Math.sqrt(dx * dx + dy * dy);
+            if (dist < 0.001f) return;
+            float nx = dx / dist, ny = dy / dist;
+            float drawn = 0;
+            boolean on = true;
+            while (drawn < dist) {
+                float seg = Math.min(dashLen, dist - drawn);
+                if (on) {
+                    sd.line(x1 + nx * drawn, y1 + ny * drawn,
+                            x1 + nx * (drawn + seg), y1 + ny * (drawn + seg), lw);
+                }
+                drawn += seg;
+                on = !on;
+            }
+        }
     }
 }
