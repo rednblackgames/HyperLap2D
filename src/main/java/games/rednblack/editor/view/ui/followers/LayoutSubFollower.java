@@ -19,6 +19,7 @@ public class LayoutSubFollower extends SubFollower {
     private static final Color VERTICAL_COLOR = new Color(0.3f, 0.85f, 0.4f, 0.8f);
     private static final Color ANCHOR_COLOR = new Color(1f, 1f, 1f, 0.9f);
     private static final Color PARENT_BOUNDS_COLOR = new Color(1f, 1f, 1f, 0.25f);
+    private static final Color SIBLING_BOUNDS_COLOR = new Color(0.8f, 0.7f, 0.3f, 0.25f);
     private static final Color LABEL_BG_COLOR = new Color(0f, 0f, 0f, 0.6f);
     private static final float LABEL_FONT_SCALE = 0.7f;
     private static final float LABEL_PADDING = 2f;
@@ -84,6 +85,7 @@ public class LayoutSubFollower extends SubFollower {
         shapeDrawer.update();
 
         drawParentBounds(transform, parentDim, scale, scaleX, scaleY);
+        drawSiblingBounds(layout, transform, scale, scaleX, scaleY);
 
         drawConstraint(batch, layout.left, transform, dimensions, parentDim, true, true, scale, scaleX, scaleY, lineWidth, anchorRadius);
         drawConstraint(batch, layout.right, transform, dimensions, parentDim, true, false, scale, scaleX, scaleY, lineWidth, anchorRadius);
@@ -105,6 +107,43 @@ public class LayoutSubFollower extends SubFollower {
         drawDashedLine(x1, y0, x1, y1, bw, 4f);
         drawDashedLine(x1, y1, x0, y1, bw, 4f);
         drawDashedLine(x0, y1, x0, y0, bw, 4f);
+    }
+
+    private void drawSiblingBounds(LayoutComponent layout, TransformComponent transform,
+                                     float scale, float scaleX, float scaleY) {
+        // Collect unique sibling targets and draw their bounds
+        LayoutComponent.ConstraintData[] constraints = {layout.left, layout.right, layout.bottom, layout.top};
+        // Track drawn entities to avoid duplicates (simple linear scan, max 4 entries)
+        int[] drawn = new int[4];
+        int drawnCount = 0;
+
+        for (LayoutComponent.ConstraintData data : constraints) {
+            if (data == null || data.targetEntity == -1) continue;
+
+            // Check if already drawn
+            boolean alreadyDrawn = false;
+            for (int i = 0; i < drawnCount; i++) {
+                if (drawn[i] == data.targetEntity) { alreadyDrawn = true; break; }
+            }
+            if (alreadyDrawn) continue;
+            drawn[drawnCount++] = data.targetEntity;
+
+            TransformComponent sibTransform = SandboxComponentRetriever.get(data.targetEntity, TransformComponent.class);
+            DimensionsComponent sibDim = SandboxComponentRetriever.get(data.targetEntity, DimensionsComponent.class);
+            if (sibTransform == null || sibDim == null) continue;
+
+            float x0 = (sibTransform.x - transform.x) * scale * scaleX;
+            float y0 = (sibTransform.y - transform.y) * scale * scaleY;
+            float x1 = (sibTransform.x + sibDim.width - transform.x) * scale * scaleX;
+            float y1 = (sibTransform.y + sibDim.height - transform.y) * scale * scaleY;
+
+            shapeDrawer.setColor(SIBLING_BOUNDS_COLOR);
+            float bw = 1f;
+            drawDashedLine(x0, y0, x1, y0, bw, 4f);
+            drawDashedLine(x1, y0, x1, y1, bw, 4f);
+            drawDashedLine(x1, y1, x0, y1, bw, 4f);
+            drawDashedLine(x0, y1, x0, y0, bw, 4f);
+        }
     }
 
     /**

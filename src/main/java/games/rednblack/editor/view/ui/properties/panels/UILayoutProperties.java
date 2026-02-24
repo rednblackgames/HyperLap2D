@@ -87,7 +87,7 @@ public class UILayoutProperties extends UIRemovableProperties {
         leftMargin = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
         mainTable.add(leftEnabled).left().width(34);
-        mainTable.add(leftTarget).growX().padLeft(1);
+        mainTable.add(leftTarget).width(90).padLeft(1);
         mainTable.add(leftSide).width(62).padLeft(1);
         mainTable.add(leftMargin).width(36).padLeft(1);
         mainTable.row().padTop(2);
@@ -101,7 +101,7 @@ public class UILayoutProperties extends UIRemovableProperties {
         rightMargin = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
         mainTable.add(rightEnabled).left().width(34);
-        mainTable.add(rightTarget).growX().padLeft(1);
+        mainTable.add(rightTarget).width(90).padLeft(1);
         mainTable.add(rightSide).width(62).padLeft(1);
         mainTable.add(rightMargin).width(36).padLeft(1);
         mainTable.row().padTop(2);
@@ -115,7 +115,7 @@ public class UILayoutProperties extends UIRemovableProperties {
         bottomMargin = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
         mainTable.add(bottomEnabled).left().width(34);
-        mainTable.add(bottomTarget).growX().padLeft(1);
+        mainTable.add(bottomTarget).width(90).padLeft(1);
         mainTable.add(bottomSide).width(62).padLeft(1);
         mainTable.add(bottomMargin).width(36).padLeft(1);
         mainTable.row().padTop(2);
@@ -129,7 +129,7 @@ public class UILayoutProperties extends UIRemovableProperties {
         topMargin = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
         mainTable.add(topEnabled).left().width(34);
-        mainTable.add(topTarget).growX().padLeft(1);
+        mainTable.add(topTarget).width(90).padLeft(1);
         mainTable.add(topSide).width(62).padLeft(1);
         mainTable.add(topMargin).width(36).padLeft(1);
         mainTable.row().padTop(5);
