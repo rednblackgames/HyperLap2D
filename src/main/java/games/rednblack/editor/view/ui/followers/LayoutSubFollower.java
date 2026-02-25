@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.kotcrab.vis.ui.VisUI;
 import games.rednblack.editor.renderer.components.*;
@@ -28,6 +30,15 @@ public class LayoutSubFollower extends SubFollower {
     private final int pixelsPerWU;
     private BitmapFont font;
     private final GlyphLayout glyphLayout = new GlyphLayout();
+
+    // Per-frame drawing state (set in draw(), used by helpers)
+    private float drawScale;
+    private float entityCosR, entitySinR;
+    private float entityScaleX, entityScaleY;
+    private float entityOriginX, entityOriginY;
+    private float entityTx, entityTy;
+    // Entity AABB offsets from (transform.x, transform.y)
+    private float entityAABBLeft, entityAABBBottom, entityAABBRight, entityAABBTop;
 
     public LayoutSubFollower(int entity) {
         super(entity);
@@ -70,57 +81,91 @@ public class LayoutSubFollower extends SubFollower {
 
         OrthographicCamera camera = Sandbox.getInstance().getCamera();
 
-        // Scale factor to convert world units to screen pixels in the BasicFollower's local space.
-        // BasicFollower positions its children using this same factor (see BasicFollower.update()).
-        float scale = pixelsPerWU / camera.zoom;
+        // Precompute per-frame drawing state
+        drawScale = pixelsPerWU / camera.zoom;
+        entityTx = transform.x;
+        entityTy = transform.y;
+        entityScaleX = transform.scaleX * (transform.flipX ? -1 : 1);
+        entityScaleY = transform.scaleY * (transform.flipY ? -1 : 1);
+        entityOriginX = Float.isNaN(transform.originX) ? 0 : transform.originX;
+        entityOriginY = Float.isNaN(transform.originY) ? 0 : transform.originY;
+        entityCosR = MathUtils.cosDeg(transform.rotation);
+        entitySinR = MathUtils.sinDeg(transform.rotation);
 
-        // The entity's scale (flip-aware), matching BasicFollower.update()
-        float scaleX = transform.scaleX * (transform.flipX ? -1 : 1);
-        float scaleY = transform.scaleY * (transform.flipY ? -1 : 1);
+        // Read precomputed AABB from BoundingBoxComponent
+        BoundingBoxComponent bb = SandboxComponentRetriever.get(entity, BoundingBoxComponent.class);
+        if (bb != null) {
+            entityAABBLeft = bb.parentLocalAABB.x;
+            entityAABBBottom = bb.parentLocalAABB.y;
+            entityAABBRight = entityAABBLeft + bb.parentLocalAABB.width;
+            entityAABBTop = entityAABBBottom + bb.parentLocalAABB.height;
+        } else {
+            entityAABBLeft = 0; entityAABBBottom = 0;
+            entityAABBRight = dimensions.width; entityAABBTop = dimensions.height;
+        }
 
-        // Line width and anchor radius in constant screen pixels
         float lineWidth = 1.5f;
         float anchorRadius = 3f;
 
         shapeDrawer.update();
 
-        drawParentBounds(transform, parentDim, scale, scaleX, scaleY);
-        drawSiblingBounds(layout, transform, scale, scaleX, scaleY);
+        drawParentBounds(parentDim);
+        drawSiblingBounds(layout);
 
-        drawConstraint(batch, layout.left, transform, dimensions, parentDim, true, true, scale, scaleX, scaleY, lineWidth, anchorRadius);
-        drawConstraint(batch, layout.right, transform, dimensions, parentDim, true, false, scale, scaleX, scaleY, lineWidth, anchorRadius);
-        drawConstraint(batch, layout.bottom, transform, dimensions, parentDim, false, true, scale, scaleX, scaleY, lineWidth, anchorRadius);
-        drawConstraint(batch, layout.top, transform, dimensions, parentDim, false, false, scale, scaleX, scaleY, lineWidth, anchorRadius);
+        drawConstraint(batch, layout.left, transform, parentDim, true, true, lineWidth, anchorRadius);
+        drawConstraint(batch, layout.right, transform, parentDim, true, false, lineWidth, anchorRadius);
+        drawConstraint(batch, layout.bottom, transform, parentDim, false, true, lineWidth, anchorRadius);
+        drawConstraint(batch, layout.top, transform, parentDim, false, false, lineWidth, anchorRadius);
     }
 
-    private void drawParentBounds(TransformComponent transform, DimensionsComponent parentDim,
-                                   float scale, float scaleX, float scaleY) {
-        // Parent bounds corners in parent-local world coords, converted to BasicFollower-local screen coords
-        float x0 = (0 - transform.x) * scale * scaleX;
-        float y0 = (0 - transform.y) * scale * scaleY;
-        float x1 = (parentDim.width - transform.x) * scale * scaleX;
-        float y1 = (parentDim.height - transform.y) * scale * scaleY;
+    // ----------------------------------------------------------------
+    // Coordinate conversion: parent-world -> SubFollower drawing coords
+    // ----------------------------------------------------------------
+
+    /**
+     * Converts a parent-world point to SubFollower X drawing coordinate.
+     * Applies the inverse of the entity's transform (parentToLocal) then
+     * scales to screen pixels, so parent-space geometry appears correctly
+     * on screen despite BasicFollower's rotation and scale.
+     */
+    private float toFollowerX(float wx, float wy) {
+        float tox = wx - entityTx - entityOriginX;
+        float toy = wy - entityTy - entityOriginY;
+        return (tox * entityCosR + toy * entitySinR) * drawScale + entityOriginX * drawScale * entityScaleX;
+    }
+
+    private float toFollowerY(float wx, float wy) {
+        float tox = wx - entityTx - entityOriginX;
+        float toy = wy - entityTy - entityOriginY;
+        return (tox * -entitySinR + toy * entityCosR) * drawScale + entityOriginY * drawScale * entityScaleY;
+    }
+
+    // ----------------------------------------------------------------
+    // Bounds drawing
+    // ----------------------------------------------------------------
+
+    private void drawParentBounds(DimensionsComponent parentDim) {
+        float x0 = toFollowerX(0, 0), y0 = toFollowerY(0, 0);
+        float x1 = toFollowerX(parentDim.width, 0), y1 = toFollowerY(parentDim.width, 0);
+        float x2 = toFollowerX(parentDim.width, parentDim.height), y2 = toFollowerY(parentDim.width, parentDim.height);
+        float x3 = toFollowerX(0, parentDim.height), y3 = toFollowerY(0, parentDim.height);
 
         shapeDrawer.setColor(PARENT_BOUNDS_COLOR);
         float bw = 1f;
-        drawDashedLine(x0, y0, x1, y0, bw, 4f);
-        drawDashedLine(x1, y0, x1, y1, bw, 4f);
-        drawDashedLine(x1, y1, x0, y1, bw, 4f);
-        drawDashedLine(x0, y1, x0, y0, bw, 4f);
+        drawDashedLine(x0, y0, x1, y1, bw, 4f);
+        drawDashedLine(x1, y1, x2, y2, bw, 4f);
+        drawDashedLine(x2, y2, x3, y3, bw, 4f);
+        drawDashedLine(x3, y3, x0, y0, bw, 4f);
     }
 
-    private void drawSiblingBounds(LayoutComponent layout, TransformComponent transform,
-                                     float scale, float scaleX, float scaleY) {
-        // Collect unique sibling targets and draw their bounds
+    private void drawSiblingBounds(LayoutComponent layout) {
         LayoutComponent.ConstraintData[] constraints = {layout.left, layout.right, layout.bottom, layout.top};
-        // Track drawn entities to avoid duplicates (simple linear scan, max 4 entries)
         int[] drawn = new int[4];
         int drawnCount = 0;
 
         for (LayoutComponent.ConstraintData data : constraints) {
             if (data == null || data.targetEntity == -1) continue;
 
-            // Check if already drawn
             boolean alreadyDrawn = false;
             for (int i = 0; i < drawnCount; i++) {
                 if (drawn[i] == data.targetEntity) { alreadyDrawn = true; break; }
@@ -129,51 +174,68 @@ public class LayoutSubFollower extends SubFollower {
             drawn[drawnCount++] = data.targetEntity;
 
             TransformComponent sibTransform = SandboxComponentRetriever.get(data.targetEntity, TransformComponent.class);
-            DimensionsComponent sibDim = SandboxComponentRetriever.get(data.targetEntity, DimensionsComponent.class);
-            if (sibTransform == null || sibDim == null) continue;
+            if (sibTransform == null) continue;
 
-            float x0 = (sibTransform.x - transform.x) * scale * scaleX;
-            float y0 = (sibTransform.y - transform.y) * scale * scaleY;
-            float x1 = (sibTransform.x + sibDim.width - transform.x) * scale * scaleX;
-            float y1 = (sibTransform.y + sibDim.height - transform.y) * scale * scaleY;
+            // Read sibling's precomputed parent-local AABB
+            BoundingBoxComponent sibBB = SandboxComponentRetriever.get(data.targetEntity, BoundingBoxComponent.class);
+            DimensionsComponent sibDim = SandboxComponentRetriever.get(data.targetEntity, DimensionsComponent.class);
+            if (sibBB == null && sibDim == null) continue;
+
+            float minX, minY, maxX, maxY;
+            if (sibBB != null) {
+                minX = sibTransform.x + sibBB.parentLocalAABB.x;
+                minY = sibTransform.y + sibBB.parentLocalAABB.y;
+                maxX = minX + sibBB.parentLocalAABB.width;
+                maxY = minY + sibBB.parentLocalAABB.height;
+            } else {
+                minX = sibTransform.x;
+                minY = sibTransform.y;
+                maxX = minX + sibDim.width;
+                maxY = minY + sibDim.height;
+            }
+
+            // Convert AABB corners to SubFollower coords
+            float fx0 = toFollowerX(minX, minY), fy0 = toFollowerY(minX, minY);
+            float fx1 = toFollowerX(maxX, minY), fy1 = toFollowerY(maxX, minY);
+            float fx2 = toFollowerX(maxX, maxY), fy2 = toFollowerY(maxX, maxY);
+            float fx3 = toFollowerX(minX, maxY), fy3 = toFollowerY(minX, maxY);
 
             shapeDrawer.setColor(SIBLING_BOUNDS_COLOR);
             float bw = 1f;
-            drawDashedLine(x0, y0, x1, y0, bw, 4f);
-            drawDashedLine(x1, y0, x1, y1, bw, 4f);
-            drawDashedLine(x1, y1, x0, y1, bw, 4f);
-            drawDashedLine(x0, y1, x0, y0, bw, 4f);
+            drawDashedLine(fx0, fy0, fx1, fy1, bw, 4f);
+            drawDashedLine(fx1, fy1, fx2, fy2, bw, 4f);
+            drawDashedLine(fx2, fy2, fx3, fy3, bw, 4f);
+            drawDashedLine(fx3, fy3, fx0, fy0, bw, 4f);
         }
     }
 
+    // ----------------------------------------------------------------
+    // Constraint line drawing
+    // ----------------------------------------------------------------
+
     /**
-     * Draws a single constraint line from the entity's edge midpoint to the target anchor.
-     *
-     * For parent constraints, the line is axis-aligned (straight horizontal/vertical).
-     * For sibling constraints, the line goes obliquely from the entity's edge midpoint
-     * to the midpoint of the target side on the sibling entity.
+     * Draws a single constraint line from the entity's AABB edge midpoint
+     * to the target anchor (parent edge or sibling AABB edge).
      */
     private void drawConstraint(Batch batch, LayoutComponent.ConstraintData data,
-                                 TransformComponent transform, DimensionsComponent dimensions,
-                                 DimensionsComponent parentDim,
+                                 TransformComponent transform, DimensionsComponent parentDim,
                                  boolean horizontal, boolean startSide,
-                                 float scale, float scaleX, float scaleY,
                                  float lineWidth, float anchorRadius) {
         if (data == null) return;
 
         Color color = horizontal ? HORIZONTAL_COLOR : VERTICAL_COLOR;
 
-        // Entity edge midpoint in parent-local world coordinates
+        // Entity edge midpoint in parent-world coordinates (from entity AABB)
         float entityEdgeX, entityEdgeY;
         if (horizontal) {
-            entityEdgeX = startSide ? transform.x : (transform.x + dimensions.width);
-            entityEdgeY = transform.y + dimensions.height / 2f;
+            entityEdgeX = transform.x + (startSide ? entityAABBLeft : entityAABBRight);
+            entityEdgeY = transform.y + (entityAABBBottom + entityAABBTop) / 2f;
         } else {
-            entityEdgeX = transform.x + dimensions.width / 2f;
-            entityEdgeY = startSide ? transform.y : (transform.y + dimensions.height);
+            entityEdgeX = transform.x + (entityAABBLeft + entityAABBRight) / 2f;
+            entityEdgeY = transform.y + (startSide ? entityAABBBottom : entityAABBTop);
         }
 
-        // Target anchor point in parent-local world coordinates
+        // Target anchor point in parent-world coordinates
         float targetX, targetY;
         if (data.targetEntity == -1) {
             // Parent: straight horizontal/vertical line to parent edge
@@ -186,21 +248,30 @@ public class LayoutSubFollower extends SubFollower {
                 targetX = entityEdgeX;
             }
         } else {
-            // Sibling: oblique line to the midpoint of the target side
+            // Sibling: line to the midpoint of the target AABB side
             TransformComponent sibTransform = SandboxComponentRetriever.get(data.targetEntity, TransformComponent.class);
-            DimensionsComponent sibDim = SandboxComponentRetriever.get(data.targetEntity, DimensionsComponent.class);
-            if (sibTransform == null || sibDim == null) return;
+            if (sibTransform == null) return;
 
-            targetX = resolveSiblingSideX(data.targetSide, sibTransform, sibDim);
-            targetY = resolveSiblingSideY(data.targetSide, sibTransform, sibDim);
+            BoundingBoxComponent sibBB = SandboxComponentRetriever.get(data.targetEntity, BoundingBoxComponent.class);
+            DimensionsComponent sibDim = SandboxComponentRetriever.get(data.targetEntity, DimensionsComponent.class);
+            if (sibBB == null && sibDim == null) return;
+
+            Rectangle aabb;
+            if (sibBB != null) {
+                aabb = sibBB.parentLocalAABB;
+            } else {
+                aabb = new Rectangle(0, 0, sibDim.width, sibDim.height);
+            }
+
+            targetX = resolveSiblingAABBSideX(data.targetSide, sibTransform, aabb);
+            targetY = resolveSiblingAABBSideY(data.targetSide, sibTransform, aabb);
         }
 
-        // Convert from parent-local world coords to BasicFollower-local screen coords.
-        // BasicFollower origin = entity's (transform.x, transform.y) in screen space.
-        float ex = (entityEdgeX - transform.x) * scale * scaleX;
-        float ey = (entityEdgeY - transform.y) * scale * scaleY;
-        float tx = (targetX - transform.x) * scale * scaleX;
-        float ty = (targetY - transform.y) * scale * scaleY;
+        // Convert to SubFollower drawing coords
+        float ex = toFollowerX(entityEdgeX, entityEdgeY);
+        float ey = toFollowerY(entityEdgeX, entityEdgeY);
+        float tx = toFollowerX(targetX, targetY);
+        float ty = toFollowerY(targetX, targetY);
 
         shapeDrawer.setColor(color);
 
@@ -212,7 +283,7 @@ public class LayoutSubFollower extends SubFollower {
         // negligible a straight dashed line is cleaner and cheaper.
         float crossDelta = horizontal ? Math.abs(ey - ty) : Math.abs(ex - tx);
         if (data.targetEntity != -1 && crossDelta > 5f) {
-            // Entity edge outward direction (perpendicular to the face)
+            // Entity edge outward direction (in parent-world axis)
             float eDirX, eDirY;
             if (horizontal) { eDirX = startSide ? -1 : 1; eDirY = 0; }
             else             { eDirX = 0; eDirY = startSide ? -1 : 1; }
@@ -228,13 +299,15 @@ public class LayoutSubFollower extends SubFollower {
                 }
             }
 
+            // Compute control points in parent-world, then convert to SubFollower
             float dist = (float) Math.sqrt((tx - ex) * (tx - ex) + (ty - ey) * (ty - ey));
             float cpDist = Math.max(dist * 0.35f, 15f);
+            float cpDistWorld = cpDist / drawScale;
 
-            float cx1 = ex + eDirX * cpDist;
-            float cy1 = ey + eDirY * cpDist;
-            float cx2 = tx + tDirX * cpDist;
-            float cy2 = ty + tDirY * cpDist;
+            float cx1 = toFollowerX(entityEdgeX + eDirX * cpDistWorld, entityEdgeY + eDirY * cpDistWorld);
+            float cy1 = toFollowerY(entityEdgeX + eDirX * cpDistWorld, entityEdgeY + eDirY * cpDistWorld);
+            float cx2 = toFollowerX(targetX + tDirX * cpDistWorld, targetY + tDirY * cpDistWorld);
+            float cy2 = toFollowerY(targetX + tDirX * cpDistWorld, targetY + tDirY * cpDistWorld);
 
             drawDashedBezier(ex, ey, cx1, cy1, cx2, cy2, tx, ty, lineWidth, 6f, 24);
 
@@ -255,6 +328,60 @@ public class LayoutSubFollower extends SubFollower {
             drawMarginLabel(batch, data.margin, labelX, labelY, color);
         }
     }
+
+    // ----------------------------------------------------------------
+    // Side resolution helpers
+    // ----------------------------------------------------------------
+
+    private float resolveParentSideX(LayoutComponent.ConstraintSide side, DimensionsComponent parentDim) {
+        if (side == null) return 0;
+        switch (side) {
+            case LEFT: return 0;
+            case RIGHT: return parentDim.width;
+            case BOTTOM:
+            case TOP: return parentDim.width / 2f;
+            default: return 0;
+        }
+    }
+
+    private float resolveParentSideY(LayoutComponent.ConstraintSide side, DimensionsComponent parentDim) {
+        if (side == null) return 0;
+        switch (side) {
+            case BOTTOM: return 0;
+            case TOP: return parentDim.height;
+            case LEFT:
+            case RIGHT: return parentDim.height / 2f;
+            default: return 0;
+        }
+    }
+
+    private float resolveSiblingAABBSideX(LayoutComponent.ConstraintSide side,
+                                           TransformComponent sibTransform, Rectangle aabb) {
+        if (side == null) return 0;
+        switch (side) {
+            case LEFT: return sibTransform.x + aabb.x;
+            case RIGHT: return sibTransform.x + aabb.x + aabb.width;
+            case BOTTOM:
+            case TOP: return sibTransform.x + aabb.x + aabb.width / 2f;
+            default: return 0;
+        }
+    }
+
+    private float resolveSiblingAABBSideY(LayoutComponent.ConstraintSide side,
+                                           TransformComponent sibTransform, Rectangle aabb) {
+        if (side == null) return 0;
+        switch (side) {
+            case BOTTOM: return sibTransform.y + aabb.y;
+            case TOP: return sibTransform.y + aabb.y + aabb.height;
+            case LEFT:
+            case RIGHT: return sibTransform.y + aabb.y + aabb.height / 2f;
+            default: return 0;
+        }
+    }
+
+    // ----------------------------------------------------------------
+    // Drawing utilities
+    // ----------------------------------------------------------------
 
     private void drawMarginLabel(Batch batch, float margin, float cx, float cy, Color color) {
         String text = margin == (int) margin ? String.valueOf((int) margin) : String.format("%.1f", margin);
@@ -279,54 +406,6 @@ public class LayoutSubFollower extends SubFollower {
         font.draw(batch, text, cx - textW / 2f, cy + textH / 2f);
 
         font.getData().setScale(oldScaleX, oldScaleY);
-    }
-
-    private float resolveParentSideX(LayoutComponent.ConstraintSide side, DimensionsComponent parentDim) {
-        if (side == null) return 0;
-        switch (side) {
-            case LEFT: return 0;
-            case RIGHT: return parentDim.width;
-            case BOTTOM:
-            case TOP: return parentDim.width / 2f;
-            default: return 0;
-        }
-    }
-
-    private float resolveParentSideY(LayoutComponent.ConstraintSide side, DimensionsComponent parentDim) {
-        if (side == null) return 0;
-        switch (side) {
-            case BOTTOM: return 0;
-            case TOP: return parentDim.height;
-            case LEFT:
-            case RIGHT: return parentDim.height / 2f;
-            default: return 0;
-        }
-    }
-
-    private float resolveSiblingSideX(LayoutComponent.ConstraintSide side,
-                                       TransformComponent sibTransform,
-                                       DimensionsComponent sibDim) {
-        if (side == null) return 0;
-        switch (side) {
-            case LEFT: return sibTransform.x;
-            case RIGHT: return sibTransform.x + sibDim.width;
-            case BOTTOM:
-            case TOP: return sibTransform.x + sibDim.width / 2f;
-            default: return 0;
-        }
-    }
-
-    private float resolveSiblingSideY(LayoutComponent.ConstraintSide side,
-                                       TransformComponent sibTransform,
-                                       DimensionsComponent sibDim) {
-        if (side == null) return 0;
-        switch (side) {
-            case BOTTOM: return sibTransform.y;
-            case TOP: return sibTransform.y + sibDim.height;
-            case LEFT:
-            case RIGHT: return sibTransform.y + sibDim.height / 2f;
-            default: return 0;
-        }
     }
 
     private void drawDashedLine(float x1, float y1, float x2, float y2, float lineWidth, float dashLength) {
