@@ -276,6 +276,8 @@ public class LayoutSubFollower extends SubFollower {
         shapeDrawer.setColor(color);
 
         float labelX, labelY;
+        // Arrival direction at target (for arrowhead), set per branch
+        float arrDirX, arrDirY;
 
         // Use a cubic bezier for sibling constraints when the endpoints are
         // not axis-aligned — gives a professional "wire" look where the curve
@@ -314,15 +316,22 @@ public class LayoutSubFollower extends SubFollower {
             // Label at the bezier midpoint (t = 0.5)
             labelX = 0.125f * ex + 0.375f * cx1 + 0.375f * cx2 + 0.125f * tx;
             labelY = 0.125f * ey + 0.375f * cy1 + 0.375f * cy2 + 0.125f * ty;
+
+            // Bezier tangent at t=1 is the direction from last control point to endpoint
+            arrDirX = tx - cx2;
+            arrDirY = ty - cy2;
         } else {
             drawDashedLine(ex, ey, tx, ty, lineWidth, 6f);
             labelX = (ex + tx) / 2f;
             labelY = (ey + ty) / 2f;
+
+            arrDirX = tx - ex;
+            arrDirY = ty - ey;
         }
 
         shapeDrawer.setColor(ANCHOR_COLOR);
         shapeDrawer.filledCircle(ex, ey, anchorRadius);
-        shapeDrawer.filledCircle(tx, ty, anchorRadius);
+        drawArrowhead(tx, ty, arrDirX, arrDirY, anchorRadius);
 
         if (data.margin != 0 && font != null) {
             drawMarginLabel(batch, data.margin, labelX, labelY, color);
@@ -406,6 +415,29 @@ public class LayoutSubFollower extends SubFollower {
         font.draw(batch, text, cx - textW / 2f, cy + textH / 2f);
 
         font.getData().setScale(oldScaleX, oldScaleY);
+    }
+
+    private void drawArrowhead(float tipX, float tipY, float dirX, float dirY, float size) {
+        float len = (float) Math.sqrt(dirX * dirX + dirY * dirY);
+        if (len < 0.001f) return;
+        float nx = dirX / len;
+        float ny = dirY / len;
+
+        float arrowLen = size * 2.5f;
+        float arrowHalfW = size * 1.5f;
+
+        // Base center (behind the tip along the arrival direction)
+        float bx = tipX - nx * arrowLen;
+        float by = tipY - ny * arrowLen;
+
+        // Perpendicular
+        float px = -ny;
+        float py = nx;
+
+        shapeDrawer.filledTriangle(
+                tipX, tipY,
+                bx + px * arrowHalfW, by + py * arrowHalfW,
+                bx - px * arrowHalfW, by - py * arrowHalfW);
     }
 
     private void drawDashedLine(float x1, float y1, float x2, float y2, float lineWidth, float dashLength) {
