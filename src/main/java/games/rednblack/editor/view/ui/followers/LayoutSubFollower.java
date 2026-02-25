@@ -203,14 +203,56 @@ public class LayoutSubFollower extends SubFollower {
         float ty = (targetY - transform.y) * scale * scaleY;
 
         shapeDrawer.setColor(color);
-        drawDashedLine(ex, ey, tx, ty, lineWidth, 6f);
+
+        float labelX, labelY;
+
+        // Use a cubic bezier for sibling constraints when the endpoints are
+        // not axis-aligned — gives a professional "wire" look where the curve
+        // leaves each face perpendicularly.  When the cross-axis offset is
+        // negligible a straight dashed line is cleaner and cheaper.
+        float crossDelta = horizontal ? Math.abs(ey - ty) : Math.abs(ex - tx);
+        if (data.targetEntity != -1 && crossDelta > 5f) {
+            // Entity edge outward direction (perpendicular to the face)
+            float eDirX, eDirY;
+            if (horizontal) { eDirX = startSide ? -1 : 1; eDirY = 0; }
+            else             { eDirX = 0; eDirY = startSide ? -1 : 1; }
+
+            // Target face outward direction
+            float tDirX = 0, tDirY = 0;
+            if (data.targetSide != null) {
+                switch (data.targetSide) {
+                    case LEFT:   tDirX = -1; break;
+                    case RIGHT:  tDirX =  1; break;
+                    case BOTTOM: tDirY = -1; break;
+                    case TOP:    tDirY =  1; break;
+                }
+            }
+
+            float dist = (float) Math.sqrt((tx - ex) * (tx - ex) + (ty - ey) * (ty - ey));
+            float cpDist = Math.max(dist * 0.35f, 15f);
+
+            float cx1 = ex + eDirX * cpDist;
+            float cy1 = ey + eDirY * cpDist;
+            float cx2 = tx + tDirX * cpDist;
+            float cy2 = ty + tDirY * cpDist;
+
+            drawDashedBezier(ex, ey, cx1, cy1, cx2, cy2, tx, ty, lineWidth, 6f, 24);
+
+            // Label at the bezier midpoint (t = 0.5)
+            labelX = 0.125f * ex + 0.375f * cx1 + 0.375f * cx2 + 0.125f * tx;
+            labelY = 0.125f * ey + 0.375f * cy1 + 0.375f * cy2 + 0.125f * ty;
+        } else {
+            drawDashedLine(ex, ey, tx, ty, lineWidth, 6f);
+            labelX = (ex + tx) / 2f;
+            labelY = (ey + ty) / 2f;
+        }
 
         shapeDrawer.setColor(ANCHOR_COLOR);
         shapeDrawer.filledCircle(ex, ey, anchorRadius);
         shapeDrawer.filledCircle(tx, ty, anchorRadius);
 
         if (data.margin != 0 && font != null) {
-            drawMarginLabel(batch, data.margin, (ex + tx) / 2f, (ey + ty) / 2f, color);
+            drawMarginLabel(batch, data.margin, labelX, labelY, color);
         }
     }
 
@@ -308,6 +350,56 @@ public class LayoutSubFollower extends SubFollower {
             }
             drawn += segLen;
             drawing = !drawing;
+        }
+    }
+
+    /**
+     * Draws a dashed cubic bezier curve.  The curve is sampled into straight
+     * segments and the dash pattern is advanced along the arc length so
+     * dashes stay uniform even around tight bends.
+     */
+    private void drawDashedBezier(float x1, float y1, float cx1, float cy1,
+                                   float cx2, float cy2, float x2, float y2,
+                                   float lineWidth, float dashLength, int segments) {
+        float prevX = x1, prevY = y1;
+        float dashRemaining = dashLength;
+        boolean drawing = true;
+
+        for (int i = 1; i <= segments; i++) {
+            float t = i / (float) segments;
+            float u = 1 - t;
+
+            // Cubic bezier
+            float px = u * u * u * x1 + 3 * u * u * t * cx1 + 3 * u * t * t * cx2 + t * t * t * x2;
+            float py = u * u * u * y1 + 3 * u * u * t * cy1 + 3 * u * t * t * cy2 + t * t * t * y2;
+
+            float dx = px - prevX;
+            float dy = py - prevY;
+            float segLen = (float) Math.sqrt(dx * dx + dy * dy);
+
+            if (segLen > 0.001f) {
+                float consumed = 0;
+                while (consumed < segLen) {
+                    float step = Math.min(dashRemaining, segLen - consumed);
+                    if (drawing) {
+                        float t0 = consumed / segLen;
+                        float t1 = (consumed + step) / segLen;
+                        shapeDrawer.line(
+                                prevX + dx * t0, prevY + dy * t0,
+                                prevX + dx * t1, prevY + dy * t1,
+                                lineWidth);
+                    }
+                    consumed += step;
+                    dashRemaining -= step;
+                    if (dashRemaining <= 0.001f) {
+                        drawing = !drawing;
+                        dashRemaining = dashLength;
+                    }
+                }
+            }
+
+            prevX = px;
+            prevY = py;
         }
     }
 }

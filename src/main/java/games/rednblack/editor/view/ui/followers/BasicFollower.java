@@ -51,6 +51,9 @@ public abstract class BasicFollower extends Group {
     protected float polygonOffsetX;
     protected float polygonOffsetY;
 
+    private float lastEntityX = Float.NaN;
+    private float lastEntityY = Float.NaN;
+
     private final Array<SubFollower> subFollowers = new Array<>();
 
     public BasicFollower(int entity) {
@@ -128,8 +131,25 @@ public abstract class BasicFollower extends Group {
 
         setRotation(transformComponent.rotation);
 
+        lastEntityX = transformComponent.x;
+        lastEntityY = transformComponent.y;
+
         for (SubFollower follower : subFollowers) {
             follower.update();
+        }
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        // Re-check the entity position after the ECS engine has processed
+        // (engine.process() runs before uiStage.act()).  If a system like
+        // LayoutSystem corrected the position that a drag temporarily set,
+        // refresh the follower so it shows the effective position, not the
+        // intermediate dragged one.
+        if (transformComponent != null
+                && (transformComponent.x != lastEntityX || transformComponent.y != lastEntityY)) {
+            update();
         }
     }
 

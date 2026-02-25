@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
-import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.renderer.components.LayoutComponent;
