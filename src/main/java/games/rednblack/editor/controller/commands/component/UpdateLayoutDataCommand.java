@@ -48,6 +48,8 @@ public class UpdateLayoutDataCommand extends EntityModifyRevertibleCommand {
     private void applyVoToComponent(LayoutComponent comp, LayoutConstraintVO vo, int entity) {
         comp.horizontalBias = vo.horizontalBias;
         comp.verticalBias = vo.verticalBias;
+        comp.matchConstraintWidth = vo.matchConstraintWidth;
+        comp.matchConstraintHeight = vo.matchConstraintHeight;
 
         comp.left = createConstraintData(vo.left, entity);
         comp.right = createConstraintData(vo.right, entity);

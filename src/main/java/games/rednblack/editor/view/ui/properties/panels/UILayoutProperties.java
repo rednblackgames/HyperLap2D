@@ -53,6 +53,10 @@ public class UILayoutProperties extends UIRemovableProperties {
     private VisValidatableTextField horizontalBiasField;
     private VisValidatableTextField verticalBiasField;
 
+    // Match constraint
+    private VisCheckBox matchWidthCheckBox;
+    private VisCheckBox matchHeightCheckBox;
+
     private ConstraintPreviewWidget previewWidget;
 
     public UILayoutProperties() {
@@ -142,6 +146,14 @@ public class UILayoutProperties extends UIRemovableProperties {
         mainTable.row().padTop(3);
         mainTable.add(new VisLabel("V Bias:", Align.right)).padRight(2).padLeft(4);
         mainTable.add(verticalBiasField).growX().colspan(3);
+        mainTable.row().padTop(5);
+
+        // Match constraint section
+        matchWidthCheckBox = StandardWidgetsFactory.createCheckBox("W = match constraint");
+        matchHeightCheckBox = StandardWidgetsFactory.createCheckBox("H = match constraint");
+        mainTable.add(matchWidthCheckBox).left().colspan(4);
+        mainTable.row().padTop(2);
+        mainTable.add(matchHeightCheckBox).left().colspan(4);
         mainTable.row();
 
         updateConstraintFieldsEnabled();
@@ -179,6 +191,9 @@ public class UILayoutProperties extends UIRemovableProperties {
 
         horizontalBiasField.addListener(new KeyboardListener(getUpdateEventName()));
         verticalBiasField.addListener(new KeyboardListener(getUpdateEventName()));
+
+        matchWidthCheckBox.addListener(enabledListener);
+        matchHeightCheckBox.addListener(enabledListener);
     }
 
     private void updateConstraintFieldsEnabled() {
@@ -257,6 +272,17 @@ public class UILayoutProperties extends UIRemovableProperties {
     // Bias accessors
     public VisValidatableTextField getHorizontalBiasField() { return horizontalBiasField; }
     public VisValidatableTextField getVerticalBiasField() { return verticalBiasField; }
+
+    // Match constraint accessors
+    public boolean isMatchConstraintWidth() { return matchWidthCheckBox.isChecked(); }
+    public void setMatchConstraintWidth(boolean v) { matchWidthCheckBox.setChecked(v); }
+    public boolean isMatchConstraintHeight() { return matchHeightCheckBox.isChecked(); }
+    public void setMatchConstraintHeight(boolean v) { matchHeightCheckBox.setChecked(v); }
+
+    public void setMatchConstraintVisible(boolean visible) {
+        matchWidthCheckBox.setVisible(visible);
+        matchHeightCheckBox.setVisible(visible);
+    }
 
     public static boolean isParentTarget(String target) {
         return PARENT_TARGET.equals(target);

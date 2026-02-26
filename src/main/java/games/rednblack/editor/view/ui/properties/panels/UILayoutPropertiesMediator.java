@@ -8,6 +8,7 @@ import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.data.LayoutConstraintVO;
+import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
@@ -113,6 +114,15 @@ public class UILayoutPropertiesMediator extends UIItemPropertiesMediator<UILayou
         // Bias
         viewComponent.getHorizontalBiasField().setText(layoutComponent.horizontalBias + "");
         viewComponent.getVerticalBiasField().setText(layoutComponent.verticalBias + "");
+
+        // Match constraint – only for entity types that support editable dimensions
+        MainItemComponent mic = SandboxComponentRetriever.get(entity, MainItemComponent.class);
+        boolean supportsMatchConstraint = mic != null && (mic.entityType == EntityFactory.COMPOSITE_TYPE
+                || mic.entityType == EntityFactory.LABEL_TYPE
+                || mic.entityType == EntityFactory.NINE_PATCH);
+        viewComponent.setMatchConstraintVisible(supportsMatchConstraint);
+        viewComponent.setMatchConstraintWidth(layoutComponent.matchConstraintWidth);
+        viewComponent.setMatchConstraintHeight(layoutComponent.matchConstraintHeight);
     }
 
     private String resolveTargetLabel(LayoutComponent.ConstraintData data, int entity) {
@@ -170,6 +180,10 @@ public class UILayoutPropertiesMediator extends UIItemPropertiesMediator<UILayou
         // Bias
         newVo.horizontalBias = NumberUtils.toFloat(viewComponent.getHorizontalBiasField().getText(), 0.5f);
         newVo.verticalBias = NumberUtils.toFloat(viewComponent.getVerticalBiasField().getText(), 0.5f);
+
+        // Match constraint
+        newVo.matchConstraintWidth = viewComponent.isMatchConstraintWidth();
+        newVo.matchConstraintHeight = viewComponent.isMatchConstraintHeight();
 
         if (!oldVo.equals(newVo)) {
             Object payload = UpdateLayoutDataCommand.payload(observableReference, newVo);

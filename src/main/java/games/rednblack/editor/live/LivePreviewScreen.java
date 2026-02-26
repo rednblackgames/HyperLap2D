@@ -21,6 +21,7 @@ import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.utils.TextureArrayCpuPolygonSpriteBatch;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.extension.bvb.BVBItemType;
+import games.rednblack.h2d.extension.talos.TalosAnchorConstraintSystem;
 import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelItemType;
@@ -67,6 +68,7 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
         SceneConfiguration config = new SceneConfiguration(new TextureArrayCpuPolygonSpriteBatch(32_767), true, settingsManager.editorConfigVO.msaaSamples);
         config.setResourceRetriever(resourceManager);
         config.setExternalItemTypes(externalItemTypes);
+        config.addSystem(new TalosAnchorConstraintSystem());
 
         sceneLoader = new SceneLoader(config);
 
