@@ -43,6 +43,7 @@ import games.rednblack.editor.view.ui.properties.UIAbstractPropertiesMediator;
 import games.rednblack.editor.view.ui.properties.panels.*;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extension.spine.SpineItemType;
+import games.rednblack.h2d.extension.talos.TalosAnchorConstraintComponent;
 import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelComponent;
 import games.rednblack.puremvc.interfaces.IMediator;
@@ -231,6 +232,11 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         LayoutComponent layoutComponent = SandboxComponentRetriever.get(entity, LayoutComponent.class);
         if (layoutComponent != null) {
             mediatorNames.add(UILayoutPropertiesMediator.NAME);
+        }
+
+        TalosAnchorConstraintComponent anchorComp = SandboxComponentRetriever.get(entity, TalosAnchorConstraintComponent.class);
+        if (anchorComp != null && entityType == TalosItemType.TALOS_TYPE) {
+            mediatorNames.add(UITalosAnchorConstraintPropertiesMediator.NAME);
         }
     }
 

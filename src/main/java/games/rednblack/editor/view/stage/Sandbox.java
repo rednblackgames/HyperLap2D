@@ -47,6 +47,7 @@ import games.rednblack.editor.renderer.systems.CullingSystem;
 import games.rednblack.editor.renderer.systems.LightSystem;
 import games.rednblack.editor.renderer.systems.ParticleSystem;
 import games.rednblack.editor.renderer.systems.PhysicsSystem;
+import games.rednblack.h2d.extension.talos.TalosAnchorConstraintSystem;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.renderer.utils.TextureArrayCpuPolygonSpriteBatch;
 import games.rednblack.editor.system.HyperLap2dRendererMiniMap;
@@ -168,6 +169,7 @@ public class Sandbox {
         config.removeSystem(ParticleSystem.class);
         config.addSystem(new ParticleContinuousSystem());
         config.removeSystem(TalosSystem.class);
+        config.addSystem(new TalosAnchorConstraintSystem());
         config.addSystem(new TalosContinuousSystem());
         config.setRendererSystem(new HyperLap2dRendererMiniMap(batch, true, config.getMsaaSamples()));
 

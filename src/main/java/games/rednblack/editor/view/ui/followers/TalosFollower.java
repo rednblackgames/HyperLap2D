@@ -13,12 +13,12 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.VisUI;
-import games.rednblack.editor.renderer.components.ParentNodeComponent;
-import games.rednblack.editor.renderer.components.TransformComponent;
+import games.rednblack.editor.renderer.components.*;
 import games.rednblack.editor.renderer.utils.TransformMathUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
+import games.rednblack.h2d.extension.talos.TalosAnchorConstraintComponent;
 import games.rednblack.h2d.extension.talos.TalosComponent;
 import games.rednblack.talos.runtime.IEmitter;
 import games.rednblack.talos.runtime.ParticleEmitterDescriptor;
@@ -31,6 +31,7 @@ public class TalosFollower extends BasicFollower {
     private static final Color POINT_COLOR = new Color(0.2f, 0.9f, 1f, 1f);
     private static final Color FROM_TO_COLOR = new Color(1f, 0.6f, 0f, 1f);
     private static final Color TARGET_COLOR = new Color(0.8f, 0.2f, 1f, 1f);
+    private static final Color ANCHOR_COLOR = new Color(0.2f, 1f, 0.5f, 0.8f);
 
     private final TalosComponent talosComponent;
     private Image icon;
@@ -111,7 +112,6 @@ public class TalosFollower extends BasicFollower {
         if (hidden || Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) return;
 
         float oldColor = shapeDrawer.getPackedColor();
-
         float alphaMult = getColor().a * parentAlpha;
 
         for (IEmitter emitter : talosComponent.effect.getEmitters()) {
@@ -132,7 +132,46 @@ public class TalosFollower extends BasicFollower {
             }
         }
 
+        // Draw anchor constraint bindings
+        TalosAnchorConstraintComponent anchorComp = SandboxComponentRetriever.get(entity, TalosAnchorConstraintComponent.class);
+        if (anchorComp != null) {
+            drawAnchorBindings(anchorComp, alphaMult);
+        }
+
         shapeDrawer.setColor(oldColor);
+    }
+
+    private void drawAnchorBindings(TalosAnchorConstraintComponent anchorComp, float alphaMult) {
+        Sandbox sandbox = Sandbox.getInstance();
+
+        for (int i = 0; i < anchorComp.bindings.size; i++) {
+            TalosAnchorConstraintComponent.AnchorBinding binding = anchorComp.bindings.get(i);
+
+            // Get the resolved dynamic value position from the scope
+            com.badlogic.gdx.math.Vector2 scopeVal = new com.badlogic.gdx.math.Vector2();
+            games.rednblack.talos.runtime.values.NumericalValue nv = talosComponent.effect.getScope().getDynamicValue(binding.scopeKey);
+            if (nv != null && nv.elementsCount() >= 2) {
+                scopeVal.set(nv.get(0), nv.get(1));
+            } else {
+                continue;
+            }
+
+            // Project the effect-local scope value to screen
+            projectToScreen(scopeVal.x, scopeVal.y, tmp);
+            float cx = tmp.x;
+            float cy = tmp.y;
+
+            shapeDrawer.setColor(ANCHOR_COLOR.r, ANCHOR_COLOR.g, ANCHOR_COLOR.b, ANCHOR_COLOR.a * alphaMult);
+
+            // Draw diamond marker at anchor point
+            float size = 5f;
+            shapeDrawer.filledTriangle(cx, cy + size, cx - size, cy, cx + size, cy);
+            shapeDrawer.filledTriangle(cx, cy - size, cx - size, cy, cx + size, cy);
+
+            // Draw small label
+            float labelOffset = 8f;
+            shapeDrawer.filledCircle(cx, cy + size + labelOffset, 2f);
+        }
     }
 
     private void projectToScreen(float worldX, float worldY, Vector2 out) {
