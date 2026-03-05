@@ -110,6 +110,12 @@ public class PluginManager extends Proxy implements PluginAPI {
     }
 
     @Override
+    public String getPackNameFromRegion(String regionName) {
+        ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
+        return resourceManager.getPackFromRegionName(regionName);
+    }
+
+    @Override
     public void reLoadProject() {
         Sandbox sandbox = Sandbox.getInstance();
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);

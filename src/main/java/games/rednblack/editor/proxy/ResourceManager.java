@@ -247,6 +247,14 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return false;
     }
 
+    public String getPackFromRegionName(String regionName) {
+        for (Entry<String, TextureAtlas> entry : currentProjectAtlas.entrySet()) {
+            if (entry.getValue().findRegion(regionName) != null)
+                return entry.getKey();
+        }
+        return "pack";
+    }
+
     @Override
     public ProjectInfoVO getProjectVO() {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
