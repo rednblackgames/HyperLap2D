@@ -250,7 +250,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     public String getPackFromRegionName(String regionName) {
         for (Entry<String, TextureAtlas> entry : currentProjectAtlas.entrySet()) {
             if (entry.getValue().findRegion(regionName) != null)
-                return entry.getKey();
+                return entry.getKey().equals("main") ? "pack" : entry.getKey();
         }
         return "pack";
     }
