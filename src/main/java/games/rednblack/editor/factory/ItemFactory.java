@@ -24,7 +24,10 @@ import games.rednblack.puremvc.Facade;
 import java.util.HashMap;
 
 public class ItemFactory implements IFactory {
-    protected PoolManager POOLS = new PoolManager(ComponentFactory.InitialData::new);
+    protected static PoolManager POOLS = new PoolManager();
+    static {
+        POOLS.addPool(ComponentFactory.InitialData.class, ComponentFactory.InitialData::new);
+    }
 
     private final EntityFactory entityFactory;
     private final SceneLoader sceneLoader;

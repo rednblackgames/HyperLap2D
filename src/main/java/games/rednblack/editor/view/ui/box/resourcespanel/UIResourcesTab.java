@@ -19,7 +19,10 @@ import games.rednblack.puremvc.Facade;
  * Created by sargis on 5/4/15.
  */
 public abstract class UIResourcesTab extends ImageTab {
-    protected PoolManager POOLS = new PoolManager(Vector2::new);
+    protected static PoolManager POOLS = new PoolManager();
+    static {
+        POOLS.addPool(Vector2.class, Vector2::new);
+    }
 
     protected final VisTable contentTable;
 

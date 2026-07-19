@@ -21,7 +21,10 @@ import games.rednblack.editor.view.ui.widget.actors.polygon.PolyVertex;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class PolygonFollower extends SubFollower {
-    protected static PoolManager POOLS = new PoolManager(Vector2::new);
+    protected static PoolManager POOLS = new PoolManager();
+    static {
+        POOLS.addPool(Vector2.class, Vector2::new);
+    }
 
     private static final Color innerColor = new Color(200f / 255f, 200f / 255f, 200f / 255f, 0.2f);
     public static final Color outlineColor = new Color(200f / 255f, 156f / 255f, 71f / 255f, 1f);

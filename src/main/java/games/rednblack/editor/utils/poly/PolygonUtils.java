@@ -29,7 +29,10 @@ import games.rednblack.editor.view.stage.Sandbox;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class PolygonUtils {
-    protected static PoolManager POOLS = new PoolManager(Vector2::new);
+    protected static PoolManager POOLS = new PoolManager();
+	static {
+		POOLS.addPool(Vector2.class, Vector2::new);
+	}
 
 	public static boolean intersectSegments(Array<Vector2> points, int index1, int index2, int index3, int index4) {
 		Vector2 intersectionPoint = POOLS.obtain(Vector2.class).set(points.get(index1));

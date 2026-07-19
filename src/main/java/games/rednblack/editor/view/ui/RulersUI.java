@@ -25,7 +25,11 @@ import java.util.HashMap;
  * Created by azakhary on 7/18/2015.
  */
 public class RulersUI extends Actor {
-    protected PoolManager POOLS = new PoolManager(VisLabel::new);
+    protected static  PoolManager POOLS = new PoolManager();
+    static {
+        POOLS.addPool(VisLabel.class, VisLabel::new);
+    }
+
     private static final String CLASS_NAME = "games.rednblack.editor.view.ui.RulersUI";
     public static final String ACTION_GUIDES_MODIFIED = CLASS_NAME + ".ACTION_GUIDES_MODIFIED";
     public static final String RIGHT_CLICK_RULER = CLASS_NAME + ".RIGHT_CLICK_RULER";

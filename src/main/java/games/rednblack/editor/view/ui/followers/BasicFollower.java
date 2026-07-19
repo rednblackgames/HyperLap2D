@@ -39,7 +39,10 @@ import games.rednblack.puremvc.interfaces.INotification;
  * Created by azakhary on 5/20/2015.
  */
 public abstract class BasicFollower extends Group {
-    protected static PoolManager POOLS = new PoolManager(Vector2::new);
+    protected static PoolManager POOLS = new PoolManager();
+    static {
+        POOLS.addPool(Vector2.class, Vector2::new);
+    }
 
     protected TransformComponent transformComponent;
     protected DimensionsComponent dimensionsComponent;
