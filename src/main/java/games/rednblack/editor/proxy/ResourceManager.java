@@ -26,7 +26,6 @@ import games.rednblack.editor.renderer.resources.FontSizePair;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.editor.renderer.utils.*;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.h2d.extension.spine.ResourceRetrieverAttachmentLoader;
 import games.rednblack.h2d.extension.spine.SpineDataObject;
 import games.rednblack.h2d.extension.spine.SpineDrawableLogic;

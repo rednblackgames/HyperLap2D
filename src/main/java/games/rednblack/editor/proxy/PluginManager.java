@@ -31,15 +31,6 @@ import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.ecs.Engine;
 import games.rednblack.editor.utils.runtime.EntityUtils;
-import games.rednblack.editor.view.menu.HyperLap2DMenuBarMediator;
-import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.editor.view.stage.SandboxMediator;
-import games.rednblack.editor.view.stage.UIStage;
-import games.rednblack.editor.view.ui.FollowersUIMediator;
-import games.rednblack.editor.view.ui.UIDropDownMenu;
-import games.rednblack.editor.view.ui.UIDropDownMenuMediator;
-import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
-import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
 import games.rednblack.h2d.common.IItemCommand;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.factory.IFactory;
@@ -53,6 +44,7 @@ import games.rednblack.h2d.common.vo.ProjectVO;
 import games.rednblack.h2d.common.vo.SceneConfigVO;
 import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.Proxy;
+import games.rednblack.puremvc.interfaces.IMediator;
 
 import java.util.*;
 
@@ -63,13 +55,32 @@ public class PluginManager extends Proxy implements PluginAPI {
     private static final String TAG = PluginManager.class.getCanonicalName();
     public static final String NAME = TAG;
 
-    private ArrayList<H2DPlugin> plugins = new ArrayList<>();
+    private final ArrayList<H2DPlugin> plugins = new ArrayList<>();
     private String pluginDir, cacheDir;
 
     private HashSet<Integer> pluginEntities;
 
+    /**
+     * View-side bridge for the plugin-facing operations that touch the UI
+     * (menu items, tools, dropdown, followers, scene load, UI stage). Set in
+     * {@link #onRegister()} from the mediator registered under
+     * {@link PluginUIBridge#MEDIATOR_NAME}; lets this proxy avoid importing the
+     * view layer.
+     */
+    private PluginUIBridge bridge;
+
     public PluginManager() {
         super(NAME, null);
+    }
+
+    @Override
+    public void onRegister() {
+        // BootstrapViewCommand registers PluginUIBridgeMediator before
+        // BootstrapPlugins creates this proxy, so the bridge is available here.
+        IMediator mediator = facade.retrieveMediator(PluginUIBridge.MEDIATOR_NAME);
+        if (mediator instanceof PluginUIBridge) {
+            bridge = (PluginUIBridge) mediator;
+        }
     }
 
     public H2DPlugin registerPlugin(H2DPlugin plugin) {
@@ -93,8 +104,7 @@ public class PluginManager extends Proxy implements PluginAPI {
     }
 
     public void setDropDownItemName(String action, String name) {
-        UIDropDownMenuMediator dropDownMenuMediator = facade.retrieveMediator(UIDropDownMenuMediator.NAME);
-        dropDownMenuMediator.getViewComponent().setActionName(action, name);
+        bridge.setDropDownItemName(action, name);
     }
 
     @Override
@@ -117,18 +127,16 @@ public class PluginManager extends Proxy implements PluginAPI {
 
     @Override
     public void reLoadProject() {
-        Sandbox sandbox = Sandbox.getInstance();
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath());
-        sandbox.loadCurrentProject();
+        bridge.loadCurrentProject();
         facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
     }
 
     @Override
     public void saveProject() {
-        Sandbox sandbox = Sandbox.getInstance();
         SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
-        SceneVO vo = sandbox.sceneVoFromItems();
+        SceneVO vo = bridge.sceneVoFromItems();
         sceneDataManager.saveScene(vo);
     }
 
@@ -140,19 +148,16 @@ public class PluginManager extends Proxy implements PluginAPI {
 
     @Override
     public void removeFollower(int entity) {
-        FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
-        followersUIMediator.removeFollower(entity);
+        facade.sendNotification(MsgAPI.FOLLOWER_REMOVED, entity);
     }
 
     public void addMenuItem(String menu, String subMenuName, String notificationName) {
-        HyperLap2DMenuBarMediator hyperlap2DMenuBarMediator = facade.retrieveMediator(HyperLap2DMenuBarMediator.NAME);
-        hyperlap2DMenuBarMediator.addMenuItem(menu, subMenuName, notificationName);
+        bridge.addMenuItem(menu, subMenuName, notificationName);
     }
 
     @Override
     public void addTool(String toolName, VisImageButton.VisImageButtonStyle toolBtnStyle, boolean addSeparator, Tool tool) {
-        UIToolBoxMediator uiToolBoxMediator = facade.retrieveMediator(UIToolBoxMediator.NAME);
-        uiToolBoxMediator.addTool(toolName, toolBtnStyle, addSeparator, tool);
+        bridge.addTool(toolName, toolBtnStyle, addSeparator, tool);
         Map.Entry<String, Tool> toolPair = new Map.Entry<String, Tool>() {
             @Override
             public String getKey() {
@@ -176,14 +181,12 @@ public class PluginManager extends Proxy implements PluginAPI {
 
     @Override
     public void toolHotSwap(Tool tool) {
-        SandboxMediator sandboxMediator = facade.retrieveMediator(SandboxMediator.NAME);
-        sandboxMediator.toolHotSwap(tool);
+        bridge.toolHotSwap(tool);
     }
 
     @Override
     public void toolHotSwapBack() {
-        SandboxMediator sandboxMediator = facade.retrieveMediator(SandboxMediator.NAME);
-        sandboxMediator.toolHotSwapBack();
+        bridge.toolHotSwapBack();
     }
 
     public void setPluginDir(String pluginDir) {
@@ -207,7 +210,7 @@ public class PluginManager extends Proxy implements PluginAPI {
 
     @Override
     public SceneLoader getSceneLoader() {
-        return Sandbox.getInstance().getSceneControl().sceneLoader;
+        return bridge.getSceneLoader();
     }
 
     @Override
@@ -222,7 +225,7 @@ public class PluginManager extends Proxy implements PluginAPI {
 
     @Override
     public Stage getUIStage() {
-        return Sandbox.getInstance().getUIStage();
+        return bridge.getUIStage();
     }
 
     @Override
@@ -237,40 +240,23 @@ public class PluginManager extends Proxy implements PluginAPI {
 
     @Override
     public HashSet<Integer> getProjectEntities() {
-        Sandbox sandbox = Sandbox.getInstance();
-        return sandbox.getSelector().getAllFreeItems();
+        return bridge.getProjectEntities();
     }
 
     @Override
     public void showPopup(HashMap<String, String> actionsSet, Object observable) {
-        UIDropDownMenu uiDropDownMenu = new UIDropDownMenu();
-        actionsSet.entrySet().forEach(entry -> uiDropDownMenu.setActionName(entry.getKey(), entry.getValue()));
-
-        Array<String> actions = new Array<>();
-        actionsSet.keySet().forEach(key -> actions.add(key));
-        uiDropDownMenu.setActionList(actions);
-
-        Sandbox sandbox = Sandbox.getInstance();
-        UIStage uiStage = sandbox.getUIStage();
-
-        uiDropDownMenu.setX(sandbox.getInputX());
-        uiDropDownMenu.setY(uiStage.getHeight() - sandbox.getInputY() - uiDropDownMenu.getHeight());
-        getUIStage().addActor(uiDropDownMenu);
-
-        UIDropDownMenuMediator dropDownMenuMediator = facade.retrieveMediator(UIDropDownMenuMediator.NAME);
-        dropDownMenuMediator.setCurrentObservable(observable);
+        bridge.showPopup(actionsSet, observable);
     }
 
     @Override
     public void setCursor(CursorData cursorData, TextureRegion region) {
-        CursorManager cursorManager = Facade.getInstance().retrieveProxy(CursorManager.NAME);
+        CursorManager cursorManager = facade.retrieveProxy(CursorManager.NAME);
         cursorManager.setCursor(cursorData, region);
     }
 
     @Override
     public String getCurrentSelectedLayerName() {
-        UILayerBoxMediator uiLayerBoxMediator = facade.retrieveMediator(UILayerBoxMediator.NAME);
-        return uiLayerBoxMediator.getViewComponent().getCurrentSelectedLayer().getLayerName();
+        return bridge.getCurrentSelectedLayerName();
     }
 
     @Override
