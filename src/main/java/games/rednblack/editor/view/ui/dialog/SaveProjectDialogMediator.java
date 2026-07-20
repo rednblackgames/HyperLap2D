@@ -29,7 +29,6 @@ public class SaveProjectDialogMediator extends Mediator<SaveProjectDialog> {
         Sandbox sandbox = Sandbox.getInstance();
         UIStage uiStage = sandbox.getUIStage();
 
-        Facade facade = Facade.getInstance();
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
 
         switch (notification.getName()) {

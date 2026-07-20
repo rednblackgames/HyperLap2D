@@ -235,7 +235,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
             if (button == Input.Buttons.RIGHT) {
                 // if right clicked on an item, drop down for current selection
-                Facade.getInstance().sendNotification(MsgAPI.ITEM_RIGHT_CLICK);
+                facade.sendNotification(MsgAPI.ITEM_RIGHT_CLICK);
             }
         }
 

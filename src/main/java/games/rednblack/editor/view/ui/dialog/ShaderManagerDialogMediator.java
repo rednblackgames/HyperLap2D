@@ -44,7 +44,7 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
         super.onRegister();
 
         resourceManager = facade.retrieveProxy(ResourceManager.NAME);
-        projectManager = Facade.getInstance().retrieveProxy(ProjectManager.NAME);
+        projectManager = facade.retrieveProxy(ProjectManager.NAME);
     }
 
     @Override

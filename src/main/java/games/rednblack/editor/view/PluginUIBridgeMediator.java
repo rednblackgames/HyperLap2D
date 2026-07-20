@@ -1,4 +1,5 @@
 package games.rednblack.editor.view;
+import games.rednblack.editor.proxy.SelectionProxy;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
@@ -45,7 +46,7 @@ public class PluginUIBridgeMediator extends Mediator<Object> implements PluginUI
 
     @Override
     public HashSet<Integer> getProjectEntities() {
-        return Sandbox.getInstance().getSelector().getAllFreeItems();
+        return SelectionProxy.get(facade).getAllFreeItems();
     }
 
     @Override

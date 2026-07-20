@@ -70,6 +70,6 @@ public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<
 
         Set<Integer> entityHashSet = new HashSet<>();
         entityHashSet.add(observableReference);
-        Facade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, entityHashSet);
+        facade.sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, entityHashSet);
     }
 }

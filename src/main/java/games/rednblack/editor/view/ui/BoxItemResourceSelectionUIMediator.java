@@ -92,7 +92,7 @@ public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource
 				namesOrdered.addAll(nameSet.toArray(String[]::new));
 				namesOrdered.sort();
 	        	for (String name : namesOrdered) {
-	        		Facade.getInstance().sendNotification(MsgAPI.IMAGE_BUNDLE_DROP_SINGLE, new Object[] {name, payloadBody[1], false});
+	        		facade.sendNotification(MsgAPI.IMAGE_BUNDLE_DROP_SINGLE, new Object[] {name, payloadBody[1], false});
 	        	}
 	        	break;
 	        case UIResourcesBoxMediator.ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT:

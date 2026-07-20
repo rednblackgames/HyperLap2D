@@ -268,6 +268,6 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
         Object[] payload = new Object[2];
         payload[0] = entity;
         payload[1] = componentsToUpdate;
-        Facade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_ITEM_DATA, payload);
+        facade.sendNotification(MsgAPI.ACTION_UPDATE_ITEM_DATA, payload);
     }
 }

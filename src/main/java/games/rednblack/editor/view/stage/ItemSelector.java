@@ -49,6 +49,8 @@ public class ItemSelector {
     /** commands reference */
     private Sandbox sandbox;
 
+    private final Facade facade;
+
     private SceneControlMediator sceneControl;
 
     /** list of current selected panels */
@@ -58,11 +60,12 @@ public class ItemSelector {
 
     private MoveCommandBuilder moveCommandBuilder = new MoveCommandBuilder();
 
-    public ItemSelector(Sandbox sandbox) {
+    public ItemSelector(Sandbox sandbox, Facade facade) {
         this.sandbox = sandbox;
+        this.facade = facade;
         sceneControl = sandbox.getSceneControl();
 
-        followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+        followersUIMediator = facade.retrieveMediator(FollowersUIMediator.NAME);
     }
 
     /***************************** Getters *********************************/
@@ -183,7 +186,7 @@ public class ItemSelector {
 
         currentSelection.add(item);
 
-        Facade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
+        facade.sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
     }
 
     /**
@@ -209,18 +212,18 @@ public class ItemSelector {
         currentSelection.clear();
 
         if(items == null) {
-            Facade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
+            facade.sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
             return;
         }
 
         currentSelection.addAll(items.stream().collect(Collectors.toList()));
 
         if (alsoShow) {
-            Facade.getInstance().sendNotification(MsgAPI.SHOW_SELECTIONS, currentSelection);
+            facade.sendNotification(MsgAPI.SHOW_SELECTIONS, currentSelection);
         } else {
-            Facade.getInstance().sendNotification(MsgAPI.HIDE_SELECTIONS, currentSelection);
+            facade.sendNotification(MsgAPI.HIDE_SELECTIONS, currentSelection);
         }
-        Facade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
+        facade.sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
     }
 
     /**
@@ -240,7 +243,7 @@ public class ItemSelector {
     public void releaseSelection(int item) {
         currentSelection.remove(item);
 
-        Facade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
+        facade.sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
     }
 
     /**
@@ -249,7 +252,7 @@ public class ItemSelector {
     public void clearSelections() {
         currentSelection.clear();
 
-        Facade.getInstance().sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
+        facade.sendNotification(MsgAPI.ITEM_SELECTION_CHANGED, currentSelection);
     }
 
 
@@ -426,7 +429,7 @@ public class ItemSelector {
     public void moveSelectedItemsBy(float x, float y) {
         for (int entity : currentSelection) {
             sandbox.getItemControl().moveItemBy(entity, x, y);
-            Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+            facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
         }
     }
 

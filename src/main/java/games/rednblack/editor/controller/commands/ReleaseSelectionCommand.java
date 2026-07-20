@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.controller.commands;
+import games.rednblack.editor.proxy.SelectionProxy;
 
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.utils.runtime.EntityUtils;
@@ -40,7 +41,7 @@ public class ReleaseSelectionCommand extends RevertibleCommand {
     public void doAction() {
         cancel();
         Set<Integer> items = new HashSet<>(getNotification().<Collection<Integer>>getBody());
-        Sandbox.getInstance().getSelector().releaseSelections(items);
+        SelectionProxy.get(facade).releaseSelections(items);
 
         entityIds = EntityUtils.getEntityId(items);
 
@@ -50,7 +51,7 @@ public class ReleaseSelectionCommand extends RevertibleCommand {
     @Override
     public void undoAction() {
         Set<Integer> items = EntityUtils.getByUniqueId(entityIds);
-        Sandbox.getInstance().getSelector().addSelections(items);
+        SelectionProxy.get(facade).addSelections(items);
 
         facade.sendNotification(DONE);
     }

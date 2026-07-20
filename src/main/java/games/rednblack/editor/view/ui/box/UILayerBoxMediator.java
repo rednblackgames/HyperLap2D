@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.box;
+import games.rednblack.editor.proxy.SelectionProxy;
 
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
@@ -238,7 +239,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
     private void lockLayerByName(UILayerBox.UILayerItem layerItem, boolean setLocked) {
         String layerName = layerItem.getLayerName();
         if(setLocked){
-            Sandbox.getInstance().getSelector().clearSelections();
+            SelectionProxy.get(facade).clearSelections();
         }
         int viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewEntity, LayerMapComponent.class);
@@ -248,7 +249,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
 
     private void selectEntitiesByLayerName(UILayerBox.UILayerItem layerItem) {
         if(layerItem.isLocked()){
-            Sandbox.getInstance().getSelector().clearSelections();
+            SelectionProxy.get(facade).clearSelections();
             viewComponent.clearSelection();
             return;
         }
@@ -264,7 +265,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                 items.add(entity);
             }
         }
-        Sandbox.getInstance().getSelector().clearSelections();
+        SelectionProxy.get(facade).clearSelections();
         facade.sendNotification(MsgAPI.ACTION_ADD_SELECTION, items);
     }
 

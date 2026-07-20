@@ -73,13 +73,13 @@ public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
                     polygonShapeComponent.vertices = new Array<>(points);
                     polygonShapeComponent.polygonizedVertices = PolygonRuntimeUtils.polygonize(points);
 
-                    FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+                    FollowersUIMediator followersUIMediator = facade.retrieveMediator(FollowersUIMediator.NAME);
                     BasicFollower follower = followersUIMediator.getFollower(entity);
                     PolygonFollower polygonFollower = (PolygonFollower) follower.getSubFollower(PolygonFollower.class);
                     if (polygonFollower != null)
                         polygonFollower.update();
 
-                    Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+                    facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
                 }
             } else {
                 H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Auto Trace can be performed only for Image type.").padBottom(20).pack();

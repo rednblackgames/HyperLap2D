@@ -132,7 +132,7 @@ public class UIPolygonComponentPropertiesMediator extends UIRemovableComponentPr
             polygonShapeComponent.makeRectangle( dimensionsComponent.width, dimensionsComponent.height );
         }
 
-        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, observableReference);
+        facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, observableReference);
     }
 
     private void addAutoTraceMesh() {
@@ -154,6 +154,6 @@ public class UIPolygonComponentPropertiesMediator extends UIRemovableComponentPr
         if(vertices == null) return;
         Object[] payload = UpdatePolygonVerticesCommand.payloadInitialState(observableReference);
         UpdatePolygonVerticesCommand.payload(payload, vertices, polygonizedVertices);
-        Facade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, payload);
+        facade.sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, payload);
     }
 }

@@ -179,7 +179,8 @@ public class Sandbox {
         sceneControl = new SceneControlMediator(sceneLoader);
         itemControl = new ItemControlMediator(sceneControl);
 
-        selector = new ItemSelector(this);
+        selector = new ItemSelector(this, facade);
+        facade.registerProxy(new SelectionProxy(selector));
 
         cameraService = new CameraService(this, facade);
         sceneLoadService = new SceneLoadService(this, projectManager, facade);

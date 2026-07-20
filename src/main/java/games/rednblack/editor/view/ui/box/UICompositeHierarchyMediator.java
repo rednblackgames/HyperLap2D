@@ -48,7 +48,7 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
                 break;
             case UICompositeHierarchy.SWITCH_VIEW_COMPOSITE_CLICKED:
                 entityId = notification.getBody();
-                Facade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, EntityUtils.getByUniqueId(entityId));
+                facade.sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, EntityUtils.getByUniqueId(entityId));
                 break;
             default:
                 break;

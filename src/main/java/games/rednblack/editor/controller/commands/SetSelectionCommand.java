@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.controller.commands;
+import games.rednblack.editor.proxy.SelectionProxy;
 
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.components.NodeComponent;
@@ -41,7 +42,7 @@ public class SetSelectionCommand extends RevertibleCommand {
     @Override
     public void doAction() {
         cancel();
-        HashSet<Integer> previousSelection = new HashSet<>(Sandbox.getInstance().getSelector().getSelectedItems());
+        HashSet<Integer> previousSelection = new HashSet<>(SelectionProxy.get(facade).getSelectedItems());
         previousSelectionIds = EntityUtils.getEntityId(previousSelection);
 
         if (getNotification().getBody() instanceof Integer) {
@@ -78,7 +79,7 @@ public class SetSelectionCommand extends RevertibleCommand {
 
     @Override
     public void undoAction() {
-        Sandbox.getInstance().getSelector().setSelections(EntityUtils.getByUniqueId(previousSelectionIds), true);
+        SelectionProxy.get(facade).setSelections(EntityUtils.getByUniqueId(previousSelectionIds), true);
         facade.sendNotification(DONE);
     }
 }
