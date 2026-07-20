@@ -40,8 +40,11 @@ public class LayoutSubFollower extends SubFollower {
     // Entity AABB offsets from (transform.x, transform.y)
     private float entityAABBLeft, entityAABBBottom, entityAABBRight, entityAABBTop;
 
+    private final EntityDataProxy entityData;
+
     public LayoutSubFollower(int entity) {
         super(entity);
+        entityData = EntityDataProxy.get();
         pixelsPerWU = Sandbox.getInstance().getPixelPerWU();
     }
 
@@ -66,17 +69,17 @@ public class LayoutSubFollower extends SubFollower {
     public void draw(Batch batch, float parentAlpha) {
         if (shapeDrawer == null) return;
 
-        LayoutComponent layout = EntityDataProxy.get().get(entity, LayoutComponent.class);
+        LayoutComponent layout = entityData.get(entity, LayoutComponent.class);
         if (layout == null) return;
 
-        TransformComponent transform = EntityDataProxy.get().get(entity, TransformComponent.class);
-        DimensionsComponent dimensions = EntityDataProxy.get().get(entity, DimensionsComponent.class);
-        ParentNodeComponent parentNode = EntityDataProxy.get().get(entity, ParentNodeComponent.class);
+        TransformComponent transform = entityData.get(entity, TransformComponent.class);
+        DimensionsComponent dimensions = entityData.get(entity, DimensionsComponent.class);
+        ParentNodeComponent parentNode = entityData.get(entity, ParentNodeComponent.class);
         if (transform == null || dimensions == null || parentNode == null) return;
 
         int parent = parentNode.parentEntity;
         if (parent == -1) return;
-        DimensionsComponent parentDim = EntityDataProxy.get().get(parent, DimensionsComponent.class);
+        DimensionsComponent parentDim = entityData.get(parent, DimensionsComponent.class);
         if (parentDim == null) return;
 
         OrthographicCamera camera = Sandbox.getInstance().getCamera();
@@ -93,7 +96,7 @@ public class LayoutSubFollower extends SubFollower {
         entitySinR = MathUtils.sinDeg(transform.rotation);
 
         // Read precomputed AABB from BoundingBoxComponent
-        BoundingBoxComponent bb = EntityDataProxy.get().get(entity, BoundingBoxComponent.class);
+        BoundingBoxComponent bb = entityData.get(entity, BoundingBoxComponent.class);
         if (bb != null) {
             entityAABBLeft = bb.parentLocalAABB.x;
             entityAABBBottom = bb.parentLocalAABB.y;
@@ -173,12 +176,12 @@ public class LayoutSubFollower extends SubFollower {
             if (alreadyDrawn) continue;
             drawn[drawnCount++] = data.targetEntity;
 
-            TransformComponent sibTransform = EntityDataProxy.get().get(data.targetEntity, TransformComponent.class);
+            TransformComponent sibTransform = entityData.get(data.targetEntity, TransformComponent.class);
             if (sibTransform == null) continue;
 
             // Read sibling's precomputed parent-local AABB
-            BoundingBoxComponent sibBB = EntityDataProxy.get().get(data.targetEntity, BoundingBoxComponent.class);
-            DimensionsComponent sibDim = EntityDataProxy.get().get(data.targetEntity, DimensionsComponent.class);
+            BoundingBoxComponent sibBB = entityData.get(data.targetEntity, BoundingBoxComponent.class);
+            DimensionsComponent sibDim = entityData.get(data.targetEntity, DimensionsComponent.class);
             if (sibBB == null && sibDim == null) continue;
 
             float minX, minY, maxX, maxY;
@@ -249,11 +252,11 @@ public class LayoutSubFollower extends SubFollower {
             }
         } else {
             // Sibling: line to the midpoint of the target AABB side
-            TransformComponent sibTransform = EntityDataProxy.get().get(data.targetEntity, TransformComponent.class);
+            TransformComponent sibTransform = entityData.get(data.targetEntity, TransformComponent.class);
             if (sibTransform == null) return;
 
-            BoundingBoxComponent sibBB = EntityDataProxy.get().get(data.targetEntity, BoundingBoxComponent.class);
-            DimensionsComponent sibDim = EntityDataProxy.get().get(data.targetEntity, DimensionsComponent.class);
+            BoundingBoxComponent sibBB = entityData.get(data.targetEntity, BoundingBoxComponent.class);
+            DimensionsComponent sibDim = entityData.get(data.targetEntity, DimensionsComponent.class);
             if (sibBB == null && sibDim == null) return;
 
             Rectangle aabb;

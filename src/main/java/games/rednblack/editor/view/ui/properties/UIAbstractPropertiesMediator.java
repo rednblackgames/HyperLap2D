@@ -7,7 +7,7 @@ import games.rednblack.puremvc.interfaces.INotification;
 import games.rednblack.puremvc.util.Interests;
 
 public abstract class UIAbstractPropertiesMediator<T, V extends UIAbstractProperties> extends Mediator<V> {
-    private Sandbox sandbox;
+    protected Sandbox sandbox;
 
     protected T observableReference;
 

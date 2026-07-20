@@ -59,7 +59,8 @@ public abstract class UIItemPropertiesMediator<V extends UIAbstractProperties> e
     }
 
     protected boolean validReference() {
-        return observableReference != -1
+        return observableReference != null
+                && observableReference != -1
                 && sandbox.getEngine().getEntityManager().isActive(observableReference)
                 && EntityDataProxy.get().get(observableReference, MainItemComponent.class) != null;
     }

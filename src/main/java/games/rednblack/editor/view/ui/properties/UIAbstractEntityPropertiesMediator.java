@@ -19,56 +19,26 @@
 package games.rednblack.editor.view.ui.properties;
 
 import games.rednblack.editor.proxy.EntityDataProxy;
-import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.puremvc.interfaces.INotification;
-import games.rednblack.puremvc.util.Interests;
 
 /**
- * Created by azakhary on 4/15/2015.
+ * Entity-property-mediator base that adapts the generic {@code Integer} observable
+ * reference from {@link UIAbstractPropertiesMediator} to {@code int} for the
+ * concrete panel subclasses. The duplicated {@code handleNotification},
+ * {@code listNotificationInterests}, and {@code onItemDataUpdate} were removed
+ * (they were copies of the parent's); the {@code int}-typed {@code setItem} and
+ * {@code translateObservableDataToView} adapters stay so the 18 panel mediators
+ * can keep their {@code int}-typed overrides.
  */
 public abstract class UIAbstractEntityPropertiesMediator<V extends UIAbstractProperties> extends UIAbstractPropertiesMediator<Integer, V> {
-    protected Sandbox sandbox;
 
     protected EntityDataProxy entityData;
 
-    protected int observableReference;
-
-    protected boolean lockUpdates = true;
-
     public UIAbstractEntityPropertiesMediator(String mediatorName, V viewComponent) {
         super(mediatorName, viewComponent);
-
-        sandbox = Sandbox.getInstance();
         entityData = EntityDataProxy.get(facade);
     }
 
-    @Override
-    public void listNotificationInterests(Interests interests) {
-        interests.add(MsgAPI.ITEM_DATA_UPDATED,
-                viewComponent.getUpdateEventName());
-    }
-
-    @Override
-    public void handleNotification(INotification notification) {
-        super.handleNotification(notification);
-
-
-        if(notification.getName().equals(viewComponent.getUpdateEventName())) {
-            if(!lockUpdates) {
-                translateViewToItemData();
-            }
-        }
-
-        switch (notification.getName()) {
-            case MsgAPI.ITEM_DATA_UPDATED:
-                onItemDataUpdate();
-                break;
-            default:
-                break;
-        }
-    }
-
+    /** Bridges the generic {@code Integer} setter to the {@code int} version used by panels. */
     @Override
     public void setItem(Integer item) {
         setItem((int) item);
@@ -81,18 +51,11 @@ public abstract class UIAbstractEntityPropertiesMediator<V extends UIAbstractPro
         lockUpdates = false;
     }
 
-    public void onItemDataUpdate() {
-        lockUpdates = true;
-        translateObservableDataToView(observableReference);
-        lockUpdates = false;
-    }
-
+    /** Bridges the generic {@code Integer} translate to the {@code int} version implemented by panels. */
     @Override
     protected void translateObservableDataToView(Integer item) {
         translateObservableDataToView((int) item);
     }
 
     protected abstract void translateObservableDataToView(int item);
-
-    protected abstract void translateViewToItemData();
 }
