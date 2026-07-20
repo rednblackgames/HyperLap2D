@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.utils.runtime;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.ecs.Aspect;
 import games.rednblack.editor.renderer.ecs.Component;
@@ -81,11 +82,11 @@ public class EntityUtils {
     }
 
     public static String getItemName(int entity) {
-        ParentNodeComponent parentNodeComponent = SandboxComponentRetriever.get(entity, ParentNodeComponent.class);
+        ParentNodeComponent parentNodeComponent = EntityDataProxy.get().get(entity, ParentNodeComponent.class);
         if (parentNodeComponent == null)
             return Sandbox.getInstance().getSceneControl().getCurrentSceneVO().sceneName;
 
-        MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
+        MainItemComponent mainItemComponent = EntityDataProxy.get().get(entity, MainItemComponent.class);
         if (mainItemComponent.itemIdentifier != null && !mainItemComponent.itemIdentifier.isEmpty()) {
             return mainItemComponent.itemIdentifier;
         } else {
@@ -104,14 +105,14 @@ public class EntityUtils {
     }
 
     public static String getEntityId(int entity) {
-        MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
+        MainItemComponent mainItemComponent = EntityDataProxy.get().get(entity, MainItemComponent.class);
         return mainItemComponent.uniqueId;
     }
 
     public static Array<String> getEntityId(Iterable<Integer> entities) {
         Array<String> entityIds = new Array<>();
         for (int entity : entities) {
-            MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
+            MainItemComponent mainItemComponent = EntityDataProxy.get().get(entity, MainItemComponent.class);
             if (mainItemComponent != null)
                 entityIds.add(mainItemComponent.uniqueId);
         }
@@ -160,34 +161,34 @@ public class EntityUtils {
     }*/
 
     public static Vector2 getPosition(int entity) {
-        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+        TransformComponent transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
         return new Vector2(transformComponent.x, transformComponent.y);
     }
 
     public static void getPosition(int entity, Vector2 position) {
-        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+        TransformComponent transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
         position.set(transformComponent.x, transformComponent.y);
     }
 
     public static TransformComponent setPosition(int entity, Vector2 position) {
-        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+        TransformComponent transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
         transformComponent.x = position.x;
         transformComponent.y = position.y;
         return transformComponent;
     }
 
     public static Vector2 getSize(int entity) {
-        DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+        DimensionsComponent dimensionsComponent = EntityDataProxy.get().get(entity, DimensionsComponent.class);
         return new Vector2(dimensionsComponent.width, dimensionsComponent.height);
     }
 
     public static void getSize(int entity, Vector2 size) {
-        DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+        DimensionsComponent dimensionsComponent = EntityDataProxy.get().get(entity, DimensionsComponent.class);
         size.set(dimensionsComponent.width, dimensionsComponent.height);
     }
 
     public static DimensionsComponent setSize(int entity, Vector2 size) {
-        DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+        DimensionsComponent dimensionsComponent = EntityDataProxy.get().get(entity, DimensionsComponent.class);
         dimensionsComponent.width = size.x;
         dimensionsComponent.height = size.y;
         if (dimensionsComponent.boundBox != null) {
@@ -203,8 +204,8 @@ public class EntityUtils {
         Vector2 rightTopPoint = getPosition(entities.stream().findFirst().get());
 
         for (int entity : entities) {
-            TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
-            DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+            TransformComponent transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
+            DimensionsComponent dimensionsComponent = EntityDataProxy.get().get(entity, DimensionsComponent.class);
 
             if (rightTopPoint.x < transformComponent.x + dimensionsComponent.width) {
                 rightTopPoint.x = transformComponent.x + dimensionsComponent.width;
@@ -223,7 +224,7 @@ public class EntityUtils {
         Vector2 leftBottomPoint = getPosition(entities.stream().findFirst().get());
 
         for (int entity : entities) {
-            TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+            TransformComponent transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
             if (leftBottomPoint.x > transformComponent.x) {
                 leftBottomPoint.x = transformComponent.x;
             }
@@ -237,14 +238,14 @@ public class EntityUtils {
 
     public static void changeParent(HashSet<Integer> entities, int parent) {
         for (int entity : entities) {
-            ParentNodeComponent parentNodeComponent = SandboxComponentRetriever.get(entity, ParentNodeComponent.class);
+            ParentNodeComponent parentNodeComponent = EntityDataProxy.get().get(entity, ParentNodeComponent.class);
 
             //remove me from previous parent children list
-            NodeComponent nodeComponent = SandboxComponentRetriever.get(parentNodeComponent.parentEntity, NodeComponent.class);
+            NodeComponent nodeComponent = EntityDataProxy.get().get(parentNodeComponent.parentEntity, NodeComponent.class);
             nodeComponent.removeChild(entity);
 
             //add me to new parent child list
-            NodeComponent rootNodeComponent = SandboxComponentRetriever.get(parent, NodeComponent.class);
+            NodeComponent rootNodeComponent = EntityDataProxy.get().get(parent, NodeComponent.class);
             rootNodeComponent.addChild(entity);
 
             //change my parent
@@ -254,7 +255,7 @@ public class EntityUtils {
 
     public static HashSet<Integer> getChildren(int entity) {
         HashSet<Integer> entities;
-        NodeComponent nodeComponent = SandboxComponentRetriever.get(entity, NodeComponent.class);
+        NodeComponent nodeComponent = EntityDataProxy.get().get(entity, NodeComponent.class);
         if (nodeComponent == null)
             return null;
         Integer[] children = nodeComponent.children.toArray();
@@ -264,7 +265,7 @@ public class EntityUtils {
     }
 
     public static int getType(int entity) {
-        MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
+        MainItemComponent mainItemComponent = EntityDataProxy.get().get(entity, MainItemComponent.class);
         if (mainItemComponent == null)
             return UNKNOWN_TYPE;
         return mainItemComponent.entityType;
@@ -272,11 +273,11 @@ public class EntityUtils {
 
     public static Array<Integer> getByLibraryLink(String link) {
         Array<Integer> result = new Array<>();
-        EntitySubscription subscription = Sandbox.getInstance().getEngine().getAspectSubscriptionManager()
+        EntitySubscription subscription = EntityDataProxy.get().getEngine().getAspectSubscriptionManager()
                 .get(Aspect.all(NodeComponent.class));
         IntBag composites = subscription.getEntities();
         for (int composite : composites.getData()) {
-            MainItemComponent mainItemComponent = SandboxComponentRetriever.get(composite, MainItemComponent.class);
+            MainItemComponent mainItemComponent = EntityDataProxy.get().get(composite, MainItemComponent.class);
             if (mainItemComponent != null && mainItemComponent.libraryLink.equals(link)) {
                 result.add(composite);
             }
@@ -286,8 +287,8 @@ public class EntityUtils {
     }
 
     public static LayerItemVO getEntityLayer(int entity) {
-        ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
-        LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(SandboxComponentRetriever.get(entity, ParentNodeComponent.class).parentEntity, LayerMapComponent.class);
+        ZIndexComponent zIndexComponent = EntityDataProxy.get().get(entity, ZIndexComponent.class);
+        LayerMapComponent layerMapComponent = EntityDataProxy.get().get(EntityDataProxy.get().get(entity, ParentNodeComponent.class).parentEntity, LayerMapComponent.class);
 
         return layerMapComponent.getLayer(zIndexComponent.layerHash);
     }
@@ -300,7 +301,7 @@ public class EntityUtils {
      */
     public static void applyActionRecursivelyOnEntities(int root, Consumer<Integer> action) {
         action.accept(root);
-        NodeComponent nodeComponent = SandboxComponentRetriever.get(root, NodeComponent.class);
+        NodeComponent nodeComponent = EntityDataProxy.get().get(root, NodeComponent.class);
         if (nodeComponent != null && nodeComponent.children != null) {
             for (int targetEntity : nodeComponent.children) {
                 applyActionRecursivelyOnEntities(targetEntity, action);
@@ -319,15 +320,15 @@ public class EntityUtils {
 
     public static void removeEntities(ArrayList<Integer> entityList) {
         for (int entity : entityList) {
-            Sandbox.getInstance().getEngine().delete(entity);
+            EntityDataProxy.get().getEngine().delete(entity);
         }
-        Sandbox.getInstance().getEngine().process();
+        EntityDataProxy.get().getEngine().process();
     }
 
     private static final Bag<Component> tmpComponents = new Bag<>();
 
     public static void refreshComponents(int entity) {
-        Engine engine = Sandbox.getInstance().getEngine();
+        Engine engine = EntityDataProxy.get().getEngine();
         tmpComponents.clear();
         engine.getComponentManager().getComponentsFor(entity, tmpComponents);
         for (Component component : tmpComponents) {
@@ -343,9 +344,9 @@ public class EntityUtils {
 
     public static String getJsonStringFromEntity(int entity) {
         Json json = HyperJson.getJson();
-        Engine engine = Sandbox.getInstance().getEngine();
+        Engine engine = EntityDataProxy.get().getEngine();
         EntityFactory entityFactory = Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory();
-        int entityType = SandboxComponentRetriever.get(entity, MainItemComponent.class).entityType;
+        int entityType = EntityDataProxy.get().get(entity, MainItemComponent.class).entityType;
         try {
             MainItemVO entityVO = entityFactory.instantiateEmptyVO(entityType);
             entityVO.loadFromEntity(entity, engine, entityFactory);
@@ -358,10 +359,10 @@ public class EntityUtils {
 
     public static String getJsonStringFromEntities(Set<Integer> entities) {
         CompositeItemVO holderComposite = new CompositeItemVO();
-        Engine engine = Sandbox.getInstance().getEngine();
+        Engine engine = EntityDataProxy.get().getEngine();
         EntityFactory entityFactory = Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory();
         for (int entity : entities) {
-            int entityType = SandboxComponentRetriever.get(entity, MainItemComponent.class).entityType;
+            int entityType = EntityDataProxy.get().get(entity, MainItemComponent.class).entityType;
             try {
                 MainItemVO entityVO = entityFactory.instantiateEmptyVO(entityType);
                 entityVO.loadFromEntity(entity, engine, entityFactory);

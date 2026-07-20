@@ -25,11 +25,14 @@ import java.util.TimeZone;
 
 public class AboutDialog extends H2DDialog {
 
-    public AboutDialog() {
+    private final Facade facade;
+
+    public AboutDialog(Facade facade) {
         super("About HyperLap2D");
+        this.facade = facade;
         addCloseButton();
 
-        SettingsManager settingsManager = Facade.getInstance().retrieveProxy(SettingsManager.NAME);
+        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
 
         Date date = new Date(settingsManager.editorConfigVO.totalSpentTime);
         DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
@@ -87,7 +90,7 @@ public class AboutDialog extends H2DDialog {
     }
 
     private FileHandle getResourceFileFromJar(String fileName) {
-        SettingsManager settingsManager = Facade.getInstance().retrieveProxy(SettingsManager.NAME);
+        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
         File tempFile = new File(settingsManager.cacheDir + File.separator + fileName);
 
         try {

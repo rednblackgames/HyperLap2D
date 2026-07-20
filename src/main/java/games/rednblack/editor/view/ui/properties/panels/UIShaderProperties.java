@@ -93,7 +93,7 @@ public class UIShaderProperties extends UIRemovableProperties {
 
     @Override
     public void onRemove() {
-        Facade.getInstance().sendNotification(CLOSE_CLICKED);
+        facade.sendNotification(CLOSE_CLICKED);
     }
 
     public void setSelected(String currShaderName) {

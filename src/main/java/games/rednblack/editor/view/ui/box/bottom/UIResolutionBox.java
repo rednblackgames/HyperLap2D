@@ -116,7 +116,6 @@ public class UIResolutionBox extends UIBaseBox {
         public void clicked(InputEvent event, float x, float y) {
             super.clicked(event, x, y);
 
-            Facade facade = Facade.getInstance();
             switch (btnClicked) {
                 case DELETE_RESOLUTION_BTN_CLICKED:
                 	if (!deleteBtn.isDisabled())
@@ -137,7 +136,6 @@ public class UIResolutionBox extends UIBaseBox {
                 return;
             }
 
-            Facade facade = Facade.getInstance();
             if (selectedIndex == 0) {
                 facade.sendNotification(CREATE_NEW_RESOLUTION_BTN_CLICKED);
                 return;

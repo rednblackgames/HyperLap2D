@@ -35,6 +35,11 @@ public class EntityDataProxy extends Proxy {
         return ComponentRetriever.getMapper(type, engine);
     }
 
+    /** The editor ECS engine (for non-component operations: delete, process, subscriptions). */
+    public Engine getEngine() {
+        return engine;
+    }
+
     /** Retrieves the proxy from the facade (assignment-typed for generic inference). */
     public static EntityDataProxy get(Facade facade) {
         return facade.retrieveProxy(NAME);

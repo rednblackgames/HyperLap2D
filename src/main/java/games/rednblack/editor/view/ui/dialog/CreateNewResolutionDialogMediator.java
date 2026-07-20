@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.puremvc.Facade;
 
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
@@ -35,7 +36,7 @@ public class CreateNewResolutionDialogMediator extends Mediator<CreateNewResolut
     private static final String NAME = TAG;
 
     public CreateNewResolutionDialogMediator() {
-        super(NAME, new CreateNewResolutionDialog());
+        super(NAME, new CreateNewResolutionDialog(Facade.getInstance()));
     }
 
     @Override

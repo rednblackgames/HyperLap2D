@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.puremvc.Facade;
 
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -12,7 +13,7 @@ public class NodeEditorDialogMediator extends Mediator<NodeEditorDialog> {
     private static final String NAME = TAG;
 
     public NodeEditorDialogMediator() {
-        super(NAME, new NodeEditorDialog());
+        super(NAME, new NodeEditorDialog(Facade.getInstance()));
     }
 
     @Override

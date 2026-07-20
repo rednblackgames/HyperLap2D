@@ -31,8 +31,11 @@ public class ShaderManagerDialog extends H2DDialog {
 
     public static final String CREATE_NEW_SHADER = prefix + ".CREATE_NEW_SHADER";
 
-    public ShaderManagerDialog() {
+    private final Facade facade;
+
+    public ShaderManagerDialog(Facade facade) {
         super("Shader Manager");
+        this.facade = facade;
 
         addCloseButton();
         getContentTable().top().left();
@@ -60,7 +63,7 @@ public class ShaderManagerDialog extends H2DDialog {
                 payload[0] = newShaderName.getText();
                 payload[1] = newShaderTypeSelectBox.getSelectedIndex();
 
-                Facade.getInstance().sendNotification(CREATE_NEW_SHADER, payload);
+                facade.sendNotification(CREATE_NEW_SHADER, payload);
             }
         });
 
@@ -92,7 +95,7 @@ public class ShaderManagerDialog extends H2DDialog {
         return Sandbox.getInstance().getUIStage().getHeight() * 0.4f;
     }
 
-    public static class ShaderResourceListAdapter extends SimpleListAdapter<String> {
+    public class ShaderResourceListAdapter extends SimpleListAdapter<String> {
 
         public ShaderResourceListAdapter(Array<String> array) {
             super(array);
@@ -108,7 +111,7 @@ public class ShaderManagerDialog extends H2DDialog {
             editFragment.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    Facade.getInstance().sendNotification(EDIT_FRAGMENT_SHADER, item);
+                    facade.sendNotification(EDIT_FRAGMENT_SHADER, item);
                 }
             });
             tableButton.add(editFragment).pad(8);
@@ -116,7 +119,7 @@ public class ShaderManagerDialog extends H2DDialog {
             editVertex.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    Facade.getInstance().sendNotification(EDIT_VERTEX_SHADER, item);
+                    facade.sendNotification(EDIT_VERTEX_SHADER, item);
                 }
             });
             tableButton.add(editVertex).pad(8);
@@ -124,7 +127,7 @@ public class ShaderManagerDialog extends H2DDialog {
             deleteButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    Facade.getInstance().sendNotification(MsgAPI.ACTION_DELETE_SHADER, item);
+                    facade.sendNotification(MsgAPI.ACTION_DELETE_SHADER, item);
                 }
             });
             tableButton.add(deleteButton).pad(8);

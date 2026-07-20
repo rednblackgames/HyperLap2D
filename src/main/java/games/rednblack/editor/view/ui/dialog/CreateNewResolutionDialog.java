@@ -41,8 +41,11 @@ public class CreateNewResolutionDialog extends H2DDialog {
     private VisRadioButton basedOnWidthRadioButton;
     private VisRadioButton basedOnHeightRadioButton;
 
-    public CreateNewResolutionDialog() {
+    private final Facade facade;
+
+    public CreateNewResolutionDialog(Facade facade) {
         super("Create New Resolution");
+        this.facade = facade;
         addCloseButton();
         VisTable mainTable = new VisTable();
 
@@ -85,7 +88,6 @@ public class CreateNewResolutionDialog extends H2DDialog {
 	@Override
 	public void close() {
     	super.close();
-        Facade facade = Facade.getInstance();
 		facade.sendNotification(CLOSE_DIALOG);
 	}
 
@@ -96,7 +98,6 @@ public class CreateNewResolutionDialog extends H2DDialog {
             if (nameVisTextField.getText().equals("") || widthVisTextField.getText().equals("") || heightVisTextField.getText().equals("")) {
                 return;
             }
-            Facade facade = Facade.getInstance();
             ResolutionEntryVO resolutionEntryVO = new ResolutionEntryVO();
             resolutionEntryVO.name = nameVisTextField.getText();
             resolutionEntryVO.width = Integer.parseInt(widthVisTextField.getText());

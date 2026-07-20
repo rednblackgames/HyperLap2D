@@ -23,6 +23,6 @@ public class UITypingLabelProperties extends UIRemovableProperties {
 
     @Override
     public void onRemove() {
-        Facade.getInstance().sendNotification(CLOSE_CLICKED);
+        facade.sendNotification(CLOSE_CLICKED);
     }
 }

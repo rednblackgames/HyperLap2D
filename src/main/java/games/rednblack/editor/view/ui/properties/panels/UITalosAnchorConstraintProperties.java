@@ -119,7 +119,7 @@ public class UITalosAnchorConstraintProperties extends UIRemovableProperties {
 
     @Override
     public void onRemove() {
-        Facade.getInstance().sendNotification(CLOSE_CLICKED);
+        facade.sendNotification(CLOSE_CLICKED);
     }
 
     public class BindingRow {
@@ -214,7 +214,7 @@ public class UITalosAnchorConstraintProperties extends UIRemovableProperties {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     updateFieldsEnabled();
-                    Facade.getInstance().sendNotification(getUpdateEventName());
+                    facade.sendNotification(getUpdateEventName());
                 }
             };
             enabled.addListener(masterListener);
@@ -223,7 +223,7 @@ public class UITalosAnchorConstraintProperties extends UIRemovableProperties {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     updateConstraintFieldsEnabled();
-                    Facade.getInstance().sendNotification(getUpdateEventName());
+                    facade.sendNotification(getUpdateEventName());
                 }
             };
             leftEnabled.addListener(constraintToggle);

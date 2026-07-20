@@ -52,8 +52,11 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
 
     private String actionName;
 
-    public NodeEditorDialog() {
+    private final Facade facade;
+
+    public NodeEditorDialog(Facade facade) {
         super("Node Editor");
+        this.facade = facade;
 
         StaticGrid gridView = new StaticGrid(this);
         getContentTable().addActor(gridView);
@@ -145,7 +148,7 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Object[] payload = AddToLibraryActionCommand.getPayload(actionName, graphContainer.serializeGraph());
-                Facade.getInstance().sendNotification(MsgAPI.ACTION_ADD_TO_LIBRARY_ACTION, payload);
+                facade.sendNotification(MsgAPI.ACTION_ADD_TO_LIBRARY_ACTION, payload);
                 close();
             }
         });
@@ -292,7 +295,7 @@ public class NodeEditorDialog extends H2DDialog implements Graph<GraphBox<Action
         graphContainer.clear();
         getTitleLabel().setText(actionName);
 
-        ProjectManager projectManager = Facade.getInstance().retrieveProxy(ProjectManager.NAME);
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         HashMap<String, GraphVO> items = projectManager.currentProjectInfoVO.libraryActions;
 
         if (items.get(actionName) != null) {

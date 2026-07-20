@@ -164,7 +164,7 @@ public class UILayoutProperties extends UIRemovableProperties {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 updateConstraintFieldsEnabled();
-                Facade.getInstance().sendNotification(getUpdateEventName());
+                facade.sendNotification(getUpdateEventName());
             }
         };
 
@@ -290,7 +290,7 @@ public class UILayoutProperties extends UIRemovableProperties {
 
     @Override
     public void onRemove() {
-        Facade.getInstance().sendNotification(CLOSE_CLICKED);
+        facade.sendNotification(CLOSE_CLICKED);
     }
 
     /**

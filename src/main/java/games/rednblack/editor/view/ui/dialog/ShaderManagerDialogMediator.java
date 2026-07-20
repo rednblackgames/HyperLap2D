@@ -36,7 +36,7 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
     private ProjectManager projectManager;
 
     public ShaderManagerDialogMediator() {
-        super(NAME, new ShaderManagerDialog());
+        super(NAME, new ShaderManagerDialog(Facade.getInstance()));
     }
 
     @Override
