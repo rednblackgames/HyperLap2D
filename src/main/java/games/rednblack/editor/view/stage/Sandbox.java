@@ -26,7 +26,6 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationGLESFix;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -76,7 +75,7 @@ import java.util.HashMap;
 /**
  * Sandbox is a complex hierarchy of managing classes that is supposed to be a main hub for the "commands" the part of editor where
  * user drops all panels, moves them around, and composes the scene. commands is responsible for using runtime to render the visual scene,
- * it is responsible to listen for all the events, item resizing, selecting, aligning, removing and things like that.
+ * it is responsible to listen for all events, item resizing, selecting, aligning, removing and things like that.
  *
  * @author azakhary
  */
@@ -84,13 +83,8 @@ public class Sandbox {
 
     private static Sandbox instance = null;
 
-    private static final float CAMERA_ZOOM_DURATION = 0.65f;
-    private static final float CAMERA_PAN_DURATION = 0.45f;
-
     public SceneControlMediator sceneControl;
     public ItemControlMediator itemControl;
-
-    private final HashMap<String, Object> localClipboard = new HashMap<>();
 
     private int currentViewingEntity = -1;
 
@@ -108,15 +102,12 @@ public class Sandbox {
     public PixelRect selectionRec;
 
     private SceneLoader sceneLoader;
-    private Array<InputListener> listeners = new Array<>(1);
+    private final InputListenerRegistry listenerRegistry = new InputListenerRegistry();
+    private GridService gridService;
+    private ClipboardService clipboardService;
+    private SceneLoadService sceneLoadService;
+    private CameraService cameraService;
 
-    private static final Vector3 temp = new Vector3();
-    private static final Vector2 tmp = new Vector2();
-    private float timeToCameraZoomTarget, cameraZoomTarget, cameraZoomOrigin;
-    private boolean moveCameraWithZoom = false;
-
-    private float timeToCameraPosTarget;
-    private Vector2 cameraPosTarget = new Vector2(), cameraPosOrigin = new Vector2();
     private CullingSystem cullingSystem;
 
     private Sandbox() {
@@ -141,6 +132,8 @@ public class Sandbox {
         projectManager = facade.retrieveProxy(ProjectManager.NAME);
         settingsManager = facade.retrieveProxy(SettingsManager.NAME);
         resourceManager = facade.retrieveProxy(ResourceManager.NAME);
+
+        gridService = new GridService(projectManager, facade);
 
         UIStageMediator uiStageMediator = facade.retrieveMediator(UIStageMediator.NAME);
         uiStage = uiStageMediator.getViewComponent();
@@ -187,6 +180,10 @@ public class Sandbox {
         itemControl = new ItemControlMediator(sceneControl);
 
         selector = new ItemSelector(this);
+
+        cameraService = new CameraService(this, facade);
+        sceneLoadService = new SceneLoadService(this, projectManager, facade);
+        clipboardService = new ClipboardService();
     }
 
     public void initView() {
@@ -221,37 +218,11 @@ public class Sandbox {
     }
 
     public void loadCurrentProject() {
-        ProjectVO projectVO = projectManager.getCurrentProjectVO();
-        loadScene(projectVO.lastOpenScene.isEmpty() ? "MainScene" : projectVO.lastOpenScene);
+        sceneLoadService.loadCurrentProject();
     }
 
     public void loadScene(String sceneName) {
-        currentLoadedSceneFileName = sceneName;
-
-        sceneControl.initScene(sceneName);
-
-        initView();
-
-        ProjectVO projectVO = projectManager.getCurrentProjectVO();
-        projectVO.lastOpenScene = sceneName;
-        projectManager.saveCurrentProject();
-
-        facade.sendNotification(MsgAPI.LIBRARY_LIST_UPDATED);
-        facade.sendNotification(MsgAPI.LIBRARY_ACTIONS_UPDATED);
-
-        setCurrentViewingEntity(getRootEntity());
-
-        sceneConfigVO = projectManager.getCurrentSceneConfigVO();
-        getCamera().position.set(sceneConfigVO.cameraPosition[0], sceneConfigVO.cameraPosition[1], 0);
-        setZoomPercent(sceneConfigVO.cameraZoom, false);
-        projectManager.changeSceneWindowTitle();
-
-        //TODO: move this into SceneDataManager!
-        SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
-        sceneDataManager.sendNotification(MsgAPI.SCENE_LOADED);
-
-        CommandManager commandManager = facade.retrieveProxy(CommandManager.NAME);
-        commandManager.initHistory();
+        sceneLoadService.loadScene(sceneName);
     }
 
     /**
@@ -260,71 +231,32 @@ public class Sandbox {
      * @param deltaTime
      */
     public void render(float deltaTime) {
-        if (timeToCameraZoomTarget > 0) {
-            getCamera().unproject(temp.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-            float px = temp.x;
-            float py = temp.y;
-
-            timeToCameraZoomTarget -= deltaTime;
-            float progress = timeToCameraZoomTarget < 0 ? 1 : 1f - timeToCameraZoomTarget / CAMERA_ZOOM_DURATION;
-            getCamera().zoom = Interpolation.pow3Out.apply(cameraZoomOrigin, cameraZoomTarget, progress);
-            getCamera().update();
-
-            if (moveCameraWithZoom) {
-                getCamera().unproject(temp.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-                getCamera().position.add(px - temp.x, py - temp.y, 0);
-                getCamera().update();
-            }
-
-            facade.sendNotification(MsgAPI.ZOOM_CHANGED);
-        }
-
-        if (timeToCameraPosTarget > 0) {
-            timeToCameraPosTarget -= deltaTime;
-            float progress = timeToCameraPosTarget < 0 ? 1 : 1f - timeToCameraPosTarget / CAMERA_PAN_DURATION;
-            float x = Interpolation.smoother.apply(cameraPosOrigin.x, cameraPosTarget.x, progress);
-            float y = Interpolation.smoother.apply(cameraPosOrigin.y, cameraPosTarget.y, progress);
-            getCamera().position.set(x, y, 0);
-
-            facade.sendNotification(PanTool.SCENE_PANNED);
-        }
-
+        cameraService.update(deltaTime);
         cullingSystem.setDebug(settingsManager.editorConfigVO.showBoundingBoxes);
     }
 
     public void adjustCameraInComposites() {
-        if (!isViewingRootEntity()) {
-            panSceneTo(0, 0);
-        } else {
-            panSceneTo(sceneConfigVO.cameraPosition[0], sceneConfigVO.cameraPosition[1]);
-        }
+        cameraService.adjustCameraInComposites();
     }
 
     public void scenePanned() {
-        if (isViewingRootEntity() && timeToCameraPosTarget <= 0) {
-            sceneConfigVO.cameraPosition[0] = getCamera().position.x;
-            sceneConfigVO.cameraPosition[1] = getCamera().position.y;
-        }
+        cameraService.scenePanned();
     }
 
     public void panSceneTo(float x, float y) {
-        cameraPosOrigin.set(getCamera().position.x, getCamera().position.y);
-        cameraPosTarget.set(x, y);
-        timeToCameraPosTarget = CAMERA_PAN_DURATION - timeToCameraPosTarget * 0.5f;
+        cameraService.panSceneTo(x, y);
     }
 
     public void panSceneBy(float amountX, float amountY) {
-        cameraPosOrigin.set(getCamera().position.x, getCamera().position.y);
-        cameraPosTarget.set(cameraPosOrigin.x + amountX, cameraPosOrigin.y + amountY);
-        timeToCameraPosTarget = CAMERA_PAN_DURATION - timeToCameraPosTarget * 0.5f;
+        cameraService.panSceneBy(amountX, amountY);
     }
 
     public Vector2 getCameraPosTarget() {
-        return cameraPosTarget;
+        return cameraService.getCameraPosTarget();
     }
 
     public float getCameraZoomTarget() {
-        return cameraZoomTarget;
+        return cameraService.getCameraZoomTarget();
     }
 
     /**
@@ -336,12 +268,7 @@ public class Sandbox {
      * @return SceneVO
      */
     public SceneVO sceneVoFromItems() {
-        CompositeItemVO newVo = new CompositeItemVO();
-        newVo.loadFromEntity(getRootEntity(), getEngine(), sceneControl.sceneLoader.getEntityFactory());
-        newVo.sStickyNotes.putAll(sceneControl.getCurrentSceneVO().composite.sStickyNotes);
-        sceneControl.getCurrentSceneVO().composite = newVo;
-
-        return sceneControl.getCurrentSceneVO();
+        return sceneLoadService.sceneVoFromItems();
     }
 
     public ItemSelector getSelector() {
@@ -357,29 +284,19 @@ public class Sandbox {
     }
 
     public int getZoomPercent() {
-        return (int) sceneConfigVO.cameraZoom;
+        return cameraService.getZoomPercent();
     }
 
     public Vector3 getCameraPosition() {
-        return getCamera().position;
+        return cameraService.getCameraPosition();
     }
 
     public void setZoomPercent(float percent, boolean moveCamera) {
-        sceneConfigVO.cameraZoom = percent;
-
-        cameraZoomOrigin = getCamera().zoom;
-        cameraZoomTarget = 1f / (sceneConfigVO.cameraZoom / 100f);
-
-        timeToCameraZoomTarget = CAMERA_ZOOM_DURATION;
-        moveCameraWithZoom = moveCamera;
+        cameraService.setZoomPercent(percent, moveCamera);
     }
 
     public void zoomDivideBy(float amount) {
-        float zoomPercent = sceneConfigVO.cameraZoom / amount;
-        if (zoomPercent < 20) zoomPercent = 20;
-        if (zoomPercent > 1000) zoomPercent = 1000;
-
-        setZoomPercent(zoomPercent, false);
+        cameraService.zoomDivideBy(amount);
     }
 
     public float getWorldGridSize() {
@@ -387,23 +304,19 @@ public class Sandbox {
     }
 
     public float getGridSize() {
-        return projectManager.currentProjectVO.gridSize;
+        return gridService.getGridSize();
     }
 
     public void setGridSize(float gridSize) {
-        projectManager.currentProjectVO.gridSize = gridSize;
-        projectManager.saveCurrentProject();
-        facade.sendNotification(MsgAPI.GRID_SIZE_CHANGED, gridSize);
+        gridService.setGridSize(gridSize);
     }
 
     public boolean getLockLines() {
-        return projectManager.currentProjectVO.lockLines;
+        return gridService.getLockLines();
     }
 
     public void setLockLines(boolean lockLines) {
-        projectManager.currentProjectVO.lockLines = lockLines;
-        projectManager.saveCurrentProject();
-        facade.sendNotification(MsgAPI.LOCK_LINES_CHANGED, lockLines);
+        gridService.setLockLines(lockLines);
     }
 
     public int getRootEntity() {
@@ -424,26 +337,23 @@ public class Sandbox {
     //Global Listeners part
 
     public void addListener(InputListener listener) {
-        if (!listeners.contains(listener, true)) {
-            listeners.add(listener);
-        }
+        listenerRegistry.add(listener);
     }
 
     public void removeListener(InputListener listener) {
-        listeners.removeValue(listener, true);
+        listenerRegistry.remove(listener);
     }
 
     public void removeAllListener() {
-        listeners.clear();
+        listenerRegistry.removeAll();
     }
 
     public Array<InputListener> getAllListeners() {
-        listeners.shrink();
-        return listeners;
+        return listenerRegistry.getAll();
     }
 
     public OrthographicCamera getCamera() {
-        return (OrthographicCamera) getViewport().getCamera();
+        return cameraService.getCamera();
     }
 
     public int getCurrentViewingEntity() {
@@ -455,14 +365,11 @@ public class Sandbox {
     }
 
     public ViewPortComponent getViewportComponent() {
-        if (getCurrentViewingEntity() == -1) return null;
-        return SandboxComponentRetriever.get(getCurrentViewingEntity(), ViewPortComponent.class);
+        return cameraService.getViewportComponent();
     }
 
     public Viewport getViewport() {
-        ViewPortComponent viewPortComponent = getViewportComponent();
-        if (viewPortComponent == null) return null;
-        return viewPortComponent.viewPort;
+        return cameraService.getViewport();
     }
 
     /**
@@ -470,58 +377,39 @@ public class Sandbox {
      **/
 
     public Rectangle screenToWorld(Rectangle rect) {
-        Vector2 pos = screenToWorld(new Vector2(rect.x, rect.y));
-        Vector2 pos2 = screenToWorld(new Vector2(rect.x + rect.width, rect.y + rect.height));
-        rect.x = pos.x;
-        rect.y = pos.y;
-        rect.width = pos2.x - rect.x;
-        rect.height = pos2.y - rect.y;
-        return rect;
+        return cameraService.screenToWorld(rect);
     }
 
     public Vector2 screenToWorld(Vector2 vector) {
-        Viewport viewport = getViewport();
-        if (viewport != null) {
-            vector.scl(1f / getUIStage().getUIScaleDensity());
-            vector.y = Gdx.graphics.getHeight() - vector.y;
-            vector = viewport.unproject(vector);
-        }
-
-        return vector;
+        return cameraService.screenToWorld(vector);
     }
 
     public Vector2 worldToScreen(Vector2 vector) {
-        Viewport viewport = getViewport();
-        if (viewport != null) {
-            vector = viewport.project(vector);
-            vector.scl(getUIStage().getUIScaleDensity());
-        }
-
-        return vector;
+        return cameraService.worldToScreen(vector);
     }
 
     public Vector2 screenToWorld(float x, float y) {
-        return screenToWorld(tmp.set(x, y));
+        return cameraService.screenToWorld(x, y);
     }
 
     public Vector2 worldToScreen(float x, float y) {
-        return worldToScreen(tmp.set(x, y));
+        return cameraService.worldToScreen(x, y);
     }
 
     public float getInputX() {
-        return getInputX(0);
+        return cameraService.getInputX();
     }
 
     public float getInputX(float offset) {
-        return (Gdx.input.getX() + offset) * getUIStage().getUIScaleDensity();
+        return cameraService.getInputX(offset);
     }
 
     public float getInputY() {
-        return getInputY(0);
+        return cameraService.getInputY();
     }
 
     public float getInputY(float offset) {
-        return (Gdx.input.getY() + offset) * getUIStage().getUIScaleDensity();
+        return cameraService.getInputY(offset);
     }
 
     public static void copyToClipboard(Object data) {
@@ -552,11 +440,11 @@ public class Sandbox {
     }
 
     public void copyToLocalClipboard(String key, Object data) {
-        this.localClipboard.put(key, data);
+        clipboardService.copyToLocalClipboard(key, data);
     }
 
     public Object retrieveFromLocalClipboard(String key) {
-        return localClipboard.get(key);
+        return clipboardService.retrieveFromLocalClipboard(key);
     }
 
     public int getPixelPerWU() {

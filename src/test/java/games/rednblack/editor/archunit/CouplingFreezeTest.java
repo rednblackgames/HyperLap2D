@@ -22,9 +22,9 @@ import java.util.List;
  */
 public class CouplingFreezeTest {
 
-    /** Frozen caps (ratchet). Baseline captured 2026-07-20. Lower only after removing call sites. */
-    private static final long FROZEN_SANDBOX_GETINSTANCE = 277L;   // view + controller + proxy + utils
-    private static final long FROZEN_FACADE_GETINSTANCE_VIEW = 146L;        // view only
+    /** Frozen caps (ratchet). Comment-stripped baseline captured 2026-07-20. Lower only after removing call sites. */
+    private static final long FROZEN_SANDBOX_GETINSTANCE = 275L;   // view + controller + proxy + utils
+    private static final long FROZEN_FACADE_GETINSTANCE_VIEW = 145L;        // view only
     private static final long FROZEN_SANDBOX_COMPONENT_RETRIEVER_VIEW = 159L; // view only
 
     private static final String EDITOR_SRC = "src/main/java/games/rednblack/editor";
@@ -61,8 +61,13 @@ public class CouplingFreezeTest {
         collectJavaFiles(root, files);
         for (File f : files) {
             String src = new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8);
+            // Strip comments so the ratchet counts actual code, not javadoc/comment
+            // mentions of the pattern (e.g. "{@code Sandbox.getInstance()}").
+            String stripped = src
+                    .replaceAll("/\\*[\\s\\S]*?\\*/", " ")  // block comments
+                    .replaceAll("//[^\\n]*", " ");           // line comments
             int idx = 0;
-            while ((idx = src.indexOf(token, idx)) >= 0) {
+            while ((idx = stripped.indexOf(token, idx)) >= 0) {
                 total[0]++;
                 idx += token.length();
             }
