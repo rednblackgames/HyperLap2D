@@ -181,6 +181,8 @@ public class Sandbox {
         selector = new ItemSelector(this, facade);
         facade.registerProxy(new SelectionProxy(selector));
         facade.registerProxy(new EntityDataProxy(getEngine()));
+        facade.registerProxy(new ResourceSelectionProxy());
+        facade.registerProxy(new LayerSelectionProxy());
 
         cameraService = new CameraService(this, facade);
         sceneLoadService = new SceneLoadService(this, projectManager, facade);

@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.properties.panels;
+import games.rednblack.editor.controller.commands.component.LabelDataPayload;
 
 import games.rednblack.editor.proxy.FontManager;
 import games.rednblack.editor.proxy.ResourceManager;
@@ -78,17 +79,16 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
     protected void translateViewToItemData() {
         final String newText = viewComponent.getText();
 
-        Object[] payload = new Object[9];
-        payload[0] = observableReference;
-        payload[1] = viewComponent.getFontFamily();
-        payload[2] = viewComponent.getFontSize();
-        payload[3] = viewComponent.getAlignValue();
-        payload[4] = newText;
-        payload[5] = prevText;
-        payload[6] = viewComponent.isWrap();
-        payload[7] = viewComponent.isMono();
-        payload[8] = viewComponent.getBitmapFont().equals(UILabelItemProperties.NONE_BITMAP_FONT) ? null : viewComponent.getBitmapFont();
-        sendNotification(MsgAPI.ACTION_UPDATE_LABEL_DATA, payload);
+        sendNotification(MsgAPI.ACTION_UPDATE_LABEL_DATA, new LabelDataPayload(
+                observableReference,
+                viewComponent.getFontFamily(),
+                viewComponent.getFontSize(),
+                viewComponent.getAlignValue(),
+                newText,
+                prevText,
+                viewComponent.isWrap(),
+                viewComponent.isMono(),
+                viewComponent.getBitmapFont().equals(UILabelItemProperties.NONE_BITMAP_FONT) ? null : viewComponent.getBitmapFont()));
 
         this.prevText = newText;
     }

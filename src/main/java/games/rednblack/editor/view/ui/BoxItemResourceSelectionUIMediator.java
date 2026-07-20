@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui;
+import games.rednblack.editor.proxy.ResourceSelectionProxy;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -46,6 +47,7 @@ public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource
     @Override
     public void onRegister() {
     	super.onRegister();
+	ResourceSelectionProxy.get(facade).setSelectedResources(boxResourceSelectedSet);
     }
 
 	@Override

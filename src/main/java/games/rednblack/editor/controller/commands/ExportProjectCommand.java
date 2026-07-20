@@ -18,19 +18,24 @@
 
 package games.rednblack.editor.controller.commands;
 
-import games.rednblack.editor.controller.SandboxCommand;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.puremvc.commands.SimpleCommand;
+import games.rednblack.puremvc.interfaces.IMediator;
 import games.rednblack.puremvc.interfaces.INotification;
 
-public class ExportProjectCommand extends SandboxCommand {
+public class ExportProjectCommand extends SimpleCommand {
 
     @Override
     public void execute(INotification notification) {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         if (projectManager.currentProjectVO.texturePackerVO.fast) {
-            H2DDialogs.showConfirmDialog(sandbox.getUIStage(),
+            IMediator mediator = facade.retrieveMediator(PluginUIBridge.MEDIATOR_NAME);
+            Stage uiStage = ((PluginUIBridge) mediator).getUIStage();
+            H2DDialogs.showConfirmDialog(uiStage,
                     "Warning, not optimized Atlas!", "While a fast packing can speed up the development time,\nfor production you should disable it:\n\nFile -> Settings -> Project Export -> Fast Packing",
                     new String[]{"Cancel", "Yes, export as is"}, new Integer[]{0, 1}, r -> {
                         if (r == 1) {

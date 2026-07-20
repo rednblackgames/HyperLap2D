@@ -1,9 +1,10 @@
 package games.rednblack.editor.controller.commands.resource;
+import java.util.SortedSet;
 
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.utils.AssetIOManager;
-import games.rednblack.editor.view.ui.BoxItemResourceSelectionUIMediator;
+import games.rednblack.editor.proxy.ResourceSelectionProxy;
 
 public class DeleteMultipleResources extends DeleteResourceCommand {
     private static final String CLASS_NAME = "games.rednblack.editor.controller.commands.resource.DeleteMultipleResources";
@@ -11,14 +12,14 @@ public class DeleteMultipleResources extends DeleteResourceCommand {
 
     @Override
     protected String confirmDialogMessage() {
-        BoxItemResourceSelectionUIMediator boxSelection = facade.retrieveMediator(BoxItemResourceSelectionUIMediator.NAME);
-        return "Are you sure you want to delete " + boxSelection.boxResourceSelectedSet.size() + " resources?";
+        SortedSet<String> selectedResources = ResourceSelectionProxy.get(facade).getSelectedResources();
+        return "Are you sure you want to delete " + selectedResources.size() + " resources?";
     }
 
     @Override
     public void doAction() {
-        BoxItemResourceSelectionUIMediator boxSelection = facade.retrieveMediator(BoxItemResourceSelectionUIMediator.NAME);
-        for (String resource : boxSelection.boxResourceSelectedSet) {
+        SortedSet<String> selectedResources = ResourceSelectionProxy.get(facade).getSelectedResources();
+        for (String resource : selectedResources) {
             if (!AssetIOManager.getInstance().deleteAsset(sandbox.getRootEntity(), resource))
                 cancel();
         }

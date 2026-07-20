@@ -25,7 +25,7 @@ import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
+import games.rednblack.editor.proxy.LayerSelectionProxy;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 
@@ -49,7 +49,6 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
     public void doAction() {
         // get entity list
         HashSet<Integer> entities = (HashSet<Integer>) sandbox.getSelector().getSelectedItems();
-        UILayerBoxMediator layerBoxMediator = facade.retrieveMediator(UILayerBoxMediator.NAME);
 
         if(layersBackup == null) {
             // backup layer data
@@ -93,7 +92,7 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
         dimensionsComponent.boundBox.set(0, 0, newSize.x, newSize.y);
 
         ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
-        zIndexComponent.setLayerName(layerBoxMediator.getCurrentSelectedLayerName());
+        zIndexComponent.setLayerName(LayerSelectionProxy.get(facade).getCurrentLayerName());
 
         sandbox.getEngine().process();
 
@@ -101,7 +100,7 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
         Facade.getInstance().sendNotification(DONE);
         Facade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
 
-        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, entity);
+        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, SelectionPayload.single(entity));
     }
 
     @Override

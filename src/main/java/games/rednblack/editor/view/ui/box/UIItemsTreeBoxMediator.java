@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.box;
+import games.rednblack.editor.controller.commands.SelectionPayload;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.utils.Array;
@@ -101,6 +102,6 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
 
     private void sendSelectionNotification(Set<Integer> items) {
         Set<Integer> ntfItems = (items.isEmpty())? null : items;
-        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, ntfItems);
+        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, SelectionPayload.multiple(ntfItems));
     }
 }

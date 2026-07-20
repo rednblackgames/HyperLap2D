@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.box;
+import games.rednblack.editor.proxy.LayerSelectionProxy;
 import games.rednblack.editor.proxy.EntityDataProxy;
 import games.rednblack.editor.proxy.SelectionProxy;
 
@@ -50,6 +51,12 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
 
     public UILayerBoxMediator() {
         super(NAME, new UILayerBox());
+    }
+
+    @Override
+    public void onRegister() {
+        super.onRegister();
+        LayerSelectionProxy.get(facade).setLayerNameSupplier(this::getCurrentSelectedLayerName);
     }
 
     @Override

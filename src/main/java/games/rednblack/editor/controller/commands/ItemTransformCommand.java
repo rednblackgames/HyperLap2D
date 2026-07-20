@@ -1,12 +1,12 @@
 package games.rednblack.editor.controller.commands;
 
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.h2d.common.command.TransformData;
+import games.rednblack.h2d.common.command.TransformPayload;
 import games.rednblack.puremvc.Facade;
 
 /**
@@ -14,36 +14,26 @@ import games.rednblack.puremvc.Facade;
  */
 public class ItemTransformCommand extends EntityModifyRevertibleCommand {
 
-    private Array<Object> payload;
+    private TransformPayload payload;
 
     private String entityId;
 
     @Override
     public void doAction() {
         payload = getNotification().getBody();
-        int entity = (int) payload.get(0);
-        Object[] newData = (Object[]) payload.get(2);
-
+        int entity = payload.entity();
         entityId = EntityUtils.getEntityId(entity);
 
-        Vector2 newPos = (Vector2) newData[0];
-        Vector2 newSize = (Vector2) newData[1];
-        Vector2 newScale = (Vector2) newData[2];
-        Float newRotation = (Float) newData[3];
-        Vector2 newOrigin = (Vector2) newData[4];
+        TransformData newData = payload.current();
 
         TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
         DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
 
-        if(newPos != null) transformComponent.x = newPos.x;
-        if(newPos != null) transformComponent.y = newPos.y;
-        if(newSize != null) dimensionsComponent.width = newSize.x;
-        if(newSize != null) dimensionsComponent.height = newSize.y;
-        if(newScale != null) transformComponent.scaleX = newScale.x;
-        if(newScale != null) transformComponent.scaleY = newScale.y;
-        if(newRotation != null) transformComponent.rotation = newRotation;
-        if(newOrigin != null) transformComponent.originX = newOrigin.x;
-        if(newOrigin != null) transformComponent.originY = newOrigin.y;
+        if (newData.pos != null) { transformComponent.x = newData.pos.x; transformComponent.y = newData.pos.y; }
+        if (newData.size != null) { dimensionsComponent.width = newData.size.x; dimensionsComponent.height = newData.size.y; }
+        if (newData.scale != null) { transformComponent.scaleX = newData.scale.x; transformComponent.scaleY = newData.scale.y; }
+        if (newData.rotation != null) transformComponent.rotation = newData.rotation;
+        if (newData.origin != null) { transformComponent.originX = newData.origin.x; transformComponent.originY = newData.origin.y; }
 
         EntityUtils.refreshComponents(entity);
 
@@ -53,30 +43,24 @@ public class ItemTransformCommand extends EntityModifyRevertibleCommand {
     @Override
     public void undoAction() {
         int entity = EntityUtils.getByUniqueId(entityId);
-        Object[] prevData = (Object[]) payload.get(1);
-
-        Vector2 prevPos = (Vector2) prevData[0];
-        Vector2 prevSize = (Vector2) prevData[1];
-        Vector2 prevScale = (Vector2) prevData[2];
-        Float prevRotation = (Float) prevData[3];
-        Vector2 prevOrigin = (Vector2) prevData[4];
+        TransformData prevData = payload.prev();
 
         TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
         DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
 
-        transformComponent.x = prevPos.x;
-        transformComponent.y = prevPos.y;
-        dimensionsComponent.width = prevSize.x;
-        dimensionsComponent.height = prevSize.y;
+        transformComponent.x = prevData.pos.x;
+        transformComponent.y = prevData.pos.y;
+        dimensionsComponent.width = prevData.size.x;
+        dimensionsComponent.height = prevData.size.y;
         if (dimensionsComponent.boundBox != null) {
             dimensionsComponent.boundBox.width = dimensionsComponent.width;
             dimensionsComponent.boundBox.height = dimensionsComponent.height;
         }
-        transformComponent.scaleX = prevScale.x;
-        transformComponent.scaleY = prevScale.y;
-        transformComponent.rotation = prevRotation;
-        transformComponent.originX = prevOrigin.x;
-        transformComponent.originY = prevOrigin.y;
+        transformComponent.scaleX = prevData.scale.x;
+        transformComponent.scaleY = prevData.scale.y;
+        transformComponent.rotation = prevData.rotation;
+        transformComponent.originX = prevData.origin.x;
+        transformComponent.originY = prevData.origin.y;
 
         EntityUtils.refreshComponents(entity);
 

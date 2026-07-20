@@ -45,33 +45,26 @@ public class SetSelectionCommand extends RevertibleCommand {
         HashSet<Integer> previousSelection = new HashSet<>(SelectionProxy.get(facade).getSelectedItems());
         previousSelectionIds = EntityUtils.getEntityId(previousSelection);
 
-        if (getNotification().getBody() instanceof Integer) {
-            int entity = getNotification().getBody();
-            sandbox.getSelector().setSelection(entity, true);
-        } else {
-            Set<Integer> items = getNotification().getBody();
-
-            if(items == null) {
-                // deselect all
-                sandbox.getSelector().setSelections(items, true);
-                facade.sendNotification(DONE);
-                return;
-            }
-
-            // check if items are in viewable element, if no - cancel
-            NodeComponent nodeComponent = SandboxComponentRetriever.get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
-            for (Iterator<Integer> iterator = items.iterator(); iterator.hasNext();) {
-                int item = iterator.next();
-                if(!nodeComponent.children.contains(item, false)) {
-                    iterator.remove();
+        SelectionPayload payload = getNotification().getBody();
+        switch (payload) {
+            case SelectionPayload.Single s -> sandbox.getSelector().setSelection(s.entity(), true);
+            case SelectionPayload.Multiple m -> {
+                Set<Integer> items = m.entities();
+                // check if items are in viewable element, if no - cancel
+                NodeComponent nodeComponent = SandboxComponentRetriever.get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
+                for (Iterator<Integer> iterator = items.iterator(); iterator.hasNext();) {
+                    int item = iterator.next();
+                    if (!nodeComponent.children.contains(item, false)) {
+                        iterator.remove();
+                    }
+                }
+                if (items.size() == 0) {
+                    cancel();
+                } else {
+                    sandbox.getSelector().setSelections(items, true);
                 }
             }
-
-            if(items.size() == 0) {
-                cancel();
-            } else {
-                sandbox.getSelector().setSelections(items, true);
-            }
+            case SelectionPayload.Empty e -> sandbox.getSelector().setSelections(null, true);
         }
 
         facade.sendNotification(DONE);

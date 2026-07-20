@@ -15,9 +15,9 @@ public class UpdateLightBodyDataCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void doAction() {
-        Object[] payload = getNotification().getBody();
-        int entity = (int) payload[0];
-        LightBodyDataVO vo = (LightBodyDataVO) payload[1];
+        LightDataPayload payload = getNotification().getBody();
+        int entity = payload.entity();
+        LightBodyDataVO vo = payload.vo();
         entityId = EntityUtils.getEntityId(entity);
 
         LightBodyComponent lightComponent = SandboxComponentRetriever.get(entity, LightBodyComponent.class);
@@ -72,11 +72,8 @@ public class UpdateLightBodyDataCommand extends EntityModifyRevertibleCommand {
         Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
 
-    public static Object payload(int entity, LightBodyDataVO vo) {
-        Object[] payload = new Object[2];
-        payload[0] = entity;
-        payload[1] = vo;
+    public static LightDataPayload payload(int entity, LightBodyDataVO vo) {
+        return new LightDataPayload(entity, vo);
 
-        return payload;
     }
 }

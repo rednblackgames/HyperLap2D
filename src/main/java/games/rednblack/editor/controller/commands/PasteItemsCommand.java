@@ -31,7 +31,7 @@ import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
+import games.rednblack.editor.proxy.LayerSelectionProxy;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 
@@ -49,8 +49,7 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
     public void doAction() {
         Object[] payload = (Object[]) Sandbox.retrieveFromClipboard();
 
-        UILayerBoxMediator layerBoxMediator = facade.retrieveMediator(UILayerBoxMediator.NAME);
-        if(layerBoxMediator.getCurrentSelectedLayerName() == null || payload == null) {
+        if(LayerSelectionProxy.get(facade).getCurrentLayerName() == null || payload == null) {
             cancel();
             return;
         }
@@ -71,13 +70,13 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
             transformComponent.x += diff.x;
             transformComponent.y += diff.y;
             ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
-            zIndexComponent.setLayerName(layerBoxMediator.getCurrentSelectedLayerName());
+            zIndexComponent.setLayerName(LayerSelectionProxy.get(facade).getCurrentLayerName());
             Sandbox.getInstance().getEngine().getSystem(LayerSystem.class).process();
             Facade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
             pastedEntityIds.add(EntityUtils.getEntityId(entity));
         }
 
-        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, newEntitiesList);
+        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, SelectionPayload.multiple(newEntitiesList));
     }
 
     @Override

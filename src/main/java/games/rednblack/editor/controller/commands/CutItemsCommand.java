@@ -57,6 +57,6 @@ public class CutItemsCommand extends EntityModifyRevertibleCommand {
             Facade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
         }
 
-        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, newEntitiesList);
+        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, SelectionPayload.multiple(newEntitiesList));
     }
 }

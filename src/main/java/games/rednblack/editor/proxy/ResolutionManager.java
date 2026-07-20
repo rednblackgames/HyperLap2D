@@ -29,7 +29,6 @@ import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.renderer.data.TexturePackVO;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.utils.NinePatchUtils;
-import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.ProgressHandler;
@@ -150,7 +149,7 @@ public class ResolutionManager extends Proxy {
             rePackProjectImages(resolutionEntryVO);
             changePercentBy(5);
             if (resizeWarnings > 0) {
-                H2DDialogs.showOKDialog(Sandbox.getInstance().getUIStage(), "Warning", resizeWarnings + " images were not resized for smaller resolutions due to already small size ( < 3px )");
+                H2DDialogs.showOKDialog(PluginUIBridge.get(facade).getUIStage(), "Warning", resizeWarnings + " images were not resized for smaller resolutions due to already small size ( < 3px )");
             }
             Facade.getInstance().sendNotification(RESOLUTION_LIST_CHANGED);
         });
@@ -343,7 +342,7 @@ public class ResolutionManager extends Proxy {
                     ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
                     ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
                     resourceManager.loadCurrentProjectData(projectManager.getCurrentProjectPath(), currentResolutionName);
-                    Sandbox.getInstance().loadCurrentProject();
+                    PluginUIBridge.get(facade).loadCurrentProject();
                     facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
                 });
             }

@@ -36,11 +36,11 @@ public class UpdateEntityComponentsCommand extends EntityModifyRevertibleCommand
 
     @Override
     public void doAction() {
-        Object[] payload = getNotification().getBody();
+        EntityComponentsPayload payload = getNotification().getBody();
 
-        int entity = (int) payload[0];
+        int entity = payload.entity();
         entityId = EntityUtils.getEntityId(entity);
-        Array<Component> components = (Array<Component>) payload[1];
+        Array<Component> components = payload.components();
 
         for(int i = 0; i < components.size; i++) {
             //backup the original component

@@ -63,7 +63,7 @@ public class CreateItemCommand extends EntityModifyRevertibleCommand {
 
         Set<Integer> items = new HashSet<>();
         items.add(entity);
-        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, items);
+        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, SelectionPayload.multiple(items));
     }
 
     @Override

@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.stage;
+import games.rednblack.editor.controller.commands.SelectionPayload;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
@@ -60,7 +61,7 @@ class SandboxStageEventListener extends EntityClickListener {
                 break;
             case KeyBindingsLayout.SELECT_ALL:
                 // Ctrl+A means select all
-                mediator.getFacade().sendNotification(MsgAPI.ACTION_SET_SELECTION, sandbox.getSelector().getAllFreeItems());
+                mediator.getFacade().sendNotification(MsgAPI.ACTION_SET_SELECTION, SelectionPayload.multiple(sandbox.getSelector().getAllFreeItems()));
                 break;
             case KeyBindingsLayout.COPY:
                 mediator.getFacade().sendNotification(MsgAPI.ACTION_COPY);
@@ -99,7 +100,7 @@ class SandboxStageEventListener extends EntityClickListener {
 
         if (keycode == Input.Keys.ESCAPE) {
             if (sandbox.getSelector().getSelectedItems().size() > 0) {
-                mediator.getFacade().sendNotification(MsgAPI.ACTION_SET_SELECTION, null);
+                mediator.getFacade().sendNotification(MsgAPI.ACTION_SET_SELECTION, SelectionPayload.empty());
             } else {
                 mediator.currentSelectedTool.stageMouseDoubleClick(0, 0);
             }

@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.properties.panels;
+import games.rednblack.editor.controller.commands.EntityComponentsPayload;
 
 import games.rednblack.editor.renderer.ecs.Component;
 import com.badlogic.gdx.graphics.Color;
@@ -264,9 +265,6 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
         componentsToUpdate.add(mainItemComponent);
         componentsToUpdate.add(dimensionComponent);
         componentsToUpdate.add(tintComponent);
-        Object[] payload = new Object[2];
-        payload[0] = entity;
-        payload[1] = componentsToUpdate;
-        facade.sendNotification(MsgAPI.ACTION_UPDATE_ITEM_DATA, payload);
+        facade.sendNotification(MsgAPI.ACTION_UPDATE_ITEM_DATA, new EntityComponentsPayload(entity, componentsToUpdate));
     }
 }

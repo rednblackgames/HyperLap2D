@@ -5,6 +5,8 @@ import com.kotcrab.vis.ui.widget.VisImageButton;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.h2d.common.view.tools.Tool;
+import games.rednblack.puremvc.Facade;
+import games.rednblack.puremvc.interfaces.IMediator;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,4 +51,11 @@ public interface PluginUIBridge {
     void toolHotSwapBack();
 
     String getCurrentSelectedLayerName();
+
+    SceneVO getCurrentSceneVO();
+
+    static PluginUIBridge get(Facade facade) {
+        IMediator m = facade.retrieveMediator(MEDIATOR_NAME);
+        return (PluginUIBridge) m;
+    }
 }

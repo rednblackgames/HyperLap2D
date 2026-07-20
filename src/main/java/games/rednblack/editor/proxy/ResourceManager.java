@@ -25,7 +25,6 @@ import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.resources.FontSizePair;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.editor.renderer.utils.*;
-import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.extension.spine.ResourceRetrieverAttachmentLoader;
 import games.rednblack.h2d.extension.spine.SpineDataObject;
 import games.rednblack.h2d.extension.spine.SpineDrawableLogic;
@@ -391,7 +390,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private void loadCurrentProjectSpineAnimations(String path) {
         spineAnimAtlases.clear();
         FileHandle sourceDir = new FileHandle(path);
-        SpineDrawableLogic spineDrawableLogic = (SpineDrawableLogic) Sandbox.getInstance().getSceneControl().sceneLoader.getExternalItemType(SpineItemType.SPINE_TYPE).getDrawable();
+        SpineDrawableLogic spineDrawableLogic = (SpineDrawableLogic) PluginUIBridge.get(facade).getSceneLoader().getExternalItemType(SpineItemType.SPINE_TYPE).getDrawable();
         for (FileHandle entry : sourceDir.list()) {
             if (entry.file().isDirectory()) {
                 String animName = FilenameUtils.removeExtension(entry.file().getName());

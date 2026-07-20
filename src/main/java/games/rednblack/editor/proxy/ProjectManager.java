@@ -34,7 +34,6 @@ import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.utils.RecursiveFileSuffixFilter;
 import games.rednblack.editor.view.menu.HyperLap2DMenuBar;
-import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.SettingsDialog;
 import games.rednblack.editor.view.ui.settings.LivePreviewSettings;
 import games.rednblack.editor.view.ui.settings.ProjectExportSettings;
@@ -174,7 +173,7 @@ public class ProjectManager extends Proxy {
 
         // here we load all data
         openProjectAndLoadAllData(projectFolder.path());
-        Sandbox.getInstance().loadCurrentProject();
+        PluginUIBridge.get(facade).loadCurrentProject();
 
         facade.sendNotification(ProjectManager.PROJECT_OPENED);
 
@@ -405,7 +404,7 @@ public class ProjectManager extends Proxy {
             totalWarnings += copyImageFilesIntoProject(files, resolutionEntryVO, performResize, handler);
         }
         if (totalWarnings > 0) {
-            H2DDialogs.showOKDialog(Sandbox.getInstance().getUIStage(), "Warning", totalWarnings + " images were not resized for smaller resolutions due to already small size ( < 3px )");
+            H2DDialogs.showOKDialog(PluginUIBridge.get(facade).getUIStage(), "Warning", totalWarnings + " images were not resized for smaller resolutions due to already small size ( < 3px )");
         }
     }
 
@@ -689,7 +688,7 @@ public class ProjectManager extends Proxy {
                 SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
                 settingsManager.setLastOpenedPath(workSpacePath);
             }
-            Sandbox.getInstance().loadCurrentProject();
+            PluginUIBridge.get(facade).loadCurrentProject();
             facade.sendNotification(PROJECT_OPENED);
 
             //Set title with opened file path
@@ -718,13 +717,13 @@ public class ProjectManager extends Proxy {
         if (currentProjectVO == null)
             return null;
         for (int i = 0; i < currentProjectVO.sceneConfigs.size(); i++) {
-            if (currentProjectVO.sceneConfigs.get(i).sceneName.equals(Sandbox.getInstance().getSceneControl().getCurrentSceneVO().sceneName)) {
+            if (currentProjectVO.sceneConfigs.get(i).sceneName.equals(PluginUIBridge.get(facade).getCurrentSceneVO().sceneName)) {
                 return currentProjectVO.sceneConfigs.get(i);
             }
         }
 
         SceneConfigVO newConfig = new SceneConfigVO();
-        newConfig.sceneName = Sandbox.getInstance().getSceneControl().getCurrentSceneVO().sceneName;
+        newConfig.sceneName = PluginUIBridge.get(facade).getCurrentSceneVO().sceneName;
         currentProjectVO.sceneConfigs.add(newConfig);
 
         return newConfig;

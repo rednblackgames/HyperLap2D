@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.stage.tools;
+import games.rednblack.editor.controller.commands.SelectionPayload;
 import games.rednblack.editor.utils.RoundUtils;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.editor.proxy.EntityDataProxy;
@@ -206,7 +207,7 @@ public class SelectionTool extends SimpleTool {
                 // get selection, add this item to selection
                 Set<Integer> items = new HashSet<>();
                 items.add(entity);
-                facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, items);
+                facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, SelectionPayload.multiple(items));
             }
         }
 
@@ -436,11 +437,11 @@ public class SelectionTool extends SimpleTool {
             facade.sendNotification(MsgAPI.EMPTY_SPACE_CLICKED);
 
             //remove visual selection command
-            facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, null);
+            facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, SelectionPayload.empty());
             return;
         }
 
-        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, curr);
+        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, SelectionPayload.multiple(curr));
     }
 
     private boolean isEntityVisible(int e) {

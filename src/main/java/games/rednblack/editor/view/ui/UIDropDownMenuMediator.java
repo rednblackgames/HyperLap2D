@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui;
+import java.util.SortedSet;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -162,8 +163,8 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
     }
 
     private void applyResourceBoxMutators(Array<String> actionsSet) {
-        BoxItemResourceSelectionUIMediator boxSelection = facade.retrieveMediator(BoxItemResourceSelectionUIMediator.NAME);
-        if (boxSelection.boxResourceSelectedSet.size() > 1) {
+        SortedSet<String> selectedResources = games.rednblack.editor.proxy.ResourceSelectionProxy.get(facade).getSelectedResources();
+        if (selectedResources.size() > 1) {
             actionsSet.addAll(actionSets.get(MIX_RESOURCE_BOX_ACTION_SET));
         }
     }

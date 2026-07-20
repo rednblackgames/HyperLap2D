@@ -13,7 +13,6 @@ import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.UIDropDownMenu;
 import games.rednblack.editor.view.ui.UIDropDownMenuMediator;
-import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
 import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
 import games.rednblack.h2d.common.view.tools.Tool;
 import games.rednblack.puremvc.Mediator;
@@ -109,8 +108,13 @@ public class PluginUIBridgeMediator extends Mediator<Object> implements PluginUI
     }
 
     @Override
+    public SceneVO getCurrentSceneVO() {
+        return Sandbox.getInstance().getSceneControl().getCurrentSceneVO();
+    }
+
+    @Override
     public String getCurrentSelectedLayerName() {
-        UILayerBoxMediator uiLayerBoxMediator = facade.retrieveMediator(UILayerBoxMediator.NAME);
-        return uiLayerBoxMediator.getViewComponent().getCurrentSelectedLayer().getLayerName();
+        String layerName = games.rednblack.editor.proxy.LayerSelectionProxy.get(facade).getCurrentLayerName();
+        return layerName;
     }
 }

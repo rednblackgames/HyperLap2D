@@ -48,8 +48,8 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void doAction() {
-        Object[] payload = getNotification().getBody();
-        int entity = (int) payload[0];
+        LabelDataPayload payload = getNotification().getBody();
+        int entity = payload.entity();
         entityId = EntityUtils.getEntityId(entity);
 
         LabelComponent labelComponent = SandboxComponentRetriever.get(entity, LabelComponent.class);
@@ -59,18 +59,18 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
         this.prevLabelAlign = labelComponent.labelAlign;
         this.prevLineAlign = labelComponent.lineAlign;
         this.prevStyle = labelComponent.getStyle();
-        this.prevText = (String) payload[5];
+        this.prevText = payload.prevText();
         this.prevWrap = labelComponent.wrap;
         this.prevMono = labelComponent.mono;
         this.prevBitmapFont = labelComponent.bitmapFont;
 
-        labelComponent.fontName = (String) payload[1];
-        labelComponent.fontSize = (int) payload[2];
-        labelComponent.setAlignment((Integer) payload[3]);
-        labelComponent.setText((String) payload[4]);
-        labelComponent.setWrap((Boolean) payload[6]);
-        labelComponent.mono = (Boolean) payload[7];
-        labelComponent.bitmapFont = (String) payload[8];
+        labelComponent.fontName = payload.fontName();
+        labelComponent.fontSize = payload.fontSize();
+        labelComponent.setAlignment(payload.align());
+        labelComponent.setText(payload.text());
+        labelComponent.setWrap(payload.wrap());
+        labelComponent.mono = payload.mono();
+        labelComponent.bitmapFont = payload.bitmapFont();
 
         if (labelComponent.bitmapFont != null) {
             labelComponent.setStyle(getNewStyle(labelComponent.bitmapFont));
