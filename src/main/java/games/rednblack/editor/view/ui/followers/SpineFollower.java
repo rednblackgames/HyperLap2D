@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.followers;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -6,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import games.rednblack.editor.utils.SkeletonDrawerDebug;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.h2d.extension.spine.SpineComponent;
@@ -23,7 +23,7 @@ public class SpineFollower extends NormalSelectionFollower {
 
     public SpineFollower(int entity) {
         super(entity);
-        spineObjectComponent = SandboxComponentRetriever.get(entity, SpineComponent.class);
+        spineObjectComponent = EntityDataProxy.get().get(entity, SpineComponent.class);
     }
 
     @Override

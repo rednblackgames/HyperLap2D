@@ -1,8 +1,8 @@
 package games.rednblack.editor.view.ui.panel;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.renderer.data.ShaderUniformVO;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.menu.WindowMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -85,7 +85,7 @@ public class ShaderUniformsPanelMediator extends Mediator<ShaderUniformsPanel> {
             return;
         }
 
-        ShaderComponent shaderComponent = SandboxComponentRetriever.get(observable, ShaderComponent.class);
+        ShaderComponent shaderComponent = EntityDataProxy.get().get(observable, ShaderComponent.class);
         if (shaderComponent != null)
             viewComponent.updateView(shaderComponent.uniforms, shaderComponent.customUniforms);
         else
@@ -113,14 +113,14 @@ public class ShaderUniformsPanelMediator extends Mediator<ShaderUniformsPanel> {
                 break;
         }
 
-        ShaderComponent shaderComponent = SandboxComponentRetriever.get(observable, ShaderComponent.class);
+        ShaderComponent shaderComponent = EntityDataProxy.get().get(observable, ShaderComponent.class);
         shaderComponent.customUniforms.put(name, vo);
 
         updateView();
     }
 
     private void removeUniform(String uniform) {
-        ShaderComponent shaderComponent = SandboxComponentRetriever.get(observable, ShaderComponent.class);
+        ShaderComponent shaderComponent = EntityDataProxy.get().get(observable, ShaderComponent.class);
         ShaderUniformVO vo = shaderComponent.customUniforms.remove(uniform);
         ShaderComponent.POOLS.free(vo);
 

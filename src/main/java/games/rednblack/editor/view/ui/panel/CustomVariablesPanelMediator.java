@@ -17,10 +17,10 @@
  */
 
 package games.rednblack.editor.view.ui.panel;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.controller.commands.CustomVariableModifyCommand;
 import games.rednblack.editor.renderer.components.MainItemComponent;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.menu.WindowMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -124,7 +124,7 @@ public class CustomVariablesPanelMediator extends Mediator<CustomVariablesPanel>
         if (observable == -1) {
             viewComponent.setEmptyMsg("No item selected.");
         } else {
-            MainItemComponent mainItemComponent = SandboxComponentRetriever.get(observable, MainItemComponent.class);
+            MainItemComponent mainItemComponent = EntityDataProxy.get().get(observable, MainItemComponent.class);
             viewComponent.updateView(mainItemComponent.customVariables);
         }
     }

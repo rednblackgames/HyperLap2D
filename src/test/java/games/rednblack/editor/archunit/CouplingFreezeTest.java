@@ -25,7 +25,7 @@ public class CouplingFreezeTest {
     /** Frozen caps (ratchet). Comment-stripped baseline captured 2026-07-20. Lower only after removing call sites. */
     private static final long FROZEN_SANDBOX_GETINSTANCE = 258L;   // view + controller + proxy + utils
     private static final long FROZEN_FACADE_GETINSTANCE_VIEW = 124L;        // view only
-    private static final long FROZEN_SANDBOX_COMPONENT_RETRIEVER_VIEW = 159L; // view only
+    private static final long FROZEN_SANDBOX_COMPONENT_RETRIEVER_VIEW = 0L; // view only — banned
 
     private static final String EDITOR_SRC = "src/main/java/games/rednblack/editor";
 

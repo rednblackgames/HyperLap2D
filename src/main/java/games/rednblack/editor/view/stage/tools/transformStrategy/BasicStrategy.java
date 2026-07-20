@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.stage.tools.transformStrategy;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -8,7 +9,6 @@ import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.utils.RoundUtils;
 import games.rednblack.editor.utils.runtime.EntityUtils;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 import games.rednblack.editor.view.ui.properties.panels.UIBasicItemPropertiesMediator;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
@@ -23,8 +23,8 @@ public class BasicStrategy extends AbstractTransformStrategy {
 
     @Override
     public void calculate(float mouseDx, float mouseDy, int anchor, int entity, TransformCommandBuilder transformCommandBuilder, Vector2 mousePointStage, float lastTransformAngle, float lastEntityAngle) {
-        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
-        DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+        TransformComponent transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
+        DimensionsComponent dimensionsComponent = EntityDataProxy.get().get(entity, DimensionsComponent.class);
 
         float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
         float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);

@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.stage.tools;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
@@ -29,7 +30,6 @@ import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.utils.poly.PolygonRuntimeUtils;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.utils.poly.PolygonUtils;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.followers.BasicFollower;
@@ -126,7 +126,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
 
     @Override
     public void vertexUp(PolygonFollower follower, int vertexIndex, float x, float y) {
-        PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonShapeComponent.class);
+        PolygonShapeComponent polygonShapeComponent = EntityDataProxy.get().get(follower.getEntity(), PolygonShapeComponent.class);
 
         Array<Vector2> points = polygonShapeComponent.vertices;
 
@@ -154,7 +154,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
 
     @Override
     public void vertexDown(PolygonFollower follower, int vertexIndex, float x, float y) {
-        PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonShapeComponent.class);
+        PolygonShapeComponent polygonShapeComponent = EntityDataProxy.get().get(follower.getEntity(), PolygonShapeComponent.class);
         currentCommandPayload = UpdatePolygonVerticesCommand.payloadInitialState(follower.getEntity());
 
         polygonShapeComponent.vertices.insert(vertexIndex, new Vector2(x, y));
@@ -180,14 +180,14 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
         follower.setSelectedAnchor(anchor);
         lastSelectedMeshFollower = follower;
 
-        PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonShapeComponent.class);
+        PolygonShapeComponent polygonShapeComponent = EntityDataProxy.get().get(follower.getEntity(), PolygonShapeComponent.class);
         polygonizedVerticesBackup = UpdatePolygonVerticesCommand.cloneData(polygonShapeComponent.polygonizedVertices);
         verticesBackup = UpdatePolygonVerticesCommand.cloneData(polygonShapeComponent.vertices);
     }
 
     @Override
     public void anchorDragged(PolygonFollower follower, int anchor, float x, float y) {
-        PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonShapeComponent.class);
+        PolygonShapeComponent polygonShapeComponent = EntityDataProxy.get().get(follower.getEntity(), PolygonShapeComponent.class);
 
         Array<Vector2> points = polygonShapeComponent.vertices;
         Vector2 diff = dragLastPoint.sub(x, y);
@@ -243,7 +243,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
 
     private boolean deleteSelectedAnchor() {
         PolygonFollower follower = lastSelectedMeshFollower;
-        PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(follower.getEntity(), PolygonShapeComponent.class);
+        PolygonShapeComponent polygonShapeComponent = EntityDataProxy.get().get(follower.getEntity(), PolygonShapeComponent.class);
         if(follower != null && follower.getSelectedAnchorId() != -1) {
             if(polygonShapeComponent == null || polygonShapeComponent.vertices == null || polygonShapeComponent.vertices.size == 0) return false;
             if( polygonShapeComponent.vertices.size <= 3) return false;

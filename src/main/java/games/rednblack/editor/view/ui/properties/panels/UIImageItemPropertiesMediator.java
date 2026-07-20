@@ -3,7 +3,6 @@ package games.rednblack.editor.view.ui.properties.panels;
 import games.rednblack.editor.controller.commands.component.UpdateImageItemDataCommand;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.data.SimpleImageVO;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 
@@ -19,7 +18,7 @@ public class UIImageItemPropertiesMediator extends UIItemPropertiesMediator<UIIm
 
     @Override
     protected void translateObservableDataToView(int item) {
-        textureRegionComponent = SandboxComponentRetriever.get(item, TextureRegionComponent.class);
+        textureRegionComponent = entityData.get(item, TextureRegionComponent.class);
 
         if(textureRegionComponent.isRepeat) {
             viewComponent.setRenderMode("REPEAT");

@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.stage;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.ecs.BaseComponentMapper;
 import games.rednblack.editor.renderer.ecs.ComponentMapper;
@@ -34,7 +35,6 @@ import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.utils.KeyBindingsLayout;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.input.EntityClickListener;
 import games.rednblack.editor.view.stage.input.InputListenerComponent;
 import games.rednblack.editor.view.stage.tools.PanTool;
@@ -160,7 +160,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
     private void initItemListeners() {
         int rootEntity = getViewComponent().getCurrentViewingEntity();
-        NodeComponent nodeComponent = SandboxComponentRetriever.get(rootEntity, NodeComponent.class);
+        NodeComponent nodeComponent = EntityDataProxy.get().get(rootEntity, NodeComponent.class);
         SnapshotArray<Integer> childrenEntities = nodeComponent.children;
 
         for (int child: childrenEntities) {

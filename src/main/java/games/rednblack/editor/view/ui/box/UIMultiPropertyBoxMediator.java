@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.box;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -34,7 +35,6 @@ import games.rednblack.editor.renderer.components.physics.SensorComponent;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.runtime.EntityUtils;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.stage.tools.TextTool;
@@ -199,13 +199,13 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         }
 
         // optional panels based on components
-        PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(entity, PolygonShapeComponent.class);
-        PhysicsBodyComponent physicsComponent = SandboxComponentRetriever.get(entity, PhysicsBodyComponent.class);
-        SensorComponent sensorComponent = SandboxComponentRetriever.get(entity, SensorComponent.class);
-        ShaderComponent shaderComponent = SandboxComponentRetriever.get(entity, ShaderComponent.class);
-        LightBodyComponent lightComponent = SandboxComponentRetriever.get(entity, LightBodyComponent.class);
-        TypingLabelComponent typingLabelComponent = SandboxComponentRetriever.get(entity, TypingLabelComponent.class);
-        CircleShapeComponent circleShapeComponent = SandboxComponentRetriever.get(entity, CircleShapeComponent.class);
+        PolygonShapeComponent polygonShapeComponent = EntityDataProxy.get().get(entity, PolygonShapeComponent.class);
+        PhysicsBodyComponent physicsComponent = EntityDataProxy.get().get(entity, PhysicsBodyComponent.class);
+        SensorComponent sensorComponent = EntityDataProxy.get().get(entity, SensorComponent.class);
+        ShaderComponent shaderComponent = EntityDataProxy.get().get(entity, ShaderComponent.class);
+        LightBodyComponent lightComponent = EntityDataProxy.get().get(entity, LightBodyComponent.class);
+        TypingLabelComponent typingLabelComponent = EntityDataProxy.get().get(entity, TypingLabelComponent.class);
+        CircleShapeComponent circleShapeComponent = EntityDataProxy.get().get(entity, CircleShapeComponent.class);
 
         if (polygonShapeComponent != null) {
             mediatorNames.add(UIPolygonComponentPropertiesMediator.NAME);
@@ -229,12 +229,12 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
             mediatorNames.add(UICircleShapePropertiesMediator.NAME);
         }
 
-        LayoutComponent layoutComponent = SandboxComponentRetriever.get(entity, LayoutComponent.class);
+        LayoutComponent layoutComponent = EntityDataProxy.get().get(entity, LayoutComponent.class);
         if (layoutComponent != null) {
             mediatorNames.add(UILayoutPropertiesMediator.NAME);
         }
 
-        TalosAnchorConstraintComponent anchorComp = SandboxComponentRetriever.get(entity, TalosAnchorConstraintComponent.class);
+        TalosAnchorConstraintComponent anchorComp = EntityDataProxy.get().get(entity, TalosAnchorConstraintComponent.class);
         if (anchorComp != null && entityType == TalosItemType.TALOS_TYPE) {
             mediatorNames.add(UITalosAnchorConstraintPropertiesMediator.NAME);
         }

@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.stage;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -26,7 +27,6 @@ import games.rednblack.editor.utils.Constants;
 import games.rednblack.editor.utils.EntityBounds;
 import games.rednblack.editor.utils.MoveCommandBuilder;
 import games.rednblack.editor.utils.runtime.EntityUtils;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.SceneControlMediator;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.h2d.common.MsgAPI;
@@ -260,7 +260,7 @@ public class ItemSelector {
      * Selects all panels on currently active scene
      */
     public HashSet<Integer> getAllFreeItems() {
-    	NodeComponent nodeComponent = SandboxComponentRetriever.get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
+    	NodeComponent nodeComponent = EntityDataProxy.get().get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
 		SnapshotArray<Integer> childrenEntities = nodeComponent.children;
 
         Integer[] array = childrenEntities.toArray();
@@ -442,7 +442,7 @@ public class ItemSelector {
         if(currentSelection.isEmpty()) return false;
 
         int entity = currentSelection.stream().findFirst().get();
-        NodeComponent nodeComponent = SandboxComponentRetriever.get(entity, NodeComponent.class);
+        NodeComponent nodeComponent = EntityDataProxy.get().get(entity, NodeComponent.class);
 
         return nodeComponent != null;
     }

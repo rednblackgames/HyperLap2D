@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.followers;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.ecs.ComponentMapper;
 import com.badlogic.gdx.Gdx;
@@ -15,7 +16,6 @@ import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.VisUI;
 import games.rednblack.editor.renderer.components.*;
 import games.rednblack.editor.renderer.utils.TransformMathUtils;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.h2d.extension.talos.TalosAnchorConstraintComponent;
@@ -41,13 +41,13 @@ public class TalosFollower extends BasicFollower {
     private final static Vector2 vecFrom = new Vector2();
     private final static Vector2 vecTo = new Vector2();
 
-    private final ComponentMapper<TransformComponent> transformMapper = (ComponentMapper<TransformComponent>) SandboxComponentRetriever.getMapper(TransformComponent.class);
-    private final ComponentMapper<ParentNodeComponent> parentMapper = (ComponentMapper<ParentNodeComponent>) SandboxComponentRetriever.getMapper(ParentNodeComponent.class);
+    private final ComponentMapper<TransformComponent> transformMapper = (ComponentMapper<TransformComponent>) EntityDataProxy.get().getMapper(TransformComponent.class);
+    private final ComponentMapper<ParentNodeComponent> parentMapper = (ComponentMapper<ParentNodeComponent>) EntityDataProxy.get().getMapper(ParentNodeComponent.class);
     private boolean hidden = true;
 
     public TalosFollower(int entity) {
         super(entity);
-        talosComponent = SandboxComponentRetriever.get(entity, TalosComponent.class);
+        talosComponent = EntityDataProxy.get().get(entity, TalosComponent.class);
         setTransform(false);
     }
 
@@ -133,7 +133,7 @@ public class TalosFollower extends BasicFollower {
         }
 
         // Draw anchor constraint bindings
-        TalosAnchorConstraintComponent anchorComp = SandboxComponentRetriever.get(entity, TalosAnchorConstraintComponent.class);
+        TalosAnchorConstraintComponent anchorComp = EntityDataProxy.get().get(entity, TalosAnchorConstraintComponent.class);
         if (anchorComp != null) {
             drawAnchorBindings(anchorComp, alphaMult);
         }

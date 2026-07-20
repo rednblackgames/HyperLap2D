@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -6,7 +7,6 @@ import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
 import games.rednblack.editor.renderer.utils.poly.PolygonRuntimeUtils;
 import games.rednblack.editor.utils.poly.tracer.Tracer;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
@@ -56,10 +56,10 @@ public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
     }
 
     private void addAutoTraceMesh() {
-        PolygonShapeComponent polygonShapeComponent = SandboxComponentRetriever.get(entity, PolygonShapeComponent.class);
+        PolygonShapeComponent polygonShapeComponent = EntityDataProxy.get().get(entity, PolygonShapeComponent.class);
 
         if (polygonShapeComponent != null) {
-            TextureRegionComponent textureRegionComponent = SandboxComponentRetriever.get(entity, TextureRegionComponent.class);
+            TextureRegionComponent textureRegionComponent = EntityDataProxy.get().get(entity, TextureRegionComponent.class);
 
             if (textureRegionComponent != null && textureRegionComponent.region != null && !textureRegionComponent.regionName.equals("")) {
                 Vector2[][] traceResult = Tracer.trace(textureRegionComponent.region, viewComponent.getHullTolerance(),

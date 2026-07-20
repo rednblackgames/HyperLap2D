@@ -9,7 +9,6 @@ import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.data.LayoutConstraintVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
@@ -38,18 +37,18 @@ public class UILayoutPropertiesMediator extends UIRemovableComponentPropertiesMe
 
     @Override
     protected void translateObservableDataToView(int entity) {
-        LayoutComponent layoutComponent = SandboxComponentRetriever.get(entity, LayoutComponent.class);
+        LayoutComponent layoutComponent = entityData.get(entity, LayoutComponent.class);
         if (layoutComponent == null) return;
 
         // Build sibling list
         Array<String> siblings = new Array<>();
-        ParentNodeComponent parentNode = SandboxComponentRetriever.get(entity, ParentNodeComponent.class);
+        ParentNodeComponent parentNode = entityData.get(entity, ParentNodeComponent.class);
         if (parentNode != null && parentNode.parentEntity != -1) {
-            NodeComponent nodeComponent = SandboxComponentRetriever.get(parentNode.parentEntity, NodeComponent.class);
+            NodeComponent nodeComponent = entityData.get(parentNode.parentEntity, NodeComponent.class);
             if (nodeComponent != null) {
                 for (int child : nodeComponent.children) {
                     if (child == entity) continue;
-                    MainItemComponent mic = SandboxComponentRetriever.get(child, MainItemComponent.class);
+                    MainItemComponent mic = entityData.get(child, MainItemComponent.class);
                     if (mic != null) {
                         String label = mic.itemIdentifier != null && !mic.itemIdentifier.isEmpty()
                                 ? mic.itemIdentifier : mic.uniqueId;
@@ -109,7 +108,7 @@ public class UILayoutPropertiesMediator extends UIRemovableComponentPropertiesMe
         viewComponent.getVerticalBiasField().setText(layoutComponent.verticalBias + "");
 
         // Match constraint – only for entity types that support editable dimensions
-        MainItemComponent mic = SandboxComponentRetriever.get(entity, MainItemComponent.class);
+        MainItemComponent mic = entityData.get(entity, MainItemComponent.class);
         boolean supportsMatchConstraint = mic != null && (mic.entityType == EntityFactory.COMPOSITE_TYPE
                 || mic.entityType == EntityFactory.LABEL_TYPE
                 || mic.entityType == EntityFactory.NINE_PATCH);
@@ -121,7 +120,7 @@ public class UILayoutPropertiesMediator extends UIRemovableComponentPropertiesMe
     private String resolveTargetLabel(LayoutComponent.ConstraintData data, int entity) {
         if (data.targetEntity == -1) return null; // null = Parent
 
-        MainItemComponent mic = SandboxComponentRetriever.get(data.targetEntity, MainItemComponent.class);
+        MainItemComponent mic = entityData.get(data.targetEntity, MainItemComponent.class);
         if (mic == null) return null;
 
         return mic.itemIdentifier != null && !mic.itemIdentifier.isEmpty()
@@ -130,7 +129,7 @@ public class UILayoutPropertiesMediator extends UIRemovableComponentPropertiesMe
 
     @Override
     protected void translateViewToItemData() {
-        LayoutComponent layoutComponent = SandboxComponentRetriever.get(observableReference, LayoutComponent.class);
+        LayoutComponent layoutComponent = entityData.get(observableReference, LayoutComponent.class);
         if (layoutComponent == null) return;
 
         LayoutConstraintVO oldVo = new LayoutConstraintVO();
@@ -188,15 +187,15 @@ public class UILayoutPropertiesMediator extends UIRemovableComponentPropertiesMe
         if (label == null) return null; // Parent
 
         // The label could be an itemIdentifier or a uniqueId - find the matching sibling
-        ParentNodeComponent parentNode = SandboxComponentRetriever.get(observableReference, ParentNodeComponent.class);
+        ParentNodeComponent parentNode = entityData.get(observableReference, ParentNodeComponent.class);
         if (parentNode == null || parentNode.parentEntity == -1) return label;
 
-        NodeComponent nodeComponent = SandboxComponentRetriever.get(parentNode.parentEntity, NodeComponent.class);
+        NodeComponent nodeComponent = entityData.get(parentNode.parentEntity, NodeComponent.class);
         if (nodeComponent == null) return label;
 
         for (int child : nodeComponent.children) {
             if (child == observableReference) continue;
-            MainItemComponent mic = SandboxComponentRetriever.get(child, MainItemComponent.class);
+            MainItemComponent mic = entityData.get(child, MainItemComponent.class);
             if (mic != null) {
                 String childLabel = mic.itemIdentifier != null && !mic.itemIdentifier.isEmpty()
                         ? mic.itemIdentifier : mic.uniqueId;

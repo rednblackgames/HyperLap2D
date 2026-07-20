@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.stage.tools.transformStrategy;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -10,7 +11,6 @@ import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.utils.runtime.EntityUtils;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 import games.rednblack.editor.view.ui.properties.panels.UIBasicItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
@@ -86,10 +86,10 @@ public class CompositeStrategy extends AbstractTransformStrategy {
     }
 
     private void getChildrenPositions(int parentEntity, HashMap<String, Vector2> entityPos) {
-        NodeComponent nodeComponent = SandboxComponentRetriever.get(parentEntity, NodeComponent.class);
+        NodeComponent nodeComponent = EntityDataProxy.get().get(parentEntity, NodeComponent.class);
         if (nodeComponent != null) {
             for (int entity : nodeComponent.children) {
-                TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+                TransformComponent transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
                 Vector2 currentEntityPos = new Vector2(transformComponent.x, transformComponent.y);
                 entityPos.put(EntityUtils.getEntityId(entity), currentEntityPos);
             }
@@ -107,8 +107,8 @@ public class CompositeStrategy extends AbstractTransformStrategy {
 
     @Override
     public void calculate(float mouseDx, float mouseDy, int anchor, int entity, TransformCommandBuilder transformCommandBuilder, Vector2 mousePointStage, float lastTransformAngle, float lastEntityAngle) {
-        CompositeTransformComponent component = SandboxComponentRetriever.get(entity, CompositeTransformComponent.class);
-        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+        CompositeTransformComponent component = EntityDataProxy.get().get(entity, CompositeTransformComponent.class);
+        TransformComponent transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
 
         float[] horizontal = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation, tmp1);
         float[] vertical = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation + 90, tmp2);
@@ -127,7 +127,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
         }
 
         if (!component.automaticResize) {
-            DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+            DimensionsComponent dimensionsComponent = EntityDataProxy.get().get(entity, DimensionsComponent.class);
             float sX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
             float sY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
 
@@ -241,9 +241,9 @@ public class CompositeStrategy extends AbstractTransformStrategy {
     }
 
     private void move(int node, float x, float y) {
-        SnapshotArray<Integer> nodeEntity = SandboxComponentRetriever.get(node, NodeComponent.class).children;
+        SnapshotArray<Integer> nodeEntity = EntityDataProxy.get().get(node, NodeComponent.class).children;
         for (int child : nodeEntity) {
-            TransformComponent transformComponent = SandboxComponentRetriever.get(child, TransformComponent.class);
+            TransformComponent transformComponent = EntityDataProxy.get().get(child, TransformComponent.class);
             transformComponent.x += x;
             transformComponent.y += y;
         }

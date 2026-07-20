@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.stage.tools;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
@@ -25,7 +26,6 @@ import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.utils.runtime.EntityUtils;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.tools.transformStrategy.*;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
@@ -153,7 +153,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
 
         commandBuilder.begin(follower.getEntity(), Sandbox.getInstance().getEngine());
 
-        TransformComponent transformComponent = SandboxComponentRetriever.get(follower.getEntity(), TransformComponent.class);
+        TransformComponent transformComponent = EntityDataProxy.get().get(follower.getEntity(), TransformComponent.class);
         Vector2 mousePoint = sandbox.screenToWorld(x, y);
         mouseInitialCoordinates.set(mousePoint.x, mousePoint.y);
 
@@ -228,7 +228,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
             return;
         }
 
-        TransformComponent transformComponent = SandboxComponentRetriever.get(follower.getEntity(), TransformComponent.class);
+        TransformComponent transformComponent = EntityDataProxy.get().get(follower.getEntity(), TransformComponent.class);
         float entityRotation = transformComponent.rotation;
 
         // Determine if we are operating on a rotation cursor or a resizing cursor

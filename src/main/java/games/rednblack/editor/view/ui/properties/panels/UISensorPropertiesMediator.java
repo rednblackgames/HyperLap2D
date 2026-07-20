@@ -4,7 +4,6 @@ import games.rednblack.editor.controller.commands.component.UpdateSensorDataComm
 import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.renderer.components.physics.SensorComponent;
 import games.rednblack.editor.renderer.data.SensorDataVO;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
@@ -41,7 +40,7 @@ public class UISensorPropertiesMediator extends UIRemovableComponentPropertiesMe
 
 	@Override
 	protected void translateObservableDataToView(int item) {
-		sensorComponent = SandboxComponentRetriever.get(item, SensorComponent.class);
+		sensorComponent = entityData.get(item, SensorComponent.class);
 
         viewComponent.getSensorBottomBox().setChecked(sensorComponent.bottom);
         viewComponent.getSensorLeftBox().setChecked(sensorComponent.left);
@@ -61,7 +60,7 @@ public class UISensorPropertiesMediator extends UIRemovableComponentPropertiesMe
 
 	@Override
 	protected void translateViewToItemData() {
-        sensorComponent = SandboxComponentRetriever.get(observableReference, SensorComponent.class);
+        sensorComponent = entityData.get(observableReference, SensorComponent.class);
 
         SensorDataVO oldPayloadVo = new SensorDataVO();
         oldPayloadVo.loadFromComponent(sensorComponent);

@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.stage;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -8,7 +9,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import games.rednblack.editor.renderer.components.ViewPortComponent;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.tools.PanTool;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
@@ -145,7 +145,7 @@ public class CameraService {
 
     public ViewPortComponent getViewportComponent() {
         if (sandbox.getCurrentViewingEntity() == -1) return null;
-        return SandboxComponentRetriever.get(sandbox.getCurrentViewingEntity(), ViewPortComponent.class);
+        return EntityDataProxy.get().get(sandbox.getCurrentViewingEntity(), ViewPortComponent.class);
     }
 
     public Viewport getViewport() {

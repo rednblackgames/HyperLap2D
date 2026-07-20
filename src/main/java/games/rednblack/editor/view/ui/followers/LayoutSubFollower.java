@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.followers;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,7 +11,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.kotcrab.vis.ui.VisUI;
 import games.rednblack.editor.renderer.components.*;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import space.earlygrey.shapedrawer.ShapeDrawer;
@@ -66,17 +66,17 @@ public class LayoutSubFollower extends SubFollower {
     public void draw(Batch batch, float parentAlpha) {
         if (shapeDrawer == null) return;
 
-        LayoutComponent layout = SandboxComponentRetriever.get(entity, LayoutComponent.class);
+        LayoutComponent layout = EntityDataProxy.get().get(entity, LayoutComponent.class);
         if (layout == null) return;
 
-        TransformComponent transform = SandboxComponentRetriever.get(entity, TransformComponent.class);
-        DimensionsComponent dimensions = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
-        ParentNodeComponent parentNode = SandboxComponentRetriever.get(entity, ParentNodeComponent.class);
+        TransformComponent transform = EntityDataProxy.get().get(entity, TransformComponent.class);
+        DimensionsComponent dimensions = EntityDataProxy.get().get(entity, DimensionsComponent.class);
+        ParentNodeComponent parentNode = EntityDataProxy.get().get(entity, ParentNodeComponent.class);
         if (transform == null || dimensions == null || parentNode == null) return;
 
         int parent = parentNode.parentEntity;
         if (parent == -1) return;
-        DimensionsComponent parentDim = SandboxComponentRetriever.get(parent, DimensionsComponent.class);
+        DimensionsComponent parentDim = EntityDataProxy.get().get(parent, DimensionsComponent.class);
         if (parentDim == null) return;
 
         OrthographicCamera camera = Sandbox.getInstance().getCamera();
@@ -93,7 +93,7 @@ public class LayoutSubFollower extends SubFollower {
         entitySinR = MathUtils.sinDeg(transform.rotation);
 
         // Read precomputed AABB from BoundingBoxComponent
-        BoundingBoxComponent bb = SandboxComponentRetriever.get(entity, BoundingBoxComponent.class);
+        BoundingBoxComponent bb = EntityDataProxy.get().get(entity, BoundingBoxComponent.class);
         if (bb != null) {
             entityAABBLeft = bb.parentLocalAABB.x;
             entityAABBBottom = bb.parentLocalAABB.y;
@@ -173,12 +173,12 @@ public class LayoutSubFollower extends SubFollower {
             if (alreadyDrawn) continue;
             drawn[drawnCount++] = data.targetEntity;
 
-            TransformComponent sibTransform = SandboxComponentRetriever.get(data.targetEntity, TransformComponent.class);
+            TransformComponent sibTransform = EntityDataProxy.get().get(data.targetEntity, TransformComponent.class);
             if (sibTransform == null) continue;
 
             // Read sibling's precomputed parent-local AABB
-            BoundingBoxComponent sibBB = SandboxComponentRetriever.get(data.targetEntity, BoundingBoxComponent.class);
-            DimensionsComponent sibDim = SandboxComponentRetriever.get(data.targetEntity, DimensionsComponent.class);
+            BoundingBoxComponent sibBB = EntityDataProxy.get().get(data.targetEntity, BoundingBoxComponent.class);
+            DimensionsComponent sibDim = EntityDataProxy.get().get(data.targetEntity, DimensionsComponent.class);
             if (sibBB == null && sibDim == null) continue;
 
             float minX, minY, maxX, maxY;
@@ -249,11 +249,11 @@ public class LayoutSubFollower extends SubFollower {
             }
         } else {
             // Sibling: line to the midpoint of the target AABB side
-            TransformComponent sibTransform = SandboxComponentRetriever.get(data.targetEntity, TransformComponent.class);
+            TransformComponent sibTransform = EntityDataProxy.get().get(data.targetEntity, TransformComponent.class);
             if (sibTransform == null) return;
 
-            BoundingBoxComponent sibBB = SandboxComponentRetriever.get(data.targetEntity, BoundingBoxComponent.class);
-            DimensionsComponent sibDim = SandboxComponentRetriever.get(data.targetEntity, DimensionsComponent.class);
+            BoundingBoxComponent sibBB = EntityDataProxy.get().get(data.targetEntity, BoundingBoxComponent.class);
+            DimensionsComponent sibDim = EntityDataProxy.get().get(data.targetEntity, DimensionsComponent.class);
             if (sibBB == null && sibDim == null) return;
 
             Rectangle aabb;

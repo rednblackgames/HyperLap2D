@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.stage.input;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.ecs.BaseComponentMapper;
 import games.rednblack.editor.renderer.ecs.ComponentMapper;
@@ -18,7 +19,6 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.renderer.utils.TransformMathUtils;
 import games.rednblack.editor.utils.EntityBounds;
 import games.rednblack.editor.utils.runtime.EntityUtils;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.puremvc.Facade;
@@ -78,7 +78,7 @@ public class SandboxInputAdapter implements InputProcessor {
 			return false;
 		}
 
-		Viewport viewPort = SandboxComponentRetriever.get(rootEntity, ViewPortComponent.class).viewPort;
+		Viewport viewPort = EntityDataProxy.get().get(rootEntity, ViewPortComponent.class).viewPort;
 		if (screenX < viewPort.getScreenX() || screenX >= viewPort.getScreenX() + viewPort.getScreenWidth()) return false;
 		if (Gdx.graphics.getHeight() - screenY < viewPort.getScreenY()
 			|| Gdx.graphics.getHeight() - screenY >= viewPort.getScreenY() + viewPort.getScreenHeight()) return false;
@@ -212,7 +212,7 @@ public class SandboxInputAdapter implements InputProcessor {
 		ComponentMapper<TransformComponent> transformMapper = (ComponentMapper<TransformComponent>) ComponentRetriever.getMapper(TransformComponent.class, sandbox.getEngine());
 		TransformMathUtils.parentToLocalCoordinates(root, localCoordinates, transformMapper);
 
-		NodeComponent nodeComponent = SandboxComponentRetriever.get(root, NodeComponent.class);
+		NodeComponent nodeComponent = EntityDataProxy.get().get(root, NodeComponent.class);
 		SnapshotArray<Integer> childrenEntities = nodeComponent.children;
 		int n = childrenEntities.size-1;
 		for (int i = n; i >= 0; i--){
@@ -232,7 +232,7 @@ public class SandboxInputAdapter implements InputProcessor {
 	}
 	
 	public Vector2 screenToSceneCoordinates (int root, Vector2 screenCoords) {
-		ViewPortComponent viewPortComponent = SandboxComponentRetriever.get(root, ViewPortComponent.class);
+		ViewPortComponent viewPortComponent = EntityDataProxy.get().get(root, ViewPortComponent.class);
 		viewPortComponent.viewPort.unproject(screenCoords);
 		return screenCoords;
 	}

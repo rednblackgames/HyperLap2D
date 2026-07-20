@@ -1,9 +1,9 @@
 package games.rednblack.editor.view.stage.tools.transformStrategy;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
 
@@ -13,8 +13,8 @@ public class LabelStrategy extends AbstractTransformStrategy {
 
     @Override
     public void calculate(float mouseDx, float mouseDy, int anchor, int entity, TransformCommandBuilder transformCommandBuilder, Vector2 mousePoint, float lastTransformAngle, float lastEntityAngle) {
-        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
-        DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+        TransformComponent transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
+        DimensionsComponent dimensionsComponent = EntityDataProxy.get().get(entity, DimensionsComponent.class);
 
         float[] horizontal = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation, tmp1);
         float[] vertical = calculateSizeAndXyAmount(mouseDx, mouseDy, transformComponent.rotation + 90, tmp2);

@@ -23,7 +23,6 @@ import com.esotericsoftware.spine.Animation;
 import com.esotericsoftware.spine.Skin;
 import games.rednblack.editor.controller.commands.component.UpdateSpineDataCommand;
 import games.rednblack.h2d.extension.spine.SpineVO;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extension.spine.SpineComponent;
@@ -43,7 +42,7 @@ public class UISpineAnimationItemPropertiesMediator extends UIItemPropertiesMedi
 
     @Override
     protected void translateObservableDataToView(int entity) {
-        spineComponent = SandboxComponentRetriever.get(entity, SpineComponent.class);
+        spineComponent = entityData.get(entity, SpineComponent.class);
 
         animations.clear();
         for (Animation animation : spineComponent.getAnimations()) {

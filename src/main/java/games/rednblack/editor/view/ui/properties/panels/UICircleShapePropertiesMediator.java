@@ -3,7 +3,6 @@ package games.rednblack.editor.view.ui.properties.panels;
 import games.rednblack.editor.controller.commands.component.UpdateCircleShapeCommand;
 import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.renderer.components.shape.CircleShapeComponent;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
@@ -31,13 +30,13 @@ public class UICircleShapePropertiesMediator extends UIRemovableComponentPropert
 
     @Override
     protected void translateObservableDataToView(int item) {
-        CircleShapeComponent component = SandboxComponentRetriever.get(item, CircleShapeComponent.class);
+        CircleShapeComponent component = entityData.get(item, CircleShapeComponent.class);
         viewComponent.setRadius(component.radius);
     }
 
     @Override
     protected void translateViewToItemData() {
-        CircleShapeComponent component = SandboxComponentRetriever.get(observableReference, CircleShapeComponent.class);
+        CircleShapeComponent component = entityData.get(observableReference, CircleShapeComponent.class);
 
         float radius = Float.parseFloat(viewComponent.getRadius());
         if (component.radius != radius) {

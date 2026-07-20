@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.followers;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.ecs.ComponentMapper;
 import com.badlogic.gdx.Input;
@@ -13,7 +14,6 @@ import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.utils.TransformMathUtils;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.editor.view.ui.widget.actors.polygon.PolyLine;
@@ -78,11 +78,11 @@ public class PolygonFollower extends SubFollower {
 
     @Override
     public void create() {
-        polygonShapeComponent = SandboxComponentRetriever.get(entity, PolygonShapeComponent.class);
-        transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
-        dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
-        transformCM = (ComponentMapper<TransformComponent>) SandboxComponentRetriever.getMapper(TransformComponent.class);
-        parentNodeCM = (ComponentMapper<ParentNodeComponent>) SandboxComponentRetriever.getMapper(ParentNodeComponent.class);
+        polygonShapeComponent = EntityDataProxy.get().get(entity, PolygonShapeComponent.class);
+        transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
+        dimensionsComponent = EntityDataProxy.get().get(entity, DimensionsComponent.class);
+        transformCM = (ComponentMapper<TransformComponent>) EntityDataProxy.get().getMapper(TransformComponent.class);
+        parentNodeCM = (ComponentMapper<ParentNodeComponent>) EntityDataProxy.get().getMapper(ParentNodeComponent.class);
     }
 
     @Override

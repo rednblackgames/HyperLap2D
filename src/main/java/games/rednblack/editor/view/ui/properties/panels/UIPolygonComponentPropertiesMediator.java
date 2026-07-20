@@ -24,7 +24,6 @@ import games.rednblack.editor.controller.commands.component.UpdatePolygonVertice
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.ecs.Component;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.AutoTraceDialog;
 import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
@@ -88,7 +87,7 @@ public class UIPolygonComponentPropertiesMediator extends UIRemovableComponentPr
 
     @Override
     protected void translateObservableDataToView(int item) {
-        polygonShapeComponent = SandboxComponentRetriever.get(item, PolygonShapeComponent.class);
+        polygonShapeComponent = entityData.get(item, PolygonShapeComponent.class);
         if (polygonShapeComponent.vertices == null && polygonShapeComponent.polygonizedVertices == null) {
             viewComponent.initEmptyView();
             return;
@@ -123,7 +122,7 @@ public class UIPolygonComponentPropertiesMediator extends UIRemovableComponentPr
     }
 
     private void addDefaultMesh() {
-        DimensionsComponent dimensionsComponent = SandboxComponentRetriever.get(observableReference, DimensionsComponent.class);
+        DimensionsComponent dimensionsComponent = entityData.get(observableReference, DimensionsComponent.class);
         if(dimensionsComponent.boundBox != null) { // If the bound box is not null we have a Composite Item!
             polygonShapeComponent.makeRectangle( dimensionsComponent.boundBox.x, dimensionsComponent.boundBox.y, dimensionsComponent.boundBox.width, dimensionsComponent.boundBox.height);
         }
@@ -140,7 +139,7 @@ public class UIPolygonComponentPropertiesMediator extends UIRemovableComponentPr
     }
 
     private void copyMesh() {
-        polygonShapeComponent = SandboxComponentRetriever.get(observableReference, PolygonShapeComponent.class);
+        polygonShapeComponent = entityData.get(observableReference, PolygonShapeComponent.class);
         Object[] param = new Object[2];
         param[0] = polygonShapeComponent.polygonizedVertices;
         param[1] = polygonShapeComponent.vertices;

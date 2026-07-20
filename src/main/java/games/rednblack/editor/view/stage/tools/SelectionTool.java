@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.stage.tools;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -35,7 +36,6 @@ import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.utils.EntityBounds;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.utils.runtime.EntityUtils;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.followers.BasicFollower;
@@ -133,7 +133,7 @@ public class SelectionTool extends SimpleTool {
             BasicFollower follower = followersUIMediator.getFollower(entity);
             if (follower == null) continue;
             follower.removeSubFollower(LayoutSubFollower.class);
-            LayoutComponent layoutComponent = SandboxComponentRetriever.get(entity, LayoutComponent.class);
+            LayoutComponent layoutComponent = EntityDataProxy.get().get(entity, LayoutComponent.class);
             if (layoutComponent != null) {
                 LayoutSubFollower subFollower = new LayoutSubFollower(entity);
                 follower.addSubfollower(subFollower);
@@ -178,7 +178,7 @@ public class SelectionTool extends SimpleTool {
         int currentView = sandbox.getCurrentViewingEntity();
         if (currentView == -1)
             return;
-        ParentNodeComponent parentNodeComponent = SandboxComponentRetriever.get(currentView, ParentNodeComponent.class);
+        ParentNodeComponent parentNodeComponent = EntityDataProxy.get().get(currentView, ParentNodeComponent.class);
         if (parentNodeComponent != null) {
             Facade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, parentNodeComponent.parentEntity);
         }
@@ -213,7 +213,7 @@ public class SelectionTool extends SimpleTool {
         dragStartPositions.clear();
         dragTouchDiff.clear();
         for (int itemInstance : sandbox.getSelector().getCurrentSelection()) {
-            transformComponent = SandboxComponentRetriever.get(itemInstance, TransformComponent.class);
+            transformComponent = EntityDataProxy.get().get(itemInstance, TransformComponent.class);
             if (transformComponent == null)
                 continue;
 
@@ -243,7 +243,7 @@ public class SelectionTool extends SimpleTool {
             dragStartPositions.clear();
             dragTouchDiff.clear();
             for (int itemInstance : sandbox.getSelector().getCurrentSelection()) {
-                transformComponent = SandboxComponentRetriever.get(itemInstance, TransformComponent.class);
+                transformComponent = EntityDataProxy.get().get(itemInstance, TransformComponent.class);
 
                 dragTouchDiff.put(itemInstance, new Vector2(x - transformComponent.x, y - transformComponent.y));
                 dragStartPositions.put(itemInstance, new Vector2(transformComponent.x, transformComponent.y));
@@ -286,7 +286,7 @@ public class SelectionTool extends SimpleTool {
 
             // Selection rectangles should move and follow along
             for (int itemInstance : sandbox.getSelector().getCurrentSelection()) {
-                transformComponent = SandboxComponentRetriever.get(itemInstance, TransformComponent.class);
+                transformComponent = EntityDataProxy.get().get(itemInstance, TransformComponent.class);
 
                 if (dragTouchDiff.get(itemInstance) == null)
                     continue;
@@ -317,7 +317,7 @@ public class SelectionTool extends SimpleTool {
     public boolean stageMouseScrolled(float amountX, float amountY) {
         if (isItemDown) {
             for (int itemInstance : sandbox.getSelector().getCurrentSelection()) {
-                transformComponent = SandboxComponentRetriever.get(itemInstance, TransformComponent.class);
+                transformComponent = EntityDataProxy.get().get(itemInstance, TransformComponent.class);
 
                 float degreeAmount = 3;
                 if (amountX < 0 || amountY < 0) degreeAmount = -3;
@@ -355,7 +355,7 @@ public class SelectionTool extends SimpleTool {
             // sets item position, and puts things into undo-redo que
             Array<Object[]> payloads = new Array<>();
             for (int itemInstance : sandbox.getSelector().getCurrentSelection()) {
-                transformComponent = SandboxComponentRetriever.get(itemInstance, TransformComponent.class);
+                transformComponent = EntityDataProxy.get().get(itemInstance, TransformComponent.class);
                 if (transformComponent == null)
                     continue;
                 Vector2 newPosition = new Vector2(transformComponent.x, transformComponent.y);
@@ -416,8 +416,8 @@ public class SelectionTool extends SimpleTool {
         draggedRectanglePoints[7] = sR.y + sR.height;
 
         for (int entity : freeItems) {
-            transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
-            dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+            transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
+            dimensionsComponent = EntityDataProxy.get().get(entity, DimensionsComponent.class);
 
             //if (!freeItems.get(i).isLockedByLayer() && Intersector.overlaps(sR, new Rectangle(entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight()))) {
 
@@ -469,7 +469,7 @@ public class SelectionTool extends SimpleTool {
         if (!isControlPressed) {
             dragStartPositions.clear();
             for (int itemInstance : sandbox.getSelector().getCurrentSelection()) {
-                transformComponent = SandboxComponentRetriever.get(itemInstance, TransformComponent.class);
+                transformComponent = EntityDataProxy.get().get(itemInstance, TransformComponent.class);
                 if (transformComponent != null)
                     dragStartPositions.put(itemInstance, new Vector2(transformComponent.x, transformComponent.y));
             }
@@ -494,7 +494,7 @@ public class SelectionTool extends SimpleTool {
             // sets item position, and puts things into undo-redo que
             Array<Object[]> payloads = new Array<>();
             for (int itemInstance : sandbox.getSelector().getCurrentSelection()) {
-                transformComponent = SandboxComponentRetriever.get(itemInstance, TransformComponent.class);
+                transformComponent = EntityDataProxy.get().get(itemInstance, TransformComponent.class);
                 if (transformComponent == null)
                     continue;
                 Vector2 newPosition = new Vector2(transformComponent.x, transformComponent.y);

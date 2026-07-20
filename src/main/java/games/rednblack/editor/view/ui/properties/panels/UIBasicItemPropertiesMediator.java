@@ -35,7 +35,6 @@ import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.runtime.ComponentCloner;
 import games.rednblack.editor.utils.runtime.EntityUtils;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
@@ -107,7 +106,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
                 ColorPicker picker = new HyperLapColorPicker(new ColorPickerAdapter() {
                     @Override
                     public void finished(Color newColor) {
-                        TintComponent tintComponent = SandboxComponentRetriever.get(observableReference, TintComponent.class);
+                        TintComponent tintComponent = entityData.get(observableReference, TintComponent.class);
                         tintComponent.color.set(prevColor);
 
                         viewComponent.setTintColor(newColor);
@@ -116,7 +115,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
 
                     @Override
                     public void changed(Color newColor) {
-                        TintComponent tintComponent = SandboxComponentRetriever.get(observableReference, TintComponent.class);
+                        TintComponent tintComponent = entityData.get(observableReference, TintComponent.class);
                         tintComponent.color.set(newColor);
                     }
                 });
@@ -167,10 +166,10 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
 
     @Override
     protected void translateObservableDataToView(int entity) {
-    	transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
-    	mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
-    	dimensionComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
-    	tintComponent = SandboxComponentRetriever.get(entity, TintComponent.class);
+    	transformComponent = entityData.get(entity, TransformComponent.class);
+    	mainItemComponent = entityData.get(entity, MainItemComponent.class);
+    	dimensionComponent = entityData.get(entity, DimensionsComponent.class);
+    	tintComponent = entityData.get(entity, TintComponent.class);
 
     	int entityType = EntityUtils.getType(observableReference);
         if(entityType == EntityFactory.COMPOSITE_TYPE) {
@@ -222,7 +221,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
         for (Map.Entry<String, Class<? extends Component>> entry : addable.entrySet()) {
             String componentName = entry.getKey();
             Class<? extends Component> componentClass = entry.getValue();
-            Component component = SandboxComponentRetriever.get(entity, componentClass);
+            Component component = entityData.get(entity, componentClass);
             if(component == null) {
                 componentsToAddList.add(componentName);
             }
@@ -235,10 +234,10 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
     protected void translateViewToItemData() {
     	int entity  = observableReference;
 
-        transformComponent = ComponentCloner.get(SandboxComponentRetriever.get(entity, TransformComponent.class));
-        mainItemComponent = ComponentCloner.get(SandboxComponentRetriever.get(entity, MainItemComponent.class));
-        dimensionComponent = ComponentCloner.get(SandboxComponentRetriever.get(entity, DimensionsComponent.class));
-        tintComponent = ComponentCloner.get(SandboxComponentRetriever.get(entity, TintComponent.class));
+        transformComponent = ComponentCloner.get(entityData.get(entity, TransformComponent.class));
+        mainItemComponent = ComponentCloner.get(entityData.get(entity, MainItemComponent.class));
+        dimensionComponent = ComponentCloner.get(entityData.get(entity, DimensionsComponent.class));
+        tintComponent = ComponentCloner.get(entityData.get(entity, TintComponent.class));
 
     	mainItemComponent.itemIdentifier = viewComponent.getIdBoxValue();
     	transformComponent.x = NumberUtils.toFloat(viewComponent.getXValue(), transformComponent.x);

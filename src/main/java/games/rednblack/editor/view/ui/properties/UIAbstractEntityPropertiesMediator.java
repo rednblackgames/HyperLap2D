@@ -18,6 +18,7 @@
 
 package games.rednblack.editor.view.ui.properties;
 
+import games.rednblack.editor.proxy.EntityDataProxy;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.interfaces.INotification;
@@ -29,6 +30,8 @@ import games.rednblack.puremvc.util.Interests;
 public abstract class UIAbstractEntityPropertiesMediator<V extends UIAbstractProperties> extends UIAbstractPropertiesMediator<Integer, V> {
     protected Sandbox sandbox;
 
+    protected EntityDataProxy entityData;
+
     protected int observableReference;
 
     protected boolean lockUpdates = true;
@@ -37,6 +40,7 @@ public abstract class UIAbstractEntityPropertiesMediator<V extends UIAbstractPro
         super(mediatorName, viewComponent);
 
         sandbox = Sandbox.getInstance();
+        entityData = EntityDataProxy.get(facade);
     }
 
     @Override

@@ -3,7 +3,6 @@ package games.rednblack.editor.view.ui.properties.panels;
 import games.rednblack.editor.controller.commands.component.UpdateParticleDataCommand;
 import games.rednblack.editor.renderer.components.particle.ParticleComponent;
 import games.rednblack.editor.renderer.data.ParticleEffectVO;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 
@@ -18,7 +17,7 @@ public class UIParticlePropertiesMediator extends UIItemPropertiesMediator<UIPar
 
     @Override
     protected void translateObservableDataToView(int item) {
-        ParticleComponent particleComponent = SandboxComponentRetriever.get(item, ParticleComponent.class);
+        ParticleComponent particleComponent = entityData.get(item, ParticleComponent.class);
         viewComponent.setMatrixTransformEnabled(particleComponent.transform);
         viewComponent.setAutoStartEnabled(particleComponent.autoStart);
     }

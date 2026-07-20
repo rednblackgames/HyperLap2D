@@ -3,7 +3,6 @@ package games.rednblack.editor.view.ui.properties.panels;
 import games.rednblack.editor.proxy.FontManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.components.label.LabelComponent;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.interfaces.INotification;
@@ -57,13 +56,13 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
     }
 
     private void onTextChange() {
-        LabelComponent labelComponent = SandboxComponentRetriever.get(observableReference, LabelComponent.class);
+        LabelComponent labelComponent = entityData.get(observableReference, LabelComponent.class);
         labelComponent.setText(viewComponent.getText());
     }
 
     @Override
     protected void translateObservableDataToView(int item) {
-        LabelComponent labelComponent = SandboxComponentRetriever.get(item, LabelComponent.class);
+        LabelComponent labelComponent = entityData.get(item, LabelComponent.class);
         viewComponent.setFontFamily(labelComponent.fontName);
         viewComponent.setFontSize(labelComponent.fontSize);
         viewComponent.setAlignValue(labelComponent.labelAlign);

@@ -17,9 +17,9 @@
  */
 
 package games.rednblack.editor.view.ui.properties;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.components.MainItemComponent;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.interfaces.INotification;
 
@@ -61,6 +61,6 @@ public abstract class UIItemPropertiesMediator<V extends UIAbstractProperties> e
     protected boolean validReference() {
         return observableReference != -1
                 && sandbox.getEngine().getEntityManager().isActive(observableReference)
-                && SandboxComponentRetriever.get(observableReference, MainItemComponent.class) != null;
+                && EntityDataProxy.get().get(observableReference, MainItemComponent.class) != null;
     }
 }

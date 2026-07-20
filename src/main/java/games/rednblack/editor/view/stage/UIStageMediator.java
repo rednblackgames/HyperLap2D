@@ -17,13 +17,13 @@
  */
 
 package games.rednblack.editor.view.stage;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import com.kotcrab.vis.ui.widget.toast.MessageToast;
 import games.rednblack.editor.controller.commands.ShowNotificationCommand;
 import games.rednblack.editor.renderer.components.MainItemComponent;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Mediator;
@@ -69,7 +69,7 @@ public class UIStageMediator extends Mediator<UIStage> {
 
                 int item = notification.getBody();
 
-                MainItemComponent mainItemComponent = SandboxComponentRetriever.get(item, MainItemComponent.class);
+                MainItemComponent mainItemComponent = EntityDataProxy.get().get(item, MainItemComponent.class);
 
                 H2DDialogs.showInputDialog(sandbox.getUIStage(), "New Library Item", "Unique Name", false, new InputDialogListener() {
                     @Override

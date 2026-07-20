@@ -21,7 +21,6 @@ package games.rednblack.editor.view.ui.properties.panels;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.controller.commands.component.UpdateSpriteAnimationDataCommand;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.interfaces.INotification;
@@ -63,7 +62,7 @@ public class UISpriteAnimationItemPropertiesMediator extends UIItemPropertiesMed
     @Override
     protected void translateObservableDataToView(int entity) {
 
-    	spriteAnimationComponent = SandboxComponentRetriever.get(entity, SpriteAnimationComponent.class);
+    	spriteAnimationComponent = entityData.get(entity, SpriteAnimationComponent.class);
         Array<String> animations = new Array<>();
         spriteAnimationComponent.frameRangeMap.keySet().forEach(animations::add);
 

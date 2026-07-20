@@ -22,7 +22,6 @@ import games.rednblack.editor.controller.commands.component.UpdateCompositeDataC
 import games.rednblack.editor.renderer.components.CompositeTransformComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.systems.CompositeSystem;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
@@ -45,7 +44,7 @@ public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<
 
     @Override
     protected void translateObservableDataToView(int item) {
-        CompositeTransformComponent transformComponent = SandboxComponentRetriever.get(item, CompositeTransformComponent.class);
+        CompositeTransformComponent transformComponent = entityData.get(item, CompositeTransformComponent.class);
         viewComponent.setAutomaticResize(transformComponent.automaticResize);
         viewComponent.setScissorsEnabled(transformComponent.scissorsEnabled);
         viewComponent.setRenderToFBOEnabled(transformComponent.renderToFBO);

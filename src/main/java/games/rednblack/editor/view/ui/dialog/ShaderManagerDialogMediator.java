@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.files.FileHandle;
 import games.rednblack.editor.code.syntax.GLSLSyntax;
@@ -9,7 +10,6 @@ import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.renderer.utils.DefaultShaders;
 import games.rednblack.editor.renderer.utils.ShaderCompiler;
 import games.rednblack.editor.utils.runtime.EntityUtils;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.menu.ResourcesMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -123,7 +123,7 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
 
     private void updateEntitiesShaders(int root, String shaderName) {
         Consumer<Integer> action = (item) -> {
-            ShaderComponent shaderComponent = SandboxComponentRetriever.get(item, ShaderComponent.class);
+            ShaderComponent shaderComponent = EntityDataProxy.get().get(item, ShaderComponent.class);
             if (shaderComponent != null && shaderComponent.shaderName.equals(shaderName)) {
                 shaderComponent.setShader(shaderName, resourceManager.getShaderProgram(shaderName));
             }

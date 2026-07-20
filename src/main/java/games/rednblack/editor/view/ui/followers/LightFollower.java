@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.followers;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -16,7 +17,6 @@ import com.badlogic.gdx.utils.FloatArray;
 import com.kotcrab.vis.ui.VisUI;
 import games.rednblack.editor.renderer.components.light.LightObjectComponent;
 import games.rednblack.editor.renderer.lights.Light;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import space.earlygrey.shapedrawer.JoinType;
@@ -45,7 +45,7 @@ public class LightFollower extends BasicFollower {
 
     public LightFollower(int entity) {
         super(entity);
-        lightObjectComponent = SandboxComponentRetriever.get(entity, LightObjectComponent.class);
+        lightObjectComponent = EntityDataProxy.get().get(entity, LightObjectComponent.class);
     }
 
     @Override

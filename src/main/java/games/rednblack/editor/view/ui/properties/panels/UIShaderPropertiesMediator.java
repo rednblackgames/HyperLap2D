@@ -24,7 +24,6 @@ import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.renderer.components.ShaderComponent;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.dialog.CodeEditorDialogMediator;
 import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
@@ -105,7 +104,7 @@ public class UIShaderPropertiesMediator extends UIRemovableComponentPropertiesMe
     protected void translateObservableDataToView(int item) {
         viewComponent.initShaders(resourceManager.getShaders());
 
-        ShaderComponent shaderComponent = SandboxComponentRetriever.get(item, ShaderComponent.class);
+        ShaderComponent shaderComponent = entityData.get(item, ShaderComponent.class);
         String currShaderName = shaderComponent.shaderName;
         viewComponent.setSelected(currShaderName);
         viewComponent.setRenderingLayer(shaderComponent.renderingLayer);
@@ -113,7 +112,7 @@ public class UIShaderPropertiesMediator extends UIRemovableComponentPropertiesMe
 
     @Override
     protected void translateViewToItemData() {
-        ShaderComponent shaderComponent = SandboxComponentRetriever.get(observableReference, ShaderComponent.class);
+        ShaderComponent shaderComponent = entityData.get(observableReference, ShaderComponent.class);
 
         if (!shaderComponent.shaderName.equals(viewComponent.getShader())
                 || shaderComponent.renderingLayer != viewComponent.getRenderingLayer()) {

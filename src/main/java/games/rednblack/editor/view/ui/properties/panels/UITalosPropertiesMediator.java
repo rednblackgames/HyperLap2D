@@ -3,7 +3,6 @@ package games.rednblack.editor.view.ui.properties.panels;
 import games.rednblack.editor.controller.commands.component.UpdateTalosDataCommand;
 import games.rednblack.h2d.extension.talos.TalosComponent;
 import games.rednblack.h2d.extension.talos.TalosVO;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 
@@ -18,7 +17,7 @@ public class UITalosPropertiesMediator extends UIItemPropertiesMediator<UITalosP
 
     @Override
     protected void translateObservableDataToView(int item) {
-        TalosComponent talosComponent = SandboxComponentRetriever.get(item, TalosComponent.class);
+        TalosComponent talosComponent = entityData.get(item, TalosComponent.class);
         viewComponent.setMatrixTransformEnabled(talosComponent.transform);
         viewComponent.setAutoStartEnabled(talosComponent.autoStart);
     }

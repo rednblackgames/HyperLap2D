@@ -8,7 +8,6 @@ import games.rednblack.editor.renderer.components.LayoutComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extension.talos.TalosAnchorConstraintComponent;
@@ -44,19 +43,19 @@ public class UITalosAnchorConstraintPropertiesMediator extends UIRemovableCompon
 
     @Override
     protected void translateObservableDataToView(int entity) {
-        TalosComponent talosComp = SandboxComponentRetriever.get(entity, TalosComponent.class);
-        TalosAnchorConstraintComponent anchorComp = SandboxComponentRetriever.get(entity, TalosAnchorConstraintComponent.class);
+        TalosComponent talosComp = entityData.get(entity, TalosComponent.class);
+        TalosAnchorConstraintComponent anchorComp = entityData.get(entity, TalosAnchorConstraintComponent.class);
         if (talosComp == null || anchorComp == null) return;
 
         // Build sibling list
         Array<String> siblings = new Array<>();
-        ParentNodeComponent parentNode = SandboxComponentRetriever.get(entity, ParentNodeComponent.class);
+        ParentNodeComponent parentNode = entityData.get(entity, ParentNodeComponent.class);
         if (parentNode != null && parentNode.parentEntity != -1) {
-            NodeComponent nodeComponent = SandboxComponentRetriever.get(parentNode.parentEntity, NodeComponent.class);
+            NodeComponent nodeComponent = entityData.get(parentNode.parentEntity, NodeComponent.class);
             if (nodeComponent != null) {
                 for (int child : nodeComponent.children) {
                     if (child == entity) continue;
-                    MainItemComponent mic = SandboxComponentRetriever.get(child, MainItemComponent.class);
+                    MainItemComponent mic = entityData.get(child, MainItemComponent.class);
                     if (mic != null) {
                         String label = mic.itemIdentifier != null && !mic.itemIdentifier.isEmpty()
                                 ? mic.itemIdentifier : mic.uniqueId;
@@ -158,7 +157,7 @@ public class UITalosAnchorConstraintPropertiesMediator extends UIRemovableCompon
     private String resolveTargetLabel(TalosAnchorConstraintComponent.ConstraintData data, int entity) {
         if (data.targetEntity == -1) return null; // null triggers "Parent" selection
 
-        MainItemComponent mic = SandboxComponentRetriever.get(data.targetEntity, MainItemComponent.class);
+        MainItemComponent mic = entityData.get(data.targetEntity, MainItemComponent.class);
         if (mic == null) return null;
 
         return mic.itemIdentifier != null && !mic.itemIdentifier.isEmpty()
@@ -167,7 +166,7 @@ public class UITalosAnchorConstraintPropertiesMediator extends UIRemovableCompon
 
     @Override
     protected void translateViewToItemData() {
-        TalosAnchorConstraintComponent comp = SandboxComponentRetriever.get(observableReference, TalosAnchorConstraintComponent.class);
+        TalosAnchorConstraintComponent comp = entityData.get(observableReference, TalosAnchorConstraintComponent.class);
         if (comp == null) return;
 
         TalosAnchorConstraintVO oldVo = new TalosAnchorConstraintVO();
@@ -231,15 +230,15 @@ public class UITalosAnchorConstraintPropertiesMediator extends UIRemovableCompon
     private String resolveTargetUniqueId(String label) {
         if (label == null) return null; // Parent
 
-        ParentNodeComponent parentNode = SandboxComponentRetriever.get(observableReference, ParentNodeComponent.class);
+        ParentNodeComponent parentNode = entityData.get(observableReference, ParentNodeComponent.class);
         if (parentNode == null || parentNode.parentEntity == -1) return label;
 
-        NodeComponent nodeComponent = SandboxComponentRetriever.get(parentNode.parentEntity, NodeComponent.class);
+        NodeComponent nodeComponent = entityData.get(parentNode.parentEntity, NodeComponent.class);
         if (nodeComponent == null) return label;
 
         for (int child : nodeComponent.children) {
             if (child == observableReference) continue;
-            MainItemComponent mic = SandboxComponentRetriever.get(child, MainItemComponent.class);
+            MainItemComponent mic = entityData.get(child, MainItemComponent.class);
             if (mic != null) {
                 String childLabel = mic.itemIdentifier != null && !mic.itemIdentifier.isEmpty()
                         ? mic.itemIdentifier : mic.uniqueId;

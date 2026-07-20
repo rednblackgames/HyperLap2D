@@ -7,7 +7,6 @@ import games.rednblack.editor.controller.commands.component.UpdateLightBodyDataC
 import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.data.LightBodyDataVO;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
@@ -55,7 +54,7 @@ public class UILightBodyPropertiesMediator extends UIRemovableComponentPropertie
                 ColorPicker picker = new HyperLapColorPicker(new ColorPickerAdapter() {
                     @Override
                     public void finished(Color newColor) {
-                        lightComponent = SandboxComponentRetriever.get(observableReference, LightBodyComponent.class);
+                        lightComponent = entityData.get(observableReference, LightBodyComponent.class);
                         lightComponent.color[0] = prevColor.r;
                         lightComponent.color[1] = prevColor.g;
                         lightComponent.color[2] = prevColor.b;
@@ -66,7 +65,7 @@ public class UILightBodyPropertiesMediator extends UIRemovableComponentPropertie
                     }
                     @Override
                     public void changed(Color newColor) {
-                        lightComponent = SandboxComponentRetriever.get(observableReference, LightBodyComponent.class);
+                        lightComponent = entityData.get(observableReference, LightBodyComponent.class);
                         lightComponent.color[0] = newColor.r;
                         lightComponent.color[1] = newColor.g;
                         lightComponent.color[2] = newColor.b;
@@ -85,7 +84,7 @@ public class UILightBodyPropertiesMediator extends UIRemovableComponentPropertie
 
     @Override
     protected void translateObservableDataToView(int item) {
-        lightComponent = SandboxComponentRetriever.get(item, LightBodyComponent.class);
+        lightComponent = entityData.get(item, LightBodyComponent.class);
         viewComponent.setDirection(lightComponent.rayDirection);
         viewComponent.setDistance(lightComponent.distance + "");
         viewComponent.setLightIntensity(lightComponent.intensity + "");
@@ -102,7 +101,7 @@ public class UILightBodyPropertiesMediator extends UIRemovableComponentPropertie
 
     @Override
     protected void translateViewToItemData() {
-        lightComponent = SandboxComponentRetriever.get(observableReference, LightBodyComponent.class);
+        lightComponent = entityData.get(observableReference, LightBodyComponent.class);
         LightBodyDataVO oldPayloadVo = new LightBodyDataVO();
         oldPayloadVo.loadFromComponent(lightComponent);
 

@@ -17,11 +17,11 @@
  */
 
 package games.rednblack.editor.view.ui;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
 import games.rednblack.editor.controller.commands.ConvertToCompositeCommand;
 import games.rednblack.editor.renderer.components.NodeComponent;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.stage.tools.PanTool;
@@ -147,7 +147,7 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
     private void createFollowersForAllVisible() {
         removeAllfollowers();
         Sandbox sandbox = Sandbox.getInstance();
-        NodeComponent nodeComponent = SandboxComponentRetriever.get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
+        NodeComponent nodeComponent = EntityDataProxy.get().get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
         if (nodeComponent != null) {
             for (int entity: nodeComponent.children) {
                 createFollower(entity);

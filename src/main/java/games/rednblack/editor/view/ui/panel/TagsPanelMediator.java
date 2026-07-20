@@ -1,7 +1,7 @@
 package games.rednblack.editor.view.ui.panel;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.components.MainItemComponent;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.menu.WindowMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -68,7 +68,7 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
                 viewComponent.updateView();
                 String tagToRemove = notification.getBody();
                 for (int observable : observables) {
-                    MainItemComponent mainItemComponent = SandboxComponentRetriever.get(observable, MainItemComponent.class);
+                    MainItemComponent mainItemComponent = EntityDataProxy.get().get(observable, MainItemComponent.class);
                     mainItemComponent.tags.remove(tagToRemove);
                 }
                 break;
@@ -76,7 +76,7 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
                 viewComponent.updateView();
                 String tagToAdd = notification.getBody();
                 for (int observable : observables) {
-                    MainItemComponent mainItemComponent = SandboxComponentRetriever.get(observable, MainItemComponent.class);
+                    MainItemComponent mainItemComponent = EntityDataProxy.get().get(observable, MainItemComponent.class);
                     mainItemComponent.tags.add(tagToAdd);
                 }
                 break;
@@ -97,7 +97,7 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
             Iterator<Integer> iterator = observables.iterator();
 
             int entity = iterator.next();
-            MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
+            MainItemComponent mainItemComponent = EntityDataProxy.get().get(entity, MainItemComponent.class);
             if (mainItemComponent == null)
                 return;
             Set<String> common = new LinkedHashSet<>();
@@ -108,7 +108,7 @@ public class TagsPanelMediator extends Mediator<TagsPanel> {
 
             while (iterator.hasNext()) {
                 entity = iterator.next();
-                mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
+                mainItemComponent = EntityDataProxy.get().get(entity, MainItemComponent.class);
                 if (mainItemComponent == null) continue;
                 toRetain.clear();
                 for (String tag : mainItemComponent.tags)

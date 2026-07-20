@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.followers;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.ecs.ComponentMapper;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -31,7 +32,6 @@ import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.utils.TransformMathUtils;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.puremvc.interfaces.INotification;
 
@@ -66,13 +66,13 @@ public abstract class BasicFollower extends Group {
     }
 
     private void setItem(int entity) {
-        transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
-        dimensionsComponent = SandboxComponentRetriever.get(entity, DimensionsComponent.class);
+        transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
+        dimensionsComponent = EntityDataProxy.get().get(entity, DimensionsComponent.class);
         this.entity = entity;
     }
 
     public void update() {
-        if (SandboxComponentRetriever.get(entity, MainItemComponent.class) == null)
+        if (EntityDataProxy.get().get(entity, MainItemComponent.class) == null)
             return;
 
         Sandbox sandbox = Sandbox.getInstance();

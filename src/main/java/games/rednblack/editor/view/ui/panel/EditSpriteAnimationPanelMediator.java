@@ -17,12 +17,12 @@
  */
 
 package games.rednblack.editor.view.ui.panel;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
 import games.rednblack.editor.renderer.data.FrameRange;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.runtime.EntityUtils;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.menu.WindowMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -116,7 +116,7 @@ public class EditSpriteAnimationPanelMediator extends Mediator<EditSpriteAnimati
         if(observable == -1) {
             viewComponent.setEmpty("No item selected");
         } else {
-            SpriteAnimationComponent spriteAnimationComponent = SandboxComponentRetriever.get(observable, SpriteAnimationComponent.class);
+            SpriteAnimationComponent spriteAnimationComponent = EntityDataProxy.get().get(observable, SpriteAnimationComponent.class);
             viewComponent.updateView(spriteAnimationComponent.frameRangeMap);
         }
     }
@@ -126,14 +126,14 @@ public class EditSpriteAnimationPanelMediator extends Mediator<EditSpriteAnimati
         int frameFrom = viewComponent.getFrameFrom();
         int frameTo = viewComponent.getFrameTo();
 
-        SpriteAnimationComponent spriteAnimationComponent = SandboxComponentRetriever.get(observable, SpriteAnimationComponent.class);
+        SpriteAnimationComponent spriteAnimationComponent = EntityDataProxy.get().get(observable, SpriteAnimationComponent.class);
         spriteAnimationComponent.frameRangeMap.put(name, new FrameRange(name, frameFrom, frameTo));
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, observable);
     }
 
     private void removeAnimation(String name) {
-        SpriteAnimationComponent spriteAnimationComponent = SandboxComponentRetriever.get(observable, SpriteAnimationComponent.class);
+        SpriteAnimationComponent spriteAnimationComponent = EntityDataProxy.get().get(observable, SpriteAnimationComponent.class);
         spriteAnimationComponent.frameRangeMap.remove(name);
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, observable);

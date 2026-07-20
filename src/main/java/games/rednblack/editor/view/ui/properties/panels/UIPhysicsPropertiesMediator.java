@@ -4,7 +4,6 @@ import games.rednblack.editor.controller.commands.component.UpdatePhysicsDataCom
 import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.data.PhysicsBodyDataVO;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
@@ -36,7 +35,7 @@ public class UIPhysicsPropertiesMediator extends UIRemovableComponentPropertiesM
 
     @Override
     protected void translateObservableDataToView(int item) {
-        physicsComponent = SandboxComponentRetriever.get(item, PhysicsBodyComponent.class);
+        physicsComponent = entityData.get(item, PhysicsBodyComponent.class);
         viewComponent.setBodyType(physicsComponent.bodyType);
         viewComponent.getMassField().setText(physicsComponent.mass + "");
         viewComponent.getCenterOfMassXField().setText(physicsComponent.centerOfMass.x + "");
@@ -60,7 +59,7 @@ public class UIPhysicsPropertiesMediator extends UIRemovableComponentPropertiesM
 
     @Override
     protected void translateViewToItemData() {
-        physicsComponent = SandboxComponentRetriever.get(observableReference, PhysicsBodyComponent.class);
+        physicsComponent = entityData.get(observableReference, PhysicsBodyComponent.class);
 
         PhysicsBodyDataVO oldPayloadVo = new PhysicsBodyDataVO();
         oldPayloadVo.loadFromComponent(physicsComponent);

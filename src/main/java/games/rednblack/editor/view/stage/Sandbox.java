@@ -54,7 +54,6 @@ import games.rednblack.editor.system.ParticleContinuousSystem;
 import games.rednblack.editor.system.PhysicsAdjustSystem;
 import games.rednblack.editor.system.TalosContinuousSystem;
 import games.rednblack.editor.utils.NativeDialogs;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ItemControlMediator;
 import games.rednblack.editor.view.SceneControlMediator;
 import games.rednblack.editor.view.stage.input.InputListener;
@@ -181,6 +180,7 @@ public class Sandbox {
 
         selector = new ItemSelector(this, facade);
         facade.registerProxy(new SelectionProxy(selector));
+        facade.registerProxy(new EntityDataProxy(getEngine()));
 
         cameraService = new CameraService(this, facade);
         sceneLoadService = new SceneLoadService(this, projectManager, facade);

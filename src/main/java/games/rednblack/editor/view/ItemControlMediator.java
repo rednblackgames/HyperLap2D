@@ -17,10 +17,10 @@
  */
 
 package games.rednblack.editor.view;
+import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 
 import java.util.Set;
 
@@ -40,7 +40,7 @@ public class ItemControlMediator {
 
     public void itemZIndexChange(Set<Integer> currentSelection, boolean isUp) {
         for (Integer item : currentSelection) {
-        	zIndexComponent = SandboxComponentRetriever.get(item, ZIndexComponent.class);
+        	zIndexComponent = EntityDataProxy.get().get(item, ZIndexComponent.class);
 
             int ammount = 1;
             if (!isUp) ammount = -1;
@@ -52,7 +52,7 @@ public class ItemControlMediator {
     }
 
     public void moveItemBy(int entity, float x, float y) {
-    	transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
+    	transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
     	transformComponent.x+=x;
     	transformComponent.y+=y;
     }

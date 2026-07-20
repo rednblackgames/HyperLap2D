@@ -1,7 +1,6 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import games.rednblack.editor.renderer.ecs.Component;
-import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelComponent;
 import games.rednblack.puremvc.interfaces.INotification;
@@ -44,7 +43,7 @@ public class UITypingLabelPropertiesMediator extends UIRemovableComponentPropert
     }
 
     private void restartTypingLabel() {
-        TypingLabelComponent typingLabelComponent = SandboxComponentRetriever.get(observableReference, TypingLabelComponent.class);
+        TypingLabelComponent typingLabelComponent = entityData.get(observableReference, TypingLabelComponent.class);
         typingLabelComponent.typingLabel.restart();
     }
 
