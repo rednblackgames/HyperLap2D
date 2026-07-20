@@ -49,22 +49,27 @@ public class UIToolBoxMediator extends Mediator<UIToolBox> {
     }
 
     private void initToolList() {
-        toolList.put(SelectionTool.NAME, new SelectionTool());
+        registerTool(SelectionTool.NAME, new SelectionTool());
         viewComponent.addToolButton(SelectionTool.NAME, toolList.get(SelectionTool.NAME));
-        toolList.put(TransformTool.NAME, new TransformTool());
+        registerTool(TransformTool.NAME, new TransformTool());
         viewComponent.addToolButton(TransformTool.NAME, toolList.get(TransformTool.NAME));
-        toolList.put(PolygonTool.NAME, new PolygonTool());
+        registerTool(PolygonTool.NAME, new PolygonTool());
         viewComponent.addToolButton(PolygonTool.NAME, toolList.get(PolygonTool.NAME));
 
         viewComponent.add(new Separator("tool")).padTop(2).padBottom(2).fill().expand().row();
 
-        toolList.put(TextTool.NAME, new TextTool());
+        registerTool(TextTool.NAME, new TextTool());
         viewComponent.addToolButton(TextTool.NAME, toolList.get(TextTool.NAME));
-        toolList.put(PointLightTool.NAME, new PointLightTool());
+        registerTool(PointLightTool.NAME, new PointLightTool());
         viewComponent.addToolButton(PointLightTool.NAME, toolList.get(PointLightTool.NAME));
-        toolList.put(ConeLightTool.NAME, new ConeLightTool());
+        registerTool(ConeLightTool.NAME, new ConeLightTool());
         viewComponent.addToolButton(ConeLightTool.NAME, toolList.get(ConeLightTool.NAME));
-        toolList.put(PanTool.NAME, new PanTool());
+        registerTool(PanTool.NAME, new PanTool());
+    }
+
+    private void registerTool(String name, SimpleTool tool) {
+        tool.initFacade(facade);
+        toolList.put(name, tool);
     }
 
     public void addTool(String toolName, VisImageButton.VisImageButtonStyle toolBtnStyle, boolean addSeparator, Tool tool) {

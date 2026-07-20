@@ -98,7 +98,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
         updateListeners();
 
         // set cursor
-        cursorManager = Facade.getInstance().retrieveProxy(CursorManager.NAME);
+        cursorManager = facade.retrieveProxy(CursorManager.NAME);
         cursorManager.setCursor(Cursors.CROSS);
     }
 
@@ -124,7 +124,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
     }
 
     private void updateListeners() {
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = getSandbox();
         Set<Integer> selectedEntities = sandbox.getSelector().getSelectedItems();
         updateListeners(selectedEntities);
     }
@@ -136,7 +136,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
     }
 
     private void updateListeners(Set<Integer> entities) {
-        FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+        FollowersUIMediator followersUIMediator = facade.retrieveMediator(FollowersUIMediator.NAME);
         followersUIMediator.clearAllListeners();
 
         for (int entity : entities) {
@@ -149,9 +149,9 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
     public void anchorDown(NormalSelectionFollower follower, int anchor, float x, float y) {
         fixCursor = true;
 
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = getSandbox();
 
-        commandBuilder.begin(follower.getEntity(), Sandbox.getInstance().getEngine());
+        commandBuilder.begin(follower.getEntity(), getSandbox().getEngine());
 
         TransformComponent transformComponent = EntityDataProxy.get().get(follower.getEntity(), TransformComponent.class);
         Vector2 mousePoint = sandbox.screenToWorld(x, y);
@@ -197,11 +197,11 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
         fixCursor = false;
 
         if (anchor == NormalSelectionFollower.ORIGIN && button == Input.Buttons.RIGHT) {
-            Facade.getInstance().sendNotification(MANUAL_ORIGIN_POSITION, follower.getEntity());
+            facade.sendNotification(MANUAL_ORIGIN_POSITION, follower.getEntity());
             return;
         }
 
-        commandBuilder.execute(Facade.getInstance());
+        commandBuilder.execute(facade);
         if (transformStrategy == compositeStrategy) {
             compositeStrategy.swapItemFinalAndInitialStates(follower.getEntity());
         }
@@ -212,13 +212,13 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
 
     @Override
     public void anchorDragged(NormalSelectionFollower follower, int anchor, float x, float y) {
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = getSandbox();
 
         Vector2 mousePointStage = sandbox.screenToWorld(x, y);
         execute(mouseInitialCoordinates, mousePointStage, anchor, follower.getEntity());
         mouseInitialCoordinates.set(mousePointStage.x, mousePointStage.y);
 
-        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED);
+        facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED);
     }
 
     @Override

@@ -48,7 +48,7 @@ public class ConeLightTool extends ItemDropTool {
 
     @Override
     public int putItem(float x, float y) {
-        //LayerItemVO layer = Sandbox.getInstance().getItemFactory().getSelectedLayer();
+        //LayerItemVO layer = getSandbox().getItemFactory().getSelectedLayer();
         LightVO vo = new LightVO();
         vo.type = LightObjectComponent.LightType.CONE;
         vo.distance = vo.distance / sandbox.getPixelPerWU();

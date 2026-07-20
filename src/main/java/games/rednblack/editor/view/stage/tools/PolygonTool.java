@@ -82,7 +82,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
     public void initTool() {
         super.initTool();
 
-        followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+        followersUIMediator = facade.retrieveMediator(FollowersUIMediator.NAME);
 
         updateSubFollowerList();
     }
@@ -110,7 +110,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
     }
 
     private void updateSubFollowerList() {
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = getSandbox();
         Set<Integer> selectedEntities = sandbox.getSelector().getSelectedItems();
         for(int entity: selectedEntities) {
             BasicFollower follower = followersUIMediator.getFollower(entity);
@@ -149,7 +149,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
         follower.setProblems(null);
 
         UpdatePolygonVerticesCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
-        Facade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
+        facade.sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
     }
 
     @Override
@@ -215,7 +215,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
             Object[] payload = new Object[2];
             payload[0] = follower;
             payload[1] = anchor;
-            Facade.getInstance().sendNotification(PolygonTool.MANUAL_VERTEX_POSITION, payload);
+            facade.sendNotification(PolygonTool.MANUAL_VERTEX_POSITION, payload);
             return;
         }
 
@@ -234,7 +234,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
     }
 
     private PolygonFollower getMeshFollower(int entity) {
-        FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+        FollowersUIMediator followersUIMediator = facade.retrieveMediator(FollowersUIMediator.NAME);
         BasicFollower follower = followersUIMediator.getFollower(entity);
 
         PolygonFollower meshFollower = (PolygonFollower) (follower).getSubFollower(PolygonFollower.class);
@@ -266,7 +266,7 @@ public class PolygonTool extends SelectionTool implements PolygonTransformationL
             }
 
             UpdatePolygonVerticesCommand.payload(currentCommandPayload, polygonShapeComponent.vertices, polygonShapeComponent.polygonizedVertices);
-            Facade.getInstance().sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
+            facade.sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, currentCommandPayload);
 
             follower.update();
 

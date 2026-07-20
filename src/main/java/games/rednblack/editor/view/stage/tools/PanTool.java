@@ -37,15 +37,15 @@ public class PanTool extends SimpleTool {
 
     @Override
     public void initTool() {
-        CursorManager cursorManager = Facade.getInstance().retrieveProxy(CursorManager.NAME);
+        CursorManager cursorManager = facade.retrieveProxy(CursorManager.NAME);
         cursorManager.setCursor(Cursors.HAND);
     }
 
     @Override
     public boolean stageMouseDown(float x, float y) {
         lastCoordinates.set(Gdx.input.getX(), Gdx.input.getY());
-        currX = Sandbox.getInstance().getCamera().position.x;
-        currY = Sandbox.getInstance().getCamera().position.y;
+        currX = getSandbox().getCamera().position.x;
+        currY = getSandbox().getCamera().position.y;
         return false;
     }
 
@@ -72,8 +72,8 @@ public class PanTool extends SimpleTool {
     @Override
     public boolean itemMouseDown(int entity, float x, float y) {
         lastCoordinates.set(Gdx.input.getX(), Gdx.input.getY());
-        currX = Sandbox.getInstance().getCamera().position.x;
-        currY = Sandbox.getInstance().getCamera().position.y;
+        currX = getSandbox().getCamera().position.x;
+        currY = getSandbox().getCamera().position.y;
         return true;
     }
 
@@ -94,9 +94,9 @@ public class PanTool extends SimpleTool {
 
     float currX, currY;
     private void doPanning(float x, float y) {
-        ResourceManager resourceManager = Facade.getInstance().retrieveProxy(ResourceManager.NAME);
+        ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = getSandbox();
         OrthographicCamera camera = sandbox.getCamera();
 
         currX += (lastCoordinates.x - Gdx.input.getX()) * camera.zoom / resourceManager.getProjectVO().pixelToWorld;
@@ -106,6 +106,6 @@ public class PanTool extends SimpleTool {
 
         lastCoordinates.set(Gdx.input.getX(), Gdx.input.getY());
 
-        Facade.getInstance().sendNotification(SCENE_PANNED);
+        facade.sendNotification(SCENE_PANNED);
     }
 }

@@ -1,6 +1,7 @@
 package games.rednblack.editor.view.stage.tools;
 
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.followers.BasicFollower;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
@@ -15,11 +16,28 @@ import java.util.Set;
  */
 public abstract class SimpleTool implements Tool {
 
+    /**
+     * Injected by {@code UIToolBoxMediator} when the editor tools are created, so
+     * editor tools stop calling {@code Facade.getInstance()}/{@code Sandbox.getInstance()}
+     * (plugin tools implement {@link Tool} directly and are unaffected).
+     */
+    protected Facade facade;
+
+    /** Lazily retrieves the Sandbox via the facade (SandboxMediator is registered after UIToolBoxMediator). */
+    protected Sandbox getSandbox() {
+        return facade.retrieveMediator(SandboxMediator.NAME).getViewComponent();
+    }
+
+    /** Called by {@code UIToolBoxMediator} after constructing each editor tool. */
+    public void initFacade(Facade facade) {
+        this.facade = facade;
+    }
+
     @Override
     public void initTool() {
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = getSandbox();
         Set<Integer> currSelection = sandbox.getSelector().getCurrentSelection();
-        FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+        FollowersUIMediator followersUIMediator = facade.retrieveMediator(FollowersUIMediator.NAME);
         for(int entity: currSelection) {
             BasicFollower follower = followersUIMediator.getFollower(entity);
             if(follower instanceof NormalSelectionFollower) {

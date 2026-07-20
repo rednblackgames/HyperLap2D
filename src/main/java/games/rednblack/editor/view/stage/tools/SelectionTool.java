@@ -103,12 +103,12 @@ public class SelectionTool extends SimpleTool {
     @Override
     public void initTool() {
         super.initTool();
-        sandbox = Sandbox.getInstance();
+        sandbox = getSandbox();
 
-        followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
+        followersUIMediator = facade.retrieveMediator(FollowersUIMediator.NAME);
 
         // set cursor
-        CursorManager cursorManager = Facade.getInstance().retrieveProxy(CursorManager.NAME);
+        CursorManager cursorManager = facade.retrieveProxy(CursorManager.NAME);
         cursorManager.setCursor(Cursors.NORMAL);
 
         if (getName().equals(NAME)) {
@@ -143,10 +143,10 @@ public class SelectionTool extends SimpleTool {
 
     @Override
     public boolean stageMouseDown(float x, float y) {
-        sandbox = Sandbox.getInstance();
+        sandbox = getSandbox();
 
         // transform stage coordinates to screen coordinates
-        Vector2 screenCoords = Sandbox.getInstance().worldToScreen(x, y);
+        Vector2 screenCoords = getSandbox().worldToScreen(x, y);
 
         // preparing selection tool rectangle to follow mouse
         sandbox.prepareSelectionRectangle(screenCoords.x, screenCoords.y);
@@ -163,11 +163,11 @@ public class SelectionTool extends SimpleTool {
 
     @Override
     public void stageMouseDragged(float x, float y) {
-        sandbox = Sandbox.getInstance();
+        sandbox = getSandbox();
         isCastingRectangle = true;
 
         // transform stage coordinates to screen coordinates
-        Vector2 screenCoords = Sandbox.getInstance().worldToScreen(x, y);
+        Vector2 screenCoords = getSandbox().worldToScreen(x, y);
 
         sandbox.getSelectionRec().setWidth(screenCoords.x - sandbox.getSelectionRec().getX());
         sandbox.getSelectionRec().setHeight(screenCoords.y - sandbox.getSelectionRec().getY());
@@ -180,15 +180,14 @@ public class SelectionTool extends SimpleTool {
             return;
         ParentNodeComponent parentNodeComponent = EntityDataProxy.get().get(currentView, ParentNodeComponent.class);
         if (parentNodeComponent != null) {
-            Facade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, parentNodeComponent.parentEntity);
+            facade.sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, parentNodeComponent.parentEntity);
         }
     }
 
     @Override
     public boolean itemMouseDown(int entity, float x, float y) {
         isItemDown = true;
-        sandbox = Sandbox.getInstance();
-        Facade facade = Facade.getInstance();
+        sandbox = getSandbox();
 
         currentTouchedItemWasSelected = sandbox.getSelector().getCurrentSelection().contains(entity);
 
@@ -224,7 +223,7 @@ public class SelectionTool extends SimpleTool {
         dragMouseStartPosition = new Vector2(x, y);
 
         // pining UI to update current item properties tools
-        Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+        facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
 
         return true;
     }
@@ -233,12 +232,12 @@ public class SelectionTool extends SimpleTool {
 
     @Override
     public void itemMouseDragged(int entity, float x, float y) {
-        sandbox = Sandbox.getInstance();
+        sandbox = getSandbox();
 
         if (!isDragging && (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT))) { // first drag iteration and is copy mode
             // we need to copy/paste the item in place, the set it as selection and draggable, then perform the drag.
-            Facade.getInstance().sendNotification(MsgAPI.ACTION_COPY);
-            Facade.getInstance().sendNotification(MsgAPI.ACTION_PASTE);
+            facade.sendNotification(MsgAPI.ACTION_COPY);
+            facade.sendNotification(MsgAPI.ACTION_PASTE);
 
             dragStartPositions.clear();
             dragTouchDiff.clear();
@@ -252,14 +251,14 @@ public class SelectionTool extends SimpleTool {
             dragMouseStartPosition = new Vector2(x, y);
 
             // pining UI to update current item properties tools
-            Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+            facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
 
         }
 
 
         isDragging = true;
 
-        float gridSize = Sandbox.getInstance().getWorldGridSize();
+        float gridSize = getSandbox().getWorldGridSize();
 
         if (isShiftPressed()) {
             // check if we have a direction vector
@@ -307,7 +306,7 @@ public class SelectionTool extends SimpleTool {
                 //value.hide();
 
                 // pining UI to update current item properties tools
-                Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, itemInstance);
+                facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, itemInstance);
             }
         }
 
@@ -328,7 +327,7 @@ public class SelectionTool extends SimpleTool {
 
                 transformComponent.rotation = (transformComponent.rotation + degreeAmount) % 360;
                 // pining UI to update current item properties tools
-                Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, itemInstance);
+                facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, itemInstance);
             }
         }
 
@@ -338,8 +337,7 @@ public class SelectionTool extends SimpleTool {
     @Override
     public void itemMouseUp(int entity, float x, float y) {
         isItemDown = false;
-        sandbox = Sandbox.getInstance();
-        Facade facade = Facade.getInstance();
+        sandbox = getSandbox();
 
         if (currentTouchedItemWasSelected && !isDragging) {
             // item was selected (and no dragging was performed), so we need to release it
@@ -368,7 +366,7 @@ public class SelectionTool extends SimpleTool {
                 payloads.add(payload);
             }
 
-            Facade.getInstance().sendNotification(MsgAPI.ACTION_ITEMS_MOVE_TO, payloads);
+            facade.sendNotification(MsgAPI.ACTION_ITEMS_MOVE_TO, payloads);
         }
 
         isDragging = false;
@@ -378,7 +376,7 @@ public class SelectionTool extends SimpleTool {
     @Override
     public void itemMouseDoubleClick(int item, float x, float y) {
         if (sandbox.getSelector().selectionIsComposite()) {
-            Facade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, item);
+            facade.sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, item);
         }
     }
 
@@ -389,11 +387,10 @@ public class SelectionTool extends SimpleTool {
 
 
     private void selectionComplete() {
-        sandbox = Sandbox.getInstance();
+        sandbox = getSandbox();
 
-        Facade facade = Facade.getInstance();
-        OrthographicCamera camera = Sandbox.getInstance().getCamera();
-        Viewport viewport = Sandbox.getInstance().getViewport();
+        OrthographicCamera camera = getSandbox().getCamera();
+        Viewport viewport = getSandbox().getViewport();
 
 
         HashSet<Integer> freeItems = sandbox.getSelector().getAllFreeItems();
@@ -451,11 +448,11 @@ public class SelectionTool extends SimpleTool {
         boolean isControlPressed = isControlPressed();
 
         // the amount of pixels by which to move item if moving
-        float deltaMove = 1f / Sandbox.getInstance().getPixelPerWU();
+        float deltaMove = 1f / getSandbox().getPixelPerWU();
 
         if (isShiftPressed()) {
             // if shift is pressed, move boxes by 20 pixels instead of one
-            deltaMove = 20f / Sandbox.getInstance().getPixelPerWU(); //pixels
+            deltaMove = 20f / getSandbox().getPixelPerWU(); //pixels
         }
 
         if (sandbox.getGridSize() > 1) {
@@ -511,12 +508,12 @@ public class SelectionTool extends SimpleTool {
             }
 
             if (payloads.size > 0)
-                Facade.getInstance().sendNotification(MsgAPI.ACTION_ITEMS_MOVE_TO, payloads);
+                facade.sendNotification(MsgAPI.ACTION_ITEMS_MOVE_TO, payloads);
         }
 
         // Delete
         if (KeyBindingsLayout.mapAction(keycode) == KeyBindingsLayout.DELETE) {
-            Facade.getInstance().sendNotification(MsgAPI.ACTION_DELETE);
+            facade.sendNotification(MsgAPI.ACTION_DELETE);
         }
     }
 

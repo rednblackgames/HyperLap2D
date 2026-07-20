@@ -72,7 +72,7 @@ public class TextTool extends ItemDropTool {
     @Override
     public void initTool() {
         super.initTool();
-        CursorManager cursorManager = Facade.getInstance().retrieveProxy(CursorManager.NAME);
+        CursorManager cursorManager = facade.retrieveProxy(CursorManager.NAME);
         cursorManager.setCursor(Cursors.TEXT_TOOL);
     }
 
