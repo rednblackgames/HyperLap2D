@@ -95,7 +95,7 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
     public static Set<Integer> createEntitiesFromVO(CompositeItemVO compositeVO) {
         Set<Integer> entities = new HashSet<>();
 
-        EntityFactory factory = Sandbox.getInstance().sceneControl.sceneLoader.getEntityFactory();
+        EntityFactory factory = Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory();
         int parentEntity = Sandbox.getInstance().getCurrentViewingEntity();
 
 

@@ -59,7 +59,7 @@ public abstract class EntityModifyRevertibleCommand extends HistoricRevertibleCo
             HashMap<String, CompositeItemVO> libraryItems = projectManager.currentProjectInfoVO.libraryItems;
             if (libraryItems.containsKey(mainItemComponent.libraryLink)) {
                 CompositeItemVO itemVO = new CompositeItemVO();
-                itemVO.loadFromEntity(entity, sandbox.getEngine(), sandbox.sceneControl.sceneLoader.getEntityFactory());
+                itemVO.loadFromEntity(entity, sandbox.getEngine(), sandbox.getSceneControl().sceneLoader.getEntityFactory());
                 itemVO.cleanIds();
                 libraryItems.put(mainItemComponent.libraryLink, itemVO);
             }

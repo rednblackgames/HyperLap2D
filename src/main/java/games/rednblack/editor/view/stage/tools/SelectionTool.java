@@ -169,8 +169,8 @@ public class SelectionTool extends SimpleTool {
         // transform stage coordinates to screen coordinates
         Vector2 screenCoords = Sandbox.getInstance().worldToScreen(x, y);
 
-        sandbox.selectionRec.setWidth(screenCoords.x - sandbox.selectionRec.getX());
-        sandbox.selectionRec.setHeight(screenCoords.y - sandbox.selectionRec.getY());
+        sandbox.getSelectionRec().setWidth(screenCoords.x - sandbox.getSelectionRec().getX());
+        sandbox.getSelectionRec().setHeight(screenCoords.y - sandbox.getSelectionRec().getY());
     }
 
     @Override
@@ -401,10 +401,10 @@ public class SelectionTool extends SimpleTool {
         // when touch is up, selection process stops, and if any items got "caught" in they should be selected.
 
         // hiding selection rectangle
-        sandbox.selectionRec.setOpacity(0.0f);
+        sandbox.getSelectionRec().setOpacity(0.0f);
         //ArrayList<Entity> curr = new ArrayList<Entity>();
         Set<Integer> curr = new HashSet<>();
-        Rectangle sR = sandbox.screenToWorld(sandbox.selectionRec.getRect());
+        Rectangle sR = sandbox.screenToWorld(sandbox.getSelectionRec().getRect());
 
         draggedRectanglePoints[0] = sR.x;
         draggedRectanglePoints[1] = sR.y;

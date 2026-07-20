@@ -44,7 +44,7 @@ public class ItemFactory implements IFactory {
 
     public static ItemFactory get() {
         if(instance == null) {
-            instance = new ItemFactory(Sandbox.getInstance().sceneControl.sceneLoader);
+            instance = new ItemFactory(Sandbox.getInstance().getSceneControl().sceneLoader);
         }
 
         return instance;

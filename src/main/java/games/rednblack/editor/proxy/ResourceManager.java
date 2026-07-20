@@ -391,7 +391,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private void loadCurrentProjectSpineAnimations(String path) {
         spineAnimAtlases.clear();
         FileHandle sourceDir = new FileHandle(path);
-        SpineDrawableLogic spineDrawableLogic = (SpineDrawableLogic) Sandbox.getInstance().sceneControl.sceneLoader.getExternalItemType(SpineItemType.SPINE_TYPE).getDrawable();
+        SpineDrawableLogic spineDrawableLogic = (SpineDrawableLogic) Sandbox.getInstance().getSceneControl().sceneLoader.getExternalItemType(SpineItemType.SPINE_TYPE).getDrawable();
         for (FileHandle entry : sourceDir.list()) {
             if (entry.file().isDirectory()) {
                 String animName = FilenameUtils.removeExtension(entry.file().getName());

@@ -78,7 +78,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         zUp.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sandbox.itemControl.itemZIndexChange(sandbox.getSelector().getCurrentSelection(), true);
+                sandbox.getItemControl().itemZIndexChange(sandbox.getSelector().getCurrentSelection(), true);
                 facade.sendNotification(MsgAPI.ACTION_Z_INDEX_CHANGED, sandbox.getSelector().getCurrentSelection());
             }
         });
@@ -86,7 +86,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         zDown.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sandbox.itemControl.itemZIndexChange(sandbox.getSelector().getCurrentSelection(), false);
+                sandbox.getItemControl().itemZIndexChange(sandbox.getSelector().getCurrentSelection(), false);
                 facade.sendNotification(MsgAPI.ACTION_Z_INDEX_CHANGED, sandbox.getSelector().getCurrentSelection());
             }
         });
@@ -187,7 +187,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
 
         if (parentNodeComponent == null) {
             node.setColor(Color.WHITE);
-            name = Sandbox.getInstance().sceneControl.getCurrentSceneVO().sceneName;
+            name = Sandbox.getInstance().getSceneControl().getCurrentSceneVO().sceneName;
         } else if (mainItemComponent.itemIdentifier != null && !mainItemComponent.itemIdentifier.isEmpty()) {
             node.setColor(Color.WHITE);
             name = mainItemComponent.itemIdentifier;

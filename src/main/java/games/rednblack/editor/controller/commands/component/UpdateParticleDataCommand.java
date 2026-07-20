@@ -21,7 +21,7 @@ public class UpdateParticleDataCommand extends EntityModifyRevertibleCommand {
         entityId = EntityUtils.getEntityId(entity);
 
         backup = new ParticleEffectVO();
-        backup.loadFromEntity(entity, sandbox.getEngine(), sandbox.sceneControl.sceneLoader.getEntityFactory());
+        backup.loadFromEntity(entity, sandbox.getEngine(), sandbox.getSceneControl().sceneLoader.getEntityFactory());
 
         ParticleComponent particleComponent = SandboxComponentRetriever.get(entity, ParticleComponent.class);
         particleComponent.transform = vo.transform;

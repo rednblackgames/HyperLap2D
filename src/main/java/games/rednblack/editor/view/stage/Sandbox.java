@@ -83,12 +83,12 @@ public class Sandbox {
 
     private static Sandbox instance = null;
 
-    public SceneControlMediator sceneControl;
-    public ItemControlMediator itemControl;
+    private SceneControlMediator sceneControl;
+    private ItemControlMediator itemControl;
 
     private int currentViewingEntity = -1;
 
-    public String currentLoadedSceneFileName;
+    private String currentLoadedSceneFileName;
     private UIStage uiStage;
     private ItemSelector selector;
     private Facade facade;
@@ -99,7 +99,7 @@ public class Sandbox {
 
     SceneConfigVO sceneConfigVO;
 
-    public PixelRect selectionRec;
+    private PixelRect selectionRec;
 
     private SceneLoader sceneLoader;
     private final InputListenerRegistry listenerRegistry = new InputListenerRegistry();
@@ -211,6 +211,22 @@ public class Sandbox {
 
     public SceneControlMediator getSceneControl() {
         return sceneControl;
+    }
+
+    public ItemControlMediator getItemControl() {
+        return itemControl;
+    }
+
+    public String getCurrentLoadedSceneFileName() {
+        return currentLoadedSceneFileName;
+    }
+
+    public void setCurrentLoadedSceneFileName(String sceneName) {
+        currentLoadedSceneFileName = sceneName;
+    }
+
+    public PixelRect getSelectionRec() {
+        return selectionRec;
     }
 
     public Engine getEngine() {

@@ -44,7 +44,7 @@ public class CreateItemCommand extends EntityModifyRevertibleCommand {
         int entity = getNotification().getBody();
 
         if (serializedEntity != null) {
-            EntityFactory factory = Sandbox.getInstance().sceneControl.sceneLoader.getEntityFactory();
+            EntityFactory factory = Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory();
             int parentEntity = Sandbox.getInstance().getCurrentViewingEntity();
             entity =  EntityUtils.getEntityFromJson(serializedEntity, entityType, factory, parentEntity);
             serializedEntity = null;

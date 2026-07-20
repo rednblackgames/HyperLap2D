@@ -78,7 +78,7 @@ public abstract class BasicFollower extends Group {
         Sandbox sandbox = Sandbox.getInstance();
         OrthographicCamera camera = Sandbox.getInstance().getCamera();
 
-        int pixelPerWU = sandbox.sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
+        int pixelPerWU = sandbox.getSceneControl().sceneLoader.getRm().getProjectVO().pixelToWorld;
 
     	Vector2 position = POOLS.obtain(Vector2.class);
 

@@ -75,7 +75,7 @@ public class UIResolutionBoxMediator extends Mediator<UIResolutionBox> {
                 resolutionEntryVO = notification.getBody();
                 float zoom = sandbox.getZoomPercent();
                 Vector3 cameraPos = new Vector3(sandbox.getCamera().position);
-                String name = sandbox.sceneControl.getCurrentSceneVO().sceneName;
+                String name = sandbox.getSceneControl().getCurrentSceneVO().sceneName;
                 projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath(), resolutionEntryVO.name);
                 sandbox.loadScene(name);
                 sandbox.setZoomPercent(zoom, false);
@@ -91,7 +91,7 @@ public class UIResolutionBoxMediator extends Mediator<UIResolutionBox> {
                             if (result == 1) {
                                 ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
                                 resolutionManager.deleteResolution(resolutionEntryVO);
-                                String sceneName = sandbox.sceneControl.getCurrentSceneVO().sceneName;
+                                String sceneName = sandbox.getSceneControl().getCurrentSceneVO().sceneName;
                                 sandbox.loadScene(sceneName);
                             }
                         }).padBottom(20).pack();
@@ -100,7 +100,7 @@ public class UIResolutionBoxMediator extends Mediator<UIResolutionBox> {
             case MsgAPI.ACTION_REPACK:
                 ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
                 resolutionManager.rePackProjectImagesForAllResolutions(true);
-                String sceneName = sandbox.sceneControl.getCurrentSceneVO().sceneName;
+                String sceneName = sandbox.getSceneControl().getCurrentSceneVO().sceneName;
                 sandbox.loadScene(sceneName);
                 break;
         }

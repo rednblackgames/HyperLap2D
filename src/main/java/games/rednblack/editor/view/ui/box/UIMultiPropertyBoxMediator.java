@@ -131,7 +131,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
     private void initAllPropertyBoxes(Object observable) {
         if (observable == null) {
             // if there is nothing to observe, always observe current scene
-            observable = Sandbox.getInstance().sceneControl.getCurrentSceneVO();
+            observable = Sandbox.getInstance().getSceneControl().getCurrentSceneVO();
         }
 
         String mapName = observable.getClass().getName();

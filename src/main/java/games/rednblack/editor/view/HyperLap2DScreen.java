@@ -209,17 +209,17 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
                 facade.sendNotification(FileMenu.OPEN_PROJECT, null, MenuAPI.FILE_MENU);
                 break;
             case KeyBindingsLayout.SAVE_PROJECT:
-                if (sandbox.sceneControl.getCurrentSceneVO() != null) {
+                if (sandbox.getSceneControl().getCurrentSceneVO() != null) {
                     facade.sendNotification(FileMenu.SAVE_PROJECT, null, MenuAPI.FILE_MENU);
                 }
                 break;
             case KeyBindingsLayout.EXPORT_PROJECT:
-                if (sandbox.sceneControl.getCurrentSceneVO() != null) {
+                if (sandbox.getSceneControl().getCurrentSceneVO() != null) {
                     facade.sendNotification(MsgAPI.ACTION_EXPORT_PROJECT);
                 }
                 break;
             case KeyBindingsLayout.IMPORT_TO_LIBRARY:
-                if (sandbox.sceneControl.getCurrentSceneVO() != null) {
+                if (sandbox.getSceneControl().getCurrentSceneVO() != null) {
                     facade.sendNotification(ResourcesMenu.IMPORT_TO_LIBRARY, null, MenuAPI.FILE_MENU);
                 }
                 break;

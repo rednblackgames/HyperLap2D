@@ -61,10 +61,10 @@ public class UILightItemPropertiesMediator extends UIItemPropertiesMediator<UILi
     @Override
     protected void translateViewToItemData() {
         LightVO oldPayloadVo = new LightVO();
-        oldPayloadVo.loadFromEntity(observableReference, sandbox.getEngine(), sandbox.sceneControl.sceneLoader.getEntityFactory());
+        oldPayloadVo.loadFromEntity(observableReference, sandbox.getEngine(), sandbox.getSceneControl().sceneLoader.getEntityFactory());
 
         LightVO payloadVo = new LightVO();
-        payloadVo.loadFromEntity(observableReference, sandbox.getEngine(), sandbox.sceneControl.sceneLoader.getEntityFactory());
+        payloadVo.loadFromEntity(observableReference, sandbox.getEngine(), sandbox.getSceneControl().sceneLoader.getEntityFactory());
 
         payloadVo.rays = viewComponent.getRayCount();
         payloadVo.isStatic = viewComponent.isStatic();

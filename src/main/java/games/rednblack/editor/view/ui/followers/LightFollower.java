@@ -79,7 +79,7 @@ public class LightFollower extends BasicFollower {
         super.update();
         Sandbox sandbox = Sandbox.getInstance();
         OrthographicCamera camera = Sandbox.getInstance().getCamera();
-        int pixelPerWU = sandbox.sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
+        int pixelPerWU = sandbox.getSceneControl().sceneLoader.getRm().getProjectVO().pixelToWorld;
 
         float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
         float scaleY = transformComponent.scaleY * (transformComponent.flipY ? -1 : 1);
@@ -105,7 +105,7 @@ public class LightFollower extends BasicFollower {
         Light light = lightObjectComponent.lightObject;
         Sandbox sandbox = Sandbox.getInstance();
         OrthographicCamera camera = Sandbox.getInstance().getCamera();
-        int ppwu = sandbox.sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
+        int ppwu = sandbox.getSceneControl().sceneLoader.getRm().getProjectVO().pixelToWorld;
 
         float centerX = getX() + getWidth() / 2f;
         float centerY = getY() + getHeight() / 2f;
@@ -188,7 +188,7 @@ public class LightFollower extends BasicFollower {
     private void drawFalloffIsoLines(LightObjectComponent loc, float cx, float cy, Sandbox sandbox) {
         Vector3 f = loc.falloff; // x=Constant, y=Linear, z=Quadratic
 
-        float ppwu = sandbox.sceneControl.sceneLoader.getRm().getProjectVO().pixelToWorld;
+        float ppwu = sandbox.getSceneControl().sceneLoader.getRm().getProjectVO().pixelToWorld;
         float maxRadiusPixel = (loc.distance * ppwu) / sandbox.getCamera().zoom;
 
         drawIsoLine(0.8f, ISO_HIGH, f, cx, cy, maxRadiusPixel, loc);

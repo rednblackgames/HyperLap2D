@@ -159,7 +159,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
     }
 
     private void initItemListeners() {
-        int rootEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        int rootEntity = getViewComponent().getCurrentViewingEntity();
         NodeComponent nodeComponent = SandboxComponentRetriever.get(rootEntity, NodeComponent.class);
         SnapshotArray<Integer> childrenEntities = nodeComponent.children;
 
@@ -262,8 +262,8 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
         @Override
         public boolean keyDown(int entity, int keycode) {
-            Sandbox sandbox = Sandbox.getInstance();
-            if (sandbox.sceneControl.getCurrentSceneVO() == null) {
+            Sandbox sandbox = getViewComponent();
+            if (sandbox.getSceneControl().getCurrentSceneVO() == null) {
                 return false;
             }
 
@@ -291,12 +291,12 @@ public class SandboxMediator extends Mediator<Sandbox> {
                     break;
                 case KeyBindingsLayout.Z_INDEX_UP:
                     // going to front of next item in z-index ladder
-                    sandbox.itemControl.itemZIndexChange(sandbox.getSelector().getCurrentSelection(), true);
+                    sandbox.getItemControl().itemZIndexChange(sandbox.getSelector().getCurrentSelection(), true);
                     facade.sendNotification(MsgAPI.ACTION_Z_INDEX_CHANGED, sandbox.getSelector().getCurrentSelection());
                     break;
                 case KeyBindingsLayout.Z_INDEX_DOWN:
                     // going behind the next item in z-index ladder
-                    sandbox.itemControl.itemZIndexChange(sandbox.getSelector().getCurrentSelection(), false);
+                    sandbox.getItemControl().itemZIndexChange(sandbox.getSelector().getCurrentSelection(), false);
                     facade.sendNotification(MsgAPI.ACTION_Z_INDEX_CHANGED, sandbox.getSelector().getCurrentSelection());
                     break;
                 case KeyBindingsLayout.SELECT_ALL:
@@ -395,7 +395,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
                 currentSelectedTool.stageMouseUp(x, y);
             }
 
-            Sandbox sandbox = Sandbox.getInstance();
+            Sandbox sandbox = getViewComponent();
             if (button == Input.Buttons.RIGHT) {
                 // if clicked on empty space, selections need to be cleared
                 sandbox.getSelector().clearSelections();
@@ -418,7 +418,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
         private void doubleClick(int entity, float x, float y) {
             if (currentSelectedTool != null) {
-                Sandbox sandbox = Sandbox.getInstance();
+                Sandbox sandbox = getViewComponent();
                 currentSelectedTool.stageMouseDoubleClick(x, y);
             }
         }
@@ -426,7 +426,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
         @Override
         public void touchDragged(int entity, float x, float y, int pointer) {
             if (currentSelectedTool != null) {
-                Sandbox sandbox = Sandbox.getInstance();
+                Sandbox sandbox = getViewComponent();
                 currentSelectedTool.stageMouseDragged(x, y);
             }
         }
@@ -434,7 +434,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
         @Override
         public boolean scrolled(int entity, float amountX, float amountY) {
-            Sandbox sandbox = Sandbox.getInstance();
+            Sandbox sandbox = getViewComponent();
             // well, duh
             if (amountX == 0 && amountY == 0) return false;
 
@@ -487,7 +487,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
     }
 
     private void setSandboxFocus() {
-       Sandbox sandbox = Sandbox.getInstance();
+       Sandbox sandbox = getViewComponent();
         FocusManager.resetFocus(sandbox.getUIStage());
 
         // setting key and scroll focus on main area

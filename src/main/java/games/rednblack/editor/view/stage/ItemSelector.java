@@ -60,7 +60,7 @@ public class ItemSelector {
 
     public ItemSelector(Sandbox sandbox) {
         this.sandbox = sandbox;
-        sceneControl = sandbox.sceneControl;
+        sceneControl = sandbox.getSceneControl();
 
         followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
     }
@@ -425,7 +425,7 @@ public class ItemSelector {
      */
     public void moveSelectedItemsBy(float x, float y) {
         for (int entity : currentSelection) {
-            sandbox.itemControl.moveItemBy(entity, x, y);
+            sandbox.getItemControl().moveItemBy(entity, x, y);
             Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
         }
     }

@@ -83,7 +83,7 @@ public class EntityUtils {
     public static String getItemName(int entity) {
         ParentNodeComponent parentNodeComponent = SandboxComponentRetriever.get(entity, ParentNodeComponent.class);
         if (parentNodeComponent == null)
-            return Sandbox.getInstance().sceneControl.getCurrentSceneVO().sceneName;
+            return Sandbox.getInstance().getSceneControl().getCurrentSceneVO().sceneName;
 
         MainItemComponent mainItemComponent = SandboxComponentRetriever.get(entity, MainItemComponent.class);
         if (mainItemComponent.itemIdentifier != null && !mainItemComponent.itemIdentifier.isEmpty()) {
@@ -344,7 +344,7 @@ public class EntityUtils {
     public static String getJsonStringFromEntity(int entity) {
         Json json = HyperJson.getJson();
         Engine engine = Sandbox.getInstance().getEngine();
-        EntityFactory entityFactory = Sandbox.getInstance().sceneControl.sceneLoader.getEntityFactory();
+        EntityFactory entityFactory = Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory();
         int entityType = SandboxComponentRetriever.get(entity, MainItemComponent.class).entityType;
         try {
             MainItemVO entityVO = entityFactory.instantiateEmptyVO(entityType);
@@ -359,7 +359,7 @@ public class EntityUtils {
     public static String getJsonStringFromEntities(Set<Integer> entities) {
         CompositeItemVO holderComposite = new CompositeItemVO();
         Engine engine = Sandbox.getInstance().getEngine();
-        EntityFactory entityFactory = Sandbox.getInstance().sceneControl.sceneLoader.getEntityFactory();
+        EntityFactory entityFactory = Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory();
         for (int entity : entities) {
             int entityType = SandboxComponentRetriever.get(entity, MainItemComponent.class).entityType;
             try {

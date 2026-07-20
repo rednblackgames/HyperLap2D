@@ -34,7 +34,7 @@ public class SceneLoadService {
     }
 
     public void loadScene(String sceneName) {
-        sandbox.currentLoadedSceneFileName = sceneName;
+        sandbox.setCurrentLoadedSceneFileName(sceneName);
 
         sandbox.getSceneControl().initScene(sceneName);
 

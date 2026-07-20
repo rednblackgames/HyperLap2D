@@ -54,7 +54,7 @@ public class UpdateSceneDataCommand extends EntityModifyRevertibleCommand {
         ShaderVO shader = sceneVO.shaderVO;
         shader.shaderName = shaderVO.shaderName;
 
-        Sandbox.getInstance().sceneControl.updateAmbientLights();
+        Sandbox.getInstance().getSceneControl().updateAmbientLights();
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED);
     }
@@ -89,7 +89,7 @@ public class UpdateSceneDataCommand extends EntityModifyRevertibleCommand {
         ShaderVO shader = sceneVO.shaderVO;
         shader.shaderName = shaderBackup.shaderName;
 
-        Sandbox.getInstance().sceneControl.updateAmbientLights();
+        Sandbox.getInstance().getSceneControl().updateAmbientLights();
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED);
     }

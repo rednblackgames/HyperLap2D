@@ -102,7 +102,7 @@ public class UISceneBox extends UIBaseBox {
         Array<SceneVO> array = visSelectBox.getItems();
         for (int i = 0; i < array.size; ++i) {
             SceneVO sceneVO = array.get(i);
-            if (sceneVO.sceneName.equals(Sandbox.getInstance().currentLoadedSceneFileName)) {
+            if (sceneVO.sceneName.equals(Sandbox.getInstance().getCurrentLoadedSceneFileName())) {
                 visSelectBox.setSelectedIndex(i);
                 break;
             }
