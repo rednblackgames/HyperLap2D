@@ -1,11 +1,11 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePhysicsDataCommand;
+import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.data.PhysicsBodyDataVO;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.interfaces.INotification;
@@ -13,7 +13,7 @@ import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<UIPhysicsProperties> {
+public class UIPhysicsPropertiesMediator extends UIRemovableComponentPropertiesMediator<UIPhysicsProperties> {
 
     private static final String TAG = UIPhysicsPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
@@ -25,20 +25,13 @@ public class UIPhysicsPropertiesMediator extends UIItemPropertiesMediator<UIPhys
     }
 
     @Override
-    public void listNotificationInterests(Interests interests) {
-        super.listNotificationInterests(interests);
-        interests.add(UIPhysicsProperties.CLOSE_CLICKED);
+    protected String getCloseClickedEventName() {
+        return UIPhysicsProperties.CLOSE_CLICKED;
     }
 
     @Override
-    public void handleNotification(INotification notification) {
-        super.handleNotification(notification);
-
-        switch (notification.getName()) {
-            case UIPhysicsProperties.CLOSE_CLICKED:
-                Facade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, PhysicsBodyComponent.class));
-                break;
-        }
+    protected Class<? extends Component> getComponentClass() {
+        return PhysicsBodyComponent.class;
     }
 
     @Override

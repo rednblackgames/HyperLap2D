@@ -20,14 +20,14 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
+import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.dialog.AutoTraceDialog;
-import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.interfaces.INotification;
@@ -36,7 +36,7 @@ import games.rednblack.puremvc.util.Interests;
 /**
  * Created by azakhary on 7/2/2015.
  */
-public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediator<UIPolygonComponentProperties> {
+public class UIPolygonComponentPropertiesMediator extends UIRemovableComponentPropertiesMediator<UIPolygonComponentProperties> {
 
     private static final String TAG = UIPolygonComponentPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
@@ -48,12 +48,21 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
     }
 
     @Override
+    protected String getCloseClickedEventName() {
+        return UIPolygonComponentProperties.CLOSE_CLICKED;
+    }
+
+    @Override
+    protected Class<? extends Component> getComponentClass() {
+        return PolygonShapeComponent.class;
+    }
+
+    @Override
     public void listNotificationInterests(Interests interests) {
         super.listNotificationInterests(interests);
         interests.add(UIPolygonComponentProperties.ADD_DEFAULT_MESH_BUTTON_CLICKED,
                 UIPolygonComponentProperties.COPY_BUTTON_CLICKED,
-                UIPolygonComponentProperties.PASTE_BUTTON_CLICKED,
-                UIPolygonComponentProperties.CLOSE_CLICKED);
+                UIPolygonComponentProperties.PASTE_BUTTON_CLICKED);
         interests.add(UIPolygonComponentProperties.ADD_AUTO_TRACE_MESH_BUTTON_CLICKED);
     }
 
@@ -73,9 +82,6 @@ public class UIPolygonComponentPropertiesMediator extends UIItemPropertiesMediat
                 break;
             case UIPolygonComponentProperties.PASTE_BUTTON_CLICKED:
                 pasteMesh();
-                break;
-            case UIPolygonComponentProperties.CLOSE_CLICKED:
-                Facade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, PolygonShapeComponent.class));
                 break;
         }
     }

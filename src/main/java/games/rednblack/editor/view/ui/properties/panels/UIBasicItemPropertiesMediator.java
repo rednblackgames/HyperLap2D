@@ -183,12 +183,17 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
             viewComponent.disableLinkage();
         }
 
+        // Compute the addable components for this entity type from a per-call
+        // copy, so type restrictions do not permanently mutate the shared
+        // componentClassMap (which previously leaked state across selections
+        // and shrank the "add component" dropdown over time).
+        Map<String, Class<? extends Component>> addable = new HashMap<>(componentClassMap);
         if (entityType == EntityFactory.LIGHT_TYPE) {
-            componentClassMap.remove(LIGHT_COMPONENT_KEY);
-            componentClassMap.remove(SHADER_COMPONENT_KEY);
+            addable.remove(LIGHT_COMPONENT_KEY);
+            addable.remove(SHADER_COMPONENT_KEY);
         }
         if (entityType != EntityFactory.LABEL_TYPE) {
-            componentClassMap.remove(TYPING_LABEL_COMPONENT_KEY);
+            addable.remove(TYPING_LABEL_COMPONENT_KEY);
         }
 
         viewComponent.setItemType(EntityUtils.getType(entity), mainItemComponent.uniqueId);
@@ -214,7 +219,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
 
         // non existent components
         Array<String> componentsToAddList = new Array<>();
-        for (Map.Entry<String, Class<? extends Component>> entry : componentClassMap.entrySet()) {
+        for (Map.Entry<String, Class<? extends Component>> entry : addable.entrySet()) {
             String componentName = entry.getKey();
             Class<? extends Component> componentClass = entry.getValue();
             Component component = SandboxComponentRetriever.get(entity, componentClass);

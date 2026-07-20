@@ -24,7 +24,6 @@ import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 
@@ -72,8 +71,7 @@ public class CreateItemCommand extends EntityModifyRevertibleCommand {
         int entity = EntityUtils.getByUniqueId(entityId);
         serializedEntity = EntityUtils.getJsonStringFromEntity(entity);
 
-        FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
-        followersUIMediator.removeFollower(entity);
+        facade.sendNotification(MsgAPI.FOLLOWER_REMOVED, entity);
 
         sandbox.getEngine().delete(entity);
         sandbox.getEngine().process();

@@ -24,11 +24,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import games.rednblack.puremvc.Facade;
 
 public class PixelRect extends Group {
 
-    private final Facade facade;
     private final PixelLine[] lines = new PixelLine[4];
     private final Image fill;
     private final Rectangle rectangle = new Rectangle();
@@ -38,7 +36,6 @@ public class PixelRect extends Group {
     }
 
     public PixelRect(float width, float height) {
-        facade = Facade.getInstance();
         lines[0] = new PixelLine(0, 0, width, 0);
         lines[1] = new PixelLine(0, 0, 0, height);
         lines[1].setPosition(lines[1].getThickness(), 0, lines[1].getThickness(), height - lines[1].getThickness());

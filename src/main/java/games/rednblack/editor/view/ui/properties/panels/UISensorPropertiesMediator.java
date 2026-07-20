@@ -1,11 +1,11 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdateSensorDataCommand;
+import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.renderer.components.physics.SensorComponent;
 import games.rednblack.editor.renderer.data.SensorDataVO;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.interfaces.INotification;
@@ -18,11 +18,11 @@ import org.apache.commons.lang3.math.NumberUtils;
  * 
  * @author Jan-Thierry Wegener
  */
-public class UISensorPropertiesMediator extends UIItemPropertiesMediator<UISensorProperties> {
+public class UISensorPropertiesMediator extends UIRemovableComponentPropertiesMediator<UISensorProperties> {
 
 	private static final String TAG = UISensorPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
-    
+
     private SensorComponent sensorComponent;
 
     public UISensorPropertiesMediator() {
@@ -30,20 +30,13 @@ public class UISensorPropertiesMediator extends UIItemPropertiesMediator<UISenso
 	}
 
     @Override
-    public void listNotificationInterests(Interests interests) {
-        super.listNotificationInterests(interests);
-        interests.add(UISensorProperties.CLOSE_CLICKED);
+    protected String getCloseClickedEventName() {
+        return UISensorProperties.CLOSE_CLICKED;
     }
 
     @Override
-    public void handleNotification(INotification notification) {
-        super.handleNotification(notification);
-
-        switch (notification.getName()) {
-            case UISensorProperties.CLOSE_CLICKED:
-                Facade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, SensorComponent.class));
-                break;
-        }
+    protected Class<? extends Component> getComponentClass() {
+        return SensorComponent.class;
     }
 
 	@Override

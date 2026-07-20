@@ -25,7 +25,6 @@ import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
@@ -107,8 +106,6 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
-
         //get the entity
         int entity = EntityUtils.getByUniqueId(entityId);
         int oldParentEntity = EntityUtils.getByUniqueId(parentEntityId);
@@ -135,7 +132,7 @@ public class ConvertToCompositeCommand extends EntityModifyRevertibleCommand {
         }
 
         // remove composite
-        followersUIMediator.removeFollower(entity);
+        facade.sendNotification(MsgAPI.FOLLOWER_REMOVED, entity);
         sandbox.getEngine().delete(entity);
         sandbox.getEngine().process();
 

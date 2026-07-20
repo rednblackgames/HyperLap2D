@@ -86,21 +86,6 @@ public class ItemSelector {
     }
 
     /**
-    public SelectionRectangle getSelectedItemSelectionRectangle() {
-        ArrayList<SelectionRectangle> items = new ArrayList<SelectionRectangle>();
-        for (SelectionRectangle value : currentSelection.values()) {
-            items.add(value);
-            break;
-        }
-        if(items.size() > 0) {
-            return items.get(0);
-        }
-
-        return null;
-    }
-     */
-
-    /**
      * @return list of currently selected panels
      */
     public Set<Integer> getSelectedItems() {
@@ -184,23 +169,6 @@ public class ItemSelector {
             checkSelection.accept(entity, acc);
         }
         return acc.carry;
-    }
-
-
-     /**
-     * Finds all panels that are on particular layer and selects them
-     * @param name of the layer
-     */
-    public void selectItemsByLayerName(String name) {
-    	//TODO fix and uncomment
-//        ArrayList<Entity> itemsArr = new ArrayList<Entity>();
-//        for (int i = 0; i < sceneControl.getCurrentScene().getItems().size(); i++) {
-//            if (sceneControl.getCurrentScene().getItems().get(i).getDataVO().layerName.equals(name)) {
-//                itemsArr.add(sceneControl.getCurrentScene().getItems().get(i));
-//            }
-//        }
-//
-//        setSelections(itemsArr, true);
     }
 
     /**
@@ -324,149 +292,87 @@ public class ItemSelector {
     }
 
     public void alignSelectionsByX(int relativeTo, boolean toHighestX) {
-    	if (relativeTo == -1) return;
-
-        EntityBounds bounds = new EntityBounds(relativeTo);
-        final float relativeToX = (toHighestX)? (bounds.getVisualRightX()) : bounds.getVisualX();
-
-        moveCommandBuilder.clear();
-        for (int entity : currentSelection) {
-            EntityBounds entityBounds = new EntityBounds(entity);
-            final float deltaX = entityBounds.getX() - entityBounds.getVisualX();
-            final float visualX = relativeToX - ((toHighestX)? 1 : 0) * entityBounds.getVisualWidth();
-
-            moveCommandBuilder.setX(entity, visualX + deltaX);
-        }
-        moveCommandBuilder.execute();
+        align(relativeTo, false, Axis.X, toHighestX, toHighestX, false);
     }
 
     public void alignSelectionsByY(int relativeTo, boolean toHighestY) {
-    	if (relativeTo == -1) return;
-
-        EntityBounds bounds = new EntityBounds(relativeTo);
-        final float relativeToY = (toHighestY)? bounds.getVisualTopY() : bounds.getVisualY();
-
-        moveCommandBuilder.clear();
-        for (int entity : currentSelection) {
-            EntityBounds entityBounds = new EntityBounds(entity);
-            final float deltaY = entityBounds.getY() - entityBounds.getVisualY();
-            final float visualY = relativeToY - ((toHighestY)? 1 : 0) * entityBounds.getVisualHeight();
-
-            moveCommandBuilder.setY(entity, visualY + deltaY);
-        }
-        moveCommandBuilder.execute();
+        align(relativeTo, false, Axis.Y, toHighestY, toHighestY, false);
     }
 
     public void alignSelectionsAtLeftEdge(int relativeTo) {
-        if (relativeTo == -1) return;
-
-        EntityBounds bounds = new EntityBounds(relativeTo);
-        final float relativeToX = bounds.getVisualX();
-
-        moveCommandBuilder.clear();
-        for (int entity : currentSelection) {
-            if (entity == relativeTo) continue;
-            EntityBounds entityBounds = new EntityBounds(entity);
-
-            final float deltaX = entityBounds.getX() - entityBounds.getVisualX();
-            final float visualX = relativeToX - entityBounds.getVisualWidth();
-
-            moveCommandBuilder.setX(entity, visualX + deltaX);
-        }
-        moveCommandBuilder.execute();
+        align(relativeTo, true, Axis.X, false, true, false);
     }
 
     public void alignSelectionsAtRightEdge(int relativeTo) {
-        if (relativeTo == -1) return;
-
-        EntityBounds bounds = new EntityBounds(relativeTo);
-        final float relativeToRightX = bounds.getVisualRightX();
-
-        moveCommandBuilder.clear();
-        for (int entity : currentSelection) {
-            if (entity == relativeTo) continue;
-            EntityBounds entityBounds = new EntityBounds(entity);
-
-            final float deltaX = entityBounds.getX() - entityBounds.getVisualX();
-
-            moveCommandBuilder.setX(entity, relativeToRightX + deltaX);
-        }
-        moveCommandBuilder.execute();
+        align(relativeTo, true, Axis.X, true, false, false);
     }
 
     public void alignSelectionsAtTopEdge(int relativeTo) {
-        if (relativeTo == -1) return;
-
-        EntityBounds bounds = new EntityBounds(relativeTo);
-        final float relativeToTopY = bounds.getVisualTopY();
-
-        moveCommandBuilder.clear();
-        for (int entity : currentSelection) {
-            if (entity == relativeTo) continue;
-            EntityBounds entityBounds = new EntityBounds(entity);
-
-            final float deltaY = entityBounds.getY() - entityBounds.getVisualY();
-
-            moveCommandBuilder.setY(entity, relativeToTopY + deltaY);
-        }
-        moveCommandBuilder.execute();
+        align(relativeTo, true, Axis.Y, true, false, false);
     }
 
     public void alignSelectionsAtBottomEdge(int relativeTo) {
-        if (relativeTo == -1) return;
-
-        EntityBounds bounds = new EntityBounds(relativeTo);
-        final float relativeToY = bounds.getVisualY();
-
-        moveCommandBuilder.clear();
-        for (int entity : currentSelection) {
-            if (entity == relativeTo) continue;
-            EntityBounds entityBounds = new EntityBounds(entity);
-
-            final float deltaY = entityBounds.getY() - entityBounds.getVisualY();
-            final float visualY = relativeToY - entityBounds.getVisualHeight();
-
-             moveCommandBuilder.setY(entity, visualY + deltaY);
-        }
-        moveCommandBuilder.execute();
+        align(relativeTo, true, Axis.Y, false, true, false);
     }
 
     public void alignSelectionsVerticallyCentered(int relativeTo) {
-        if (relativeTo == -1) return;
-
-        EntityBounds bounds = new EntityBounds(relativeTo);
-        final float relativeToY = bounds.getVisualY();
-        final float relativeToHeight = bounds.getVisualHeight();
-
-        moveCommandBuilder.clear();
-        for (int entity : currentSelection) {
-            if (entity == relativeTo) continue;
-            EntityBounds entityBounds = new EntityBounds(entity);
-
-            final float deltaY = entityBounds.getY() - entityBounds.getVisualY();
-            final float visualY = relativeToY + (relativeToHeight - entityBounds.getVisualHeight()) / 2;
-
-            moveCommandBuilder.setY(entity, visualY + deltaY);
-        }
-        moveCommandBuilder.execute();
+        align(relativeTo, true, Axis.Y, false, false, true);
     }
 
     public void alignSelectionsHorizontallyCentered(int relativeTo) {
+        align(relativeTo, true, Axis.X, false, false, true);
+    }
+
+    private enum Axis { X, Y }
+
+    /**
+     * Pure alignment math: returns the target visual low-edge position for an
+     * entity, given the reference entity's low edge and size, the entity's size,
+     * and the alignment mode. Extracted from the per-method duplicates so it can
+     * be unit-tested without the ECS engine.
+     *
+     * @param refLow               the reference entity's visual low edge (left / bottom)
+     * @param refSize              the reference entity's visual size (width / height)
+     * @param entSize              the entity's visual size (width / height)
+     * @param useHighEdge          align to the reference's high edge (right / top) instead of low
+     * @param itemAnchoredHighEdge offset the entity by its own size (anchor its high edge)
+     * @param centered             center the entity on the reference instead of edge-aligning
+     * @return the target visual low-edge position for the entity
+     */
+    static float alignTarget(float refLow, float refSize, float entSize,
+                             boolean useHighEdge, boolean itemAnchoredHighEdge, boolean centered) {
+        if (centered) {
+            return refLow + (refSize - entSize) / 2f;
+        }
+        float refEdge = useHighEdge ? refLow + refSize : refLow;
+        return refEdge - (itemAnchoredHighEdge ? entSize : 0f);
+    }
+
+    /**
+     * Shared alignment loop. Moves every selected entity (optionally excluding
+     * the reference) so that its visual low edge lands on the target computed by
+     * {@link #alignTarget}, preserving each entity's transform-to-visual offset.
+     */
+    private void align(int relativeTo, boolean skipReference, Axis axis,
+                       boolean useHighEdge, boolean itemAnchoredHighEdge, boolean centered) {
         if (relativeTo == -1) return;
 
-        EntityBounds bounds = new EntityBounds(relativeTo);
-        final float relativeToX = bounds.getVisualX();
-        final float relativeToWidth = bounds.getVisualWidth();
+        EntityBounds ref = new EntityBounds(relativeTo);
+        float refLow = (axis == Axis.X) ? ref.getVisualX() : ref.getVisualY();
+        float refSize = (axis == Axis.X) ? ref.getVisualWidth() : ref.getVisualHeight();
 
         moveCommandBuilder.clear();
         for (int entity : currentSelection) {
-            if (entity == relativeTo) continue;
-            EntityBounds entityBounds = new EntityBounds(entity);
-
-            final float deltaX = entityBounds.getX() - entityBounds.getVisualX();
-            final float visualX = relativeToX + (relativeToWidth - entityBounds.getVisualWidth()) / 2;
-
-            moveCommandBuilder.setX(entity, visualX + deltaX);
+            if (skipReference && entity == relativeTo) continue;
+            EntityBounds eb = new EntityBounds(entity);
+            float entSize = (axis == Axis.X) ? eb.getVisualWidth() : eb.getVisualHeight();
+            float delta = (axis == Axis.X) ? (eb.getX() - eb.getVisualX()) : (eb.getY() - eb.getVisualY());
+            float target = alignTarget(refLow, refSize, entSize, useHighEdge, itemAnchoredHighEdge, centered);
+            if (axis == Axis.X) {
+                moveCommandBuilder.setX(entity, target + delta);
+            } else {
+                moveCommandBuilder.setY(entity, target + delta);
+            }
         }
         moveCommandBuilder.execute();
     }

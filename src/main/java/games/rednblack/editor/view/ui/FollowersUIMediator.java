@@ -56,6 +56,7 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
                 MsgAPI.SCENE_LOADED,
                 MsgAPI.ITEM_DATA_UPDATED,
                 MsgAPI.ITEM_SELECTION_CHANGED);
+        interests.add(MsgAPI.FOLLOWER_REMOVED);
         interests.add(MsgAPI.SHOW_SELECTIONS,
                 MsgAPI.HIDE_SELECTIONS,
                 MsgAPI.NEW_ITEM_ADDED,
@@ -77,6 +78,9 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
                 break;
             case MsgAPI.NEW_ITEM_ADDED:
                 createFollower(notification.getBody());
+                break;
+            case MsgAPI.FOLLOWER_REMOVED:
+                removeFollower(notification.getBody());
                 break;
             case MsgAPI.ITEM_PROPERTY_DATA_FINISHED_MODIFYING:
                 BasicFollower follower = followers.get(notification.getBody());

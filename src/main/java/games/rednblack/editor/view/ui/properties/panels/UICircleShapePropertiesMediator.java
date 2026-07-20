@@ -1,17 +1,17 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdateCircleShapeCommand;
+import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.renderer.components.shape.CircleShapeComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.interfaces.INotification;
 import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.ArrayUtils;
 
-public class UICircleShapePropertiesMediator extends UIItemPropertiesMediator<UICircleShapeProperties> {
+public class UICircleShapePropertiesMediator extends UIRemovableComponentPropertiesMediator<UICircleShapeProperties> {
     private static final String TAG = UICircleShapePropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -20,20 +20,13 @@ public class UICircleShapePropertiesMediator extends UIItemPropertiesMediator<UI
     }
 
     @Override
-    public void listNotificationInterests(Interests interests) {
-        super.listNotificationInterests(interests);
-        interests.add(UICircleShapeProperties.CLOSE_CLICKED);
+    protected String getCloseClickedEventName() {
+        return UICircleShapeProperties.CLOSE_CLICKED;
     }
 
     @Override
-    public void handleNotification(INotification notification) {
-        super.handleNotification(notification);
-
-        switch (notification.getName()) {
-            case UICircleShapeProperties.CLOSE_CLICKED:
-                Facade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, CircleShapeComponent.class));
-                break;
-        }
+    protected Class<? extends Component> getComponentClass() {
+        return CircleShapeComponent.class;
     }
 
     @Override

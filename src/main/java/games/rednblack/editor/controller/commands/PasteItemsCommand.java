@@ -31,7 +31,6 @@ import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
-import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.box.UILayerBoxMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
@@ -83,10 +82,9 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
         for (String entityId : pastedEntityIds) {
             int entity = EntityUtils.getByUniqueId(entityId);
-            followersUIMediator.removeFollower(entity);
+            facade.sendNotification(MsgAPI.FOLLOWER_REMOVED, entity);
             sandbox.getEngine().delete(entity);
             sandbox.getEngine().process();
             facade.sendNotification(MsgAPI.DELETE_ITEMS_COMMAND_DONE);

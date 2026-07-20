@@ -27,7 +27,7 @@ public class SandboxInputAdapter implements InputProcessor {
 
 	private Facade facade;
 	private int rootEntity;
-	private InputListenerComponent inpputListenerComponent;
+	private InputListenerComponent inputListenerComponent;
 	private int target;
 	private Vector2 hitTargetLocalCoordinates = new Vector2();
 	private Sandbox sandbox;
@@ -103,9 +103,9 @@ public class SandboxInputAdapter implements InputProcessor {
 		screenToSceneCoordinates(rootEntity, hitTargetLocalCoordinates);
 
 		BaseComponentMapper<InputListenerComponent> mapper = ComponentMapper.getFor(InputListenerComponent.class, sandbox.getEngine());
-		inpputListenerComponent = mapper.get(target);
-		if(inpputListenerComponent == null) return false;
-		Array<InputListener> listeners = inpputListenerComponent.getAllListeners();
+		inputListenerComponent = mapper.get(target);
+		if(inputListenerComponent == null) return false;
+		Array<InputListener> listeners = inputListenerComponent.getAllListeners();
 		ComponentMapper<TransformComponent> transformMapper = (ComponentMapper<TransformComponent>) ComponentRetriever.getMapper(TransformComponent.class, sandbox.getEngine());
 		ComponentMapper<ParentNodeComponent> parentMapper = (ComponentMapper<ParentNodeComponent>) ComponentRetriever.getMapper(ParentNodeComponent.class, sandbox.getEngine());
 		TransformMathUtils.sceneToLocalCoordinates(target, hitTargetLocalCoordinates, transformMapper, parentMapper);
@@ -138,9 +138,9 @@ public class SandboxInputAdapter implements InputProcessor {
 			return false;
 		}
 		BaseComponentMapper<InputListenerComponent> mapper = ComponentMapper.getFor(InputListenerComponent.class, sandbox.getEngine());
-		inpputListenerComponent = mapper.get(target);
-		if(inpputListenerComponent == null) return false;
-		Array<InputListener> listeners = inpputListenerComponent.getAllListeners();
+		inputListenerComponent = mapper.get(target);
+		if(inputListenerComponent == null) return false;
+		Array<InputListener> listeners = inputListenerComponent.getAllListeners();
 		for (int j = 0, s = listeners.size; j < s; j++){
 			listeners.get(j).touchUp(target, screenX, screenY, pointer, button);
 		}
@@ -173,9 +173,9 @@ public class SandboxInputAdapter implements InputProcessor {
 		}
 
 		BaseComponentMapper<InputListenerComponent> mapper = ComponentMapper.getFor(InputListenerComponent.class, sandbox.getEngine());
-		inpputListenerComponent = mapper.get(target);
-		if(inpputListenerComponent == null) return false;
-		Array<InputListener> listeners = inpputListenerComponent.getAllListeners();
+		inputListenerComponent = mapper.get(target);
+		if(inputListenerComponent == null) return false;
+		Array<InputListener> listeners = inputListenerComponent.getAllListeners();
 		for (int j = 0, s = listeners.size; j < s; j++){
 			listeners.get(j).touchDragged(target, screenX, screenY, pointer);
 		}
@@ -184,18 +184,6 @@ public class SandboxInputAdapter implements InputProcessor {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-//		entities = engine.getEntitiesFor(root);
-//		for (int i = 0, n = entities.size(); i < n; i++){
-//			Entity entity = entities.get(i);
-//			inpputListenerComponent = ComponentRetriever.get(target, InputListenerComponent.class);
-//			Array<InputListener> listeners = inpputListenerComponent.getAllListeners();
-//			for (int j = 0, s = listeners.size; j < s; j++){
-//				if (listeners.get(j).mouseMoved(entity, screenX, screenY)){
-//					return true;
-//				}
-//			}
-//			
-//		}
 		return false;
 	}
 
@@ -213,16 +201,6 @@ public class SandboxInputAdapter implements InputProcessor {
 		}
 
 		//TODO scroll for other Entities don't know how deep tis should go all entities or only hit tested
-//		inpputListenerComponent = ComponentRetriever.get(entity, InputListenerComponent.class);
-//		if(inpputListenerComponent == null) continue;
-//		Array<InputListener> listeners = inpputListenerComponent.getAllListeners();
-//		for (int j = 0, s = listeners.size; j < s; j++){				
-//			if (listeners.get(j).scrolled(entity,amount)){
-//				return true;
-//			}
-//		}
-
-
 		return false;
 	}
 

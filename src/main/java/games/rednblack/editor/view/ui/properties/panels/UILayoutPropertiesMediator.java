@@ -1,8 +1,8 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.utils.Array;
-import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdateLayoutDataCommand;
+import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.renderer.components.LayoutComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
@@ -10,14 +10,14 @@ import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.data.LayoutConstraintVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
-import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.interfaces.INotification;
 import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.math.NumberUtils;
 
-public class UILayoutPropertiesMediator extends UIItemPropertiesMediator<UILayoutProperties> {
+public class UILayoutPropertiesMediator extends UIRemovableComponentPropertiesMediator<UILayoutProperties> {
 
     private static final String TAG = UILayoutPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
@@ -27,20 +27,13 @@ public class UILayoutPropertiesMediator extends UIItemPropertiesMediator<UILayou
     }
 
     @Override
-    public void listNotificationInterests(Interests interests) {
-        super.listNotificationInterests(interests);
-        interests.add(UILayoutProperties.CLOSE_CLICKED);
+    protected String getCloseClickedEventName() {
+        return UILayoutProperties.CLOSE_CLICKED;
     }
 
     @Override
-    public void handleNotification(INotification notification) {
-        super.handleNotification(notification);
-
-        switch (notification.getName()) {
-            case UILayoutProperties.CLOSE_CLICKED:
-                Facade.getInstance().sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, LayoutComponent.class));
-                break;
-        }
+    protected Class<? extends Component> getComponentClass() {
+        return LayoutComponent.class;
     }
 
     @Override

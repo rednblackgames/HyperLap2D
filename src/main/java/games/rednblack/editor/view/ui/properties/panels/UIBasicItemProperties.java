@@ -48,7 +48,7 @@ public class UIBasicItemProperties extends UIItemProperties {
     public static final String TINT_COLOR_BUTTON_CLICKED = prefix + ".TINT_COLOR_BUTTON_CLICKED";
     public static final String CUSTOM_VARS_BUTTON_CLICKED = prefix + ".CUSTOM_VARS_BUTTON_CLICKED";
     public static final String TAGS_BUTTON_CLICKED = prefix + ".TAGS_BUTTON_CLICKED";
-    public static final String ADD_COMPONENT_BUTTON_CLICKED = prefix + "ADD_COMPONENT_BUTTON_CLICKED";
+    public static final String ADD_COMPONENT_BUTTON_CLICKED = prefix + ".ADD_COMPONENT_BUTTON_CLICKED";
     public static final String LINKING_CHANGED = prefix + ".LINKING_CHANGED";
 
     private Image itemTypeIcon;

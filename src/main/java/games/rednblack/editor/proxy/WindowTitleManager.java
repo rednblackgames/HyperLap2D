@@ -1,8 +1,7 @@
 package games.rednblack.editor.proxy;
 
 import com.badlogic.gdx.Gdx;
-import games.rednblack.editor.view.ui.UIWindowTitle;
-import games.rednblack.editor.view.ui.UIWindowTitleMediator;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Proxy;
 
 public class WindowTitleManager extends Proxy {
@@ -18,9 +17,7 @@ public class WindowTitleManager extends Proxy {
     public void setWindowTitle(String title) {
         currentWindowTitle = title;
         Gdx.graphics.setTitle(currentWindowTitle);
-        UIWindowTitleMediator uiWindowTitleMediator = facade.retrieveMediator(UIWindowTitleMediator.NAME);
-        UIWindowTitle uiWindowTitle = uiWindowTitleMediator.getViewComponent();
-        uiWindowTitle.setTitle(currentWindowTitle);
+        facade.sendNotification(MsgAPI.WINDOW_TITLE_CHANGED, currentWindowTitle);
     }
 
     public void appendSaveHintTitle(boolean isModified) {
@@ -28,11 +25,9 @@ public class WindowTitleManager extends Proxy {
         if (!isModified) {
             title = currentWindowTitle;
         } else {
-            title = "\u25CF " + currentWindowTitle;
+            title = "● " + currentWindowTitle;
         }
         Gdx.graphics.setTitle(title);
-        UIWindowTitleMediator uiWindowTitleMediator = facade.retrieveMediator(UIWindowTitleMediator.NAME);
-        UIWindowTitle uiWindowTitle = uiWindowTitleMediator.getViewComponent();
-        uiWindowTitle.setTitle(title);
+        facade.sendNotification(MsgAPI.WINDOW_TITLE_CHANGED, title);
     }
 }

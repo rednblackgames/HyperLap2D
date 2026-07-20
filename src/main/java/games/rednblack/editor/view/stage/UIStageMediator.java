@@ -20,6 +20,8 @@ package games.rednblack.editor.view.stage;
 
 import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
+import com.kotcrab.vis.ui.widget.toast.MessageToast;
+import games.rednblack.editor.controller.commands.ShowNotificationCommand;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.H2DDialogs;
@@ -48,11 +50,20 @@ public class UIStageMediator extends Mediator<UIStage> {
     public void listNotificationInterests(Interests interests) {
         interests.add(MsgAPI.SHOW_ADD_LIBRARY_DIALOG,
                 MsgAPI.SAVE_EDITOR_CONFIG);
+        interests.add(MsgAPI.SHOW_NOTIFICATION);
     }
 
     @Override
     public void handleNotification(INotification notification) {
         switch (notification.getName()) {
+            case MsgAPI.SHOW_NOTIFICATION:
+                if (ShowNotificationCommand.TYPE_CLEAR_STACK.equals(notification.getType())) {
+                    viewComponent.getToastManager().clear();
+                }
+                MessageToast messageToast = new MessageToast(notification.getBody());
+                messageToast.pad(10);
+                viewComponent.getToastManager().show(messageToast, 5);
+                break;
             case MsgAPI.SHOW_ADD_LIBRARY_DIALOG:
                 Sandbox sandbox = Sandbox.getInstance();
 

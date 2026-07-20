@@ -5,7 +5,6 @@ import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.utils.runtime.EntityUtils;
-import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 
@@ -41,10 +40,9 @@ public class DeleteItemsCommand extends EntityModifyRevertibleCommand {
     public void doAction() {
         backup();
 
-        FollowersUIMediator followersUIMediator = Facade.getInstance().retrieveMediator(FollowersUIMediator.NAME);
         for (String entityId : entityIdsToDelete) {
             int item = EntityUtils.getByUniqueId(entityId);
-            followersUIMediator.removeFollower(item);
+            facade.sendNotification(MsgAPI.FOLLOWER_REMOVED, item);
             sandbox.getEngine().delete(item);
         }
         sandbox.getEngine().process();

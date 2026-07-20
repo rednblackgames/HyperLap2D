@@ -19,14 +19,14 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
 import games.rednblack.editor.code.syntax.GLSLSyntax;
-import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.component.UpdateShaderDataCommand;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
+import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.ui.dialog.CodeEditorDialogMediator;
-import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.interfaces.INotification;
 import games.rednblack.puremvc.util.Interests;
@@ -38,7 +38,7 @@ import java.nio.file.Files;
 /**
  * Created by azakhary on 8/12/2015.
  */
-public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<UIShaderProperties> {
+public class UIShaderPropertiesMediator extends UIRemovableComponentPropertiesMediator<UIShaderProperties> {
     private static final String TAG = UIShaderPropertiesMediator.class.getCanonicalName();
     public static final String NAME = TAG;
 
@@ -57,10 +57,19 @@ public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<UIShade
     }
 
     @Override
+    protected String getCloseClickedEventName() {
+        return UIShaderProperties.CLOSE_CLICKED;
+    }
+
+    @Override
+    protected Class<? extends Component> getComponentClass() {
+        return ShaderComponent.class;
+    }
+
+    @Override
     public void listNotificationInterests(Interests interests) {
         super.listNotificationInterests(interests);
-        interests.add(UIShaderProperties.CLOSE_CLICKED,
-                UIShaderProperties.EDIT_BUTTON_CLICKED,
+        interests.add(UIShaderProperties.EDIT_BUTTON_CLICKED,
                 UIShaderProperties.EDIT_SHADER_DONE);
     }
 
@@ -69,9 +78,6 @@ public class UIShaderPropertiesMediator extends UIItemPropertiesMediator<UIShade
         super.handleNotification(notification);
 
         switch (notification.getName()) {
-            case UIShaderProperties.CLOSE_CLICKED:
-                facade.sendNotification(MsgAPI.ACTION_REMOVE_COMPONENT, RemoveComponentFromItemCommand.payload(observableReference, ShaderComponent.class));
-                break;
             case UIShaderProperties.EDIT_BUTTON_CLICKED:
                 if (!viewComponent.getShader().equals("Default")) {
                     File shader = new File(projectManager.getCurrentProjectPath() + File.separator
