@@ -78,16 +78,14 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         zUp.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sandbox.getItemControl().itemZIndexChange(sandbox.getSelector().getCurrentSelection(), true);
-                facade.sendNotification(MsgAPI.ACTION_Z_INDEX_CHANGED, sandbox.getSelector().getCurrentSelection());
+                facade.sendNotification(MsgAPI.ACTION_SET_Z_INDEX, new Object[]{sandbox.getSelector().getCurrentSelection(), true});
             }
         });
 
         zDown.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sandbox.getItemControl().itemZIndexChange(sandbox.getSelector().getCurrentSelection(), false);
-                facade.sendNotification(MsgAPI.ACTION_Z_INDEX_CHANGED, sandbox.getSelector().getCurrentSelection());
+                facade.sendNotification(MsgAPI.ACTION_SET_Z_INDEX, new Object[]{sandbox.getSelector().getCurrentSelection(), false});
             }
         });
     }

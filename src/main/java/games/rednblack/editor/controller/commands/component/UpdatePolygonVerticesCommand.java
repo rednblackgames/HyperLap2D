@@ -89,9 +89,11 @@ public class UpdatePolygonVerticesCommand extends EntityModifyRevertibleCommand 
     }
 
     public static Array<Vector2> cloneData(Array<Vector2> data) {
+        if (data == null) return null;
         return PolygonRuntimeUtils.cloneData(data);
     }
     public static Vector2[][] cloneData(Vector2[][] data) {
+        if (data == null) return null;
         Vector2[][] newData = new Vector2[data.length][];
         for(int i = 0; i < data.length; i++) {
             newData[i] = new Vector2[data[i].length];

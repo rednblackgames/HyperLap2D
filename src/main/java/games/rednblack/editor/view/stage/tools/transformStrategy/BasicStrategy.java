@@ -105,6 +105,10 @@ public class BasicStrategy extends AbstractTransformStrategy {
         // Rotating
         rotating(anchor, transformCommandBuilder, mousePointStage, lastTransformAngle, lastEntityAngle, transformComponent);
 
+        // Capture position shifts from positionHorizontally/Vertically (resize anchors).
+        // origin() already calls setPos for the ORIGIN anchor; this is a no-op there.
+        transformCommandBuilder.setPos(RoundUtils.round(transformComponent.x, 2), RoundUtils.round(transformComponent.y, 2));
+
         float newScaleX = newWidth / dWidth;
         float newScaleY = isShiftPressed() ? newScaleX : newHeight / dHeight;
         newScaleX *= (transformComponent.flipX ? -1 : 1);

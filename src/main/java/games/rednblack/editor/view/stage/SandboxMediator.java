@@ -291,13 +291,11 @@ public class SandboxMediator extends Mediator<Sandbox> {
                     break;
                 case KeyBindingsLayout.Z_INDEX_UP:
                     // going to front of next item in z-index ladder
-                    sandbox.getItemControl().itemZIndexChange(sandbox.getSelector().getCurrentSelection(), true);
-                    facade.sendNotification(MsgAPI.ACTION_Z_INDEX_CHANGED, sandbox.getSelector().getCurrentSelection());
+                    facade.sendNotification(MsgAPI.ACTION_SET_Z_INDEX, new Object[]{sandbox.getSelector().getCurrentSelection(), true});
                     break;
                 case KeyBindingsLayout.Z_INDEX_DOWN:
                     // going behind the next item in z-index ladder
-                    sandbox.getItemControl().itemZIndexChange(sandbox.getSelector().getCurrentSelection(), false);
-                    facade.sendNotification(MsgAPI.ACTION_Z_INDEX_CHANGED, sandbox.getSelector().getCurrentSelection());
+                    facade.sendNotification(MsgAPI.ACTION_SET_Z_INDEX, new Object[]{sandbox.getSelector().getCurrentSelection(), false});
                     break;
                 case KeyBindingsLayout.SELECT_ALL:
                     // Ctrl+A means select all

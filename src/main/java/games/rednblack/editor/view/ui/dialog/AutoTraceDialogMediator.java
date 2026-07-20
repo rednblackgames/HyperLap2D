@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
+import games.rednblack.editor.controller.commands.component.UpdatePolygonVerticesCommand;
 import games.rednblack.editor.renderer.utils.poly.PolygonRuntimeUtils;
 import games.rednblack.editor.utils.poly.tracer.Tracer;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -70,16 +71,13 @@ public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
                     Vector2[] points = Stream.of(traceResult)
                             .flatMap(Stream::of)
                             .toArray(Vector2[]::new);
-                    polygonShapeComponent.vertices = new Array<>(points);
-                    polygonShapeComponent.polygonizedVertices = PolygonRuntimeUtils.polygonize(points);
+                    Array<Vector2> newVertices = new Array<>(points);
+                    Vector2[][] newPolygonized = PolygonRuntimeUtils.polygonize(points);
 
-                    FollowersUIMediator followersUIMediator = facade.retrieveMediator(FollowersUIMediator.NAME);
-                    BasicFollower follower = followersUIMediator.getFollower(entity);
-                    PolygonFollower polygonFollower = (PolygonFollower) follower.getSubFollower(PolygonFollower.class);
-                    if (polygonFollower != null)
-                        polygonFollower.update();
-
-                    facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+                    // route through the revertible UpdatePolygonVerticesCommand (undoable)
+                    Object[] payload = UpdatePolygonVerticesCommand.payloadInitialState(entity);
+                    UpdatePolygonVerticesCommand.payload(payload, newVertices, newPolygonized);
+                    facade.sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, payload);
                 }
             } else {
                 H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Auto Trace can be performed only for Image type.").padBottom(20).pack();

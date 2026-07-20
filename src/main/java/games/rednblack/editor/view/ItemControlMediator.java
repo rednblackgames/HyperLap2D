@@ -30,25 +30,11 @@ import java.util.Set;
 public class ItemControlMediator {
 
     private SceneControlMediator sceneControl;
-    
+
     private TransformComponent transformComponent;
-    private ZIndexComponent zIndexComponent;
 
     public ItemControlMediator(SceneControlMediator sceneControl) {
         this.sceneControl = sceneControl;
-    }
-
-    public void itemZIndexChange(Set<Integer> currentSelection, boolean isUp) {
-        for (Integer item : currentSelection) {
-        	zIndexComponent = EntityDataProxy.get().get(item, ZIndexComponent.class);
-
-            int ammount = 1;
-            if (!isUp) ammount = -1;
-
-            int setting = zIndexComponent.getZIndex() + ammount;
-            if (setting < 0) setting = 0;
-            zIndexComponent.setZIndex(setting);
-        }
     }
 
     public void moveItemBy(int entity, float x, float y) {

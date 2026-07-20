@@ -17,6 +17,8 @@
  */
 
 package games.rednblack.editor.view.stage.tools;
+import games.rednblack.editor.utils.RoundUtils;
+import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.Gdx;
@@ -325,9 +327,13 @@ public class SelectionTool extends SimpleTool {
                     degreeAmount = degreeAmount * 15;
                 }
 
-                transformComponent.rotation = (transformComponent.rotation + degreeAmount) % 360;
-                // pining UI to update current item properties tools
-                facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, itemInstance);
+                float newRotation = (transformComponent.rotation + degreeAmount) % 360;
+                // route through ItemTransformCommand (undoable): capture prev, apply, send
+                TransformCommandBuilder commandBuilder = new TransformCommandBuilder();
+                commandBuilder.begin(itemInstance, sandbox.getEngine());
+                transformComponent.rotation = newRotation;
+                commandBuilder.setRotation(RoundUtils.round(newRotation, 2));
+                commandBuilder.execute(facade);
             }
         }
 
