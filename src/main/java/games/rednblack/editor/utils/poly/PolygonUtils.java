@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.utils.poly;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
@@ -50,7 +51,7 @@ public class PolygonUtils {
 	}
 
 	public static boolean isSamePoint(Vector2 point1, Vector2 point2) {
-		int pixelsPerWU = Sandbox.getInstance().getPixelPerWU();
+		int pixelsPerWU = PluginUIBridge.get().getSandbox().getPixelPerWU();
 		int precision = 1000 * pixelsPerWU;
 		Vector2 pointA = POOLS.obtain(Vector2.class).set(point1);
 		Vector2 pointB = POOLS.obtain(Vector2.class).set(point2);

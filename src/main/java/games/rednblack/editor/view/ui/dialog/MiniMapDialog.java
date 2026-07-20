@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -40,7 +41,7 @@ public class MiniMapDialog extends Table {
                 float transformedX = miniMapBounds.x + relativeX * miniMapBounds.width;
                 float transformedY = miniMapBounds.y + relativeY * miniMapBounds.height;
 
-                Sandbox.getInstance().panSceneTo(transformedX, transformedY);
+                PluginUIBridge.get().getSandbox().panSceneTo(transformedX, transformedY);
             }
         });
         miniMap.setAlign(Align.center);
@@ -50,7 +51,7 @@ public class MiniMapDialog extends Table {
     }
 
     public boolean update() {
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         HyperLap2dRendererMiniMap rendererMiniMap = sandbox.getEngine().getSystem(HyperLap2dRendererMiniMap.class);
 
         Texture texture = rendererMiniMap.getMiniMapTexture(sandbox.getRootEntity());

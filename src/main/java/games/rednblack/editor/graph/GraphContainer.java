@@ -1,4 +1,5 @@
 package games.rednblack.editor.graph;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -283,7 +284,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
     }
 
     private void showPopupMenu(H2DPopupMenu popupMenu) {
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
 
         popupMenu.showMenu(uiStage, sandbox.getInputX(), uiStage.getHeight() - sandbox.getInputY());
@@ -803,7 +804,7 @@ public class GraphContainer<T extends FieldType> extends Table implements Naviga
             PolygonUtils.vector2Pool.free(center2);
         }
 
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
 
         if (drawingFromConnector != null) {

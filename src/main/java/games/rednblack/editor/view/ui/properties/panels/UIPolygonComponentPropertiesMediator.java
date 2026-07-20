@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.properties.panels;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -143,11 +144,11 @@ public class UIPolygonComponentPropertiesMediator extends UIRemovableComponentPr
         Object[] param = new Object[2];
         param[0] = polygonShapeComponent.polygonizedVertices;
         param[1] = polygonShapeComponent.vertices;
-        Sandbox.getInstance().copyToLocalClipboard("meshData", param);
+        PluginUIBridge.get().getSandbox().copyToLocalClipboard("meshData", param);
     }
 
     private void pasteMesh() {
-        Object[] param = (Object[]) Sandbox.getInstance().retrieveFromLocalClipboard("meshData");
+        Object[] param = (Object[]) PluginUIBridge.get().getSandbox().retrieveFromLocalClipboard("meshData");
         Vector2[][] polygonizedVertices = (Vector2[][]) param[0];
         Array<Vector2> vertices = (Array<Vector2>) param[1];
         if(vertices == null) return;

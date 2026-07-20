@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.box.resourcespanel.draggable.list;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -42,7 +43,7 @@ public abstract class ListItemResource extends Button implements DraggableResour
 
     public ListItemResource(String name, String styleName) {
         super(VisUI.getSkin().get(styleName, ListItemResourceStyle.class));
-        sandbox = Sandbox.getInstance();
+        sandbox = PluginUIBridge.get().getSandbox();
         icon = new Image(getStyle().resourceUp);
         add(icon);
         add(new VisLabel(name, getStyle().labelStyle)).expandX().fillX();

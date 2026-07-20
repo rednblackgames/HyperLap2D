@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -24,7 +25,7 @@ public class LoadingBarDialogMediator extends Mediator<LoadingBarDialog> {
     @Override
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
 
         switch (notification.getName()) {

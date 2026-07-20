@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.followers;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.graphics.Color;
@@ -45,7 +46,7 @@ public class LayoutSubFollower extends SubFollower {
     public LayoutSubFollower(int entity) {
         super(entity);
         entityData = EntityDataProxy.get();
-        pixelsPerWU = Sandbox.getInstance().getPixelPerWU();
+        pixelsPerWU = PluginUIBridge.get().getSandbox().getPixelPerWU();
     }
 
     @Override
@@ -82,7 +83,7 @@ public class LayoutSubFollower extends SubFollower {
         DimensionsComponent parentDim = entityData.get(parent, DimensionsComponent.class);
         if (parentDim == null) return;
 
-        OrthographicCamera camera = Sandbox.getInstance().getCamera();
+        OrthographicCamera camera = PluginUIBridge.get().getSandbox().getCamera();
 
         // Precompute per-frame drawing state
         drawScale = pixelsPerWU / camera.zoom;

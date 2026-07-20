@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.utils.poly.tracer;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
@@ -71,8 +72,8 @@ public class Tracer {
 			for (int ii=0; ii<outline.size; ii++) {
 				polygons[i][ii] = outline.get(ii);
 				polygons[i][ii].y = th - polygons[i][ii].y;
-				polygons[i][ii].x /= Sandbox.getInstance().getPixelPerWU();
-				polygons[i][ii].y /= Sandbox.getInstance().getPixelPerWU();
+				polygons[i][ii].x /= PluginUIBridge.get().getSandbox().getPixelPerWU();
+				polygons[i][ii].y /= PluginUIBridge.get().getSandbox().getPixelPerWU();
 			}
 		}
 

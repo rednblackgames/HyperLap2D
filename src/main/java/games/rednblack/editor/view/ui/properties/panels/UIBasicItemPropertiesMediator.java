@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.properties.panels;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.controller.commands.EntityComponentsPayload;
 
 import games.rednblack.editor.renderer.ecs.Component;
@@ -126,7 +127,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
                 }
 
                 picker.setColor(viewComponent.getTintColor());
-                Sandbox.getInstance().getUIStage().addActor(picker.fadeIn());
+                PluginUIBridge.get().getSandbox().getUIStage().addActor(picker.fadeIn());
                 break;
             case UIBasicItemProperties.LINKING_CHANGED:
                 boolean isLinked = notification.getBody();

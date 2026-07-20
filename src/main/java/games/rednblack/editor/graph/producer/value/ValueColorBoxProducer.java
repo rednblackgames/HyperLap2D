@@ -1,4 +1,5 @@
 package games.rednblack.editor.graph.producer.value;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -71,7 +72,7 @@ public class ValueColorBoxProducer<T extends FieldType> extends ValueGraphBoxPro
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         //displaying picker with fade in animation
-                        Sandbox.getInstance().getUIStage().addActor(picker.fadeIn());
+                        PluginUIBridge.get().getSandbox().getUIStage().addActor(picker.fadeIn());
                     }
                 });
 

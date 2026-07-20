@@ -1,4 +1,5 @@
 package games.rednblack.editor.live;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -51,7 +52,7 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
         int previewWidth = resolutionManager.getOriginalResolution().width;
         int previewHeight = resolutionManager.getOriginalResolution().height;
 
-        WorldSizeVO worldSizeVO = new WorldSizeVO(Sandbox.getInstance().getPixelPerWU(), previewWidth, previewHeight);
+        WorldSizeVO worldSizeVO = new WorldSizeVO(PluginUIBridge.get().getSandbox().getPixelPerWU(), previewWidth, previewHeight);
 
         mBox2DDebugRenderer = new Box2DDebugRenderer();
 

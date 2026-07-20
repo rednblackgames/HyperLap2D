@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -26,7 +27,7 @@ public class SaveProjectDialogMediator extends Mediator<SaveProjectDialog> {
     @Override
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
 
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);

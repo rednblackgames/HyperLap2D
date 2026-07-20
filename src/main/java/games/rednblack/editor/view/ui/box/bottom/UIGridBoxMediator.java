@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.box.bottom;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -48,7 +49,7 @@ public class UIGridBoxMediator extends Mediator<UIGridBox> {
     @Override
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
 
         switch (notification.getName()) {
             case ProjectManager.PROJECT_OPENED:

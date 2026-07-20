@@ -47,7 +47,7 @@ public class BoxItemResourceSelectionUIMediator extends Mediator<BoxItemResource
     @Override
     public void onRegister() {
     	super.onRegister();
-	ResourceSelectionProxy.get(facade).setSelectedResources(boxResourceSelectedSet);
+		ResourceSelectionProxy.get(facade).setSelectedResources(boxResourceSelectedSet);
     }
 
 	@Override

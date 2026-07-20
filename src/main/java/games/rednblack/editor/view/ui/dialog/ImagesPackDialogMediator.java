@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.controller.commands.resource.DeleteImageResource;
@@ -44,7 +45,7 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
 
     @Override
     public void handleNotification(INotification notification) {
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         String currentTab;

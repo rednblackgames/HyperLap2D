@@ -1,4 +1,5 @@
 package games.rednblack.editor.controller.commands;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.renderer.components.LayerMapComponent;
 import games.rednblack.editor.renderer.data.LayerItemVO;
@@ -26,12 +27,12 @@ public class NewLayerCommand extends EntityModifyRevertibleCommand {
             return;
         }
 
-        int viewingEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        int viewingEntity = PluginUIBridge.get().getSandbox().getCurrentViewingEntity();
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
 
         if (layerMapComponent.getLayer(layerName.hashCode()) != null) {
             cancel();
-            H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Layer name already exists.").padBottom(20).pack();
+            H2DDialogs.showErrorDialog(PluginUIBridge.get().getSandbox().getUIStage(), "Layer name already exists.").padBottom(20).pack();
             return;
         }
 
@@ -44,7 +45,7 @@ public class NewLayerCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        int viewingEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        int viewingEntity = PluginUIBridge.get().getSandbox().getCurrentViewingEntity();
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
 
         layerMapComponent.deleteLayer(layerName);

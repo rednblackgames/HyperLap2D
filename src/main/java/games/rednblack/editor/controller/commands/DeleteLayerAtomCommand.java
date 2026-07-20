@@ -1,4 +1,5 @@
 package games.rednblack.editor.controller.commands;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.renderer.components.LayerMapComponent;
 import games.rednblack.editor.renderer.data.LayerItemVO;
@@ -23,7 +24,7 @@ public class DeleteLayerAtomCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void doAction() {
-        int viewingEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        int viewingEntity = PluginUIBridge.get().getSandbox().getCurrentViewingEntity();
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
 
         if(layerMapComponent.getLayers().size > 1) {
@@ -35,7 +36,7 @@ public class DeleteLayerAtomCommand extends EntityModifyRevertibleCommand {
 
     @Override
     public void undoAction() {
-        int viewingEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        int viewingEntity = PluginUIBridge.get().getSandbox().getCurrentViewingEntity();
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
 
         layerMapComponent.addLayer(layerIndex, layerItemVO);

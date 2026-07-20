@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.box.resourcespanel;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -35,7 +36,7 @@ public class UIActionsTab extends UIResourcesTab {
         newBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                H2DDialogs.showInputDialog(Sandbox.getInstance().getUIStage(), "Create New Action", "Action Name : ", false, new StringNameValidator(), new InputDialogListener() {
+                H2DDialogs.showInputDialog(PluginUIBridge.get().getSandbox().getUIStage(), "Create New Action", "Action Name : ", false, new StringNameValidator(), new InputDialogListener() {
                     @Override
                     public void finished(String input) {
                         if (input == null || input.equals("")) {

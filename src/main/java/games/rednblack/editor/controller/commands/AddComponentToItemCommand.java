@@ -1,4 +1,5 @@
 package games.rednblack.editor.controller.commands;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.utils.runtime.EntityUtils;
@@ -28,7 +29,7 @@ public class AddComponentToItemCommand extends EntityModifyRevertibleCommand {
         collectData();
 
         int entity = EntityUtils.getByUniqueId(entityId);
-        Component newComponent = Sandbox.getInstance().getEngine().edit(entity).create(component);
+        Component newComponent = PluginUIBridge.get().getSandbox().getEngine().edit(entity).create(component);
         sandbox.getEngine().inject(newComponent);
 
         Facade.getInstance().sendNotification(DONE, entity);
@@ -39,8 +40,8 @@ public class AddComponentToItemCommand extends EntityModifyRevertibleCommand {
     public void undoAction() {
         int entity = EntityUtils.getByUniqueId(entityId);
 
-        Sandbox.getInstance().getEngine().edit(entity).remove(component);
-        Sandbox.getInstance().getEngine().process();
+        PluginUIBridge.get().getSandbox().getEngine().edit(entity).remove(component);
+        PluginUIBridge.get().getSandbox().getEngine().process();
 
         Facade.getInstance().sendNotification(DONE, entity);
         Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);

@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.box.resourcespanel.draggable.box;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -81,7 +82,7 @@ public abstract class BoxItemResource extends Group implements DraggableResource
      * @param highlightWhenMouseOver Whether to change the border color when the mouse hovers over the image.
      */
     public BoxItemResource(boolean highlightWhenMouseOver) {
-        sandbox = Sandbox.getInstance();
+        sandbox = PluginUIBridge.get().getSandbox();
         rc = new PixelRect(thumbnailSize, thumbnailSize);
         rc.setFillColor(fillColor);
         rc.setBorderColor(borderColor);

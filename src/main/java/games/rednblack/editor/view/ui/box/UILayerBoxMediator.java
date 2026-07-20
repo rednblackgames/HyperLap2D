@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.box;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.LayerSelectionProxy;
 import games.rednblack.editor.proxy.EntityDataProxy;
 import games.rednblack.editor.proxy.SelectionProxy;
@@ -172,14 +173,14 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
 
 
     private void handleCreateNewLayer() {
-        H2DDialogs.showInputDialog(Sandbox.getInstance().getUIStage(), "New Layer", "Enter unique name for your Layer", false, new InputDialogListener() {
+        H2DDialogs.showInputDialog(PluginUIBridge.get().getSandbox().getUIStage(), "New Layer", "Enter unique name for your Layer", false, new InputDialogListener() {
             @Override
             public void finished(String input) {
                 if (checkIfNameIsUnique(input)) {
                     Object[] payload = NewLayerCommand.payload(viewComponent.getCurrentSelectedLayerIndex() + 1, input);
                     facade.sendNotification(MsgAPI.ACTION_NEW_LAYER, payload);
                 } else {
-                    H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Layer name already exists.").padBottom(20).pack();
+                    H2DDialogs.showErrorDialog(PluginUIBridge.get().getSandbox().getUIStage(), "Layer name already exists.").padBottom(20).pack();
                 }
             }
             @Override
@@ -193,7 +194,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
         int deletingLayerIndex = viewComponent.getCurrentSelectedLayerIndex();
         if (deletingLayerIndex != -1) {
             String layerName = layers.get(deletingLayerIndex).layerName;
-            H2DDialogs.showConfirmDialog(Sandbox.getInstance().getUIStage(),
+            H2DDialogs.showConfirmDialog(PluginUIBridge.get().getSandbox().getUIStage(),
                     "Delete Layer", "Do you really want to delete '" + layerName + "' layer?",
                     new String[]{"Cancel", "Delete"}, new Integer[]{0, 1}, r -> {
                         if (r == 1) {
@@ -247,12 +248,12 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
             LayerItemVO vo = slot.getUiLayerItem().getData();
             layers.add(vo);
         }
-        LayerMapComponent layerMapComponent = ComponentRetriever.get(Sandbox.getInstance().getCurrentViewingEntity(), LayerMapComponent.class);
+        LayerMapComponent layerMapComponent = ComponentRetriever.get(PluginUIBridge.get().getSandbox().getCurrentViewingEntity(), LayerMapComponent.class);
         layerMapComponent.setLayers(layers);
     }*/
 
     private void addNewLayerToItemComposite(LayerItemVO layerVo) {
-        LayerMapComponent layerMapComponent = EntityDataProxy.get().get(Sandbox.getInstance().getCurrentViewingEntity(), LayerMapComponent.class);
+        LayerMapComponent layerMapComponent = EntityDataProxy.get().get(PluginUIBridge.get().getSandbox().getCurrentViewingEntity(), LayerMapComponent.class);
         layerMapComponent.addLayer(layerVo);
     }
 
@@ -261,7 +262,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
         if(setLocked){
             SelectionProxy.get(facade).clearSelections();
         }
-        int viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        int viewEntity = PluginUIBridge.get().getSandbox().getCurrentViewingEntity();
         LayerMapComponent layerMapComponent = EntityDataProxy.get().get(viewEntity, LayerMapComponent.class);
 
         layerMapComponent.getLayer(layerName.hashCode()).isLocked = setLocked;
@@ -274,7 +275,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
             return;
         }
         String layerName = layerItem.getLayerName();
-        int viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        int viewEntity = PluginUIBridge.get().getSandbox().getCurrentViewingEntity();
 
         NodeComponent nodeComponent = EntityDataProxy.get().get(viewEntity, NodeComponent.class);
         Set<Integer> items = new HashSet<>();
@@ -291,7 +292,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
 
     private void setEntityVisibilityByLayer(UILayerBox.UILayerItem layerItem, boolean setVisible) {
         String layerName = layerItem.getLayerName();
-        int viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        int viewEntity = PluginUIBridge.get().getSandbox().getCurrentViewingEntity();
 
         NodeComponent nodeComponent = EntityDataProxy.get().get(viewEntity, NodeComponent.class);
         for(int i=0; i<nodeComponent.children.size; i++){
@@ -334,7 +335,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
     }
 
     private void initLayerData() {
-        int viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        int viewEntity = PluginUIBridge.get().getSandbox().getCurrentViewingEntity();
         LayerMapComponent layerMapComponent = EntityDataProxy.get().get(viewEntity, LayerMapComponent.class);
         layers = layerMapComponent.getLayers();
 

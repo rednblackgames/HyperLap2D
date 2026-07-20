@@ -1,4 +1,5 @@
 package games.rednblack.editor.utils.asset.impl;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -107,7 +108,7 @@ public class SpineAsset extends Asset {
                 targetPath = projectManager.getCurrentProjectPath() + File.separator + ProjectManager.SPINE_DIR_PATH + File.separator + fileNameWithOutExt;
                 FileHandle atlasFileSource = new FileHandle(animationDataPath + File.separator + fileNameWithOutExt + ".atlas");
                 if (!atlasFileSource.exists()) {
-                    H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                    H2DDialogs.showErrorDialog(PluginUIBridge.get().getSandbox().getUIStage(),
                             "\nCould not find '" + atlasFileSource.name() +"'.\nCheck if the file exists in the same directory.").padBottom(20).pack();
                     return null;
                 }
@@ -115,7 +116,7 @@ public class SpineAsset extends Asset {
                 TextureAtlas.TextureAtlasData atlas = new TextureAtlas.TextureAtlasData(atlasFileSource, atlasFileSource.parent(), false);
                 for (TextureAtlas.TextureAtlasData.Page imageFile : new Array.ArrayIterator<>(atlas.getPages())) {
                     if (!imageFile.textureFile.exists()) {
-                        H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                        H2DDialogs.showErrorDialog(PluginUIBridge.get().getSandbox().getUIStage(),
                                 "\nCould not find " + imageFile.textureFile.name() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
                         return null;
                     }
@@ -123,7 +124,7 @@ public class SpineAsset extends Asset {
 
                 Version spineVersion = getSpineVersion(animationFileSource);
                 if (spineVersion.compareTo(SpineItemType.SUPPORTED_SPINE_VERSION) < 0) {
-                    H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                    H2DDialogs.showErrorDialog(PluginUIBridge.get().getSandbox().getUIStage(),
                             "\nCould not import Spine Animation.\nRequired version >=" + SpineItemType.SUPPORTED_SPINE_VERSION.get() + " found " + spineVersion.get()).padBottom(20).pack();
                     return null;
                 }

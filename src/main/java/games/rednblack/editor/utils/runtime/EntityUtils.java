@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.utils.runtime;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.ecs.Aspect;
@@ -84,7 +85,7 @@ public class EntityUtils {
     public static String getItemName(int entity) {
         ParentNodeComponent parentNodeComponent = EntityDataProxy.get().get(entity, ParentNodeComponent.class);
         if (parentNodeComponent == null)
-            return Sandbox.getInstance().getSceneControl().getCurrentSceneVO().sceneName;
+            return PluginUIBridge.get().getSandbox().getSceneControl().getCurrentSceneVO().sceneName;
 
         MainItemComponent mainItemComponent = EntityDataProxy.get().get(entity, MainItemComponent.class);
         if (mainItemComponent.itemIdentifier != null && !mainItemComponent.itemIdentifier.isEmpty()) {
@@ -121,13 +122,13 @@ public class EntityUtils {
     }
 
     public static int getByUniqueId(String id) {
-        return Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory().getEntityByUniqueId(id);
+        return PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader.getEntityFactory().getEntityByUniqueId(id);
     }
 
     public static HashSet<Integer> getByUniqueId(Array<String> ids) {
         HashSet<Integer> entities = new HashSet<>();
         for (String id : ids) {
-            Integer entity = Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory().getEntityByUniqueId(id);
+            Integer entity = PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader.getEntityFactory().getEntityByUniqueId(id);
             entities.add(entity);
         }
         return entities;
@@ -345,7 +346,7 @@ public class EntityUtils {
     public static String getJsonStringFromEntity(int entity) {
         Json json = HyperJson.getJson();
         Engine engine = EntityDataProxy.get().getEngine();
-        EntityFactory entityFactory = Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory();
+        EntityFactory entityFactory = PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader.getEntityFactory();
         int entityType = EntityDataProxy.get().get(entity, MainItemComponent.class).entityType;
         try {
             MainItemVO entityVO = entityFactory.instantiateEmptyVO(entityType);
@@ -360,7 +361,7 @@ public class EntityUtils {
     public static String getJsonStringFromEntities(Set<Integer> entities) {
         CompositeItemVO holderComposite = new CompositeItemVO();
         Engine engine = EntityDataProxy.get().getEngine();
-        EntityFactory entityFactory = Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory();
+        EntityFactory entityFactory = PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader.getEntityFactory();
         for (int entity : entities) {
             int entityType = EntityDataProxy.get().get(entity, MainItemComponent.class).entityType;
             try {

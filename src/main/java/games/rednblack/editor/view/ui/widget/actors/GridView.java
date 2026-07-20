@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.widget.actors;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -37,11 +38,11 @@ public class GridView extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        OrthographicCamera uiCamera = (OrthographicCamera) Sandbox.getInstance().getUIStage().getCamera();
+        OrthographicCamera uiCamera = (OrthographicCamera) PluginUIBridge.get().getSandbox().getUIStage().getCamera();
         batch.setProjectionMatrix(uiCamera.combined);
 
-        float screenWidth = Sandbox.getInstance().getUIStage().getWidth();
-        float screenHeight = Sandbox.getInstance().getUIStage().getHeight();
+        float screenWidth = PluginUIBridge.get().getSandbox().getUIStage().getWidth();
+        float screenHeight = PluginUIBridge.get().getSandbox().getUIStage().getHeight();
 
         calculateGridSize();
 
@@ -50,7 +51,7 @@ public class GridView extends Actor {
     }
 
     private void calculateGridSize() {
-        float viewMeasurableWidth = Sandbox.getInstance().getViewport().getWorldWidth() * Sandbox.getInstance().getCameraZoomTarget();
+        float viewMeasurableWidth = PluginUIBridge.get().getSandbox().getViewport().getWorldWidth() * PluginUIBridge.get().getSandbox().getCameraZoomTarget();
         float gridMeasuringSize = viewMeasurableWidth / separatorsCount;
 
         if (gridMeasuringSize <= 0.5) {
@@ -67,12 +68,12 @@ public class GridView extends Actor {
     }
 
     private void drawDynamicGrid(float screenWidth, float screenHeight, float parentAlpha) {
-        OrthographicCamera runtimeCamera = Sandbox.getInstance().getCamera();
+        OrthographicCamera runtimeCamera = PluginUIBridge.get().getSandbox().getCamera();
 
         float subStep = gridMeasuringSizeInWorld / SUBDIVISIONS;
 
-        float viewportHalfWidth = (Sandbox.getInstance().getViewport().getWorldWidth() * Sandbox.getInstance().getCameraZoomTarget()) / 2f;
-        float viewportHalfHeight = (Sandbox.getInstance().getViewport().getWorldHeight() * Sandbox.getInstance().getCameraZoomTarget()) / 2f;
+        float viewportHalfWidth = (PluginUIBridge.get().getSandbox().getViewport().getWorldWidth() * PluginUIBridge.get().getSandbox().getCameraZoomTarget()) / 2f;
+        float viewportHalfHeight = (PluginUIBridge.get().getSandbox().getViewport().getWorldHeight() * PluginUIBridge.get().getSandbox().getCameraZoomTarget()) / 2f;
 
         float worldLeft = runtimeCamera.position.x - viewportHalfWidth;
         float worldRight = runtimeCamera.position.x + viewportHalfWidth;
@@ -86,7 +87,7 @@ public class GridView extends Actor {
             LineType type = getLineType(x);
 
             tmpPoint.set(x, 0);
-            Vector2 screenPos = Sandbox.getInstance().worldToScreen(tmpPoint);
+            Vector2 screenPos = PluginUIBridge.get().getSandbox().worldToScreen(tmpPoint);
 
             setupLineStyle(type, parentAlpha);
             float thickness = (type == LineType.AXIS) ? 2f : 1f;
@@ -97,7 +98,7 @@ public class GridView extends Actor {
             LineType type = getLineType(y);
 
             tmpPoint.set(0, y);
-            Vector2 screenPos = Sandbox.getInstance().worldToScreen(tmpPoint);
+            Vector2 screenPos = PluginUIBridge.get().getSandbox().worldToScreen(tmpPoint);
 
             setupLineStyle(type, parentAlpha);
             float thickness = (type == LineType.AXIS) ? 2f : 1f;
@@ -143,7 +144,7 @@ public class GridView extends Actor {
 
     private void drawZeroLabel(Batch batch, float parentAlpha) {
         tmpPoint.set(0, 0);
-        Vector2 screenOrigin = Sandbox.getInstance().worldToScreen(tmpPoint);
+        Vector2 screenOrigin = PluginUIBridge.get().getSandbox().worldToScreen(tmpPoint);
 
         zeroLabel.setColor(1, 1, 1, 0.5f * parentAlpha);
         zeroLabel.setPosition(screenOrigin.x + 6, screenOrigin.y + 6);

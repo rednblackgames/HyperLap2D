@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -195,12 +196,12 @@ public class RulersUI extends Actor {
         verticalRect.set(leftOffset, 0, rulerBoxSize, getStage().getHeight() - topOffset);
 
         //calculating sizes
-        viewMeasurableWidth = Sandbox.getInstance().getViewport().getWorldWidth() * Sandbox.getInstance().getCamera().zoom;
-        viewMeasurableHeight = Sandbox.getInstance().getViewport().getWorldHeight() * Sandbox.getInstance().getCamera().zoom;
+        viewMeasurableWidth = PluginUIBridge.get().getSandbox().getViewport().getWorldWidth() * PluginUIBridge.get().getSandbox().getCamera().zoom;
+        viewMeasurableHeight = PluginUIBridge.get().getSandbox().getViewport().getWorldHeight() * PluginUIBridge.get().getSandbox().getCamera().zoom;
 
         if (isShowingPixels) {
-            viewMeasurableWidth = viewMeasurableWidth * Sandbox.getInstance().getPixelPerWU();
-            viewMeasurableHeight = viewMeasurableHeight * Sandbox.getInstance().getPixelPerWU();
+            viewMeasurableWidth = viewMeasurableWidth * PluginUIBridge.get().getSandbox().getPixelPerWU();
+            viewMeasurableHeight = viewMeasurableHeight * PluginUIBridge.get().getSandbox().getPixelPerWU();
         }
 
         gridMeasureToDisplayScale = getStage().getWidth() / viewMeasurableWidth;
@@ -218,19 +219,19 @@ public class RulersUI extends Actor {
 
         gridMeasuringSizeInWorld = gridMeasuringSize;
         if (isShowingPixels) {
-            gridMeasuringSizeInWorld = gridMeasuringSize / Sandbox.getInstance().getPixelPerWU();
+            gridMeasuringSizeInWorld = gridMeasuringSize / PluginUIBridge.get().getSandbox().getPixelPerWU();
         }
 
     }
 
     private Vector2 worldToHere(Vector2 tmp) {
-        tmp = Sandbox.getInstance().worldToScreen(tmp);
+        tmp = PluginUIBridge.get().getSandbox().worldToScreen(tmp);
 
         return tmp;
     }
 
     private Vector2 hereToWorld(Vector2 tmp) {
-        tmp = Sandbox.getInstance().screenToWorld(tmp);
+        tmp = PluginUIBridge.get().getSandbox().screenToWorld(tmp);
 
         return tmp;
     }
@@ -295,8 +296,8 @@ public class RulersUI extends Actor {
         String postFix = "";
         if (isShowingPixels) {
             postFix = "px";
-            worldStartPointCpy.x *= Sandbox.getInstance().getPixelPerWU();
-            worldStartPointCpy.y *= Sandbox.getInstance().getPixelPerWU();
+            worldStartPointCpy.x *= PluginUIBridge.get().getSandbox().getPixelPerWU();
+            worldStartPointCpy.y *= PluginUIBridge.get().getSandbox().getPixelPerWU();
         }
 
         float gridSize = gridMeasuringSize * gridMeasureToDisplayScale;
@@ -389,7 +390,7 @@ public class RulersUI extends Actor {
             String postfix = "";
             if (draggingGuide.isVertical) axis = "X";
             if (isShowingPixels) {
-                pos = draggingGuide.pos * Sandbox.getInstance().getPixelPerWU();
+                pos = draggingGuide.pos * PluginUIBridge.get().getSandbox().getPixelPerWU();
                 postfix = "px";
             }
 
@@ -402,7 +403,7 @@ public class RulersUI extends Actor {
                 pos = (float) (Math.round(pos * 100) / 100);
 
             guidePosLbl.setText(axis + ": " + positionAsString + postfix);
-            guidePosLbl.setPosition(Sandbox.getInstance().getInputX(15), getStage().getHeight() - Sandbox.getInstance().getInputY(15));
+            guidePosLbl.setPosition(PluginUIBridge.get().getSandbox().getInputX(15), getStage().getHeight() - PluginUIBridge.get().getSandbox().getInputY(15));
             guidePosLbl.draw(batch, parentAlpha);
         }
     }
@@ -444,7 +445,7 @@ public class RulersUI extends Actor {
         point = hereToWorld(point);
 
         Circle touchCircle = tmpCircle;
-        touchCircle.radius = 3f / Sandbox.getInstance().getPixelPerWU();
+        touchCircle.radius = 3f / PluginUIBridge.get().getSandbox().getPixelPerWU();
         touchCircle.setPosition(point.x, point.y);
 
 

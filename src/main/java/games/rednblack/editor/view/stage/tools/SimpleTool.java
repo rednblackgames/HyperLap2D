@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.stage.tools;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.SandboxMediator;
@@ -18,7 +19,7 @@ public abstract class SimpleTool implements Tool {
 
     /**
      * Injected by {@code UIToolBoxMediator} when the editor tools are created, so
-     * editor tools stop calling {@code Facade.getInstance()}/{@code Sandbox.getInstance()}
+     * editor tools stop calling {@code Facade.getInstance()}/{@code PluginUIBridge.get().getSandbox()}
      * (plugin tools implement {@link Tool} directly and are unaffected).
      */
     protected Facade facade;

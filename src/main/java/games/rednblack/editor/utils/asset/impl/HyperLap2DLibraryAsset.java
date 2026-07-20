@@ -1,4 +1,5 @@
 package games.rednblack.editor.utils.asset.impl;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
@@ -64,7 +65,7 @@ public class HyperLap2DLibraryAsset extends Asset {
         }
 
         // save before importing
-        SceneVO vo = Sandbox.getInstance().sceneVoFromItems();
+        SceneVO vo = PluginUIBridge.get().getSandbox().sceneVoFromItems();
         projectManager.saveCurrentProject(vo);
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -85,7 +86,7 @@ public class HyperLap2DLibraryAsset extends Asset {
                     Json json = HyperJson.getJson();
                     ExportMapperVO exportMapperVO = json.fromJson(ExportMapperVO.class, mapper);
                     if (!exportMapperVO.projectVersion.equals(projectManager.currentProjectVO.projectVersion)) {
-                        H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                        H2DDialogs.showErrorDialog(PluginUIBridge.get().getSandbox().getUIStage(),
                                 "\nCould not import '" + fileHandle.name() + "'.\nLibrary version does not match current Project version.")
                                 .padBottom(20).pack();
                         scheduledLibraries--;

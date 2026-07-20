@@ -1,4 +1,5 @@
 package games.rednblack.editor.controller.commands.component;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -53,7 +54,7 @@ public class ReplaceSpriteAnimationCommand extends EntityModifyRevertibleCommand
 
         textureRegionComponent.region = regions.get(0);
 
-        ProjectInfoVO projectInfoVO = Sandbox.getInstance().getSceneControl().sceneLoader.getRm().getProjectVO();
+        ProjectInfoVO projectInfoVO = PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader.getRm().getProjectVO();
         float ppwu = projectInfoVO.pixelToWorld;
         size.width = textureRegionComponent.region.getRegionWidth() / ppwu;
         size.height = textureRegionComponent.region.getRegionHeight() / ppwu;
@@ -86,7 +87,7 @@ public class ReplaceSpriteAnimationCommand extends EntityModifyRevertibleCommand
 
         textureRegionComponent.region = backupAnimRegions.get(0);
 
-        ProjectInfoVO projectInfoVO = Sandbox.getInstance().getSceneControl().sceneLoader.getRm().getProjectVO();
+        ProjectInfoVO projectInfoVO = PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader.getRm().getProjectVO();
         float ppwu = projectInfoVO.pixelToWorld;
         size.width = textureRegionComponent.region.getRegionWidth() / ppwu;
         size.height = textureRegionComponent.region.getRegionHeight() / ppwu;

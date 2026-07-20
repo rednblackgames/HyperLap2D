@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.box.resourcespanel;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -26,7 +27,7 @@ public class UIFilterMenuMediator extends Mediator<UIFilterMenu> {
     public void handleNotification(INotification notification) {
         switch (notification.getName()) {
             case UIFilterMenu.SHOW_FILTER_MENU:
-                UIStage uiStage = Sandbox.getInstance().getUIStage();
+                UIStage uiStage = PluginUIBridge.get().getSandbox().getUIStage();
                 Object[] payload = notification.getBody();
                 viewComponent.showMenu(uiStage, (float) payload[0], (float) payload[1]);
                 break;

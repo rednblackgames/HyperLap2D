@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.controller.commands;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -55,7 +56,7 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
         }
 
         Vector2 cameraPrevPosition = (Vector2) payload[0];
-        Vector2 cameraCurrPosition = new Vector2(Sandbox.getInstance().getCamera().position.x,Sandbox.getInstance().getCamera().position.y);
+        Vector2 cameraCurrPosition = new Vector2(PluginUIBridge.get().getSandbox().getCamera().position.x,PluginUIBridge.get().getSandbox().getCamera().position.y);
 
         Vector2 diff = cameraCurrPosition.sub(cameraPrevPosition);
 
@@ -71,7 +72,7 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
             transformComponent.y += diff.y;
             ZIndexComponent zIndexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
             zIndexComponent.setLayerName(LayerSelectionProxy.get(facade).getCurrentLayerName());
-            Sandbox.getInstance().getEngine().getSystem(LayerSystem.class).process();
+            PluginUIBridge.get().getSandbox().getEngine().getSystem(LayerSystem.class).process();
             Facade.getInstance().sendNotification(MsgAPI.NEW_ITEM_ADDED, entity);
             pastedEntityIds.add(EntityUtils.getEntityId(entity));
         }
@@ -94,8 +95,8 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
     public static Set<Integer> createEntitiesFromVO(CompositeItemVO compositeVO) {
         Set<Integer> entities = new HashSet<>();
 
-        EntityFactory factory = Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory();
-        int parentEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        EntityFactory factory = PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader.getEntityFactory();
+        int parentEntity = PluginUIBridge.get().getSandbox().getCurrentViewingEntity();
 
 
         for (String key : compositeVO.content.keys()) {

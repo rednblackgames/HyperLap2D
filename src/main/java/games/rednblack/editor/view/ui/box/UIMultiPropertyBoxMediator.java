@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.box;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.utils.Array;
@@ -131,7 +132,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
     private void initAllPropertyBoxes(Object observable) {
         if (observable == null) {
             // if there is nothing to observe, always observe current scene
-            observable = Sandbox.getInstance().getSceneControl().getCurrentSceneVO();
+            observable = PluginUIBridge.get().getSandbox().getSceneControl().getCurrentSceneVO();
         }
 
         String mapName = observable.getClass().getName();

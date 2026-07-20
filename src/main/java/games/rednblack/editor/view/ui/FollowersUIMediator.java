@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
@@ -146,7 +147,7 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
 
     private void createFollowersForAllVisible() {
         removeAllfollowers();
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         NodeComponent nodeComponent = EntityDataProxy.get().get(sandbox.getCurrentViewingEntity(), NodeComponent.class);
         if (nodeComponent != null) {
             for (int entity: nodeComponent.children) {

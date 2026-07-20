@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.puremvc.Facade;
 
 import games.rednblack.editor.view.menu.HelpMenu;
@@ -24,7 +25,7 @@ public class AboutDialogMediator extends Mediator<AboutDialog> {
     @Override
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
 
         switch (notification.getName()) {

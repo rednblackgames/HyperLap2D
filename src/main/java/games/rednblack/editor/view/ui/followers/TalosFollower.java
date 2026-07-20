@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.followers;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.ecs.ComponentMapper;
@@ -85,8 +86,8 @@ public class TalosFollower extends BasicFollower {
     public void update() {
         super.update();
 
-        Sandbox sandbox = Sandbox.getInstance();
-        OrthographicCamera camera = Sandbox.getInstance().getCamera();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
+        OrthographicCamera camera = PluginUIBridge.get().getSandbox().getCamera();
 
         int pixelPerWU = sandbox.getSceneControl().sceneLoader.getRm().getProjectVO().pixelToWorld;
 
@@ -142,7 +143,7 @@ public class TalosFollower extends BasicFollower {
     }
 
     private void drawAnchorBindings(TalosAnchorConstraintComponent anchorComp, float alphaMult) {
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
 
         for (int i = 0; i < anchorComp.bindings.size; i++) {
             TalosAnchorConstraintComponent.AnchorBinding binding = anchorComp.bindings.get(i);
@@ -177,7 +178,7 @@ public class TalosFollower extends BasicFollower {
     private void projectToScreen(float worldX, float worldY, Vector2 out) {
         out.set(worldX, worldY);
         TransformMathUtils.localToSceneCoordinates(entity, out, transformMapper, parentMapper);
-        Sandbox.getInstance().worldToScreen(out);
+        PluginUIBridge.get().getSandbox().worldToScreen(out);
     }
 
     private void drawReticle(float x, float y, Color color, float alpha) {

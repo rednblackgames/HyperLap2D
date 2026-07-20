@@ -1,4 +1,5 @@
 package games.rednblack.editor.controller.commands.resource;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.utils.AssetIOManager;
@@ -26,7 +27,7 @@ public class DeleteParticleEffect extends DeleteResourceCommand {
             sendNotification(DONE, particleName);
             SceneVO vo = sandbox.sceneVoFromItems();
             projectManager.saveCurrentProject(vo);
-            Sandbox.getInstance().loadCurrentProject();
+            PluginUIBridge.get().getSandbox().loadCurrentProject();
         } else {
             cancel();
         }

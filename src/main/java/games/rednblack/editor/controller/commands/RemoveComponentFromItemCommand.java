@@ -1,4 +1,5 @@
 package games.rednblack.editor.controller.commands;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.utils.runtime.ComponentCloner;
@@ -35,7 +36,7 @@ public class RemoveComponentFromItemCommand extends EntityModifyRevertibleComman
         Facade.getInstance().sendNotification(DONE, entity);
         Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
 
-        Sandbox.getInstance().getSceneControl().sceneLoader.getRenderer().removeSpecialEntity(entity);
+        PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader.getRenderer().removeSpecialEntity(entity);
     }
 
     @Override

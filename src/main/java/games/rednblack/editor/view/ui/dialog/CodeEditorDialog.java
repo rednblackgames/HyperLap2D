@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -111,11 +112,11 @@ public class CodeEditorDialog extends H2DDialog {
 
     @Override
     public float getPrefWidth() {
-        return Sandbox.getInstance().getUIStage().getWidth() * 0.7f;
+        return PluginUIBridge.get().getSandbox().getUIStage().getWidth() * 0.7f;
     }
 
     @Override
     public float getPrefHeight() {
-        return Sandbox.getInstance().getUIStage().getHeight() * 0.8f;
+        return PluginUIBridge.get().getSandbox().getUIStage().getHeight() * 0.8f;
     }
 }

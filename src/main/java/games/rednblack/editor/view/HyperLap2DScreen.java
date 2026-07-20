@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
@@ -130,7 +131,7 @@ public class HyperLap2DScreen extends InputAdapter implements Screen {
 
     @Override
     public void show() {
-        sandbox = Sandbox.getInstance();
+        sandbox = PluginUIBridge.get().getSandbox();
         uiStage = sandbox.getUIStage();
 
         if (isDrawingBgLogo) {
@@ -152,8 +153,8 @@ public class HyperLap2DScreen extends InputAdapter implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        if (Sandbox.getInstance().getViewport() != null) {
-            Sandbox.getInstance().getViewport().update(width, height, true);
+        if (PluginUIBridge.get().getSandbox().getViewport() != null) {
+            PluginUIBridge.get().getSandbox().getViewport().update(width, height, true);
         }
 
         if (width == 0 && height == 0) return;

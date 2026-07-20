@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import java.util.SortedSet;
 
 import com.badlogic.gdx.math.Vector2;
@@ -71,7 +72,7 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
     public void onRegister() {
         super.onRegister();
 
-        sandbox = Sandbox.getInstance();
+        sandbox = PluginUIBridge.get().getSandbox();
 
         actionSets.put(SCENE_ACTIONS_SET, new Array<>());
         actionSets.get(SCENE_ACTIONS_SET).add(MsgAPI.ACTION_PASTE);
@@ -241,7 +242,7 @@ public class UIDropDownMenuMediator extends Mediator<UIDropDownMenu> {
     }
 
     private void showPopup(Array<String> actionsSet, Object observable) {
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
 
         viewComponent.setActionList(actionsSet);

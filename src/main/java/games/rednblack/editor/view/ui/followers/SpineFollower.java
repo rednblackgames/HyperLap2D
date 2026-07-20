@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.followers;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.Gdx;
@@ -56,7 +57,7 @@ public class SpineFollower extends NormalSelectionFollower {
             oldProjectionMatrix.set(batch.getProjectionMatrix());
 
             matrix.set(transformComponent.worldTransform);
-            batch.setProjectionMatrix(Sandbox.getInstance().getCamera().combined);
+            batch.setProjectionMatrix(PluginUIBridge.get().getSandbox().getCamera().combined);
             batch.setTransformMatrix(matrix);
 
             skeletonDrawerDebug.draw(spineObjectComponent.skeleton);

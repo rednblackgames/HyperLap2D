@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.controller.commands.component;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
@@ -82,13 +83,13 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
     }
 
     private Label.LabelStyle getNewStyle(String fontName) {
-        IResourceRetriever rm = Sandbox.getInstance().getSceneControl().sceneLoader.getRm();
+        IResourceRetriever rm = PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader.getRm();
         return LabelComponentFactory.generateStyle(rm, fontName);
     }
 
     private Label.LabelStyle getNewStyle(String fontName, int fontSize, boolean mono) {
 
-        IResourceRetriever rm = Sandbox.getInstance().getSceneControl().sceneLoader.getRm();
+        IResourceRetriever rm = PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader.getRm();
         final boolean hasBitmapFont = rm.getFont(fontName, fontSize, mono) != null;
 
         if(!hasBitmapFont) {

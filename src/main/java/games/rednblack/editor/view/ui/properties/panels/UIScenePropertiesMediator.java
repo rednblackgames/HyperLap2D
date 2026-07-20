@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.properties.panels;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.graphics.Color;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
@@ -97,7 +98,7 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
 
                 picker.setColor(viewComponent.getAmbientColor());
                 picker.setListener(ambientColorListener);
-                Sandbox.getInstance().getUIStage().addActor(picker.fadeIn());
+                PluginUIBridge.get().getSandbox().getUIStage().addActor(picker.fadeIn());
                 break;
             case UISceneProperties.DIRECTIONAL_COLOR_BUTTON_CLICKED:
                 picker.setListener(null);
@@ -107,7 +108,7 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
 
                 picker.setColor(viewComponent.getDirectionalColor());
                 picker.setListener(directionalColorListener);
-                Sandbox.getInstance().getUIStage().addActor(picker.fadeIn());
+                PluginUIBridge.get().getSandbox().getUIStage().addActor(picker.fadeIn());
                 break;
             case UISceneProperties.EDIT_SHADER_BUTTON_CLICKED:
                 break;
@@ -127,7 +128,7 @@ public class UIScenePropertiesMediator extends UIAbstractPropertiesMediator<Scen
         ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
         ResolutionEntryVO res = resolutionManager.getCurrentResolution();
 
-        viewComponent.setPixelsPerWorldUnit(Sandbox.getInstance().getPixelPerWU(), res.width, res.height);
+        viewComponent.setPixelsPerWorldUnit(PluginUIBridge.get().getSandbox().getPixelPerWU(), res.width, res.height);
         viewComponent.setGravityXValue(physicsVO.gravityX + "");
         viewComponent.setGravityYValue(physicsVO.gravityY + "");
         viewComponent.setPhysicsEnable(physicsVO.enabled);

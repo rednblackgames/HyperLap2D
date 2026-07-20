@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.box;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.utils.Array;
@@ -34,7 +35,7 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
 
     @Override
     public void handleNotification(INotification notification) {
-        sandbox = Sandbox.getInstance();
+        sandbox = PluginUIBridge.get().getSandbox();
 
         super.handleNotification(notification);
 

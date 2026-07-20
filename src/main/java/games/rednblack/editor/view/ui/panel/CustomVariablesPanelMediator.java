@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.panel;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.controller.commands.CustomVariableModifyCommand;
@@ -66,13 +67,13 @@ public class CustomVariablesPanelMediator extends Mediator<CustomVariablesPanel>
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
 
         switch (notification.getName()) {
             case WindowMenu.CUSTOM_VARIABLES_EDITOR_OPEN:
             case UIBasicItemProperties.CUSTOM_VARS_BUTTON_CLICKED:
-                if (observable == -1) setObservable(Sandbox.getInstance().getRootEntity());
+                if (observable == -1) setObservable(PluginUIBridge.get().getSandbox().getRootEntity());
                 viewComponent.show(uiStage);
                 break;
             case MsgAPI.ITEM_SELECTION_CHANGED:
@@ -81,14 +82,14 @@ public class CustomVariablesPanelMediator extends Mediator<CustomVariablesPanel>
                     setObservable(selection.iterator().next());
                 } else {
                     if (selection.isEmpty()) {
-                        setObservable(Sandbox.getInstance().getRootEntity());
+                        setObservable(PluginUIBridge.get().getSandbox().getRootEntity());
                     } else {
                         viewComponent.setEmptyMsg("Multiple items selected.");
                     }
                 }
                 break;
             case MsgAPI.EMPTY_SPACE_CLICKED:
-                setObservable(Sandbox.getInstance().getRootEntity());
+                setObservable(PluginUIBridge.get().getSandbox().getRootEntity());
                 break;
             case CustomVariablesPanel.ADD_BUTTON_PRESSED:
                 setVariable();

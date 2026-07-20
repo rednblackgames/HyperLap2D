@@ -1,4 +1,5 @@
 package games.rednblack.editor.utils.asset.impl;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -59,7 +60,7 @@ public class BitmapFontAsset extends Asset {
                 for (String textureName : font.getImagePaths()) {
                     FileHandle tmp = new FileHandle(textureName);
                     if (!tmp.exists()) {
-                        H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                        H2DDialogs.showErrorDialog(PluginUIBridge.get().getSandbox().getUIStage(),
                                 "\nAll PNG files needs to have same location as the font file.").padBottom(20).pack();
                         return;
                     }

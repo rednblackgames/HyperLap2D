@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -185,12 +186,12 @@ public class ConsoleDialog extends H2DDialog {
 
     @Override
     public float getPrefWidth() {
-        return Sandbox.getInstance().getUIStage().getWidth() * 0.5f;
+        return PluginUIBridge.get().getSandbox().getUIStage().getWidth() * 0.5f;
     }
 
     @Override
     public float getPrefHeight() {
-        return Sandbox.getInstance().getUIStage().getHeight() * 0.5f;
+        return PluginUIBridge.get().getSandbox().getUIStage().getHeight() * 0.5f;
     }
 
     private static class FixedRule implements HighlightRule {

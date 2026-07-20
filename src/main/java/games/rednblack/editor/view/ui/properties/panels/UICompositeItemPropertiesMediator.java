@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.properties.panels;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.controller.commands.component.UpdateCompositeDataCommand;
 import games.rednblack.editor.renderer.components.CompositeTransformComponent;
@@ -62,7 +63,7 @@ public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<
         Object payload = UpdateCompositeDataCommand.payload(observableReference, payloadVo);
         facade.sendNotification(MsgAPI.ACTION_UPDATE_COMPOSITE_DATA, payload);
 
-        CompositeSystem compositeSystem = Sandbox.getInstance().getEngine().getSystem(CompositeSystem.class);
+        CompositeSystem compositeSystem = PluginUIBridge.get().getSandbox().getEngine().getSystem(CompositeSystem.class);
         if (compositeSystem != null) {
             compositeSystem.process(observableReference);
         }

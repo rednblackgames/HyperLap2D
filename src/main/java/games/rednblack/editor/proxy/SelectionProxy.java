@@ -7,7 +7,7 @@ import games.rednblack.puremvc.Proxy;
 /**
  * Exposes the editor's {@link ItemSelector} (selection state + alignment ops) as
  * a PureMVC proxy so callers can retrieve it via {@code facade.retrieveProxy(
- * SelectionProxy.NAME)} instead of {@code Sandbox.getInstance().getSelector()}
+ * SelectionProxy.NAME)} instead of {@code PluginUIBridge.get().getSandbox().getSelector()}
  * (Phase 3 decoupling). {@code Sandbox} creates the {@code ItemSelector} and
  * registers this wrapper in {@code init()}.
  */

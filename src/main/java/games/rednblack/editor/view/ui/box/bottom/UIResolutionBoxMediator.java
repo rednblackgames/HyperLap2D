@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.box.bottom;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.math.Vector3;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -61,7 +62,7 @@ public class UIResolutionBoxMediator extends Mediator<UIResolutionBox> {
     @Override
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         ResolutionEntryVO resolutionEntryVO;
         switch (notification.getName()) {
             case ResolutionManager.RESOLUTION_LIST_CHANGED:

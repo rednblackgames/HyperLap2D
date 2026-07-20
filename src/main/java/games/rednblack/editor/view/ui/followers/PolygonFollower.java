@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.followers;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.ecs.ComponentMapper;
@@ -32,7 +33,7 @@ public class PolygonFollower extends SubFollower {
     private static final Color problemColor = new Color(200f / 255f, 0f / 255f, 0f / 255f, 1f);
 
     private final int pixelsPerWU;
-    private final OrthographicCamera runtimeCamera = Sandbox.getInstance().getCamera();
+    private final OrthographicCamera runtimeCamera = PluginUIBridge.get().getSandbox().getCamera();
 
     private ComponentMapper<TransformComponent> transformCM;
     private ComponentMapper<ParentNodeComponent> parentNodeCM;
@@ -73,7 +74,7 @@ public class PolygonFollower extends SubFollower {
     public PolygonFollower(int entity) {
         super(entity);
         setTouchable(Touchable.enabled);
-        pixelsPerWU = Sandbox.getInstance().getPixelPerWU();
+        pixelsPerWU = PluginUIBridge.get().getSandbox().getPixelPerWU();
     }
 
     @Override

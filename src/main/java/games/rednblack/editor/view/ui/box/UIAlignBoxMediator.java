@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.box;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.utils.Align;
 import games.rednblack.editor.view.stage.ItemSelector;
@@ -108,7 +109,7 @@ public class UIAlignBoxMediator extends PanelMediator<UIAlignBox> {
 
     private void delegateAlignFunction(String alignFunctionName, int align) {
         try {
-            Sandbox sandbox = Sandbox.getInstance();
+            Sandbox sandbox = PluginUIBridge.get().getSandbox();
             ItemSelector selector = sandbox.getSelector();
             Method method = selector.getClass().getMethod(alignFunctionName, int.class);
             method.invoke(selector, align);

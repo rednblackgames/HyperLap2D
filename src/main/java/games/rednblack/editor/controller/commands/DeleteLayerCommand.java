@@ -1,4 +1,5 @@
 package games.rednblack.editor.controller.commands;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
@@ -41,7 +42,7 @@ public class DeleteLayerCommand extends TransactiveCommand {
 
     public Set<Integer> getItemsByLayerName(String layerName) {
         Set<Integer> result = new HashSet<>();
-        int viewingEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        int viewingEntity = PluginUIBridge.get().getSandbox().getCurrentViewingEntity();
         NodeComponent nodeComponent = SandboxComponentRetriever.get(viewingEntity, NodeComponent.class);
         for(int i = 0; i < nodeComponent.children.size; i++) {
             int child = nodeComponent.children.get(i);

@@ -1,4 +1,5 @@
 package games.rednblack.editor.factory;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -39,12 +40,12 @@ public class ItemFactory implements IFactory {
     private ItemFactory(SceneLoader sceneLoader) {
         this.sceneLoader = sceneLoader;
         entityFactory = sceneLoader.getEntityFactory();
-        sandbox = Sandbox.getInstance();
+        sandbox = PluginUIBridge.get().getSandbox();
     }
 
     public static ItemFactory get() {
         if(instance == null) {
-            instance = new ItemFactory(Sandbox.getInstance().getSceneControl().sceneLoader);
+            instance = new ItemFactory(PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader);
         }
 
         return instance;

@@ -1,4 +1,5 @@
 package games.rednblack.editor.utils;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
@@ -80,7 +81,7 @@ public class AssetIOManager {
             if (fileType > 0) {
                 if (asset.checkExistence(files)) {
                     int type = fileType;
-                    H2DDialogs.showConfirmDialog(Sandbox.getInstance().getUIStage(),
+                    H2DDialogs.showConfirmDialog(PluginUIBridge.get().getSandbox().getUIStage(),
                             "Duplicate file", "You have already an asset with this name,\nwould you like to overwrite it?",
                             new String[]{"Overwrite", "Cancel"}, new Integer[]{0, 1}, result -> {
                                 if (result == 0) {

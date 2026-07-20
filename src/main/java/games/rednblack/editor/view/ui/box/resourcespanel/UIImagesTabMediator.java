@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.box.resourcespanel;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
@@ -83,7 +84,7 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
     @Override
     protected void initList(String searchText) {
         if (drawer == null)
-            drawer = new CpuTinyVGShapeDrawer(Sandbox.getInstance().getUIStage().getBatch(), WhitePixel.sharedInstance.textureRegion);
+            drawer = new CpuTinyVGShapeDrawer(PluginUIBridge.get().getSandbox().getUIStage().getBatch(), WhitePixel.sharedInstance.textureRegion);
 
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);

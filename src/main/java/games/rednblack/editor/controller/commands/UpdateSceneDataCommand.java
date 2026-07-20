@@ -1,4 +1,5 @@
 package games.rednblack.editor.controller.commands;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.renderer.data.LightsPropertiesVO;
 import games.rednblack.editor.renderer.data.PhysicsPropertiesVO;
@@ -54,7 +55,7 @@ public class UpdateSceneDataCommand extends EntityModifyRevertibleCommand {
         ShaderVO shader = sceneVO.shaderVO;
         shader.shaderName = shaderVO.shaderName;
 
-        Sandbox.getInstance().getSceneControl().updateAmbientLights();
+        PluginUIBridge.get().getSandbox().getSceneControl().updateAmbientLights();
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED);
     }
@@ -89,7 +90,7 @@ public class UpdateSceneDataCommand extends EntityModifyRevertibleCommand {
         ShaderVO shader = sceneVO.shaderVO;
         shader.shaderName = shaderBackup.shaderName;
 
-        Sandbox.getInstance().getSceneControl().updateAmbientLights();
+        PluginUIBridge.get().getSandbox().getSceneControl().updateAmbientLights();
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED);
     }

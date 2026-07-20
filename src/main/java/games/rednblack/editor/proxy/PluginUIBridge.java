@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.data.SceneVO;
+import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.view.tools.Tool;
 import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.interfaces.IMediator;
@@ -54,8 +55,14 @@ public interface PluginUIBridge {
 
     SceneVO getCurrentSceneVO();
 
+    Sandbox getSandbox();
+
     static PluginUIBridge get(Facade facade) {
         IMediator m = facade.retrieveMediator(MEDIATOR_NAME);
         return (PluginUIBridge) m;
+    }
+
+    static PluginUIBridge get() {
+        return get(Facade.getInstance());
     }
 }

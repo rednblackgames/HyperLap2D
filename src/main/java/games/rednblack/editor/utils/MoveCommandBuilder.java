@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.utils;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -39,12 +40,12 @@ public class MoveCommandBuilder {
     }
 
     public void setX(int entity, float x) {
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class, Sandbox.getInstance().getEngine());
+        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class, PluginUIBridge.get().getSandbox().getEngine());
         setXY(entity, x, transformComponent.y);
     }
 
     public void setY(int entity, float y) {
-        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class, Sandbox.getInstance().getEngine());
+        TransformComponent transformComponent = ComponentRetriever.get(entity, TransformComponent.class, PluginUIBridge.get().getSandbox().getEngine());
         setXY(entity, transformComponent.x, y);
     }
 

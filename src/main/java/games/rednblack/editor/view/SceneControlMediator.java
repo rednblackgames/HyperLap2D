@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -69,14 +70,14 @@ public class SceneControlMediator {
 		ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
 
 		ScreenViewport viewport = new ScreenViewport();
-		float sandboxUpp = Sandbox.getInstance().getUIStage().getUIScaleDensity();
+		float sandboxUpp = PluginUIBridge.get().getSandbox().getUIStage().getUIScaleDensity();
 		float upp = 1f / resourceManager.getProjectVO().pixelToWorld * sandboxUpp;
 		viewport.setUnitsPerPixel(upp);
 
 		currentSceneVo = sceneLoader.loadScene(sceneName, viewport);
 
 		rootSceneVO = new CompositeItemVO(currentSceneVo.composite);
-		Sandbox.getInstance().getEngine().process();
+		PluginUIBridge.get().getSandbox().getEngine().process();
 	}
 
 	public void updateAmbientLights() {

@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.followers;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.Gdx;
@@ -77,8 +78,8 @@ public class LightFollower extends BasicFollower {
     @Override
     public void update() {
         super.update();
-        Sandbox sandbox = Sandbox.getInstance();
-        OrthographicCamera camera = Sandbox.getInstance().getCamera();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
+        OrthographicCamera camera = PluginUIBridge.get().getSandbox().getCamera();
         int pixelPerWU = sandbox.getSceneControl().sceneLoader.getRm().getProjectVO().pixelToWorld;
 
         float scaleX = transformComponent.scaleX * (transformComponent.flipX ? -1 : 1);
@@ -103,8 +104,8 @@ public class LightFollower extends BasicFollower {
         if (!isVisible() || shapeDrawer == null || lightObjectComponent.lightObject == null) return;
 
         Light light = lightObjectComponent.lightObject;
-        Sandbox sandbox = Sandbox.getInstance();
-        OrthographicCamera camera = Sandbox.getInstance().getCamera();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
+        OrthographicCamera camera = PluginUIBridge.get().getSandbox().getCamera();
         int ppwu = sandbox.getSceneControl().sceneLoader.getRm().getProjectVO().pixelToWorld;
 
         float centerX = getX() + getWidth() / 2f;

@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
 import games.rednblack.editor.controller.commands.CreateStickyNoteCommand;
@@ -43,7 +44,7 @@ public class StickyNotesUIMediator  extends Mediator<StickyNotesUI> {
 
         switch (notification.getName()) {
             case CompositeCameraChangeCommand.DONE:
-                viewComponent.setVisible(Sandbox.getInstance().isViewingRootEntity());
+                viewComponent.setVisible(PluginUIBridge.get().getSandbox().isViewingRootEntity());
                 break;
             case MsgAPI.SCENE_LOADED:
                 viewComponent.setVisible(true);
@@ -65,7 +66,7 @@ public class StickyNotesUIMediator  extends Mediator<StickyNotesUI> {
     private void createStickyNotes() {
         viewComponent.clear();
 
-        SceneVO sceneVO = Sandbox.getInstance().getSceneControl().getCurrentSceneVO();
+        SceneVO sceneVO = PluginUIBridge.get().getSandbox().getSceneControl().getCurrentSceneVO();
         for (StickyNoteVO noteVO : sceneVO.composite.sStickyNotes.values()) {
             viewComponent.attachNote(noteVO);
         }

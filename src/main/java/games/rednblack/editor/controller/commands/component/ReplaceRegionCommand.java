@@ -1,4 +1,5 @@
 package games.rednblack.editor.controller.commands.component;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
@@ -36,7 +37,7 @@ public class ReplaceRegionCommand extends EntityModifyRevertibleCommand {
 
         textureRegionComponent.regionName = regionName;
         textureRegionComponent.region = region;
-        ProjectInfoVO projectInfoVO = Sandbox.getInstance().getSceneControl().sceneLoader.getRm().getProjectVO();
+        ProjectInfoVO projectInfoVO = PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader.getRm().getProjectVO();
         float ppwu = projectInfoVO.pixelToWorld;
         size.width = textureRegionComponent.region.getRegionWidth() / ppwu;
         size.height = textureRegionComponent.region.getRegionHeight() / ppwu;
@@ -57,7 +58,7 @@ public class ReplaceRegionCommand extends EntityModifyRevertibleCommand {
 
         textureRegionComponent.regionName = backupRegionName;
         textureRegionComponent.region = backupRegion;
-        ProjectInfoVO projectInfoVO = Sandbox.getInstance().getSceneControl().sceneLoader.getRm().getProjectVO();
+        ProjectInfoVO projectInfoVO = PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader.getRm().getProjectVO();
         float ppwu = projectInfoVO.pixelToWorld;
         size.width = textureRegionComponent.region.getRegionWidth() / ppwu;
         size.height = textureRegionComponent.region.getRegionHeight() / ppwu;

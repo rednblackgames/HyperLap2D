@@ -1,4 +1,5 @@
 package games.rednblack.editor.utils.asset.impl;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -73,7 +74,7 @@ public class ParticleEffectAsset extends Asset {
                         File target = new File(targetPath + "/" + newName);
                         FileUtils.copyFile(fileHandle.file(), target);
                     } else {
-                        H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                        H2DDialogs.showErrorDialog(PluginUIBridge.get().getSandbox().getUIStage(),
                                 "\nAll PNG files needs to have same location as the particle file.").padBottom(20).pack();
                     }
                 } catch (IllegalArgumentException e) {

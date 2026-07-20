@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.widget.actors;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -144,7 +145,7 @@ public class StickyNoteActor extends VisWindow {
     @Override
     public void setBounds(float x, float y, float width, float height) {
         tmp.set(x, y);
-        Sandbox.getInstance().screenToWorld(tmp);
+        PluginUIBridge.get().getSandbox().screenToWorld(tmp);
         worldX = tmp.x;
         worldY = tmp.y;
 
@@ -160,8 +161,8 @@ public class StickyNoteActor extends VisWindow {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         tmp.set(worldX, worldY);
-        Sandbox.getInstance().worldToScreen(tmp);
-        float scale = Sandbox.getInstance().getZoomPercent() / 100f;
+        PluginUIBridge.get().getSandbox().worldToScreen(tmp);
+        float scale = PluginUIBridge.get().getSandbox().getZoomPercent() / 100f;
         setScale(Math.min(Math.max(scale, 0.3f), 1f));
         super.setX(tmp.x);
         super.setY(tmp.y - ((1 - getScaleY()) * getHeight())); //Correct y position when scale
@@ -361,14 +362,14 @@ public class StickyNoteActor extends VisWindow {
                         });
                         init = true;
                         picker.setColor(getColor());
-                        Sandbox.getInstance().getUIStage().addActor(picker.fadeIn());
+                        PluginUIBridge.get().getSandbox().getUIStage().addActor(picker.fadeIn());
                     }
                 });
         popupMenu.addItem(changeColor);
 
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
 
-        popupMenu.showMenu(Sandbox.getInstance().getUIStage(), sandbox.getInputX(), uiStage.getHeight() - sandbox.getInputY());
+        popupMenu.showMenu(PluginUIBridge.get().getSandbox().getUIStage(), sandbox.getInputX(), uiStage.getHeight() - sandbox.getInputY());
     }
 }

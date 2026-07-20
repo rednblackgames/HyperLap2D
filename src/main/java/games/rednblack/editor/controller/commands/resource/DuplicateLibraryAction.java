@@ -1,4 +1,5 @@
 package games.rednblack.editor.controller.commands.resource;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.utils.Json;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
@@ -30,7 +31,7 @@ public class DuplicateLibraryAction extends NonRevertibleCommand {
 
         GraphVO actionToDuplicate = libraryActions.get(libraryActionName);
 
-        H2DDialogs.showInputDialog(Sandbox.getInstance().getUIStage(), "Duplicate " + libraryActionName, "New name : ", false, new StringNameValidator(), new InputDialogListener() {
+        H2DDialogs.showInputDialog(PluginUIBridge.get().getSandbox().getUIStage(), "Duplicate " + libraryActionName, "New name : ", false, new StringNameValidator(), new InputDialogListener() {
             @Override
             public void finished(String input) {
                 if (input == null || input.equals("")) {

@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.utils.Align;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -27,7 +28,7 @@ public class MiniMapDialogMediator extends Mediator<MiniMapDialog> {
     @Override
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
 
         switch (notification.getName()) {

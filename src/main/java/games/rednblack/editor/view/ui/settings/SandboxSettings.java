@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.settings;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -74,7 +75,7 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
                 });
 
                 picker.setColor(getSettings().backgroundColor);
-                Sandbox.getInstance().getUIStage().addActor(picker.fadeIn());
+                PluginUIBridge.get().getSandbox().getUIStage().addActor(picker.fadeIn());
             }
         });
 

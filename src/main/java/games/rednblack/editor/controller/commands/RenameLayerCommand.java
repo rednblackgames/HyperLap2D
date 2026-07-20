@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.controller.commands;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.renderer.components.LayerMapComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
@@ -60,7 +61,7 @@ public class RenameLayerCommand extends EntityModifyRevertibleCommand {
     private void renameLayer(String fromName, String toName) {
         if (isCancelled) return;
 
-        int viewEntity = Sandbox.getInstance().getCurrentViewingEntity();
+        int viewEntity = PluginUIBridge.get().getSandbox().getCurrentViewingEntity();
         NodeComponent nodeComponent = SandboxComponentRetriever.get(viewEntity, NodeComponent.class);
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewEntity, LayerMapComponent.class);
 

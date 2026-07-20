@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.panel;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
@@ -67,7 +68,7 @@ public class EditSpriteAnimationPanelMediator extends Mediator<EditSpriteAnimati
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
 
         switch (notification.getName()) {

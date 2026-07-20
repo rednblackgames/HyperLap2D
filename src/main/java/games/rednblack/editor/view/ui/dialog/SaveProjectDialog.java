@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -32,7 +33,7 @@ public class SaveProjectDialog extends H2DDialog {
         yesButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Sandbox sandbox = Sandbox.getInstance();
+                Sandbox sandbox = PluginUIBridge.get().getSandbox();
                 Facade facade = Facade.getInstance();
                 ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
                 SceneVO vo = sandbox.sceneVoFromItems();

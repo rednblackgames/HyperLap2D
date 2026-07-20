@@ -1,4 +1,5 @@
 package games.rednblack.editor.utils.asset.impl;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -52,7 +53,7 @@ public class ImageAsset extends Asset {
                 int height = image.getHeight();
                 TexturePacker.Settings settings = projectManager.getTexturePackerSettings();
                 if (width > settings.maxWidth - settings.paddingX || height > settings.maxHeight - settings.paddingY) {
-                    H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                    H2DDialogs.showErrorDialog(PluginUIBridge.get().getSandbox().getUIStage(),
                             "Provided image exceeds atlas limits (" + (settings.maxWidth - settings.paddingX) + "x" + (settings.maxHeight - settings.paddingY)
                                     + ")\nPlease, resize images to the correct size.").padBottom(20).pack();
                     return false;

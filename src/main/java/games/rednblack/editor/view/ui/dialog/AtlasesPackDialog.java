@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -62,7 +63,7 @@ public class AtlasesPackDialog extends H2DDialog {
         tabbedPane = new ImageTabbedPane("chip") {
             @Override
             public boolean remove(ImageTab tab, boolean ignoreTabDirty) {
-                H2DDialogs.showOptionDialog(Sandbox.getInstance().getUIStage(), "Remove Pack", "Are you sure to remove this pack?",
+                H2DDialogs.showOptionDialog(PluginUIBridge.get().getSandbox().getUIStage(), "Remove Pack", "Are you sure to remove this pack?",
                         H2DDialogs.OptionDialogType.YES_NO_CANCEL, new OptionDialogAdapter() {
                             @Override
                             public void yes () {
@@ -361,12 +362,12 @@ public class AtlasesPackDialog extends H2DDialog {
 
     @Override
     public float getPrefWidth() {
-        return Sandbox.getInstance().getUIStage().getWidth() * 0.5f;
+        return PluginUIBridge.get().getSandbox().getUIStage().getWidth() * 0.5f;
     }
 
     @Override
     public float getPrefHeight() {
-        return Sandbox.getInstance().getUIStage().getHeight() * 0.5f;
+        return PluginUIBridge.get().getSandbox().getUIStage().getHeight() * 0.5f;
     }
 
     public static class PackTab extends ImageTab {

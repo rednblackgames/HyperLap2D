@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.properties;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -41,7 +42,7 @@ public abstract class UIRemovableProperties extends UIItemCollapsibleProperties 
         closeButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
-                H2DDialogs.showConfirmDialog(Sandbox.getInstance().getUIStage(),
+                H2DDialogs.showConfirmDialog(PluginUIBridge.get().getSandbox().getUIStage(),
                         "Delete Component", "Do you want to delete this component?",
                         new String[]{"Cancel", "Delete"}, new Integer[]{0, 1}, r -> {
                             if (r == 1) {

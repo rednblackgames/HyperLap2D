@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
@@ -69,7 +70,7 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
                 viewComponent.show();
                 break;
             case MsgAPI.SCENE_LOADED:
-                SandboxBackUI sandboxBackUI = new SandboxBackUI(Sandbox.getInstance().getUIStage().getBatch());
+                SandboxBackUI sandboxBackUI = new SandboxBackUI(PluginUIBridge.get().getSandbox().getUIStage().getBatch());
                 getViewComponent().setBackUI(sandboxBackUI);
                 getViewComponent().disableDrawingBgLogo();
                 break;

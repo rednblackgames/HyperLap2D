@@ -1,4 +1,5 @@
 package games.rednblack.editor.utils.asset.impl;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
@@ -168,7 +169,7 @@ public class TalosVFXAsset extends Asset {
                 if (file.exists()) {
                     imgs.add(new FileHandle(file));
                 } else {
-                    H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                    H2DDialogs.showErrorDialog(PluginUIBridge.get().getSandbox().getUIStage(),
                             "\nCould not find " + file.getName() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
                     imgs.clear();
                     return false;
@@ -191,7 +192,7 @@ public class TalosVFXAsset extends Asset {
                     if (file.exists()) {
                         imgs.add(new FileHandle(file));
                     } else {
-                        H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(),
+                        H2DDialogs.showErrorDialog(PluginUIBridge.get().getSandbox().getUIStage(),
                                 "\nCould not find " + file.getName() + ".\nCheck if the file exists in the same directory.").padBottom(20).pack();
                         imgs.clear();
                         return false;

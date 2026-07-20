@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.panel;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -116,7 +117,7 @@ public class ImportPanel extends UIDraggablePanel {
     }
 
     public boolean checkDropRegionHit(Vector2 mousePos) {
-        Vector2 pos = Sandbox.getInstance().getUIStage().getViewport().unproject(mousePos);
+        Vector2 pos = PluginUIBridge.get().getSandbox().getUIStage().getViewport().unproject(mousePos);
         pos = dropRegion.stageToLocalCoordinates(pos);
         if(dropRegion.hit(pos.x, pos.y, false) != null) {
             return true;

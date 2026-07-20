@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.followers;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.ecs.ComponentMapper;
@@ -75,8 +76,8 @@ public abstract class BasicFollower extends Group {
         if (EntityDataProxy.get().get(entity, MainItemComponent.class) == null)
             return;
 
-        Sandbox sandbox = Sandbox.getInstance();
-        OrthographicCamera camera = Sandbox.getInstance().getCamera();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
+        OrthographicCamera camera = PluginUIBridge.get().getSandbox().getCamera();
 
         int pixelPerWU = sandbox.getSceneControl().sceneLoader.getRm().getProjectVO().pixelToWorld;
 
@@ -88,7 +89,7 @@ public abstract class BasicFollower extends Group {
         ComponentMapper<TransformComponent> transformMapper = (ComponentMapper<TransformComponent>) ComponentMapper.getFor(TransformComponent.class, sandbox.getEngine());
         ComponentMapper<ParentNodeComponent> parentNodeMapper = (ComponentMapper<ParentNodeComponent>) ComponentMapper.getFor(ParentNodeComponent.class, sandbox.getEngine());
         TransformMathUtils.localToAscendantCoordinates(sandbox.getCurrentViewingEntity(), entity, position, transformMapper, parentNodeMapper);
-        position = Sandbox.getInstance().worldToScreen(position);
+        position = PluginUIBridge.get().getSandbox().worldToScreen(position);
 
         setX(position.x);
         setY(position.y);

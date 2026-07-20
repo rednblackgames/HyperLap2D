@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.box.resourcespanel.draggable;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
@@ -45,7 +46,7 @@ public class DraggableResource extends DragAndDrop implements Comparable<Draggab
 
     public DraggableResource(DraggableResourceView viewComponent) {
         this.viewComponent = viewComponent;
-        sandbox = Sandbox.getInstance();
+        sandbox = PluginUIBridge.get().getSandbox();
 
         if (viewComponent instanceof BoxItemResource) {
             StandardWidgetsFactory.addTooltip((Actor) viewComponent, viewComponent.getPayloadData().name);
@@ -60,7 +61,7 @@ public class DraggableResource extends DragAndDrop implements Comparable<Draggab
 			public Payload dragStart(InputEvent event, float x, float y, int pointer) {
                 Payload payload = new Payload();
                 Actor dragActor = viewComponent.getDragActor();
-                OrthographicCamera runtimeCamera = Sandbox.getInstance().getCamera();
+                OrthographicCamera runtimeCamera = PluginUIBridge.get().getSandbox().getCamera();
                 dragActor.setScale(1f/runtimeCamera.zoom);
 
                 ResourcePayloadObject payloadData = viewComponent.getPayloadData();

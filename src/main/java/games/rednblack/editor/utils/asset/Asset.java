@@ -1,4 +1,5 @@
 package games.rednblack.editor.utils.asset;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
@@ -59,7 +60,7 @@ public abstract class Asset implements IAsset {
         }
 
         // save before importing
-        SceneVO vo = Sandbox.getInstance().sceneVoFromItems();
+        SceneVO vo = PluginUIBridge.get().getSandbox().sceneVoFromItems();
         if (!skipRepack) //Skip saving if internal resource
             projectManager.saveCurrentProject(vo);
 

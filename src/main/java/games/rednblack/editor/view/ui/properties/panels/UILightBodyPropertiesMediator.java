@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.properties.panels;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.graphics.Color;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
@@ -77,7 +78,7 @@ public class UILightBodyPropertiesMediator extends UIRemovableComponentPropertie
                     viewComponent.setLightColor(notification.getBody());
                 }
                 picker.setColor(viewComponent.getLightColor());
-                Sandbox.getInstance().getUIStage().addActor(picker.fadeIn());
+                PluginUIBridge.get().getSandbox().getUIStage().addActor(picker.fadeIn());
                 break;
         }
     }

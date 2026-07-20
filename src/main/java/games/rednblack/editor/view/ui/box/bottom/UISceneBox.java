@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.box.bottom;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -102,7 +103,7 @@ public class UISceneBox extends UIBaseBox {
         Array<SceneVO> array = visSelectBox.getItems();
         for (int i = 0; i < array.size; ++i) {
             SceneVO sceneVO = array.get(i);
-            if (sceneVO.sceneName.equals(Sandbox.getInstance().getCurrentLoadedSceneFileName())) {
+            if (sceneVO.sceneName.equals(PluginUIBridge.get().getSandbox().getCurrentLoadedSceneFileName())) {
                 visSelectBox.setSelectedIndex(i);
                 break;
             }

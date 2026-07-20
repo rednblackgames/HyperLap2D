@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
@@ -55,7 +56,7 @@ public class NewProjectDialogMediator extends Mediator<NewProjectDialog> {
     @Override
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
         switch (notification.getName()) {
             case FileMenu.NEW_PROJECT:

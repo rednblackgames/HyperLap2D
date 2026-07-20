@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.properties;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
@@ -16,7 +17,7 @@ public abstract class UIAbstractPropertiesMediator<T, V extends UIAbstractProper
     public UIAbstractPropertiesMediator(String mediatorName, V viewComponent) {
         super(mediatorName, viewComponent);
 
-        sandbox = Sandbox.getInstance();
+        sandbox = PluginUIBridge.get().getSandbox();
     }
 
     @Override

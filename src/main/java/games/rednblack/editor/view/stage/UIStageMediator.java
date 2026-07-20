@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.stage;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.Gdx;
@@ -65,7 +66,7 @@ public class UIStageMediator extends Mediator<UIStage> {
                 viewComponent.getToastManager().show(messageToast, 5);
                 break;
             case MsgAPI.SHOW_ADD_LIBRARY_DIALOG:
-                Sandbox sandbox = Sandbox.getInstance();
+                Sandbox sandbox = PluginUIBridge.get().getSandbox();
 
                 int item = notification.getBody();
 

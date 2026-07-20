@@ -1,4 +1,5 @@
 package games.rednblack.editor.proxy;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.renderer.ecs.BaseComponentMapper;
 import games.rednblack.editor.renderer.ecs.Component;
@@ -11,7 +12,7 @@ import games.rednblack.puremvc.Proxy;
  * Read access to the runtime ECS for the view layer, extracted as a PureMVC
  * proxy (Phase 3 decoupling) so view code stops calling {@code SandboxComponentRetriever}
  * (a static wrapper over the Artemis {@code ComponentRetriever} that hid
- * {@code Sandbox.getInstance().getEngine()}). {@code Sandbox.init} registers this
+ * {@code PluginUIBridge.get().getSandbox().getEngine()}). {@code Sandbox.init} registers this
  * with the editor {@link Engine}; callers retrieve it via {@link #get(Facade)}.
  *
  * <p>Write paths stay in commands — this proxy is read-only.</p>

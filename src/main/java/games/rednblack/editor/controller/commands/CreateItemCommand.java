@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.controller.commands;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
@@ -44,8 +45,8 @@ public class CreateItemCommand extends EntityModifyRevertibleCommand {
         int entity = getNotification().getBody();
 
         if (serializedEntity != null) {
-            EntityFactory factory = Sandbox.getInstance().getSceneControl().sceneLoader.getEntityFactory();
-            int parentEntity = Sandbox.getInstance().getCurrentViewingEntity();
+            EntityFactory factory = PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader.getEntityFactory();
+            int parentEntity = PluginUIBridge.get().getSandbox().getCurrentViewingEntity();
             entity =  EntityUtils.getEntityFromJson(serializedEntity, entityType, factory, parentEntity);
             serializedEntity = null;
         }
@@ -54,7 +55,7 @@ public class CreateItemCommand extends EntityModifyRevertibleCommand {
         entityType = EntityUtils.getType(entity);
 
         // z-index
-        NodeComponent nodeComponent = SandboxComponentRetriever.get(Sandbox.getInstance().getCurrentViewingEntity(), NodeComponent.class);
+        NodeComponent nodeComponent = SandboxComponentRetriever.get(PluginUIBridge.get().getSandbox().getCurrentViewingEntity(), NodeComponent.class);
         ZIndexComponent zindexComponent = SandboxComponentRetriever.get(entity, ZIndexComponent.class);
         zindexComponent.setZIndex(nodeComponent.children.size);
 

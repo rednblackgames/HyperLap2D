@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.menu;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -109,7 +110,7 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
     }
 
     private void handleGeneralNotification(INotification notification) {
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         switch (notification.getName()) {
             case ProjectManager.PROJECT_OPENED:
                 onProjectOpened();
@@ -126,7 +127,7 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
     }
 
     private void handleEditMenuNotification(INotification notification) {
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         switch (notification.getName()) {
             case EditMenu.CUT:
                 facade.sendNotification(MsgAPI.ACTION_CUT);
@@ -149,7 +150,7 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
     }
 
     private void handleFileMenuNotification(INotification notification) {
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         switch (notification.getName()) {
             case FileMenu.NEW_PROJECT:
                 break;

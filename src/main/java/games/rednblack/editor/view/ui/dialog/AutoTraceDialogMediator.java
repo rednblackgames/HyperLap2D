@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.math.Vector2;
@@ -42,7 +43,7 @@ public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
     @Override
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
 
         switch (notification.getName()) {
@@ -80,7 +81,7 @@ public class AutoTraceDialogMediator extends Mediator<AutoTraceDialog> {
                     facade.sendNotification(MsgAPI.ACTION_UPDATE_MESH_DATA, payload);
                 }
             } else {
-                H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Auto Trace can be performed only for Image type.").padBottom(20).pack();
+                H2DDialogs.showErrorDialog(PluginUIBridge.get().getSandbox().getUIStage(), "Auto Trace can be performed only for Image type.").padBottom(20).pack();
             }
         }
     }

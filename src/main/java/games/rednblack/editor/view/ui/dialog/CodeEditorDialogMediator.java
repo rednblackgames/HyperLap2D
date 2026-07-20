@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.kotcrab.vis.ui.util.highlight.Highlighter;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -31,7 +32,7 @@ public class CodeEditorDialogMediator extends Mediator<CodeEditorDialog> {
 
     @Override
     public void handleNotification(INotification notification) {
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
         switch (notification.getName()) {
             case MsgAPI.OPEN_CODE_EDITOR:

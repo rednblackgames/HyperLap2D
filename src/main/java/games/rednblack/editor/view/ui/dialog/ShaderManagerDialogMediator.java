@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -62,7 +63,7 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
 
     @Override
     public void handleNotification(INotification notification) {
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
 
         File shader;

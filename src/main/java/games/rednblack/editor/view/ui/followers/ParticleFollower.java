@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.followers;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -53,8 +54,8 @@ public class ParticleFollower extends BasicFollower {
     public void update() {
         super.update();
 
-        Sandbox sandbox = Sandbox.getInstance();
-        OrthographicCamera camera = Sandbox.getInstance().getCamera();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
+        OrthographicCamera camera = PluginUIBridge.get().getSandbox().getCamera();
 
         int pixelPerWU = sandbox.getSceneControl().sceneLoader.getRm().getProjectVO().pixelToWorld;
 

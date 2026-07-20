@@ -108,6 +108,11 @@ public class PluginUIBridgeMediator extends Mediator<Object> implements PluginUI
     }
 
     @Override
+    public Sandbox getSandbox() {
+        return Sandbox.getInstance();
+    }
+
+    @Override
     public SceneVO getCurrentSceneVO() {
         return Sandbox.getInstance().getSceneControl().getCurrentSceneVO();
     }

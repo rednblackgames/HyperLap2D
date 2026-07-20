@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.panel;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
 import games.rednblack.editor.renderer.components.ShaderComponent;
@@ -44,7 +45,7 @@ public class ShaderUniformsPanelMediator extends Mediator<ShaderUniformsPanel> {
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
 
         switch (notification.getName()) {

@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.data.SceneVO;
@@ -39,7 +40,7 @@ public class RulersUIMediator extends Mediator<RulersUI> {
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
 
-        SceneVO sceneVO = Sandbox.getInstance().getSceneControl().getCurrentSceneVO();
+        SceneVO sceneVO = PluginUIBridge.get().getSandbox().getSceneControl().getCurrentSceneVO();
 
         switch (notification.getName()) {
             case MsgAPI.SCENE_LOADED:

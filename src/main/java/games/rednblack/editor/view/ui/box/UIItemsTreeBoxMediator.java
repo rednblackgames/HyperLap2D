@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.box;
+import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.controller.commands.SelectionPayload;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
@@ -49,7 +50,7 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
     @Override
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
-        Sandbox sandbox = Sandbox.getInstance();
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
         switch (notification.getName()) {
             case MsgAPI.SCENE_LOADED:
                 int rootEntity = sandbox.getCurrentViewingEntity();

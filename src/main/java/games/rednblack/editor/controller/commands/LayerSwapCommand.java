@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.controller.commands;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.renderer.components.LayerMapComponent;
 import games.rednblack.editor.renderer.systems.LayerSystem;
@@ -41,7 +42,7 @@ public class LayerSwapCommand extends EntityModifyRevertibleCommand {
             Object[] payload = getNotification().getBody();
             sourceName = (String) payload[0];
             targetName = (String) payload[1];
-            entityId = EntityUtils.getEntityId(Sandbox.getInstance().getCurrentViewingEntity());
+            entityId = EntityUtils.getEntityId(PluginUIBridge.get().getSandbox().getCurrentViewingEntity());
         }
     }
 
@@ -53,7 +54,7 @@ public class LayerSwapCommand extends EntityModifyRevertibleCommand {
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
         layerMapComponent.swap(sourceName, targetName);
 
-        Sandbox.getInstance().getEngine().getSystem(LayerSystem.class).process();
+        PluginUIBridge.get().getSandbox().getEngine().getSystem(LayerSystem.class).process();
         facade.sendNotification(DONE);
     }
 
@@ -63,7 +64,7 @@ public class LayerSwapCommand extends EntityModifyRevertibleCommand {
         LayerMapComponent layerMapComponent = SandboxComponentRetriever.get(viewingEntity, LayerMapComponent.class);
         layerMapComponent.swap(targetName, sourceName);
 
-        Sandbox.getInstance().getEngine().getSystem(LayerSystem.class).process();
+        PluginUIBridge.get().getSandbox().getEngine().getSystem(LayerSystem.class).process();
         facade.sendNotification(DONE);
     }
 }

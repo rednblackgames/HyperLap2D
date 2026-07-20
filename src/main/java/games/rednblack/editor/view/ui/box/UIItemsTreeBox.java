@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.box;
+import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.renderer.ecs.ComponentMapper;
 import com.badlogic.gdx.graphics.Color;
@@ -91,7 +92,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     }
 
     public void init(int rootScene) {
-        sandbox = Sandbox.getInstance();
+        sandbox = PluginUIBridge.get().getSandbox();
         sandbox.getEngine().inject(this);
 
         treeTable.clear();
@@ -185,7 +186,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
 
         if (parentNodeComponent == null) {
             node.setColor(Color.WHITE);
-            name = Sandbox.getInstance().getSceneControl().getCurrentSceneVO().sceneName;
+            name = PluginUIBridge.get().getSandbox().getSceneControl().getCurrentSceneVO().sceneName;
         } else if (mainItemComponent.itemIdentifier != null && !mainItemComponent.itemIdentifier.isEmpty()) {
             node.setColor(Color.WHITE);
             name = mainItemComponent.itemIdentifier;
