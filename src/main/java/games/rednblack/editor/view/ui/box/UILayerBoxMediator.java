@@ -78,7 +78,6 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
     @Override
     public void handleNotification(INotification notification) {
         super.handleNotification(notification);
-        Sandbox sandbox = Sandbox.getInstance();
         UILayerBox.UILayerItem layerItem;
         switch (notification.getName()) {
             case MsgAPI.SCENE_LOADED:
@@ -113,21 +112,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                 selectEntitiesByLayerName(layerItem);
                 break;
             case UILayerBox.CREATE_NEW_LAYER:
-                H2DDialogs.showInputDialog(Sandbox.getInstance().getUIStage(), "New Layer", "Enter unique name for your Layer", false, new InputDialogListener() {
-                    @Override
-                    public void finished(String input) {
-                        if (checkIfNameIsUnique(input)) {
-                            Object[] payload = NewLayerCommand.payload(viewComponent.getCurrentSelectedLayerIndex()+1, input);
-                            facade.sendNotification(MsgAPI.ACTION_NEW_LAYER, payload);
-                        } else {
-                            H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Layer name already exists.").padBottom(20).pack();
-                        }
-                    }
-                    @Override
-                    public void canceled() {
-
-                    }
-                });
+                handleCreateNewLayer();
                 break;
             case UILayerBox.LAYER_DROPPED:
                 facade.sendNotification(MsgAPI.ACTION_JUMP_LAYERS, notification.getBody());
@@ -138,18 +123,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                 viewComponent.setCurrentSelectedLayer(index);
                 break;
             case UILayerBox.DELETE_LAYER:
-                if (layers == null) return;
-                int deletingLayerIndex = viewComponent.getCurrentSelectedLayerIndex();
-                if(deletingLayerIndex != -1) {
-                    String layerName = layers.get(deletingLayerIndex).layerName;
-                    H2DDialogs.showConfirmDialog(sandbox.getUIStage(),
-                            "Delete Layer", "Do you really want to delete '" + layerName + "' layer?",
-                            new String[]{"Cancel", "Delete"}, new Integer[]{0, 1}, r -> {
-                                if (r == 1) {
-                                    facade.sendNotification(MsgAPI.ACTION_DELETE_LAYER, layerName);
-                                }
-                            }).padBottom(20).pack();
-                }
+                handleDeleteLayer();
                 break;
             case UILayerBox.LOCK_LAYER:
                 layerItem = notification.getBody();
@@ -168,19 +142,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                 setEntityVisibilityByLayer(layerItem, true);
                 break;
             case MsgAPI.ITEM_SELECTION_CHANGED:
-                Set<Integer> selection = notification.getBody();
-                if(selection.size() == 1) {
-                    ZIndexComponent zIndexComponent = EntityDataProxy.get().get(selection.iterator().next(), ZIndexComponent.class);
-                    index = findLayerByName(zIndexComponent.getLayerName());
-                    if(index == -1) {
-                        // handle this somehow
-                    } else {
-                        viewComponent.setCurrentSelectedLayer(index);
-                        viewComponent.currentSelectedLayerIndex = index;
-                    }
-                } else if (selection.size() > 1) {
-                    // multi selection handling not yet clear
-                }
+                handleItemSelectionChanged(notification);
                 break;
             case MsgAPI.NEW_ITEM_ADDED:
                 index = viewComponent.getCurrentSelectedLayerIndex();
@@ -189,12 +151,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
                 if(zIndexComponent.getLayerName() == null || zIndexComponent.getLayerName().isEmpty()) zIndexComponent.setLayerName(layers.get(index).layerName);
                 break;
             case UILayerBox.CHANGE_LAYER_NAME:
-                String layerName = notification.getBody();
-                int layerIndex = viewComponent.getCurrentSelectedLayerIndex();
-                if(layerIndex == -1) break;
-                LayerItemVO layerVO = layers.get(layerIndex);
-
-                facade.sendNotification(MsgAPI.ACTION_RENAME_LAYER, RenameLayerCommand.payload(layerVO.layerName, layerName));
+                handleChangeLayerName(notification);
                 break;
             case RenameLayerCommand.DONE:
                 index = viewComponent.getCurrentSelectedLayerIndex();
@@ -206,6 +163,62 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
         }
     }
 
+
+    private void handleCreateNewLayer() {
+        H2DDialogs.showInputDialog(Sandbox.getInstance().getUIStage(), "New Layer", "Enter unique name for your Layer", false, new InputDialogListener() {
+            @Override
+            public void finished(String input) {
+                if (checkIfNameIsUnique(input)) {
+                    Object[] payload = NewLayerCommand.payload(viewComponent.getCurrentSelectedLayerIndex() + 1, input);
+                    facade.sendNotification(MsgAPI.ACTION_NEW_LAYER, payload);
+                } else {
+                    H2DDialogs.showErrorDialog(Sandbox.getInstance().getUIStage(), "Layer name already exists.").padBottom(20).pack();
+                }
+            }
+            @Override
+            public void canceled() {
+            }
+        });
+    }
+
+    private void handleDeleteLayer() {
+        if (layers == null) return;
+        int deletingLayerIndex = viewComponent.getCurrentSelectedLayerIndex();
+        if (deletingLayerIndex != -1) {
+            String layerName = layers.get(deletingLayerIndex).layerName;
+            H2DDialogs.showConfirmDialog(Sandbox.getInstance().getUIStage(),
+                    "Delete Layer", "Do you really want to delete '" + layerName + "' layer?",
+                    new String[]{"Cancel", "Delete"}, new Integer[]{0, 1}, r -> {
+                        if (r == 1) {
+                            facade.sendNotification(MsgAPI.ACTION_DELETE_LAYER, layerName);
+                        }
+                    }).padBottom(20).pack();
+        }
+    }
+
+    private void handleItemSelectionChanged(INotification notification) {
+        Set<Integer> selection = notification.getBody();
+        if (selection.size() == 1) {
+            ZIndexComponent zIndexComponent = EntityDataProxy.get().get(selection.iterator().next(), ZIndexComponent.class);
+            int index = findLayerByName(zIndexComponent.getLayerName());
+            if (index == -1) {
+                // handle this somehow
+            } else {
+                viewComponent.setCurrentSelectedLayer(index);
+                viewComponent.currentSelectedLayerIndex = index;
+            }
+        } else if (selection.size() > 1) {
+            // multi selection handling not yet clear
+        }
+    }
+
+    private void handleChangeLayerName(INotification notification) {
+        String layerName = notification.getBody();
+        int layerIndex = viewComponent.getCurrentSelectedLayerIndex();
+        if (layerIndex == -1) return;
+        LayerItemVO layerVO = layers.get(layerIndex);
+        facade.sendNotification(MsgAPI.ACTION_RENAME_LAYER, RenameLayerCommand.payload(layerVO.layerName, layerName));
+    }
 
     private void setSelectedByName(String name) {
         String deletedLayerName = name;

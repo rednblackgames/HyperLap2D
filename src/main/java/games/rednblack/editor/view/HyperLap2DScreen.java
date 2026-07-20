@@ -46,7 +46,7 @@ import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.vo.SceneConfigVO;
 import games.rednblack.puremvc.Facade;
 
-public class HyperLap2DScreen implements Screen, InputProcessor {
+public class HyperLap2DScreen extends InputAdapter implements Screen {
     private static final String TAG = HyperLap2DScreen.class.getCanonicalName();
 
     public UIStage uiStage;
@@ -256,41 +256,6 @@ public class HyperLap2DScreen implements Screen, InputProcessor {
                 facade.sendNotification(MsgAPI.HIDE_MINI_MAP);
                 break;
         }
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(float amountX, float amountY) {
         return false;
     }
 

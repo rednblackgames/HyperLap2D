@@ -22,24 +22,18 @@ import games.rednblack.editor.proxy.EntityDataProxy;
 import games.rednblack.editor.renderer.ecs.BaseComponentMapper;
 import games.rednblack.editor.renderer.ecs.ComponentMapper;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.kotcrab.vis.ui.FocusManager;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
-import games.rednblack.editor.proxy.CommandManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.components.NodeComponent;
-import games.rednblack.editor.utils.KeyBindingsLayout;
-import games.rednblack.editor.view.stage.input.EntityClickListener;
 import games.rednblack.editor.view.stage.input.InputListenerComponent;
 import games.rednblack.editor.view.stage.tools.PanTool;
 import games.rednblack.editor.view.stage.tools.SelectionTool;
-import games.rednblack.editor.view.stage.tools.TransformTool;
 import games.rednblack.editor.view.ui.box.UIToolBoxMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.tools.Tool;
@@ -62,15 +56,15 @@ public class SandboxMediator extends Mediator<Sandbox> {
 
     private SandboxStageEventListener stageListener;
 
-    private Tool hotSwapMemory;
+    Tool hotSwapMemory;
 
-    private HashMap<String, Tool> sandboxTools;
-    private Tool currentSelectedTool;
+    HashMap<String, Tool> sandboxTools;
+    Tool currentSelectedTool;
 
     private static final Vector3 temp = new Vector3();
     private static final Vector2 tmp = new Vector2();
 
-    private SettingsManager settingsManager;
+    SettingsManager settingsManager;
 
     public SandboxMediator() {
         super(NAME, Sandbox.getInstance());
@@ -80,7 +74,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
     public void onRegister() {
         super.onRegister();
 
-        stageListener = new SandboxStageEventListener();
+        stageListener = new SandboxStageEventListener(this);
         getViewComponent().addListener(stageListener);
 
         initTools();
@@ -181,7 +175,11 @@ public class SandboxMediator extends Mediator<Sandbox> {
             inputListenerComponent = getViewComponent().getEngine().edit(entity).create(InputListenerComponent.class);
         }
         inputListenerComponent.removeAllListener();
-        inputListenerComponent.addListener(new SandboxItemEventListener(entity));
+        inputListenerComponent.addListener(new SandboxItemEventListener(this, entity));
+    }
+
+    public Facade getFacade() {
+        return facade;
     }
 
     public Vector2 getStageCoordinates() {
@@ -191,276 +189,6 @@ public class SandboxMediator extends Mediator<Sandbox> {
         return tmp.set(vec.x, vec.y);
     }
 
-    public class SandboxItemEventListener extends EntityClickListener {
-
-        public SandboxItemEventListener(final int entity) {
-        	
-        }
-
-        @Override
-        public boolean touchDown(int entity, float x, float y, int pointer, int button) {
-            super.touchDown(entity, x, y, pointer, button);
-
-            setSandboxFocus();
-
-            switch (button) {
-                case Input.Buttons.MIDDLE:
-                    // if middle button is pressed - PAN the scene
-                    toolHotSwap(sandboxTools.get(PanTool.NAME));
-                    break;
-            }
-
-            Vector2 coords = getStageCoordinates();
-            return currentSelectedTool != null && currentSelectedTool.itemMouseDown(entity, coords.x, coords.y);
-        }
-
-        
-        @Override
-        public void touchUp(int entity, float x, float y, int pointer, int button) {
-            super.touchUp(entity, x, y, pointer, button);
-            Vector2 coords = getStageCoordinates();
-
-            if (button == Input.Buttons.MIDDLE) {
-                toolHotSwapBack();
-            }
-
-            if (currentSelectedTool != null) {
-                currentSelectedTool.itemMouseUp(entity, x, y);
-
-                if (getTapCount() == 2) {
-                    // this is double click
-                    currentSelectedTool.itemMouseDoubleClick(entity, coords.x, coords.y);
-                }
-            }
-
-            if (button == Input.Buttons.RIGHT) {
-                // if right clicked on an item, drop down for current selection
-                facade.sendNotification(MsgAPI.ITEM_RIGHT_CLICK);
-            }
-        }
-
-        @Override
-        public void touchDragged(int entity, float x, float y, int pointer) {
-            Vector2 coords = getStageCoordinates();
-
-            if (currentSelectedTool != null) {
-                currentSelectedTool.itemMouseDragged(entity, coords.x, coords.y);
-            }
-        }
-
-        @Override
-        public boolean scrolled(int entity, float amountX, float amountY) {
-
-            return false;
-        }
-    }
-
-    private class SandboxStageEventListener extends EntityClickListener {
-        public SandboxStageEventListener() {
-            setTapCountInterval(.5f);
-        }
-
-        @Override
-        public boolean keyDown(int entity, int keycode) {
-            Sandbox sandbox = getViewComponent();
-            if (sandbox.getSceneControl().getCurrentSceneVO() == null) {
-                return false;
-            }
-
-            facade.sendNotification(MsgAPI.ACTION_KEY_DOWN, keycode);
-
-            if(currentSelectedTool != null) {
-                currentSelectedTool.keyDown(entity, keycode);
-            }
-
-            switch (KeyBindingsLayout.mapAction(keycode)) {
-                case KeyBindingsLayout.SELECTION_TOOL:
-                    facade.sendNotification(MsgAPI.TOOL_CLICKED, SelectionTool.NAME);
-                    break;
-                case KeyBindingsLayout.TRANSFORM_TOOL:
-                    facade.sendNotification(MsgAPI.TOOL_CLICKED, TransformTool.NAME);
-                    break;
-                case KeyBindingsLayout.PAN_TOOL:
-                    toolHotSwap(sandboxTools.get(PanTool.NAME));
-                    break;
-                case KeyBindingsLayout.ZOOM_PLUS:
-                    sandbox.zoomDivideBy(2f);
-                    break;
-                case KeyBindingsLayout.ZOOM_MINUS:
-                    sandbox.zoomDivideBy(0.5f);
-                    break;
-                case KeyBindingsLayout.Z_INDEX_UP:
-                    // going to front of next item in z-index ladder
-                    facade.sendNotification(MsgAPI.ACTION_SET_Z_INDEX, new Object[]{sandbox.getSelector().getCurrentSelection(), true});
-                    break;
-                case KeyBindingsLayout.Z_INDEX_DOWN:
-                    // going behind the next item in z-index ladder
-                    facade.sendNotification(MsgAPI.ACTION_SET_Z_INDEX, new Object[]{sandbox.getSelector().getCurrentSelection(), false});
-                    break;
-                case KeyBindingsLayout.SELECT_ALL:
-                    // Ctrl+A means select all
-                    facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, sandbox.getSelector().getAllFreeItems());
-                    break;
-                case KeyBindingsLayout.COPY:
-                    facade.sendNotification(MsgAPI.ACTION_COPY);
-                    break;
-                case KeyBindingsLayout.CUT:
-                    facade.sendNotification(MsgAPI.ACTION_CUT);
-                    break;
-                case KeyBindingsLayout.PASTE:
-                    facade.sendNotification(MsgAPI.ACTION_PASTE);
-                    break;
-                case KeyBindingsLayout.UNDO:
-                    CommandManager commandManager = facade.retrieveProxy(CommandManager.NAME);
-                    commandManager.undoCommand();
-                    break;
-                case KeyBindingsLayout.REDO:
-                    commandManager = facade.retrieveProxy(CommandManager.NAME);
-                    commandManager.redoCommand();
-                    break;
-                case KeyBindingsLayout.RESET_CAMERA:
-                    sandbox.getCamera().position.set(0 ,0, 0);
-                    sandbox.setZoomPercent(100, false);
-                    break;
-                case KeyBindingsLayout.ALIGN_TOP:
-                    sandbox.getSelector().alignSelections(Align.top);
-                    break;
-                case KeyBindingsLayout.ALIGN_LEFT:
-                    sandbox.getSelector().alignSelections(Align.left);
-                    break;
-                case KeyBindingsLayout.ALIGN_BOTTOM:
-                    sandbox.getSelector().alignSelections(Align.bottom);
-                    break;
-                case KeyBindingsLayout.ALIGN_RIGHT:
-                    sandbox.getSelector().alignSelections(Align.right);
-                    break;
-            }
-
-            if (keycode == Input.Keys.ESCAPE) {
-                if (sandbox.getSelector().getSelectedItems().size() > 0) {
-                    facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, null);
-                } else {
-                    currentSelectedTool.stageMouseDoubleClick(0, 0);
-                }
-            }
-            return true;
-        }
-
-        @Override
-        public boolean keyUp(int entity, int keycode) {
-            facade.sendNotification(MsgAPI.ACTION_KEY_UP, keycode);
-
-            switch (KeyBindingsLayout.mapAction(keycode)) {
-                case KeyBindingsLayout.PAN_TOOL:
-                    // if pan mode is disabled set cursor back
-                    toolHotSwapBack();
-                    break;
-            }
-
-            if(currentSelectedTool != null) {
-                currentSelectedTool.keyUp(entity, keycode);
-            }
-
-            return true;
-        }
-
-
-        @Override
-        public boolean touchDown(int entity, float x, float y, int pointer, int button) {
-            super.touchDown(entity, x, y, pointer, button);
-
-            setSandboxFocus();
-
-            switch (button) {
-                case Input.Buttons.MIDDLE:
-                    // if middle button is pressed - PAN the scene
-                    toolHotSwap(sandboxTools.get(PanTool.NAME));
-                    break;
-            }
-
-            if (currentSelectedTool != null) {
-                currentSelectedTool.stageMouseDown(x, y);
-            }
-
-            return true;
-        }
-
-        @Override
-        public void touchUp(int entity, float x, float y, int pointer, int button) {
-            super.touchUp(entity, x, y, pointer, button);
-
-            if(currentSelectedTool != null) {
-                currentSelectedTool.stageMouseUp(x, y);
-            }
-
-            Sandbox sandbox = getViewComponent();
-            if (button == Input.Buttons.RIGHT) {
-                // if clicked on empty space, selections need to be cleared
-                sandbox.getSelector().clearSelections();
-
-                // show default dropdown
-                facade.sendNotification(MsgAPI.SCENE_RIGHT_CLICK, new Vector2(x, y));
-
-                return;
-            }
-
-            if (button == Input.Buttons.MIDDLE) {
-                toolHotSwapBack();
-            }
-
-            if (getTapCount() == 2 && button == Input.Buttons.LEFT) {
-                doubleClick(entity, x, y);
-            }
-
-        }
-
-        private void doubleClick(int entity, float x, float y) {
-            if (currentSelectedTool != null) {
-                Sandbox sandbox = getViewComponent();
-                currentSelectedTool.stageMouseDoubleClick(x, y);
-            }
-        }
-
-        @Override
-        public void touchDragged(int entity, float x, float y, int pointer) {
-            if (currentSelectedTool != null) {
-                Sandbox sandbox = getViewComponent();
-                currentSelectedTool.stageMouseDragged(x, y);
-            }
-        }
-
-
-        @Override
-        public boolean scrolled(int entity, float amountX, float amountY) {
-            Sandbox sandbox = getViewComponent();
-            // well, duh
-            if (amountX == 0 && amountY == 0) return false;
-
-            // Control pressed as well
-            if (isControlPressed()) {
-                float zoomPercent = sandbox.getZoomPercent();
-                zoomPercent-= amountY * 4f;
-                if(zoomPercent < 5 ) zoomPercent = 5;
-
-                sandbox.setZoomPercent(zoomPercent, true);
-            } else {
-                if (currentSelectedTool != null
-                        && !currentSelectedTool.stageMouseScrolled(amountX, amountY)) {
-
-                    float scale = settingsManager.editorConfigVO.scrollVelocity / sandbox.getPixelPerWU();
-                    viewComponent.panSceneBy(amountX * scale, -amountY * scale);
-                }
-            }
-
-            return false;
-        }
-
-        private boolean isControlPressed() {
-            return Gdx.input.isKeyPressed(Input.Keys.SYM)
-                    || Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)
-                    || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT);
-        }
-    }
 
     public void toolHotSwap(Tool tool) {
         if (currentSelectedTool == null || currentSelectedTool.getName().equals(tool.getName()))
@@ -484,7 +212,7 @@ public class SandboxMediator extends Mediator<Sandbox> {
         return currentSelectedTool != null ? currentSelectedTool.getName() : "";
     }
 
-    private void setSandboxFocus() {
+    void setSandboxFocus() {
        Sandbox sandbox = getViewComponent();
         FocusManager.resetFocus(sandbox.getUIStage());
 
