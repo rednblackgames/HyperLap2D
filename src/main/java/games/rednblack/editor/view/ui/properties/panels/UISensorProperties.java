@@ -5,6 +5,8 @@ import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
@@ -14,7 +16,40 @@ import games.rednblack.puremvc.Facade;
  * 
  * @author Jan-Thierry Wegener
  */
-public class UISensorProperties extends UIRemovableProperties {
+public class UISensorProperties extends UIRemovableProperties implements RemoteEditablePanel {
+
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (value == null) throw new IllegalArgumentException("null value for field: " + key);
+        switch (key) {
+            case "sensorTop": sensorTop.setChecked(RemoteEditableSupport.toBool(value)); break;
+            case "sensorBottom": sensorBottom.setChecked(RemoteEditableSupport.toBool(value)); break;
+            case "sensorLeft": sensorLeft.setChecked(RemoteEditableSupport.toBool(value)); break;
+            case "sensorRight": sensorRight.setChecked(RemoteEditableSupport.toBool(value)); break;
+            case "spanPercentTop": sensorSpanPercentTop.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "spanPercentBottom": sensorSpanPercentBottom.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "spanPercentLeft": sensorSpanPercentLeft.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "spanPercentRight": sensorSpanPercentRight.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "heightPercentTop": sensorHeightPercentTop.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "heightPercentBottom": sensorHeightPercentBottom.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "widthPercentLeft": sensorWidthPercentLeft.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "widthPercentRight": sensorWidthPercentRight.setText(RemoteEditableSupport.numberToString(value)); break;
+            default: throw new IllegalArgumentException("Unknown field: " + key + " (supported: sensorTop/Bottom/Left/Right, spanPercentTop/Bottom/Left/Right, heightPercentTop/Bottom, widthPercentLeft/Right)");
+        }
+    }
+    @Override
+    public java.util.List<String> validateFieldValues() {
+        java.util.List<String> errors = new java.util.ArrayList<>();
+        RemoteEditableSupport.checkValid("spanPercentTop", sensorSpanPercentTop, errors);
+        RemoteEditableSupport.checkValid("spanPercentBottom", sensorSpanPercentBottom, errors);
+        RemoteEditableSupport.checkValid("spanPercentLeft", sensorSpanPercentLeft, errors);
+        RemoteEditableSupport.checkValid("spanPercentRight", sensorSpanPercentRight, errors);
+        RemoteEditableSupport.checkValid("heightPercentTop", sensorHeightPercentTop, errors);
+        RemoteEditableSupport.checkValid("heightPercentBottom", sensorHeightPercentBottom, errors);
+        RemoteEditableSupport.checkValid("widthPercentLeft", sensorWidthPercentLeft, errors);
+        RemoteEditableSupport.checkValid("widthPercentRight", sensorWidthPercentRight, errors);
+        return errors;
+    }
 
     public static final String prefix = "games.rednblack.editor.view.ui.properties.panels.UISensorProperties";
     public static final String CLOSE_CLICKED = prefix + ".CLOSE_CLICKED";

@@ -12,13 +12,62 @@ import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.renderer.components.LayoutComponent;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
-public class UILayoutProperties extends UIRemovableProperties {
+public class UILayoutProperties extends UIRemovableProperties implements RemoteEditablePanel {
+
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (value == null) throw new IllegalArgumentException("null value for field: " + key);
+        switch (key) {
+            case "leftMargin": leftMargin.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "rightMargin": rightMargin.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "bottomMargin": bottomMargin.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "topMargin": topMargin.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "horizontalBias": horizontalBiasField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "verticalBias": verticalBiasField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "leftEnabled": setLeftEnabled(RemoteEditableSupport.toBool(value)); break;
+            case "rightEnabled": setRightEnabled(RemoteEditableSupport.toBool(value)); break;
+            case "bottomEnabled": setBottomEnabled(RemoteEditableSupport.toBool(value)); break;
+            case "topEnabled": setTopEnabled(RemoteEditableSupport.toBool(value)); break;
+            case "leftTarget":
+                if (!RemoteEditableSupport.contains(leftTarget, value.toString())) throw new IllegalArgumentException("leftTarget '" + value + "' not available");
+                setLeftTarget(value.toString()); break;
+            case "rightTarget":
+                if (!RemoteEditableSupport.contains(rightTarget, value.toString())) throw new IllegalArgumentException("rightTarget '" + value + "' not available");
+                setRightTarget(value.toString()); break;
+            case "bottomTarget":
+                if (!RemoteEditableSupport.contains(bottomTarget, value.toString())) throw new IllegalArgumentException("bottomTarget '" + value + "' not available");
+                setBottomTarget(value.toString()); break;
+            case "topTarget":
+                if (!RemoteEditableSupport.contains(topTarget, value.toString())) throw new IllegalArgumentException("topTarget '" + value + "' not available");
+                setTopTarget(value.toString()); break;
+            case "leftSide": setLeftSide(games.rednblack.editor.renderer.components.LayoutComponent.ConstraintSide.valueOf(value.toString())); break;
+            case "rightSide": setRightSide(games.rednblack.editor.renderer.components.LayoutComponent.ConstraintSide.valueOf(value.toString())); break;
+            case "bottomSide": setBottomSide(games.rednblack.editor.renderer.components.LayoutComponent.ConstraintSide.valueOf(value.toString())); break;
+            case "topSide": setTopSide(games.rednblack.editor.renderer.components.LayoutComponent.ConstraintSide.valueOf(value.toString())); break;
+            case "matchWidth": matchWidthCheckBox.setChecked(RemoteEditableSupport.toBool(value)); break;
+            case "matchHeight": matchHeightCheckBox.setChecked(RemoteEditableSupport.toBool(value)); break;
+            default: throw new IllegalArgumentException("Unknown field: " + key + " (supported: leftMargin/rightMargin/bottomMargin/topMargin, horizontalBias/verticalBias, leftEnabled/rightEnabled/bottomEnabled/topEnabled, leftTarget/rightTarget/bottomTarget/topTarget, leftSide/rightSide/bottomSide/topSide, matchWidth/matchHeight)");
+        }
+    }
+    @Override
+    public java.util.List<String> validateFieldValues() {
+        java.util.List<String> errors = new java.util.ArrayList<>();
+        RemoteEditableSupport.checkValid("leftMargin", leftMargin, errors);
+        RemoteEditableSupport.checkValid("rightMargin", rightMargin, errors);
+        RemoteEditableSupport.checkValid("bottomMargin", bottomMargin, errors);
+        RemoteEditableSupport.checkValid("topMargin", topMargin, errors);
+        RemoteEditableSupport.checkValid("horizontalBias", horizontalBiasField, errors);
+        RemoteEditableSupport.checkValid("verticalBias", verticalBiasField, errors);
+        return errors;
+    }
 
     public static final String prefix = "games.rednblack.editor.view.ui.properties.panels.UILayoutProperties";
     public static final String CLOSE_CLICKED = prefix + ".CLOSE_CLICKED";

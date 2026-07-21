@@ -14,6 +14,8 @@ import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.NumberSelectorOverlapListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
@@ -22,7 +24,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
 
-public class UILightBodyProperties extends UIRemovableProperties {
+public class UILightBodyProperties extends UIRemovableProperties implements RemoteEditablePanel {
 
     public static final String prefix = "games.rednblack.editor.view.ui.properties.panels.UILightBodyProperties";
     public static final String CLOSE_CLICKED = prefix + ".CLOSE_CLICKED";
@@ -242,5 +244,49 @@ public class UILightBodyProperties extends UIRemovableProperties {
     @Override
     public void onRemove() {
         facade.sendNotification(CLOSE_CLICKED);
+    }
+
+    // ---- RemoteEditablePanel ----
+
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (value == null) throw new IllegalArgumentException("null value for field: " + key);
+        switch (key) {
+            case "rays": setRays(RemoteEditableSupport.intToString(value)); break;
+            case "distance": setDistance(RemoteEditableSupport.numberToString(value)); break;
+            case "intensity": setLightIntensity(RemoteEditableSupport.numberToString(value)); break;
+            case "constantFalloff": constantFalloffField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "linearFalloff": linearFalloffField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "quadraticFalloff": quadraticFalloffField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "softnessLength": setSoftnessLength(RemoteEditableSupport.numberToString(value)); break;
+            case "height": setLightHeight(RemoteEditableSupport.numberToString(value)); break;
+            case "direction":
+                if (!RemoteEditableSupport.contains(directionBox, value.toString())) {
+                    throw new IllegalArgumentException("direction '" + value + "' not valid; allowed: LEFT, RIGHT");
+                }
+                directionBox.setSelected(value.toString()); break;
+            case "isStatic": setStatic(RemoteEditableSupport.toBool(value)); break;
+            case "isXRay": setXRay(RemoteEditableSupport.toBool(value)); break;
+            case "isSoft": setSoft(RemoteEditableSupport.toBool(value)); break;
+            case "isActive": setActive(RemoteEditableSupport.toBool(value)); break;
+            case "color": setLightColor(RemoteEditableSupport.toColor(value)); break;
+            default:
+                throw new IllegalArgumentException("Unknown field: " + key
+                        + " (supported: rays, distance, intensity, constantFalloff, linearFalloff, quadraticFalloff, "
+                        + "softnessLength, height, direction, isStatic, isXRay, isSoft, isActive, color)");
+        }
+    }
+
+    @Override
+    public java.util.List<String> validateFieldValues() {
+        java.util.List<String> errors = new java.util.ArrayList<>();
+        RemoteEditableSupport.checkValid("distance", distanceTextField, errors);
+        RemoteEditableSupport.checkValid("intensity", intensityField, errors);
+        RemoteEditableSupport.checkValid("constantFalloff", constantFalloffField, errors);
+        RemoteEditableSupport.checkValid("linearFalloff", linearFalloffField, errors);
+        RemoteEditableSupport.checkValid("quadraticFalloff", quadraticFalloffField, errors);
+        RemoteEditableSupport.checkValid("softnessLength", softnessLengthField, errors);
+        RemoteEditableSupport.checkValid("height", heightField, errors);
+        return errors;
     }
 }

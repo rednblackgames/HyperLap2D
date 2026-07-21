@@ -35,6 +35,7 @@ import games.rednblack.editor.renderer.components.physics.SensorComponent;
 import games.rednblack.editor.renderer.components.shape.CircleShapeComponent;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
+import games.rednblack.editor.utils.runtime.AddableComponents;
 import games.rednblack.editor.utils.runtime.ComponentCloner;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
@@ -62,31 +63,8 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
     private DimensionsComponent dimensionComponent;
     private TintComponent tintComponent;
 
-    public static final String POLYGON_COMPONENT_KEY = "Polygon Shape";
-    public static final String CIRCLE_SHAPE_COMPONENT_KEY = "Circle Shape";
-    public static final String PHYSICS_COMPONENT_KEY = "Physics";
-    public static final String SENSOR_COMPONENT_KEY = "Physics Sensors";
-    public static final String SHADER_COMPONENT_KEY = "Shader";
-    public static final String LIGHT_COMPONENT_KEY = "Light";
-    public static final String TYPING_LABEL_COMPONENT_KEY = "Typing Label";
-    public static final String LAYOUT_COMPONENT_KEY = "Layout";
-
-    final private HashMap<String, Class<? extends Component>> componentClassMap = new HashMap<>();
-
     public UIBasicItemPropertiesMediator() {
         super(NAME, new UIBasicItemProperties());
-    }
-
-    @Override
-    public void onRegister() {
-        componentClassMap.put(POLYGON_COMPONENT_KEY, PolygonShapeComponent.class);
-        componentClassMap.put(CIRCLE_SHAPE_COMPONENT_KEY, CircleShapeComponent.class);
-        componentClassMap.put(PHYSICS_COMPONENT_KEY, PhysicsBodyComponent.class);
-        componentClassMap.put(SENSOR_COMPONENT_KEY, SensorComponent.class);
-        componentClassMap.put(SHADER_COMPONENT_KEY, ShaderComponent.class);
-        componentClassMap.put(LIGHT_COMPONENT_KEY, LightBodyComponent.class);
-        componentClassMap.put(TYPING_LABEL_COMPONENT_KEY, TypingLabelComponent.class);
-        componentClassMap.put(LAYOUT_COMPONENT_KEY, LayoutComponent.class);
     }
 
     @Override
@@ -137,7 +115,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
                 }
                 break;
             case UIBasicItemProperties.ADD_COMPONENT_BUTTON_CLICKED:
-                Class<? extends Component> componentClass = componentClassMap.get(viewComponent.getSelectedComponent());
+                Class<? extends Component> componentClass = AddableComponents.classForKey(viewComponent.getSelectedComponent());
                 if(componentClass == null) break;
                 facade.sendNotification(MsgAPI.ACTION_ADD_COMPONENT, AddComponentToItemCommand.payload(observableReference, componentClass));
                 break;
@@ -183,18 +161,9 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
             viewComponent.disableLinkage();
         }
 
-        // Compute the addable components for this entity type from a per-call
-        // copy, so type restrictions do not permanently mutate the shared
-        // componentClassMap (which previously leaked state across selections
-        // and shrank the "add component" dropdown over time).
-        Map<String, Class<? extends Component>> addable = new HashMap<>(componentClassMap);
-        if (entityType == EntityFactory.LIGHT_TYPE) {
-            addable.remove(LIGHT_COMPONENT_KEY);
-            addable.remove(SHADER_COMPONENT_KEY);
-        }
-        if (entityType != EntityFactory.LABEL_TYPE) {
-            addable.remove(TYPING_LABEL_COMPONENT_KEY);
-        }
+        // Addable components for this entity (allowed for its type + not already present),
+        // from the shared AddableComponents helper used by both the UI and the MCP RemoteOps path.
+        Map<String, Class<? extends Component>> addable = AddableComponents.addableForEntity(entity, sandbox.getEngine());
 
         viewComponent.setItemType(entityData.metadata().getType(entity), mainItemComponent.uniqueId);
         viewComponent.setIdBoxValue(mainItemComponent.itemIdentifier);
@@ -219,14 +188,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
 
         // non existent components
         Array<String> componentsToAddList = new Array<>();
-        for (Map.Entry<String, Class<? extends Component>> entry : addable.entrySet()) {
-            String componentName = entry.getKey();
-            Class<? extends Component> componentClass = entry.getValue();
-            Component component = entityData.get(entity, componentClass);
-            if(component == null) {
-                componentsToAddList.add(componentName);
-            }
-        }
+        for (String name : addable.keySet()) componentsToAddList.add(name);
         componentsToAddList.sort();
         viewComponent.setNonExistentComponents(componentsToAddList);
     }

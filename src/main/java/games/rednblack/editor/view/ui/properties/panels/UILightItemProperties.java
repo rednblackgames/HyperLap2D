@@ -32,6 +32,8 @@ import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.NumberSelectorOverlapListener;
 import games.rednblack.editor.renderer.components.light.LightObjectComponent;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -39,7 +41,48 @@ import org.apache.commons.lang3.math.NumberUtils;
 /**
  * Created by azakhary on 4/28/2015.
  */
-public class UILightItemProperties extends UIItemCollapsibleProperties {
+public class UILightItemProperties extends UIItemCollapsibleProperties implements RemoteEditablePanel {
+
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (value == null) throw new IllegalArgumentException("null value for field: " + key);
+        switch (key) {
+            case "type":
+                LightObjectComponent.LightType lt;
+                try { lt = LightObjectComponent.LightType.valueOf(value.toString()); }
+                catch (Exception e) { throw new IllegalArgumentException("type '" + value + "' not valid; allowed: POINT, CONE"); }
+                setType(lt); break;
+            case "rayCount": setRayCount(RemoteEditableSupport.toInt(value)); break;
+            case "radius": setRadius(RemoteEditableSupport.numberToString(value)); break;
+            case "angle": setAngle(RemoteEditableSupport.numberToString(value)); break;
+            case "distance": setDistance(RemoteEditableSupport.numberToString(value)); break;
+            case "direction": setDirection(RemoteEditableSupport.numberToString(value)); break;
+            case "intensity": setLightIntensity(RemoteEditableSupport.numberToString(value)); break;
+            case "height": setLightHeight(RemoteEditableSupport.numberToString(value)); break;
+            case "softnessLength": setSoftnessLength(RemoteEditableSupport.numberToString(value)); break;
+            case "falloff": setFalloff(RemoteEditableSupport.toVector3(value)); break;
+            case "isStatic": setStatic(RemoteEditableSupport.toBool(value)); break;
+            case "isXRay": setXRay(RemoteEditableSupport.toBool(value)); break;
+            case "isSoft": setSoft(RemoteEditableSupport.toBool(value)); break;
+            case "isActive": setActive(RemoteEditableSupport.toBool(value)); break;
+            default: throw new IllegalArgumentException("Unknown field: " + key + " (supported: type, rayCount, radius, angle, distance, direction, intensity, height, softnessLength, falloff, isStatic, isXRay, isSoft, isActive)");
+        }
+    }
+    @Override
+    public java.util.List<String> validateFieldValues() {
+        java.util.List<String> errors = new java.util.ArrayList<>();
+        RemoteEditableSupport.checkValid("radius", pointLightRadiusField, errors);
+        RemoteEditableSupport.checkValid("angle", coneInnerAngleField, errors);
+        RemoteEditableSupport.checkValid("distance", coneDistanceField, errors);
+        RemoteEditableSupport.checkValid("direction", coneDirectionField, errors);
+        RemoteEditableSupport.checkValid("height", heightField, errors);
+        RemoteEditableSupport.checkValid("intensity", intensityField, errors);
+        RemoteEditableSupport.checkValid("constantFalloff", constantFalloffField, errors);
+        RemoteEditableSupport.checkValid("linearFalloff", linearFalloffField, errors);
+        RemoteEditableSupport.checkValid("quadraticFalloff", quadraticFalloffField, errors);
+        RemoteEditableSupport.checkValid("softnessLength", softnessLengthField, errors);
+        return errors;
+    }
     private final Vector3 tmp = new Vector3();
 
     private VisCheckBox isStaticCheckBox;

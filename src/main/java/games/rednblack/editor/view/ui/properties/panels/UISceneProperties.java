@@ -30,13 +30,15 @@ import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.spinner.Spinner;
 import games.rednblack.editor.event.*;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIAbstractProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
 
 import java.util.HashMap;
 
-public class UISceneProperties extends UIAbstractProperties {
+public class UISceneProperties extends UIAbstractProperties implements RemoteEditablePanel {
 
     public static final String prefix = "games.rednblack.editor.view.ui.properties.panels.UISceneProperties";
     public static final String AMBIENT_COLOR_BUTTON_CLICKED = prefix + ".AMBIENT_COLOR_BUTTON_CLICKED";
@@ -345,5 +347,83 @@ public class UISceneProperties extends UIAbstractProperties {
             }
         });
         shadersSelector.addListener(new SelectBoxChangeListener(getUpdateEventName()));
+    }
+
+    // ---- RemoteEditablePanel ----
+
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (value == null) throw new IllegalArgumentException("null value for field: " + key);
+        switch (key) {
+            case "physicsEnabled": setPhysicsEnable(RemoteEditableSupport.toBool(value)); break;
+            case "gravityX": setGravityXValue(RemoteEditableSupport.numberToString(value)); break;
+            case "gravityY": setGravityYValue(RemoteEditableSupport.numberToString(value)); break;
+            case "sleepVelocity": setSleepVelocityValue(RemoteEditableSupport.numberToString(value)); break;
+            case "lightsEnabled": setLightsEnabled(RemoteEditableSupport.toBool(value)); break;
+            case "pseudo3d": setPseudo3DLightsEnabled(RemoteEditableSupport.toBool(value)); break;
+            case "blurNum": setBlurNum(RemoteEditableSupport.intToString(value)); break;
+            case "lightMapScale": setLightMapScale(RemoteEditableSupport.intToString(value)); break;
+            case "lightType":
+                if (!RemoteEditableSupport.contains(lightTypeBox, value.toString())) {
+                    throw new IllegalArgumentException("lightType '" + value + "' not valid; allowed: DIFFUSE, DIRECTIONAL, BRIGHT");
+                }
+                setLightType(value.toString()); break;
+            case "directionalRays":
+                if (directionalRays.isDisabled()) throw new IllegalArgumentException("directionalRays only editable when lightType is DIRECTIONAL");
+                setDirectionalRays(RemoteEditableSupport.intToString(value)); break;
+            case "directionalDegree":
+                if (directionalDegreeTextField.isDisabled()) throw new IllegalArgumentException("directionalDegree only editable when lightType is DIRECTIONAL");
+                setDirectionalDegree(RemoteEditableSupport.numberToString(value)); break;
+            case "directionalHeight":
+                if (directionalHeightTextField.isDisabled()) throw new IllegalArgumentException("directionalHeight only editable when lightType is DIRECTIONAL");
+                setDirectionalHeight(RemoteEditableSupport.numberToString(value)); break;
+            case "shader":
+                if (!RemoteEditableSupport.contains(shadersSelector, value.toString())) {
+                    throw new IllegalArgumentException("shader '" + value + "' not available (use list_assets 'shader' category, or 'Default')");
+                }
+                setSelectedShader(value.toString()); break;
+            case "ambientColor":
+                setAmbientColor(RemoteEditableSupport.toColor(value)); break;
+            case "directionalColor":
+                setDirectionalColor(RemoteEditableSupport.toColor(value)); break;
+            default:
+                throw new IllegalArgumentException("Unknown or unsupported field: " + key
+                        + " (supported: physicsEnabled, gravityX, gravityY, sleepVelocity, lightsEnabled, pseudo3d, "
+                        + "blurNum, lightMapScale, lightType, directionalRays, directionalDegree, directionalHeight, "
+                        + "shader, ambientColor, directionalColor)");
+        }
+    }
+
+    @Override
+    public java.util.List<String> validateFieldValues() {
+        java.util.List<String> errors = new java.util.ArrayList<>();
+        RemoteEditableSupport.checkValid("gravityX", gravityXTextField, errors);
+        RemoteEditableSupport.checkValid("gravityY", gravityYTextField, errors);
+        RemoteEditableSupport.checkValid("sleepVelocity", sleepVelocityTextField, errors);
+        RemoteEditableSupport.checkValid("blurNum", blurNumTextField, errors);
+        RemoteEditableSupport.checkValid("lightMapScale", lightMapScaleTextField, errors);
+        RemoteEditableSupport.checkValid("directionalDegree", directionalDegreeTextField, errors);
+        RemoteEditableSupport.checkValid("directionalHeight", directionalHeightTextField, errors);
+        return errors;
+    }
+
+    @Override
+    public void setProgrammaticSelectBoxes(boolean programmatic) {
+        if (!programmatic) return;
+        // Off-stage transient instance: clear change listeners on the event-firing widgets so
+        // their change events don't trigger the always-registered live scene mediator mid-drive.
+        // (The instance is discarded after the edit, so listeners aren't restored.) Text fields use
+        // KeyboardListener which only fires on keyTyped (not setText), so they're left alone.
+        lightTypeBox.clearListeners();
+        shadersSelector.clearListeners();
+        physicsEnabledCheckBox.clearListeners();
+        enableLightsCheckBox.clearListeners();
+        enablePseudo3DLightsCheckBox.clearListeners();
+        directionalRays.clearListeners();
+    }
+
+    @Override
+    public void refreshDisabledState() {
+        updateDisabled();
     }
 }

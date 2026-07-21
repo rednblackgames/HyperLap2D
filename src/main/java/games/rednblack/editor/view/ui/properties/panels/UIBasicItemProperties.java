@@ -35,6 +35,8 @@ import games.rednblack.editor.event.ButtonToNotificationListener;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.proxy.EntityMetadata;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
@@ -42,7 +44,7 @@ import games.rednblack.h2d.common.view.ui.widget.TintButton;
 /**
  * Created by azakhary on 4/15/2015.
  */
-public class UIBasicItemProperties extends UIItemProperties {
+public class UIBasicItemProperties extends UIItemProperties implements RemoteEditablePanel {
 
     public static final String prefix = "games.rednblack.editor.view.ui.properties.panels.UIBasicItemProperties";
     public static final String TINT_COLOR_BUTTON_CLICKED = prefix + ".TINT_COLOR_BUTTON_CLICKED";
@@ -314,6 +316,69 @@ public class UIBasicItemProperties extends UIItemProperties {
     @Override
     public String getPrefix() {
         return prefix;
+    }
+
+    // ---- RemoteEditablePanel: programmatic field setting + validation (MCP RemoteOps path) ----
+
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (value == null) throw new IllegalArgumentException("null value for field: " + key);
+        switch (key) {
+            case "x": xValue.setText(numberToString(value)); break;
+            case "y": yValue.setText(numberToString(value)); break;
+            case "width":
+                if (widthValue.isDisabled()) throw new IllegalArgumentException("width is not editable for this entity type");
+                widthValue.setText(numberToString(value)); break;
+            case "height":
+                if (heightValue.isDisabled()) throw new IllegalArgumentException("height is not editable for this entity type");
+                heightValue.setText(numberToString(value)); break;
+            case "scaleX": scaleXValue.setText(numberToString(value)); break;
+            case "scaleY": scaleYValue.setText(numberToString(value)); break;
+            case "rotation": rotationValue.setText(numberToString(value)); break;
+            case "flipX": flipX.setChecked(toBoolean(value)); break;
+            case "flipY": flipY.setChecked(toBoolean(value)); break;
+            case "id": idBox.setText(value.toString()); break;
+            case "tint": setTintColor(RemoteEditableSupport.toColor(value)); break;
+            default:
+                throw new IllegalArgumentException("Unknown or unsupported field: " + key
+                        + " (supported: x, y, width, height, scaleX, scaleY, rotation, flipX, flipY, id, tint)");
+        }
+    }
+
+    @Override
+    public java.util.List<String> validateFieldValues() {
+        java.util.List<String> errors = new java.util.ArrayList<>();
+        checkValid("x", xValue, errors);
+        checkValid("y", yValue, errors);
+        checkValid("width", widthValue, errors);
+        checkValid("height", heightValue, errors);
+        checkValid("scaleX", scaleXValue, errors);
+        checkValid("scaleY", scaleYValue, errors);
+        checkValid("rotation", rotationValue, errors);
+        return errors;
+    }
+
+    private static void checkValid(String key, VisTextField field, java.util.List<String> errors) {
+        if (field instanceof VisValidatableTextField) {
+            VisValidatableTextField v = (VisValidatableTextField) field;
+            String text = v.getText();
+            for (com.kotcrab.vis.ui.util.InputValidator validator : v.getValidators()) {
+                if (!validator.validateInput(text)) {
+                    errors.add("field '" + key + "' invalid value: '" + text + "'");
+                    return;
+                }
+            }
+        }
+    }
+
+    private static String numberToString(Object value) {
+        if (value instanceof Number) return String.valueOf(((Number) value).floatValue());
+        return value.toString();
+    }
+
+    private static boolean toBoolean(Object value) {
+        if (value instanceof Boolean) return (Boolean) value;
+        return Boolean.parseBoolean(value.toString());
     }
 
     private void setListeners() {

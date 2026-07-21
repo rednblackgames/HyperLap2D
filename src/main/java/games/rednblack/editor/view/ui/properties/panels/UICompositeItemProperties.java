@@ -20,13 +20,29 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import games.rednblack.editor.event.CheckBoxChangeListener;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by azakhary on 4/16/2015.
  */
-public class UICompositeItemProperties extends UIItemCollapsibleProperties {
+public class UICompositeItemProperties extends UIItemCollapsibleProperties implements RemoteEditablePanel {
+
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (value == null) throw new IllegalArgumentException("null value for field: " + key);
+        switch (key) {
+            case "scissorsEnabled": setScissorsEnabled(RemoteEditableSupport.toBool(value)); break;
+            case "renderToFBO": setRenderToFBOEnabled(RemoteEditableSupport.toBool(value)); break;
+            case "automaticResize": setAutomaticResize(RemoteEditableSupport.toBool(value)); break;
+            default: throw new IllegalArgumentException("Unknown field: " + key + " (supported: scissorsEnabled, renderToFBO, automaticResize)");
+        }
+    }
+
+    @Override
+    public java.util.List<String> validateFieldValues() { return new java.util.ArrayList<>(); }
 
     private final VisCheckBox scissorsEnabledCheckBox, automaticResizeCheckBox, renderToFBOCheckBox;
 

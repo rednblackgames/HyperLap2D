@@ -102,7 +102,10 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
     }
 
     private void sendSelectionNotification(Set<Integer> items) {
-        Set<Integer> ntfItems = (items.isEmpty())? null : items;
-        facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, SelectionPayload.multiple(ntfItems));
+        if (items == null || items.isEmpty()) {
+            facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, SelectionPayload.empty());
+        } else {
+            facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, SelectionPayload.multiple(items));
+        }
     }
 }

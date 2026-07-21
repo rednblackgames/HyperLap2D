@@ -180,7 +180,8 @@ runtime {
                'java.management',
                'jdk.crypto.cryptoki',
                'jdk.crypto.ec',
-               'jdk.unsupported']
+               'jdk.unsupported',
+               'jdk.httpserver']
 
     jpackage {
         distDir.set(file("$buildDir/../distBuild"))

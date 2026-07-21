@@ -59,6 +59,17 @@ public abstract class UIAbstractPropertiesMediator<T, V extends UIAbstractProper
         lockUpdates = false;
     }
 
+    /**
+     * Programmatic entry point that runs the same view-to-data translation the user-typing
+     * path runs (reading widget values and sending the update command). Used by the MCP
+     * RemoteOps path after setting widget values directly on a transient, unregistered
+     * panel instance — no notification/event is fired, so there is no conflict with the
+     * live UI's mediators.
+     */
+    public void applyViewToItemData() {
+        translateViewToItemData();
+    }
+
     protected abstract void translateObservableDataToView(T item);
 
     protected abstract void translateViewToItemData();

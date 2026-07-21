@@ -27,6 +27,7 @@ import com.kotcrab.vis.ui.widget.VisSelectBox;
 import games.rednblack.editor.event.ButtonToNotificationListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.renderer.data.MainItemVO;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
@@ -37,7 +38,7 @@ import java.util.Map;
 /**
  * Created by azakhary on 8/12/2015.
  */
-public class UIShaderProperties extends UIRemovableProperties {
+public class UIShaderProperties extends UIRemovableProperties implements RemoteEditablePanel {
 
     public static final String prefix = "games.rednblack.editor.view.ui.properties.panels.UIShaderProperties";
     public static final String CLOSE_CLICKED = prefix + ".CLOSE_CLICKED";
@@ -113,5 +114,42 @@ public class UIShaderProperties extends UIRemovableProperties {
 
     public String getShader() {
         return shadersSelector.getSelected();
+    }
+
+    // ---- RemoteEditablePanel ----
+
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (value == null) throw new IllegalArgumentException("null value for field: " + key);
+        String v = value.toString();
+        switch (key) {
+            case "shaderName":
+                if (!contains(shadersSelector, v)) {
+                    throw new IllegalArgumentException("shaderName '" + v
+                            + "' not available (use list_assets 'shader' category, or 'Default')");
+                }
+                shadersSelector.setSelected(v);
+                break;
+            case "renderingLayer":
+                if (!renderingLayerMap.containsKey(v)) {
+                    throw new IllegalArgumentException("renderingLayer must be one of: " + renderingLayerMap.keySet());
+                }
+                renderingLaterSelector.setSelected(v);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown field: " + key + " (supported: shaderName, renderingLayer)");
+        }
+    }
+
+    @Override
+    public java.util.List<String> validateFieldValues() {
+        return new java.util.ArrayList<>(); // allowed-values enforced in setFieldValue
+    }
+
+    private static boolean contains(VisSelectBox<String> box, String v) {
+        for (String s : box.getItems()) {
+            if (s.equals(v)) return true;
+        }
+        return false;
     }
 }

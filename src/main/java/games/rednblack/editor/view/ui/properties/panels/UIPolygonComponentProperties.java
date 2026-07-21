@@ -24,6 +24,8 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.event.ButtonToNotificationListener;
 import games.rednblack.editor.event.CheckBoxChangeListener;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
@@ -31,7 +33,18 @@ import games.rednblack.puremvc.Facade;
 /**
  * Created by azakhary on 7/2/2015.
  */
-public class UIPolygonComponentProperties extends UIRemovableProperties {
+public class UIPolygonComponentProperties extends UIRemovableProperties implements RemoteEditablePanel {
+
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (value == null) throw new IllegalArgumentException("null value for field: " + key);
+        switch (key) {
+            case "verticesCount": setVerticesCount(RemoteEditableSupport.toInt(value)); break;
+            case "openPath": setOpenPath(RemoteEditableSupport.toBool(value)); break;
+            default: throw new IllegalArgumentException("Unknown field: " + key + " (supported: verticesCount, openPath)");
+        }
+    }
+    @Override public java.util.List<String> validateFieldValues() { return new java.util.ArrayList<>(); }
 
     public static final String prefix = "games.rednblack.editor.view.ui.properties.panels.UIPolygonComponentProperties";
 

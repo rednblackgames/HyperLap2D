@@ -22,13 +22,32 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import games.rednblack.editor.event.SelectBoxChangeListener;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by azakhary on 4/16/2015.
  */
-public class UISpineAnimationItemProperties extends UIItemCollapsibleProperties {
+public class UISpineAnimationItemProperties extends UIItemCollapsibleProperties implements RemoteEditablePanel {
+
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (value == null) throw new IllegalArgumentException("null value for field: " + key);
+        switch (key) {
+            case "animation":
+                if (!RemoteEditableSupport.contains(animationsSelectBox, value.toString())) throw new IllegalArgumentException("animation '" + value + "' not available");
+                setSelectedAnimation(value.toString()); break;
+            case "skin":
+                if (!RemoteEditableSupport.contains(skinSelectBox, value.toString())) throw new IllegalArgumentException("skin '" + value + "' not available");
+                setSelectedSkin(value.toString()); break;
+            default: throw new IllegalArgumentException("Unknown field: " + key + " (supported: animation, skin)");
+        }
+    }
+
+    @Override
+    public java.util.List<String> validateFieldValues() { return new java.util.ArrayList<>(); }
 
     private VisSelectBox<String> animationsSelectBox, skinSelectBox;
 

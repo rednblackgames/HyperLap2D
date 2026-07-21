@@ -4,10 +4,22 @@ import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.spinner.Spinner;
 import games.rednblack.editor.event.NumberSelectorOverlapListener;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
-public class UICircleShapeProperties extends UIRemovableProperties {
+public class UICircleShapeProperties extends UIRemovableProperties implements RemoteEditablePanel {
+
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (value == null) throw new IllegalArgumentException("null value for field: " + key);
+        switch (key) {
+            case "radius": setRadius(RemoteEditableSupport.toFloat(value)); break;
+            default: throw new IllegalArgumentException("Unknown field: " + key + " (supported: radius)");
+        }
+    }
+    @Override public java.util.List<String> validateFieldValues() { return new java.util.ArrayList<>(); }
 
     public static final String prefix = "games.rednblack.editor.view.ui.properties.panels.UICircleShapeProperties";
     public static final String CLOSE_CLICKED = prefix + ".CLOSE_CLICKED";

@@ -29,6 +29,8 @@ import com.kotcrab.vis.ui.widget.spinner.IntSpinnerModel;
 import com.kotcrab.vis.ui.widget.spinner.Spinner;
 import games.rednblack.editor.event.NumberSelectorOverlapListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
@@ -38,7 +40,25 @@ import java.util.Map;
 /**
  * Created by azakhary on 4/16/2015.
  */
-public class UISpriteAnimationItemProperties extends UIItemCollapsibleProperties {
+public class UISpriteAnimationItemProperties extends UIItemCollapsibleProperties implements RemoteEditablePanel {
+
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (value == null) throw new IllegalArgumentException("null value for field: " + key);
+        switch (key) {
+            case "fps": setFPS(RemoteEditableSupport.toInt(value)); break;
+            case "animation":
+                if (!RemoteEditableSupport.contains(animationsSelectBox, value.toString())) throw new IllegalArgumentException("animation '" + value + "' not available");
+                setSelectedAnimation(value.toString()); break;
+            case "playMode":
+                if (!RemoteEditableSupport.contains(playModesSelectBox, value.toString())) throw new IllegalArgumentException("playMode '" + value + "' not valid; allowed: " + playModes.values());
+                playModesSelectBox.setSelected(value.toString()); break;
+            default: throw new IllegalArgumentException("Unknown field: " + key + " (supported: fps, animation, playMode)");
+        }
+    }
+
+    @Override
+    public java.util.List<String> validateFieldValues() { return new java.util.ArrayList<>(); }
 
     public static final String EDIT_ANIMATIONS_CLICKED = "games.rednblack.editor.view.ui.properties.panels.UISpriteAnimationItemProperties" + ".EDIT_ANIMATIONS_CLICKED";
 

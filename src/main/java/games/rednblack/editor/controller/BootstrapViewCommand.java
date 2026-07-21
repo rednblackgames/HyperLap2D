@@ -18,6 +18,7 @@
 
 package games.rednblack.editor.controller;
 
+import games.rednblack.editor.remote.RemoteOpsMediator;
 import games.rednblack.editor.splash.SplashScreenAdapter;
 import games.rednblack.editor.view.HyperLap2DScreenMediator;
 import games.rednblack.editor.view.PluginUIBridgeMediator;
@@ -97,6 +98,8 @@ public class BootstrapViewCommand extends SimpleCommand {
         facade.registerMediator(new AnimationsPackDialogMediator());
         facade.registerMediator(new ShaderManagerDialogMediator());
         facade.registerMediator(new MiniMapDialogMediator());
+
+        facade.registerMediator(new RemoteOpsMediator());
 
         facade.registerMediator(new SaveProjectDialogMediator());
     }

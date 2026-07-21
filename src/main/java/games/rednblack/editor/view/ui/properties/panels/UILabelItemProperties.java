@@ -16,6 +16,7 @@ import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.NumberSelectorOverlapListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.editor.view.ui.widget.actors.ExpandableTextArea;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
@@ -26,7 +27,7 @@ import java.util.Map;
 /**
  * Created by azakhary on 4/24/15.
  */
-public class UILabelItemProperties extends UIItemCollapsibleProperties {
+public class UILabelItemProperties extends UIItemCollapsibleProperties implements RemoteEditablePanel {
 
     public static final String prefix = "games.rednblack.editor.view.ui.properties.panels.UILabelItemProperties";
 
@@ -212,6 +213,62 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
 
     public void setFontSize(int fontSize) {
         ((IntSpinnerModel)fontSizeField.getModel()).setValue(fontSize);
+    }
+
+    // ---- RemoteEditablePanel ----
+
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (value == null) throw new IllegalArgumentException("null value for field: " + key);
+        switch (key) {
+            case "text": setText(value.toString()); break;
+            case "fontFamily":
+                if (!contains(fontFamilySelectBox, value.toString())) {
+                    throw new IllegalArgumentException("fontFamily '" + value + "' not available");
+                }
+                setFontFamily(value.toString()); break;
+            case "bitmapFont":
+                if (!contains(bitmapFontSelectBox, value.toString())) {
+                    throw new IllegalArgumentException("bitmapFont '" + value + "' not available");
+                }
+                setBitmapFontFamily(value.toString()); break;
+            case "fontSize":
+                setFontSize(value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(value.toString())); break;
+            case "align": {
+                // Case-insensitive match against the allowed align names ("Top Left", "Center", ...).
+                String want = value.toString();
+                String match = null;
+                for (String s : alignNames) {
+                    if (s.equalsIgnoreCase(want)) { match = s; break; }
+                }
+                if (match == null) {
+                    throw new IllegalArgumentException("align '" + value + "' not valid; allowed: " + alignMap.values());
+                }
+                alignSelectBox.setSelected(match); break;
+            }
+            case "wrap": setWrap(toBool(value)); break;
+            case "mono": setMono(toBool(value)); break;
+            default:
+                throw new IllegalArgumentException("Unknown or unsupported field: " + key
+                        + " (supported: text, fontFamily, bitmapFont, fontSize, align, wrap, mono)");
+        }
+    }
+
+    @Override
+    public java.util.List<String> validateFieldValues() {
+        return new java.util.ArrayList<>(); // allowed-values enforced in setFieldValue; fontSize clamped by spinner (1-500)
+    }
+
+    private static boolean contains(VisSelectBox<String> box, String v) {
+        for (String s : box.getItems()) {
+            if (s.equals(v)) return true;
+        }
+        return false;
+    }
+
+    private static boolean toBool(Object value) {
+        if (value instanceof Boolean) return (Boolean) value;
+        return Boolean.parseBoolean(value.toString());
     }
 
     @Override

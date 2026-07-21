@@ -10,6 +10,8 @@ import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.renderer.data.PhysicsBodyDataVO;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
@@ -19,7 +21,7 @@ import java.util.HashMap;
 /**
  * Created by CyberJoe on 7/5/2015.
  */
-public class UIPhysicsProperties extends UIRemovableProperties {
+public class UIPhysicsProperties extends UIRemovableProperties implements RemoteEditablePanel {
 
     public static final String prefix = "games.rednblack.editor.view.ui.properties.panels.UIPhysicsProperties";
     public static final String CLOSE_CLICKED = prefix + ".CLOSE_CLICKED";
@@ -275,5 +277,63 @@ public class UIPhysicsProperties extends UIRemovableProperties {
     @Override
     public void onRemove() {
         facade.sendNotification(CLOSE_CLICKED);
+    }
+
+    // ---- RemoteEditablePanel ----
+
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (value == null) throw new IllegalArgumentException("null value for field: " + key);
+        switch (key) {
+            case "mass": massField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "centerOfMassX": centerOfMassXField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "centerOfMassY": centerOfMassYField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "rotationalInertia": rotationalInertiaField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "damping": dumpingField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "angularDamping": angularDumpingField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "gravityScale": gravityScaleField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "density": densityField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "friction": frictionField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "restitution": restitutionField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "height": heightField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "bodyType":
+                if (!RemoteEditableSupport.contains(bodyTypeBox, value.toString())) {
+                    throw new IllegalArgumentException("bodyType '" + value + "' not valid; allowed: STATIC, KINEMATIC, DYNAMIC");
+                }
+                bodyTypeBox.setSelected(value.toString()); break;
+            case "shapeType":
+                if (!RemoteEditableSupport.contains(shapeType, value.toString())) {
+                    throw new IllegalArgumentException("shapeType '" + value + "' not valid; allowed: " + shapeType.getItems());
+                }
+                shapeType.setSelected(value.toString()); break;
+            case "allowSleep": allowSleepBox.setChecked(RemoteEditableSupport.toBool(value)); break;
+            case "awake": awakeBox.setChecked(RemoteEditableSupport.toBool(value)); break;
+            case "bullet": bulletBox.setChecked(RemoteEditableSupport.toBool(value)); break;
+            case "sensor": sensor.setChecked(RemoteEditableSupport.toBool(value)); break;
+            case "fineBoundBox": fineBoundBox.setChecked(RemoteEditableSupport.toBool(value)); break;
+            case "fixedRotation": fixedRotation.setChecked(RemoteEditableSupport.toBool(value)); break;
+            default:
+                throw new IllegalArgumentException("Unknown field: " + key
+                        + " (supported: mass, centerOfMassX, centerOfMassY, rotationalInertia, damping, angularDamping, "
+                        + "gravityScale, density, friction, restitution, height, bodyType, shapeType, "
+                        + "allowSleep, awake, bullet, sensor, fineBoundBox, fixedRotation)");
+        }
+    }
+
+    @Override
+    public java.util.List<String> validateFieldValues() {
+        java.util.List<String> errors = new java.util.ArrayList<>();
+        RemoteEditableSupport.checkValid("mass", massField, errors);
+        RemoteEditableSupport.checkValid("centerOfMassX", centerOfMassXField, errors);
+        RemoteEditableSupport.checkValid("centerOfMassY", centerOfMassYField, errors);
+        RemoteEditableSupport.checkValid("rotationalInertia", rotationalInertiaField, errors);
+        RemoteEditableSupport.checkValid("damping", dumpingField, errors);
+        RemoteEditableSupport.checkValid("angularDamping", angularDumpingField, errors);
+        RemoteEditableSupport.checkValid("gravityScale", gravityScaleField, errors);
+        RemoteEditableSupport.checkValid("density", densityField, errors);
+        RemoteEditableSupport.checkValid("friction", frictionField, errors);
+        RemoteEditableSupport.checkValid("restitution", restitutionField, errors);
+        RemoteEditableSupport.checkValid("height", heightField, errors);
+        return errors;
     }
 }

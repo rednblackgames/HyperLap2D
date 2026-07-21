@@ -61,6 +61,7 @@ public class BootstrapCommand extends SimpleCommand {
         facade.registerCommand(MsgAPI.ACTION_ITEMS_MOVE_TO, ItemsMoveCommand.class);
 
         facade.registerCommand(MsgAPI.ACTION_SET_Z_INDEX, SetZIndexCommand.class);
+        facade.registerCommand(MsgAPI.ACTION_SET_ENTITY_Z_INDEX, SetEntityZIndexCommand.class);
 
         facade.registerCommand(MsgAPI.ACTION_ITEM_AND_CHILDREN_TO, ItemChildrenTransformCommand.class);
 
