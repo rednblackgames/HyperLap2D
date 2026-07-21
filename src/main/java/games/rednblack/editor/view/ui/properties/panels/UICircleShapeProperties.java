@@ -6,7 +6,6 @@ import com.kotcrab.vis.ui.widget.spinner.Spinner;
 import games.rednblack.editor.event.NumberSelectorOverlapListener;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import games.rednblack.puremvc.Facade;
 
 public class UICircleShapeProperties extends UIRemovableProperties {
 
@@ -36,7 +35,7 @@ public class UICircleShapeProperties extends UIRemovableProperties {
 
     @Override
     public void onRemove() {
-        Facade.getInstance().sendNotification(CLOSE_CLICKED);
+        facade.sendNotification(CLOSE_CLICKED);
     }
 
     private void addListeners() {

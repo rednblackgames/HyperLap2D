@@ -38,16 +38,16 @@ public class SettingsDialogMediator extends Mediator<SettingsDialog> {
 
         SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
 
-        GeneralSettings generalSettings = new GeneralSettings();
+        GeneralSettings generalSettings = new GeneralSettings(facade);
         generalSettings.setSettings(settingsManager.editorConfigVO);
         viewComponent.addSettingsNode(generalSettings);
 
-        SandboxSettings sandboxSettings = new SandboxSettings();
+        SandboxSettings sandboxSettings = new SandboxSettings(facade);
         sandboxSettings.setSettings(settingsManager.editorConfigVO);
         viewComponent.addSettingsNode(sandboxSettings);
 
         if (settingsManager.editorConfigVO.enablePlugins) {
-            PluginsSettings pluginsSettings = new PluginsSettings();
+            PluginsSettings pluginsSettings = new PluginsSettings(facade);
             pluginsSettingsNode = viewComponent.addSettingsNode(pluginsSettings);
         }
     }

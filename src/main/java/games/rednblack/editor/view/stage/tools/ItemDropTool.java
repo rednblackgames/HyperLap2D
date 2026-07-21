@@ -1,6 +1,7 @@
 package games.rednblack.editor.view.stage.tools;
 
-import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.proxy.EntityDataProxy;
+
 
 /**
  * Created by CyberJoe on 6/24/2015.
@@ -52,7 +53,7 @@ public abstract class ItemDropTool extends SelectionTool {
     protected boolean checkFilter(int entity) {
         int[] itemTypes = listItemFilters();
         for(int i = 0; i < itemTypes.length; i++) {
-            if(itemTypes[i] == EntityUtils.getType(entity)) {
+            if(itemTypes[i] == EntityDataProxy.get().metadata().getType(entity)) {
                 return true;
             }
         }

@@ -18,7 +18,6 @@ import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.renderer.utils.TransformMathUtils;
 import games.rednblack.editor.utils.EntityBounds;
-import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.puremvc.Facade;
@@ -219,7 +218,7 @@ public class SandboxInputAdapter implements InputProcessor {
 			int childEntity = childrenEntities.get(i);
 
 			// get layer locked or not
-			LayerItemVO layerItemVO = EntityUtils.getEntityLayer(childEntity);
+			LayerItemVO layerItemVO = EntityDataProxy.get().metadata().getLayer(childEntity);
 			if(layerItemVO != null && (layerItemVO.isLocked || !layerItemVO.isVisible)) {
 				continue;
 			}

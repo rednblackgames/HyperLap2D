@@ -25,7 +25,6 @@ import com.kotcrab.vis.ui.util.OsUtils;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.KeyBindingsLayout;
-import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.tools.transformStrategy.*;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
@@ -85,6 +84,13 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
     @Override
     public String getTitle() {
         return "Transform Tool";
+    }
+
+    @Override
+    public void initFacade(Facade facade) {
+        super.initFacade(facade);
+        basicStrategy.initFacade(facade);
+        compositeStrategy.initFacade(facade);
     }
 
     @Override
@@ -157,7 +163,7 @@ public class TransformTool extends SelectionTool implements FollowerTransformati
         Vector2 mousePoint = sandbox.screenToWorld(x, y);
         mouseInitialCoordinates.set(mousePoint.x, mousePoint.y);
 
-        switch (EntityUtils.getType(follower.getEntity())) {
+        switch (EntityDataProxy.get().metadata().getType(follower.getEntity())) {
             case EntityFactory.COMPOSITE_TYPE:
                 transformStrategy = compositeStrategy;
                 compositeStrategy.getInitialPositions(follower.getEntity());

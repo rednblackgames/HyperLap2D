@@ -1,5 +1,6 @@
 package games.rednblack.editor.view.ui.box;
 import games.rednblack.editor.proxy.PluginUIBridge;
+import games.rednblack.editor.proxy.EntityDataProxy;
 import games.rednblack.editor.controller.commands.SelectionPayload;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
@@ -7,7 +8,6 @@ import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.controller.commands.*;
 import games.rednblack.editor.controller.commands.resource.DeleteResourceCommand;
 import games.rednblack.editor.renderer.data.LayerItemVO;
-import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
@@ -79,9 +79,9 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
 
                 for (UIItemsTreeNode node : nodes) {
                     String entityId = node.getValue().entityId;
-                    int item = EntityUtils.getByUniqueId(entityId);
+                    int item = EntityDataProxy.get().metadata().getByUniqueId(entityId);
                     //layer lock thing
-                    LayerItemVO layerItemVO = EntityUtils.getEntityLayer(item);
+                    LayerItemVO layerItemVO = EntityDataProxy.get().metadata().getLayer(item);
                     if(layerItemVO != null && layerItemVO.isLocked) {
                         continue;
                     }

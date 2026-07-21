@@ -26,8 +26,8 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
     private final TintButton tintButton;
     private VisSlider scrollVelocity, timeScale;
 
-    public SandboxSettings() {
-        super("Sandbox", Facade.getInstance());
+    public SandboxSettings(Facade facade) {
+        super("Sandbox", facade);
 
         getContentTable().add("Behavior").left().row();
         getContentTable().addSeparator();

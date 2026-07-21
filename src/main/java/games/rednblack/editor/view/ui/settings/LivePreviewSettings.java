@@ -22,8 +22,8 @@ public class LivePreviewSettings extends SettingsNodeValue<ProjectVO> {
     private final TintButton tintButton;
     private final VisCheckBox box2dDebug;
 
-    public LivePreviewSettings() {
-        super("Live Preview", Facade.getInstance());
+    public LivePreviewSettings(Facade facade) {
+        super("Live Preview", facade);
 
         getContentTable().add("Window").left().row();
         getContentTable().addSeparator();

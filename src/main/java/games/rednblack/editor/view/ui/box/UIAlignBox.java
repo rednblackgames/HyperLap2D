@@ -59,12 +59,12 @@ public class UIAlignBox extends UICollapsibleBox {
     public static final String ALIGN_AT_EDGE_RIGHT_BTN_CLICKED = prefix + ALIGN_AT_EDGE_RIGHT;
 
     //
-    private final Facade faced;
+    private final Facade facade;
 
     public UIAlignBox() {
         super("Align", 166);
         setMovable(false);
-        faced = Facade.getInstance();
+        facade = Facade.getInstance();
         VisTable alignButtonsTable = new VisTable();
         //
         alignButtonsTable.row().padTop(6);
@@ -96,7 +96,7 @@ public class UIAlignBox extends UICollapsibleBox {
         return visImageButton;
     }
 
-    private static class AlignmentButtonClickListener extends ClickListener {
+    private class AlignmentButtonClickListener extends ClickListener {
 
         private final int alignment;
 
@@ -140,7 +140,6 @@ public class UIAlignBox extends UICollapsibleBox {
                     notification = ALIGN_AT_EDGE_RIGHT_BTN_CLICKED;
                     break;
             }
-            Facade facade = Facade.getInstance();
             facade.sendNotification(notification);
         }
     }

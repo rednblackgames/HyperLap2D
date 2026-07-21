@@ -24,8 +24,9 @@ public class CouplingFreezeTest {
 
     /** Frozen caps (ratchet). Comment-stripped baseline captured 2026-07-20. Lower only after removing call sites. */
     private static final long FROZEN_SANDBOX_GETINSTANCE = 10L;   // view + controller + proxy + utils (bridge impl + bootstrap)
-    private static final long FROZEN_FACADE_GETINSTANCE_VIEW = 74L;        // view only
+    private static final long FROZEN_FACADE_GETINSTANCE_VIEW = 57L;        // view only — residue: bootstrap roots, base ctors, reflection/actor sendNotification, dialog/panel ctor inits
     private static final long FROZEN_SANDBOX_COMPONENT_RETRIEVER_VIEW = 0L; // view only — banned
+    private static final long FROZEN_ENTITY_UTILS_VIEW = 0L;               // view only — banned (Phase 3: view uses EntityDataProxy per-domain helpers)
 
     private static final String EDITOR_SRC = "src/main/java/games/rednblack/editor";
 
@@ -52,6 +53,13 @@ public class CouplingFreezeTest {
         long count = countOccurrences(new File(EDITOR_SRC, "view"), "SandboxComponentRetriever.");
         assertUnderFrozen(count, FROZEN_SANDBOX_COMPONENT_RETRIEVER_VIEW,
                 "SandboxComponentRetriever. within editor view");
+    }
+
+    @Test
+    public void noEntityUtilsInView() throws Exception {
+        long count = countOccurrences(new File(EDITOR_SRC, "view"), "EntityUtils.");
+        assertUnderFrozen(count, FROZEN_ENTITY_UTILS_VIEW,
+                "EntityUtils. within editor view (use EntityDataProxy per-domain helpers)");
     }
 
     private static long countOccurrences(File root, String token) throws Exception {

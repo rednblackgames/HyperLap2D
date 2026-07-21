@@ -38,7 +38,6 @@ import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.utils.EntityBounds;
 import games.rednblack.editor.utils.KeyBindingsLayout;
-import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.editor.view.ui.followers.BasicFollower;
@@ -367,7 +366,7 @@ public class SelectionTool extends SimpleTool {
                 Vector2 oldPosition = dragStartPositions.get(itemInstance);
 
                 Object[] payload = new Object[3];
-                payload[0] = EntityUtils.getEntityId(itemInstance);
+                payload[0] = EntityDataProxy.get().metadata().getUniqueId(itemInstance);
                 payload[1] = newPosition;
                 payload[2] = oldPosition;
                 payloads.add(payload);
@@ -445,7 +444,7 @@ public class SelectionTool extends SimpleTool {
     }
 
     private boolean isEntityVisible(int e) {
-        LayerItemVO layer = EntityUtils.getEntityLayer(e);
+        LayerItemVO layer = EntityDataProxy.get().metadata().getLayer(e);
 
         return (layer == null || layer.isVisible);
     }
@@ -508,7 +507,7 @@ public class SelectionTool extends SimpleTool {
                     continue;
 
                 Object[] payload = new Object[3];
-                payload[0] = EntityUtils.getEntityId(itemInstance);
+                payload[0] = EntityDataProxy.get().metadata().getUniqueId(itemInstance);
                 payload[1] = newPosition;
                 payload[2] = oldPosition;
                 payloads.add(payload);

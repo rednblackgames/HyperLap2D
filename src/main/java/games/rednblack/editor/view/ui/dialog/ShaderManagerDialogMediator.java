@@ -10,7 +10,6 @@ import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.renderer.utils.DefaultShaders;
 import games.rednblack.editor.renderer.utils.ShaderCompiler;
-import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.menu.ResourcesMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -130,7 +129,7 @@ public class ShaderManagerDialogMediator extends Mediator<ShaderManagerDialog> {
             }
         };
 
-        EntityUtils.applyActionRecursivelyOnEntities(root, action);
+        EntityDataProxy.get().hierarchy().applyActionRecursively(root, action);
     }
 
     private void createNewShader(String name, int type) {

@@ -35,7 +35,6 @@ import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
 import games.rednblack.editor.renderer.components.physics.SensorComponent;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.stage.tools.TextTool;
@@ -171,7 +170,7 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
     }
 
     private void initEntityProperties(Array<String> mediatorNames, int entity) {
-        int entityType = EntityUtils.getType(entity);
+        int entityType = EntityDataProxy.get().metadata().getType(entity);
 
         if (entityType == EntityFactory.IMAGE_TYPE) {
             mediatorNames.add(UIImageItemPropertiesMediator.NAME);

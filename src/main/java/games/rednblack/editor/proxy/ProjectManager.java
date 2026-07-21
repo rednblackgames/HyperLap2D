@@ -97,8 +97,8 @@ public class ProjectManager extends Proxy {
     public void onRegister() {
         super.onRegister();
 
-        projectExportSettings = new ProjectExportSettings();
-        livePreviewSettings = new LivePreviewSettings();
+        projectExportSettings = new ProjectExportSettings(facade);
+        livePreviewSettings = new LivePreviewSettings(facade);
     }
 
     @Override

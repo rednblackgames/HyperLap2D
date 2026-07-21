@@ -11,8 +11,8 @@ import java.io.File;
 
 public class PluginsSettings extends SettingsNodeValue<String> {
 
-    public PluginsSettings() {
-        super("Plugins", Facade.getInstance());
+    public PluginsSettings(Facade facade) {
+        super("Plugins", facade);
 
         VisLabel visLabel = StandardWidgetsFactory.createLabel("Choose a PlugIn to change settings", "default", Align.center);
         getContentTable().add(visLabel).center().expand().fill().grow().row();

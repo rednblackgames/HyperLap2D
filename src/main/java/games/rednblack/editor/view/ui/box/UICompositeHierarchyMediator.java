@@ -5,7 +5,6 @@ import games.rednblack.editor.proxy.EntityDataProxy;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
-import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
@@ -49,7 +48,7 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
                 break;
             case UICompositeHierarchy.SWITCH_VIEW_COMPOSITE_CLICKED:
                 entityId = notification.getBody();
-                facade.sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, EntityUtils.getByUniqueId(entityId));
+                facade.sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, EntityDataProxy.get().metadata().getByUniqueId(entityId));
                 break;
             default:
                 break;
@@ -65,7 +64,7 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
         int currEntity = entity;
 
         do {
-            CompositeHierarchyItem item = new CompositeHierarchyItem(EntityUtils.getItemName(currEntity), EntityUtils.getEntityId(currEntity));
+            CompositeHierarchyItem item = new CompositeHierarchyItem(EntityDataProxy.get().metadata().getName(currEntity), EntityDataProxy.get().metadata().getUniqueId(currEntity));
 
             parentNodeComponent = EntityDataProxy.get().get(currEntity, ParentNodeComponent.class);
             if (parentNodeComponent != null) {
@@ -86,7 +85,7 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
     }
 
     private void changeComposite(String entityId) {
-        buildCompositeTree(EntityUtils.getByUniqueId(entityId));
+        buildCompositeTree(EntityDataProxy.get().metadata().getByUniqueId(entityId));
     }
 
     private static class CompositeHierarchyItem {

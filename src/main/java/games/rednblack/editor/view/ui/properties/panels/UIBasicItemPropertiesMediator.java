@@ -36,7 +36,6 @@ import games.rednblack.editor.renderer.components.shape.CircleShapeComponent;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.runtime.ComponentCloner;
-import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
@@ -155,7 +154,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
     public void setItem(int item) {
         super.setItem(item);
         lockUpdates = true;
-        int entityType = EntityUtils.getType(observableReference);
+        int entityType = entityData.metadata().getType(observableReference);
         if (entityType == EntityFactory.LABEL_TYPE
                 || entityType == EntityFactory.COMPOSITE_TYPE
                 || entityType == EntityFactory.NINE_PATCH) {
@@ -173,7 +172,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
     	dimensionComponent = entityData.get(entity, DimensionsComponent.class);
     	tintComponent = entityData.get(entity, TintComponent.class);
 
-    	int entityType = EntityUtils.getType(observableReference);
+    	int entityType = entityData.metadata().getType(observableReference);
         if(entityType == EntityFactory.COMPOSITE_TYPE) {
             if(mainItemComponent.libraryLink!= null && mainItemComponent.libraryLink.length() > 0) {
                 viewComponent.setLinkage(true, mainItemComponent.libraryLink);
@@ -197,7 +196,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
             addable.remove(TYPING_LABEL_COMPONENT_KEY);
         }
 
-        viewComponent.setItemType(EntityUtils.getType(entity), mainItemComponent.uniqueId);
+        viewComponent.setItemType(entityData.metadata().getType(entity), mainItemComponent.uniqueId);
         viewComponent.setIdBoxValue(mainItemComponent.itemIdentifier);
         viewComponent.setXValue(String.format(Locale.ENGLISH, "%.2f", transformComponent.x));
         viewComponent.setYValue(String.format(Locale.ENGLISH, "%.2f", transformComponent.y));

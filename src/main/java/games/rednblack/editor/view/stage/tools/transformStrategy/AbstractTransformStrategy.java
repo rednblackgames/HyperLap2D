@@ -6,12 +6,19 @@ import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.utils.RoundUtils;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
+import games.rednblack.puremvc.Facade;
 
 /**
  * Created by Sasun Poghosyan on 4/14/2016.
  */
 public abstract class AbstractTransformStrategy implements ITransformStrategy {
 
+    /** Injected by {@code TransformTool.initFacade} (mirrors {@code SimpleTool.initFacade}). */
+    protected Facade facade;
+
+    public void initFacade(Facade facade) {
+        this.facade = facade;
+    }
 
     /**
      * on every anchor drag calculates width/height, x and y amounts.

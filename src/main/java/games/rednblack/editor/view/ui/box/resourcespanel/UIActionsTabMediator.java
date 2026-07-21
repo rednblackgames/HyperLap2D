@@ -7,7 +7,6 @@ import games.rednblack.editor.renderer.data.GraphVO;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.LibraryActionResource;
 import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.interfaces.INotification;
 import games.rednblack.puremvc.util.Interests;
 import org.apache.commons.lang3.ArrayUtils;
@@ -47,7 +46,7 @@ public class UIActionsTabMediator extends UIResourcesTabMediator<UIActionsTab> {
     @Override
     protected void initList(String searchText) {
         searchText = searchText.toLowerCase();
-        ProjectManager projectManager = Facade.getInstance().retrieveProxy(ProjectManager.NAME);
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         HashMap<String, GraphVO> items = projectManager.currentProjectInfoVO.libraryActions;
 
         itemArray.clear();

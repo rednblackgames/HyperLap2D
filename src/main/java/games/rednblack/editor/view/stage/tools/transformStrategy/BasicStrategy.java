@@ -8,18 +8,14 @@ import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.utils.RoundUtils;
-import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 import games.rednblack.editor.view.ui.properties.panels.UIBasicItemPropertiesMediator;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
-import games.rednblack.puremvc.Facade;
 
 public class BasicStrategy extends AbstractTransformStrategy {
 
     private static final float[] tmp1 = new float[3];
     private static final float[] tmp2 = new float[3];
-
-    private final Facade facade = Facade.getInstance();
 
     @Override
     public void calculate(float mouseDx, float mouseDy, int anchor, int entity, TransformCommandBuilder transformCommandBuilder, Vector2 mousePointStage, float lastTransformAngle, float lastEntityAngle) {
@@ -118,7 +114,7 @@ public class BasicStrategy extends AbstractTransformStrategy {
         transformComponent.scaleY = newScaleY;
         transformCommandBuilder.setScale(RoundUtils.round(newScaleX, 3), RoundUtils.round(newScaleY, 3));
 
-        EntityUtils.refreshComponents(entity);
+        EntityDataProxy.get().refreshComponents(entity);
     }
 
     private void positionHorizontally(TransformComponent t, DimensionsComponent d, float[] vectorData, boolean inverse) {

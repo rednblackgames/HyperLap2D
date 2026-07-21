@@ -19,7 +19,6 @@ import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.editor.view.ui.widget.actors.ExpandableTextArea;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,8 +37,6 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
     private HashMap<Integer, String> alignMap = new HashMap<>();
     private Array<String> alignNames = new Array<>();
 
-    private Facade facade;
-
     private VisSelectBox<String> fontFamilySelectBox, bitmapFontSelectBox;
     private VisSelectBox<String> alignSelectBox;
     private VisCheckBox boldCheckBox;
@@ -51,7 +48,6 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties {
 
     public UILabelItemProperties() {
         super("Label");
-        facade = Facade.getInstance();
 
         bitmapFontSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
         fontFamilySelectBox = StandardWidgetsFactory.createSelectBox(String.class);

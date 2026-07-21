@@ -78,7 +78,6 @@ public class UISceneBox extends UIBaseBox {
                 return;
             }
 
-            Facade facade = Facade.getInstance();
             if (selectedIndex == 0) {
                 facade.sendNotification(CREATE_NEW_SCENE_BTN_CLICKED);
                 return;

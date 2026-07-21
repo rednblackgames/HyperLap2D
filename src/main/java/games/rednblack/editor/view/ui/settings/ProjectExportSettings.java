@@ -29,8 +29,8 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
     private final VisSelectBox<String> filterMagSelectBox;
     private final VisSelectBox<String> filterMinSelectBox;
 
-    public ProjectExportSettings() {
-        super("Project Export", Facade.getInstance());
+    public ProjectExportSettings(Facade facade) {
+        super("Project Export", facade);
         duplicateCheckBox = StandardWidgetsFactory.createCheckBox("Duplicate edge pixels in atlas");
         forceSquareCheckBox = StandardWidgetsFactory.createCheckBox("Force Square");
         legacyCheckBox = StandardWidgetsFactory.createCheckBox("Legacy libGDX format");

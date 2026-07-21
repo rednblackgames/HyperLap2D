@@ -19,8 +19,8 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
     private VisSelectBox<String> filterKeyMapping;
     private VisSlider uiScaleDensity, msaaSamples, fpsLimit;
 
-    public GeneralSettings() {
-        super("General", Facade.getInstance());
+    public GeneralSettings(Facade facade) {
+        super("General", facade);
 
         getContentTable().add("Editor").left().row();
         getContentTable().addSeparator();

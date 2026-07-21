@@ -18,7 +18,7 @@ import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.proxy.EntityDataProxy;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
@@ -153,7 +153,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         MainItemComponent mainItemComponent = mainItemComponentMapper.get(entity);
         if (parentNode != null && parentNode == rootNode) {
             if (mainItemComponent.itemIdentifier.isEmpty()) {
-                if (!EntityUtils.itemTypeNameMap.get(mainItemComponent.entityType).toLowerCase().contains(searchString))
+                if (!EntityDataProxy.get().metadata().getTypeName(mainItemComponent.entityType).toLowerCase().contains(searchString))
                     return null;
             } else if (!mainItemComponent.itemIdentifier.toLowerCase().contains(searchString)) {
                 return null;
@@ -192,9 +192,9 @@ public class UIItemsTreeBox extends UICollapsibleBox {
             name = mainItemComponent.itemIdentifier;
         } else {
             node.setColor(0.65f, 0.65f, 0.65f, 1f);
-            name = EntityUtils.itemTypeNameMap.get(mainItemComponent.entityType);
+            name = EntityDataProxy.get().metadata().getTypeName(mainItemComponent.entityType);
             if (name == null)
-                name = EntityUtils.itemTypeNameMap.get(EntityFactory.UNKNOWN_TYPE);
+                name = EntityDataProxy.get().metadata().getTypeName(EntityFactory.UNKNOWN_TYPE);
         }
 
         ZIndexComponent zIndexComponent = zIndexComponentMapper.get(item);
@@ -207,7 +207,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
             node.setPad(4, 3, 4, 0);
 
         if (parentNode != null) {
-            node.setIcon(EntityUtils.getItemIcon(mainItemComponent.entityType));
+            node.setIcon(EntityDataProxy.get().metadata().getIcon(mainItemComponent.entityType));
             parentNode.add(node);
         } else {
             node.setIcon(VisUI.getSkin().getDrawable("icon-root"));
@@ -232,7 +232,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         if (tree == null || selection == null) return;
         Array<UIItemsTreeNode> allSceneRootNodes = tree.getRootNodes().get(0).getChildren();
 
-        for (String entityId : EntityUtils.getEntityId(selection)) {
+        for (String entityId : EntityDataProxy.get().metadata().getUniqueIds(selection)) {
             for (UIItemsTreeNode n : allSceneRootNodes) {
                 if(n.getValue().entityId.equals(entityId)) {
                     tree.getSelection().add(n);
@@ -257,7 +257,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         if (tree == null || selection == null) return;
         Array<UIItemsTreeNode> allSceneRootNodes = tree.getRootNodes().get(0).getChildren();
 
-        for (String entityId : EntityUtils.getEntityId(selection)) {
+        for (String entityId : EntityDataProxy.get().metadata().getUniqueIds(selection)) {
             for (UIItemsTreeNode n : allSceneRootNodes) {
                 if(n.getValue().entityId.equals(entityId)) {
                     tree.getSelection().remove(n);
@@ -275,9 +275,9 @@ public class UIItemsTreeBox extends UICollapsibleBox {
             facade.sendNotification(ITEMS_SELECTED, selection);
             if (selection.size() == 1 && getTapCount() == 2) {
                 UIItemsTreeValue selected = selection.first().getValue();
-                int item = EntityUtils.getByUniqueId(selected.entityId);
-                if (EntityUtils.getType(item) == EntityFactory.COMPOSITE_TYPE) {
-                    Facade.getInstance().sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, item);
+                int item = EntityDataProxy.get().metadata().getByUniqueId(selected.entityId);
+                if (EntityDataProxy.get().metadata().getType(item) == EntityFactory.COMPOSITE_TYPE) {
+                    facade.sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, item);
                 }
             }
         }

@@ -26,7 +26,6 @@ import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.utils.Constants;
 import games.rednblack.editor.utils.EntityBounds;
 import games.rednblack.editor.utils.MoveCommandBuilder;
-import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.SceneControlMediator;
 import games.rednblack.editor.view.ui.FollowersUIMediator;
 import games.rednblack.h2d.common.MsgAPI;
@@ -268,7 +267,7 @@ public class ItemSelector {
 
         for (Iterator<Integer> i = result.iterator(); i.hasNext();) {
             int element = i.next();
-            LayerItemVO layerItemVO = EntityUtils.getEntityLayer(element);
+            LayerItemVO layerItemVO = EntityDataProxy.get().metadata().getLayer(element);
             if(layerItemVO != null && layerItemVO.isLocked) {
                 i.remove();
             }

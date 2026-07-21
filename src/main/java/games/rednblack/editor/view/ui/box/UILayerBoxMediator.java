@@ -29,7 +29,6 @@ import games.rednblack.editor.renderer.components.LayerMapComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.data.LayerItemVO;
-import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.MsgAPI;
@@ -299,7 +298,7 @@ public class UILayerBoxMediator extends PanelMediator<UILayerBox> {
             int entity = nodeComponent.children.get(i);
             ZIndexComponent childZComponent = EntityDataProxy.get().get(entity, ZIndexComponent.class);
             if(childZComponent.getLayerName().equals(layerName)){
-                EntityUtils.getEntityLayer(entity).isVisible = setVisible;
+                EntityDataProxy.get().metadata().getLayer(entity).isVisible = setVisible;
             }
         }
     }

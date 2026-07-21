@@ -28,7 +28,6 @@ import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.list.LibraryItemResource;
 import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.interfaces.INotification;
 import games.rednblack.puremvc.util.Interests;
 
@@ -70,7 +69,7 @@ public class UILibraryItemsTabMediator extends UIResourcesTabMediator<UILibraryI
     @Override
     protected void initList(String searchText) {
         searchText = searchText.toLowerCase();
-        ProjectManager projectManager = Facade.getInstance().retrieveProxy(ProjectManager.NAME);
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         HashMap<String, CompositeItemVO> items = projectManager.currentProjectInfoVO.libraryItems;
 
         itemArray.clear();

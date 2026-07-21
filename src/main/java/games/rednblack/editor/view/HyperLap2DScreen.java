@@ -108,7 +108,7 @@ public class HyperLap2DScreen extends InputAdapter implements Screen {
     }
 
     private void updateCameraPosition() {
-        ProjectManager projectManager = Facade.getInstance().retrieveProxy(ProjectManager.NAME);
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         SceneConfigVO sceneConfigVO = projectManager.getCurrentSceneConfigVO();
         if (sceneConfigVO != null)
             sandbox.getCamera().position.set(sceneConfigVO.cameraPosition[0], sceneConfigVO.cameraPosition[1], 0);

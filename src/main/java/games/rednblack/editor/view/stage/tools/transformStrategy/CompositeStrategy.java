@@ -10,12 +10,10 @@ import games.rednblack.editor.renderer.components.CompositeTransformComponent;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
-import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.ui.followers.NormalSelectionFollower;
 import games.rednblack.editor.view.ui.properties.panels.UIBasicItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.command.TransformCommandBuilder;
-import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,8 +32,6 @@ public class CompositeStrategy extends AbstractTransformStrategy {
 
     private static final float[] tmp1 = new float[3];
     private static final float[] tmp2 = new float[3];
-
-    private final Facade facade = Facade.getInstance();
 
     public void getInitialPositions(int entity) {
         getParentState(entity, parentInitialPosition, parentInitialSize);
@@ -59,22 +55,30 @@ public class CompositeStrategy extends AbstractTransformStrategy {
         payloads.add(parentEntity(entity));
         for (Map.Entry<String, Vector2> entrySet : childrenFinalPositions.entrySet()) {
             Object[] payload = new Object[2];
-            payload[0] = EntityUtils.getByUniqueId(entrySet.getKey());
+            payload[0] = EntityDataProxy.get().metadata().getByUniqueId(entrySet.getKey());
             payload[1] = entrySet.getValue();
             payloads.add(payload);
         }
         if (!parentFinalPosition.equals(parentInitialPosition) || !parentFinalSize.equals(parentInitialSize))
-            Facade.getInstance().sendNotification(MsgAPI.ACTION_ITEM_AND_CHILDREN_TO, payloads);
+            facade.sendNotification(MsgAPI.ACTION_ITEM_AND_CHILDREN_TO, payloads);
     }
 
     private void setParentState(int entity, Vector2 position, Vector2 size) {
-        EntityUtils.setPosition(entity, position);
-        EntityUtils.setSize(entity, size);
+        TransformComponent transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
+        transformComponent.x = position.x;
+        transformComponent.y = position.y;
+        DimensionsComponent dimensionsComponent = EntityDataProxy.get().get(entity, DimensionsComponent.class);
+        dimensionsComponent.width = size.x;
+        dimensionsComponent.height = size.y;
+        if (dimensionsComponent.boundBox != null) {
+            dimensionsComponent.boundBox.width = size.x;
+            dimensionsComponent.boundBox.height = size.y;
+        }
     }
 
     private void getParentState(int entity, Vector2 position, Vector2 size) {
-        EntityUtils.getPosition(entity, position);
-        EntityUtils.getSize(entity, size);
+        EntityDataProxy.get().transform().getPosition(entity, position);
+        EntityDataProxy.get().transform().getSize(entity, size);
     }
 
     private Object[] parentEntity(int entity) {
@@ -91,7 +95,7 @@ public class CompositeStrategy extends AbstractTransformStrategy {
             for (int entity : nodeComponent.children) {
                 TransformComponent transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
                 Vector2 currentEntityPos = new Vector2(transformComponent.x, transformComponent.y);
-                entityPos.put(EntityUtils.getEntityId(entity), currentEntityPos);
+                entityPos.put(EntityDataProxy.get().metadata().getUniqueId(entity), currentEntityPos);
             }
         }
     }
@@ -100,8 +104,10 @@ public class CompositeStrategy extends AbstractTransformStrategy {
         for (Map.Entry<String, Vector2> entrySet : posMap.entrySet()) {
             String id = entrySet.getKey();
             Vector2 position = entrySet.getValue();
-            int entity = EntityUtils.getByUniqueId(id);
-            EntityUtils.setPosition(entity, position);
+            int entity = EntityDataProxy.get().metadata().getByUniqueId(id);
+            TransformComponent transformComponent = EntityDataProxy.get().get(entity, TransformComponent.class);
+            transformComponent.x = position.x;
+            transformComponent.y = position.y;
         }
     }
 

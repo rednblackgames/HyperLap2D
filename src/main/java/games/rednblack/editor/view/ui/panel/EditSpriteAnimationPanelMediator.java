@@ -23,7 +23,6 @@ import games.rednblack.editor.proxy.EntityDataProxy;
 import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
 import games.rednblack.editor.renderer.data.FrameRange;
 import games.rednblack.editor.renderer.factory.EntityFactory;
-import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.menu.WindowMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
@@ -82,7 +81,7 @@ public class EditSpriteAnimationPanelMediator extends Mediator<EditSpriteAnimati
                 Set<Integer> selection = notification.getBody();
                 if(selection.size() == 1) {
                     int entity = selection.iterator().next();
-                    if(EntityUtils.getType(entity) == EntityFactory.SPRITE_TYPE) {
+                    if(EntityDataProxy.get().metadata().getType(entity) == EntityFactory.SPRITE_TYPE) {
                         setObservable(entity);
                     } else {
                         observable = -1;
