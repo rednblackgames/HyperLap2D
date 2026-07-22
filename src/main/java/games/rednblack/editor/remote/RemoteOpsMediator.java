@@ -252,9 +252,6 @@ public class RemoteOpsMediator extends Mediator<Object> {
                 case WHOLE:
                     pixmap = renderer.getMiniMapPixmap(rootEntity);
                     break;
-                case VIEW:
-                    pixmap = renderer.getMainScreenPixmap();
-                    break;
                 case REGION:
                     pixmap = renderer.getRegionPixmap(rootEntity, req.x, req.y, req.width, req.height);
                     break;
@@ -263,9 +260,7 @@ public class RemoteOpsMediator extends Mediator<Object> {
             }
             if (pixmap == null) {
                 result.ok = false;
-                result.error = (req.mode == RemoteScreenshotRequest.Mode.VIEW)
-                        ? "current view not available (no scene loaded?)"
-                        : "scene is empty or region has zero size (nothing to capture)";
+                result.error = "scene is empty or region has zero size (nothing to capture)";
                 req.handle.complete(result);
                 return;
             }

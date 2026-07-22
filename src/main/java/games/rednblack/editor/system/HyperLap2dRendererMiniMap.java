@@ -9,10 +9,10 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.ScreenUtils;
 import games.rednblack.editor.renderer.components.BoundingBoxComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ViewPortComponent;
+import games.rednblack.editor.renderer.systems.render.FrameBufferManager;
 import games.rednblack.editor.renderer.systems.render.HyperLap2dRenderer;
 import games.rednblack.editor.renderer.systems.render.logic.DrawableLogic;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
@@ -34,7 +34,7 @@ public class HyperLap2dRendererMiniMap extends HyperLap2dRenderer {
      * (with culling off so everything is drawn), and leaves the FBO bound. Returns the pixel
      * size, or null if the rectangle is empty.
      */
-    private int[] beginMiniMap(int rootEntity, Rectangle worldBounds) {
+    private int[] beginMiniMap(int rootEntity, Rectangle worldBounds, int[] output) {
         minimapOldCamera = camera;
         camera = minimapCamera;
         minimapCamera.setToOrtho(true, worldBounds.width, worldBounds.height);
@@ -49,7 +49,7 @@ public class HyperLap2dRendererMiniMap extends HyperLap2dRenderer {
 
         // Cap the FBO to a safe max per side (the GL_MAX_TEXTURE_SIZE cap alone can be far larger
         // than is actually allocatable — a 40000px region crashed native gdx2d_clear). Preserve aspect.
-        int maxDim = 8192;
+        int maxDim = FrameBufferManager.GL_MAX_TEXTURE_SIZE;
         if (w > maxDim || h > maxDim) {
             float s = Math.min(maxDim / (float) w, maxDim / (float) h);
             w = (int) (w * s);
@@ -73,7 +73,11 @@ public class HyperLap2dRendererMiniMap extends HyperLap2dRenderer {
         enableCull = true;
         batch.end();
 
-        return new int[]{w, h};
+        if (output != null) {
+            output[0] = w;
+            output[1] = h;
+        }
+        return output;
     }
 
     private void endMiniMap() {
@@ -98,17 +102,16 @@ public class HyperLap2dRendererMiniMap extends HyperLap2dRenderer {
     }
 
     public Texture getMiniMapTexture(int rootEntity) {
-        int[] size = beginMiniMap(rootEntity, computeWholeSceneBounds(rootEntity));
-        if (size == null) return null;
+        beginMiniMap(rootEntity, computeWholeSceneBounds(rootEntity), null);
         endMiniMap();
         return frameBufferManager.getColorBufferTexture("minimap");
     }
 
     /** Whole scene → PNG-ready pixmap (render thread). null if empty. Caller disposes. */
     public Pixmap getMiniMapPixmap(int rootEntity) {
-        int[] size = beginMiniMap(rootEntity, computeWholeSceneBounds(rootEntity));
+        int[] size = beginMiniMap(rootEntity, computeWholeSceneBounds(rootEntity), new int[2]);
         if (size == null) return null;
-        Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, size[0], size[1]);
+        Pixmap pixmap = Pixmap.createFromFrameBuffer(0, 0, size[0], size[1]);
         endMiniMap();
         return pixmap;
     }
@@ -116,25 +119,10 @@ public class HyperLap2dRendererMiniMap extends HyperLap2dRenderer {
     /** Custom world-space rectangle → PNG-ready pixmap (render thread). null if region is empty. Caller disposes. */
     public Pixmap getRegionPixmap(int rootEntity, float x, float y, float width, float height) {
         Rectangle region = new Rectangle(x, y, width, height);
-        int[] size = beginMiniMap(rootEntity, region);
+        int[] size = beginMiniMap(rootEntity, region, new int[2]);
         if (size == null) return null;
-        Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, size[0], size[1]);
+        Pixmap pixmap = Pixmap.createFromFrameBuffer(0, 0, size[0], size[1]);
         endMiniMap();
-        return pixmap;
-    }
-
-    /**
-     * The current editor view (the "main" FBO rendered each frame, scene only — no UI) → PNG-ready
-     * pixmap (render thread). null if the main FBO isn't available. Caller disposes.
-     */
-    public Pixmap getMainScreenPixmap() {
-        Texture main = frameBufferManager.getColorBufferTexture("main");
-        if (main == null) return null;
-        int w = main.getWidth();
-        int h = main.getHeight();
-        frameBufferManager.begin("main");
-        Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, w, h);
-        frameBufferManager.endCurrent();
         return pixmap;
     }
 

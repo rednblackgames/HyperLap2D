@@ -178,12 +178,11 @@ Args: `entityId`, `layerName`. Moves an entity onto a different layer. The desti
 ### Visual
 
 #### `screenshot`
-Args: `mode` (`whole` | `view` | `region`, default `whole`); for `region` also `x`, `y`, `width`, `height` (world units). Returns a PNG as MCP **image content**.
-- `whole` — all entities regardless of viewport (recommended for verifying a scene).
-- `region` — a world-space rectangle (good for inspecting a specific area).
-- `view` — the current editor camera view. **Known issue:** `view` can render upside-down on an oversized canvas; prefer `whole` or `region` (the user is fixing `view` separately).
+Args: `mode` (`whole` | `region`, default `whole`); for `region` also `x`, `y`, `width`, `height` (world units). Returns a PNG as MCP **image content**.
+- `whole` — all entities regardless of viewport (recommended for verifying a scene). Frames the union of the root's direct children's bounding boxes.
+- `region` — a world-space rectangle (`x`, `y` is the corner; good for inspecting a specific area).
 - Screenshots currently do **not** render lights (known limitation).
-- Huge scenes are capped to a safe max texture size per side, preserving aspect.
+- Huge scenes/regions are capped to the GPU's max texture size per side, preserving aspect.
 
 ---
 

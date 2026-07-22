@@ -27,9 +27,8 @@ public class ScreenshotTool implements Tool {
     @Override public String name() { return "screenshot"; }
     @Override public String description() {
         return "Capture a PNG screenshot of the current scene. mode: 'whole' (all entities, regardless of "
-                + "viewport), 'view' (what the editor camera currently shows), or 'region' (a world-space "
-                + "rectangle; pass x, y, width, height in world units). Returned as image content. "
-                + "Huge scenes are capped to the GPU's max texture size.";
+                + "viewport) or 'region' (a world-space rectangle; pass x, y, width, height in world units). "
+                + "Returned as image content. Huge scenes/regions are capped to the GPU's max texture size.";
     }
 
     @Override
@@ -40,11 +39,10 @@ public class ScreenshotTool implements Tool {
         w.set("type", "string");
         w.array("enum");
         w.value("whole");
-        w.value("view");
         w.value("region");
         w.pop();
         w.set("default", "whole");
-        w.set("description", "whole = entire scene; view = current camera; region = custom world rectangle.");
+        w.set("description", "whole = entire scene; region = custom world rectangle.");
         w.pop();
         w.object("x");
         w.set("type", "number");
@@ -71,7 +69,6 @@ public class ScreenshotTool implements Tool {
         String modeStr = (args != null) ? args.getString("mode", "whole") : "whole";
         RemoteScreenshotRequest.Mode mode;
         switch (modeStr) {
-            case "view": mode = RemoteScreenshotRequest.Mode.VIEW; break;
             case "region": mode = RemoteScreenshotRequest.Mode.REGION; break;
             default: mode = RemoteScreenshotRequest.Mode.WHOLE;
         }
