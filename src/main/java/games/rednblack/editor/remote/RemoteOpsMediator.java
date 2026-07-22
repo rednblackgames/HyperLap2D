@@ -19,6 +19,8 @@ import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.components.LayoutComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
+import games.rednblack.editor.renderer.components.NodeComponent;
+import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.ShaderComponent;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.components.light.LightObjectComponent;
@@ -810,71 +812,120 @@ public class RemoteOpsMediator extends Mediator<Object> {
                 return;
             }
 
-            int entity;
-            switch (req.type) {
-                case "image": factory.createSimpleImage(req.name, pos); entity = factory.getCreatedEntity(); break;
-                case "spriteAnimation": factory.createSpriteAnimation(req.name, pos); entity = factory.getCreatedEntity(); break;
-                case "spineAnimation": factory.createSpineAnimation(req.name, pos); entity = factory.getCreatedEntity(); break;
-                case "libraryItem": factory.createItemFromLibrary(req.name, pos); entity = factory.getCreatedEntity(); break;
-                case "9patch": factory.create9Patch(req.name, pos); entity = factory.getCreatedEntity(); break;
-                case "tinyvg": entity = factory.createTinyVGItem(req.name, pos); break;
-                case "particle": entity = factory.createParticleItem(req.name, pos); break;
-                case "talos": entity = factory.createTalosItem(req.name, pos); break;
-                case "primitive":
-                    factory.createPrimitive(pos, PolygonShapeVO.createRect(req.width, req.height));
-                    entity = factory.getCreatedEntity(); break;
-                case "composite": entity = factory.createCompositeItem(pos); break;
-                case "label": {
-                    games.rednblack.editor.proxy.FontManager fontManager = facade.retrieveProxy(games.rednblack.editor.proxy.FontManager.NAME);
-                    com.badlogic.gdx.utils.Array<String> fonts = fontManager.getFontNamesFromMap();
-                    String family = (req.fontFamily == null || req.fontFamily.isEmpty()) ? null : req.fontFamily;
-                    if (family == null) {
-                        if (fonts.size == 0) {
-                            result.ok = false;
-                            result.error = "no fonts loaded in the project; add a font or pass a loaded fontFamily";
-                            req.handle.complete(result);
-                            return;
-                        }
-                        family = fonts.first();
-                    } else if (!contains(fonts, family)) {
+            // If a parent composite is requested, enter it (the editor's enter-composite flow) so
+            // the factory creates the entity as its child, then exit back to the previous view.
+            // The enter/exit commands cancel themselves from the undo stack (view changes aren't
+            // undoable); only the creation is. The editor only supports entering a composite that
+            // is a direct child of the current viewing entity — to target a nested composite, enter
+            // its container in the editor first.
+            Sandbox sandbox = PluginUIBridge.get(facade).getSandbox();
+            int prevView = sandbox.getCurrentViewingEntity();
+            Integer exitTo = null;
+            if (req.parentUniqueId != null && !req.parentUniqueId.isEmpty()) {
+                Engine engine = sandbox.getEngine();
+                int parentEntity = EntityUtils.getByUniqueId(req.parentUniqueId);
+                if (parentEntity < 0 || !engine.getEntityManager().isActive(parentEntity)
+                        || ComponentRetriever.get(parentEntity, MainItemComponent.class, engine) == null) {
+                    result.ok = false;
+                    result.error = "parent entity not found: " + req.parentUniqueId;
+                    req.handle.complete(result);
+                    return;
+                }
+                if (ComponentRetriever.get(parentEntity, NodeComponent.class, engine) == null) {
+                    result.ok = false;
+                    result.error = "parent is not a composite/container (cannot hold children): " + req.parentUniqueId;
+                    req.handle.complete(result);
+                    return;
+                }
+                if (parentEntity != prevView) {
+                    ParentNodeComponent pnc = ComponentRetriever.get(parentEntity, ParentNodeComponent.class, engine);
+                    int parentOfParent = pnc != null ? pnc.parentEntity : -1;
+                    if (parentOfParent != prevView) {
                         result.ok = false;
-                        result.error = "fontFamily '" + family + "' not loaded; available: " + fonts;
+                        result.error = "parent composite must be a direct child of the current viewing entity; "
+                                + "double-click its container in the editor to enter it first";
                         req.handle.complete(result);
                         return;
                     }
-                    TextTool tt = new TextTool();
-                    tt.setFontFamily(family);
-                    if (req.fontSize > 0) tt.setFontSize(req.fontSize);
-                    entity = factory.createLabel(tt, pos); break;
+                    facade.sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, parentEntity);
+                    exitTo = prevView;
                 }
-                case "light": {
-                    LightVO vo = new LightVO();
-                    vo.type = "CONE".equalsIgnoreCase(req.lightType)
-                            ? LightObjectComponent.LightType.CONE
-                            : LightObjectComponent.LightType.POINT;
-                    entity = factory.createLightItem(vo, pos); break;
-                }
-                default:
-                    result.ok = false;
-                    result.error = "unknown type: " + req.type
-                            + " (image, spriteAnimation, spineAnimation, libraryItem, 9patch, tinyvg, particle, talos, primitive, composite, label, light)";
-                    req.handle.complete(result);
-                    return;
             }
-            if (entity < 0) {
-                result.ok = false;
-                result.error = "create failed (no scene loaded?)";
-            } else {
-                Engine engine = PluginUIBridge.get(facade).getSandbox().getEngine();
-                MainItemComponent main = ComponentRetriever.get(entity, MainItemComponent.class, engine);
-                result.uniqueId = (main != null && main.uniqueId != null) ? main.uniqueId : String.valueOf(entity);
-                result.ok = true;
+
+            try {
+                createOneEntity(req, factory, pos, facade, result);
+            } finally {
+                if (exitTo != null) {
+                    facade.sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, exitTo);
+                }
             }
         } catch (Throwable t) {
             result.ok = false;
             result.error = "create failed: " + t.getClass().getSimpleName() + ": " + t.getMessage();
         }
         req.handle.complete(result);
+    }
+
+    /** Build the entity per req.type via the factory and set result.ok/error/uniqueId (no handle completion). */
+    private void createOneEntity(RemoteCreateEntityRequest req, ItemFactory factory, Vector2 pos,
+                                 Facade facade, RemoteCreateEntityResult result) {
+        int entity;
+        switch (req.type) {
+            case "image": factory.createSimpleImage(req.name, pos); entity = factory.getCreatedEntity(); break;
+            case "spriteAnimation": factory.createSpriteAnimation(req.name, pos); entity = factory.getCreatedEntity(); break;
+            case "spineAnimation": factory.createSpineAnimation(req.name, pos); entity = factory.getCreatedEntity(); break;
+            case "libraryItem": factory.createItemFromLibrary(req.name, pos); entity = factory.getCreatedEntity(); break;
+            case "9patch": factory.create9Patch(req.name, pos); entity = factory.getCreatedEntity(); break;
+            case "tinyvg": entity = factory.createTinyVGItem(req.name, pos); break;
+            case "particle": entity = factory.createParticleItem(req.name, pos); break;
+            case "talos": entity = factory.createTalosItem(req.name, pos); break;
+            case "primitive":
+                factory.createPrimitive(pos, PolygonShapeVO.createRect(req.width, req.height));
+                entity = factory.getCreatedEntity(); break;
+            case "composite": entity = factory.createCompositeItem(pos); break;
+            case "label": {
+                games.rednblack.editor.proxy.FontManager fontManager = facade.retrieveProxy(games.rednblack.editor.proxy.FontManager.NAME);
+                com.badlogic.gdx.utils.Array<String> fonts = fontManager.getFontNamesFromMap();
+                String family = (req.fontFamily == null || req.fontFamily.isEmpty()) ? null : req.fontFamily;
+                if (family == null) {
+                    if (fonts.size == 0) {
+                        result.ok = false;
+                        result.error = "no fonts loaded in the project; add a font or pass a loaded fontFamily";
+                        return;
+                    }
+                    family = fonts.first();
+                } else if (!contains(fonts, family)) {
+                    result.ok = false;
+                    result.error = "fontFamily '" + family + "' not loaded; available: " + fonts;
+                    return;
+                }
+                TextTool tt = new TextTool();
+                tt.setFontFamily(family);
+                if (req.fontSize > 0) tt.setFontSize(req.fontSize);
+                entity = factory.createLabel(tt, pos); break;
+            }
+            case "light": {
+                LightVO vo = new LightVO();
+                vo.type = "CONE".equalsIgnoreCase(req.lightType)
+                        ? LightObjectComponent.LightType.CONE
+                        : LightObjectComponent.LightType.POINT;
+                entity = factory.createLightItem(vo, pos); break;
+            }
+            default:
+                result.ok = false;
+                result.error = "unknown type: " + req.type
+                        + " (image, spriteAnimation, spineAnimation, libraryItem, 9patch, tinyvg, particle, talos, primitive, composite, label, light)";
+                return;
+        }
+        if (entity < 0) {
+            result.ok = false;
+            result.error = "create failed (no scene loaded?)";
+        } else {
+            Engine engine = PluginUIBridge.get(facade).getSandbox().getEngine();
+            MainItemComponent main = ComponentRetriever.get(entity, MainItemComponent.class, engine);
+            result.uniqueId = (main != null && main.uniqueId != null) ? main.uniqueId : String.valueOf(entity);
+            result.ok = true;
+        }
     }
 
     /** Create a shader resource (write .vert/.frag + register) — same path as the shader manager dialog. */

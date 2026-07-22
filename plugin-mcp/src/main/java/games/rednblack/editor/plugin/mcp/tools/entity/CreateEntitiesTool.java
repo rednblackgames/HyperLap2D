@@ -29,9 +29,10 @@ public class CreateEntitiesTool implements Tool {
     @Override public String description() {
         return "Create multiple entities in one call (bulk create). Pass an 'entities' array; each entry has "
                 + "the same fields as create_entity (type, name, x, y, width, height, fontFamily, fontSize, "
-                + "lightType). Entities are created sequentially via the same validated/undoable path as "
-                + "create_entity. Returns a JSON array of per-entry results {ok, uniqueId, error} in input order. "
-                + "Use this when placing many tiles/objects at once instead of many create_entity round-trips.";
+                + "lightType, parentUniqueId). Entities are created sequentially via the same validated/undoable "
+                + "path as create_entity. Returns a JSON array of per-entry results {ok, uniqueId, error} in "
+                + "input order. Use this when placing many tiles/objects at once instead of many create_entity "
+                + "round-trips.";
     }
 
     @Override
@@ -61,6 +62,8 @@ public class CreateEntitiesTool implements Tool {
         w.object("fontFamily"); w.set("type", "string"); w.pop();
         w.object("fontSize"); w.set("type", "integer"); w.pop();
         w.object("lightType"); w.set("type", "string"); w.array("enum"); w.value("POINT"); w.value("CONE"); w.pop(); w.pop();
+        w.object("parentUniqueId"); w.set("type", "string");
+        w.set("description", "Optional composite uniqueId to create inside (x, y become local to it)."); w.pop();
         w.pop();
         w.pop();
         w.pop();
@@ -93,6 +96,7 @@ public class CreateEntitiesTool implements Tool {
                     if (entry.has("fontFamily")) req.fontFamily = entry.getString("fontFamily");
                     if (entry.has("fontSize")) req.fontSize = entry.getInt("fontSize", 20);
                     if (entry.has("lightType")) req.lightType = entry.getString("lightType");
+                    if (entry.has("parentUniqueId")) req.parentUniqueId = entry.getString("parentUniqueId");
 
                     RemoteCreateEntityResult r = remote.createEntity(req, 5000);
                     w.set("ok", r.ok);

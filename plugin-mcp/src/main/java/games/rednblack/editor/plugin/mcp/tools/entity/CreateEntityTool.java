@@ -29,7 +29,10 @@ public class CreateEntityTool implements Tool {
                 + "image | spriteAnimation | spineAnimation | libraryItem | 9patch | tinyvg | particle | talos "
                 + "(name-based, pass the asset name from list_assets), primitive (width/height rect), composite "
                 + "(empty), label (optional fontFamily/fontSize), light (lightType POINT/CONE). "
-                + "Returns the new entity's uniqueId. The creation is undoable (Ctrl+Z).";
+                + "Optional parentUniqueId: create INSIDE that composite (x, y are then in the composite's local "
+                + "space); the composite must be a direct child of the current viewing entity (double-click its "
+                + "container in the editor to enter a nested one first). Returns the new entity's uniqueId. "
+                + "The creation is undoable (Ctrl+Z).";
     }
 
     @Override
@@ -57,6 +60,11 @@ public class CreateEntityTool implements Tool {
         w.object("fontSize"); w.set("type", "integer"); w.set("description", "label font size (optional, default 20)."); w.pop();
         w.object("lightType"); w.set("type", "string"); w.array("enum"); w.value("POINT"); w.value("CONE"); w.pop();
         w.set("description", "light type (optional, default POINT)."); w.pop();
+        w.object("parentUniqueId");
+        w.set("type", "string");
+        w.set("description", "Optional composite uniqueId to create inside (x, y become local to it). "
+                + "Must be a direct child of the current viewing entity.");
+        w.pop();
         w.pop();
         w.name("required");
         w.array();
@@ -77,6 +85,7 @@ public class CreateEntityTool implements Tool {
         if (args.has("fontFamily")) req.fontFamily = args.getString("fontFamily");
         if (args.has("fontSize")) req.fontSize = args.getInt("fontSize", 20);
         if (args.has("lightType")) req.lightType = args.getString("lightType");
+        if (args.has("parentUniqueId")) req.parentUniqueId = args.getString("parentUniqueId");
 
         RemoteCreateEntityResult r = new RemoteOps(ctx).createEntity(req, 5000);
         if (!r.ok) return McpToolResult.error(r.error != null ? r.error : "create failed");
