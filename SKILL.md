@@ -1,11 +1,11 @@
 ---
 name: hyperlap2d-mcp
-description: Drive the HyperLap2D 2D scene editor from an MCP client (create/modify entities & components, list assets, screenshot, scene settings, shaders, z-ordering). Use whenever the running editor's MCP server is connected and the task is to build or inspect a HyperLap2D scene.
+description: Drive the HyperLap2D 2D scene editor from an MCP client (create/modify entities & components, list assets, screenshot, scene settings, shaders, z-ordering, layers). Use whenever the running editor's MCP server is connected and the task is to build or inspect a HyperLap2D scene.
 ---
 
 # HyperLap2D MCP Server — Tool Guide
 
-The HyperLap2D editor exposes an MCP server (Streamable HTTP) that lets an external client drive it: create and modify entities and components, list assets, capture screenshots, change scenes and scene settings, create shaders, and control z-ordering. This skill documents every tool, the editor's coordinate/layer model, and the edge cases that bite when authoring a scene blind.
+The HyperLap2D editor exposes an MCP server (Streamable HTTP) that lets an external client drive it: create and modify entities and components, list assets, capture screenshots, change scenes and scene settings, create shaders, control z-ordering, and manage layers. This skill documents every tool, the editor's coordinate/layer model, and the edge cases that bite when authoring a scene blind.
 
 ## Prerequisites & connection
 
@@ -25,8 +25,10 @@ All tool calls run on the editor's render thread via an internal bridge; they ar
 - **Asset world size = pixel size / pixelsPerWU.** Use `get_asset_dimensions` to get each region's pixel + world width/height so you can place tiles the right distance apart.
 - **Never guess an asset's appearance from its name.** Use `get_asset_preview` to actually see the source PNG before placing it. Names like `walls3` or `plant1` tell you nothing reliable about content or scale.
 - **Coordinate origin.** The editor scene camera is y-down (origin top-left, +y downward). Entity `(x, y)` is the entity's position **in its parent composite's local space**, never in absolute scene space.
-- **Layers + z-index.** Every entity belongs to a **layer** (named, e.g. `Default`) and has a **z-index** that is *local to that layer*. Lower z-index draws behind, higher draws in front. The runtime auto-adjusts z-indices into a linear progression, so setting an absolute integer is the intended usage (`set_z_index`). Read current order from `list_entities` (`zIndex` + `layer` fields).
-- **Composites — everything lives in one.** A composite is a container entity that holds children. **The scene root is itself a composite**, so *every* entity has a parent composite and *every* `(x, y)` is local to that parent. A child's coordinates are an offset from its composite's origin — **not** a scene-absolute position. Creating a child at `(5.5, 0)` inside a composite places it 5.5 units from *that composite's* origin, wherever the composite sits. See **Building a composite correctly** below — getting this backwards puts everything in the wrong place.
+- **Layers + z-index.** Every entity belongs to a **layer** (named, e.g. `Default`) and has a **z-index** that is *local to that layer*. Lower z-index draws behind, higher draws in front. The runtime auto-adjusts z-indices into a linear progression, so setting an absolute integer is the intended usage (`set_z_index`). Read current order from `list_entities` (`zIndex` + `layer` fields). **Layers are per-composite** (each composite — including the scene root — has its own layer list) and layer names are **case-sensitive** in the editor (stored by hash; the default layer is `Default`). The layer tools resolve names case-insensitively, so `"default"` matches `Default` — but when creating/renaming you pass the exact name you want.
+- **Composites — everything lives in one.** A composite is a container entity that holds children. **The scene root is itself a composite**, so *every* entity has a parent composite and *every* `(x, y)` is local to that parent. A child's coordinates are an offset from its composite's origin — **not** a scene-absolute position. Creating a child at `(5.5, 0)` inside a composite places it 5.5 units from *that composite's* origin, wherever the composite sits.
+- **The first child of a new composite lands at the composite's origin — this is correct, not a bug.** With `automaticResize` (the default), the composite has no size until it has children; the first child you add *defines* the origin of the local space, so it sits at local `(0, 0)` regardless of the coordinates you pass. This is the whole point of a composite. Build the group so its first/anchor child is the one meant to be at the origin, then add the rest relative to it, then position the composite (see **Building a composite correctly**). Never treat the first-child-at-origin as something to "fix" by deleting/recreating — you'll only scramble the group.
+- **Lights belong to the object they light, not to a "lights" group.** A point/cone light is placed *next to the object it illuminates, inside that object's composite/hierarchy* — a lamp light goes in the lamp's composite at the lamp's position, a glow light goes on the glowing prop. Do **not** collect all lights into a separate `lights` composite or treat lighting as a render layer; that is not how HyperLap2D lighting works. Light position is meaningful and must track its object, so keep them together (moving the object then moves its light).
 - **Validation is sacred.** Component add/edit goes through the *same properties panels* the UI uses. Invalid values or disallowed components are rejected with the same messages the panels produce. Do not try to "work around" a rejected value — it's rejected because the editor considers it invalid.
 
 ## Golden rules for scene authoring
@@ -45,7 +47,7 @@ Do not place entities blindly; do not invent asset semantics. The user judges al
 
 ## Tool reference
 
-22 tools. Grouped by purpose.
+28 tools. Grouped by purpose.
 
 ### Discovery (read-only)
 
@@ -83,17 +85,18 @@ No args. Returns the library action-graph names in the project (the node-graph a
 ### Mutation (validated, undoable unless noted)
 
 #### `create_entity`
-Args: `type` (required), `name`, `x`, `y`, `width`, `height`, `fontFamily`, `fontSize`, `lightType`, `parentUniqueId`.
+Args: `type` (required), `name`, `x`, `y`, `width`, `height`, `fontFamily`, `fontSize`, `lightType`, `parentUniqueId`, `layer`.
 - `type`: `image | spriteAnimation | spineAnimation | libraryItem | 9patch | tinyvg | particle | talos | primitive | composite | label | light`.
 - Name-based types (`image`, `spriteAnimation`, `spineAnimation`, `libraryItem`, `9patch`, `tinyvg`, `particle`, `talos`) require `name` from `list_assets`.
 - `primitive`: `width`/`height` (default 100) define the rect at creation.
 - `label`: optional `fontFamily` (must be a loaded font) / `fontSize` (default 20).
 - `light`: `lightType` `POINT` (default) or `CONE`.
 - `parentUniqueId`: create **inside** that composite; `x`/`y` then become **local to the composite** (offsets from its origin, not scene-absolute — see Edge cases → *Building a composite correctly*, and lay children out around `(0,0)`, not at their intended world positions). The composite must be a **direct child of the current viewing entity**. To target a nested composite, enter its container in the editor first.
+- `layer`: create on a named layer (resolved case-insensitively; must exist on the effective parent — see `list_layers`). When omitted, the entity uses the currently selected layer.
 - Returns the new entity's `uniqueId`. Creation is undoable (Ctrl+Z).
 
 #### `create_entities` (bulk)
-Args: `entities` (array of specs with the same fields as `create_entity`). Creates each sequentially via the same validated/undoable path. Returns a JSON array of `{ ok, uniqueId, error }` in input order. Use for placing many tiles/objects at once instead of many `create_entity` round-trips. Some entries can fail without aborting the rest.
+Args: `entities` (array of specs with the same fields as `create_entity`, including `parentUniqueId` and `layer`). Creates each sequentially via the same validated/undoable path. Returns a JSON array of `{ ok, uniqueId, error }` in input order. Use for placing many tiles/objects at once instead of many `create_entity` round-trips. Some entries can fail without aborting the rest.
 
 #### `update_transform`
 Args: `entityId`, `fields` (object). Fields: `x`, `y`, `width`, `height`, `scaleX`, `scaleY`, `rotation`, `flipX`, `flipY`, `id`, `tint`. Pass only what you want to change. Drives the basic properties panel (validated, undoable).
@@ -150,6 +153,28 @@ Args: `name` (required, unique), `templateType` (0=Default Array, 1=Distance Fie
 #### `save_project`
 No args. Saves the current project (all scenes and assets) to disk.
 
+### Layers
+
+Layers belong to the **current viewing entity** (the scene root, or the composite currently being edited) — they are per-composite. Layer tools resolve layer names **case-insensitively** (so `"default"` matches `Default`), but the editor stores names case-sensitively; `create_layer`/`rename_layer` apply the name you pass exactly. `create`/`delete`/`rename`/`set_layer_order`/`set_entity_layer` all run through the editor's undoable layer commands.
+
+#### `list_layers`
+No args. Returns `[{ name, index, isVisible, isLocked }]` for the current viewing entity's layers, in editor order (index 0 = back-most layer). Use to learn exact layer names before referencing them.
+
+#### `create_layer`
+Args: `layerName`. Creates a new layer on the current viewing entity; `layerName` is used as-is (case-sensitive). Rejected if a same-cased or case-insensitive match already exists. Undoable.
+
+#### `delete_layer`
+Args: `layerName` (matched case-insensitively). Deletes the layer. **WARNING: also deletes every entity on that layer.** Undoable.
+
+#### `rename_layer`
+Args: `layerName` (existing, matched case-insensitively), `newName` (applied as-is, case-sensitive, must be unique). Undoable.
+
+#### `set_layer_order`
+Args: `layerName` (matched case-insensitively), `direction` (`up` | `down`). Moves the layer one step in the stack (swaps with its neighbor). Lower index draws behind, higher draws in front. Undoable.
+
+#### `set_entity_layer`
+Args: `entityId`, `layerName`. Moves an entity onto a different layer. The destination layer must exist on the **entity's parent composite** (so `list_layers` while viewing that parent). `layerName` matched case-insensitively. The entity lands at the front of the destination layer; use `set_z_index` to fine-tune its position within the layer. Undoable.
+
 ### Visual
 
 #### `screenshot`
@@ -182,17 +207,29 @@ Color fields (`tint`, `color`, `ambientColor`, `directionalColor`) accept any of
 ### Label align is case-insensitive
 `update_component` (`label`, `align`) matches the allowed names case-insensitively: `"top left"`, `"Center"`, `"BOTTOM RIGHT"` all work. Allowed values: `Top Left, Top, Top Right, Left, Center, Right, Bottom Left, Bottom, Bottom Right`.
 
+### Layers are per-composite and (mostly) case-sensitive
+Each composite — including the scene root — has its **own** layer list; a layer named `Default` at the root is a different list from one inside a composite. To move an entity to a layer, that layer must exist on the **entity's parent** (call `list_layers` while viewing the parent). Layer names are stored case-sensitively (by hash), so `Default` ≠ `default` ≠ `DEFAULT` as far as the editor is concerned — but the layer tools resolve names **case-insensitively** so you won't trip on casing when referencing an existing layer. `create_layer`/`rename_layer` use the exact string you pass, so decide the casing deliberately. `delete_layer` deletes the layer *and* every entity on it.
+
 ### Building a composite correctly (READ THIS — the #1 mistake)
 
-A composite has its own local coordinate space, and by default `automaticResize = true`: **the composite's size and origin are recomputed from its children.** You do **not** know a composite's final position/size until its children exist. This dictates the workflow.
+A composite has its own local coordinate space, and by default `automaticResize = true`: **the composite's size and origin are recomputed from its children.** You do **not** know a composite's final position/size until its children exist. The first child anchors the local origin. This dictates the workflow.
 
 **The correct sequence — build the group in local space, then place the whole group:**
 
-1. **Create the composite** (`create_entity` type `composite`). Its `(x, y)` at this point is provisional — you'll set the real position in step 3. Create it at `(0, 0)`.
-2. **Add all children with `parentUniqueId`, in LOCAL coordinates.** Lay the group out around its own origin — a child at local `(0, 0)` sits at the composite's origin, a child at `(2, 1)` is 2 units right / 1 down *within the group*. Do **not** use scene-absolute coordinates here (that was the mistake: children given world positions like `x=5.5` inside a composite meant to sit at the scene origin). Design the group as if it were its own little scene starting at `(0,0)`.
-3. **Now position the composite in its parent.** After the children exist, `automaticResize` has computed the composite's dimensions. `update_transform` the composite's `(x, y)` to drop the finished group where it belongs in the parent. Everything inside moves with it, rigidly — you place the container once, not each child.
+1. **Create the composite** (`create_entity` type `composite`) at `(0, 0)`. Its position is provisional — you set the real one in step 4.
+2. **Add the anchor child first.** The first child defines the origin: it lands at local `(0, 0)` no matter what `x`/`y` you pass. So make the first child the object you want *at the group's origin* (e.g. the bottom-left tile of a wall, the base of a structure). Passing `(0,0)` for it is honest and clearest.
+3. **Add the rest with `parentUniqueId`, in LOCAL coordinates relative to that anchor.** A child at local `(2, 1)` is 2 units right / 1 down *from the anchor*. Design the group as its own little scene whose origin is the anchor. Pick the anchor so the other locals are simple (usually the group's bottom-left, giving all-positive locals).
+4. **Position the composite in its parent.** Now `automaticResize` has computed the composite's size. `update_transform` the composite's `(x, y)` to drop the finished group where it belongs. Everything inside moves rigidly — you place the container **once**, never the children.
 
-**Why "just give every child its final world position" fails:** with `automaticResize`, adding/moving a child re-derives the composite's bounding box and origin, so absolute-looking child coordinates don't land where you expect, and a later `update_transform` on one child shifts the whole group's frame. Build in local space (step 2), place once (step 3), and this never bites.
+**Concrete example — a wall row that belongs at world y=5:** create composite; add wall segments at local `(0,0), (1,0), (2,0), …` (all `y=0`, the row's baseline); then `update_transform` the composite to `(0, 5)`. Result: the row sits at world y=5. Do **not** instead give the segments `y=5` and leave the composite at `(0,0)` — that puts world coordinates into local space and makes the composite's position meaningless.
+
+**Two failure modes to never repeat:**
+- **World coords as local coords + composite left at origin.** Semantically wrong even when it happens to render: the composite's position no longer means anything, and the group can't be moved as a unit.
+- **"Fixing" the first child (or any child) after the fact.** The first child sitting at the origin is *correct* — it defines the local space. Deleting/recreating it, or `update_transform`-ing a single child in an `automaticResize` composite, re-derives the bounding box and scrambles the group. Build it right in one pass; don't post-patch individual children.
+
+**Before concluding a child is misplaced or missing, check z-index between composites** (see *Z-index* below). Sibling composites draw in composite-creation order — an entire composite (and everything in it) can be hidden behind another composite. A "missing" object is usually a z-order problem, not a position problem. Verify with a `region` screenshot of where it *should* be before touching anything.
+
+**Do not disable `automaticResize`.** Leaving it on (the default) is how composites are meant to work — it is what lets the container size itself to its children so you can then position it. Turning it off is only for rare special effects, never as a workaround for a placement you got wrong.
 
 **Nesting / other rules:**
 - The parent must be a **direct child of the current viewing entity** (normally the scene root). The editor's enter-composite flow only supports entering one level at a time. If you get *"parent composite must be a direct child of the current viewing entity; double-click its container in the editor to enter it first"*, enter the outer composite in the editor UI, then target the inner composite's uniqueId.
@@ -202,6 +239,8 @@ A composite has its own local coordinate space, and by default `automaticResize 
 ### Z-index is per-layer and absolute
 `set_z_index` sets an absolute integer scoped to the entity's **layer**. The runtime re-linearizes z-indices, so don't try to compute "relative" offsets — just set the order you want (e.g. background=0, mid=5, foreground=10). Retrieve current values from `list_entities`.
 
+**Sibling composites draw in their own z-order, and it carries their whole subtree.** Among children of the same parent (including the top-level composites under the root), z-index follows **creation order** by default — created earlier = drawn behind. So a composite created before another draws *entirely* behind it, and so does every child inside it. Consequence: an object placed at exactly the right coordinates can be completely hidden because its composite sits behind a later one (e.g. `props` created before `path` → the rune circle in `props` is covered by the path tiles). **When something "isn't there," suspect z-order first**: check the composites' `zIndex` in `list_entities`, and `set_z_index` the composite (not the child) to bring the whole group forward/back. Create composites in back-to-front order (background first), or fix the order afterward with `set_z_index`. Do not go hunting for a "wrong position" or delete/recreate anything until you've ruled out z-order.
+
 ### Component edits are panel-validated
 Every `add_component` / `update_component` / `remove_component` / `update_transform` / `update_scene_settings` drives the real UI panel off-stage and runs its VisUI validators. If a value is rejected, the error message is the panel's. Use `get_editable_components` to discover what's allowed for a given entity before editing. Never assume a field exists for a type.
 
@@ -209,7 +248,7 @@ Every `add_component` / `update_component` / `remove_component` / `update_transf
 `create_entities` and `delete_entities` process entries sequentially and return per-entry results; a failure in one entry does **not** abort the others. Check the returned array for partial failures.
 
 ### Undoability
-`create_entity`/`create_entities`, `update_transform`, `update_component`, `add_component`, `remove_component`, `set_z_index`, `delete_entity`/`delete_entities`, `update_scene_settings` are all undoable in the editor (Ctrl+Z). Composite enter/exit for creation is intentionally not on the undo stack. `create_shader` writes resource files (not a scene edit).
+`create_entity`/`create_entities`, `update_transform`, `update_component`, `add_component`, `remove_component`, `set_z_index`, `delete_entity`/`delete_entities`, `update_scene_settings`, `create_layer`, `delete_layer`, `rename_layer`, `set_layer_order`, `set_entity_layer` are all undoable in the editor (Ctrl+Z). Composite enter/exit for creation is intentionally not on the undo stack. `create_shader` writes resource files (not a scene edit).
 
 ### Visual verification is the user's job
 Never judge a screenshot as "looks good" on the user's behalf. Capture the screenshot, hand it over, and let the user decide. Your responsibility is correct, validated structure and correct coordinates/scale.
@@ -220,11 +259,11 @@ Never judge a screenshot as "looks good" on the user's behalf. Capture the scree
 
 1. `open_scene` (or confirm the current scene) → `get_scene_settings` (note `pixelsPerWU`).
 2. `list_assets` → `get_asset_dimensions` (world sizes) → `get_asset_preview` for the regions you'll use (see them).
-3. Plan placement in world units using `worldWidth`/`worldHeight` (tile spacing = region world size; positions relative to origin). Group related entities into composites (e.g. `ground`, `path`, `wall`, `props`) — it keeps the scene tree navigable and lets you order/move whole groups at once.
-4. For each group: create the composite, then `create_entities` (bulk) with `parentUniqueId` set and children laid out in **local** coordinates around `(0,0)` (see *Building a composite correctly*); then `update_transform` the composite to its final position. Capture the returned `uniqueId`s.
-5. `set_z_index` to order the composites/entities background→foreground.
-6. Add components as needed: `get_editable_components` → `add_component` → `update_component`.
+3. Plan placement in world units using `worldWidth`/`worldHeight` (tile spacing = region world size; positions relative to origin). Group related entities into composites (e.g. `ground`, `path`, `wall`, `props`) — it keeps the scene tree navigable and lets you order/move whole groups at once. **Create composites back-to-front** (background group first) so their creation-order z-index already matches the draw order you want.
+4. For each group: create the composite; add the **anchor child first** (it lands at the origin), then `create_entities` (bulk) with `parentUniqueId` and the rest in **local** coordinates relative to that anchor; then `update_transform` the composite to its final position (see *Building a composite correctly*). Capture the returned `uniqueId`s.
+5. If any group is hidden or draws in the wrong order, `set_z_index` the **composite** (not its children) to reorder whole groups background→foreground. Rule out z-order before ever suspecting a wrong position.
+6. Add components as needed: `get_editable_components` → `add_component` → `update_component`. **Place each light inside the composite/hierarchy of the object it illuminates, at that object's position** — never in a standalone lights group.
 7. `screenshot` (mode `whole`) → return it to the user for visual verification.
 8. Iterate based on user feedback; `save_project` when satisfied.
 
-If something is rejected, read the error — it reflects the editor's real validation. Don't retry the same invalid value.
+If something is rejected, read the error — it reflects the editor's real validation. Don't retry the same invalid value. And never delete/recreate or post-`update_transform` a composite's children to "fix" placement — build each group right in one pass, then move only the composite.

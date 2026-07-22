@@ -2,12 +2,15 @@ package games.rednblack.editor.remote;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
+import games.rednblack.editor.controller.commands.NewLayerCommand;
+import games.rednblack.editor.controller.commands.RenameLayerCommand;
 import games.rednblack.editor.controller.commands.SelectionPayload;
 import games.rednblack.editor.factory.ItemFactory;
 import games.rednblack.editor.renderer.utils.DefaultShaders;
@@ -21,7 +24,9 @@ import games.rednblack.editor.renderer.components.LayoutComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
+import games.rednblack.editor.renderer.components.LayerMapComponent;
 import games.rednblack.editor.renderer.components.ShaderComponent;
+import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.components.light.LightBodyComponent;
 import games.rednblack.editor.renderer.components.light.LightObjectComponent;
 import games.rednblack.editor.renderer.components.physics.PhysicsBodyComponent;
@@ -36,6 +41,7 @@ import games.rednblack.editor.renderer.data.PolygonShapeVO;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.data.TexturePackVO;
+import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.renderer.ecs.Component;
 import games.rednblack.editor.renderer.ecs.Engine;
 import games.rednblack.editor.renderer.factory.EntityFactory;
@@ -43,6 +49,7 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.system.HyperLap2dRendererMiniMap;
 import games.rednblack.editor.utils.runtime.AddableComponents;
 import games.rednblack.editor.utils.runtime.EntityUtils;
+import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.tools.TextTool;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
@@ -81,6 +88,8 @@ import games.rednblack.h2d.common.remote.RemoteEditResult;
 import games.rednblack.h2d.common.remote.RemoteHandle;
 import games.rednblack.h2d.common.remote.RemoteOpenSceneRequest;
 import games.rednblack.h2d.common.remote.RemoteZIndexRequest;
+import games.rednblack.h2d.common.remote.RemoteLayerRequest;
+import games.rednblack.h2d.common.remote.RemoteLayerResult;
 import games.rednblack.h2d.common.remote.RemoteSceneSettingsRequest;
 import games.rednblack.h2d.common.remote.RemoteSceneSettingsResult;
 import games.rednblack.h2d.common.remote.RemoteScreenshotRequest;
@@ -94,8 +103,10 @@ import games.rednblack.puremvc.util.Interests;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Editor-core bridge that fulfills plugin "remote operation" requests on the libGDX
@@ -130,6 +141,7 @@ public class RemoteOpsMediator extends Mediator<Object> {
         interests.add(MsgAPI.ACTION_REMOTE_CREATE_SHADER);
         interests.add(MsgAPI.ACTION_REMOTE_ASSET_DIMENSIONS);
         interests.add(MsgAPI.ACTION_REMOTE_SET_Z_INDEX);
+        interests.add(MsgAPI.ACTION_REMOTE_LAYERS);
     }
 
     @Override
@@ -205,6 +217,12 @@ public class RemoteOpsMediator extends Mediator<Object> {
                 RemoteZIndexRequest req = (RemoteZIndexRequest) notification.getBody();
                 if (req == null || req.handle == null) return;
                 Gdx.app.postRunnable(() -> setZIndex(req));
+                break;
+            }
+            case MsgAPI.ACTION_REMOTE_LAYERS: {
+                RemoteLayerRequest req = (RemoteLayerRequest) notification.getBody();
+                if (req == null || req.handle == null) return;
+                Gdx.app.postRunnable(() -> handleLayerOp(req));
                 break;
             }
         }
@@ -399,6 +417,132 @@ public class RemoteOpsMediator extends Mediator<Object> {
             result.error = "set z-index failed: " + t.getClass().getSimpleName() + ": " + t.getMessage();
         }
         req.handle.complete(result);
+    }
+
+    /** Layer management: list/create/delete/rename/reorder layers and move an entity to a layer. */
+    private void handleLayerOp(RemoteLayerRequest req) {
+        RemoteLayerResult result = new RemoteLayerResult();
+        try {
+            if (req.op == null) {
+                result.ok = false;
+                result.error = "missing op";
+                req.handle.complete(result);
+                return;
+            }
+            Facade facade = Facade.getInstance();
+            Sandbox sandbox = PluginUIBridge.get(facade).getSandbox();
+            int viewEntity = sandbox.getCurrentViewingEntity();
+            LayerMapComponent layerMap = SandboxComponentRetriever.get(viewEntity, LayerMapComponent.class);
+            if (layerMap == null) {
+                result.ok = false;
+                result.error = "no layers on current viewing entity (open a scene first)";
+                req.handle.complete(result);
+                return;
+            }
+
+            switch (req.op) {
+                case LIST: {
+                    Array<LayerItemVO> layers = layerMap.getLayers();
+                    for (int i = 0; i < layers.size; i++) {
+                        LayerItemVO l = layers.get(i);
+                        result.layers.add(new RemoteLayerResult.LayerInfo(l.layerName, i, l.isVisible, l.isLocked));
+                    }
+                    result.ok = true;
+                    break;
+                }
+                case CREATE: {
+                    String name = req.layerName == null ? "" : req.layerName.trim();
+                    if (name.isEmpty()) { result.ok = false; result.error = "missing layerName"; break; }
+                    if (resolveLayer(layerMap, name) != null) {
+                        result.ok = false; result.error = "layer already exists (case-insensitive): '" + name + "'";
+                        break;
+                    }
+                    facade.sendNotification(MsgAPI.ACTION_NEW_LAYER,
+                            NewLayerCommand.payload(layerMap.getLayers().size, name));
+                    result.ok = true;
+                    break;
+                }
+                case DELETE: {
+                    String exact = resolveLayer(layerMap, req.layerName);
+                    if (exact == null) { result.ok = false; result.error = "layer not found: " + req.layerName; break; }
+                    // DeleteLayerCommand also deletes every entity on the layer.
+                    facade.sendNotification(MsgAPI.ACTION_DELETE_LAYER, exact);
+                    result.ok = true;
+                    break;
+                }
+                case RENAME: {
+                    String oldExact = resolveLayer(layerMap, req.layerName);
+                    if (oldExact == null) { result.ok = false; result.error = "layer not found: " + req.layerName; break; }
+                    String newName = req.newName == null ? "" : req.newName.trim();
+                    if (newName.isEmpty() || newName.equals(oldExact)) {
+                        result.ok = false; result.error = "invalid newName"; break;
+                    }
+                    String clash = resolveLayer(layerMap, newName);
+                    if (clash != null) { result.ok = false; result.error = "layer already exists (case-insensitive): '" + clash + "'"; break; }
+                    facade.sendNotification(MsgAPI.ACTION_RENAME_LAYER, RenameLayerCommand.payload(oldExact, newName));
+                    result.ok = true;
+                    break;
+                }
+                case ORDER: {
+                    String exact = resolveLayer(layerMap, req.layerName);
+                    if (exact == null) { result.ok = false; result.error = "layer not found: " + req.layerName; break; }
+                    boolean up = "up".equalsIgnoreCase(req.direction);
+                    if (!up && !"down".equalsIgnoreCase(req.direction)) {
+                        result.ok = false; result.error = "direction must be 'up' or 'down'"; break;
+                    }
+                    Array<LayerItemVO> layers = layerMap.getLayers();
+                    int idx = -1;
+                    for (int i = 0; i < layers.size; i++) if (layers.get(i).layerName.equals(exact)) { idx = i; break; }
+                    int neighbor = up ? idx - 1 : idx + 1;
+                    if (neighbor < 0 || neighbor >= layers.size) {
+                        result.ok = false;
+                        result.error = "cannot move " + (up ? "up" : "down") + ": layer is already at the " + (up ? "top" : "bottom");
+                        break;
+                    }
+                    String target = layers.get(neighbor).layerName;
+                    facade.sendNotification(MsgAPI.ACTION_SWAP_LAYERS, new Object[]{exact, target});
+                    result.ok = true;
+                    break;
+                }
+                case SET_ENTITY: {
+                    Engine engine = sandbox.getEngine();
+                    int entity = EntityUtils.getByUniqueId(req.entityId);
+                    if (entity < 0 || !engine.getEntityManager().isActive(entity)
+                            || ComponentRetriever.get(entity, MainItemComponent.class, engine) == null) {
+                        result.ok = false; result.error = "entity not found: " + req.entityId; break;
+                    }
+                    // An entity's layer belongs to its parent composite's LayerMapComponent.
+                    ParentNodeComponent pnc = ComponentRetriever.get(entity, ParentNodeComponent.class, engine);
+                    int parentEntity = pnc != null ? pnc.parentEntity : viewEntity;
+                    LayerMapComponent parentLayers = SandboxComponentRetriever.get(parentEntity, LayerMapComponent.class);
+                    if (parentLayers == null) { result.ok = false; result.error = "parent has no layers"; break; }
+                    String exact = resolveLayer(parentLayers, req.layerName);
+                    if (exact == null) {
+                        result.ok = false; result.error = "layer not found: " + req.layerName
+                                + " (use list_layers while viewing the parent composite; layers are per-composite)";
+                        break;
+                    }
+                    facade.sendNotification(MsgAPI.ACTION_SET_ENTITY_LAYER, new Object[]{entity, exact});
+                    result.ok = true;
+                    break;
+                }
+            }
+        } catch (Throwable t) {
+            result.ok = false;
+            result.error = "layer op failed: " + t.getClass().getSimpleName() + ": " + t.getMessage();
+        }
+        req.handle.complete(result);
+    }
+
+    /** Case-insensitive layer-name lookup; returns the editor's exact-cased name, or null if not found. */
+    private static String resolveLayer(LayerMapComponent layerMap, String name) {
+        if (name == null) return null;
+        Array<LayerItemVO> layers = layerMap.getLayers();
+        for (int i = 0; i < layers.size; i++) {
+            String ln = layers.get(i).layerName;
+            if (ln.equalsIgnoreCase(name)) return ln;
+        }
+        return null;
     }
 
     // ---- Validated edits (drive the existing properties panels off-stage) ----
@@ -869,6 +1013,25 @@ public class RemoteOpsMediator extends Mediator<Object> {
     /** Build the entity per req.type via the factory and set result.ok/error/uniqueId (no handle completion). */
     private void createOneEntity(RemoteCreateEntityRequest req, ItemFactory factory, Vector2 pos,
                                  Facade facade, RemoteCreateEntityResult result) {
+        // Resolve the requested layer (case-insensitively) against the effective parent's layers
+        // before creating, so an invalid layer fails fast without leaving a stray entity.
+        String resolvedLayer = null;
+        if (req.layer != null && !req.layer.isEmpty()) {
+            Sandbox sandbox = PluginUIBridge.get(facade).getSandbox();
+            LayerMapComponent lm = SandboxComponentRetriever.get(sandbox.getCurrentViewingEntity(), LayerMapComponent.class);
+            if (lm == null) {
+                result.ok = false;
+                result.error = "no layers on target parent; cannot set layer '" + req.layer + "'";
+                return;
+            }
+            resolvedLayer = resolveLayer(lm, req.layer);
+            if (resolvedLayer == null) {
+                result.ok = false;
+                result.error = "layer not found: " + req.layer + " (use list_layers; layers are per-composite)";
+                return;
+            }
+        }
+
         int entity;
         switch (req.type) {
             case "image": factory.createSimpleImage(req.name, pos); entity = factory.getCreatedEntity(); break;
@@ -925,6 +1088,17 @@ public class RemoteOpsMediator extends Mediator<Object> {
             MainItemComponent main = ComponentRetriever.get(entity, MainItemComponent.class, engine);
             result.uniqueId = (main != null && main.uniqueId != null) ? main.uniqueId : String.valueOf(entity);
             result.ok = true;
+            // Override the factory's default (selected) layer with the requested one.
+            if (resolvedLayer != null) {
+                ZIndexComponent z = ComponentRetriever.get(entity, ZIndexComponent.class, engine);
+                if (z != null) {
+                    z.setLayerName(resolvedLayer);
+                    z.setZIndex(Integer.MAX_VALUE); // front of the destination layer; autoIndexing re-linearizes
+                    Set<Integer> sel = new HashSet<>();
+                    sel.add(entity);
+                    Facade.getInstance().sendNotification(MsgAPI.ACTION_Z_INDEX_CHANGED, sel);
+                }
+            }
         }
     }
 

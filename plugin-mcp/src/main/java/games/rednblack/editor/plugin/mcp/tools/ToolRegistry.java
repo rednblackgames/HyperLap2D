@@ -7,6 +7,7 @@ import games.rednblack.editor.plugin.mcp.tools.entity.ComponentTools;
 import games.rednblack.editor.plugin.mcp.tools.entity.CreateEntityTool;
 import games.rednblack.editor.plugin.mcp.tools.entity.CreateEntitiesTool;
 import games.rednblack.editor.plugin.mcp.tools.entity.ListEntitiesTool;
+import games.rednblack.editor.plugin.mcp.tools.layer.LayerTools;
 import games.rednblack.editor.plugin.mcp.tools.scene.ListScenesTool;
 import games.rednblack.editor.plugin.mcp.tools.screenshot.ScreenshotTool;
 
@@ -32,6 +33,12 @@ public class ToolRegistry {
         register(new ComponentTools.DeleteEntityTool(ctx));
         register(new ComponentTools.DeleteEntitiesTool(ctx));
         register(new ComponentTools.SetZIndexTool(ctx));
+        register(new LayerTools.ListLayersTool(ctx));
+        register(new LayerTools.CreateLayerTool(ctx));
+        register(new LayerTools.DeleteLayerTool(ctx));
+        register(new LayerTools.RenameLayerTool(ctx));
+        register(new LayerTools.SetLayerOrderTool(ctx));
+        register(new LayerTools.SetEntityLayerTool(ctx));
         register(new ComponentTools.OpenSceneTool(ctx));
         register(new ComponentTools.GetSceneSettingsTool(ctx));
         register(new ComponentTools.UpdateSceneSettingsTool(ctx));

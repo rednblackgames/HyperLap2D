@@ -64,6 +64,8 @@ public class CreateEntitiesTool implements Tool {
         w.object("lightType"); w.set("type", "string"); w.array("enum"); w.value("POINT"); w.value("CONE"); w.pop(); w.pop();
         w.object("parentUniqueId"); w.set("type", "string");
         w.set("description", "Optional composite uniqueId to create inside (x, y become local to it)."); w.pop();
+        w.object("layer"); w.set("type", "string");
+        w.set("description", "Optional layer name to create on (resolved case-insensitively)."); w.pop();
         w.pop();
         w.pop();
         w.pop();
@@ -97,6 +99,7 @@ public class CreateEntitiesTool implements Tool {
                     if (entry.has("fontSize")) req.fontSize = entry.getInt("fontSize", 20);
                     if (entry.has("lightType")) req.lightType = entry.getString("lightType");
                     if (entry.has("parentUniqueId")) req.parentUniqueId = entry.getString("parentUniqueId");
+                    if (entry.has("layer")) req.layer = entry.getString("layer");
 
                     RemoteCreateEntityResult r = remote.createEntity(req, 5000);
                     w.set("ok", r.ok);

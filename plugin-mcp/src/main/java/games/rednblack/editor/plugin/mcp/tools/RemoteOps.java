@@ -23,6 +23,8 @@ import games.rednblack.h2d.common.remote.RemoteScreenshotResult;
 import games.rednblack.h2d.common.remote.RemoteTypeNamesRequest;
 import games.rednblack.h2d.common.remote.RemoteTypeNamesResult;
 import games.rednblack.h2d.common.remote.RemoteZIndexRequest;
+import games.rednblack.h2d.common.remote.RemoteLayerRequest;
+import games.rednblack.h2d.common.remote.RemoteLayerResult;
 
 /**
  * Client-side helper for the editor-core RemoteOps bridge: builds a request + handle,
@@ -205,6 +207,19 @@ public class RemoteOps {
             RemoteEditResult err = new RemoteEditResult();
             err.ok = false;
             err.error = "set z-index request failed: " + e.getMessage();
+            return err;
+        }
+    }
+
+    public RemoteLayerResult layerOp(RemoteLayerRequest req, long timeoutMs) {
+        req.handle = new RemoteHandle<>();
+        ctx.facade().sendNotification(MsgAPI.ACTION_REMOTE_LAYERS, req);
+        try {
+            return req.handle.await(timeoutMs);
+        } catch (Exception e) {
+            RemoteLayerResult err = new RemoteLayerResult();
+            err.ok = false;
+            err.error = "layer op request failed: " + e.getMessage();
             return err;
         }
     }
