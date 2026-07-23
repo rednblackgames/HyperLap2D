@@ -673,6 +673,9 @@
   com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
     default-horizontal: {
       background: slider,
+      disabledBackground: slider-disabled,
+      knobBefore: slider-before,
+      disabledKnobBefore: slider-disabled,
       knob: slider-knob,
       disabledKnob: slider-knob-disabled,
       knobOver: slider-knob-over,
@@ -680,6 +683,9 @@
     },
     default-vertical: {
       background: slider-vertical,
+      disabledBackground: slider-vertical-disabled,
+      knobBefore: slider-vertical-before,
+      disabledKnobBefore: slider-vertical-disabled,
       knob: slider-knob,
       disabledKnob: slider-knob-disabled,
       knobOver: slider-knob-over,
