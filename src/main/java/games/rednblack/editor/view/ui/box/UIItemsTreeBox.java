@@ -272,9 +272,16 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         public void clicked (InputEvent event, float x, float y) {
             Selection<UIItemsTreeNode> selection = tree.getSelection();
             selection.remove(rootNode);
+
+            // resolve the clicked node from the pointer position, not from the selection: entities
+            // on a locked layer are intentionally never selected, so the selection is empty for
+            // them and a double click would otherwise be ignored (see below)
+            UIItemsTreeNode clickedNode = tree.getNodeAt(y);
+
             facade.sendNotification(ITEMS_SELECTED, selection);
-            if (selection.size() == 1 && getTapCount() == 2) {
-                UIItemsTreeValue selected = selection.first().getValue();
+
+            if (getTapCount() == 2 && clickedNode != null && clickedNode != rootNode) {
+                UIItemsTreeValue selected = clickedNode.getValue();
                 int item = EntityDataProxy.get().metadata().getByUniqueId(selected.entityId);
                 if (EntityDataProxy.get().metadata().getType(item) == EntityFactory.COMPOSITE_TYPE) {
                     facade.sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, item);
