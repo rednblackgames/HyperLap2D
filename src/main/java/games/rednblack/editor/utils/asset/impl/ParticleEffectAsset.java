@@ -95,7 +95,7 @@ public class ParticleEffectAsset extends Asset {
         }
         if (!skipRepack) {
             ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-            resolutionManager.rePackProjectImagesForAllResolutionsSync();
+            resolutionManager.rePackProjectImagesForAllResolutionsSync(false);
         }
     }
 

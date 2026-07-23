@@ -1,4 +1,5 @@
 package games.rednblack.editor.view.ui.dialog;
+import com.badlogic.gdx.utils.ObjectSet;
 import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.utils.Array;
@@ -6,6 +7,7 @@ import games.rednblack.editor.controller.commands.resource.DeleteImageResource;
 import games.rednblack.editor.controller.commands.resource.DeleteSpineAnimation;
 import games.rednblack.editor.controller.commands.resource.DeleteSpriteAnimation;
 import games.rednblack.editor.proxy.ProjectManager;
+import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.TexturePackVO;
 import games.rednblack.editor.view.menu.ResourcesMenu;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -14,6 +16,9 @@ import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Mediator;
 import games.rednblack.puremvc.interfaces.INotification;
 import games.rednblack.puremvc.util.Interests;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
     private static final String TAG = ImagesPackDialogMediator.class.getCanonicalName();
@@ -48,6 +53,7 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
         Sandbox sandbox = PluginUIBridge.get().getSandbox();
         UIStage uiStage = sandbox.getUIStage();
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
         String currentTab;
         switch (notification.getName()) {
             case ResourcesMenu.OPEN_IMAGES_PACK:
@@ -98,6 +104,11 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
                 viewComponent.updateCurrentPack(projectManager.currentProjectInfoVO.imagesPacks.get(viewComponent.getSelectedTab()).regions);
                 viewComponent.updateMainPack(projectManager.currentProjectInfoVO.imagesPacks.get("main").regions);
                 projectManager.saveCurrentProject();
+                // incremental repack: only the source and destination packs actually changed
+                ObjectSet<String> movedPacks = new ObjectSet<>();
+                movedPacks.add(fromPack);
+                movedPacks.add(toPack);
+                resolutionManager.rePackProjectImagesForAllResolutions(true, movedPacks, null);
                 break;
             case REMOVE_PACK:
                 String packToRemove = notification.getBody();
@@ -108,6 +119,10 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
                 viewComponent.updateMainPack(projectManager.currentProjectInfoVO.imagesPacks.get("main").regions);
                 viewComponent.clearCurrentPack();
                 projectManager.saveCurrentProject();
+                // incremental repack: the deleted pack's regions moved back into main
+                ObjectSet<String> removedPacks = new ObjectSet<>();
+                removedPacks.add("main");
+                resolutionManager.rePackProjectImagesForAllResolutions(true, removedPacks, null);
                 break;
         }
     }

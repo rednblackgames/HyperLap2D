@@ -70,7 +70,7 @@ public class SpineAsset extends Asset {
                 continue;
 
             if (copiedFile.getName().toLowerCase().endsWith(".json")) {
-                resolutionManager.rePackProjectImagesForAllResolutionsSync();
+                resolutionManager.rePackProjectImagesForAllResolutionsSync(false);
             }
         }
     }

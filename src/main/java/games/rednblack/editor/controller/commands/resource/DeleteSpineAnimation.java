@@ -23,7 +23,7 @@ public class DeleteSpineAnimation extends DeleteResourceCommand {
         String spineItemName = notification.getBody();
         if (AssetIOManager.getInstance().deleteAsset(AssetsUtils.TYPE_SPINE_ANIMATION, sandbox.getRootEntity(), spineItemName)) {
             ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-            resolutionManager.rePackProjectImagesForAllResolutions(true);
+            resolutionManager.rePackProjectImagesForAllResolutions(true, false, null);
 
             sendNotification(DONE, spineItemName);
 

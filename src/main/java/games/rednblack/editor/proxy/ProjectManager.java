@@ -741,4 +741,17 @@ public class ProjectManager extends Proxy {
         for (TexturePackVO vo : map.values())
             vo.regions.remove(region);
     }
+
+    /**
+     * Returns the VO pack name ("main", "foo", ...) that currently holds the given region across both
+     * images and animations packs, or {@code null} if none. Used to scope a repack to just the pack
+     * affected by a resource deletion.
+     */
+    public String findPackNameForRegion(String region) {
+        for (TexturePackVO vo : currentProjectInfoVO.imagesPacks.values())
+            if (vo.regions.contains(region)) return vo.name;
+        for (TexturePackVO vo : currentProjectInfoVO.animationsPacks.values())
+            if (vo.regions.contains(region)) return vo.name;
+        return null;
+    }
 }

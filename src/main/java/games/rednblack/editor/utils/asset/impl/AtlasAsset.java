@@ -67,7 +67,7 @@ public class AtlasAsset extends Asset {
                 }
             }
 
-            resolutionManager.rePackProjectImagesForAllResolutionsSync();
+            resolutionManager.rePackProjectImagesForAllResolutionsSync(false);
 
             Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.UPDATE_ATLAS_PACK_LIST));
         } catch (IOException e) {

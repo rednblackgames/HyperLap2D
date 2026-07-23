@@ -23,6 +23,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.mortennobel.imagescaling.ResampleOp;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
@@ -42,7 +43,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
+import java.util.regex.Pattern;
 import java.util.concurrent.Executors;
 
 public class ResolutionManager extends Proxy {
@@ -172,6 +175,37 @@ public class ResolutionManager extends Proxy {
     }
 
     public void rePackProjectImages(ResolutionEntryVO resEntry) {
+        rePackProjectImages(resEntry, true);
+    }
+
+    /**
+     * Packs the images of a single resolution into per-pack atlases.
+     *
+     * When {@code force} is true (manual repack, settings change, project recovery) every pack is
+     * rebuilt and the whole {@code pack/} directory is wiped first — identical to legacy behaviour.
+     *
+     * When {@code force} is false (asset import, resource deletion) only the packs whose source
+     * files changed on disk since their last pack are rebuilt: a pack is dirty if its atlas is
+     * missing or any of its source PNGs is newer than its atlas file. This needs no stored baseline,
+     * so it works on the very first run after upgrade — importing one image into the main pack never
+     * touches a giant atlas. For pack-dialog reorganisation (moving a region, which changes no file
+     * mtimes) use {@link #rePackProjectImages(ResolutionEntryVO, ObjectSet)} to name the packs.
+     */
+    public void rePackProjectImages(ResolutionEntryVO resEntry, boolean force) {
+        doRepack(resEntry, force, null);
+    }
+
+    /**
+     * Repacks the given packs (by their VO name, e.g. {@code "main"}/{@code "foo"}) plus any pack whose
+     * source files changed on disk. Used by the pack-dialog when regions move between packs: no
+     * source file changes, so the mtime heuristic alone would miss it, so the affected packs must be
+     * named explicitly.
+     */
+    public void rePackProjectImages(ResolutionEntryVO resEntry, ObjectSet<String> forcePacks) {
+        doRepack(resEntry, false, forcePacks);
+    }
+
+    private void doRepack(ResolutionEntryVO resEntry, boolean force, ObjectSet<String> forcePacks) {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         TexturePacker.Settings settings = projectManager.getTexturePackerSettings();
 
@@ -183,41 +217,114 @@ public class ResolutionManager extends Proxy {
 
         try {
             FileUtils.forceMkdir(outputDir);
-            FileUtils.cleanDirectory(outputDir);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        ObjectMap<String, TexturePacker> packerMap = new ObjectMap<>();
+        // region-name -> on-disk pack name, plus the set of every pack name (images + animations)
         ObjectMap<String, String> regionsReverse = new ObjectMap<>();
+        ObjectSet<String> packNames = new ObjectSet<>();
         for (TexturePackVO packVO : projectManager.currentProjectInfoVO.imagesPacks.values()) {
             String name = packVO.name.equals("main") ? "pack" : packVO.name;
-            packerMap.put(name, new TexturePacker(settings));
+            packNames.add(name);
             for (String region : packVO.regions)
                 regionsReverse.put(region, name);
         }
         for (TexturePackVO packVO : projectManager.currentProjectInfoVO.animationsPacks.values()) {
             String name = packVO.name.equals("main") ? "pack" : packVO.name;
-            if (packerMap.get(name) == null)
-                packerMap.put(name, new TexturePacker(settings));
+            packNames.add(name);
             for (String region : packVO.regions)
                 regionsReverse.put(region, name);
         }
 
-
-        for (FileHandle entry : sourceDir.list()) {
-            if (entry.extension().equals("png")) {
+        // route every source PNG to the pack it belongs to (same routing as the legacy loop)
+        ObjectMap<String, Array<FileHandle>> filesByPack = new ObjectMap<>();
+        if (sourceDir.exists()) {
+            for (FileHandle entry : sourceDir.list()) {
+                if (!entry.extension().equals("png")) continue;
                 String name = regionsReverse.get(entry.nameWithoutExtension().replace(".9", "").replaceAll("_[0-9]+", ""));
-                name = name == null ? "pack" : name;
-                TexturePacker tp = packerMap.get(name);
-                tp.addImage(entry.file());
+                if (name == null) name = "pack";
+                Array<FileHandle> arr = filesByPack.get(name);
+                if (arr == null) {
+                    arr = new Array<>();
+                    filesByPack.put(name, arr);
+                }
+                arr.add(entry);
             }
         }
 
-        for (String name : packerMap.keys()) {
-            TexturePacker tp = packerMap.get(name);
+        ObjectSet<String> dirty = new ObjectSet<>();
+        if (force) {
+            for (String name : packNames) dirty.add(name);
+            try {
+                FileUtils.cleanDirectory(outputDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // explicitly forced packs (VO names -> on-disk names, "main" -> "pack")
+            if (forcePacks != null) {
+                for (String voName : forcePacks) {
+                    dirty.add(voName.equals("main") ? "pack" : voName);
+                }
+            }
+            // mtime-incremental: a pack is dirty if its atlas is missing or any source file is newer than it
+            for (String name : packNames) {
+                if (dirty.contains(name)) continue;
+                Array<FileHandle> files = filesByPack.get(name);
+                File atlasFile = new File(outputDir, name + ".atlas");
+                if (!atlasFile.exists()) {
+                    dirty.add(name);
+                    continue;
+                }
+                long atlasMtime = atlasFile.lastModified();
+                if (files != null) {
+                    for (FileHandle f : files) {
+                        if (f.lastModified() > atlasMtime) {
+                            dirty.add(name);
+                            break;
+                        }
+                    }
+                }
+            }
+            // remove atlases of packs that no longer exist (deleted / renamed packs)
+            File[] existingAtlases = outputDir.listFiles((dir, n) -> n.endsWith(".atlas"));
+            if (existingAtlases != null) {
+                for (File atlas : existingAtlases) {
+                    String atlasName = atlas.getName();
+                    atlasName = atlasName.substring(0, atlasName.length() - ".atlas".length());
+                    if (!packNames.contains(atlasName)) deletePackFiles(outputDir, atlasName);
+                }
+            }
+            // delete the previous output (atlas + page PNGs) of every pack that will be rebuilt,
+            // mirroring the cleanDirectory used by a full repack but scoped to dirty packs only
+            for (String name : dirty) deletePackFiles(outputDir, name);
+        }
+
+        // pack only dirty packs; skip empty packs (they produce no atlas, matching legacy behaviour)
+        for (String name : dirty) {
+            Array<FileHandle> files = filesByPack.get(name);
+            if (files == null || files.size == 0) continue;
+            TexturePacker tp = new TexturePacker(settings);
+            for (FileHandle entry : files) tp.addImage(entry.file());
             tp.pack(outputDir, name);
         }
+    }
+
+    /**
+     * Removes a pack's previous atlas output — the {@code .atlas} file plus its page PNGs — from the
+     * pack directory. This is the per-pack equivalent of the {@code cleanDirectory} used by a full
+     * (forced) repack, scoped to just the packs being rebuilt.
+     * <p>
+     * libGDX names the pages of a pack {@code name} as {@code name.png}, {@code name2.png},
+     * {@code name3.png}, ... (the first page has no numeric suffix, subsequent pages are numbered
+     * from 2), so page files are matched as {@code name\d*\.png}.
+     */
+    private void deletePackFiles(File outputDir, String name) {
+        String pagePattern = Pattern.quote(name) + "\\d*\\.png";
+        File[] pages = outputDir.listFiles((dir, n) -> n.matches(pagePattern));
+        if (pages != null) for (File f : pages) f.delete();
+        new File(outputDir, name + ".atlas").delete();
     }
 
     private int resizeTextures(String path, ResolutionEntryVO resolution) {
@@ -320,15 +427,56 @@ public class ResolutionManager extends Proxy {
     }
 
     public void rePackProjectImagesForAllResolutions(boolean reloadProjectData) {
-        rePackProjectImagesForAllResolutions(reloadProjectData, null);
+        rePackProjectImagesForAllResolutions(reloadProjectData, true, null);
     }
 
     public void rePackProjectImagesForAllResolutions(boolean reloadProjectData, RepackCallback callback) {
+        rePackProjectImagesForAllResolutions(reloadProjectData, true, callback);
+    }
+
+    /**
+     * Async repack across every resolution. {@code force} selects full ({@code true}, legacy
+     * behaviour used by the manual menu and settings change) vs incremental ({@code false}, used by
+     * asset import and resource deletion).
+     */
+    public void rePackProjectImagesForAllResolutions(boolean reloadProjectData, boolean force, RepackCallback callback) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG));
             try {
-                rePackProjectImagesForAllResolutionsSync();
+                rePackProjectImagesForAllResolutionsSync(force);
+                Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.HIDE_LOADING_DIALOG));
+                if (callback != null)
+                    callback.onRepack(true);
+            } catch (Exception e) {
+                if (callback != null)
+                    callback.onRepack(false);
+            }
+
+            if (reloadProjectData) {
+                Gdx.app.postRunnable(() -> {
+                    ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+                    ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
+                    resourceManager.loadCurrentProjectData(projectManager.getCurrentProjectPath(), currentResolutionName);
+                    PluginUIBridge.get(facade).loadCurrentProject();
+                    facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
+                });
+            }
+        });
+        executor.shutdown();
+    }
+
+    /**
+     * Async incremental repack that forces the given packs (by VO name) to be rebuilt across every
+     * resolution, in addition to any pack whose source files changed on disk. Used by the pack-dialog
+     * when regions move between packs (a move changes no source file mtimes).
+     */
+    public void rePackProjectImagesForAllResolutions(boolean reloadProjectData, ObjectSet<String> forcePacks, RepackCallback callback) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG));
+            try {
+                rePackProjectImagesForAllResolutionsSync(forcePacks);
                 Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.HIDE_LOADING_DIALOG));
                 if (callback != null)
                     callback.onRepack(true);
@@ -351,10 +499,22 @@ public class ResolutionManager extends Proxy {
     }
 
     public void rePackProjectImagesForAllResolutionsSync() {
+        rePackProjectImagesForAllResolutionsSync(true);
+    }
+
+    public void rePackProjectImagesForAllResolutionsSync(boolean force) {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        rePackProjectImages(projectManager.getCurrentProjectInfoVO().originalResolution);
+        rePackProjectImages(projectManager.getCurrentProjectInfoVO().originalResolution, force);
         for (ResolutionEntryVO resolutionEntryVO : projectManager.getCurrentProjectInfoVO().resolutions) {
-            rePackProjectImages(resolutionEntryVO);
+            rePackProjectImages(resolutionEntryVO, force);
+        }
+    }
+
+    public void rePackProjectImagesForAllResolutionsSync(ObjectSet<String> forcePacks) {
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        rePackProjectImages(projectManager.getCurrentProjectInfoVO().originalResolution, forcePacks);
+        for (ResolutionEntryVO resolutionEntryVO : projectManager.getCurrentProjectInfoVO().resolutions) {
+            rePackProjectImages(resolutionEntryVO, forcePacks);
         }
     }
 

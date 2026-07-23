@@ -83,7 +83,7 @@ public class ImageAsset extends Asset {
 
         if (!skipRepack) {
             ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-            resolutionManager.rePackProjectImagesForAllResolutionsSync();
+            resolutionManager.rePackProjectImagesForAllResolutionsSync(false);
         }
 
         for (FileHandle handle : new Array.ArrayIterator<>(files)) {

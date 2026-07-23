@@ -93,7 +93,7 @@ public class SpriteAnimationAtlasAsset extends Asset {
                     projectManager.getCurrentProjectInfoVO().animationsPacks.get("main").regions.add(region.name);
                 }
 
-                resolutionManager.rePackProjectImagesForAllResolutionsSync();
+                resolutionManager.rePackProjectImagesForAllResolutionsSync(false);
             }
         }
     }

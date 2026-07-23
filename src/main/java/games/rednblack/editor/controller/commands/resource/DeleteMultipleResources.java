@@ -1,6 +1,9 @@
 package games.rednblack.editor.controller.commands.resource;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.SortedSet;
 
+import com.badlogic.gdx.utils.ObjectSet;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.utils.AssetIOManager;
@@ -19,6 +22,12 @@ public class DeleteMultipleResources extends DeleteResourceCommand {
     @Override
     public void doAction() {
         SortedSet<String> selectedResources = ResourceSelectionProxy.get(facade).getSelectedResources();
+        // collect the packs holding the selected resources before deletion, to scope the repack
+        ObjectSet<String> forcePacks = new ObjectSet<>();
+        for (String resource : selectedResources) {
+            String packName = projectManager.findPackNameForRegion(resource);
+            if (packName != null) forcePacks.add(packName);
+        }
         for (String resource : selectedResources) {
             if (!AssetIOManager.getInstance().deleteAsset(sandbox.getRootEntity(), resource))
                 cancel();
@@ -26,7 +35,7 @@ public class DeleteMultipleResources extends DeleteResourceCommand {
 
         if (!isCancelled) {
             ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-            resolutionManager.rePackProjectImagesForAllResolutions(true);
+            resolutionManager.rePackProjectImagesForAllResolutions(true, forcePacks, null);
 
             SceneVO vo = sandbox.sceneVoFromItems();
             projectManager.saveCurrentProject(vo);
