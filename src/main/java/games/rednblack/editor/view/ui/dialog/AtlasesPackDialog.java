@@ -38,6 +38,7 @@ public class AtlasesPackDialog extends H2DDialog {
     private final ImageTabbedPane tabbedPane;
     private final String addNewNotification;
     private final String moveRegionNotification, updateCurrentNotification, removeNotification;
+    private final String applyNotification;
     private final SimpleListAdapter<String> mainPackAdapter, currentPackAdapter;
     private final VisTextButton insertButton, removeButton;
     private final VisLabel currentSelectedPackLabel;
@@ -50,14 +51,16 @@ public class AtlasesPackDialog extends H2DDialog {
     private final ListView<String> mainPackList;
     private final ListView<String> currentPackList;
 
-    public AtlasesPackDialog(String title, String add, String move, String updateList, String removeNotification) {
+    public AtlasesPackDialog(String title, String add, String move, String updateList, String removeNotification, String applyNotification) {
         super(title);
         addNewNotification = add;
         moveRegionNotification = move;
         updateCurrentNotification = updateList;
         this.removeNotification = removeNotification;
+        this.applyNotification = applyNotification;
 
         addCloseButton();
+        closeOnEscape();
         getContentTable().top().left();
 
         tabbedPane = new ImageTabbedPane("chip") {
@@ -174,6 +177,40 @@ public class AtlasesPackDialog extends H2DDialog {
         opTable.add(currentPackList.getMainTable()).uniformX().grow().row();
 
         getContentTable().add(opTable).grow().row();
+
+        // Bottom bar: OK/Cancel/Apply, mirroring SettingsDialog. Edits are buffered by the mediator
+        // in a copy of the packs VO, so Apply/OK send APPLY to commit (save + repack once); Cancel
+        // and the X/Escape close paths just discard the copy (the live VO is never touched until
+        // commit), so Cancel needs no notification.
+        VisTextButton okButton = StandardWidgetsFactory.createTextButton("OK");
+        okButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                facade.sendNotification(applyNotification);
+                close();
+            }
+        });
+        VisTextButton cancelButton = StandardWidgetsFactory.createTextButton("Cancel");
+        cancelButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                close();
+            }
+        });
+        VisTextButton applyButton = StandardWidgetsFactory.createTextButton("Apply");
+        applyButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                facade.sendNotification(applyNotification);
+            }
+        });
+        getButtonsTable().add(okButton).width(80).pad(2);
+        getButtonsTable().add(cancelButton).width(80).pad(2);
+        getButtonsTable().add(applyButton).width(80).pad(2);
+        getCell(getButtonsTable()).right();
 
         addListener(new InputListener(){
             @Override
