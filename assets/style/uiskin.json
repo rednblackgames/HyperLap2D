@@ -446,8 +446,9 @@
       focusBorder: border
     },
     close-window: {
-      down: button-red,
-      up: button-window-bg,
+      down: button-close-circle-red,
+      up: button-close-circle,
+      over: button-close-circle-over,
       imageUp: icon-close-white
     },
     close-node-window: {
@@ -456,6 +457,11 @@
       imageUp: close-node
     },
     close-panel: {
+      down: button-close-circle-red,
+      over: button-close-circle-over,
+      imageUp: icon-close-white
+    },
+    close-toast: {
       down: button-red,
       up: button-panel-bg,
       imageUp: icon-close-white
@@ -834,7 +840,7 @@
   com.kotcrab.vis.ui.widget.toast.Toast$ToastStyle: {
     default: {
       background: tooltip-bg,
-      closeButtonStyle: close-window
+      closeButtonStyle: close-toast
     },
     dark: {
       background: window-bg,

@@ -5,12 +5,17 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.Main;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.H2DDialogs;
+import games.rednblack.editor.view.ui.widget.SettingsTree;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
@@ -19,7 +24,17 @@ public class SettingsDialog extends H2DDialog {
     private static final String prefix = "games.rednblack.editor.view.ui.dialog.SettingsDialog";
     public static final String ADD_SETTINGS = prefix + ".ADD_SETTINGS";
 
-    private final VisTree<SettingsNode, SettingsNodeValue<?>> settingsTree;
+    /** Settings category name -> atlas region used as its tree icon. */
+    private static final ObjectMap<String, String> SETTINGS_ICONS = new ObjectMap<>();
+    static {
+        SETTINGS_ICONS.put("General", "icon-settings-general");
+        SETTINGS_ICONS.put("Sandbox", "icon-settings-sandbox");
+        SETTINGS_ICONS.put("Plugins", "icon-settings-plugins");
+        SETTINGS_ICONS.put("Live Preview", "icon-settings-live-preview");
+        SETTINGS_ICONS.put("Project Export", "icon-settings-export");
+    }
+
+    private final SettingsTree settingsTree;
 
     private static final float TRANSITION_TIME = 0.1f;
 
@@ -32,7 +47,7 @@ public class SettingsDialog extends H2DDialog {
 
         VisTable containerTable = new VisTable();
         VisScrollPane containerScrollPane = StandardWidgetsFactory.createScrollPane(containerTable);
-        settingsTree = new VisTree<>();
+        settingsTree = new SettingsTree();
         VisScrollPane treeScrollPane = StandardWidgetsFactory.createScrollPane(settingsTree);
 
         VisSplitPane splitPane = new VisSplitPane(treeScrollPane, containerScrollPane, false);
@@ -158,6 +173,7 @@ public class SettingsDialog extends H2DDialog {
         int existingIndex = settingsTree.getRootNodes().indexOf(node, false);
         if (existingIndex == -1) {
             node.setValue(nodeValue);
+            applyNodeIcon(node, nodeValue.getName());
             settingsTree.add(node);
         } else {
             settingsTree.getRootNodes().get(existingIndex).setValue(nodeValue);
@@ -170,11 +186,24 @@ public class SettingsDialog extends H2DDialog {
         int existingIndex = parent.getChildren().indexOf(node, false);
         if (existingIndex == -1) {
             node.setValue(nodeValue);
+            applyNodeIcon(node, nodeValue.getName());
             parent.add(node);
         } else {
             parent.getChildren().get(existingIndex).setValue(nodeValue);
         }
         return node;
+    }
+
+    /**
+     * Gives a settings node its category icon. Plugin-contributed nodes have arbitrary names and
+     * simply get no icon, so a missing mapping is not an error.
+     */
+    private void applyNodeIcon(SettingsNode node, String name) {
+        String region = SETTINGS_ICONS.get(name);
+        if (region == null) return;
+        Skin skin = VisUI.getSkin();
+        if (!skin.has(region, Drawable.class) && skin.getAtlas().findRegion(region) == null) return;
+        node.setIcon(skin.getDrawable(region));
     }
 
     public static class SettingsNode extends Tree.Node<SettingsNode, SettingsNodeValue<?>, VisLabel> {
