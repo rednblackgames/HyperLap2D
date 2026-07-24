@@ -15,10 +15,10 @@ public class WindowMenu extends H2DMenu {
 
     public WindowMenu() {
         super("Window");
-        MenuItem customVars = new MenuItem("Custom Variables", new MenuItemListener(CUSTOM_VARIABLES_EDITOR_OPEN, null, WINDOW_MENU));
-        MenuItem tags = new MenuItem("Tags", new MenuItemListener(TAGS_EDITOR_OPEN, null, WINDOW_MENU));
-        MenuItem animations = new MenuItem("Sprite Animations", new MenuItemListener(SPRITE_ANIMATIONS_EDITOR_OPEN, null, WINDOW_MENU));
-        MenuItem shaderUniforms = new MenuItem("Shader Uniforms", new MenuItemListener(SHADER_UNIFORMS_EDITOR_OPEN, null, WINDOW_MENU));
+        MenuItem customVars = new MenuItem("Custom Variables", icon("icon-menu-custom-vars"), new MenuItemListener(CUSTOM_VARIABLES_EDITOR_OPEN, null, WINDOW_MENU));
+        MenuItem tags = new MenuItem("Tags", icon("icon-menu-tags"), new MenuItemListener(TAGS_EDITOR_OPEN, null, WINDOW_MENU));
+        MenuItem animations = new MenuItem("Sprite Animations", icon("icon-menu-sprite-anim"), new MenuItemListener(SPRITE_ANIMATIONS_EDITOR_OPEN, null, WINDOW_MENU));
+        MenuItem shaderUniforms = new MenuItem("Shader Uniforms", icon("icon-menu-uniforms"), new MenuItemListener(SHADER_UNIFORMS_EDITOR_OPEN, null, WINDOW_MENU));
 
         addItem(tags);
         addItem(customVars);

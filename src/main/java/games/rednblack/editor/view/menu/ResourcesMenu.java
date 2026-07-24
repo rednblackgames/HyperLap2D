@@ -21,14 +21,14 @@ public class ResourcesMenu extends H2DMenu {
 
     public ResourcesMenu() {
         super("Resources");
-        MenuItem importToLibrary = new MenuItem("Import Resources...", new MenuItemListener(IMPORT_TO_LIBRARY, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.IMPORT_TO_LIBRARY));
-        MenuItem importSpriteSheet = new MenuItem("Import Sprite Sheet Animation...", new MenuItemListener(IMPORT_SPRITE_SHEET, null, RESOURCE_MENU));
-        MenuItem placeholders = new MenuItem("Create Placeholder...", new MenuItemListener(CREATE_PLACEHOLDER, null, RESOURCE_MENU));
-        MenuItem noise = new MenuItem("Create Perlin Noise...", new MenuItemListener(CREATE_NOISE, null, RESOURCE_MENU));
-        MenuItem repack = new MenuItem("Repack Assets", new MenuItemListener(MsgAPI.ACTION_REPACK, null, RESOURCE_MENU));
-        MenuItem imagesPack = new MenuItem("Images Atlases...", new MenuItemListener(OPEN_IMAGES_PACK, null, RESOURCE_MENU));
-        MenuItem animationsPack = new MenuItem("Animations Atlases...", new MenuItemListener(OPEN_ANIMATIONS_PACK, null, RESOURCE_MENU));
-        MenuItem shaderManager = new MenuItem("Shader Manager...", new MenuItemListener(OPEN_SHADER_MANAGER, null, RESOURCE_MENU));
+        MenuItem importToLibrary = new MenuItem("Import Resources...", icon("icon-menu-import"), new MenuItemListener(IMPORT_TO_LIBRARY, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.IMPORT_TO_LIBRARY));
+        MenuItem importSpriteSheet = new MenuItem("Import Sprite Sheet Animation...", icon("icon-menu-sprite-sheet"), new MenuItemListener(IMPORT_SPRITE_SHEET, null, RESOURCE_MENU));
+        MenuItem placeholders = new MenuItem("Create Placeholder...", icon("icon-menu-placeholder"), new MenuItemListener(CREATE_PLACEHOLDER, null, RESOURCE_MENU));
+        MenuItem noise = new MenuItem("Create Perlin Noise...", icon("icon-menu-noise"), new MenuItemListener(CREATE_NOISE, null, RESOURCE_MENU));
+        MenuItem repack = new MenuItem("Repack Assets", icon("icon-menu-repack"), new MenuItemListener(MsgAPI.ACTION_REPACK, null, RESOURCE_MENU));
+        MenuItem imagesPack = new MenuItem("Images Atlases...", icon("icon-menu-images-atlas"), new MenuItemListener(OPEN_IMAGES_PACK, null, RESOURCE_MENU));
+        MenuItem animationsPack = new MenuItem("Animations Atlases...", icon("icon-menu-animations-atlas"), new MenuItemListener(OPEN_ANIMATIONS_PACK, null, RESOURCE_MENU));
+        MenuItem shaderManager = new MenuItem("Shader Manager...", icon("icon-menu-shader"), new MenuItemListener(OPEN_SHADER_MANAGER, null, RESOURCE_MENU));
 
         addItem(importToLibrary);
         addSeparator();

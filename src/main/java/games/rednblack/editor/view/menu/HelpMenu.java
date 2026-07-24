@@ -16,7 +16,7 @@ public class HelpMenu extends H2DMenu {
 
     public HelpMenu() {
         super("Help");
-        MenuItem docs = new MenuItem("Documentation...", new ChangeListener() {
+        MenuItem docs = new MenuItem("Documentation...", icon("icon-menu-docs"), new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.net.openURI("https://hyperlap2d.rednblack.games/wiki/");
@@ -24,12 +24,12 @@ public class HelpMenu extends H2DMenu {
         });
         addItem(docs);
 
-        MenuItem console = new MenuItem("Console", new MenuItemListener(MsgAPI.OPEN_CONSOLE, null, HELP_MENU))
+        MenuItem console = new MenuItem("Console", icon("icon-menu-console"), new MenuItemListener(MsgAPI.OPEN_CONSOLE, null, HELP_MENU))
                 .setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.OPEN_CONSOLE));
         addItem(console);
         addSeparator();
 
-        MenuItem about = new MenuItem("About", new MenuItemListener(ABOUT_DIALOG_OPEN, null, HELP_MENU));
+        MenuItem about = new MenuItem("About", icon("icon-menu-about"), new MenuItemListener(ABOUT_DIALOG_OPEN, null, HELP_MENU));
         addItem(about);
     }
 

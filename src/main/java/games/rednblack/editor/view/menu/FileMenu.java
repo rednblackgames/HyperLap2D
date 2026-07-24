@@ -36,21 +36,21 @@ public class FileMenu extends H2DMenu {
 
     public FileMenu() {
         super("File"); //⌘⇧⌥
-        saveProject = new MenuItem("Save Project", new MenuItemListener(SAVE_PROJECT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.SAVE_PROJECT));
-        saveProjectAs = new MenuItem("Save Project As...", new MenuItemListener(SAVE_PROJECT_AS, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.SAVE_PROJECT_AS));
-        addItem(new MenuItem("New Project...", new MenuItemListener(NEW_PROJECT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.NEW_PROJECT)));
-        addItem(new MenuItem("Open Project...", new MenuItemListener(OPEN_PROJECT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.OPEN_PROJECT)));
+        saveProject = new MenuItem("Save Project", icon("icon-menu-save"), new MenuItemListener(SAVE_PROJECT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.SAVE_PROJECT));
+        saveProjectAs = new MenuItem("Save Project As...", icon("icon-menu-save-as"), new MenuItemListener(SAVE_PROJECT_AS, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.SAVE_PROJECT_AS));
+        addItem(new MenuItem("New Project...", icon("icon-menu-new"), new MenuItemListener(NEW_PROJECT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.NEW_PROJECT)));
+        addItem(new MenuItem("Open Project...", icon("icon-menu-open"), new MenuItemListener(OPEN_PROJECT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.OPEN_PROJECT)));
         addItem(saveProject);
         addItem(saveProjectAs);
         //
         addSeparator();
 
-        export = new MenuItem("Export Project", new MenuItemListener(EXPORT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.EXPORT_PROJECT));
+        export = new MenuItem("Export Project", icon("icon-menu-export"), new MenuItemListener(EXPORT, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.EXPORT_PROJECT));
         addItem(export);
-        addItem(new MenuItem("Settings...", new MenuItemListener(SETTINGS, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.OPEN_SETTINGS)));
+        addItem(new MenuItem("Settings...", icon("icon-menu-settings"), new MenuItemListener(SETTINGS, null, FILE_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.OPEN_SETTINGS)));
         //
         addSeparator();
-        MenuItem recentProjectsMenuItem = new MenuItem("Recent Projects");
+        MenuItem recentProjectsMenuItem = new MenuItem("Recent Projects", icon("icon-menu-recent"));
         recentProjectsPopupMenu = new H2DPopupMenu();
         recentProjectsMenuItem.setSubMenu(recentProjectsPopupMenu);
         recentProjectsMenuItems = new Array<>();
@@ -61,7 +61,7 @@ public class FileMenu extends H2DMenu {
         reInitRecent(prefs.getRecentHistory());
         //
         addSeparator();
-        addItem(new MenuItem("Exit", new MenuItemListener(EXIT, null , FILE_MENU)));
+        addItem(new MenuItem("Exit", icon("icon-menu-exit"), new MenuItemListener(EXIT, null , FILE_MENU)));
     }
 
     public String getFolderNameAndPath(String path) {
@@ -84,6 +84,7 @@ public class FileMenu extends H2DMenu {
     public void addRecent(ArrayList<String> paths) {
         for (String path : paths) {
             MenuItem menuItem = new MenuItem(getFolderNameAndPath(path) , new MenuItemListener(RECENT_PROJECTS, path, FILE_MENU));
+            menuItem.getImageCell().pad(5);
             recentProjectsMenuItems.add(menuItem);
             recentProjectsPopupMenu.addItem(menuItem);
         }
@@ -107,7 +108,8 @@ public class FileMenu extends H2DMenu {
             recentProjectsPopupMenu.addSeparator();
         }
 
-        MenuItem menuItem = new MenuItem("Clear history", new MenuItemListener(CLEAR_RECENT, null, FILE_MENU));
+        MenuItem menuItem = new MenuItem("Clear history", icon("icon-menu-clear"), new MenuItemListener(CLEAR_RECENT, null, FILE_MENU));
+        menuItem.getImageCell().pad(5);
         recentProjectsMenuItems.add(menuItem);
         recentProjectsPopupMenu.addItem(menuItem);
 

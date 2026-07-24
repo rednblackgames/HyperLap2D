@@ -1,26 +1,10 @@
-/*
- * ******************************************************************************
- *  * Copyright 2015 See AUTHORS file.
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *   http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
- *  *****************************************************************************
- */
-
 package games.rednblack.editor.view.ui;
 
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import games.rednblack.editor.event.MenuItemListener;
+import games.rednblack.editor.utils.MenuIcons;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.ui.widget.H2DPopupMenu;
 
@@ -37,9 +21,11 @@ public class UIDropDownMenu extends H2DPopupMenu {
 
     private final Array<String> currentActionList = new Array<>();
     private final HashMap<String, String> actionNames = new HashMap<>();
+    /** action constant -> skin region used as its context-menu icon (shared with the top menu bar). */
+    private final HashMap<String, String> actionIcons = new HashMap<>();
 
     public UIDropDownMenu() {
-        actionNames.put(MsgAPI.ACTION_GROUP_ITEMS, "Convert into composite");
+        actionNames.put(MsgAPI.ACTION_GROUP_ITEMS, "Wrap into composite");
         actionNames.put(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, "Edit composite");
         actionNames.put(MsgAPI.ACTION_CONVERT_TO_BUTTON, "Convert to button");
         actionNames.put(MsgAPI.ACTION_CUT, "Cut");
@@ -73,6 +59,45 @@ public class UIDropDownMenu extends H2DPopupMenu {
 
         actionNames.put(MsgAPI.ACTION_DUPLICATE_LIBRARY_ACTION, "Duplicate");
         actionNames.put(MsgAPI.ACTION_DELETE_LIBRARY_ACTION, "Delete");
+
+        actionIcons.put(MsgAPI.ACTION_GROUP_ITEMS, "icon-menu-composite");
+        actionIcons.put(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, "icon-menu-edit-composite");
+        actionIcons.put(MsgAPI.ACTION_CONVERT_TO_BUTTON, "icon-menu-button");
+        actionIcons.put(MsgAPI.ACTION_CUT, "icon-menu-cut");
+        actionIcons.put(MsgAPI.ACTION_COPY, "icon-menu-copy");
+        actionIcons.put(MsgAPI.ACTION_PASTE, "icon-menu-paste");
+        actionIcons.put(MsgAPI.ACTION_DELETE, "icon-menu-delete");
+        actionIcons.put(MsgAPI.SHOW_ADD_LIBRARY_DIALOG, "icon-menu-library-add");
+        actionIcons.put(MsgAPI.ACTION_CREATE_PRIMITIVE, "icon-menu-primitive");
+        actionIcons.put(MsgAPI.ACTION_CREATE_STICKY_NOTE, "icon-menu-sticky-note");
+
+        actionIcons.put(MsgAPI.ACTION_EXPORT_LIBRARY_ITEM, "icon-menu-export");
+        actionIcons.put(MsgAPI.ACTION_EXPORT_ACTION_ITEM, "icon-menu-export");
+        actionIcons.put(MsgAPI.ACTION_RENAME_ACTION_ITEM, "icon-menu-rename");
+        actionIcons.put(MsgAPI.ACTION_DELETE_IMAGE_RESOURCE, "icon-menu-delete");
+        actionIcons.put(MsgAPI.ACTION_DELETE_TINY_VG_RESOURCE, "icon-menu-delete");
+        actionIcons.put(MsgAPI.ACTION_DELETE_LIBRARY_ITEM, "icon-menu-delete");
+        actionIcons.put(MsgAPI.ACTION_DELETE_PARTICLE_EFFECT, "icon-menu-delete");
+        actionIcons.put(MsgAPI.ACTION_DELETE_TALOS_VFX, "icon-menu-delete");
+        actionIcons.put(MsgAPI.ACTION_DELETE_SPRITE_ANIMATION_RESOURCE, "icon-menu-delete");
+        actionIcons.put(MsgAPI.ACTION_DELETE_SPINE_ANIMATION_RESOURCE, "icon-menu-delete");
+
+        actionIcons.put(MsgAPI.ACTION_DELETE_MULTIPLE_RESOURCE, "icon-menu-delete-all");
+
+        actionIcons.put(MsgAPI.ACTION_UPDATE_RULER_POSITION, "icon-menu-ruler");
+
+        actionIcons.put(MsgAPI.ACTION_CHANGE_POLYGON_VERTEX_POSITION, "icon-menu-vertex");
+        actionIcons.put(MsgAPI.ACTION_DELETE_POLYGON_VERTEX, "icon-menu-vertex-delete");
+
+        actionIcons.put(MsgAPI.ACTION_CHANGE_ORIGIN_POSITION, "icon-menu-origin");
+        actionIcons.put(MsgAPI.ACTION_CENTER_ORIGIN_POSITION, "icon-menu-origin-center");
+
+        actionIcons.put(MsgAPI.ACTION_DUPLICATE_LIBRARY_ACTION, "icon-menu-duplicate");
+        actionIcons.put(MsgAPI.ACTION_DELETE_LIBRARY_ACTION, "icon-menu-delete");
+    }
+
+    private static Drawable icon(String region) {
+        return MenuIcons.get(region);
     }
 
     public void setActionName(String action, String name) {
@@ -95,8 +120,13 @@ public class UIDropDownMenu extends H2DPopupMenu {
         clear();
 
         for (int i = 0; i < currentActionList.size; i++) {
-            String itemName = actionNames.get(currentActionList.get(i));
-            MenuItem menuItem = new MenuItem(itemName, new MenuItemListener(ITEM_CLICKED, currentActionList.get(i)));
+            String action = currentActionList.get(i);
+            String itemName = actionNames.get(action);
+            Drawable itemIcon = icon(actionIcons.get(action));
+            MenuItem menuItem = itemIcon != null
+                    ? new MenuItem(itemName, itemIcon, new MenuItemListener(ITEM_CLICKED, action))
+                    : new MenuItem(itemName, new MenuItemListener(ITEM_CLICKED, action));
+            menuItem.getImageCell().pad(5);
             addItem(menuItem);
         }
     }

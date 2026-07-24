@@ -52,7 +52,7 @@ public abstract class BoxItemResource extends Group implements DraggableResource
     /**
      * The color of the border when the mouse hovers over the image.
      */
-    private final Color borderMouseOverColor = new Color(1f, 94f / 255f, 0f / 255f, 1f);
+    private final Color borderMouseOverColor = new Color(27f / 255f, 161f / 255f, 226f / 255f, 1f);
     /**
      * The color to fill the background of the image when the mouse hovers over the image.
      */

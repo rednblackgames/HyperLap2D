@@ -20,6 +20,7 @@ import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
 import games.rednblack.editor.controller.commands.ModifyStickyNoteCommand;
 import games.rednblack.editor.renderer.data.StickyNoteVO;
+import games.rednblack.editor.utils.MenuIcons;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.h2d.common.MsgAPI;
@@ -331,7 +332,7 @@ public class StickyNoteActor extends VisWindow {
 
     private void showPopupMenu() {
         H2DPopupMenu popupMenu = new H2DPopupMenu();
-        MenuItem remove = new MenuItem("Remove note");
+        MenuItem remove = new MenuItem("Remove note", MenuIcons.get("icon-menu-delete"));
         remove.addListener(
                 new ClickListener(Input.Buttons.LEFT) {
                     @Override
@@ -339,8 +340,9 @@ public class StickyNoteActor extends VisWindow {
                         facade.sendNotification(MsgAPI.ACTION_REMOVE_STICKY_NOTE, id);
                     }
                 });
+        remove.getImageCell().pad(5);
         popupMenu.addItem(remove);
-        MenuItem changeColor = new MenuItem("Change color");
+        MenuItem changeColor = new MenuItem("Change color", MenuIcons.get("icon-menu-color"));
         changeColor.addListener(
                 new ClickListener(Input.Buttons.LEFT) {
                     boolean init = false;
@@ -365,6 +367,7 @@ public class StickyNoteActor extends VisWindow {
                         PluginUIBridge.get().getSandbox().getUIStage().addActor(picker.fadeIn());
                     }
                 });
+        changeColor.getImageCell().pad(5);
         popupMenu.addItem(changeColor);
 
         Sandbox sandbox = PluginUIBridge.get().getSandbox();

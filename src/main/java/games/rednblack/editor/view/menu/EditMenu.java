@@ -22,11 +22,11 @@ public class EditMenu extends H2DMenu {
 
     public EditMenu() {
         super("Edit");
-        cut = new MenuItem("Cut", new MenuItemListener(CUT, null, EDIT_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.CUT));
-        copy = new MenuItem("Copy", new MenuItemListener(COPY, null, EDIT_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.COPY));
-        paste = new MenuItem("Paste", new MenuItemListener(PASTE, null, EDIT_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.PASTE));
-        undo = new MenuItem("Undo", new MenuItemListener(UNDO, null, EDIT_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.UNDO));
-        redo = new MenuItem("Redo", new MenuItemListener(REDO, null, EDIT_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.REDO));
+        cut = new MenuItem("Cut", icon("icon-menu-cut"), new MenuItemListener(CUT, null, EDIT_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.CUT));
+        copy = new MenuItem("Copy", icon("icon-menu-copy"), new MenuItemListener(COPY, null, EDIT_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.COPY));
+        paste = new MenuItem("Paste", icon("icon-menu-paste"), new MenuItemListener(PASTE, null, EDIT_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.PASTE));
+        undo = new MenuItem("Undo", icon("icon-menu-undo"), new MenuItemListener(UNDO, null, EDIT_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.UNDO));
+        redo = new MenuItem("Redo", icon("icon-menu-redo"), new MenuItemListener(REDO, null, EDIT_MENU)).setShortcut(KeyBindingsLayout.getShortcutList(KeyBindingsLayout.REDO));
         addItem(cut);
         addItem(copy);
         addItem(paste);
