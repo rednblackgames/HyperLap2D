@@ -298,7 +298,7 @@ public class UILayerBox extends UICollapsibleBox {
             setHeight(actor.getPrefHeight());
             VisImageButton lockBtn = new VisImageButton("layer-lock");
             VisImageButton visibleBtn = new VisImageButton("layer-visible");
-            add(lockBtn).left();
+            add(lockBtn).left().padRight(3);
             add(visibleBtn).left().padRight(6);
             add(actor.getLayerName()).expandX().fillX();
             setBackground(VisUI.getSkin().getDrawable(actor.isSelected() ? "layer-bg-over" : "layer-bg"));
@@ -328,7 +328,7 @@ public class UILayerBox extends UICollapsibleBox {
         public void setLayerItem(UILayerItem uiLayerItem) {
             this.uiLayerItem = uiLayerItem;
             cell.setActor(uiLayerItem);
-            cell.height(uiLayerItem.getHeight());
+            cell.height(uiLayerItem.getPrefHeight());
         }
 
         public UILayerItem getUiLayerItem() {
@@ -364,7 +364,7 @@ public class UILayerBox extends UICollapsibleBox {
             VisImageButton visibleBtn = new VisImageButton("layer-visible");
             visibleBtn.addListener(new CheckClickListener(visibleBtn, HIDE_LAYER, UNHIDE_LAYER));
 
-            add(lockBtn).left();
+            add(lockBtn).left().padRight(3);
             add(visibleBtn).left().padRight(6);
 
             layerNameField = StandardWidgetsFactory.createTextField("transparent", false);

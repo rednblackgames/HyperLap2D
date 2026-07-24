@@ -126,7 +126,6 @@
       vScrollKnob: scroll-knob-vertical,
       hScroll: scroll-horizontal,
       hScrollKnob: scroll-knob-horizontal,
-      background: border
     },
     list: {
       vScroll: scroll,

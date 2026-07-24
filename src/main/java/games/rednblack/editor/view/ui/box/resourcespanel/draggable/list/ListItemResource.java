@@ -45,7 +45,7 @@ public abstract class ListItemResource extends Button implements DraggableResour
         super(VisUI.getSkin().get(styleName, ListItemResourceStyle.class));
         sandbox = PluginUIBridge.get().getSandbox();
         icon = new Image(getStyle().resourceUp);
-        add(icon);
+        add(icon).padRight(6);
         add(new VisLabel(name, getStyle().labelStyle)).expandX().fillX();
     }
 
