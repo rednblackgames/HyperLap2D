@@ -104,8 +104,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         });
         treeTable.add(searchField).growX().padTop(5).colspan(2).padRight(6).row();
 
-        tree = new VisTree<>();
-        tree.setIconSpacing(5, 5);
+        tree = new UIItemsTree();
         scroller = StandardWidgetsFactory.createScrollPane(tree);
         scroller.setFlickScroll(false);
         treeTable.add(scroller).growX().padTop(5).maxHeight(550).colspan(2);
