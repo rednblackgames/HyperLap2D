@@ -102,7 +102,7 @@ public class SpriteAnimationSequenceAsset extends SpriteAnimationAtlasAsset {
 
         if (newAnimName != null) {
             projectManager.getCurrentProjectInfoVO().animationsPacks.get("main").regions.add(newAnimName);
-            resolutionManager.rePackProjectImagesForAllResolutionsSync(false);
+            rePackMainPackForAllResolutionsSync();
         }
     }
 }

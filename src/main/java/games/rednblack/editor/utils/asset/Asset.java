@@ -3,6 +3,7 @@ import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectSet;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.editor.proxy.ResourceManager;
@@ -78,6 +79,20 @@ public abstract class Asset implements IAsset {
             progressHandler.progressComplete();
         });
         executor.shutdown();
+    }
+
+    /**
+     * Incremental repack of every resolution, always rebuilding the "main" pack.
+     *
+     * Animation frames are added to the "main" animations pack, but they are written with the
+     * modification date of the file they came from, so the incremental mtime check can consider the
+     * pack up to date and leave the freshly imported regions out of the atlas. Naming the pack makes
+     * the rebuild unconditional.
+     */
+    protected void rePackMainPackForAllResolutionsSync() {
+        ObjectSet<String> forcePacks = new ObjectSet<>();
+        forcePacks.add("main");
+        resolutionManager.rePackProjectImagesForAllResolutionsSync(forcePacks);
     }
 
     @Override

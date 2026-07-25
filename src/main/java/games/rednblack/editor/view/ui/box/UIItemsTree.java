@@ -43,7 +43,7 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> {
 
     /** Light guide lines from a parent down to its children. */
     private static final Color LINE_COLOR = new Color(1f, 1f, 1f, 0.13f);
-    private static final float LINE_THICKNESS = 1f;
+    private static final float LINE_THICKNESS = 2f;
 
     private static final float DIMMED_ALPHA = 0.3f;
     private static final float PLACEHOLDER_ALPHA = 0.35f;   // in-place row of the picked-up node
