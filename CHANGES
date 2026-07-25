@@ -5,6 +5,7 @@
 - Remote control with built-in MCP server
 - Update libGDX to 1.14.2, Spine to 4.2.12, Talos Legacy to 1.6.0
 - Incremental atlas updates with repacks only when necessary
+- Z Ordering with drag and drop in Items Tree
 - [BREAK CHANGE] Fork Artemis-ODB into runtime codebase
 - [BREAK CHANGE] Any reference to Artemis' World was changed to `Engine`
 - [BREAK CHANGE] Replaced Artemis Reflection with libGDX Reflection

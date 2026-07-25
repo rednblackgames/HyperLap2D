@@ -105,6 +105,8 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         treeTable.add(searchField).growX().padTop(5).colspan(2).padRight(6).row();
 
         tree = new UIItemsTree();
+        ((UIItemsTree) tree).setDropListener(ordered ->
+                facade.sendNotification(MsgAPI.ACTION_REORDER_Z_INDEX, ordered));
         scroller = StandardWidgetsFactory.createScrollPane(tree);
         scroller.setFlickScroll(false);
         treeTable.add(scroller).growX().padTop(5).maxHeight(550).colspan(2);
@@ -200,6 +202,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         node.setName(name, zIndexComponent.getLayerName());
 
         node.setNodeValue(mainItemComponent.uniqueId, zIndexComponent.getGlobalZIndex());
+        node.getValue().setLayerName(zIndexComponent.getLayerName());
         if (mainItemComponent.entityType != EntityFactory.COMPOSITE_TYPE)
             node.setPad(0, 0, 4, 0);
         else
