@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -22,9 +21,9 @@ import com.kotcrab.vis.ui.util.dialog.OptionDialogAdapter;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.utils.ResourceGridAdapter;
 import games.rednblack.editor.utils.ResourceListAdapter;
-import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.H2DDialogs;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.listener.ScrollFocusListener;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
@@ -37,6 +36,13 @@ import java.util.Set;
 import static com.kotcrab.vis.ui.util.adapter.AbstractListAdapter.ListSelection.DEFAULT_KEY;
 
 public class AtlasesPackDialog extends H2DDialog {
+
+    private static final String TABLE_BG = "table-bg";
+    private static final String HEADER_BG = "table-header";
+    /** Inset of the rows from the container's border, matching ListTable's. */
+    private static final int LIST_PAD = 3;
+    private static final int HEADER_HEIGHT = 26;
+    private static final int MOVE_BUTTON_SIZE = 38;
 
     private final ImageTabbedPane tabbedPane;
     private final String addNewNotification;
@@ -173,36 +179,30 @@ public class AtlasesPackDialog extends H2DDialog {
         updateOpButtons();
         VisTable opButtonsContainer = new VisTable();
         VisTable opButtons = new VisTable();
-        opButtons.add(insertButton).size(44).pad(2).row();
-        opButtons.add(removeButton).size(44).pad(2).row();
+        opButtons.add(insertButton).size(MOVE_BUTTON_SIZE).pad(3).row();
+        opButtons.add(removeButton).size(MOVE_BUTTON_SIZE).pad(3).row();
         opButtonsContainer.add(opButtons);
 
-        // Titled panels: a header strip over each list so the two columns read as labelled panels
-        // rather than plain labels floating above gray boxes. Header uses the skin's "grey" (lighter
-        // than the list's DARK_GRAY) for a subtle title-bar contrast.
-        NinePatchDrawable headerBg = ((NinePatchDrawable) VisUI.getSkin().getDrawable("sticky-note"))
-                .tint(VisUI.getSkin().getColor("grey"));
-        NinePatchDrawable listBg = ((NinePatchDrawable) VisUI.getSkin().getDrawable("sticky-note"))
-                .tint(Color.DARK_GRAY);
+        // Titled panels sharing the look of the panels' data tables: a header band over a sunken,
+        // bordered container, so the two columns read as one designed pair rather than tinted boxes.
+        VisTable mainHeader = headerBand(StandardWidgetsFactory.createLabel("Main Pack",
+                PropertyGrid.style(PropertyGrid.SECTION_STYLE_LARGE), Align.center));
 
-        VisTable mainHeader = new VisTable();
-        mainHeader.background(headerBg);
-        mainHeader.add(new VisLabel("Main Pack", Align.center)).growX().pad(4).padLeft(8).padRight(8);
+        currentSelectedPackLabel = StandardWidgetsFactory.createLabel("Select Pack",
+                PropertyGrid.style(PropertyGrid.SECTION_STYLE_LARGE), Align.center);
+        VisTable currentHeader = headerBand(currentSelectedPackLabel);
 
-        currentSelectedPackLabel = new VisLabel("Select Pack", Align.center);
-        VisTable currentHeader = new VisTable();
-        currentHeader.background(headerBg);
-        currentHeader.add(currentSelectedPackLabel).growX().pad(4).padLeft(8).padRight(8);
-
-        mainPackList.getMainTable().background(listBg);
-        currentPackList.getMainTable().background(listBg);
+        mainPackList.getMainTable().background(VisUI.getSkin().getDrawable(TABLE_BG));
+        mainPackList.getMainTable().pad(LIST_PAD);
+        currentPackList.getMainTable().background(VisUI.getSkin().getDrawable(TABLE_BG));
+        currentPackList.getMainTable().pad(LIST_PAD);
 
         // Empty-state placeholders, layered over each list and toggled by refreshEmptyStates()
-        mainEmptyLabel = new VisLabel("No regions", Align.center);
-        mainEmptyLabel.setColor(new Color(1, 1, 1, 0.4f));
+        mainEmptyLabel = StandardWidgetsFactory.createLabel("No regions",
+                PropertyGrid.style(PropertyGrid.LABEL_STYLE_LARGE), Align.center);
         mainEmptyLabel.setTouchable(Touchable.disabled);
-        currentEmptyLabel = new VisLabel("Select a pack", Align.center);
-        currentEmptyLabel.setColor(new Color(1, 1, 1, 0.4f));
+        currentEmptyLabel = StandardWidgetsFactory.createLabel("Select a pack",
+                PropertyGrid.style(PropertyGrid.LABEL_STYLE_LARGE), Align.center);
         currentEmptyLabel.setTouchable(Touchable.disabled);
         Stack mainStack = new Stack();
         mainStack.add(mainPackList.getMainTable());
@@ -431,6 +431,14 @@ public class AtlasesPackDialog extends H2DDialog {
         if (tabbedPane.getActiveTab() == null)
             return null;
         return ((PackTab) tabbedPane.getActiveTab()).getName();
+    }
+
+    /** Header band of a pack column, drawn with the table header asset. */
+    private VisTable headerBand(VisLabel title) {
+        VisTable header = new VisTable();
+        header.background(VisUI.getSkin().getDrawable(HEADER_BG));
+        header.add(title).growX().height(HEADER_HEIGHT).padLeft(8).padRight(8);
+        return header;
     }
 
     private void updateOpButtons() {
