@@ -143,10 +143,11 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
                 public void run() {
                     Sandbox sandbox = PluginUIBridge.get().getSandbox();
                     ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-                    projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath());
-                    sandbox.loadCurrentProject();
-                    ImportPanelMediator.this.viewComponent.setDroppingView();
-                    facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
+                    projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath(), null, () -> {
+                        sandbox.loadCurrentProject();
+                        ImportPanelMediator.this.viewComponent.setDroppingView();
+                        facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
+                    });
                 }
             }, 0.6f);
         }

@@ -20,11 +20,12 @@ public class DeleteTalosVFX extends DeleteResourceCommand {
     public void doAction() {
         String particleName = notification.getBody();
         if (AssetIOManager.getInstance().deleteAsset(AssetsUtils.TYPE_TALOS_VFX, sandbox.getRootEntity(), particleName)) {
-            projectManager.loadProjectData(projectManager.getCurrentProjectPath());
-            sendNotification(DONE, particleName);
-            SceneVO vo = sandbox.sceneVoFromItems();
-            projectManager.saveCurrentProject(vo);
-            PluginUIBridge.get().getSandbox().loadCurrentProject();
+            projectManager.loadProjectData(projectManager.getCurrentProjectPath(), () -> {
+                sendNotification(DONE, particleName);
+                SceneVO vo = sandbox.sceneVoFromItems();
+                projectManager.saveCurrentProject(vo);
+                PluginUIBridge.get().getSandbox().loadCurrentProject();
+            });
         } else {
             cancel();
         }

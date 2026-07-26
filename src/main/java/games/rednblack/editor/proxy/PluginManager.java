@@ -128,9 +128,10 @@ public class PluginManager extends Proxy implements PluginAPI {
     @Override
     public void reLoadProject() {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath());
-        bridge.loadCurrentProject();
-        facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
+        projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath(), null, () -> {
+            bridge.loadCurrentProject();
+            facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
+        });
     }
 
     @Override

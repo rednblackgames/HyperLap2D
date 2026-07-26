@@ -77,10 +77,11 @@ public class UIResolutionBoxMediator extends Mediator<UIResolutionBox> {
                 float zoom = sandbox.getZoomPercent();
                 Vector3 cameraPos = new Vector3(sandbox.getCamera().position);
                 String name = sandbox.getSceneControl().getCurrentSceneVO().sceneName;
-                projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath(), resolutionEntryVO.name);
-                sandbox.loadScene(name);
-                sandbox.setZoomPercent(zoom, false);
-                sandbox.getCamera().position.set(cameraPos);
+                projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath(), resolutionEntryVO.name, () -> {
+                    sandbox.loadScene(name);
+                    sandbox.setZoomPercent(zoom, false);
+                    sandbox.getCamera().position.set(cameraPos);
+                });
                 break;
             case UIResolutionBox.DELETE_RESOLUTION_BTN_CLICKED:
                 resolutionEntryVO = notification.getBody();
@@ -91,9 +92,8 @@ public class UIResolutionBoxMediator extends Mediator<UIResolutionBox> {
                         result -> {
                             if (result == 1) {
                                 ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
-                                resolutionManager.deleteResolution(resolutionEntryVO);
                                 String sceneName = sandbox.getSceneControl().getCurrentSceneVO().sceneName;
-                                sandbox.loadScene(sceneName);
+                                resolutionManager.deleteResolution(resolutionEntryVO, () -> sandbox.loadScene(sceneName));
                             }
                         }).padBottom(20).pack();
                 break;

@@ -25,8 +25,11 @@ import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.resources.FontSizePair;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.editor.renderer.utils.*;
+import games.rednblack.editor.utils.AsyncAtlasLoader;
+import games.rednblack.editor.utils.FrameStepRunner;
+import games.rednblack.editor.view.ui.dialog.LoadingBarDialog;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.extension.spine.ResourceRetrieverAttachmentLoader;
-import games.rednblack.h2d.extension.spine.SpineDataObject;
 import games.rednblack.h2d.extension.spine.SpineDrawableLogic;
 import games.rednblack.h2d.extension.spine.SpineItemType;
 import games.rednblack.h2d.extension.talos.ResourceRetrieverAssetProvider;
@@ -53,9 +56,16 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private static final String TAG = ResourceManager.class.getCanonicalName();
     public static final String NAME = TAG;
 
+    /** How the loading bar is split between the three phases; the atlases dominate the wait. */
+    private static final float TEXTURES_LOAD_SHARE = 0.7f;
+    private static final float READ_LOAD_SHARE = 0.2f;
+    private static final float INSTALL_LOAD_SHARE = 0.1f;
+
     private final HashMap<String, ParticleEffectPool> particleEffects = new HashMap<>(1);
     private final HashMap<String, ParticleEffectInstancePool> talosVFXs = new HashMap<>(1);
     private final HashMap<String, TextureAtlas> currentProjectAtlas = new HashMap<>(1);
+    /** Atlases of the load being replaced, kept drawable until the new ones are in use. */
+    private final HashMap<String, TextureAtlas> previousProjectAtlas = new HashMap<>(1);
 
     private final HashMap<String, BVBDataObject> spineAnimAtlases = new HashMap<>();
     private final HashMap<String, Array<TextureAtlas.AtlasRegion>> spriteAnimAtlases = new HashMap<>();
@@ -70,6 +80,9 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private ResolutionManager resolutionManager;
     private SettingsManager settingsManager;
     private PixmapPacker fontPacker;
+
+    private boolean loading;
+    private Runnable pendingLoad;
 
     public ResourceManager() {
         super(NAME, null);
@@ -261,30 +274,203 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     @Override
     public SceneVO getSceneVO(String name) {
+        return getSceneVO(name, HyperJson.getJson());
+    }
+
+    /**
+     * @param json the parser to read with — off the render thread this has to be an instance of its
+     *             own, since the shared one caches type information as it reads.
+     */
+    private SceneVO getSceneVO(String name, Json json) {
         SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
         // TODO: this should be cached
         FileHandle file = Gdx.files.internal(sceneDataManager.getCurrProjectScenePathByName(name));
-        Json json = HyperJson.getJson();
         return json.fromJson(SceneVO.class, file.readString());
     }
 
-    public void loadCurrentProjectData(String projectPath, String curResolution) {
+    /**
+     * Reloads every project resource for the given resolution.
+     * <p>
+     * The load runs in three phases: texture pages are decoded off the render thread, then every
+     * resource that is pure parsing is read on a worker thread, and only the parts that need a GL
+     * context — Talos VFX, shader compilation, font pages — run on the render thread, one step per
+     * frame. So the editor keeps drawing and the loading dialog keeps moving throughout.
+     * <p>
+     * {@code onComplete} runs on the render thread once everything is in, and is where callers put
+     * whatever used to follow this call — the scene reload, notifications, and so on.
+     */
+    public void loadCurrentProjectData(String projectPath, String curResolution, Runnable onComplete) {
+        if (loading) {
+            // Every load reloads everything, so only the most recent request is worth keeping.
+            pendingLoad = () -> loadCurrentProjectData(projectPath, curResolution, onComplete);
+            return;
+        }
+        loading = true;
         packResolutionName = curResolution;
-        loadCurrentProjectAssets(projectPath + "/assets/" + curResolution + "/pack");
-        loadCurrentProjectParticles(projectPath + File.separator + ProjectManager.PARTICLE_DIR_PATH);
-        loadCurrentProjectTalosVFXs(projectPath + File.separator + ProjectManager.TALOS_VFX_DIR_PATH);
-        loadCurrentProjectSpineAnimations(projectPath + File.separator + ProjectManager.SPINE_DIR_PATH);
-        loadCurrentProjectSpriteAnimations(projectPath + File.separator + ProjectManager.SPRITE_DIR_PATH);
-        loadCurrentProjectBitmapFonts(projectPath + File.separator + ProjectManager.BITMAP_FONTS_DIR_PATH);
-        loadCurrentProjectTinyVGs(projectPath + File.separator + ProjectManager.TINY_VG_DIR_PATH);
-        loadCurrentProjectFonts();
-        loadCurrentProjectShaders(projectPath + File.separator + ProjectManager.SHADER_DIR_PATH);
 
-        removeInvalidResourceReferences();
+        facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG);
+        facade.sendNotification(LoadingBarDialog.SET_MESSAGE, "Loading textures...");
+        facade.sendNotification(LoadingBarDialog.SET_PROGRESS, 0f);
+
+        new AsyncAtlasLoader(projectPath + "/assets/" + curResolution + "/pack", new AsyncAtlasLoader.Listener() {
+            @Override
+            public void onProgress(float progress) {
+                facade.sendNotification(LoadingBarDialog.SET_PROGRESS, progress * TEXTURES_LOAD_SHARE);
+            }
+
+            @Override
+            public void onFinished(Map<String, TextureAtlas> atlases) {
+                installProjectAtlases(atlases);
+                readProjectData(projectPath, onComplete);
+            }
+
+            @Override
+            public void onFailed(Throwable error) {
+                error.printStackTrace();
+                facade.sendNotification(MsgAPI.SHOW_NOTIFICATION, "ERROR: Unable to load project textures!");
+                // Keep going with the atlases already in memory: better a stale editor than a stuck one.
+                readProjectData(projectPath, onComplete);
+            }
+        }).start();
     }
 
-    public void loadCurrentProjectBitmapFonts(String path) {
-        bitmapFonts.clear();
+    /**
+     * Swaps in the atlases that just finished loading. The previous ones stay on the GPU until the
+     * load is over: the editor keeps drawing meanwhile, and everything on screen still holds regions
+     * pointing at them.
+     */
+    private void installProjectAtlases(Map<String, TextureAtlas> atlases) {
+        previousProjectAtlas.putAll(currentProjectAtlas);
+        currentProjectAtlas.clear();
+        for (Entry<String, TextureAtlas> entry : atlases.entrySet()) {
+            String name = entry.getKey().equals("pack") ? "main" : entry.getKey();
+            currentProjectAtlas.put(name, entry.getValue());
+        }
+    }
+
+    /**
+     * Second phase: everything that is only parsing runs on a worker thread, into collections of its
+     * own. Nothing here touches the live resource maps, so the render thread keeps drawing the scene
+     * with the resources it already has until the install phase swaps them in.
+     */
+    private void readProjectData(String projectPath, Runnable onComplete) {
+        // Look up on the render thread what the readers need but must not reach for themselves.
+        SpineDrawableLogic spineDrawableLogic = null;
+        try {
+            spineDrawableLogic = (SpineDrawableLogic) PluginUIBridge.get(facade).getSceneLoader()
+                    .getExternalItemType(SpineItemType.SPINE_TYPE).getDrawable();
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+        SpineDrawableLogic spineDrawable = spineDrawableLogic;
+        float fontScaleMul = resolutionManager.getCurrentMul();
+
+        LoadedProjectData data = new LoadedProjectData();
+        Thread worker = new Thread(() -> {
+            long startedAt = System.nanoTime();
+            try {
+                // Confined to this thread: the shared parser is in use by the render thread.
+                Json json = HyperJson.newJson();
+
+                readStep("Loading particle effects...", 0f, () ->
+                        data.particleEffects = readParticles(projectPath + File.separator + ProjectManager.PARTICLE_DIR_PATH));
+                readStep("Loading Spine animations...", 0.15f, () ->
+                        data.spineAnimations = readSpineAnimations(projectPath + File.separator + ProjectManager.SPINE_DIR_PATH, spineDrawable, json));
+                readStep("Loading sprite animations...", 0.3f, () ->
+                        data.spriteAnimations = readSpriteAnimations(projectPath + File.separator + ProjectManager.SPRITE_DIR_PATH));
+                readStep("Loading bitmap fonts...", 0.4f, () ->
+                        data.bitmapFonts = readBitmapFonts(projectPath + File.separator + ProjectManager.BITMAP_FONTS_DIR_PATH));
+                readStep("Loading TinyVG assets...", 0.5f, () ->
+                        data.tinyVGs = readTinyVGs(projectPath + File.separator + ProjectManager.TINY_VG_DIR_PATH));
+                readStep("Loading fonts...", 0.6f, () ->
+                        data.fontData = readFonts(fontScaleMul, json));
+                readStep("Loading shaders...", 0.85f, () ->
+                        data.shaderSources = readShaderSources(projectPath + File.separator + ProjectManager.SHADER_DIR_PATH));
+                readStep("Checking resources...", 0.95f, () ->
+                        data.regionNames = collectRegionNames());
+
+                System.out.println("Read project resources in " + (System.nanoTime() - startedAt) / 1_000_000L + "ms");
+            } catch (Throwable t) {
+                t.printStackTrace();
+            } finally {
+                // Whatever happened, hand back to the render thread: a load that never finishes would
+                // leave the editor behind the loading dialog for good.
+                Gdx.app.postRunnable(() -> installProjectData(projectPath, data, onComplete));
+            }
+        }, "ProjectDataLoader");
+        worker.setDaemon(true);
+        worker.start();
+    }
+
+    /** Announces a read step and runs it; a resource that fails to parse must not stall the load. */
+    private void readStep(String message, float progress, Runnable action) {
+        Gdx.app.postRunnable(() -> {
+            facade.sendNotification(LoadingBarDialog.SET_MESSAGE, message);
+            facade.sendNotification(LoadingBarDialog.SET_PROGRESS, TEXTURES_LOAD_SHARE + READ_LOAD_SHARE * progress);
+        });
+        try {
+            action.run();
+        } catch (Throwable t) {
+            // The step's resources stay as they were, which is quiet enough to be missed: say it.
+            t.printStackTrace();
+            Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.SHOW_NOTIFICATION,
+                    "ERROR: " + message.replace("...", " failed")));
+        }
+    }
+
+    /**
+     * Third phase: swap in what the worker read, and run the parts that need a GL context. Each step
+     * is a frame of its own, but they are all short — the long work already happened off-thread.
+     */
+    private void installProjectData(String projectPath, LoadedProjectData data, Runnable onComplete) {
+        new FrameStepRunner()
+                .add("Loading Talos VFX...", () -> loadCurrentProjectTalosVFXs(projectPath + File.separator + ProjectManager.TALOS_VFX_DIR_PATH))
+                .add("Loading shaders...", () -> installShaders(data.shaderSources))
+                .add("Loading fonts...", () -> installFonts(data.fontData))
+                .add("Checking resources...", () -> {
+                    swap(particleEffects, data.particleEffects);
+                    swap(spineAnimAtlases, data.spineAnimations);
+                    swap(spriteAnimAtlases, data.spriteAnimations);
+                    swap(bitmapFonts, data.bitmapFonts);
+                    if (data.tinyVGs != null) {
+                        swap(tinyVGs, data.tinyVGs.working);
+                        swap(originalTinyVGs, data.tinyVGs.original);
+                    }
+                    removeInvalidResourceReferences(data.regionNames);
+                })
+                .run((name, progress) -> {
+                    facade.sendNotification(LoadingBarDialog.SET_MESSAGE, name);
+                    facade.sendNotification(LoadingBarDialog.SET_PROGRESS, TEXTURES_LOAD_SHARE + READ_LOAD_SHARE + INSTALL_LOAD_SHARE * progress);
+                }, () -> finishProjectDataLoad(onComplete));
+    }
+
+    /** A step that failed to read leaves its map alone rather than emptying it. */
+    private static <K, V> void swap(HashMap<K, V> target, HashMap<K, V> loaded) {
+        if (loaded == null) return;
+        target.clear();
+        target.putAll(loaded);
+    }
+
+    private void finishProjectDataLoad(Runnable onComplete) {
+        try {
+            if (onComplete != null) onComplete.run();
+        } finally {
+            // The callback has rebuilt the scene against the new atlases, so nothing points here anymore.
+            for (TextureAtlas atlas : previousProjectAtlas.values())
+                atlas.dispose();
+            previousProjectAtlas.clear();
+
+            facade.sendNotification(MsgAPI.HIDE_LOADING_DIALOG);
+            loading = false;
+
+            Runnable pending = pendingLoad;
+            pendingLoad = null;
+            if (pending != null) pending.run();
+        }
+    }
+
+    private HashMap<String, BitmapFont> readBitmapFonts(String path) {
+        HashMap<String, BitmapFont> loaded = new HashMap<>();
         FileHandle sourceDir = new FileHandle(path);
         for (FileHandle entry : sourceDir.list()) {
             File file = entry.file();
@@ -296,28 +482,29 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
             for (String page : bitmapFontData.imagePaths) {
                 pages.add(getTextureRegion(FilenameUtils.getBaseName(page)));
             }
+            // Pages come from the atlases, so nothing here creates a texture.
             BitmapFont bitmapFont = new BitmapFont(bitmapFontData, pages, false);
-            bitmapFonts.put(bitmapFont.getData().name, bitmapFont);
+            loaded.put(bitmapFont.getData().name, bitmapFont);
         }
+        return loaded;
     }
 
-    public void loadCurrentProjectTinyVGs(String path) {
-        tinyVGs.clear();
-        originalTinyVGs.clear();
-
+    private TinyVGSet readTinyVGs(String path) {
+        TinyVGSet loaded = new TinyVGSet();
         FileHandle sourceDir = new FileHandle(path);
         for (FileHandle entry : sourceDir.list()) {
             File file = entry.file();
             String filename = file.getName();
             if (file.isDirectory() || filename.endsWith(".DS_Store")) continue;
 
-            tinyVGs.put(entry.nameWithoutExtension(), TinyVGUtils.load(entry));
-            originalTinyVGs.put(entry.nameWithoutExtension(), TinyVGUtils.load(entry));
+            loaded.working.put(entry.nameWithoutExtension(), TinyVGUtils.load(entry));
+            loaded.original.put(entry.nameWithoutExtension(), TinyVGUtils.load(entry));
         }
+        return loaded;
     }
 
-    private void loadCurrentProjectParticles(String path) {
-        particleEffects.clear();
+    private HashMap<String, ParticleEffectPool> readParticles(String path) {
+        HashMap<String, ParticleEffectPool> loaded = new HashMap<>();
         FileHandle sourceDir = new FileHandle(path);
         for (FileHandle entry : sourceDir.list()) {
             File file = entry.file();
@@ -333,8 +520,9 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 } catch (Exception ignore) { }
             }
             ParticleEffectPool effectPool = new ParticleEffectPool(particleEffect, 1, games.rednblack.editor.renderer.resources.ResourceManager.PARTICLE_POOL_SIZE);
-            particleEffects.put(filename, effectPool);
+            loaded.put(filename, effectPool);
         }
+        return loaded;
     }
 
     private void loadCurrentProjectTalosVFXs(String path) {
@@ -387,10 +575,9 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return asset;
     }
 
-    private void loadCurrentProjectSpineAnimations(String path) {
-        spineAnimAtlases.clear();
+    private HashMap<String, BVBDataObject> readSpineAnimations(String path, SpineDrawableLogic spineDrawableLogic, Json json) {
+        HashMap<String, BVBDataObject> loaded = new HashMap<>();
         FileHandle sourceDir = new FileHandle(path);
-        SpineDrawableLogic spineDrawableLogic = (SpineDrawableLogic) PluginUIBridge.get(facade).getSceneLoader().getExternalItemType(SpineItemType.SPINE_TYPE).getDrawable();
         for (FileHandle entry : sourceDir.list()) {
             if (entry.file().isDirectory()) {
                 String animName = FilenameUtils.removeExtension(entry.file().getName());
@@ -402,16 +589,17 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
                 FileHandle bvb = Gdx.files.internal(entry.file().getAbsolutePath() + File.separator + animName + "-bvb.json");
                 if (bvb.exists())
-                    spineDataObject.bvbData = HyperJson.getJson().fromJson(BVB.class, bvb);
+                    spineDataObject.bvbData = json.fromJson(BVB.class, bvb);
 
-                spineAnimAtlases.put(animName, spineDataObject);
+                loaded.put(animName, spineDataObject);
             }
         }
 
+        return loaded;
     }
 
-    private void loadCurrentProjectSpriteAnimations(String path) {
-        spriteAnimAtlases.clear();
+    private HashMap<String, Array<TextureAtlas.AtlasRegion>> readSpriteAnimations(String path) {
+        HashMap<String, Array<TextureAtlas.AtlasRegion>> loaded = new HashMap<>();
         FileHandle sourceDir = new FileHandle(path);
         for (FileHandle entry : sourceDir.list()) {
             if (entry.file().isDirectory()) {
@@ -423,41 +611,30 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                         break;
                 }
                 if (regions != null)
-                    spriteAnimAtlases.put(animName, regions);
+                    loaded.put(animName, regions);
             }
         }
-    }
-
-    public void loadCurrentProjectAssets(String packFolderPath) {
-        for (TextureAtlas atlas : currentProjectAtlas.values()) {
-            atlas.dispose();
-        }
-        currentProjectAtlas.clear();
-
-        FileHandle folder = new FileHandle(packFolderPath);
-        for (FileHandle file : folder.list()) {
-            if (file.extension().equals("atlas")) {
-                String name = file.nameWithoutExtension().equals("pack") ? "main" : file.nameWithoutExtension();
-                currentProjectAtlas.put(name, new TextureAtlas(file));
-            }
-        }
+        return loaded;
     }
 
     public ArrayList<FontSizePair> getProjectRequiredFontsList() {
+        return getProjectRequiredFontsList(HyperJson.getJson());
+    }
+
+    private ArrayList<FontSizePair> getProjectRequiredFontsList(Json json) {
         ObjectSet<FontSizePair> fontsToLoad = new ObjectSet<>();
 
+        // Library items are shared by every scene, so they are collected once and not per scene.
+        for (CompositeItemVO library : getProjectVO().libraryItems.values())
+            fontsToLoad.addAll(library.getRecursiveFontList());
+
         for (int i = 0; i < getProjectVO().scenes.size(); i++) {
-            SceneVO scene = getSceneVO(getProjectVO().scenes.get(i).sceneName);
+            SceneVO scene = getSceneVO(getProjectVO().scenes.get(i).sceneName, json);
             CompositeItemVO composite = scene.composite;
             if (composite == null) {
                 continue;
             }
-            Array<FontSizePair> fonts = composite.getRecursiveFontList();
-            for (CompositeItemVO library : getProjectVO().libraryItems.values()) {
-                Array<FontSizePair>  libFonts = library.getRecursiveFontList();
-                fontsToLoad.addAll(libFonts);
-            }
-            fontsToLoad.addAll(fonts);
+            fontsToLoad.addAll(composite.getRecursiveFontList());
         }
 
         ArrayList<FontSizePair> result = new ArrayList<>();
@@ -466,10 +643,14 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         return result;
     }
 
-    public void loadCurrentProjectFonts() {
-        fonts.clear();
+    /**
+     * Rasterizes every font the project needs. Only the glyph packing happens here — turning the
+     * packer's pages into textures needs a GL context and is left to {@link #installFonts}.
+     */
+    private HashMap<FontSizePair, PreparedFont> readFonts(float scaleMul, Json json) {
+        HashMap<FontSizePair, PreparedFont> loaded = new HashMap<>();
 
-        ArrayList<FontSizePair> requiredFonts = getProjectRequiredFontsList();
+        ArrayList<FontSizePair> requiredFonts = getProjectRequiredFontsList(json);
         for (int i = 0; i < requiredFonts.size(); i++) {
             FontSizePair pair = requiredFonts.get(i);
             FileHandle fontFile;
@@ -477,43 +658,75 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 fontFile = getTTFSafely(pair.fontName);
                 FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
                 FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-                parameter.size = Math.round(pair.fontSize * resolutionManager.getCurrentMul());
+                parameter.size = Math.round(pair.fontSize * scaleMul);
                 parameter.packer = fontPacker;
-                BitmapFont font = generator.generateFont(parameter);
-                font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-                font.setUseIntegerPositions(false);
-                fonts.put(pair, font);
+
+                FreeTypeFontGenerator.FreeTypeBitmapFontData data = new FreeTypeFontGenerator.FreeTypeBitmapFontData();
+                data.regions = new Array<>();
+                generator.generateData(parameter, data);
+                loaded.put(pair, new PreparedFont(data, parameter));
+
                 generator.dispose();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        return loaded;
     }
-    
-    private void loadCurrentProjectShaders(String path) {
-    	Iterator<Entry<String, ShaderProgram>> it = shaderPrograms.entrySet().iterator();
-    	while (it.hasNext()) {
-    		Entry<String, ShaderProgram> pair = it.next();
-    		pair.getValue().dispose();
-    		it.remove(); 
-    	}
-        shaderPrograms.clear();
+
+    private void installFonts(HashMap<FontSizePair, PreparedFont> loaded) {
+        if (loaded == null) return;
+
+        fonts.clear();
+        for (Entry<FontSizePair, PreparedFont> entry : loaded.entrySet()) {
+            PreparedFont prepared = entry.getValue();
+            fontPacker.updateTextureRegions(prepared.data.regions, prepared.parameter.minFilter,
+                    prepared.parameter.magFilter, prepared.parameter.genMipMaps);
+            if (prepared.data.regions.isEmpty()) {
+                System.err.println("No texture regions generated for font: " + entry.getKey().fontName);
+                continue;
+            }
+
+            BitmapFont font = new BitmapFont(prepared.data, prepared.data.regions, true);
+            font.setOwnsTexture(false);
+            font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+            font.setUseIntegerPositions(false);
+            fonts.put(entry.getKey(), font);
+        }
+    }
+
+    /** Shader sources by name; compiling them is a GL job, see {@link #installShaders}. */
+    private HashMap<String, String[]> readShaderSources(String path) {
+        HashMap<String, String[]> loaded = new HashMap<>();
         path += File.separator;
         FileHandle sourceDir = new FileHandle(path);
         for (FileHandle entry : sourceDir.list()) {
             File file = entry.file();
             String filename = file.getName().replace(".vert", "").replace(".frag", "");
-            if (file.isDirectory() || filename.endsWith(".DS_Store") || shaderPrograms.containsKey(filename)) continue;
+            if (file.isDirectory() || filename.endsWith(".DS_Store") || loaded.containsKey(filename)) continue;
             // check if pair exists.
-            if(Gdx.files.internal(path + filename + ".vert").exists() && Gdx.files.internal(path + filename + ".frag").exists()) {
-                ShaderProgram shaderProgram = ShaderCompiler.compileShader(Gdx.files.internal(path + filename + ".vert"), Gdx.files.internal(path + filename + ".frag"));
-                if (!shaderProgram.isCompiled()) {
-                    System.out.println("Error compiling shader: " + shaderProgram.getLog());
-                }
-                shaderPrograms.put(filename, shaderProgram);
-            }
+            FileHandle vertex = Gdx.files.internal(path + filename + ".vert");
+            FileHandle fragment = Gdx.files.internal(path + filename + ".frag");
+            if (vertex.exists() && fragment.exists())
+                loaded.put(filename, new String[]{vertex.readString(), fragment.readString()});
         }
+        return loaded;
+    }
 
+    private void installShaders(HashMap<String, String[]> loaded) {
+        if (loaded == null) return;
+
+        for (ShaderProgram shaderProgram : shaderPrograms.values())
+            shaderProgram.dispose();
+        shaderPrograms.clear();
+
+        for (Entry<String, String[]> entry : loaded.entrySet()) {
+            ShaderProgram shaderProgram = ShaderCompiler.compileShader(entry.getValue()[0], entry.getValue()[1]);
+            if (!shaderProgram.isCompiled()) {
+                System.out.println("Error compiling shader: " + shaderProgram.getLog());
+            }
+            shaderPrograms.put(entry.getKey(), shaderProgram);
+        }
     }
 
     public void reloadShader(String shaderName) {
@@ -642,13 +855,24 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     }
 
     public void removeInvalidResourceReferences() {
+        removeInvalidResourceReferences(collectRegionNames());
+    }
+
+    /**
+     * Same sweep, against a set of region names collected up front. {@link #hasTextureRegion} walks
+     * every atlas linearly, which on a project with thousands of regions turns this into a quadratic
+     * scan; the set makes each check a lookup.
+     */
+    private void removeInvalidResourceReferences(HashSet<String> regionNames) {
+        if (regionNames == null) return;
+
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         HashSet<String> invalidImages = new HashSet<>();
 
         for (TexturePackVO packVO : projectManager.currentProjectInfoVO.imagesPacks.values()) {
             invalidImages.clear();
             for (String region : packVO.regions) {
-                if (!hasTextureRegion(region))
+                if (!regionNames.contains(region))
                     invalidImages.add(region);
             }
             if (invalidImages.size() > 0)
@@ -658,11 +882,48 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         for (TexturePackVO packVO : projectManager.currentProjectInfoVO.animationsPacks.values()) {
             invalidImages.clear();
             for (String region : packVO.regions) {
-                if (!hasTextureRegion(region))
+                if (!regionNames.contains(region))
                     invalidImages.add(region);
             }
             if (invalidImages.size() > 0)
                 packVO.regions.removeAll(invalidImages);
+        }
+    }
+
+    private HashSet<String> collectRegionNames() {
+        HashSet<String> names = new HashSet<>();
+        for (TextureAtlas atlas : currentProjectAtlas.values()) {
+            for (TextureAtlas.AtlasRegion region : atlas.getRegions())
+                names.add(region.name);
+        }
+        return names;
+    }
+
+    /** What the background phase reads, waiting to be installed on the render thread. */
+    private static class LoadedProjectData {
+        HashMap<String, ParticleEffectPool> particleEffects;
+        HashMap<String, BVBDataObject> spineAnimations;
+        HashMap<String, Array<TextureAtlas.AtlasRegion>> spriteAnimations;
+        HashMap<String, BitmapFont> bitmapFonts;
+        TinyVGSet tinyVGs;
+        HashMap<FontSizePair, PreparedFont> fontData;
+        HashMap<String, String[]> shaderSources;
+        HashSet<String> regionNames;
+    }
+
+    /** TinyVGs are parsed twice on purpose: the editor edits one copy and compares against the other. */
+    private static class TinyVGSet {
+        final HashMap<String, TinyVG> working = new HashMap<>();
+        final HashMap<String, TinyVG> original = new HashMap<>();
+    }
+
+    private static class PreparedFont {
+        final FreeTypeFontGenerator.FreeTypeBitmapFontData data;
+        final FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+
+        PreparedFont(FreeTypeFontGenerator.FreeTypeBitmapFontData data, FreeTypeFontGenerator.FreeTypeFontParameter parameter) {
+            this.data = data;
+            this.parameter = parameter;
         }
     }
 }

@@ -445,22 +445,17 @@ public class ResolutionManager extends Proxy {
             Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG));
             try {
                 rePackProjectImagesForAllResolutionsSync(force);
-                Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.HIDE_LOADING_DIALOG));
+                hideLoadingDialogUnless(reloadProjectData);
                 if (callback != null)
                     callback.onRepack(true);
             } catch (Exception e) {
+                hideLoadingDialogUnless(reloadProjectData);
                 if (callback != null)
                     callback.onRepack(false);
             }
 
             if (reloadProjectData) {
-                Gdx.app.postRunnable(() -> {
-                    ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-                    ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
-                    resourceManager.loadCurrentProjectData(projectManager.getCurrentProjectPath(), currentResolutionName);
-                    PluginUIBridge.get(facade).loadCurrentProject();
-                    facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
-                });
+                Gdx.app.postRunnable(() -> reloadProjectData(currentResolutionName));
             }
         });
         executor.shutdown();
@@ -477,25 +472,35 @@ public class ResolutionManager extends Proxy {
             Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG));
             try {
                 rePackProjectImagesForAllResolutionsSync(forcePacks);
-                Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.HIDE_LOADING_DIALOG));
+                hideLoadingDialogUnless(reloadProjectData);
                 if (callback != null)
                     callback.onRepack(true);
             } catch (Exception e) {
+                hideLoadingDialogUnless(reloadProjectData);
                 if (callback != null)
                     callback.onRepack(false);
             }
 
             if (reloadProjectData) {
-                Gdx.app.postRunnable(() -> {
-                    ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-                    ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
-                    resourceManager.loadCurrentProjectData(projectManager.getCurrentProjectPath(), currentResolutionName);
-                    PluginUIBridge.get(facade).loadCurrentProject();
-                    facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
-                });
+                Gdx.app.postRunnable(() -> reloadProjectData(currentResolutionName));
             }
         });
         executor.shutdown();
+    }
+
+    /** The reload that follows a repack keeps the dialog up and closes it itself when it is done. */
+    private void hideLoadingDialogUnless(boolean reloadFollows) {
+        if (reloadFollows) return;
+        Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.HIDE_LOADING_DIALOG));
+    }
+
+    private void reloadProjectData(String resolutionName) {
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+        ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
+        resourceManager.loadCurrentProjectData(projectManager.getCurrentProjectPath(), resolutionName, () -> {
+            PluginUIBridge.get(facade).loadCurrentProject();
+            facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
+        });
     }
 
     public void rePackProjectImagesForAllResolutionsSync() {
@@ -519,6 +524,11 @@ public class ResolutionManager extends Proxy {
     }
 
     public void deleteResolution(ResolutionEntryVO resolutionEntryVO) {
+        deleteResolution(resolutionEntryVO, null);
+    }
+
+    /** {@code onComplete} runs on the render thread once the project has been reloaded. */
+    public void deleteResolution(ResolutionEntryVO resolutionEntryVO, Runnable onComplete) {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         try {
             FileUtils.deleteDirectory(new File(projectManager.getCurrentProjectPath() + "/assets/" + resolutionEntryVO.name));
@@ -532,7 +542,7 @@ public class ResolutionManager extends Proxy {
         projectInfo.resolutions.removeValue(resolutionEntryVO, false);
         Facade.getInstance().sendNotification(RESOLUTION_LIST_CHANGED);
         projectManager.saveCurrentProject();
-        projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath(), "orig");
+        projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath(), "orig", onComplete);
     }
 
     public Array<ResolutionEntryVO> getResolutions() {

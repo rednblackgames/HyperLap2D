@@ -172,25 +172,36 @@ public class ProjectManager extends Proxy {
         settingsManager.setLastOpenedPath(projectFolder.parent().path());
 
         // here we load all data
-        openProjectAndLoadAllData(projectFolder.path());
-        PluginUIBridge.get(facade).loadCurrentProject();
+        openProjectAndLoadAllData(projectFolder.path(), null, () -> {
+            PluginUIBridge.get(facade).loadCurrentProject();
 
-        facade.sendNotification(ProjectManager.PROJECT_OPENED);
+            facade.sendNotification(ProjectManager.PROJECT_OPENED);
 
-        //Set title with opened file path
-        setWindowTitle(getFormattedTitle(path));
+            //Set title with opened file path
+            setWindowTitle(getFormattedTitle(path));
+        });
     }
 
     public void openProjectAndLoadAllData(String projectPath) {
-        openProjectAndLoadAllData(projectPath, null);
+        openProjectAndLoadAllData(projectPath, null, null);
     }
 
     public void openProjectAndLoadAllData(String projectPath, String resolution) {
+        openProjectAndLoadAllData(projectPath, resolution, null);
+    }
+
+    /**
+     * Loading is asynchronous: {@code onComplete} runs on the render thread once every resource is
+     * in memory, and is where anything that depends on them belongs.
+     */
+    public void openProjectAndLoadAllData(String projectPath, String resolution, Runnable onComplete) {
         String prjFilePath = projectPath + "/project.h2d";
         FileHandle projectFile = Gdx.files.internal(prjFilePath);
         if (!projectFile.exists() || !projectFile.extension().equals("h2d")
-                || !projectFile.file().canRead() || !projectFile.file().canWrite())
+                || !projectFile.file().canRead() || !projectFile.file().canWrite()) {
+            if (onComplete != null) onComplete.run();
             return;
+        }
 
         PreferencesManager prefs = PreferencesManager.getInstance();
         prefs.buildRecentHistory();
@@ -228,14 +239,15 @@ public class ProjectManager extends Proxy {
             currentProjectPath = projectPath;
             saveCurrentProject();
 
-            checkForConsistency(projectPath);
-            loadProjectData(projectPath);
+            loadProjectData(projectPath, onComplete);
 
             try {
                 addFileWatcher(projectPath);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else if (onComplete != null) {
+            onComplete.run();
         }
     }
 
@@ -324,27 +336,15 @@ public class ProjectManager extends Proxy {
         pvm.start();
     }
 
-    private void checkForConsistency(String projectPath) {
-        // check if current project requires cleanup
-
-        FileHandle sourceDir = new FileHandle(projectPath + "/scenes/");
-        for (FileHandle entry : sourceDir.list(HyperLap2DUtils.DT_FILTER)) {
-            if (!entry.file().isDirectory()) {
-                Json json = HyperJson.getJson();
-                json.setIgnoreUnknownFields(true);
-                SceneVO sceneVO = json.fromJson(SceneVO.class, entry);
-                if (sceneVO.composite == null) continue;
-                Array<MainItemVO> items = sceneVO.composite.getAllItems();
-
-                for (CompositeItemVO libraryItem : currentProjectInfoVO.libraryItems.values()) {
-                    if (libraryItem == null) continue;
-                    items = libraryItem.getAllItems();
-                }
-            }
-        }
+    public void loadProjectData(String projectPath) {
+        loadProjectData(projectPath, null);
     }
 
-    public void loadProjectData(String projectPath) {
+    /**
+     * Loading is asynchronous: {@code onComplete} runs on the render thread once every resource is
+     * in memory, and is where anything that depends on them belongs.
+     */
+    public void loadProjectData(String projectPath, Runnable onComplete) {
         // All legit loading assets
         ResolutionManager resolutionManager = facade.retrieveProxy(ResolutionManager.NAME);
         File pack = new File(currentProjectPath + "/assets/" + resolutionManager.currentResolutionName + "/pack/pack.atlas");
@@ -353,7 +353,7 @@ public class ProjectManager extends Proxy {
             resolutionManager.rePackProjectImagesForAllResolutionsSync();
         }
         ResourceManager resourceManager = facade.retrieveProxy(ResourceManager.NAME);
-        resourceManager.loadCurrentProjectData(projectPath, resolutionManager.currentResolutionName);
+        resourceManager.loadCurrentProjectData(projectPath, resolutionManager.currentResolutionName, onComplete);
     }
 
     public void saveCurrentProject() {
@@ -682,17 +682,18 @@ public class ProjectManager extends Proxy {
 
         try {
             createEmptyProject(projectPath, originWidth, originHeight, pixelPerWorldUnit);
-            openProjectAndLoadAllData(projectPath);
-            String workSpacePath = projectPath.substring(0, projectPath.lastIndexOf(projectName));
-            if (workSpacePath.length() > 0) {
-                SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
-                settingsManager.setLastOpenedPath(workSpacePath);
-            }
-            PluginUIBridge.get(facade).loadCurrentProject();
-            facade.sendNotification(PROJECT_OPENED);
+            openProjectAndLoadAllData(projectPath, null, () -> {
+                String workSpacePath = projectPath.substring(0, projectPath.lastIndexOf(projectName));
+                if (workSpacePath.length() > 0) {
+                    SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
+                    settingsManager.setLastOpenedPath(workSpacePath);
+                }
+                PluginUIBridge.get(facade).loadCurrentProject();
+                facade.sendNotification(PROJECT_OPENED);
 
-            //Set title with opened file path
-            setWindowTitle(getFormattedTitle(projectPath));
+                //Set title with opened file path
+                setWindowTitle(getFormattedTitle(projectPath));
+            });
 
         } catch (IOException e) {
             e.printStackTrace();
