@@ -30,6 +30,8 @@ import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.renderer.data.TexturePackVO;
 import games.rednblack.editor.utils.HyperLap2DUtils;
 import games.rednblack.editor.utils.NinePatchUtils;
+import games.rednblack.editor.utils.PackProgressListener;
+import games.rednblack.editor.view.ui.dialog.LoadingBarDialog;
 import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.ProgressHandler;
@@ -192,7 +194,7 @@ public class ResolutionManager extends Proxy {
      * mtimes) use {@link #rePackProjectImages(ResolutionEntryVO, ObjectSet)} to name the packs.
      */
     public void rePackProjectImages(ResolutionEntryVO resEntry, boolean force) {
-        doRepack(resEntry, force, null);
+        doRepack(resEntry, force, null, silentProgress());
     }
 
     /**
@@ -202,10 +204,22 @@ public class ResolutionManager extends Proxy {
      * named explicitly.
      */
     public void rePackProjectImages(ResolutionEntryVO resEntry, ObjectSet<String> forcePacks) {
-        doRepack(resEntry, false, forcePacks);
+        doRepack(resEntry, false, forcePacks, silentProgress());
     }
 
-    private void doRepack(ResolutionEntryVO resEntry, boolean force, ObjectSet<String> forcePacks) {
+    /**
+     * A repack nobody is watching still needs a listener, so the packing path stays free of null
+     * checks. One per run: the listener carries the portion stack of the run driving it.
+     */
+    private static TexturePacker.ProgressListener silentProgress() {
+        return new TexturePacker.ProgressListener() {
+            @Override
+            public void progress(float progress) {
+            }
+        };
+    }
+
+    private void doRepack(ResolutionEntryVO resEntry, boolean force, ObjectSet<String> forcePacks, TexturePacker.ProgressListener progress) {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         TexturePacker.Settings settings = projectManager.getTexturePackerSettings();
 
@@ -302,12 +316,22 @@ public class ResolutionManager extends Proxy {
         }
 
         // pack only dirty packs; skip empty packs (they produce no atlas, matching legacy behaviour)
+        Array<String> toPack = new Array<>();
         for (String name : dirty) {
             Array<FileHandle> files = filesByPack.get(name);
-            if (files == null || files.size == 0) continue;
+            if (files != null && files.size > 0) toPack.add(name);
+        }
+
+        for (String name : toPack) {
+            progress.start(1f / toPack.size);
+            progress.setMessage("Packing " + resEntry.name + " / " + name + "...");
+
             TexturePacker tp = new TexturePacker(settings);
-            for (FileHandle entry : files) tp.addImage(entry.file());
+            tp.setProgressListener(progress);
+            for (FileHandle entry : filesByPack.get(name)) tp.addImage(entry.file());
             tp.pack(outputDir, name);
+
+            progress.end();
         }
     }
 
@@ -442,9 +466,9 @@ public class ResolutionManager extends Proxy {
     public void rePackProjectImagesForAllResolutions(boolean reloadProjectData, boolean force, RepackCallback callback) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
-            Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG));
+            showLoadingDialogForPacking();
             try {
-                rePackProjectImagesForAllResolutionsSync(force);
+                rePackProjectImagesForAllResolutionsSync(force, new PackProgressListener());
                 hideLoadingDialogUnless(reloadProjectData);
                 if (callback != null)
                     callback.onRepack(true);
@@ -469,9 +493,9 @@ public class ResolutionManager extends Proxy {
     public void rePackProjectImagesForAllResolutions(boolean reloadProjectData, ObjectSet<String> forcePacks, RepackCallback callback) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
-            Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG));
+            showLoadingDialogForPacking();
             try {
-                rePackProjectImagesForAllResolutionsSync(forcePacks);
+                rePackProjectImagesForAllResolutionsSync(forcePacks, new PackProgressListener());
                 hideLoadingDialogUnless(reloadProjectData);
                 if (callback != null)
                     callback.onRepack(true);
@@ -486,6 +510,14 @@ public class ResolutionManager extends Proxy {
             }
         });
         executor.shutdown();
+    }
+
+    private void showLoadingDialogForPacking() {
+        Gdx.app.postRunnable(() -> {
+            facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG);
+            facade.sendNotification(LoadingBarDialog.SET_MESSAGE, "Packing textures...");
+            facade.sendNotification(LoadingBarDialog.SET_PROGRESS, 0f);
+        });
     }
 
     /** The reload that follows a repack keeps the dialog up and closes it itself when it is done. */
@@ -508,19 +540,49 @@ public class ResolutionManager extends Proxy {
     }
 
     public void rePackProjectImagesForAllResolutionsSync(boolean force) {
+        rePackProjectImagesForAllResolutionsSync(force, silentProgress());
+    }
+
+    /**
+     * @param progress reports across the whole run: every resolution takes an equal share of the bar
+     *                 and each pack an equal share of its resolution, which the packer then
+     *                 subdivides per image and per page.
+     */
+    public void rePackProjectImagesForAllResolutionsSync(boolean force, TexturePacker.ProgressListener progress) {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        rePackProjectImages(projectManager.getCurrentProjectInfoVO().originalResolution, force);
-        for (ResolutionEntryVO resolutionEntryVO : projectManager.getCurrentProjectInfoVO().resolutions) {
-            rePackProjectImages(resolutionEntryVO, force);
+        Array<ResolutionEntryVO> resolutions = projectManager.getCurrentProjectInfoVO().resolutions;
+        int total = 1 + resolutions.size;
+
+        progress.start(1f);
+        repackResolution(projectManager.getCurrentProjectInfoVO().originalResolution, force, null, progress, total);
+        for (ResolutionEntryVO resolutionEntryVO : resolutions) {
+            repackResolution(resolutionEntryVO, force, null, progress, total);
         }
+        progress.end();
     }
 
     public void rePackProjectImagesForAllResolutionsSync(ObjectSet<String> forcePacks) {
+        rePackProjectImagesForAllResolutionsSync(forcePacks, silentProgress());
+    }
+
+    public void rePackProjectImagesForAllResolutionsSync(ObjectSet<String> forcePacks, TexturePacker.ProgressListener progress) {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-        rePackProjectImages(projectManager.getCurrentProjectInfoVO().originalResolution, forcePacks);
-        for (ResolutionEntryVO resolutionEntryVO : projectManager.getCurrentProjectInfoVO().resolutions) {
-            rePackProjectImages(resolutionEntryVO, forcePacks);
+        Array<ResolutionEntryVO> resolutions = projectManager.getCurrentProjectInfoVO().resolutions;
+        int total = 1 + resolutions.size;
+
+        progress.start(1f);
+        repackResolution(projectManager.getCurrentProjectInfoVO().originalResolution, false, forcePacks, progress, total);
+        for (ResolutionEntryVO resolutionEntryVO : resolutions) {
+            repackResolution(resolutionEntryVO, false, forcePacks, progress, total);
         }
+        progress.end();
+    }
+
+    private void repackResolution(ResolutionEntryVO resEntry, boolean force, ObjectSet<String> forcePacks,
+                                  TexturePacker.ProgressListener progress, int resolutionCount) {
+        progress.start(1f / resolutionCount);
+        doRepack(resEntry, force, forcePacks, progress);
+        progress.end();
     }
 
     public void deleteResolution(ResolutionEntryVO resolutionEntryVO) {
