@@ -1,29 +1,12 @@
-/*
- * ******************************************************************************
- *  * Copyright 2015 See AUTHORS file.
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *   http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
- *  *****************************************************************************
- */
-
 package games.rednblack.editor.view.ui.panel;
+
 import games.rednblack.editor.proxy.PluginUIBridge;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -33,8 +16,9 @@ import com.kotcrab.vis.ui.widget.VisProgressBar;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.utils.AssetsUtils;
-import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.UIDraggablePanel;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
@@ -46,15 +30,36 @@ public class ImportPanel extends UIDraggablePanel {
 
     public static final String IMPORT_FAILED = CLASS_NAME + ".IMPORT_FAILED";
 
-    private Facade facade;
+    private static final String DROP_ZONE_BG = "drop-zone";
+    private static final String ERROR_BG = "message-error";
+    private static final String ERROR_STYLE = "message-error";
+    private static final String ERROR_ICON = "icon-alert";
+    private static final String DROP_ZONE_BG_OVER = "drop-zone-over";
+    private static final String DROP_ICON = "icon-menu-import";
 
-    private VisTable mainTable;
-    private Image dropRegion;
-    private VisLabel errorLabel;
+    private static final int MIN_WIDTH = 400;
+    private static final int ERROR_PAD = 8;
+    /** Left padding of the banner content, clearing the red bar the drawable carries. */
+    private static final int ERROR_BAR_PAD = 12;
+    private static final int ERROR_ICON_SIZE = 18;
+    private static final int DROP_ZONE_HEIGHT = 96;
+    private static final String SUPPORTED_TYPES =
+            "Images, sprite animations (atlas or image sequence), spine animations, particle effects, "
+                    + "fonts, shaders, libraries and actions.";
 
+    private final Facade facade;
+
+    /** The view of the panel, swapped between dropping and importing. */
+    private final VisTable body;
+    /** Kept out of {@link #body}, so switching view cannot take the error message away with it. */
+    private final Cell<VisTable> errorCell;
+    private final VisTable errorBanner;
+    private final VisLabel errorLabel;
+
+    private VisTable dropZone;
     private VisProgressBar progressBar;
 
-    private HashMap<Integer, String> typeNames = new HashMap<>();
+    private final HashMap<Integer, String> typeNames = new HashMap<>();
 
     ImportPanel() {
         super("Import Resources");
@@ -64,29 +69,32 @@ public class ImportPanel extends UIDraggablePanel {
         setStyle(VisUI.getSkin().get("box", WindowStyle.class));
         getTitleLabel().setAlignment(Align.left);
 
-        setWidth(250);
-        setHeight(100);
-
         facade = Facade.getInstance();
 
         fillTypeNames();
 
-        mainTable = new VisTable();
+        errorLabel = StandardWidgetsFactory.createLabel("", ERROR_STYLE, Align.left);
+        errorLabel.setWrap(true);
 
-        add(mainTable).fill().expand();
-        row();
+        errorBanner = new VisTable();
+        errorBanner.setBackground(VisUI.getSkin().getDrawable(ERROR_BG));
+        errorBanner.setTouchable(Touchable.disabled);
+        errorBanner.add(new Image(VisUI.getSkin().getDrawable(ERROR_ICON))).size(ERROR_ICON_SIZE)
+                .top().padTop(ERROR_PAD).padLeft(ERROR_BAR_PAD).padRight(ERROR_PAD);
+        PropertyGrid.elastic(errorBanner.add(errorLabel)).pad(ERROR_PAD).padLeft(0);
+
+        body = new VisTable();
+
+        VisTable content = new VisTable();
+        // the banner only exists while there is something to say, so no space is held for it
+        errorCell = content.add((VisTable) null).growX()
+                .padLeft(PropertyGrid.PANEL_PAD + PropertyGrid.CONTENT_PAD)
+                .padRight(PropertyGrid.PANEL_PAD + PropertyGrid.CONTENT_PAD);
+        content.row();
+        content.add(body).growX().row();
+        getContentTable().add(content).growX();
 
         setDroppingView();
-
-        errorLabel = new VisLabel("File you selected was too sexy to import");
-        errorLabel.setColor(Color.RED);
-        errorLabel.setWidth(260);
-        errorLabel.setWrap(true);
-        errorLabel.getColor().a = 0;
-        errorLabel.setTouchable(Touchable.disabled);
-
-        mainTable.add(errorLabel).width(260).pad(6);
-        mainTable.row().pad(5);
     }
 
     private void fillTypeNames() {
@@ -112,112 +120,133 @@ public class ImportPanel extends UIDraggablePanel {
         public Vector2 pos;
     }
 
-    public Image getDropRegion() {
-        return dropRegion;
-    }
-
     public boolean checkDropRegionHit(Vector2 mousePos) {
         Vector2 pos = PluginUIBridge.get().getSandbox().getUIStage().getViewport().unproject(mousePos);
-        pos = dropRegion.stageToLocalCoordinates(pos);
-        if(dropRegion.hit(pos.x, pos.y, false) != null) {
+        pos = dropZone.stageToLocalCoordinates(pos);
+        if (dropZone.hit(pos.x, pos.y, false) != null) {
             return true;
         }
 
-        dropRegion.getColor().a = 0.3f;
-
+        dragExit();
         return false;
     }
 
     public void dragOver() {
-        dropRegion.getColor().a = 0.5f;
+        if (dropZone != null) dropZone.setBackground(VisUI.getSkin().getDrawable(DROP_ZONE_BG_OVER));
     }
 
     public void dragExit() {
-        dropRegion.getColor().a = 0.3f;
+        if (dropZone != null) dropZone.setBackground(VisUI.getSkin().getDrawable(DROP_ZONE_BG));
     }
 
-
+    /** Waiting for files: the drop zone, the way to browse instead, and what can be imported. */
     public void setDroppingView() {
-        mainTable.clear();
+        body.clear();
+        hideError();
 
-        VisLabel helpLbl = new VisLabel("Supported file types: images, sprite animations (atlas or img sequence), spine animations, particle effects");
-        helpLbl.setWidth(260);
-        helpLbl.setWrap(true);
-        mainTable.add(helpLbl).width(260).padLeft(5);
-        mainTable.row().padBottom(5);
-
-        dropRegion = new Image(VisUI.getSkin().getDrawable("dropHere"));
-        mainTable.add(dropRegion).padRight(6).padBottom(6).padTop(10);
-        mainTable.row().pad(5);
-
-        mainTable.add(new VisLabel("or browse files on file system"));
-        mainTable.row().pad(5);
-
-        VisTextButton showFileSelectBtn = new VisTextButton("Browse");
-        mainTable.add(showFileSelectBtn).width(88);
-        mainTable.row().pad(5);
-
-        initDropListeners(showFileSelectBtn);
-
-        dragExit();
-        pack();
-    }
-
-    public void setImportingView(int type, int count) {
-        mainTable.clear();
-
-        errorLabel.getColor().a = 0;
-        errorLabel.clearActions();
-
-        String typeText = typeNames.get(type);
-        if(count > 1) typeText+=" (" + count + ")";
-
-        mainTable.add(new VisLabel("Currently importing: " + typeText)).left();
-        mainTable.row().padBottom(5);
-
-        progressBar = new VisProgressBar(0, 100, 1, false);
-        mainTable.add(progressBar).fillX().padTop(5).width(250);
-        mainTable.row().padBottom(5);
-
-        pack();
-    }
-
-    private void initDropListeners(VisTextButton browseBtn) {
-        browseBtn.addListener(new ClickListener() {
-            public void clicked (InputEvent event, float x, float y) {
+        VisTextButton browseButton = StandardWidgetsFactory.createTextButton("Browse files");
+        browseButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
                 facade.sendNotification(BROWSE_BTN_CLICKED);
             }
         });
+
+        PropertyGrid grid = PropertyGrid.on(body).dialogScale().padPanel();
+        grid.section("Import");
+        grid.wideFill(createDropZone(), DROP_ZONE_HEIGHT);
+        grid.buttons(browseButton);
+
+        grid.section("Supported types");
+        grid.wideFill(wrappedText(SUPPORTED_TYPES));
+
+        invalidateHeight();
     }
 
+    /** Importing: what is being brought in, and how far along it is. */
+    public void setImportingView(int type, int count) {
+        body.clear();
+        hideError();
+
+        String typeText = typeNames.get(type);
+        if (count > 1) typeText += " (" + count + ")";
+
+        progressBar = new VisProgressBar(0, 100, 1, false);
+        progressBar.setAnimateDuration(0.5f);
+
+        PropertyGrid grid = PropertyGrid.on(body).dialogScale().padPanel();
+        grid.section("Importing");
+        grid.rowCompact("Type", PropertyGrid.value(typeText));
+        grid.wideFill(progressBar);
+
+        invalidateHeight();
+    }
+
+    private VisTable createDropZone() {
+        dropZone = new VisTable();
+        dropZone.setBackground(VisUI.getSkin().getDrawable(DROP_ZONE_BG));
+        dropZone.add(new Image(VisUI.getSkin().getDrawable(DROP_ICON))).padBottom(6).row();
+        dropZone.add(StandardWidgetsFactory.createLabel("Drop files here",
+                PropertyGrid.style(PropertyGrid.SECTION_STYLE_LARGE), Align.center)).row();
+        return dropZone;
+    }
+
+    private VisTable wrappedText(String text) {
+        VisLabel label = StandardWidgetsFactory.createLabel(text,
+                PropertyGrid.style(PropertyGrid.LABEL_STYLE_LARGE), Align.left);
+        label.setWrap(true);
+        VisTable wrapper = new VisTable();
+        // no preferred width of its own, so the text wraps to the panel instead of widening it
+        PropertyGrid.elastic(wrapper.add(label));
+        return wrapper;
+    }
+
+    /**
+     * Reports why an import did not happen. Whatever the panel was showing, it goes back to waiting
+     * for files: an import that failed halfway would otherwise leave a progress bar stalled on screen
+     * with no way to tell it is over.
+     */
     public void showError(int type) {
-        String text = "";
-        if(type == AssetsUtils.TYPE_UNSUPPORTED || type == AssetsUtils.TYPE_UNKNOWN) {
-            text = "unsupported file type/types";
-        }
-        if(type == AssetsUtils.TYPE_MIXED) {
-            text = "Multiple import types, please use one";
-        }
-        switch (type) {
-            case AssetsUtils.TYPE_UNSUPPORTED:
-            case AssetsUtils.TYPE_UNKNOWN:
-                text = "Unsupported file type/types";
-                break;
-            case AssetsUtils.TYPE_MIXED:
-                text = "Multiple import types, please use one";
-                break;
-            case AssetsUtils.TYPE_FAILED:
-                text = "Import has failed";
-                break;
-        }
+        String text = switch (type) {
+            case AssetsUtils.TYPE_UNSUPPORTED, AssetsUtils.TYPE_UNKNOWN ->
+                    "That file cannot be imported. See the supported types below.";
+            case AssetsUtils.TYPE_MIXED ->
+                    "Those files are of different kinds. Import one kind at a time.";
+            case AssetsUtils.TYPE_FAILED ->
+                    "The import failed. The console has the details.";
+            default -> "The import did not happen.";
+        };
+
+        setDroppingView();
 
         errorLabel.setText(text);
-
-        errorLabel.addAction(Actions.fadeIn(0.3f));
+        errorCell.setActor(errorBanner).padTop(PropertyGrid.PANEL_PAD)
+                .padBottom(PropertyGrid.DIALOG_ROW_PAD);
+        errorBanner.clearActions();
+        errorBanner.getColor().a = 0;
+        errorBanner.addAction(Actions.fadeIn(0.3f));
         dragExit();
+        invalidateHeight();
+    }
+
+    private void hideError() {
+        errorBanner.clearActions();
+        errorLabel.setText("");
+        errorCell.setActor(null).padTop(0).padBottom(0);
     }
 
     public VisProgressBar getProgressBar() {
         return progressBar;
+    }
+
+    /** Closing the panel drops the message with it: a stale error must not greet the next open. */
+    @Override
+    protected void onDismiss() {
+        super.onDismiss();
+        hideError();
+    }
+
+    @Override
+    public float getPrefWidth() {
+        return Math.max(super.getPrefWidth(), MIN_WIDTH);
     }
 }

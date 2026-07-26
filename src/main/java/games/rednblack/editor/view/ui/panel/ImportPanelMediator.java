@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.panel;
+import com.badlogic.gdx.utils.Timer;
 import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.Gdx;
@@ -39,6 +40,7 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -136,14 +138,17 @@ public class ImportPanelMediator extends Mediator<ImportPanel> {
 
         @Override
         public void progressComplete() {
-            Gdx.app.postRunnable(() -> {
-                Sandbox sandbox = PluginUIBridge.get().getSandbox();
-                ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
-                projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath());
-                sandbox.loadCurrentProject();
-                ImportPanelMediator.this.viewComponent.setDroppingView();
-                facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
-            });
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    Sandbox sandbox = PluginUIBridge.get().getSandbox();
+                    ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
+                    projectManager.openProjectAndLoadAllData(projectManager.getCurrentProjectPath());
+                    sandbox.loadCurrentProject();
+                    ImportPanelMediator.this.viewComponent.setDroppingView();
+                    facade.sendNotification(ProjectManager.PROJECT_DATA_UPDATED);
+                }
+            }, 0.6f);
         }
 
         @Override

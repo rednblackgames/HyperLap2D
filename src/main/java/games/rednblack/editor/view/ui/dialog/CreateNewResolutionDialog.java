@@ -57,7 +57,7 @@ public class CreateNewResolutionDialog extends H2DDialog {
         mainTable.add("Resolution:").padRight(5).right().top();
         mainTable.add(getDimensionsTable()).left();
         mainTable.row().padTop(20);
-        VisTextButton createBtn = StandardWidgetsFactory.createTextButton("Create", "red");
+        VisTextButton createBtn = StandardWidgetsFactory.createTextButton("Create", "accent");
         createBtn.addListener(new CrateButtonClickListener());
         getButtonsTable().add(createBtn).width(93).height(24).colspan(2);
         getContentTable().add(mainTable);

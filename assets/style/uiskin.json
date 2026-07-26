@@ -77,6 +77,12 @@
       b: 0.886,
       g: 0.631,
       r: 0.105
+    },
+    hyperlap2d-error-text: {
+      a: 1,
+      b: 0.70,
+      g: 0.72,
+      r: 1
     }
   },
   com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
@@ -210,12 +216,10 @@
   com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
     default-horizontal: {
       background: progressbar,
-      knob: progressbar-filled,
       knobBefore: progressbar-filled
     },
     default-vertical: {
       background: progressbar-vertical,
-      knob: progressbar-filled-vertical,
       knobBefore: progressbar-filled-vertical
     }
   },
@@ -251,6 +255,10 @@
     property-section-large: {
       font: default-font,
       fontColor: white
+    },
+    message-error: {
+      font: default-font,
+      fontColor: hyperlap2d-error-text
     }
   },
   com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
@@ -387,14 +395,16 @@
       fontColor: hyperlap2d-button-text-black,
       disabledFontColor: grey
     },
-    red: {
-      down: button-flat-red-down,
-      up: button-flat-red,
-      over: button-flat-red-over,
-      disabled: button-flat-red-over,
-      font: big-font,
+    accent: {
+      down: button-flat-blue-down,
+      up: button-flat-blue,
+      over: button-flat-blue-over,
+      disabled: button-flat-blue-down,
+      font: default-font,
       fontColor: white,
-      disabledFontColor: grey
+      overFontColor: white,
+      downFontColor: white,
+      disabledFontColor: hyperlap2d-menuitem-disabled-grey
     },
     tagBtn: {
       down: toolbar-over,
