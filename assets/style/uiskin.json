@@ -108,8 +108,10 @@
       over: button-over,
       disabled: button,
       font: default-font,
-      fontColor: hyperlap2d-button-text-white,
-      disabledFontColor: grey
+      fontColor: hyperlap2d-menuitem-grey,
+      overFontColor: white,
+      downFontColor: white,
+      disabledFontColor: hyperlap2d-menuitem-disabled-grey
     },
     toggle: {
       down: button-down,
@@ -144,6 +146,8 @@
       disabledFontColor: grey,
       background: default-select,
       backgroundOver: default-select-over,
+      backgroundOpen: default-select-open,
+      overFontColor: white,
       scrollStyle: default,
       listStyle: {
         font: default-font,
@@ -368,9 +372,11 @@
       up: button,
       over: button-over,
       disabled: button,
-      font: big-font,
-      fontColor: hyperlap2d-button-text-white,
-      disabledFontColor: grey
+      font: default-font,
+      fontColor: hyperlap2d-menuitem-grey,
+      overFontColor: white,
+      downFontColor: white,
+      disabledFontColor: hyperlap2d-menuitem-disabled-grey
     },
     dark: {
       down: button-dark-down,
