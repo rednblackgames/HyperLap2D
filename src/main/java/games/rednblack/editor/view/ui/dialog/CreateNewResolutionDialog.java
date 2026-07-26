@@ -26,6 +26,7 @@ import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.view.ui.validator.StringNameValidator;
 import games.rednblack.h2d.common.H2DDialog;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
 
@@ -43,46 +44,55 @@ public class CreateNewResolutionDialog extends H2DDialog {
 
     private final Facade facade;
 
+    private static final int MIN_WIDTH = 420;
+    /** Which side the asset scale for this resolution is derived from, see ResolutionEntryVO.base. */
+    private static final String SCALE_TOOLTIP =
+            "The side compared with the original resolution to work out how much to scale the "
+                    + "project's images for this one.";
+
     public CreateNewResolutionDialog(Facade facade) {
         super("Create New Resolution");
         this.facade = facade;
         addCloseButton();
-        VisTable mainTable = new VisTable();
+        closeOnEscape();
 
-        mainTable.padTop(6).padRight(6).padBottom(22);
-        mainTable.add("Name:").padRight(5).right();
+        VisTextField.TextFieldFilter.DigitsOnlyFilter digitsOnly = new VisTextField.TextFieldFilter.DigitsOnlyFilter();
         nameVisTextField = StandardWidgetsFactory.createValidableTextField("light", new StringNameValidator());
-        mainTable.add(nameVisTextField).colspan(3).width(177).height(21);
-        mainTable.row().padTop(10);
-        mainTable.add("Resolution:").padRight(5).right().top();
-        mainTable.add(getDimensionsTable()).left();
-        mainTable.row().padTop(20);
-        VisTextButton createBtn = StandardWidgetsFactory.createTextButton("Create", "accent");
-        createBtn.addListener(new CrateButtonClickListener());
-        getButtonsTable().add(createBtn).width(93).height(24).colspan(2);
-        getContentTable().add(mainTable);
-    }
+        widthVisTextField = StandardWidgetsFactory.createTextField("light", digitsOnly);
+        heightVisTextField = StandardWidgetsFactory.createTextField("light", digitsOnly);
 
-    private Table getDimensionsTable() {
+        // the order matters: the checked index becomes ResolutionEntryVO.base, 0 for width, 1 for height
+        basedOnWidthRadioButton = new VisRadioButton("Width");
+        basedOnHeightRadioButton = new VisRadioButton("Height");
         buttonGroup = new ButtonGroup<>();
-        VisTextField.TextFieldFilter.DigitsOnlyFilter digitsOnlyFilter = new VisTextField.TextFieldFilter.DigitsOnlyFilter();
-        VisTable dimensionsTable = new VisTable();
-        widthVisTextField = StandardWidgetsFactory.createTextField("light", digitsOnlyFilter);
-        dimensionsTable.add(new VisLabel("Width:")).left().padRight(3);
-        dimensionsTable.add(widthVisTextField).width(45).height(21).padRight(7);
-        basedOnWidthRadioButton = new VisRadioButton(null);
-        dimensionsTable.add(basedOnWidthRadioButton);
-        dimensionsTable.add("Based on");
-        dimensionsTable.row().padTop(10);
-        heightVisTextField = StandardWidgetsFactory.createTextField("light", digitsOnlyFilter);
-        dimensionsTable.add(new VisLabel("Height:")).left().padRight(7);
-        dimensionsTable.add(heightVisTextField).width(45).height(21).left();
-        basedOnHeightRadioButton = new VisRadioButton(null);
-        dimensionsTable.add(basedOnHeightRadioButton);
-        dimensionsTable.add("Based on");
         buttonGroup.add(basedOnWidthRadioButton);
         buttonGroup.add(basedOnHeightRadioButton);
-        return dimensionsTable;
+        // without a default nothing is checked and the base would come out as -1
+        basedOnWidthRadioButton.setChecked(true);
+
+        VisTable scaleBy = new VisTable();
+        scaleBy.add(basedOnWidthRadioButton).left();
+        scaleBy.add(basedOnHeightRadioButton).left().padLeft(PropertyGrid.PAIR_GAP * 2);
+
+        VisTable body = new VisTable();
+        getContentTable().add(body).growX();
+        PropertyGrid grid = PropertyGrid.on(body).dialogScale().padPanel();
+        grid.section("Resolution");
+        grid.row("Name", nameVisTextField);
+        grid.rowUnit("Width", widthVisTextField, "px");
+        grid.rowUnit("Height", heightVisTextField, "px");
+        grid.rowCompact("Scale by", scaleBy);
+        grid.tooltipLastRow(SCALE_TOOLTIP);
+
+        VisTextButton createBtn = StandardWidgetsFactory.createTextButton("Create", "accent");
+        createBtn.addListener(new CrateButtonClickListener());
+        getButtonsTable().add(createBtn).pad(2);
+        getCell(getButtonsTable()).right();
+    }
+
+    @Override
+    public float getPrefWidth() {
+        return Math.max(super.getPrefWidth(), MIN_WIDTH);
     }
 
 	@Override

@@ -3,12 +3,12 @@ package games.rednblack.editor.view.ui.dialog;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.util.Validators;
-import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisValidatableTextField;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import games.rednblack.h2d.common.H2DDialog;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.InputFileWidget;
 import games.rednblack.puremvc.Facade;
@@ -22,45 +22,48 @@ public class ImportSpriteSheetDialog extends H2DDialog {
     private final VisTextButton importButton;
     private final Facade facade;
 
+    private static final int MIN_WIDTH = 460;
+    /** What the two numbers are for: the sheet is cut into frames of exactly this size. */
+    private static final String SIZE_TOOLTIP =
+            "The size of one frame. The sheet is cut into a grid of frames this big, left to right "
+                    + "and top to bottom.";
+
     public ImportSpriteSheetDialog() {
         super("Import Sprite Sheet Animation");
         addCloseButton();
+        closeOnEscape();
 
         this.facade = Facade.getInstance();
 
         setModal(true);
-        VisTable fileTable = new VisTable();
-        fileTable.pad(6);
-        //
-        fileTable.add(new VisLabel("Sprite Sheet:")).right().padRight(5);
-        imagePathField = new InputFileWidget(FileChooser.Mode.OPEN, FileChooser.SelectionMode.FILES, false);
-        imagePathField.setTextFieldWidth(156);
-        fileTable.add(imagePathField);
-        getContentTable().add(fileTable);
-        //
-        getContentTable().row().padTop(10);
-        //
 
         Validators.IntegerValidator validator = new Validators.IntegerValidator();
-
+        imagePathField = new InputFileWidget(FileChooser.Mode.OPEN, FileChooser.SelectionMode.FILES, false);
         width = StandardWidgetsFactory.createValidableTextField(validator);
         height = StandardWidgetsFactory.createValidableTextField(validator);
 
-        VisTable sizeTable = new VisTable();
-        sizeTable.add("Sprite Width:").padRight(3);
-        sizeTable.add(width).width(60);
-        sizeTable.add("px").padLeft(5);
-        sizeTable.row().padTop(5);
-        sizeTable.add("Sprite Height:").padRight(3);
-        sizeTable.add(height).width(60);
-        sizeTable.add("px").padLeft(5);
-        getContentTable().add(sizeTable);
+        VisTable body = new VisTable();
+        getContentTable().add(body).growX();
+        PropertyGrid grid = PropertyGrid.on(body).dialogScale().padPanel();
+        grid.section("Sprite sheet");
+        grid.row("File", imagePathField);
 
-        importButton = StandardWidgetsFactory.createTextButton("Import");
-        getButtonsTable().add(importButton);
-        pack();
+        grid.section("Frame");
+        grid.rowUnit("Width", width, "px");
+        grid.tooltipLastRow(SIZE_TOOLTIP);
+        grid.rowUnit("Height", height, "px");
+        grid.tooltipLastRow(SIZE_TOOLTIP);
+
+        importButton = StandardWidgetsFactory.createTextButton("Import", "accent");
+        getButtonsTable().add(importButton).pad(2);
+        getCell(getButtonsTable()).right();
 
         setListeners();
+    }
+
+    @Override
+    public float getPrefWidth() {
+        return Math.max(super.getPrefWidth(), MIN_WIDTH);
     }
 
     public int getSpriteWidth() {

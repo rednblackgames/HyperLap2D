@@ -117,9 +117,10 @@ public class NewProjectDialog extends H2DDialog {
         grid.row("Folder", workspacePathField);
 
         grid.section("Resolution");
-        grid.rowCompact("Width", withUnit(originWidthTextField));
-        grid.rowCompact("Height", withUnit(originHeightTextField));
-        grid.rowCompact("Pixels per unit", withUnit(pixelsPerWorldUnitField), PPWU_TOOLTIP);
+        grid.rowUnit("Width", originWidthTextField, "px");
+        grid.rowUnit("Height", originHeightTextField, "px");
+        grid.rowUnit("Pixels per unit", pixelsPerWorldUnitField, "px");
+        grid.tooltipLastRow(PPWU_TOOLTIP);
         grid.rowCompact("Presets", createPresets());
 
         VisTable content = new VisTable();
@@ -260,6 +261,8 @@ public class NewProjectDialog extends H2DDialog {
         private final Color fill = new Color(27 / 255f, 161 / 255f, 226 / 255f, 0.16f);
         private final Color border = new Color(27 / 255f, 161 / 255f, 226 / 255f, 0.9f);
         private final Color empty = new Color(1f, 1f, 1f, 0.10f);
+        /** Scratch colour: the drawn one is the palette colour faded with the dialog. */
+        private final Color tint = new Color();
 
         private ShapeDrawer shapeDrawer;
 
@@ -276,10 +279,16 @@ public class NewProjectDialog extends H2DDialog {
             if (shapeDrawer == null) return;
             shapeDrawer.update();
 
+            // ShapeDrawer paints with colours of its own, so the fade the dialog applies to its
+            // children has to be folded in by hand: without this the preview stays opaque while
+            // everything around it fades in and out.
+            float alpha = parentAlpha * getColor().a;
+            if (alpha <= 0f) return;
+
             int width = NumberUtils.toInt(getOriginWidth());
             int height = NumberUtils.toInt(getOriginHeight());
             if (width <= 0 || height <= 0) {
-                shapeDrawer.setColor(empty);
+                shapeDrawer.setColor(faded(empty, alpha));
                 shapeDrawer.rectangle(getX() + PAD, getY() + PAD,
                         getWidth() - PAD * 2, getHeight() - PAD * 2, 1f);
                 return;
@@ -290,10 +299,14 @@ public class NewProjectDialog extends H2DDialog {
             float x = getX() + (getWidth() - canvasWidth) / 2f;
             float y = getY() + (getHeight() - canvasHeight) / 2f;
 
-            shapeDrawer.setColor(fill);
+            shapeDrawer.setColor(faded(fill, alpha));
             shapeDrawer.filledRectangle(x, y, canvasWidth, canvasHeight);
-            shapeDrawer.setColor(border);
+            shapeDrawer.setColor(faded(border, alpha));
             shapeDrawer.rectangle(x, y, canvasWidth, canvasHeight, BORDER);
+        }
+
+        private Color faded(Color color, float alpha) {
+            return tint.set(color).mul(1f, 1f, 1f, alpha);
         }
     }
 
