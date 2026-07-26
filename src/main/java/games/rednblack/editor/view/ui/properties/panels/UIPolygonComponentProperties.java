@@ -18,7 +18,6 @@
 
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -27,8 +26,8 @@ import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import games.rednblack.puremvc.Facade;
 
 /**
  * Created by azakhary on 7/2/2015.
@@ -69,18 +68,16 @@ public class UIPolygonComponentProperties extends UIRemovableProperties implemen
     public void initView() {
         mainTable.clear();
 
-        verticesCountLbl = new VisLabel("", Align.left);
+        verticesCountLbl = PropertyGrid.value("");
 
         copyBtn = new VisTextButton("Copy");
         pasteBtn = new VisTextButton("Paste");
-        openEndedCheckbox = StandardWidgetsFactory.createCheckBox("Open Ended");
+        openEndedCheckbox = StandardWidgetsFactory.createSwitch();
 
-        mainTable.add(new VisLabel("Vertices: ", Align.left)).left().padRight(3);
-        mainTable.add(verticesCountLbl).left().width(67);
-        mainTable.add(copyBtn).right().padRight(4);
-        mainTable.add(pasteBtn).right().padRight(4);
-        mainTable.row();
-        mainTable.add(openEndedCheckbox).left().colspan(4).padTop(5).row();
+        PropertyGrid grid = PropertyGrid.on(mainTable);
+        grid.rowCompact("Vertices", verticesCountLbl);
+        grid.toggle("Open ended", openEndedCheckbox);
+        grid.buttons(copyBtn, pasteBtn);
 
         initListeners();
     }
@@ -103,10 +100,10 @@ public class UIPolygonComponentProperties extends UIRemovableProperties implemen
         addDefaultMeshButton = StandardWidgetsFactory.createTextButton("Make Default");
         addAutoTraceMeshButton = StandardWidgetsFactory.createTextButton("Auto Trace");
 
-        mainTable.add(new VisLabel("There is no vertices in this shape", Align.center));
-        mainTable.row();
-        mainTable.add(addDefaultMeshButton).center().row();
-        mainTable.add(addAutoTraceMeshButton).center().padTop(5).row();
+        PropertyGrid grid = PropertyGrid.on(mainTable);
+        grid.wideCentered(PropertyGrid.value("This shape has no vertices"));
+        grid.wideCentered(addDefaultMeshButton);
+        grid.wideCentered(addAutoTraceMeshButton);
 
         initEmptyViewListeners();
     }

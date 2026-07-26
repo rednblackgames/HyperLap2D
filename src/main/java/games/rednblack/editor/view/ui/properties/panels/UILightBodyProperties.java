@@ -3,9 +3,7 @@ package games.rednblack.editor.view.ui.properties.panels;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
@@ -17,6 +15,7 @@ import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
 import games.rednblack.puremvc.Facade;
@@ -71,51 +70,26 @@ public class UILightBodyProperties extends UIRemovableProperties implements Remo
         constantFalloffField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         linearFalloffField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         quadraticFalloffField = StandardWidgetsFactory.createValidableTextField(floatValidator);
-        softnessLengthField = new VisValidatableTextField(floatValidator);
-        heightField = new VisValidatableTextField(floatValidator);
-        isStaticCheckBox = StandardWidgetsFactory.createCheckBox("Static");
-        isXRayCheckBox = StandardWidgetsFactory.createCheckBox("X-Ray");
-        isSoftCheckBox = StandardWidgetsFactory.createCheckBox("Soft");
-        isActiveCheckBox = StandardWidgetsFactory.createCheckBox("Active");
+        softnessLengthField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        heightField = StandardWidgetsFactory.createValidableTextField(floatValidator);
+        isStaticCheckBox = StandardWidgetsFactory.createSwitch();
+        isXRayCheckBox = StandardWidgetsFactory.createSwitch();
+        isSoftCheckBox = StandardWidgetsFactory.createSwitch();
+        isActiveCheckBox = StandardWidgetsFactory.createSwitch();
 
-        mainTable.add(new VisLabel("Direction:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(directionBox).width(100).colspan(2);
-        mainTable.row().padTop(5);
-
-        mainTable.add(new VisLabel("Color:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(lightColor).left();
-        mainTable.row().padTop(5);
-        mainTable.add(new VisLabel("Ray Count:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(raysTextSelector).left().colspan(2);
-        mainTable.row().padTop(5);
-        mainTable.add(new VisLabel("Distance:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(distanceTextField).width(100).colspan(2);
-        mainTable.row().padTop(5);
-        mainTable.add(new VisLabel("Height: ", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(heightField).width(100).colspan(2);
-        mainTable.row().padTop(5);
-        mainTable.add(new VisLabel("Intensity:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(intensityField).width(100).colspan(2);
-        mainTable.row().padTop(5);
-        mainTable.add(new VisLabel("Falloff:", Align.right)).padRight(5).colspan(2).fillX();
-        Table falloffTable = new Table();
-        falloffTable.add(constantFalloffField).width(30).padRight(1);
-        falloffTable.add(linearFalloffField).width(30).padRight(1);
-        falloffTable.add(quadraticFalloffField).width(30);
-        mainTable.add(falloffTable).width(100).colspan(2);
-        mainTable.row().padTop(5);
-        mainTable.add(new VisLabel("Softness length: ", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(softnessLengthField).width(100).colspan(2);
-        mainTable.row().padTop(5);
-
-        VisTable bottomTable = new VisTable();
-        //bottomTable.add(isStaticCheckBox).padRight(5);//TODO Figure out why static lights does not change position
-        bottomTable.add(isXRayCheckBox).padRight(5);
-        bottomTable.add(isSoftCheckBox).padRight(5);
-        bottomTable.add(isActiveCheckBox).padRight(5);
-
-        mainTable.add(bottomTable).padBottom(5).colspan(4);
-        mainTable.row().padTop(5);
+        PropertyGrid grid = PropertyGrid.on(mainTable);
+        grid.row("Direction", directionBox);
+        grid.rowCompact("Color", lightColor);
+        grid.row("Ray count", raysTextSelector);
+        grid.row("Distance", distanceTextField);
+        grid.row("Height", heightField);
+        grid.row("Intensity", intensityField);
+        grid.triple("Falloff", constantFalloffField, linearFalloffField, quadraticFalloffField);
+        grid.row("Softness length", softnessLengthField);
+        //isStaticCheckBox is left out //TODO Figure out why static lights does not change position
+        grid.toggle("X-Ray", isXRayCheckBox);
+        grid.toggle("Soft", isSoftCheckBox);
+        grid.toggle("Active", isActiveCheckBox);
     }
 
     public void setRays(String rays) {

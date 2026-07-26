@@ -16,6 +16,7 @@ import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
 import space.earlygrey.shapedrawer.ShapeDrawer;
@@ -74,6 +75,8 @@ public class UILayoutProperties extends UIRemovableProperties implements RemoteE
 
     private static final String PARENT_TARGET = "Parent";
 
+    private static final int PREVIEW_HEIGHT = 120;
+
     // Left constraint
     private VisCheckBox leftEnabled;
     private VisSelectBox<String> leftTarget;
@@ -125,12 +128,8 @@ public class UILayoutProperties extends UIRemovableProperties implements RemoteE
         verticalSides.add(LayoutComponent.ConstraintSide.BOTTOM.name());
         verticalSides.add(LayoutComponent.ConstraintSide.TOP.name());
 
-        // Preview widget
         previewWidget = new ConstraintPreviewWidget();
-        mainTable.add(previewWidget).height(120).growX().colspan(4).padBottom(4);
-        mainTable.row();
 
-        // Left constraint - single row
         leftEnabled = StandardWidgetsFactory.createCheckBox("L");
         leftTarget = StandardWidgetsFactory.createSelectBox(String.class);
         leftSide = StandardWidgetsFactory.createSelectBox(String.class);
@@ -138,13 +137,6 @@ public class UILayoutProperties extends UIRemovableProperties implements RemoteE
         leftSide.setSelected(LayoutComponent.ConstraintSide.LEFT.name());
         leftMargin = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
-        mainTable.add(leftEnabled).left().width(34);
-        mainTable.add(leftTarget).width(90).padLeft(1);
-        mainTable.add(leftSide).width(62).padLeft(1);
-        mainTable.add(leftMargin).width(36).padLeft(1);
-        mainTable.row().padTop(2);
-
-        // Right constraint - single row
         rightEnabled = StandardWidgetsFactory.createCheckBox("R");
         rightTarget = StandardWidgetsFactory.createSelectBox(String.class);
         rightSide = StandardWidgetsFactory.createSelectBox(String.class);
@@ -152,13 +144,6 @@ public class UILayoutProperties extends UIRemovableProperties implements RemoteE
         rightSide.setSelected(LayoutComponent.ConstraintSide.RIGHT.name());
         rightMargin = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
-        mainTable.add(rightEnabled).left().width(34);
-        mainTable.add(rightTarget).width(90).padLeft(1);
-        mainTable.add(rightSide).width(62).padLeft(1);
-        mainTable.add(rightMargin).width(36).padLeft(1);
-        mainTable.row().padTop(2);
-
-        // Bottom constraint - single row
         bottomEnabled = StandardWidgetsFactory.createCheckBox("B");
         bottomTarget = StandardWidgetsFactory.createSelectBox(String.class);
         bottomSide = StandardWidgetsFactory.createSelectBox(String.class);
@@ -166,13 +151,6 @@ public class UILayoutProperties extends UIRemovableProperties implements RemoteE
         bottomSide.setSelected(LayoutComponent.ConstraintSide.BOTTOM.name());
         bottomMargin = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
-        mainTable.add(bottomEnabled).left().width(34);
-        mainTable.add(bottomTarget).width(90).padLeft(1);
-        mainTable.add(bottomSide).width(62).padLeft(1);
-        mainTable.add(bottomMargin).width(36).padLeft(1);
-        mainTable.row().padTop(2);
-
-        // Top constraint - single row
         topEnabled = StandardWidgetsFactory.createCheckBox("T");
         topTarget = StandardWidgetsFactory.createSelectBox(String.class);
         topSide = StandardWidgetsFactory.createSelectBox(String.class);
@@ -180,30 +158,27 @@ public class UILayoutProperties extends UIRemovableProperties implements RemoteE
         topSide.setSelected(LayoutComponent.ConstraintSide.TOP.name());
         topMargin = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
-        mainTable.add(topEnabled).left().width(34);
-        mainTable.add(topTarget).width(90).padLeft(1);
-        mainTable.add(topSide).width(62).padLeft(1);
-        mainTable.add(topMargin).width(36).padLeft(1);
-        mainTable.row().padTop(5);
-
-        // Bias section
         horizontalBiasField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         verticalBiasField = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
-        mainTable.add(new VisLabel("H Bias:", Align.right)).padRight(2);
-        mainTable.add(horizontalBiasField).growX().colspan(3);
-        mainTable.row().padTop(3);
-        mainTable.add(new VisLabel("V Bias:", Align.right)).padRight(2).padLeft(4);
-        mainTable.add(verticalBiasField).growX().colspan(3);
-        mainTable.row().padTop(5);
+        matchWidthCheckBox = StandardWidgetsFactory.createSwitch();
+        matchHeightCheckBox = StandardWidgetsFactory.createSwitch();
 
-        // Match constraint section
-        matchWidthCheckBox = StandardWidgetsFactory.createCheckBox("W = match constraint");
-        matchHeightCheckBox = StandardWidgetsFactory.createCheckBox("H = match constraint");
-        mainTable.add(matchWidthCheckBox).left().colspan(4);
-        mainTable.row().padTop(2);
-        mainTable.add(matchHeightCheckBox).left().colspan(4);
-        mainTable.row();
+        // One dense row per side, in a table of their own so they keep their tighter columns.
+        VisTable constraints = new VisTable();
+        PropertyGrid sides = PropertyGrid.on(constraints);
+        sides.constraintRow(leftEnabled, leftTarget, leftSide, leftMargin);
+        sides.constraintRow(rightEnabled, rightTarget, rightSide, rightMargin);
+        sides.constraintRow(bottomEnabled, bottomTarget, bottomSide, bottomMargin);
+        sides.constraintRow(topEnabled, topTarget, topSide, topMargin);
+
+        PropertyGrid grid = PropertyGrid.on(mainTable);
+        grid.wideFill(previewWidget, PREVIEW_HEIGHT);
+        grid.wideFill(constraints);
+        grid.row("H bias", horizontalBiasField);
+        grid.row("V bias", verticalBiasField);
+        grid.toggle("Match width", matchWidthCheckBox);
+        grid.toggle("Match height", matchHeightCheckBox);
 
         updateConstraintFieldsEnabled();
     }

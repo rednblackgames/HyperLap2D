@@ -1,21 +1,3 @@
-/*
- * ******************************************************************************
- *  * Copyright 2015 See AUTHORS file.
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *   http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
- *  *****************************************************************************
- */
-
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.graphics.Color;
@@ -24,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
@@ -33,6 +14,7 @@ import games.rednblack.editor.event.*;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIAbstractProperties;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
 
@@ -50,6 +32,7 @@ public class UISceneProperties extends UIAbstractProperties implements RemoteEdi
 
     final private VisLabel pixelsPerWorldUnitField;
     final private VisLabel worldSizeField;
+    private PropertyGrid.CollapsibleRow directionalRow;
     final private VisCheckBox physicsEnabledCheckBox;
     final private VisTextField gravityXTextField;
     final private VisTextField gravityYTextField;
@@ -72,16 +55,16 @@ public class UISceneProperties extends UIAbstractProperties implements RemoteEdi
         Validators.FloatValidator floatValidator = new Validators.FloatValidator();
         Validators.IntegerValidator integerValidator  = new Validators.IntegerValidator();
 
-        pixelsPerWorldUnitField = new VisLabel("1");
-        worldSizeField = new VisLabel("0 x 0");
-        physicsEnabledCheckBox = StandardWidgetsFactory.createCheckBox();
+        pixelsPerWorldUnitField = PropertyGrid.value("1");
+        worldSizeField = PropertyGrid.value("0 x 0");
+        physicsEnabledCheckBox = StandardWidgetsFactory.createSwitch();
         gravityXTextField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         gravityYTextField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         sleepVelocityTextField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         blurNumTextField = StandardWidgetsFactory.createValidableTextField(integerValidator);
         lightMapScaleTextField = StandardWidgetsFactory.createValidableTextField(integerValidator);
-        enableLightsCheckBox = StandardWidgetsFactory.createCheckBox();
-        enablePseudo3DLightsCheckBox = StandardWidgetsFactory.createCheckBox();
+        enableLightsCheckBox = StandardWidgetsFactory.createSwitch();
+        enablePseudo3DLightsCheckBox = StandardWidgetsFactory.createSwitch();
         ambientColorComponent = StandardWidgetsFactory.createTintButton();
         lightTypeBox = StandardWidgetsFactory.createSelectBox(String.class);
         directionalRays = StandardWidgetsFactory.createNumberSelector(4, 4, 5000);
@@ -89,72 +72,38 @@ public class UISceneProperties extends UIAbstractProperties implements RemoteEdi
         directionalHeightTextField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         directionalLightColor = StandardWidgetsFactory.createTintButton();
 
+        shadersSelector = StandardWidgetsFactory.createSelectBox(String.class);
+
         lightTypeBox.setItems("DIFFUSE", "DIRECTIONAL", "BRIGHT");
 
-        pad(5);
-        add(new VisLabel("Pixels per WU:", Align.right)).padRight(5).width(115);
-        add(pixelsPerWorldUnitField).width(30).left().padLeft(7);
-        row().padTop(5);
-        add(new VisLabel("World size:", Align.right)).padRight(5).width(115);
-        add(worldSizeField).width(30).left().padLeft(7);
-        row().padTop(5);
-        addSeparator().colspan(2).padTop(5).padBottom(5);
-        shadersSelector = StandardWidgetsFactory.createSelectBox(String.class);
-        add(new VisLabel("Scene Shader: ", Align.right)).padRight(5).width(75).right();
-        add(shadersSelector).width(100).left().row();
-        //TextButton editButton = StandardWidgetsFactory.createTextButton("Edit");
-        //editButton.addListener(new ButtonToNotificationListener(EDIT_SHADER_BUTTON_CLICKED));
-        //add(editButton).padTop(5).padRight(3);
-        //TextButton uniformsButton = StandardWidgetsFactory.createTextButton("Uniforms");
-        //uniformsButton.addListener(new ButtonToNotificationListener(UNIFORMS_SHADER_BUTTON_CLICKED));
-        //add(uniformsButton).padTop(5).row();
-        addSeparator().colspan(2).padTop(5).padBottom(5);
-        add(new VisLabel("Physics enabled:", Align.right)).padRight(5).width(115);
-        add(physicsEnabledCheckBox).padLeft(1).left();
-        row().padTop(5);
-        add(new VisLabel("Gravity X:", Align.right)).padRight(5).width(115);
-        add(gravityXTextField).width(100);
-        row().padTop(5);
-        add(new VisLabel("Gravity Y:", Align.right)).padRight(5).width(115);
-        add(gravityYTextField).width(100);
-        row().padTop(5);
-        add(new VisLabel("Sleep velocity:", Align.right)).padRight(5).width(115);
-        add(sleepVelocityTextField).width(100);
-        row().padTop(5);
-        addSeparator().colspan(2).padTop(5).padBottom(5);
-        add(new VisLabel("Enable Lights:", Align.right)).padRight(5).width(115);
-        add(enableLightsCheckBox).padLeft(1).left();
-        row().padTop(5);
-        add(new VisLabel("Enable Pseudo3D:", Align.right)).padRight(5).width(115);
-        add(enablePseudo3DLightsCheckBox).padLeft(1).left();
-        row().padTop(5);
-        add(new VisLabel("Shadows Blur:", Align.right)).padRight(5).width(115);
-        add(blurNumTextField).width(100);
-        row().padTop(5);
-        add(new VisLabel("Scale Quality:", Align.right)).padRight(5).width(115);
-        add(lightMapScaleTextField).width(100);
-        row().padTop(5);
-        add(new VisLabel("Ambient Color:", Align.right)).padRight(5).width(115);
-        add(ambientColorComponent).padLeft(1).left();
-        row().padTop(5);
-        add(new VisLabel("Light Type:", Align.right)).padRight(5).width(115);
-        add(lightTypeBox).fillX().padLeft(1).left();
-        row().padTop(5);
+        PropertyGrid grid = PropertyGrid.on(this).padPanel();
 
-        directionalTable.add(StandardWidgetsFactory.createLabel("Directional Light Settings:", Align.left)).fillX().expandX().colspan(2).padLeft(8);
-        directionalTable.row().padTop(6);
-        directionalTable.add(new VisLabel("Color:", Align.right)).padRight(5).width(115);
-        directionalTable.add(directionalLightColor).left();
-        directionalTable.row().padTop(5);
-        directionalTable.add(new VisLabel("Rays:", Align.right)).padRight(5).width(115);
-        directionalTable.add(directionalRays).left();
-        directionalTable.row().padTop(5);
-        directionalTable.add(new VisLabel("Degree:", Align.right)).padRight(5).width(115);
-        directionalTable.add(directionalDegreeTextField).width(100);
-        directionalTable.row().padTop(5);
-        directionalTable.add(new VisLabel("Height:", Align.right)).padRight(5).width(115);
-        directionalTable.add(directionalHeightTextField).width(100);
-        directionalTable.row().padTop(5);
+        grid.section("Scene");
+        grid.rowCompact("Pixels per WU", pixelsPerWorldUnitField);
+        grid.rowCompact("World size", worldSizeField);
+        grid.row("Shader", shadersSelector);
+
+        grid.section("Physics", physicsEnabledCheckBox);
+        grid.pair("Gravity", "X", gravityXTextField, "Y", gravityYTextField);
+        grid.row("Sleep velocity", sleepVelocityTextField);
+
+        grid.section("Lights", enableLightsCheckBox);
+        grid.rowCompact("Ambient color", ambientColorComponent);
+        grid.row("Light type", lightTypeBox);
+        grid.row("Shadows blur", blurNumTextField);
+        grid.row("Scale quality", lightMapScaleTextField);
+        grid.toggle("Pseudo 3D", enablePseudo3DLightsCheckBox);
+
+        PropertyGrid directional = PropertyGrid.on(directionalTable, grid);
+        directional.section("Directional light");
+        directional.rowCompact("Color", directionalLightColor);
+        directional.rowCompact("Rays", directionalRays);
+        directional.row("Degree", directionalDegreeTextField);
+        directional.row("Height", directionalHeightTextField);
+
+        // Shown by updateDisabled() only while the light type is DIRECTIONAL.
+        directionalRow = grid.collapsibleSubGrid(directionalTable);
+        directionalRow.setContentVisible(false);
 
         setListeners();
     }
@@ -186,16 +135,10 @@ public class UISceneProperties extends UIAbstractProperties implements RemoteEdi
     }
 
     public void updateDisabled() {
-        directionalRays.setDisabled(!lightTypeBox.getSelected().equals("DIRECTIONAL"));
-        directionalDegreeTextField.setDisabled(!lightTypeBox.getSelected().equals("DIRECTIONAL"));
-        if (lightTypeBox.getSelected().equals("DIRECTIONAL")) {
-            if (!directionalTable.hasParent()) {
-                row();
-                add(directionalTable).colspan(2);
-            }
-        } else {
-            directionalTable.remove();
-        }
+        boolean isDirectional = lightTypeBox.getSelected().equals("DIRECTIONAL");
+        directionalRays.setDisabled(!isDirectional);
+        directionalDegreeTextField.setDisabled(!isDirectional);
+        directionalRow.setContentVisible(isDirectional);
     }
 
     public String getLightType() {

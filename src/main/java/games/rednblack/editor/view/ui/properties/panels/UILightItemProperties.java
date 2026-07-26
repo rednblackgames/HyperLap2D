@@ -1,26 +1,6 @@
-/*
- * ******************************************************************************
- *  * Copyright 2015 See AUTHORS file.
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *   http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
- *  *****************************************************************************
- */
-
 package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -35,12 +15,10 @@ import games.rednblack.editor.renderer.components.light.LightObjectComponent;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import org.apache.commons.lang3.math.NumberUtils;
 
-/**
- * Created by azakhary on 4/28/2015.
- */
 public class UILightItemProperties extends UIItemCollapsibleProperties implements RemoteEditablePanel {
 
     @Override
@@ -103,17 +81,18 @@ public class UILightItemProperties extends UIItemCollapsibleProperties implement
     private VisLabel lightTypeLabel;
 
     private VisTable secondaryTable;
+    private PropertyGrid grid;
 
     public UILightItemProperties() {
         super("Light");
         Validators.FloatValidator floatValidator = new Validators.FloatValidator();
 
-        isStaticCheckBox = StandardWidgetsFactory.createCheckBox("Static");
-        isXRayCheckBox = StandardWidgetsFactory.createCheckBox("X-Ray");
-        isSoftCheckBox = StandardWidgetsFactory.createCheckBox("Soft");
-        isActiveCheckBox = StandardWidgetsFactory.createCheckBox("Active");
+        isStaticCheckBox = StandardWidgetsFactory.createSwitch();
+        isXRayCheckBox = StandardWidgetsFactory.createSwitch();
+        isSoftCheckBox = StandardWidgetsFactory.createSwitch();
+        isActiveCheckBox = StandardWidgetsFactory.createSwitch();
         rayCountSelector = StandardWidgetsFactory.createNumberSelector(4, 4, 5000);
-        lightTypeLabel = new VisLabel();
+        lightTypeLabel = PropertyGrid.value("");
         pointLightRadiusField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         coneInnerAngleField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         coneDistanceField = StandardWidgetsFactory.createValidableTextField(floatValidator);
@@ -127,64 +106,34 @@ public class UILightItemProperties extends UIItemCollapsibleProperties implement
 
         secondaryTable = new VisTable();
 
-        mainTable.add(new VisLabel("Type: ", Align.right)).padRight(5).width(75).right();
-        mainTable.add(lightTypeLabel).left();
-        mainTable.row().padTop(5);
-        mainTable.add(new VisLabel("Ray Count: ", Align.right)).padRight(5).width(75).right();
-        mainTable.add(rayCountSelector).left();
-        mainTable.row().padTop(5);
-        mainTable.add(new VisLabel("Softness length: ", Align.right)).padRight(5).width(110).right();
-        mainTable.add(softnessLengthField).width(92).left();
-        mainTable.row().padTop(5);
-        mainTable.add(new VisLabel("Height: ", Align.right)).padRight(5).width(110).right();
-        mainTable.add(heightField).width(92).left();
-        mainTable.row().padTop(5);
-        mainTable.add(new VisLabel("Intensity: ", Align.right)).padRight(5).width(110).right();
-        mainTable.add(intensityField).width(92).left();
-        mainTable.row().padTop(5);
-        mainTable.add(new VisLabel("Falloff:", Align.right)).padRight(5).width(110).right();
-        Table falloffTable = new Table();
-        falloffTable.add(constantFalloffField).width(30).padRight(1);
-        falloffTable.add(linearFalloffField).width(30).padRight(1);
-        falloffTable.add(quadraticFalloffField).width(30);
-        mainTable.add(falloffTable).width(100).width(92).left();
-        mainTable.row().padTop(5);
-
-        mainTable.add(secondaryTable).colspan(2);
-        mainTable.row().padTop(5);
-
-        VisTable bottomTable = new VisTable();
-        bottomTable.add(isStaticCheckBox).left().padRight(5);
-        bottomTable.add(isXRayCheckBox).padRight(5);
-        bottomTable.add(isSoftCheckBox).padRight(5);
-        bottomTable.row();
-        bottomTable.add(isActiveCheckBox).padRight(5);
-        mainTable.add(bottomTable).padBottom(5).colspan(4);
-        mainTable.row().padTop(5);
+        grid = PropertyGrid.on(mainTable);
+        grid.rowCompact("Type", lightTypeLabel);
+        grid.row("Ray count", rayCountSelector);
+        grid.row("Softness length", softnessLengthField);
+        grid.row("Height", heightField);
+        grid.row("Intensity", intensityField);
+        grid.triple("Falloff", constantFalloffField, linearFalloffField, quadraticFalloffField);
+        grid.subGrid(secondaryTable);
+        grid.toggle("Static", isStaticCheckBox);
+        grid.toggle("X-Ray", isXRayCheckBox);
+        grid.toggle("Soft", isSoftCheckBox);
+        grid.toggle("Active", isActiveCheckBox);
 
         setListeners();
     }
 
     public void initPointFields() {
         secondaryTable.clear();
-
-        secondaryTable.add(new VisLabel("Radius: ", Align.right)).padRight(5).width(110).right();
-        secondaryTable.add(pointLightRadiusField).width(70).left();
-        secondaryTable.row().padTop(5);
+        PropertyGrid.on(secondaryTable, grid).row("Radius", pointLightRadiusField);
     }
 
     public void initConeFields() {
         secondaryTable.clear();
 
-        secondaryTable.add(new VisLabel("Distance: ", Align.right)).padRight(5).width(110).right();
-        secondaryTable.add(coneDistanceField).width(92).left();
-        secondaryTable.row().padTop(5);
-        secondaryTable.add(new VisLabel("Angle: ", Align.right)).padRight(5).width(110).right();
-        secondaryTable.add(coneInnerAngleField).width(92).left();
-        secondaryTable.row().padTop(5);
-        secondaryTable.add(new VisLabel("Direction: ", Align.right)).padRight(5).width(110).right();
-        secondaryTable.add(coneDirectionField).width(92).left();
-        secondaryTable.row().padTop(5);
+        PropertyGrid cone = PropertyGrid.on(secondaryTable, grid);
+        cone.row("Distance", coneDistanceField);
+        cone.row("Angle", coneInnerAngleField);
+        cone.row("Direction", coneDirectionField);
     }
 
     public void setType(LightObjectComponent.LightType type) {

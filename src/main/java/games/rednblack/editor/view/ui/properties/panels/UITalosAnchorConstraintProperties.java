@@ -2,7 +2,6 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
@@ -10,8 +9,8 @@ import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.renderer.components.LayoutComponent;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import games.rednblack.puremvc.Facade;
 
 public class UITalosAnchorConstraintProperties extends UIRemovableProperties {
 
@@ -67,46 +66,19 @@ public class UITalosAnchorConstraintProperties extends UIRemovableProperties {
     }
 
     private void addBindingRowToTable(BindingRow row) {
-        // Header: main enabled checkbox + scope key label
-        mainTable.add(row.enabled).left().width(24);
-        mainTable.add(new VisLabel("Scope " + row.scopeKey)).left().expandX().colspan(3);
-        mainTable.row().padTop(2);
+        // One dense row per side, in a table of their own so they keep their tighter columns.
+        VisTable constraints = new VisTable();
+        PropertyGrid sides = PropertyGrid.on(constraints);
+        sides.constraintRow(row.leftEnabled, row.leftTarget, row.leftSide, row.leftMargin);
+        sides.constraintRow(row.rightEnabled, row.rightTarget, row.rightSide, row.rightMargin);
+        sides.constraintRow(row.bottomEnabled, row.bottomTarget, row.bottomSide, row.bottomMargin);
+        sides.constraintRow(row.topEnabled, row.topTarget, row.topSide, row.topMargin);
 
-        // L constraint row
-        mainTable.add(row.leftEnabled).left().width(34);
-        mainTable.add(row.leftTarget).width(90).padLeft(1);
-        mainTable.add(row.leftSide).width(62).padLeft(1);
-        mainTable.add(row.leftMargin).width(36).padLeft(1);
-        mainTable.row().padTop(1);
-
-        // R constraint row
-        mainTable.add(row.rightEnabled).left().width(34);
-        mainTable.add(row.rightTarget).width(90).padLeft(1);
-        mainTable.add(row.rightSide).width(62).padLeft(1);
-        mainTable.add(row.rightMargin).width(36).padLeft(1);
-        mainTable.row().padTop(1);
-
-        // B constraint row
-        mainTable.add(row.bottomEnabled).left().width(34);
-        mainTable.add(row.bottomTarget).width(90).padLeft(1);
-        mainTable.add(row.bottomSide).width(62).padLeft(1);
-        mainTable.add(row.bottomMargin).width(36).padLeft(1);
-        mainTable.row().padTop(1);
-
-        // T constraint row
-        mainTable.add(row.topEnabled).left().width(34);
-        mainTable.add(row.topTarget).width(90).padLeft(1);
-        mainTable.add(row.topSide).width(62).padLeft(1);
-        mainTable.add(row.topMargin).width(36).padLeft(1);
-        mainTable.row().padTop(2);
-
-        // Bias row
-        mainTable.add(new VisLabel("H Bias:", Align.right)).padRight(2);
-        mainTable.add(row.horizontalBiasField).growX().colspan(3);
-        mainTable.row().padTop(1);
-        mainTable.add(new VisLabel("V Bias:", Align.right)).padRight(2);
-        mainTable.add(row.verticalBiasField).growX().colspan(3);
-        mainTable.row().padTop(6);
+        PropertyGrid grid = PropertyGrid.on(mainTable);
+        grid.section("Scope " + row.scopeKey, row.enabled);
+        grid.wideFill(constraints);
+        grid.row("H bias", row.horizontalBiasField);
+        grid.row("V bias", row.verticalBiasField);
     }
 
     public Array<BindingRow> getBindingRows() {
@@ -157,7 +129,7 @@ public class UITalosAnchorConstraintProperties extends UIRemovableProperties {
         BindingRow(int scopeKey) {
             this.scopeKey = scopeKey;
 
-            enabled = StandardWidgetsFactory.createCheckBox("");
+            enabled = StandardWidgetsFactory.createSwitch();
 
             // Left
             leftEnabled = StandardWidgetsFactory.createCheckBox("L");

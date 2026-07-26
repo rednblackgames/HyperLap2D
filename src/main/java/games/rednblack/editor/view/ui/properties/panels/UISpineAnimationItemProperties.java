@@ -18,13 +18,13 @@
 
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
@@ -56,13 +56,10 @@ public class UISpineAnimationItemProperties extends UIItemCollapsibleProperties 
         animationsSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
         skinSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
 
-        mainTable.add(StandardWidgetsFactory.createLabel("Animation:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(animationsSelectBox).width(120).colspan(2).row();
+        PropertyGrid grid = PropertyGrid.on(mainTable);
+        grid.row("Animation", animationsSelectBox);
+        grid.row("Skin", skinSelectBox);
 
-        mainTable.add().padTop(7).colspan(4).row();
-
-        mainTable.add(StandardWidgetsFactory.createLabel("Skin:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(skinSelectBox).width(120).colspan(2).row();
         setListeners();
     }
 

@@ -19,6 +19,7 @@ import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.editor.view.ui.widget.actors.ExpandableTextArea;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 import java.util.HashMap;
@@ -55,8 +56,8 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
         alignSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
         boldCheckBox = StandardWidgetsFactory.createCheckBox();
         italicCheckBox = StandardWidgetsFactory.createCheckBox();
-        wrapCheckBox = StandardWidgetsFactory.createCheckBox("Wrap");
-        monoCheckBox = StandardWidgetsFactory.createCheckBox("Mono Space");
+        wrapCheckBox = StandardWidgetsFactory.createSwitch();
+        monoCheckBox = StandardWidgetsFactory.createSwitch();
         fontSizeField = StandardWidgetsFactory.createNumberSelector(12, 1, 500);
 
         fontFamilySelectBox.setMaxListCount(10);
@@ -67,34 +68,16 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
         textAreaTable.setSyntax(new TypingLabelSyntax());
         textArea = textAreaTable.getTextArea();
 
-        mainTable.add(StandardWidgetsFactory.createLabel("Bitmap Font", Align.right)).padRight(5).width(90).left();
-        mainTable.add(bitmapFontSelectBox).width(90).padRight(5);
-        mainTable.row().padTop(5);
+        PropertyGrid grid = PropertyGrid.on(mainTable);
+        grid.row("Bitmap font", bitmapFontSelectBox);
+        grid.row("Font name", fontFamilySelectBox);
+        grid.row("Font size", fontSizeField);
+        grid.row("Align", alignSelectBox);
+        grid.wideFill(textEditTable);
+        grid.toggle("Wrap", wrapCheckBox);
+        grid.toggle("Mono space", monoCheckBox);
 
-        mainTable.add(StandardWidgetsFactory.createLabel("Font Name", Align.right)).padRight(5).width(90).left();
-        mainTable.add(fontFamilySelectBox).width(90).padRight(5);
-        mainTable.row().padTop(5);
-
-        /*mainTable.add(StandardWidgetsFactory.createLabel("Bold", Align.right)).padRight(5).width(90).left();
-        mainTable.add(boldCheckBox).width(55).padRight(5);
-        mainTable.row().padTop(5);
-        mainTable.add(StandardWidgetsFactory.createLabel("Italic", Align.right)).padRight(5).width(90).left();
-        mainTable.add(italicCheckBox).width(55).padRight(5);
-        mainTable.row().padTop(5);*/
-
-        mainTable.add(StandardWidgetsFactory.createLabel("Font Size", Align.right)).padRight(5).width(90).left();
-        mainTable.add(fontSizeField).width(55).padRight(5);
-        mainTable.row().padTop(5);
-        mainTable.add(StandardWidgetsFactory.createLabel("Align", Align.right)).padRight(5).width(90).left();
-        mainTable.add(alignSelectBox).width(90).padRight(5);
-        mainTable.row().padTop(5);
-        mainTable.add(textEditTable).colspan(2).width(200);
-        mainTable.row().padTop(5);
-        mainTable.add(wrapCheckBox).padRight(5);
-        mainTable.add(monoCheckBox).padRight(5);
-        mainTable.row().padTop(5);
-
-        textEditTable.add(textAreaTable).width(200);
+        PropertyGrid.elastic(textEditTable.add(textAreaTable));
 
         setListeners();
         setAlignList();

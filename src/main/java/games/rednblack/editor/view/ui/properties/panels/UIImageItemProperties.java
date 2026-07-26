@@ -1,11 +1,11 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
@@ -42,12 +42,9 @@ public class UIImageItemProperties extends UIItemCollapsibleProperties implement
         renderModeBox.setItems("REPEAT", "SINGLE");
         spriteTypeBox.setItems("SQUARE", "POLYGON");
 
-        mainTable.add(StandardWidgetsFactory.createLabel("Render Mode:", Align.right)).padRight(5).width(90).left();
-        mainTable.add(renderModeBox).left().width(90).padRight(5);
-        mainTable.row().padTop(5);
-        mainTable.add(StandardWidgetsFactory.createLabel("Sprite Type:", Align.right)).padRight(5).width(90).left();
-        mainTable.add(spriteTypeBox).left().width(90).padRight(5);
-        mainTable.row().padTop(5);
+        PropertyGrid grid = PropertyGrid.on(mainTable);
+        grid.row("Render mode", renderModeBox);
+        grid.row("Sprite type", spriteTypeBox);
 
         collapse(header);
 

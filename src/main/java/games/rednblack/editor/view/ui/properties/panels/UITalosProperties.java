@@ -5,6 +5,7 @@ import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 public class UITalosProperties extends UIItemCollapsibleProperties implements RemoteEditablePanel {
@@ -24,11 +25,12 @@ public class UITalosProperties extends UIItemCollapsibleProperties implements Re
     public UITalosProperties() {
         super("Talos VFX");
 
-        matrixTransformCheckBox = StandardWidgetsFactory.createCheckBox("Matrix Transform");
-        autoStartCheckBox = StandardWidgetsFactory.createCheckBox("Auto Start");
+        matrixTransformCheckBox = StandardWidgetsFactory.createSwitch();
+        autoStartCheckBox = StandardWidgetsFactory.createSwitch();
 
-        mainTable.add(matrixTransformCheckBox).left().row();
-        mainTable.add(autoStartCheckBox).left().row();
+        PropertyGrid grid = PropertyGrid.on(mainTable);
+        grid.toggle("Matrix transform", matrixTransformCheckBox);
+        grid.toggle("Auto start", autoStartCheckBox);
 
         setListeners();
     }

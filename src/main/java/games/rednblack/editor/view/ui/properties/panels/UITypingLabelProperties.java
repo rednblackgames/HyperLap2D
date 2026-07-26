@@ -3,6 +3,7 @@ package games.rednblack.editor.view.ui.properties.panels;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import games.rednblack.editor.event.ButtonToNotificationListener;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
 
@@ -16,7 +17,7 @@ public class UITypingLabelProperties extends UIRemovableProperties {
         super("Typing Label");
 
         TextButton restartButton = StandardWidgetsFactory.createTextButton("Restart");
-        mainTable.add(restartButton);
+        PropertyGrid.on(mainTable).buttons(restartButton);
 
         restartButton.addListener(new ButtonToNotificationListener(RESTART_BUTTON_CLICKED));
     }

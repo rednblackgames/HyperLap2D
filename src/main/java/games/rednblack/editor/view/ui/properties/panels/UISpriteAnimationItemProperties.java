@@ -21,7 +21,6 @@ package games.rednblack.editor.view.ui.properties.panels;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -32,6 +31,7 @@ import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 import java.util.HashMap;
@@ -78,18 +78,11 @@ public class UISpriteAnimationItemProperties extends UIItemCollapsibleProperties
         playModesSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
         editAnimationsButton = new VisTextButton("Edit animations");
 
-        mainTable.add(StandardWidgetsFactory.createLabel("FPS:", Align.right)).padRight(5).fillX();
-        mainTable.add(fpsSelector).width(50).left();
-        mainTable.row().padTop(5);
-
-        mainTable.add(StandardWidgetsFactory.createLabel("Play mode:", Align.right)).padRight(5).fillX();
-        mainTable.add(playModesSelectBox).width(120);
-        mainTable.row().padTop(5);
-
-        mainTable.add(StandardWidgetsFactory.createLabel("Animation:", Align.right)).padRight(5).fillX();
-        mainTable.add(animationsSelectBox).width(120);
-        mainTable.row().padTop(5);
-        mainTable.add(editAnimationsButton).right().colspan(2);
+        PropertyGrid grid = PropertyGrid.on(mainTable);
+        grid.row("FPS", fpsSelector);
+        grid.row("Play mode", playModesSelectBox);
+        grid.row("Animation", animationsSelectBox);
+        grid.buttons(editAnimationsButton);
 
         setPlayModes();
 

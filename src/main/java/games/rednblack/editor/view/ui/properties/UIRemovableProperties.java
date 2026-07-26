@@ -10,8 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
-import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.H2DDialogs;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
@@ -31,7 +31,7 @@ public abstract class UIRemovableProperties extends UIItemCollapsibleProperties 
         VisImageButton collapseButton = StandardWidgetsFactory.createImageButton("expandable-properties-button");
         VisImageButton closeButton = StandardWidgetsFactory.createImageButton("close-properties");
         header.add(closeButton).left().padLeft(2);
-        header.add(StandardWidgetsFactory.createLabel(title)).left().expandX().padLeft(6);
+        header.add(PropertyGrid.sectionLabel(title)).left().expandX().padLeft(6);
         header.add(collapseButton).right().padRight(8);
         header.addListener(new ClickListener() {
             @Override

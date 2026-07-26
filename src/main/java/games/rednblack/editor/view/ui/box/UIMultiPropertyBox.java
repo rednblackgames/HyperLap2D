@@ -40,6 +40,8 @@ public class UIMultiPropertyBox extends UICollapsibleBox {
         scrollPaneInner = new VisTable();
         scrollPane = StandardWidgetsFactory.createScrollPane(scrollPaneInner);
         scrollPane.setFadeScrollBars(true);
+        // Panels are laid out to the box width by PropertyGrid; never scroll them sideways.
+        scrollPane.setScrollingDisabled(true, false);
 
         propertiesTable.add(scrollPane).maxHeight(Gdx.graphics.getHeight() * 0.38f).width(BOX_DEFAULT_WIDTH);
         createCollapsibleWidget(propertiesTable);

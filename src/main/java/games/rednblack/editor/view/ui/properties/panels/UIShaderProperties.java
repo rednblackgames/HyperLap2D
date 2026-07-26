@@ -20,17 +20,15 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import games.rednblack.editor.event.ButtonToNotificationListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.renderer.data.MainItemVO;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -68,20 +66,16 @@ public class UIShaderProperties extends UIRemovableProperties implements RemoteE
     public void initView() {
         mainTable.clear();
 
-        mainTable.add(new VisLabel("Shader: ", Align.right)).padRight(5).width(75).right();
-        mainTable.add(shadersSelector).width(100).left().row();
-
         TextButton editButton = StandardWidgetsFactory.createTextButton("Edit");
         editButton.addListener(new ButtonToNotificationListener(EDIT_BUTTON_CLICKED));
-        mainTable.add(editButton).padTop(5).padRight(3);
 
         TextButton uniformsButton = StandardWidgetsFactory.createTextButton("Uniforms");
         uniformsButton.addListener(new ButtonToNotificationListener(UNIFORMS_BUTTON_CLICKED));
-        mainTable.add(uniformsButton).padTop(5).row();
 
-        mainTable.addSeparator().padTop(5).padBottom(5).colspan(2);
-        mainTable.add(StandardWidgetsFactory.createLabel("Rendering Layer:")).padRight(5).right();
-        mainTable.add(renderingLaterSelector).width(100).left().row();
+        PropertyGrid grid = PropertyGrid.on(mainTable);
+        grid.row("Shader", shadersSelector);
+        grid.buttons(editButton, uniformsButton);
+        grid.row("Rendering layer", renderingLaterSelector);
     }
 
     public void initShaders(HashMap<String, ShaderProgram> shaders) {

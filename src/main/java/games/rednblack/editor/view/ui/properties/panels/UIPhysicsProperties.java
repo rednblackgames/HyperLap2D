@@ -2,7 +2,6 @@ package games.rednblack.editor.view.ui.properties.panels;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
@@ -13,8 +12,8 @@ import games.rednblack.editor.renderer.data.PhysicsBodyDataVO;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
-import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
 
@@ -82,76 +81,32 @@ public class UIPhysicsProperties extends UIRemovableProperties implements Remote
         frictionField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         restitutionField = StandardWidgetsFactory.createValidableTextField(floatValidator);
         heightField = StandardWidgetsFactory.createValidableTextField(floatValidator);
-        allowSleepBox = StandardWidgetsFactory.createCheckBox("Allow Sleep");
-        awakeBox = StandardWidgetsFactory.createCheckBox("Awake");
-        bulletBox = StandardWidgetsFactory.createCheckBox("Bullet");
-        sensor = StandardWidgetsFactory.createCheckBox("Sensor");
-        fineBoundBox = StandardWidgetsFactory.createCheckBox("Fine Bound Box");
-        fixedRotation = StandardWidgetsFactory.createCheckBox("Fixed Rotation");
+        allowSleepBox = StandardWidgetsFactory.createSwitch();
+        awakeBox = StandardWidgetsFactory.createSwitch();
+        bulletBox = StandardWidgetsFactory.createSwitch();
+        sensor = StandardWidgetsFactory.createSwitch();
+        fineBoundBox = StandardWidgetsFactory.createSwitch();
+        fixedRotation = StandardWidgetsFactory.createSwitch();
 
-        mainTable.add(new VisLabel("Body Type:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(bodyTypeBox).width(100).colspan(2);
-        mainTable.row().padTop(5);
-
-        mainTable.add(new VisLabel("Shape Type:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(shapeType).width(100).colspan(2);
-        mainTable.row().padTop(5);
-
-        mainTable.add(new VisLabel("Mass:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(massField).width(100).colspan(2);
-        mainTable.row().padTop(5);
-
-        mainTable.add(new VisLabel("Center of Mass:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(centerOfMassXField).width(50);
-        mainTable.add(centerOfMassYField).width(50);
-        mainTable.row().padTop(5);
-
-        mainTable.add(new VisLabel("Rotational Inertia:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(rotationalInertiaField).width(100).colspan(2);
-        mainTable.row().padTop(5);
-
-        mainTable.add(new VisLabel("Dumping:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(dumpingField).width(100).colspan(2);
-        mainTable.row().padTop(5);
-
-        mainTable.add(new VisLabel("Angular Dumping:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(angularDumpingField).width(100).colspan(2);
-        mainTable.row().padTop(5);
-
-        mainTable.add(new VisLabel("Gravity Scale:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(gravityScaleField).width(100).colspan(2);
-        mainTable.row().padTop(5);
-
-        mainTable.add(new VisLabel("Density:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(densityField).width(100).colspan(2);
-        mainTable.row().padTop(5);
-
-        mainTable.add(new VisLabel("Friction:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(frictionField).width(100).colspan(2);
-        mainTable.row().padTop(5);
-
-        mainTable.add(new VisLabel("Restitution:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(restitutionField).width(100).colspan(2);
-        mainTable.row().padTop(5);
-
-        mainTable.add(new VisLabel("Height:", Align.right)).padRight(5).colspan(2).fillX();
-        mainTable.add(heightField).width(100).colspan(2);
-        mainTable.row().padTop(5);
-
-        VisTable bottomTable = new VisTable();
-        bottomTable.add(allowSleepBox).padRight(5);
-        bottomTable.add(awakeBox).padRight(5);
-        bottomTable.add(bulletBox).padRight(5);
-
-        bottomTable.row();
-
-        bottomTable.add(sensor).padRight(5);
-        bottomTable.add(fixedRotation).colspan(2).left();
-        bottomTable.row();
-        bottomTable.add(fineBoundBox).colspan(3);
-
-        mainTable.add(bottomTable).padBottom(5).colspan(4);
-        mainTable.row().padTop(5);
+        PropertyGrid grid = PropertyGrid.on(mainTable);
+        grid.row("Body type", bodyTypeBox);
+        grid.row("Shape type", shapeType);
+        grid.row("Mass", massField);
+        grid.pair("Center of mass", "X", centerOfMassXField, "Y", centerOfMassYField);
+        grid.row("Rotational inertia", rotationalInertiaField);
+        grid.row("Dumping", dumpingField);
+        grid.row("Angular dumping", angularDumpingField);
+        grid.row("Gravity scale", gravityScaleField);
+        grid.row("Density", densityField);
+        grid.row("Friction", frictionField);
+        grid.row("Restitution", restitutionField);
+        grid.row("Height", heightField);
+        grid.toggle("Allow sleep", allowSleepBox);
+        grid.toggle("Awake", awakeBox);
+        grid.toggle("Bullet", bulletBox);
+        grid.toggle("Sensor", sensor);
+        grid.toggle("Fixed rotation", fixedRotation);
+        grid.toggle("Fine bound box", fineBoundBox);
     }
 
     private void updateEnabled() {

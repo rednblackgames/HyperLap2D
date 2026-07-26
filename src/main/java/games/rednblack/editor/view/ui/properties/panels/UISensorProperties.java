@@ -1,6 +1,5 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
-import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.event.CheckBoxChangeListener;
@@ -8,6 +7,7 @@ import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIRemovableProperties;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
 
@@ -79,10 +79,10 @@ public class UISensorProperties extends UIRemovableProperties implements RemoteE
 
     public void initView() {
         // sensors
-        sensorBottom = StandardWidgetsFactory.createCheckBox("Bottom");
-        sensorLeft = StandardWidgetsFactory.createCheckBox("Left");
-        sensorRight = StandardWidgetsFactory.createCheckBox("Right");
-        sensorTop = StandardWidgetsFactory.createCheckBox("Top");
+        sensorBottom = StandardWidgetsFactory.createSwitch("Bottom");
+        sensorLeft = StandardWidgetsFactory.createSwitch("Left");
+        sensorRight = StandardWidgetsFactory.createSwitch("Right");
+        sensorTop = StandardWidgetsFactory.createSwitch("Top");
 
         Validators.FloatValidator floatValidator = new Validators.FloatValidator();
         sensorSpanPercentBottom = StandardWidgetsFactory.createValidableTextField(floatValidator);
@@ -95,38 +95,12 @@ public class UISensorProperties extends UIRemovableProperties implements RemoteE
         sensorWidthPercentRight = StandardWidgetsFactory.createValidableTextField(floatValidator);
         sensorHeightPercentTop = StandardWidgetsFactory.createValidableTextField(floatValidator);
 
-        mainTable.add(new VisLabel("Add sensors to body:", Align.left)).padRight(5).colspan(2).fillX();
-        mainTable.row().padTop(5);
-        
-        // table
-        VisTable sensorTable = new VisTable();
-        sensorTable.defaults().left();
-        sensorTable.add(sensorTop).padRight(5);
-        sensorTable.add("W:");
-        sensorTable.add(sensorSpanPercentTop).width(50).padRight(5);
-        sensorTable.add("H:");
-        sensorTable.add(sensorHeightPercentTop).width(50).padRight(5);
-        sensorTable.row();
-        sensorTable.add(sensorLeft).padRight(5);
-        sensorTable.add("H:");
-        sensorTable.add(sensorSpanPercentLeft).width(50).padRight(5);
-        sensorTable.add("W:");
-        sensorTable.add(sensorWidthPercentLeft).width(50).padRight(5);
-        sensorTable.row();
-        sensorTable.add(sensorRight).padRight(5);
-        sensorTable.add("H:");
-        sensorTable.add(sensorSpanPercentRight).width(50).padRight(5);
-        sensorTable.add("W:");
-        sensorTable.add(sensorWidthPercentRight).width(50).padRight(5);
-        sensorTable.row();
-        sensorTable.add(sensorBottom).padRight(5);
-        sensorTable.add("W:");
-        sensorTable.add(sensorSpanPercentBottom).width(50).padRight(5);
-        sensorTable.add("H:");
-        sensorTable.add(sensorHeightPercentBottom).width(50).padRight(5);
-        
-        mainTable.add(sensorTable).padBottom(5).colspan(2);
-        mainTable.row().padTop(5);
+        // One row per side: the side toggle, then its two percentage fields.
+        PropertyGrid grid = PropertyGrid.on(mainTable);
+        grid.pair(sensorTop, "W", sensorSpanPercentTop, "H", sensorHeightPercentTop);
+        grid.pair(sensorLeft, "H", sensorSpanPercentLeft, "W", sensorWidthPercentLeft);
+        grid.pair(sensorRight, "H", sensorSpanPercentRight, "W", sensorWidthPercentRight);
+        grid.pair(sensorBottom, "W", sensorSpanPercentBottom, "H", sensorHeightPercentBottom);
     }
     
     /**

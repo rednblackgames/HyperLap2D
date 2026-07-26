@@ -231,6 +231,14 @@
     menuitem-shortcut: {
       font: small-font,
       fontColor: hyperlap2d-menuitem-shortcut-grey
+    },
+    property-label: {
+      font: small-font,
+      fontColor: hyperlap2d-menuitem-grey
+    },
+    property-section: {
+      font: small-font,
+      fontColor: white
     }
   },
   com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
@@ -715,6 +723,16 @@
       font: default-font,
       fontColor: white,
       disabledFontColor: grey
+    },
+    switch: {
+      checkBackground: switch-off,
+      checkBackgroundOver: switch-off-over,
+      checkBackgroundDown: switch-off-down,
+      tick: switch-on,
+      tickDisabled: switch-on-disabled,
+      font: small-font,
+      fontColor: hyperlap2d-menuitem-grey,
+      disabledFontColor: hyperlap2d-menuitem-disabled-grey
     }
   },
   com.kotcrab.vis.ui.widget.PopupMenu$PopupMenuStyle: {

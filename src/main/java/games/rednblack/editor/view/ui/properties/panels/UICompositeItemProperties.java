@@ -23,6 +23,7 @@ import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
@@ -48,13 +49,14 @@ public class UICompositeItemProperties extends UIItemCollapsibleProperties imple
 
     public UICompositeItemProperties() {
         super("Composite");
-        scissorsEnabledCheckBox = StandardWidgetsFactory.createCheckBox("Scissors Enabled");
-        automaticResizeCheckBox = StandardWidgetsFactory.createCheckBox("Automatic Resize");
-        renderToFBOCheckBox = StandardWidgetsFactory.createCheckBox("Render to FBO");
+        scissorsEnabledCheckBox = StandardWidgetsFactory.createSwitch();
+        automaticResizeCheckBox = StandardWidgetsFactory.createSwitch();
+        renderToFBOCheckBox = StandardWidgetsFactory.createSwitch();
 
-        mainTable.add(scissorsEnabledCheckBox).left().row();
-        mainTable.add(automaticResizeCheckBox).left().row();
-        mainTable.add(renderToFBOCheckBox).left();
+        PropertyGrid grid = PropertyGrid.on(mainTable);
+        grid.toggle("Scissors", scissorsEnabledCheckBox);
+        grid.toggle("Automatic resize", automaticResizeCheckBox);
+        grid.toggle("Render to FBO", renderToFBOCheckBox);
 
         setListeners();
     }

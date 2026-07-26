@@ -22,10 +22,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.kotcrab.vis.ui.VisUI;
@@ -38,6 +36,7 @@ import games.rednblack.editor.proxy.EntityMetadata;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
 import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemProperties;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
 
@@ -53,6 +52,9 @@ public class UIBasicItemProperties extends UIItemProperties implements RemoteEdi
     public static final String ADD_COMPONENT_BUTTON_CLICKED = prefix + ".ADD_COMPONENT_BUTTON_CLICKED";
     public static final String LINKING_CHANGED = prefix + ".LINKING_CHANGED";
 
+    /** Item type icon and library link icon, matching the editor's 22px icon set. */
+    private static final int ICON_SIZE = 22;
+
     private Image itemTypeIcon;
     private VisLabel itemType;
 
@@ -60,6 +62,7 @@ public class UIBasicItemProperties extends UIItemProperties implements RemoteEdi
     private VisLabel libraryLinkLabel;
 
     private VisTable linkageContainer;
+    private PropertyGrid.CollapsibleRow linkageRow;
 
     private VisTextField idBox;
 
@@ -83,23 +86,20 @@ public class UIBasicItemProperties extends UIItemProperties implements RemoteEdi
         Validators.FloatValidator floatValidator = new Validators.FloatValidator();
         Validators.GreaterThanValidator nonNegativeValidator = new Validators.GreaterThanValidator(0, true);
 
-        itemType = new VisLabel("");
-        itemType.setAlignment(Align.left);
+        // Both texts are user data of unbounded length, so they ellipsize instead of widening the panel.
+        itemType = PropertyGrid.valueEllipsized("");
         itemTypeIcon = new Image();
 
-        libraryLinkLabel = StandardWidgetsFactory.createLabel("");
-        libraryLinkLabel.setAlignment(Align.left);
+        libraryLinkLabel = PropertyGrid.valueEllipsized("");
         linkImage = StandardWidgetsFactory.createImageButton("library-link-button");
-        linkImage.setWidth(22);
 
-        VisTable iconContainer = new VisTable();
-        iconContainer.add(itemTypeIcon).width(22).right();
+        VisTable titleContainer = new VisTable();
+        titleContainer.add(itemTypeIcon).size(ICON_SIZE).padRight(PropertyGrid.LABEL_GAP);
+        PropertyGrid.elastic(titleContainer.add(itemType)).height(PropertyGrid.FIELD_HEIGHT);
 
         linkageContainer = new VisTable();
-        linkageContainer.setVisible(false);
-        linkageContainer.add(linkImage).width(22);
-        linkageContainer.add(libraryLinkLabel);
-        linkageContainer.row();
+        linkageContainer.add(linkImage).size(ICON_SIZE).padRight(PropertyGrid.SUB_LABEL_GAP);
+        PropertyGrid.elastic(linkageContainer.add(libraryLinkLabel));
 
         idBox = StandardWidgetsFactory.createTextField();
         xValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
@@ -110,8 +110,9 @@ public class UIBasicItemProperties extends UIItemProperties implements RemoteEdi
         heightValue.setDisabled(true);
         scaleXValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
         scaleYValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
-        flipY = StandardWidgetsFactory.createCheckBox("Flip Y");
-        flipX = StandardWidgetsFactory.createCheckBox("Flip X");
+        linkScaleButton = StandardWidgetsFactory.createImageButton("library-link-button");
+        flipY = StandardWidgetsFactory.createSwitch();
+        flipX = StandardWidgetsFactory.createSwitch();
         tintColorComponent = StandardWidgetsFactory.createTintButton();
         rotationValue = StandardWidgetsFactory.createValidableTextField(floatValidator);
         customVarsButton = new VisTextButton("Custom Vars");
@@ -121,44 +122,34 @@ public class UIBasicItemProperties extends UIItemProperties implements RemoteEdi
         addComponentButton = new VisTextButton("Add");
 
         VisTable componentsTable = new VisTable();
-        componentsTable.add(nonExistantComponents).left().width(150).padRight(10);
-        componentsTable.add(addComponentButton).right().height(21);
-        componentsTable.row();
+        PropertyGrid.elastic(componentsTable.add(nonExistantComponents)).height(PropertyGrid.FIELD_HEIGHT);
+        componentsTable.add(addComponentButton).height(PropertyGrid.FIELD_HEIGHT).padLeft(PropertyGrid.BUTTON_GAP);
 
-        add(iconContainer).padTop(9).padRight(3).right().fillX();
-        add(itemType).width(143).height(21).colspan(2).padTop(9).left();
-        row();
-        addSeparator().padTop(5).padBottom(6).colspan(3);
-        add(StandardWidgetsFactory.createLabel("Identifier:", Align.left)).fillX();
-        add(idBox).fillX().height(21).colspan(2);
-        row();
-        add(linkageContainer).colspan(3).right();
-        row().padTop(2);
-        add(StandardWidgetsFactory.createLabel("Position:")).padRight(3).left().top();
-        add(getAsTable("X:", xValue, "Y:", yValue)).left();
-        add(getAsTable("Width:", widthValue, "Height:", heightValue)).right();
-        row().padTop(6);
-        add(StandardWidgetsFactory.createLabel("Rotation:")).padRight(3).left();
-        add(rotationValue).width(45).height(21).left().padLeft(13);
-        add(getTintTable()).fillX();
-        row().padTop(6);
-        add(StandardWidgetsFactory.createLabel("Scale:")).padRight(3).left().top();
-        linkScaleButton = StandardWidgetsFactory.createImageButton("library-link-button");
-        add(getAsTable("X:", scaleXValue, "Y:", scaleYValue, linkScaleButton)).left();
-        VisTable buttonsTable = new VisTable();
-        buttonsTable.add(customVarsButton);
-        buttonsTable.row();
-        buttonsTable.add(tagsButton).right().padTop(2);
-        add(buttonsTable).height(45).left().top().padLeft(13);
-        row().padTop(5);
-        add(flipX);
-        add(flipY);
-        row();
-        addSeparator().padTop(9).padBottom(6).colspan(3);
-        add(StandardWidgetsFactory.createLabel("Add additional components:", Align.left)).fillX().colspan(3);
-        row().padTop(6);
-        add(componentsTable).left().colspan(3);
-        row();
+        PropertyGrid grid = PropertyGrid.on(this).padPanel();
+
+        grid.wideFill(titleContainer);
+        grid.separator();
+        grid.row("Identifier", idBox);
+        // Only library items are linked, for anything else the row takes no space at all.
+        linkageRow = grid.collapsibleField(linkageContainer);
+        linkageRow.setContentVisible(false);
+
+        grid.section("Transform");
+        grid.pair("Position", "X", xValue, "Y", yValue);
+        grid.pair("Size", "W", widthValue, "H", heightValue);
+        // The link toggle rides in the label column, so the fields stay on the grid like every other pair.
+        grid.pair(PropertyGrid.labelWith(linkScaleButton, "Scale"), "X", scaleXValue, "Y", scaleYValue);
+        grid.row("Rotation", rotationValue);
+
+        grid.section("Appearance");
+        grid.rowCompact("Tint", tintColorComponent);
+        grid.togglePair("Flip", "X", flipX, "Y", flipY);
+
+        grid.section("Metadata");
+        grid.buttons(customVarsButton, tagsButton);
+
+        grid.section("Components");
+        grid.wideFill(componentsTable);
 
         setListeners();
     }
@@ -172,48 +163,19 @@ public class UIBasicItemProperties extends UIItemProperties implements RemoteEdi
     }
 
     public void setLinkage(boolean isLinked, String text) {
-        linkageContainer.setVisible(true);
+        linkageRow.setContentVisible(true);
         linkImage.setChecked(isLinked);
         libraryLinkLabel.setText(text);
     }
 
     public void disableLinkage() {
-        linkageContainer.setVisible(false);
-    }
-
-    private Table getTintTable() {
-        VisTable tintTable = new VisTable();
-        tintTable.add(StandardWidgetsFactory.createLabel("Tint:")).growX().padRight(3);
-        tintTable.add(tintColorComponent).width(45).right();
-        return tintTable;
-    }
-
-    private Table getAsTable(String text1, Actor actor1, String text2, Actor actor2) {
-        return getAsTable(text1, actor1, text2, actor2, null);
-    }
-
-    private Table getAsTable(String text1, Actor actor1, String text2, Actor actor2, Actor link) {
-        VisTable positionTable = new VisTable();
-        positionTable.add(StandardWidgetsFactory.createLabel(text1)).right().padRight(3);
-        positionTable.add(actor1).width(45).height(21);
-        if (link != null) {
-            positionTable.row();
-            positionTable.add();
-            positionTable.add(link);
-            positionTable.row();
-        } else {
-            positionTable.row().padTop(4);
-        }
-        positionTable.add(StandardWidgetsFactory.createLabel(text2)).right().padRight(3);
-        positionTable.add(actor2).width(45).height(21).left();
-        return positionTable;
+        linkageRow.setContentVisible(false);
     }
 
     public void setItemType(int type, String itemUniqueId) {
         itemType.setText(EntityMetadata.itemTypeNameMap.get(type) + " ("+itemUniqueId+")");
         itemTypeIcon.setDrawable(VisUI.getSkin().getDrawable(EntityMetadata.itemTypeIconMap.get(type)));
         itemTypeIcon.setScaling(Scaling.fit);
-        itemTypeIcon.setWidth(22);
     }
 
     public String getIdBoxValue() {

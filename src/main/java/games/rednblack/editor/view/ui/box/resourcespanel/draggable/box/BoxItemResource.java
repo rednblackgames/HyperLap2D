@@ -38,7 +38,7 @@ import games.rednblack.puremvc.Facade;
  */
 public abstract class BoxItemResource extends Group implements DraggableResourceView {
     protected final Sandbox sandbox;
-    protected float thumbnailSize = 50;
+    protected float thumbnailSize = 59;
     protected PixelRect rc;
 
     /**

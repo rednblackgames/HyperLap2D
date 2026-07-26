@@ -26,6 +26,7 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.CollapsibleWidget;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
@@ -39,8 +40,8 @@ public abstract class UIItemCollapsibleProperties extends UIItemProperties {
 
     public UIItemCollapsibleProperties(String title) {
         this.title = title;
-        row().padTop(9).padBottom(6);
-        add(crateHeaderTable()).expandX().fillX().padBottom(7);
+        row().padTop(PropertyGrid.SECTION_PAD_TOP);
+        add(crateHeaderTable()).expandX().fillX().padBottom(PropertyGrid.SECTION_PAD_BOTTOM);
         createCollapsibleWidget();
     }
 
@@ -48,7 +49,7 @@ public abstract class UIItemCollapsibleProperties extends UIItemProperties {
         header = new VisTable();
         header.setTouchable(Touchable.enabled);
         header.setBackground(VisUI.getSkin().getDrawable("expandable-properties-active-bg"));
-        header.add(StandardWidgetsFactory.createLabel(title)).left().expandX().padRight(6).padLeft(8);
+        header.add(PropertyGrid.sectionLabel(title)).left().expandX().padRight(6).padLeft(8);
         VisImageButton button = StandardWidgetsFactory.createImageButton("expandable-properties-button");
         header.add(button).padRight(8);
         header.addListener(new ClickListener() {
@@ -66,9 +67,10 @@ public abstract class UIItemCollapsibleProperties extends UIItemProperties {
     }
 
     private void createCollapsibleWidget() {
-        mainTable = new VisTable();
+        // Padded like a top level panel, and wide enough that its field column can fill the panel.
+        mainTable = PropertyGrid.createPanelBody();
         collapsibleWidget = new CollapsibleWidget(mainTable);
         row();
-        add(collapsibleWidget).expand();
+        add(collapsibleWidget).expand().fillX().left();
     }
 }
