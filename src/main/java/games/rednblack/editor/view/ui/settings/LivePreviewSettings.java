@@ -8,9 +8,9 @@ import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
-import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
@@ -25,20 +25,8 @@ public class LivePreviewSettings extends SettingsNodeValue<ProjectVO> {
     public LivePreviewSettings(Facade facade) {
         super("Live Preview", facade);
 
-        getContentTable().add("Window").left().row();
-        getContentTable().addSeparator();
-
-        getContentTable().add("Render").left().row();
-        getContentTable().addSeparator();
-        box2dDebug = StandardWidgetsFactory.createCheckBox("Box2D debug render");
-        getContentTable().add(box2dDebug).left().padTop(5).padLeft(8).row();
-
-        getContentTable().add("Background").left().padTop(10).row();
-        getContentTable().addSeparator();
-        VisTable tintTable = new VisTable();
-        tintTable.add("Color:").padRight(5).left();
+        box2dDebug = StandardWidgetsFactory.createSwitch();
         tintButton = StandardWidgetsFactory.createTintButton();
-        tintTable.add(tintButton).left().padRight(5);
 
         tintButton.addListener(new ClickListener() {
             @Override
@@ -70,16 +58,25 @@ public class LivePreviewSettings extends SettingsNodeValue<ProjectVO> {
         });
 
         VisTextButton resetButton = StandardWidgetsFactory.createTextButton("Reset");
-        resetButton.addListener(new ClickListener(){
+        resetButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 getSettings().backgroundColor.set(0, 0, 0, 1.0f);
                 tintButton.setColorValue(getSettings().backgroundColor);
             }
         });
-        tintTable.add(resetButton);
 
-        getContentTable().add(tintTable).padLeft(8).left().row();
+        VisTable colorTable = new VisTable();
+        colorTable.add(tintButton).left();
+        colorTable.add(resetButton).height(PropertyGrid.FIELD_HEIGHT).padLeft(PropertyGrid.BUTTON_GAP);
+
+        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale();
+
+        grid.section("Render");
+        grid.toggleWide("Box2D debug render", box2dDebug);
+
+        grid.section("Background");
+        grid.rowCompact("Color", colorTable);
     }
 
     @Override

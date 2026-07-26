@@ -6,49 +6,42 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
 import games.rednblack.editor.renderer.systems.strategy.HyperLap2dInvocationStrategy;
 import games.rednblack.editor.utils.RoundUtils;
-import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
 import games.rednblack.h2d.common.view.ui.widget.TintButton;
 import games.rednblack.h2d.common.vo.EditorConfigVO;
 import games.rednblack.puremvc.Facade;
 
+import java.util.function.Supplier;
+
 public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
 
     private final VisCheckBox disableAmbientComposite, showBoundBoxes;
     private final TintButton tintButton;
-    private VisSlider scrollVelocity, timeScale;
+    private final VisSlider scrollVelocity, timeScale;
 
     public SandboxSettings(Facade facade) {
         super("Sandbox", facade);
 
-        getContentTable().add("Behavior").left().row();
-        getContentTable().addSeparator();
-        disableAmbientComposite = StandardWidgetsFactory.createCheckBox("Disable Ambient light when viewing Composites");
-        getContentTable().add(disableAmbientComposite).left().padTop(5).padLeft(8).row();
-
-        getContentTable().add(getScrollVelocityTable()).left().padTop(10).row();
-
-        getContentTable().add("Debug").left().padTop(10).row();
-        getContentTable().addSeparator();
-        showBoundBoxes = StandardWidgetsFactory.createCheckBox("Show bounding boxes outline");
-        getContentTable().add(showBoundBoxes).left().padTop(5).padLeft(8).row();
-
-        getContentTable().add(getTimeScaleTable()).left().padTop(10).row();
-
-        getContentTable().add("Background").left().padTop(10).row();
-        getContentTable().addSeparator();
-        VisTable tintTable = new VisTable();
-        tintTable.add("Color:").padRight(5).left();
+        disableAmbientComposite = StandardWidgetsFactory.createSwitch();
+        showBoundBoxes = StandardWidgetsFactory.createSwitch();
+        scrollVelocity = StandardWidgetsFactory.createSlider(30, 400, 1);
+        timeScale = StandardWidgetsFactory.createSlider(0.1f, 2f, 0.1f);
         tintButton = StandardWidgetsFactory.createTintButton();
-        tintTable.add(tintButton).left().padRight(5);
+
+        timeScale.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                HyperLap2dInvocationStrategy.setTimeScale(getTimeScale());
+            }
+        });
 
         tintButton.addListener(new ClickListener() {
             @Override
@@ -80,55 +73,43 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
         });
 
         VisTextButton resetButton = StandardWidgetsFactory.createTextButton("Reset");
-        resetButton.addListener(new ClickListener(){
+        resetButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 getSettings().backgroundColor.set(0.15f, 0.15f, 0.15f, 1.0f);
                 tintButton.setColorValue(getSettings().backgroundColor);
             }
         });
-        tintTable.add(resetButton);
 
-        getContentTable().add(tintTable).padLeft(8).left().row();
+        VisTable colorTable = new VisTable();
+        colorTable.add(tintButton).left();
+        colorTable.add(resetButton).height(PropertyGrid.FIELD_HEIGHT).padLeft(PropertyGrid.BUTTON_GAP);
+
+        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale();
+
+        grid.section("Behavior");
+        grid.toggleWide("Disable ambient light when viewing composites", disableAmbientComposite);
+        grid.sliderRow("Scroll velocity", scrollVelocity,
+                sliderValue(grid, scrollVelocity, () -> String.valueOf(getScrollVelocity())));
+
+        grid.section("Debug");
+        grid.toggleWide("Show bounding boxes outline", showBoundBoxes);
+        grid.sliderRow("Time scale", timeScale, sliderValue(grid, timeScale, () -> String.valueOf(getTimeScale())));
+
+        grid.section("Background");
+        grid.rowCompact("Color", colorTable);
     }
 
-    private Actor getScrollVelocityTable() {
-        VisTable scaleTable = new VisTable();
-
-        scaleTable.add("Scroll Velocity:").padLeft(8);
-        scrollVelocity = StandardWidgetsFactory.createSlider(30, 400, 1);
-        scaleTable.add(scrollVelocity).padLeft(8);
-        VisLabel labelFactor = StandardWidgetsFactory.createLabel("", "default", Align.left);
-        scaleTable.add(labelFactor).padLeft(8);
-        labelFactor.setText(String.valueOf(getScrollVelocity()));
-        scrollVelocity.addListener(new ChangeListener() {
+    /** The live value of a slider row, kept in sync while the slider is dragged. */
+    private VisLabel sliderValue(PropertyGrid grid, VisSlider slider, Supplier<String> text) {
+        VisLabel label = grid.valueLabel(text.get());
+        slider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                labelFactor.setText(String.valueOf(getScrollVelocity()));
+                label.setText(text.get());
             }
         });
-
-        return scaleTable;
-    }
-
-    private Actor getTimeScaleTable() {
-        VisTable scaleTable = new VisTable();
-
-        scaleTable.add("Time Scale:").padLeft(8);
-        timeScale = StandardWidgetsFactory.createSlider(0.1f, 2f, 0.1f);
-        scaleTable.add(timeScale).padLeft(8);
-        VisLabel labelFactor = StandardWidgetsFactory.createLabel("", "default", Align.left);
-        scaleTable.add(labelFactor).padLeft(8);
-        labelFactor.setText(String.valueOf(getTimeScale()));
-        timeScale.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                labelFactor.setText(String.valueOf(getTimeScale()));
-                HyperLap2dInvocationStrategy.setTimeScale(getTimeScale());
-            }
-        });
-
-        return scaleTable;
+        return label;
     }
 
     private float getScrollVelocity() {

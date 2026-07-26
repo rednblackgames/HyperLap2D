@@ -1,16 +1,14 @@
 package games.rednblack.editor.view.ui.settings;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
-import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
-import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResolutionManager;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.InputFileWidget;
 import games.rednblack.h2d.common.vo.ProjectVO;
@@ -31,68 +29,40 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
 
     public ProjectExportSettings(Facade facade) {
         super("Project Export", facade);
-        duplicateCheckBox = StandardWidgetsFactory.createCheckBox("Duplicate edge pixels in atlas");
-        forceSquareCheckBox = StandardWidgetsFactory.createCheckBox("Force Square");
-        legacyCheckBox = StandardWidgetsFactory.createCheckBox("Legacy libGDX format");
-        fastCheckBox = StandardWidgetsFactory.createCheckBox("Fast Packing");
-        StandardWidgetsFactory.addTooltip(fastCheckBox, "Packs your atlas faster, but result may not be efficient and produce extra atlas pages. Do not use for production export.");
+
+        duplicateCheckBox = StandardWidgetsFactory.createSwitch();
+        forceSquareCheckBox = StandardWidgetsFactory.createSwitch();
+        legacyCheckBox = StandardWidgetsFactory.createSwitch();
+        fastCheckBox = StandardWidgetsFactory.createSwitch();
         exportSettingsInputFileWidget = new InputFileWidget(FileChooser.Mode.OPEN, FileChooser.SelectionMode.DIRECTORIES, false);
         widthSelectBox = StandardWidgetsFactory.createSelectBox(Integer.class);
         heightSelectBox = StandardWidgetsFactory.createSelectBox(Integer.class);
         filterMagSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
         filterMinSelectBox = StandardWidgetsFactory.createSelectBox(String.class);
 
-        VisTable assetsTable = new VisTable();
-        assetsTable.add("Export folder:").padRight(15).left();
-        assetsTable.add(exportSettingsInputFileWidget).growX().row();
-        getContentTable().add(assetsTable).padTop(5).fillX().expandX().growX().row();
+        Integer[] sizes = {512, 1024, 2048, 4096, 8192};
+        widthSelectBox.setItems(sizes);
+        heightSelectBox.setItems(sizes);
 
-        getContentTable().add("Texture Packer Settings").padTop(15).left().row();
-        getContentTable().addSeparator().row();
-        VisTable texturePackerTable = new VisTable();
-        texturePackerTable.left();
-        texturePackerTable.add("Atlas Max Size:").left().top().padRight(5).padTop(10);
-        texturePackerTable.add(getDimensionsTable()).padTop(10).left();
-        texturePackerTable.row().padTop(10);
-        texturePackerTable.add("Atlas Filter:").left().top().padRight(5).padTop(10);
-        texturePackerTable.add(getFilterTable()).padTop(10).left();
-        texturePackerTable.row().padTop(10);
-        texturePackerTable.add(fastCheckBox).left().colspan(2).row();
-        texturePackerTable.add(duplicateCheckBox).left().colspan(2).row();
-        texturePackerTable.add(legacyCheckBox).left().colspan(2).row();
-        texturePackerTable.add(forceSquareCheckBox).left().row();
-        texturePackerTable.row().padTop(23);
-
-        getContentTable().add(texturePackerTable).padLeft(8).fillX().expandX().growX().row();
-    }
-
-    private Table getDimensionsTable() {
-        Integer[] data = {512, 1024, 2048, 4096, 8192};
-        VisTable dimensionsTable = new VisTable();
-
-        widthSelectBox.setItems(data);
-        dimensionsTable.add(new VisLabel("Width:")).left().padRight(3);
-        dimensionsTable.add(widthSelectBox).width(85).height(21).padRight(3);
-        dimensionsTable.row().padTop(10);
-        heightSelectBox.setItems(data);
-        dimensionsTable.add(new VisLabel("Height:")).left().padRight(3);
-        dimensionsTable.add(heightSelectBox).width(85).height(21).left();
-        return dimensionsTable;
-    }
-
-    private Table getFilterTable() {
-        String[] data = {"Linear", "Nearest", "MipMap", "MipMapNearestNearest", "MipMapLinearNearest",
+        String[] filters = {"Linear", "Nearest", "MipMap", "MipMapNearestNearest", "MipMapLinearNearest",
                 "MipMapNearestLinear", "MipMapLinearLinear"};
-        VisTable filterTable = new VisTable();
+        filterMagSelectBox.setItems(filters);
+        filterMinSelectBox.setItems(filters);
 
-        filterMagSelectBox.setItems(data);
-        filterTable.add(new VisLabel("Mag:")).left().padRight(3);
-        filterTable.add(filterMagSelectBox).width(85).height(21).padRight(3);
-        filterTable.row().padTop(10);
-        filterMinSelectBox.setItems(data);
-        filterTable.add(new VisLabel("Min:")).left().padRight(3);
-        filterTable.add(filterMinSelectBox).width(85).height(21).left();
-        return filterTable;
+        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale();
+
+        grid.section("Export");
+        grid.row("Export folder", exportSettingsInputFileWidget);
+
+        grid.section("Texture packer");
+        grid.pair("Atlas max size", "W", widthSelectBox, "H", heightSelectBox);
+        grid.row("Filter mag", filterMagSelectBox);
+        grid.row("Filter min", filterMinSelectBox);
+        grid.toggleWide("Fast packing", fastCheckBox,
+                "Packs your atlas faster, but result may not be efficient and produce extra atlas pages. Do not use for production export.");
+        grid.toggleWide("Duplicate edge pixels in atlas", duplicateCheckBox);
+        grid.toggleWide("Legacy libGDX format", legacyCheckBox);
+        grid.toggleWide("Force square atlas", forceSquareCheckBox);
     }
 
     @Override

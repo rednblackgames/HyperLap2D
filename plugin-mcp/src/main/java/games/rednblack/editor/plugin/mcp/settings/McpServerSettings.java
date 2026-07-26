@@ -8,12 +8,13 @@ import games.rednblack.editor.plugin.mcp.McpPluginSettingsNotifications;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.plugins.H2DPluginAdapter;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
 
 /**
  * Settings panel nested under Settings -> Plugins -> "MCP Server". Exposes an enable
- * checkbox and a port spinner; on Apply it persists the value and sends a live
+ * switch and a port spinner; on Apply it persists the value and sends a live
  * toggle notification so the MCP server starts/stops without a restart.
  */
 public class McpServerSettings extends SettingsNodeValue<McpSettingsVO> {
@@ -28,16 +29,14 @@ public class McpServerSettings extends SettingsNodeValue<McpSettingsVO> {
         this.plugin = plugin;
         setSettings(vo);
 
-        getContentTable().add("MCP Server").left().row();
-        getContentTable().addSeparator();
-
-        enableCheckbox = StandardWidgetsFactory.createCheckBox("Enable MCP server (localhost only)");
-        getContentTable().add(enableCheckbox).left().padTop(5).padLeft(8).row();
-
-        getContentTable().add("Port").left().padTop(8).padLeft(8).row();
+        enableCheckbox = StandardWidgetsFactory.createSwitch();
         int initialPort = vo != null ? vo.port : McpPlugin.DEFAULT_PORT;
         portSpinner = StandardWidgetsFactory.createNumberSelector(initialPort, 1, 65535);
-        getContentTable().add(portSpinner).left().padLeft(8).row();
+
+        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale();
+        grid.section("MCP Server");
+        grid.toggleWide("Enable MCP server (localhost only)", enableCheckbox);
+        grid.rowCompact("Port", portSpinner);
     }
 
     @Override

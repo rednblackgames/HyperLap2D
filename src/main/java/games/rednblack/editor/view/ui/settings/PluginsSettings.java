@@ -1,10 +1,8 @@
 package games.rednblack.editor.view.ui.settings;
 
-import com.badlogic.gdx.utils.Align;
-import com.kotcrab.vis.ui.widget.VisLabel;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.puremvc.Facade;
 
 import java.io.File;
@@ -14,16 +12,18 @@ public class PluginsSettings extends SettingsNodeValue<String> {
     public PluginsSettings(Facade facade) {
         super("Plugins", facade);
 
-        VisLabel visLabel = StandardWidgetsFactory.createLabel("Choose a PlugIn to change settings", "default", Align.center);
-        getContentTable().add(visLabel).center().expand().fill().grow().row();
-
         SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
-        getContentTable().add("Plugin directory : ").left().row();
+        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale();
+
+        grid.wideCentered(grid.valueLabel("Choose a plugin to change its settings"));
+
+        grid.section("Directories");
+        boolean first = true;
         for (File pluginDir : settingsManager.pluginDirs) {
-            getContentTable().add(pluginDir.getAbsolutePath()).left().padLeft(10).row();
+            grid.row(first ? "Plugins" : "", grid.valueLabelEllipsized(pluginDir.getAbsolutePath()));
+            first = false;
         }
-        getContentTable().add("Cache directory : ").left().row();
-        getContentTable().add(settingsManager.cacheDir.getAbsolutePath()).left().padLeft(10).row();
+        grid.row("Cache", grid.valueLabelEllipsized(settingsManager.cacheDir.getAbsolutePath()));
     }
 
     @Override

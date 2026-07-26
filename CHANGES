@@ -1,7 +1,7 @@
 [0.2.0]
 - New Logo and Branding
 - Full icons re-design
-- Properties panels re-design
+- Settings and Properties panel re-design
 - Auto Constraint Layouts
 - Remote control with built-in MCP server
 - Update libGDX to 1.14.2, Spine to 4.2.12, Talos Legacy to 1.6.0

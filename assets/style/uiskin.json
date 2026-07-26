@@ -239,6 +239,14 @@
     property-section: {
       font: small-font,
       fontColor: white
+    },
+    property-label-large: {
+      font: default-font,
+      fontColor: hyperlap2d-menuitem-grey
+    },
+    property-section-large: {
+      font: default-font,
+      fontColor: white
     }
   },
   com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {

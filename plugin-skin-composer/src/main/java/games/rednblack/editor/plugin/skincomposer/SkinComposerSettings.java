@@ -4,6 +4,7 @@ import com.kotcrab.vis.ui.widget.VisCheckBox;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.plugins.H2DPluginAdapter;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
 
@@ -18,10 +19,11 @@ public class SkinComposerSettings extends SettingsNodeValue<SkinComposerVO> {
 
         this.plugin = plugin;
 
-        getContentTable().add("Updates").left().row();
-        getContentTable().addSeparator();
-        alwaysCheckUpdates = StandardWidgetsFactory.createCheckBox("Always check for updates");
-        getContentTable().add(alwaysCheckUpdates).left().padTop(5).padLeft(8).row();
+        alwaysCheckUpdates = StandardWidgetsFactory.createSwitch();
+
+        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale();
+        grid.section("Updates");
+        grid.toggleWide("Always check for updates", alwaysCheckUpdates);
     }
 
     @Override
