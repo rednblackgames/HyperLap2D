@@ -38,7 +38,7 @@ public class PackProgressListener extends TexturePacker.ProgressListener {
         Gdx.app.postRunnable(() -> {
             Facade facade = Facade.getInstance();
             if (messageChanged)
-                facade.sendNotification(LoadingBarDialog.SET_MESSAGE, message);
+                facade.sendNotification(LoadingBarDialog.SET_DETAIL, message);
             facade.sendNotification(LoadingBarDialog.SET_PROGRESS, progress);
         });
     }

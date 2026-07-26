@@ -61,6 +61,12 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private static final float READ_LOAD_SHARE = 0.2f;
     private static final float INSTALL_LOAD_SHARE = 0.1f;
 
+    public static final String PHASE_ATLASES = "Texture atlases";
+    public static final String PHASE_READ = "Reading resources";
+    public static final String PHASE_INSTALL = "Installing";
+    /** The checklist of a project load, for whoever opens the loading dialog ahead of one. */
+    public static final String[] LOAD_PHASES = {PHASE_ATLASES, PHASE_READ, PHASE_INSTALL};
+
     private final HashMap<String, ParticleEffectPool> particleEffects = new HashMap<>(1);
     private final HashMap<String, ParticleEffectInstancePool> talosVFXs = new HashMap<>(1);
     private final HashMap<String, TextureAtlas> currentProjectAtlas = new HashMap<>(1);
@@ -309,12 +315,14 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         packResolutionName = curResolution;
 
         facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG);
-        facade.sendNotification(LoadingBarDialog.SET_MESSAGE, "Loading textures...");
+        facade.sendNotification(LoadingBarDialog.SET_PHASES, LOAD_PHASES);
+        facade.sendNotification(LoadingBarDialog.SET_PHASE, PHASE_ATLASES);
         facade.sendNotification(LoadingBarDialog.SET_PROGRESS, 0f);
 
         new AsyncAtlasLoader(projectPath + "/assets/" + curResolution + "/pack", new AsyncAtlasLoader.Listener() {
             @Override
-            public void onProgress(float progress) {
+            public void onProgress(float progress, int pages) {
+                facade.sendNotification(LoadingBarDialog.SET_DETAIL, pages + (pages == 1 ? " page" : " pages"));
                 facade.sendNotification(LoadingBarDialog.SET_PROGRESS, progress * TEXTURES_LOAD_SHARE);
             }
 
@@ -365,6 +373,8 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         SpineDrawableLogic spineDrawable = spineDrawableLogic;
         float fontScaleMul = resolutionManager.getCurrentMul();
 
+        facade.sendNotification(LoadingBarDialog.SET_PHASE, PHASE_READ);
+
         LoadedProjectData data = new LoadedProjectData();
         Thread worker = new Thread(() -> {
             long startedAt = System.nanoTime();
@@ -372,21 +382,21 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 // Confined to this thread: the shared parser is in use by the render thread.
                 Json json = HyperJson.newJson();
 
-                readStep("Loading particle effects...", 0f, () ->
+                readStep("particle effects", 0f, () ->
                         data.particleEffects = readParticles(projectPath + File.separator + ProjectManager.PARTICLE_DIR_PATH));
-                readStep("Loading Spine animations...", 0.15f, () ->
+                readStep("Spine animations", 0.15f, () ->
                         data.spineAnimations = readSpineAnimations(projectPath + File.separator + ProjectManager.SPINE_DIR_PATH, spineDrawable, json));
-                readStep("Loading sprite animations...", 0.3f, () ->
+                readStep("sprite animations", 0.3f, () ->
                         data.spriteAnimations = readSpriteAnimations(projectPath + File.separator + ProjectManager.SPRITE_DIR_PATH));
-                readStep("Loading bitmap fonts...", 0.4f, () ->
+                readStep("bitmap fonts", 0.4f, () ->
                         data.bitmapFonts = readBitmapFonts(projectPath + File.separator + ProjectManager.BITMAP_FONTS_DIR_PATH));
-                readStep("Loading TinyVG assets...", 0.5f, () ->
+                readStep("TinyVG assets", 0.5f, () ->
                         data.tinyVGs = readTinyVGs(projectPath + File.separator + ProjectManager.TINY_VG_DIR_PATH));
-                readStep("Loading fonts...", 0.6f, () ->
+                readStep("fonts", 0.6f, () ->
                         data.fontData = readFonts(fontScaleMul, json));
-                readStep("Loading shaders...", 0.85f, () ->
+                readStep("shaders", 0.85f, () ->
                         data.shaderSources = readShaderSources(projectPath + File.separator + ProjectManager.SHADER_DIR_PATH));
-                readStep("Checking resources...", 0.95f, () ->
+                readStep("resource references", 0.95f, () ->
                         data.regionNames = collectRegionNames());
 
                 System.out.println("Read project resources in " + (System.nanoTime() - startedAt) / 1_000_000L + "ms");
@@ -403,9 +413,9 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     }
 
     /** Announces a read step and runs it; a resource that fails to parse must not stall the load. */
-    private void readStep(String message, float progress, Runnable action) {
+    private void readStep(String detail, float progress, Runnable action) {
         Gdx.app.postRunnable(() -> {
-            facade.sendNotification(LoadingBarDialog.SET_MESSAGE, message);
+            facade.sendNotification(LoadingBarDialog.SET_DETAIL, detail);
             facade.sendNotification(LoadingBarDialog.SET_PROGRESS, TEXTURES_LOAD_SHARE + READ_LOAD_SHARE * progress);
         });
         try {
@@ -414,7 +424,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
             // The step's resources stay as they were, which is quiet enough to be missed: say it.
             t.printStackTrace();
             Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.SHOW_NOTIFICATION,
-                    "ERROR: " + message.replace("...", " failed")));
+                    "ERROR: failed to load " + detail));
         }
     }
 
@@ -423,11 +433,13 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
      * is a frame of its own, but they are all short — the long work already happened off-thread.
      */
     private void installProjectData(String projectPath, LoadedProjectData data, Runnable onComplete) {
+        facade.sendNotification(LoadingBarDialog.SET_PHASE, PHASE_INSTALL);
+
         new FrameStepRunner()
-                .add("Loading Talos VFX...", () -> loadCurrentProjectTalosVFXs(projectPath + File.separator + ProjectManager.TALOS_VFX_DIR_PATH))
-                .add("Loading shaders...", () -> installShaders(data.shaderSources))
-                .add("Loading fonts...", () -> installFonts(data.fontData))
-                .add("Checking resources...", () -> {
+                .add("Talos VFX", () -> loadCurrentProjectTalosVFXs(projectPath + File.separator + ProjectManager.TALOS_VFX_DIR_PATH))
+                .add("shaders", () -> installShaders(data.shaderSources))
+                .add("fonts", () -> installFonts(data.fontData))
+                .add("resource references", () -> {
                     swap(particleEffects, data.particleEffects);
                     swap(spineAnimAtlases, data.spineAnimations);
                     swap(spriteAnimAtlases, data.spriteAnimations);
@@ -439,7 +451,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                     removeInvalidResourceReferences(data.regionNames);
                 })
                 .run((name, progress) -> {
-                    facade.sendNotification(LoadingBarDialog.SET_MESSAGE, name);
+                    facade.sendNotification(LoadingBarDialog.SET_DETAIL, name);
                     facade.sendNotification(LoadingBarDialog.SET_PROGRESS, TEXTURES_LOAD_SHARE + READ_LOAD_SHARE + INSTALL_LOAD_SHARE * progress);
                 }, () -> finishProjectDataLoad(onComplete));
     }
@@ -452,6 +464,8 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     }
 
     private void finishProjectDataLoad(Runnable onComplete) {
+        // Before the callback, so the checklist is complete for the frames the dialog spends fading.
+        facade.sendNotification(LoadingBarDialog.SET_COMPLETE);
         try {
             if (onComplete != null) onComplete.run();
         } finally {

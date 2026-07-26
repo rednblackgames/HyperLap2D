@@ -60,6 +60,9 @@ public class ResolutionManager extends Proxy {
 
     public static final String RESOLUTION_LIST_CHANGED = "games.rednblack.editor.proxy.ResolutionManager" + ".RESOLUTION_LIST_CHANGED";
 
+    /** The repack's row on the loading dialog's checklist. */
+    public static final String PHASE_PACKING = "Packing textures";
+
     private static final String EXTENSION_9PATCH = ".9.png";
     public String currentResolutionName;
     private float currentPercent = 0.0f;
@@ -324,7 +327,7 @@ public class ResolutionManager extends Proxy {
 
         for (String name : toPack) {
             progress.start(1f / toPack.size);
-            progress.setMessage("Packing " + resEntry.name + " / " + name + "...");
+            progress.setMessage(resEntry.name + " / " + name);
 
             TexturePacker tp = new TexturePacker(settings);
             tp.setProgressListener(progress);
@@ -466,14 +469,14 @@ public class ResolutionManager extends Proxy {
     public void rePackProjectImagesForAllResolutions(boolean reloadProjectData, boolean force, RepackCallback callback) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
-            showLoadingDialogForPacking();
+            showLoadingDialogForPacking(reloadProjectData);
             try {
                 rePackProjectImagesForAllResolutionsSync(force, new PackProgressListener());
-                hideLoadingDialogUnless(reloadProjectData);
+                closeLoadingDialogUnless(reloadProjectData, true);
                 if (callback != null)
                     callback.onRepack(true);
             } catch (Exception e) {
-                hideLoadingDialogUnless(reloadProjectData);
+                closeLoadingDialogUnless(reloadProjectData, false);
                 if (callback != null)
                     callback.onRepack(false);
             }
@@ -493,14 +496,14 @@ public class ResolutionManager extends Proxy {
     public void rePackProjectImagesForAllResolutions(boolean reloadProjectData, ObjectSet<String> forcePacks, RepackCallback callback) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
-            showLoadingDialogForPacking();
+            showLoadingDialogForPacking(reloadProjectData);
             try {
                 rePackProjectImagesForAllResolutionsSync(forcePacks, new PackProgressListener());
-                hideLoadingDialogUnless(reloadProjectData);
+                closeLoadingDialogUnless(reloadProjectData, true);
                 if (callback != null)
                     callback.onRepack(true);
             } catch (Exception e) {
-                hideLoadingDialogUnless(reloadProjectData);
+                closeLoadingDialogUnless(reloadProjectData, false);
                 if (callback != null)
                     callback.onRepack(false);
             }
@@ -512,18 +515,34 @@ public class ResolutionManager extends Proxy {
         executor.shutdown();
     }
 
-    private void showLoadingDialogForPacking() {
+    /**
+     * A repack that will reload the project afterwards declares the load's phases too, so the
+     * checklist covers the whole run instead of growing halfway through it.
+     */
+    private void showLoadingDialogForPacking(boolean reloadFollows) {
+        Array<String> phases = new Array<>();
+        phases.add(PHASE_PACKING);
+        if (reloadFollows) phases.addAll(ResourceManager.LOAD_PHASES);
+
         Gdx.app.postRunnable(() -> {
             facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG);
-            facade.sendNotification(LoadingBarDialog.SET_MESSAGE, "Packing textures...");
+            facade.sendNotification(LoadingBarDialog.SET_PHASES, phases.toArray(String.class));
+            facade.sendNotification(LoadingBarDialog.SET_PHASE, PHASE_PACKING);
             facade.sendNotification(LoadingBarDialog.SET_PROGRESS, 0f);
         });
     }
 
-    /** The reload that follows a repack keeps the dialog up and closes it itself when it is done. */
-    private void hideLoadingDialogUnless(boolean reloadFollows) {
+    /**
+     * Closes the dialog, unless a reload follows — that one keeps it up and closes it itself.
+     *
+     * @param packed whether the repack got through, which decides if the checklist ends ticked off
+     */
+    private void closeLoadingDialogUnless(boolean reloadFollows, boolean packed) {
         if (reloadFollows) return;
-        Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.HIDE_LOADING_DIALOG));
+        Gdx.app.postRunnable(() -> {
+            if (packed) facade.sendNotification(LoadingBarDialog.SET_COMPLETE);
+            facade.sendNotification(MsgAPI.HIDE_LOADING_DIALOG);
+        });
     }
 
     private void reloadProjectData(String resolutionName) {

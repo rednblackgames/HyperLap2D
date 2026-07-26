@@ -21,9 +21,12 @@ public class LoadingBarDialogMediator extends Mediator<LoadingBarDialog> {
     @Override
     public void listNotificationInterests(Interests interests) {
         interests.add(MsgAPI.SHOW_LOADING_DIALOG,
-                MsgAPI.HIDE_LOADING_DIALOG,
-                LoadingBarDialog.SET_MESSAGE,
+                MsgAPI.HIDE_LOADING_DIALOG);
+        interests.add(LoadingBarDialog.SET_PHASES,
+                LoadingBarDialog.SET_PHASE,
+                LoadingBarDialog.SET_DETAIL,
                 LoadingBarDialog.SET_PROGRESS);
+        interests.add(LoadingBarDialog.SET_COMPLETE);
     }
 
     @Override
@@ -48,11 +51,20 @@ public class LoadingBarDialogMediator extends Mediator<LoadingBarDialog> {
                 shown = false;
                 viewComponent.close();
                 break;
-            case LoadingBarDialog.SET_MESSAGE:
-                viewComponent.setMessage(notification.getBody());
+            case LoadingBarDialog.SET_PHASES:
+                viewComponent.addPhases(notification.getBody());
+                break;
+            case LoadingBarDialog.SET_PHASE:
+                viewComponent.setPhase(notification.getBody());
+                break;
+            case LoadingBarDialog.SET_DETAIL:
+                viewComponent.setDetail(notification.getBody());
                 break;
             case LoadingBarDialog.SET_PROGRESS:
                 viewComponent.setProgress(notification.getBody());
+                break;
+            case LoadingBarDialog.SET_COMPLETE:
+                viewComponent.setComplete();
                 break;
         }
     }

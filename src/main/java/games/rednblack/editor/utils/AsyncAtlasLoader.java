@@ -36,8 +36,11 @@ import java.util.concurrent.atomic.AtomicLong;
 public class AsyncAtlasLoader {
 
     public interface Listener {
-        /** Fraction of the pages already uploaded, {@code 0..1}. */
-        void onProgress(float progress);
+        /**
+         * @param progress fraction of the pages already uploaded, {@code 0..1}
+         * @param totalPages how many pages the folder's atlases hold in total
+         */
+        void onProgress(float progress, int totalPages);
 
         /** Atlases keyed by pack file name (without extension), in folder order. */
         void onFinished(Map<String, TextureAtlas> atlases);
@@ -173,7 +176,7 @@ public class AsyncAtlasLoader {
 
         int total = totalPages;
         if (total >= 0) {
-            listener.onProgress(total == 0 ? 1f : (float) uploadedPages / total);
+            listener.onProgress(total == 0 ? 1f : (float) uploadedPages / total, total);
             if (uploadedPages == total) {
                 finish();
                 return;
