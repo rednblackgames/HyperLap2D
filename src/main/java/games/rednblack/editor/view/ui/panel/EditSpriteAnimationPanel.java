@@ -20,7 +20,6 @@ package games.rednblack.editor.view.ui.panel;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -30,6 +29,9 @@ import com.kotcrab.vis.ui.widget.spinner.Spinner;
 import games.rednblack.editor.renderer.data.FrameRange;
 import games.rednblack.editor.view.ui.validator.EmptyOrDefaultValidator;
 import games.rednblack.h2d.common.UIDraggablePanel;
+import games.rednblack.h2d.common.view.ui.FormRow;
+import games.rednblack.h2d.common.view.ui.ListTable;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
 
@@ -43,103 +45,27 @@ public class EditSpriteAnimationPanel extends UIDraggablePanel {
     public static final String ADD_BUTTON_PRESSED = PREFIX + ".ADD_BUTTON_PRESSED";
     public static final String DELETE_BUTTON_PRESSED = PREFIX + ".DELETE_BUTTON_PRESSED";
 
+    /** The range every sprite animation has, covering the whole sheet: it cannot be deleted. */
+    private static final String DEFAULT_RANGE = "Default";
+    private static final int MIN_WIDTH = 480;
+
     private final Facade facade;
 
-    private VisTextField nameField;
+    private final VisTextField nameField;
+    private final VisTextButton addButton;
+    private final VisTable mainTable;
+
     private Spinner fromFrameField;
     private Spinner toFrameField;
-    private VisTextButton addButton;
-
-    private final VisTable animationsList;
 
     public EditSpriteAnimationPanel() {
-        super("Edit Sprite Animation Ranges");
+        super("Sprite Animation Ranges");
         addCloseButton();
 
         facade = Facade.getInstance();
 
-        VisTable mainTable = new VisTable();
-
-        animationsList = new VisTable();
-
-        createNewAnimationTable(100);
-
-        mainTable.row();
-        mainTable.add(animationsList).fillX();
-        mainTable.row();
-
-        getContentTable().add(mainTable).pad(10);
-    }
-
-    private void createNewAnimationTable(int maxFrame) {
         nameField = StandardWidgetsFactory.createValidableTextField(new EmptyOrDefaultValidator());
-        fromFrameField = StandardWidgetsFactory.createNumberSelector(0, maxFrame);
-        toFrameField = StandardWidgetsFactory.createNumberSelector(0, maxFrame);
-        addButton = new VisTextButton("Add");
-
-        animationsList.add(nameField).width(120);
-        animationsList.add(fromFrameField).padLeft(5);
-        animationsList.add(toFrameField).padLeft(5);
-        animationsList.add(addButton).padLeft(7).padRight(3);
-        animationsList.row().padTop(5);
-        initListeners();
-    }
-
-    public void setEmpty(String text) {
-        animationsList.clear();
-        animationsList.add(text).row();
-        invalidateHeight();
-    }
-
-    public void updateView(Map<String, FrameRange> frameRangeMap) {
-        animationsList.clear();
-        createNewAnimationTable(frameRangeMap.get("Default").endFrame);
-
-        animationsList.add("Animation Name").expandX();
-        animationsList.add("Start").expandX();
-        animationsList.add("End").expandX();
-        animationsList.add("").expandX();
-        animationsList.row();
-        animationsList.addSeparator().colspan(4).expandX().fillX().row();
-
-        for (Map.Entry<String, FrameRange> entry : frameRangeMap.entrySet()) {
-            String animationName = entry.getKey();
-            FrameRange range = entry.getValue();
-
-            VisTable nameTbl = new VisTable();
-            nameTbl.setBackground(VisUI.getSkin().getDrawable("layer-bg"));
-            nameTbl.add(StandardWidgetsFactory.createLabel(animationName)).left();
-            VisTable startTbl = new VisTable();
-            startTbl.setBackground(VisUI.getSkin().getDrawable("layer-bg"));
-            startTbl.add(StandardWidgetsFactory.createLabel(range.startFrame + "")).left();
-            VisTable endTbl = new VisTable();
-            endTbl.setBackground(VisUI.getSkin().getDrawable("layer-bg"));
-            endTbl.add(StandardWidgetsFactory.createLabel(range.endFrame + "")).left();
-
-            VisImageButton trashBtn = new VisImageButton("trash-button");
-
-            animationsList.add(nameTbl).height(20).expandX().fillX();
-            animationsList.add(startTbl).height(20).expandX().fillX();
-            animationsList.add(endTbl).height(20).expandX().fillX();
-
-            if (!animationName.equals("Default"))
-                animationsList.add(trashBtn).padLeft(10);
-            else
-                animationsList.add();
-            animationsList.row().padBottom(2);
-
-            trashBtn.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    facade.sendNotification(DELETE_BUTTON_PRESSED, animationName);
-                }
-            });
-        }
-
-        invalidateHeight();
-    }
-
-    private void initListeners() {
+        addButton = StandardWidgetsFactory.createTextButton("Add");
         addButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -147,6 +73,73 @@ public class EditSpriteAnimationPanel extends UIDraggablePanel {
                     facade.sendNotification(ADD_BUTTON_PRESSED);
             }
         });
+
+        createFrameSpinners(100);
+
+        mainTable = new VisTable();
+        getContentTable().add(mainTable).growX();
+    }
+
+    /** The spinners are bound to the sheet length, so they are rebuilt whenever it is known. */
+    private void createFrameSpinners(int maxFrame) {
+        fromFrameField = StandardWidgetsFactory.createNumberSelector(0, maxFrame);
+        toFrameField = StandardWidgetsFactory.createNumberSelector(0, maxFrame);
+    }
+
+    public void setEmpty(String text) {
+        mainTable.clear();
+        PropertyGrid.on(mainTable).dialogScale().padPanel().wideCentered(PropertyGrid.value(text));
+        invalidateHeight();
+    }
+
+    public void updateView(Map<String, FrameRange> frameRangeMap) {
+        mainTable.clear();
+        createFrameSpinners(frameRangeMap.get(DEFAULT_RANGE).endFrame);
+
+        PropertyGrid grid = PropertyGrid.on(mainTable).dialogScale().padPanel();
+        grid.section("New range");
+        grid.wideContent(new FormRow()
+                .label("Name").field(nameField)
+                .label("From").compact(fromFrameField)
+                .label("To").compact(toFrameField)
+                .action(addButton));
+
+        grid.section("Ranges");
+        grid.wideContent(createRangesList(frameRangeMap));
+
+        invalidateHeight();
+    }
+
+    /** Clicking a range loads it back into the form above, ready to be edited and re-added. */
+    private ListTable createRangesList(Map<String, FrameRange> frameRangeMap) {
+        ListTable list = new ListTable("Animation", "From", "To");
+        if (frameRangeMap.isEmpty()) {
+            return list.message("This sprite animation has no ranges");
+        }
+        for (Map.Entry<String, FrameRange> entry : frameRangeMap.entrySet()) {
+            String animationName = entry.getKey();
+            FrameRange range = entry.getValue();
+
+            ListTable.ItemRow row = list.item(animationName,
+                    String.valueOf(range.startFrame), String.valueOf(range.endFrame));
+            row.onClick(() -> {
+                setName(animationName);
+                setFrameFrom(range.startFrame);
+                setFrameTo(range.endFrame);
+            });
+
+            if (!animationName.equals(DEFAULT_RANGE)) {
+                VisImageButton deleteButton = StandardWidgetsFactory.createImageButton("trash-button");
+                deleteButton.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        facade.sendNotification(DELETE_BUTTON_PRESSED, animationName);
+                    }
+                });
+                row.action(deleteButton);
+            }
+        }
+        return list;
     }
 
     public String getName() {
@@ -154,24 +147,27 @@ public class EditSpriteAnimationPanel extends UIDraggablePanel {
     }
 
     public int getFrameFrom() {
-        return ((IntSpinnerModel)fromFrameField.getModel()).getValue();
+        return ((IntSpinnerModel) fromFrameField.getModel()).getValue();
     }
 
     public int getFrameTo() {
-        return ((IntSpinnerModel)toFrameField.getModel()).getValue();
+        return ((IntSpinnerModel) toFrameField.getModel()).getValue();
     }
-
 
     public void setName(String name) {
         nameField.setText(name);
     }
 
     public void setFrameFrom(int from) {
-        ((IntSpinnerModel)fromFrameField.getModel()).setValue(from);
+        ((IntSpinnerModel) fromFrameField.getModel()).setValue(from);
     }
 
     public void setFrameTo(int to) {
-        ((IntSpinnerModel)toFrameField.getModel()).setValue(to);
+        ((IntSpinnerModel) toFrameField.getModel()).setValue(to);
     }
 
+    @Override
+    public float getPrefWidth() {
+        return Math.max(super.getPrefWidth(), MIN_WIDTH);
+    }
 }

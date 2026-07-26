@@ -20,11 +20,12 @@ package games.rednblack.editor.view.ui.panel;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.h2d.common.UIDraggablePanel;
+import games.rednblack.h2d.common.view.ui.FormRow;
+import games.rednblack.h2d.common.view.ui.ListTable;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
 
@@ -36,14 +37,15 @@ public class CustomVariablesPanel extends UIDraggablePanel {
     public static final String ADD_BUTTON_PRESSED = PREFIX + ".ADD_BUTTON_PRESSED";
     public static final String DELETE_BUTTON_PRESSED = PREFIX + ".DELETE_BUTTON_PRESSED";
 
-    private Facade facade;
+    private static final int MIN_WIDTH = 460;
 
-    private VisTextField keyField;
-    private VisTextField valueField;
-    private VisTextButton addButton;
+    private final Facade facade;
 
-    private VisTable variablesList;
-    private VisTable addVariableTable;
+    private final VisTextField keyField;
+    private final VisTextField valueField;
+    private final VisTextButton addButton;
+
+    private final VisTable mainTable;
 
     public CustomVariablesPanel() {
         super("Custom variables");
@@ -51,105 +53,66 @@ public class CustomVariablesPanel extends UIDraggablePanel {
 
         facade = Facade.getInstance();
 
-        addVariableTable = new VisTable();
-        addVariableTable.padTop(4);
-        variablesList = new VisTable();
-
-        createAddVariableTable();
-
-        getContentTable().add(addVariableTable).row();
-
-        getContentTable().add(variablesList).fillX().row();
-    }
-
-    private void createAddVariableTable() {
-        addVariableTable.clear();
         keyField = StandardWidgetsFactory.createTextField();
         valueField = StandardWidgetsFactory.createTextField();
-        addButton = new VisTextButton("Add");
-
-        addVariableTable.add(keyField).padLeft(6);
-        addVariableTable.add(valueField).padLeft(5);
-        addVariableTable.add(addButton).width(38).padLeft(4).padRight(5);
-
-        addVariableTable.row();
-        initListeners();
-    }
-
-    public void setEmptyMsg(String msg) {
-        variablesList.clear();
-        VisLabel label = StandardWidgetsFactory.createLabel(msg);
-        label.setAlignment(Align.center);
-        variablesList.add(label).pad(10).width(278).center();
-        addVariableTable.clear();
-        invalidateHeight();
-    }
-
-    public void updateView(ObjectMap<String, String> vars) {
-        variablesList.clear();
-        createAddVariableTable();
-
-        variablesList.add("Key name").expandX();
-        variablesList.add("Value").colspan(2).expandX();
-        variablesList.row();
-        variablesList.addSeparator().colspan(3).expandX().fillX().row();
-
-        for (ObjectMap.Entry<String, String> entry : vars) {
-            String key = entry.key;
-            String value = entry.value;
-
-            VisTable keyTbl = new VisTable();
-            keyTbl.setBackground(VisUI.getSkin().getDrawable("layer-bg"));
-            VisTable valueTbl = new VisTable();
-            valueTbl.setBackground(VisUI.getSkin().getDrawable("layer-bg"));
-
-            keyTbl.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    keyField.setText(key);
-                    valueField.setText(value);
-                }
-            });
-            VisLabel keyLabel = new VisLabel(key);
-            keyTbl.add(keyLabel);
-
-            valueTbl.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    keyField.setText(key);
-                    valueField.setText(value);
-                }
-            });
-            VisLabel valueLabel = new VisLabel(value);
-            valueTbl.add(valueLabel);
-
-            VisImageButton trashBtn = new VisImageButton("trash-button");
-
-            variablesList.add(keyTbl).height(20).expandX().fillX();
-            variablesList.add(valueTbl).height(20).expandX().fillX();
-            variablesList.add(trashBtn).padLeft(4);
-            variablesList.row().padBottom(2);
-
-            trashBtn.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    facade.sendNotification(DELETE_BUTTON_PRESSED, key);
-                }
-            });
-        }
-
-        addVariableTable.setVisible(true);
-
-        invalidateHeight();
-    }
-
-    private void initListeners() {
+        addButton = StandardWidgetsFactory.createTextButton("Add");
         addButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 facade.sendNotification(ADD_BUTTON_PRESSED);
             }
         });
+
+        mainTable = new VisTable();
+        getContentTable().add(mainTable).growX();
+    }
+
+    public void setEmptyMsg(String msg) {
+        mainTable.clear();
+        PropertyGrid.on(mainTable).dialogScale().padPanel().wideCentered(PropertyGrid.value(msg));
+        invalidateHeight();
+    }
+
+    public void updateView(ObjectMap<String, String> vars) {
+        mainTable.clear();
+
+        PropertyGrid grid = PropertyGrid.on(mainTable).dialogScale().padPanel();
+        grid.section("New variable");
+        grid.wideContent(new FormRow()
+                .label("Key").field(keyField)
+                .label("Value").field(valueField)
+                .action(addButton));
+
+        grid.section("Variables");
+        grid.wideContent(createVariablesList(vars));
+
+        invalidateHeight();
+    }
+
+    /** Clicking a row loads it back into the form above, which is how a variable gets edited. */
+    private ListTable createVariablesList(ObjectMap<String, String> vars) {
+        ListTable list = new ListTable("Key", "Value");
+        if (vars.size == 0) {
+            return list.message("This item has no custom variables");
+        }
+        for (ObjectMap.Entry<String, String> entry : vars) {
+            String key = entry.key;
+            String value = entry.value;
+
+            VisImageButton deleteButton = StandardWidgetsFactory.createImageButton("trash-button");
+            deleteButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    facade.sendNotification(DELETE_BUTTON_PRESSED, key);
+                }
+            });
+
+            list.item(key, value).action(deleteButton).onClick(() -> {
+                keyField.setText(key);
+                valueField.setText(value);
+            });
+        }
+        return list;
     }
 
     public String getKey() {
@@ -168,4 +131,8 @@ public class CustomVariablesPanel extends UIDraggablePanel {
         valueField.setText(value);
     }
 
+    @Override
+    public float getPrefWidth() {
+        return Math.max(super.getPrefWidth(), MIN_WIDTH);
+    }
 }

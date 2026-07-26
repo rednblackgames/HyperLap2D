@@ -2,12 +2,14 @@ package games.rednblack.editor.view.ui.panel;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
-import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import games.rednblack.h2d.common.UIDraggablePanel;
+import games.rednblack.h2d.common.view.ui.FormRow;
+import games.rednblack.h2d.common.view.ui.ListTable;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
 
@@ -22,11 +24,13 @@ public class TagsPanel extends UIDraggablePanel {
     public static final String ITEM_ADD = prefix + ".ITEM_ADD";
     public static final String ITEM_REMOVED = prefix + ".ITEM_REMOVED";
 
-    private Facade facade;
+    private static final int MIN_WIDTH = 380;
 
-    private VisTable mainTable;
-    private VisTable tagTable;
-    private TagItem.TagItemListener tagItemListener;
+    private final Facade facade;
+
+    private final VisTable mainTable;
+    private final VisTextField newTagField;
+    private final VisTextButton addTagButton;
 
     private Set<String> tags = new HashSet<>();
 
@@ -36,24 +40,28 @@ public class TagsPanel extends UIDraggablePanel {
 
         facade = Facade.getInstance();
 
-        mainTable = new VisTable();
-
-        add(mainTable).padBottom(4);
-
-        tagItemListener = new TagItem.TagItemListener() {
+        newTagField = StandardWidgetsFactory.createTextField();
+        addTagButton = StandardWidgetsFactory.createTextButton("Add");
+        addTagButton.addListener(new ClickListener() {
             @Override
-            public void removed(String tag) {
-                tags.remove(tag);
-                facade.sendNotification(ITEM_REMOVED, tag);
+            public void clicked(InputEvent event, float x, float y) {
+                String tag = newTagField.getText();
+                if (!tag.isEmpty() && !tagExists(tag)) {
+                    newTagField.setText("");
+                    addTag(tag);
+                    facade.sendNotification(ITEM_ADD, tag);
+                }
             }
-        };
+        });
+
+        mainTable = new VisTable();
+        getContentTable().add(mainTable).growX();
     }
 
     public void setEmpty() {
         mainTable.clear();
-        VisLabel label = StandardWidgetsFactory.createLabel("No item selected");
-        label.setAlignment(Align.center);
-        mainTable.add(label).pad(10).width(278).center();
+        PropertyGrid.on(mainTable).dialogScale().padPanel()
+                .wideCentered(PropertyGrid.value("No item selected"));
         invalidateHeight();
     }
 
@@ -68,38 +76,35 @@ public class TagsPanel extends UIDraggablePanel {
     public void updateView() {
         mainTable.clear();
 
-        tagTable = new VisTable();
-        VisTable inputTable = new VisTable();
+        PropertyGrid grid = PropertyGrid.on(mainTable).dialogScale().padPanel();
+        grid.section("New tag");
+        grid.wideContent(new FormRow().label("Tag").field(newTagField).action(addTagButton));
 
-        List<String> sorted = new LinkedList<>(tags);
-        Collections.sort(sorted);
-        for(String tag: sorted) {
-            tagTable.add(new TagItem(tag, tagItemListener)).pad(5).left().expandX().fillX();
-            tagTable.row();
-        }
-
-        VisTextField newTagField = StandardWidgetsFactory.createTextField();
-        VisTextButton createTagBtn = new VisTextButton("add");
-        inputTable.add(newTagField).width(200);
-        inputTable.add(createTagBtn).padLeft(5);
-
-        createTagBtn.addListener(new ClickListener() {
-            @Override
-            public void clicked (InputEvent event, float x, float y) {
-                String tag = newTagField.getText();
-                if(!tagExists(tag)) {
-                    newTagField.setText("");
-                    addTag(tag);
-                    facade.sendNotification(ITEM_ADD, tag);
-                }
-            }
-        });
-
-        mainTable.add(inputTable);
-        mainTable.row();
-        mainTable.add(tagTable).expandX().fillX();
+        grid.section("Tags");
+        grid.wideContent(createTagList());
 
         invalidateHeight();
+    }
+
+    private ListTable createTagList() {
+        ListTable list = new ListTable("Tag");
+        List<String> sorted = new LinkedList<>(tags);
+        Collections.sort(sorted);
+        if (sorted.isEmpty()) {
+            return list.message("This item has no tags");
+        }
+        for (String tag : sorted) {
+            VisImageButton removeButton = StandardWidgetsFactory.createImageButton("trash-button");
+            removeButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    tags.remove(tag);
+                    facade.sendNotification(ITEM_REMOVED, tag);
+                }
+            });
+            list.item(tag).action(removeButton);
+        }
+        return list;
     }
 
     public Set<String> getTags() {
@@ -108,5 +113,10 @@ public class TagsPanel extends UIDraggablePanel {
 
     private boolean tagExists(String tag) {
         return tags.contains(tag);
+    }
+
+    @Override
+    public float getPrefWidth() {
+        return Math.max(super.getPrefWidth(), MIN_WIDTH);
     }
 }
