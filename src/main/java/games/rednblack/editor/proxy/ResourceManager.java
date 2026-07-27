@@ -61,6 +61,9 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     private static final float READ_LOAD_SHARE = 0.2f;
     private static final float INSTALL_LOAD_SHARE = 0.1f;
 
+    /** Mirrors the fallback size of {@link games.rednblack.editor.renderer.factory.component.LabelComponentFactory}. */
+    private static final int LABEL_DEFAULT_SIZE = 12;
+
     public static final String PHASE_ATLASES = "Texture atlases";
     public static final String PHASE_READ = "Reading resources";
     public static final String PHASE_INSTALL = "Installing";
@@ -798,18 +801,48 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
 
     public void prepareEmbeddingFont(String fontfamily, int fontSize, boolean mono) {
         flushAllUnusedFonts();
+        embedFont(fontfamily, fontSize, mono);
+    }
 
+    /**
+     * Rasterizes every font the given composite needs and that is not in memory yet.
+     * <p>
+     * Items restored from a VO — pasted, or brought back by an undo — may carry fonts the loaded
+     * project never asked for: a label added to a scene that was never saved, or a copy coming from
+     * another project. The label factories read the font straight out of the map and blow up on a
+     * miss, so it has to be filled in before the entities are built. Unlike
+     * {@link #prepareEmbeddingFont} this does not flush, or each font would evict the previous one.
+     */
+    public void prepareEmbeddingFonts(CompositeItemVO compositeVO) {
+        for (MainItemVO item : compositeVO.getAllItems()) {
+            if (!(item instanceof LabelVO)) continue;
+
+            LabelVO label = (LabelVO) item;
+            // Bitmap fonts come from the project's font folder, they are not rasterized here.
+            if (label.bitmapFont != null || label.style == null || label.style.isEmpty()) continue;
+            // Same fallback the label factories apply when they ask for the font.
+            embedFont(label.style, label.size == 0 ? LABEL_DEFAULT_SIZE : label.size, label.monoSpace);
+        }
+    }
+
+    private void embedFont(String fontfamily, int fontSize, boolean mono) {
         if (isFontLoaded(fontfamily, fontSize, mono)) {
             return;
         }
 
-        FontManager fontManager = facade.retrieveProxy(FontManager.NAME);
+        FileHandle fontFile;
+        try {
+            fontFile = getTTFSafely(fontfamily);
+        } catch (IOException e) {
+            System.err.println("Unable to find font file for: " + fontfamily);
+            return;
+        }
 
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = fontSize;
         parameter.packer = fontPacker;
         parameter.mono = mono;
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontManager.getTTFByName(fontfamily));
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
         BitmapFont font = generator.generateFont(parameter);
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setUseIntegerPositions(false);

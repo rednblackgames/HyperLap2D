@@ -33,6 +33,7 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.proxy.LayerSelectionProxy;
+import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 
@@ -94,6 +95,10 @@ public class PasteItemsCommand extends EntityModifyRevertibleCommand {
 
     public static Set<Integer> createEntitiesFromVO(CompositeItemVO compositeVO) {
         Set<Integer> entities = new HashSet<>();
+
+        // Labels expect their font to be in memory already, and a pasted one may never have been loaded.
+        ResourceManager resourceManager = Facade.getInstance().retrieveProxy(ResourceManager.NAME);
+        resourceManager.prepareEmbeddingFonts(compositeVO);
 
         EntityFactory factory = PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader.getEntityFactory();
         int parentEntity = PluginUIBridge.get().getSandbox().getCurrentViewingEntity();
