@@ -24,7 +24,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.MainItemVO;
+import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.data.SceneVO;
+import games.rednblack.editor.renderer.data.TexturePackVO;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.puremvc.Proxy;
 import org.apache.commons.io.FileUtils;
@@ -124,12 +126,30 @@ public class SceneDataManager extends Proxy {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //copy project dt
+        //export project dt, without the packs the game is never meant to see
         try {
-            FileUtils.copyFile(new File(projectManager.getCurrentProjectPath() + "/project.dt"), new File(targetPath + "/project.dt"));
+            FileUtils.writeStringToFile(new File(targetPath + "/project.dt"),
+                    buildExportProjectInfo(projectManager).constructJsonString(), "utf-8");
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Copy of the project info with every {@link TexturePackVO#editorOnly} pack stripped out.
+     * <p>
+     * The runtime enumerates {@code imagesPacks} to decide which atlases to load, so leaving an
+     * editor-only pack in the exported file would make it look for an atlas that was deliberately
+     * not shipped. Dropping the entry here keeps the exported project self-consistent.
+     */
+    private ProjectInfoVO buildExportProjectInfo(ProjectManager projectManager) throws IOException {
+        Json json = HyperJson.getJson();
+        ProjectInfoVO vo = json.fromJson(ProjectInfoVO.class,
+                FileUtils.readFileToString(new File(projectManager.getCurrentProjectPath() + "/project.dt"), "utf-8"));
+
+        vo.imagesPacks.values().removeIf(pack -> pack.editorOnly);
+        vo.animationsPacks.values().removeIf(pack -> pack.editorOnly);
+        return vo;
     }
 
     private void clearCompositesForExport(CompositeItemVO compositeVO) {

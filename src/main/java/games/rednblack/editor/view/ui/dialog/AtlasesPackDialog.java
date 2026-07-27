@@ -48,9 +48,11 @@ public class AtlasesPackDialog extends H2DDialog {
     private final String addNewNotification;
     private final String moveRegionNotification, updateCurrentNotification, removeNotification;
     private final String applyNotification;
+    private final String editorOnlyNotification;
     private final SimpleListAdapter<String> mainPackAdapter, currentPackAdapter;
     private final VisImageButton insertButton, removeButton;
     private final VisLabel currentSelectedPackLabel;
+    private final VisCheckBox editorOnlyCheckBox;
     private final VisLabel mainEmptyLabel, currentEmptyLabel;
 
     private final Facade facade = Facade.getInstance();
@@ -61,13 +63,15 @@ public class AtlasesPackDialog extends H2DDialog {
     private final ListView<String> mainPackList;
     private final ListView<String> currentPackList;
 
-    public AtlasesPackDialog(String title, String add, String move, String updateList, String removeNotification, String applyNotification) {
+    public AtlasesPackDialog(String title, String add, String move, String updateList, String removeNotification,
+                             String applyNotification, String editorOnlyNotification) {
         super(title);
         addNewNotification = add;
         moveRegionNotification = move;
         updateCurrentNotification = updateList;
         this.removeNotification = removeNotification;
         this.applyNotification = applyNotification;
+        this.editorOnlyNotification = editorOnlyNotification;
 
         addCloseButton();
         closeOnEscape();
@@ -190,7 +194,17 @@ public class AtlasesPackDialog extends H2DDialog {
 
         currentSelectedPackLabel = StandardWidgetsFactory.createLabel("Select Pack",
                 PropertyGrid.style(PropertyGrid.SECTION_STYLE_LARGE), Align.center);
-        VisTable currentHeader = headerBand(currentSelectedPackLabel);
+
+        // Editor-only packs are still packed so they show up while authoring, but the export skips
+        // both the atlas and the project entry, so the game never carries them.
+        editorOnlyCheckBox = StandardWidgetsFactory.createCheckBox("Editor only");
+        editorOnlyCheckBox.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                facade.sendNotification(editorOnlyNotification, editorOnlyCheckBox.isChecked());
+            }
+        });
+        VisTable currentHeader = headerBand(currentSelectedPackLabel, editorOnlyCheckBox);
 
         mainPackList.getMainTable().background(VisUI.getSkin().getDrawable(TABLE_BG));
         mainPackList.getMainTable().pad(LIST_PAD);
@@ -373,6 +387,8 @@ public class AtlasesPackDialog extends H2DDialog {
         currentList.clear();
         currentPackAdapter.itemsChanged();
         currentSelectedPackLabel.setText("Select Pack");
+        editorOnlyCheckBox.setChecked(false);
+        setEditorOnlyEnabled(false);
         refreshEmptyStates();
     }
 
@@ -439,6 +455,25 @@ public class AtlasesPackDialog extends H2DDialog {
         header.background(VisUI.getSkin().getDrawable(HEADER_BG));
         header.add(title).growX().height(HEADER_HEIGHT).padLeft(8).padRight(8);
         return header;
+    }
+
+    /** Header band with a trailing control, e.g. the editor-only toggle. */
+    private VisTable headerBand(VisLabel title, Actor trailing) {
+        VisTable header = new VisTable();
+        header.background(VisUI.getSkin().getDrawable(HEADER_BG));
+        header.add(title).growX().height(HEADER_HEIGHT).padLeft(8);
+        header.add(trailing).height(HEADER_HEIGHT).padLeft(8).padRight(8);
+        return header;
+    }
+
+    /** Reflect the selected pack's flag without firing the change notification back. */
+    public void setEditorOnly(boolean editorOnly) {
+        editorOnlyCheckBox.setChecked(editorOnly);
+    }
+
+    public void setEditorOnlyEnabled(boolean enabled) {
+        editorOnlyCheckBox.setDisabled(!enabled);
+        editorOnlyCheckBox.setColor(1f, 1f, 1f, enabled ? 1f : 0.45f);
     }
 
     private void updateOpButtons() {

@@ -55,6 +55,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -626,6 +627,9 @@ public class ProjectManager extends Proxy {
                 FileHandle assetDirectoryFileHandle = Gdx.files.absolute(assetDirectory.path());
                 FileHandle[] packFiles = assetDirectoryFileHandle.child("pack").list();
                 for (FileHandle packFile : packFiles) {
+                    //Editor-only packs stay in the project but never ship
+                    if (isEditorOnlyPackFile(packFile.nameWithoutExtension())) continue;
+
                     File fileTarget = new File(targetPath + "/" + assetDirectory.name() + "/" + packFile.name());
                     try {
                         FileUtils.copyFile(packFile.file(), fileTarget);
@@ -636,6 +640,31 @@ public class ProjectManager extends Proxy {
 
             }
         }
+    }
+
+    /**
+     * True when this packed file belongs to a pack marked {@link TexturePackVO#editorOnly}.
+     *
+     * @param baseName pack file name without extension, e.g. {@code foo}, {@code foo2} for its
+     *                 second atlas page, or {@code pack} for the "main" pack
+     */
+    private boolean isEditorOnlyPackFile(String baseName) {
+        return matchesEditorOnlyPack(baseName, currentProjectInfoVO.imagesPacks.values())
+                || matchesEditorOnlyPack(baseName, currentProjectInfoVO.animationsPacks.values());
+    }
+
+    private boolean matchesEditorOnlyPack(String baseName, Collection<TexturePackVO> packs) {
+        for (TexturePackVO vo : packs) {
+            if (!vo.editorOnly) continue;
+            String packName = vo.name.equals("main") ? "pack" : vo.name;
+            if (baseName.equals(packName)) return true;
+            // Extra atlas pages are the pack name plus a number, so match those too without
+            // mistaking a pack whose own name ends in a digit for a page of a shorter one.
+            if (baseName.startsWith(packName) && baseName.substring(packName.length()).matches("[0-9]+")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setExportPaths(String path) {

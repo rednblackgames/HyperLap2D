@@ -28,6 +28,7 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
     private static final String MOVE_REGION_TO_PACK = "games.rednblack.editor.view.ui.dialog.ImagesPackDialogMediator.MOVE_REGION_TO_PACK";
     private static final String UPDATE_CURRENT_LIST = "games.rednblack.editor.view.ui.dialog.ImagesPackDialogMediator.UPDATE_CURRENT_LIST";
     private static final String REMOVE_PACK = "games.rednblack.editor.view.ui.dialog.ImagesPackDialogMediator.REMOVE_PACK";
+    private static final String SET_EDITOR_ONLY = "games.rednblack.editor.view.ui.dialog.ImagesPackDialogMediator.SET_EDITOR_ONLY";
     private static final String APPLY_PACKS = "games.rednblack.editor.view.ui.dialog.ImagesPackDialogMediator.APPLY_PACKS";
 
     /** Deep copy of the live images packs, edited in place by the dialog and committed on Apply/OK. */
@@ -36,7 +37,7 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
     private final ObjectSet<String> pendingPacks = new ObjectSet<>();
 
     public ImagesPackDialogMediator() {
-        super(NAME, new AtlasesPackDialog("Images Atlases", NEW_IMAGES_PACK, MOVE_REGION_TO_PACK, UPDATE_CURRENT_LIST, REMOVE_PACK, APPLY_PACKS));
+        super(NAME, new AtlasesPackDialog("Images Atlases", NEW_IMAGES_PACK, MOVE_REGION_TO_PACK, UPDATE_CURRENT_LIST, REMOVE_PACK, APPLY_PACKS, SET_EDITOR_ONLY));
     }
 
     @Override
@@ -45,7 +46,7 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
                 ProjectManager.PROJECT_OPENED,
                 NEW_IMAGES_PACK,
                 MOVE_REGION_TO_PACK);
-        interests.add(APPLY_PACKS);
+        interests.add(APPLY_PACKS, SET_EDITOR_ONLY);
         interests.add(UPDATE_CURRENT_LIST,
                 REMOVE_PACK,
                 MsgAPI.UPDATE_ATLAS_PACK_LIST,
@@ -68,6 +69,7 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
             TexturePackVO copy = new TexturePackVO();
             copy.name = vo.name;
             copy.regions = new HashSet<>(vo.regions);
+            copy.editorOnly = vo.editorOnly;
             editablePacks.put(copy.name, copy);
         }
     }
@@ -88,6 +90,7 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
             TexturePackVO copy = new TexturePackVO();
             copy.name = vo.name;
             copy.regions = new HashSet<>(vo.regions);
+            copy.editorOnly = vo.editorOnly;
             live.put(copy.name, copy);
         }
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
@@ -99,6 +102,13 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
             resolutionManager.rePackProjectImagesForAllResolutions(true, forcePacks, null);
         }
         resetEditable();
+    }
+
+    /** "main" always ships, so it must never be markable as editor-only. */
+    private void syncEditorOnly(String packName) {
+        boolean isMain = "main".equals(packName);
+        viewComponent.setEditorOnlyEnabled(!isMain);
+        viewComponent.setEditorOnly(!isMain && editablePacks.get(packName).editorOnly);
     }
 
     @Override
@@ -141,8 +151,10 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
                 break;
             case UPDATE_CURRENT_LIST:
                 currentTab = viewComponent.getSelectedTab();
-                if (currentTab != null)
+                if (currentTab != null) {
                     viewComponent.updateCurrentPack(editablePacks.get(currentTab).regions);
+                    syncEditorOnly(currentTab);
+                }
                 break;
             case MOVE_REGION_TO_PACK:
                 String toPack = viewComponent.getMainSelected().size > 0 ? viewComponent.getSelectedTab() : "main";
@@ -167,6 +179,11 @@ public class ImagesPackDialogMediator extends Mediator<AtlasesPackDialog> {
 
                 viewComponent.updateMainPack(editablePacks.get("main").regions);
                 viewComponent.clearCurrentPack();
+                break;
+            case SET_EDITOR_ONLY:
+                currentTab = viewComponent.getSelectedTab();
+                if (currentTab != null)
+                    editablePacks.get(currentTab).editorOnly = notification.getBody();
                 break;
             case APPLY_PACKS:
                 commit();
