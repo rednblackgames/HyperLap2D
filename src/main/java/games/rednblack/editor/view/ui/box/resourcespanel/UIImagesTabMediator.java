@@ -61,7 +61,7 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
     @Override
     public void listNotificationInterests(Interests interests) {
         super.listNotificationInterests(interests);
-        interests.add( DeleteImageResource.DONE, DeleteTinyVGResource.DONE, CHANGE_FOLDER);
+        interests.add(DeleteImageResource.DONE, DeleteTinyVGResource.DONE, CHANGE_FOLDER);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
                 if (atlasName.equals("main") || !atlasName.toLowerCase().contains(searchText)) continue;
 
                 TextureAtlas atlas = resourceManager.getTextureAtlas(atlasName);
-                AtlasResource atlasResource = new AtlasResource(atlas, atlasName);
+                AtlasResource atlasResource = new AtlasResource(atlas, atlasName, projectInfoVO.imagesPacks.get(atlasName).regions);
                 DraggableResource draggableResource = new DraggableResource(atlasResource);
                 thumbnailBoxes.add(draggableResource);
             }
@@ -109,6 +109,10 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
         }
 
         TextureAtlas atlas = resourceManager.getTextureAtlas(currentAtlas);
+        if (atlas == null) {
+            viewComponent.setThumbnailBoxes(thumbnailBoxes);
+            return;
+        }
         Array<TextureAtlas.AtlasRegion> atlasRegions = atlas.getRegions();
 
         for (TextureAtlas.AtlasRegion region : new Array.ArrayIterator<>(atlasRegions)) {

@@ -57,6 +57,7 @@ public class UIAnimationsTab extends UIResourcesTab {
     @Override
     protected VisScrollPane crateScrollPane() {
         animationsTable = new VisTable();
+        animationsTable.left();
         Facade.getInstance().sendNotification(UIResourcesBoxMediator.ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT, animationsTable);
         VisScrollPane scrollPane = StandardWidgetsFactory.createScrollPane(animationsTable);
         scrollPane.setScrollingDisabled(true, false);

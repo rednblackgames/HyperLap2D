@@ -41,6 +41,7 @@ public class UIImagesTab extends UIResourcesTab {
     @Override
     protected VisScrollPane crateScrollPane() {
         imagesTable = new VisTable();
+        imagesTable.left();
         Facade.getInstance().sendNotification(UIResourcesBoxMediator.ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT, imagesTable);
         return StandardWidgetsFactory.createScrollPane(imagesTable);
     }

@@ -23,15 +23,13 @@ public class UIActionsTab extends UIResourcesTab {
 
     public UIActionsTab() {
         VisImageButton newBtn = StandardWidgetsFactory.createImageButton("new-layer-button");
-        VisImageButton deleteBtn = StandardWidgetsFactory.createImageButton("trash-button");
 
         VisTable bottomPane = new VisTable();
         contentTable.row();
-        bottomPane.align(Align.left);
+        bottomPane.align(Align.right);
         contentTable.add(bottomPane).padTop(5).colspan(3).growX();
 
         bottomPane.add(newBtn).center().pad(3);
-        bottomPane.add(deleteBtn).center().pad(3);
 
         newBtn.addListener(new ChangeListener() {
             @Override
