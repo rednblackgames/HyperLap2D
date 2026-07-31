@@ -2,6 +2,7 @@ package games.rednblack.editor.plugin.mcp.tools.entity;
 
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SnapshotArray;
 import games.rednblack.editor.plugin.mcp.server.McpJson;
 import games.rednblack.editor.plugin.mcp.server.RenderThread;
@@ -9,8 +10,12 @@ import games.rednblack.editor.plugin.mcp.tools.McpContext;
 import games.rednblack.editor.plugin.mcp.tools.McpToolResult;
 import games.rednblack.editor.plugin.mcp.tools.RemoteOps;
 import games.rednblack.editor.plugin.mcp.tools.Tool;
+import com.badlogic.gdx.graphics.Color;
+import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
+import games.rednblack.editor.renderer.components.TintComponent;
+import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.remote.RemoteTypeNamesResult;
@@ -37,8 +42,11 @@ public class ListEntitiesTool implements Tool {
     @Override public String name() { return "list_entities"; }
     @Override public String description() {
         return "List all entities in the current scene with uniqueId, parentId, name, typeId and type "
-                + "(display name, including Spine/Talos/TinyVG), depth for tree reconstruction, and zIndex "
-                + "+ layer (the per-layer z-index used by set_z_index; lower draws behind, higher in front).";
+                + "(display name, including Spine/Talos/TinyVG), depth for tree reconstruction, zIndex "
+                + "+ layer (the per-layer z-index used by set_z_index; lower draws behind, higher in front), "
+                + "and a transform block (x, y, width, height, scaleX, scaleY, rotation, originX, originY, "
+                + "flipX/flipY when set) — coordinates are the item's own, local to the parent composite for "
+                + "a child. customVars, tags and tint are included when they are not empty/white.";
     }
 
     @Override
@@ -92,6 +100,51 @@ public class ListEntitiesTool implements Tool {
         w.set("depth", depth);
         w.set("zIndex", zindex != null ? zindex.getZIndex() : 0);
         w.set("layer", zindex != null && zindex.getLayerName() != null ? zindex.getLayerName() : "");
+
+        // Where the entity is and how big, so a caller can check what it wrote instead of assuming
+        // it. Coordinates are the item's own: local to the parent composite for a child, world for
+        // anything sitting at the root.
+        TransformComponent transform = ComponentRetriever.get(entity, TransformComponent.class, ctx.api().getEngine());
+        DimensionsComponent size = ComponentRetriever.get(entity, DimensionsComponent.class, ctx.api().getEngine());
+        if (transform != null) {
+            w.object("transform");
+            w.set("x", transform.x);
+            w.set("y", transform.y);
+            if (size != null) {
+                w.set("width", size.width);
+                w.set("height", size.height);
+            }
+            w.set("scaleX", transform.scaleX);
+            w.set("scaleY", transform.scaleY);
+            w.set("rotation", transform.rotation);
+            w.set("originX", transform.originX);
+            w.set("originY", transform.originY);
+            if (transform.flipX) w.set("flipX", true);
+            if (transform.flipY) w.set("flipY", true);
+            w.pop();
+        }
+
+        // Tint only when it is not plain opaque white, which is the overwhelming majority.
+        TintComponent tint = ComponentRetriever.get(entity, TintComponent.class, ctx.api().getEngine());
+        if (tint != null && !Color.WHITE.equals(tint.color)) {
+            w.set("tint", "#" + tint.color.toString().toUpperCase());
+        }
+        // Custom variables come back too, so whatever wrote them can read them again. Omitted when
+        // empty, which is the common case and would otherwise bloat every listing.
+        if (main != null && main.customVariables != null && main.customVariables.size > 0) {
+            w.object("customVars");
+            for (ObjectMap.Entry<String, String> var : main.customVariables) {
+                w.set(var.key, var.value);
+            }
+            w.pop();
+        }
+        // Tags likewise: they decide which components a runtime transmutes onto the entity, so
+        // being able to read them back is how you check the scene says what you meant.
+        if (main != null && main.tags != null && main.tags.size > 0) {
+            w.array("tags");
+            for (String tag : main.tags) w.value(tag);
+            w.pop();
+        }
         w.pop();
 
         if (node != null && node.children.size > 0) {

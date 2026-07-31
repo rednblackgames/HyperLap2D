@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
+import games.rednblack.editor.controller.commands.CustomVariableModifyCommand;
+import games.rednblack.h2d.common.command.TransformCommandBuilder;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.controller.commands.NewLayerCommand;
 import games.rednblack.editor.controller.commands.RenameLayerCommand;
@@ -23,6 +25,7 @@ import games.rednblack.editor.proxy.ResourceManager;
 import games.rednblack.editor.renderer.components.LayoutComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
+import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.LayerMapComponent;
 import games.rednblack.editor.renderer.components.ShaderComponent;
@@ -103,7 +106,9 @@ import games.rednblack.puremvc.util.Interests;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -638,6 +643,32 @@ public class RemoteOpsMediator extends Mediator<Object> {
             return;
         }
 
+        // Custom variables are not a properties panel: they are an open map on MainItemComponent,
+        // edited through their own dialog. Same entry point, different road.
+        if ("customVars".equals(key)) {
+            setCustomVars(entity, fields, result);
+            return;
+        }
+
+        // Tags likewise: an open set on MainItemComponent, edited from the Tags dialog.
+        if ("tags".equals(key)) {
+            setTags(engine, entity, fields, result);
+            return;
+        }
+
+        // The origin is a transform field with no widget in the basic panel — it is dragged in the
+        // sandbox. Taken out of the map and applied first, because it is the pivot every other
+        // transform turns around: scaling before moving the origin sends the item somewhere else.
+        if ("basic".equals(key) || "transform".equals(key)) {
+            Map<String, Object> rest = new LinkedHashMap<>(fields == null ? Collections.emptyMap() : fields);
+            if (!applyOrigin(engine, entity, rest, result)) return;
+            if (rest.isEmpty()) {
+                result.ok = true;
+                return;
+            }
+            fields = rest;
+        }
+
         switch (key) {
             case "basic":
             case "transform":
@@ -706,6 +737,126 @@ public class RemoteOpsMediator extends Mediator<Object> {
     }
 
     /**
+     * Pull {@code originX}/{@code originY} out of a transform request and apply them through the
+     * same {@link TransformCommandBuilder} the sandbox uses when the pivot is dragged, so the
+     * change is undoable and the rest of the panel never sees fields it has no widgets for.
+     * <p>
+     * Whichever of the two is missing keeps its current value.
+     *
+     * @return false when the request is bad and the caller must stop
+     */
+    private boolean applyOrigin(Engine engine, int entity, Map<String, Object> fields, RemoteEditResult result) {
+        Object ox = fields.remove("originX");
+        Object oy = fields.remove("originY");
+        if (ox == null && oy == null) return true;
+
+        TransformComponent transform = ComponentRetriever.get(entity, TransformComponent.class, engine);
+        if (transform == null) {
+            result.ok = false;
+            result.error = "entity has no transform, so it has no origin";
+            return false;
+        }
+        if ((ox != null && !(ox instanceof Number)) || (oy != null && !(oy instanceof Number))) {
+            result.ok = false;
+            result.validationErrors.add("originX/originY must be numbers");
+            return false;
+        }
+
+        TransformCommandBuilder builder = new TransformCommandBuilder();
+        builder.begin(entity, engine);
+        builder.setOrigin(ox != null ? ((Number) ox).floatValue() : transform.originX,
+                oy != null ? ((Number) oy).floatValue() : transform.originY);
+        builder.execute(Facade.getInstance());
+        return true;
+    }
+
+    /**
+     * Add or remove tags on an entity: every field name is a tag, and a null value removes it.
+     * <p>
+     * Tags matter beyond bookkeeping — a runtime maps them to components through
+     * {@code SceneConfiguration.addTagTransmuter}, so what is tagged here is what the game's systems
+     * will iterate over.
+     * <p>
+     * Written straight onto the component, which is what the Tags dialog does too: unlike custom
+     * variables, tags have no command behind them in the editor, so this is <b>not undoable</b>.
+     * Matching the dialog's behaviour is worth more than being quietly different from it.
+     */
+    private void setTags(Engine engine, int entity, Map<String, Object> fields, RemoteEditResult result) {
+        if (fields == null || fields.isEmpty()) {
+            result.ok = false;
+            result.error = "no tags given";
+            return;
+        }
+
+        MainItemComponent main = ComponentRetriever.get(entity, MainItemComponent.class, engine);
+        if (main == null) {
+            result.ok = false;
+            result.error = "entity has no main item component";
+            return;
+        }
+
+        List<String> errors = new ArrayList<>();
+        for (Map.Entry<String, Object> e : fields.entrySet()) {
+            if (e.getKey() == null || e.getKey().trim().isEmpty()) errors.add("empty tag");
+        }
+        if (!errors.isEmpty()) {
+            result.ok = false;
+            result.validationErrors.addAll(errors);
+            return;
+        }
+
+        for (Map.Entry<String, Object> e : fields.entrySet()) {
+            String tag = e.getKey().trim();
+            if (e.getValue() == null) main.tags.remove(tag);
+            else main.tags.add(tag);
+        }
+        result.ok = true;
+    }
+
+    /**
+     * Set or remove custom variables on an entity, one command per key so every change lands on
+     * the undo stack exactly as it does from the Custom Variables dialog.
+     * <p>
+     * A null value removes the variable; anything else is stored as its string form, which is
+     * what the format holds anyway. Keys are free-form but may not be blank, and the whole
+     * request is checked before the first command is sent — a half-applied set would be worse
+     * than a rejected one.
+     */
+    private void setCustomVars(int entity, Map<String, Object> fields, RemoteEditResult result) {
+        if (fields == null || fields.isEmpty()) {
+            result.ok = false;
+            result.error = "no custom variables given";
+            return;
+        }
+
+        List<String> errors = new ArrayList<>();
+        for (Map.Entry<String, Object> e : fields.entrySet()) {
+            if (e.getKey() == null || e.getKey().trim().isEmpty()) {
+                errors.add("empty variable name");
+            }
+        }
+        if (!errors.isEmpty()) {
+            result.ok = false;
+            result.validationErrors.addAll(errors);
+            return;
+        }
+
+        Facade facade = Facade.getInstance();
+        for (Map.Entry<String, Object> e : fields.entrySet()) {
+            String name = e.getKey().trim();
+            Object value = e.getValue();
+            if (value == null) {
+                facade.sendNotification(MsgAPI.CUSTOM_VARIABLE_MODIFY,
+                        CustomVariableModifyCommand.removeCustomVariable(entity, name));
+            } else {
+                facade.sendNotification(MsgAPI.CUSTOM_VARIABLE_MODIFY,
+                        CustomVariableModifyCommand.addCustomVariable(entity, name, String.valueOf(value)));
+            }
+        }
+        result.ok = true;
+    }
+
+    /**
      * Single source of truth for whether a componentKey's panel applies to an entity.
      * Returns null if applicable, else an error message. Used by both setFields (editing) and
      * editableComponents (discovery) so the two can't drift.
@@ -728,13 +879,15 @@ public class RemoteOpsMediator extends Mediator<Object> {
             case "polygon": return ComponentRetriever.get(entity, PolygonShapeComponent.class, engine) != null ? null : "entity has no Polygon Shape component; add it first (add_component 'Polygon Shape')";
             case "sensor": return ComponentRetriever.get(entity, SensorComponent.class, engine) != null ? null : "entity has no Sensor component; add it first (add_component 'Physics Sensors')";
             case "layout": return ComponentRetriever.get(entity, LayoutComponent.class, engine) != null ? null : "entity has no Layout component; add it first (add_component Layout)";
+            case "customVars": return null;   // every entity carries the map, empty or not
+            case "tags": return null;         // and the tag set, likewise
             default: return "unsupported component key: " + key;
         }
     }
 
     private static final String[] ALL_PANEL_KEYS = {
             "basic", "label", "particle", "image", "composite", "sprite", "spine", "talos", "lightItem",
-            "shader", "physics", "light", "circle", "polygon", "sensor", "layout"
+            "shader", "physics", "light", "circle", "polygon", "sensor", "layout", "customVars", "tags"
     };
 
     /** Discovery: which componentKeys are editable on the entity + which components can be added. */

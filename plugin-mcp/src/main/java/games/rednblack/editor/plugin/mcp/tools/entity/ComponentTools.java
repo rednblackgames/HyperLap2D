@@ -121,8 +121,11 @@ public final class ComponentTools {
         @Override public String name() { return "update_transform"; }
         @Override public String description() {
             return "Set basic/transform fields on an entity. Pass only the fields to change: x, y, width, height, "
-                    + "scaleX, scaleY, rotation (numbers), flipX, flipY (booleans), id (string). Validated through "
-                    + "the basic properties panel (width/height must be >= 0). The edit is undoable (Ctrl+Z).";
+                    + "scaleX, scaleY, rotation, originX, originY (numbers), flipX, flipY (booleans), id (string). "
+                    + "Validated through the basic properties panel (width/height must be >= 0). originX/originY are "
+                    + "the pivot every other transform turns around and are applied FIRST, so a call that sets both "
+                    + "origin and scale scales around the new pivot — set the origin before scaling, or the item "
+                    + "moves as it grows. The edit is undoable (Ctrl+Z).";
         }
         @Override
         public void writeInputSchema(JsonWriter w) throws IOException {
@@ -142,6 +145,10 @@ public final class ComponentTools {
             w.object("scaleX"); w.set("type", "number"); w.pop();
             w.object("scaleY"); w.set("type", "number"); w.pop();
             w.object("rotation"); w.set("type", "number"); w.pop();
+            w.object("originX"); w.set("type", "number");
+            w.set("description", "Pivot X, in the item's own units. Applied before every other field."); w.pop();
+            w.object("originY"); w.set("type", "number");
+            w.set("description", "Pivot Y, in the item's own units. Applied before every other field."); w.pop();
             w.object("flipX"); w.set("type", "boolean"); w.pop();
             w.object("flipY"); w.set("type", "boolean"); w.pop();
             w.object("id"); w.set("type", "string"); w.pop();
@@ -337,7 +344,9 @@ public final class ComponentTools {
         @Override public String name() { return "update_component"; }
         @Override public String description() {
             return "Set fields on a component via its properties panel (validated, undoable). componentKey selects "
-                    + "the panel: basic (x/y/width/height/scaleX/scaleY/rotation/flipX/flipY/id/tint), "
+                    + "the panel: basic (x/y/width/height/scaleX/scaleY/rotation/originX/originY/flipX/flipY/id/tint; "
+                    + "originX/originY are the pivot and are applied before everything else, so set them before scaling "
+                    + "or the item moves as it grows), "
                     + "label (text/fontFamily/bitmapFont/fontSize/align/wrap/mono), "
                     + "particle (matrixTransform/autoStart), image (renderMode/spriteType), "
                     + "composite (scissorsEnabled/renderToFBO/automaticResize), sprite (fps/animation/playMode), "
@@ -354,6 +363,10 @@ public final class ComponentTools {
                     + "layout (leftMargin/rightMargin/bottomMargin/topMargin, horizontalBias/verticalBias, "
                     + "leftEnabled/rightEnabled/bottomEnabled/topEnabled, leftTarget/rightTarget/bottomTarget/topTarget, "
                     + "leftSide/rightSide/bottomSide/topSide, matchWidth/matchHeight). "
+                    + "customVars (free-form: every field name is a variable name, every entity accepts them, "
+                    + "and a null value removes one), "
+                    + "tags (free-form set: every field name is a tag, a null value removes it; a runtime maps "
+                    + "tags to components via addTagTransmuter, so this decides what its systems iterate). "
                     + "Colors (tint/color/ambientColor/directionalColor) accept 'r,g,b,a', a [r,g,b,a] list, or '#RRGGBBAA'. "
                     + "Vector3 (falloff) accepts 'x,y,z' or [x,y,z]. Pass only the fields to change. Select fields accept only allowed values.";
         }
@@ -384,11 +397,13 @@ public final class ComponentTools {
             w.value("polygon");
             w.value("sensor");
             w.value("layout");
+            w.value("customVars");
+            w.value("tags");
             w.pop();
             w.pop();
             w.object("fields");
             w.set("type", "object");
-            w.set("description", "Field name -> value. Numeric fields take numbers; flags take booleans; select fields take one of the allowed values.");
+            w.set("description", "Field name -> value. Numeric fields take numbers; flags take booleans; select fields take one of the allowed values. With customVars the field names are the variable names, and a null value deletes one.");
             w.set("additionalProperties", true);
             w.pop();
             w.pop();
