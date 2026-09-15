@@ -1,6 +1,42 @@
 {
   "$schema" : "https://json-schema.org/draft/2019-09/schema",
   "$defs" : {
+    "AnchorBindingVO" : {
+      "type" : "object",
+      "properties" : {
+        "bottom" : {
+          "$ref" : "#/$defs/ConstraintDataVO_1"
+        },
+        "horizontalBias" : {
+          "type" : "number",
+          "default" : 0.5
+        },
+        "left" : {
+          "$ref" : "#/$defs/ConstraintDataVO_1"
+        },
+        "right" : {
+          "$ref" : "#/$defs/ConstraintDataVO_1"
+        },
+        "scopeKey" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "top" : {
+          "$ref" : "#/$defs/ConstraintDataVO_1"
+        },
+        "verticalBias" : {
+          "type" : "number",
+          "default" : 0.5
+        }
+      },
+      "additionalProperties" : false
+    },
+    "AnchorBindingVOArray" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/$defs/AnchorBindingVO"
+      }
+    },
     "Circle" : {
       "type" : "object",
       "properties" : {
@@ -47,6 +83,9 @@
         "layerName" : {
           "type" : "string",
           "default" : ""
+        },
+        "layout" : {
+          "$ref" : "#/$defs/LayoutConstraintVO"
         },
         "light" : {
           "$ref" : "#/$defs/LightBodyDataVO"
@@ -133,10 +172,10 @@
         "content" : {
           "type" : "object",
           "properties" : {
-            "SpriteAnimationVO" : {
+            "TalosVO" : {
               "type" : "array",
               "items" : {
-                "$ref" : "#/$defs/SpriteAnimationVO"
+                "$ref" : "#/$defs/TalosVO"
               }
             },
             "ColorPrimitiveVO" : {
@@ -145,10 +184,10 @@
                 "$ref" : "#/$defs/ColorPrimitiveVO"
               }
             },
-            "Image9patchVO" : {
+            "CompositeItemVO" : {
               "type" : "array",
               "items" : {
-                "$ref" : "#/$defs/Image9patchVO"
+                "$ref" : "#/$defs/CompositeItemVO"
               }
             },
             "ParticleEffectVO" : {
@@ -157,22 +196,16 @@
                 "$ref" : "#/$defs/ParticleEffectVO"
               }
             },
-            "CompositeItemVO" : {
+            "TinyVGVO" : {
               "type" : "array",
               "items" : {
-                "$ref" : "#/$defs/CompositeItemVO"
+                "$ref" : "#/$defs/TinyVGVO"
               }
             },
-            "TalosVO" : {
+            "Image9patchVO" : {
               "type" : "array",
               "items" : {
-                "$ref" : "#/$defs/TalosVO"
-              }
-            },
-            "LabelVO" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/$defs/LabelVO"
+                "$ref" : "#/$defs/Image9patchVO"
               }
             },
             "SpineVO" : {
@@ -181,16 +214,22 @@
                 "$ref" : "#/$defs/SpineVO"
               }
             },
-            "TinyVGVO" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/$defs/TinyVGVO"
-              }
-            },
             "SimpleImageVO" : {
               "type" : "array",
               "items" : {
                 "$ref" : "#/$defs/SimpleImageVO"
+              }
+            },
+            "LabelVO" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/$defs/LabelVO"
+              }
+            },
+            "SpriteAnimationVO" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/$defs/SpriteAnimationVO"
               }
             },
             "LightVO" : {
@@ -231,6 +270,9 @@
         },
         "layers" : {
           "$ref" : "#/$defs/LayerItemVOArray"
+        },
+        "layout" : {
+          "$ref" : "#/$defs/LayoutConstraintVO"
         },
         "light" : {
           "$ref" : "#/$defs/LightBodyDataVO"
@@ -318,6 +360,42 @@
         }
       },
       "additionalProperties" : false
+    },
+    "ConstraintDataVO_1" : {
+      "type" : "object",
+      "properties" : {
+        "margin" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "targetSide" : {
+          "$ref" : "#/$defs/ConstraintSide"
+        },
+        "targetUniqueId" : {
+          "type" : "string"
+        }
+      },
+      "additionalProperties" : false
+    },
+    "ConstraintDataVO_2" : {
+      "type" : "object",
+      "properties" : {
+        "margin" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "targetSide" : {
+          "$ref" : "#/$defs/ConstraintSide"
+        },
+        "targetUniqueId" : {
+          "type" : "string"
+        }
+      },
+      "additionalProperties" : false
+    },
+    "ConstraintSide" : {
+      "type" : "string",
+      "enum" : [ "LEFT", "RIGHT", "TOP", "BOTTOM" ]
     },
     "FrameRange" : {
       "type" : "object",
@@ -460,6 +538,9 @@
           "type" : "string",
           "default" : ""
         },
+        "layout" : {
+          "$ref" : "#/$defs/LayoutConstraintVO"
+        },
         "light" : {
           "$ref" : "#/$defs/LightBodyDataVO"
         },
@@ -580,6 +661,9 @@
           "type" : "string",
           "default" : ""
         },
+        "layout" : {
+          "$ref" : "#/$defs/LayoutConstraintVO"
+        },
         "light" : {
           "$ref" : "#/$defs/LightBodyDataVO"
         },
@@ -699,6 +783,40 @@
       "items" : {
         "$ref" : "#/$defs/LayerItemVO"
       }
+    },
+    "LayoutConstraintVO" : {
+      "type" : "object",
+      "properties" : {
+        "bottom" : {
+          "$ref" : "#/$defs/ConstraintDataVO_2"
+        },
+        "horizontalBias" : {
+          "type" : "number",
+          "default" : 0.5
+        },
+        "left" : {
+          "$ref" : "#/$defs/ConstraintDataVO_2"
+        },
+        "matchConstraintHeight" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "matchConstraintWidth" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "right" : {
+          "$ref" : "#/$defs/ConstraintDataVO_2"
+        },
+        "top" : {
+          "$ref" : "#/$defs/ConstraintDataVO_2"
+        },
+        "verticalBias" : {
+          "type" : "number",
+          "default" : 0.5
+        }
+      },
+      "additionalProperties" : false
     },
     "LightBodyDataVO" : {
       "type" : "object",
@@ -837,6 +955,9 @@
         "layerName" : {
           "type" : "string",
           "default" : ""
+        },
+        "layout" : {
+          "$ref" : "#/$defs/LayoutConstraintVO"
         },
         "light" : {
           "$ref" : "#/$defs/LightBodyDataVO"
@@ -1003,6 +1124,12 @@
         "type" : "string"
       }
     },
+    "MapOfStringToTenPatchVO" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "$ref" : "#/$defs/TenPatchVO"
+      }
+    },
     "MapOfStringToTexturePackVO" : {
       "type" : "object",
       "additionalProperties" : {
@@ -1041,6 +1168,9 @@
         "layerName" : {
           "type" : "string",
           "default" : ""
+        },
+        "layout" : {
+          "$ref" : "#/$defs/LayoutConstraintVO"
         },
         "light" : {
           "$ref" : "#/$defs/LightBodyDataVO"
@@ -1454,6 +1584,9 @@
           "type" : "string",
           "default" : ""
         },
+        "layout" : {
+          "$ref" : "#/$defs/LayoutConstraintVO"
+        },
         "light" : {
           "$ref" : "#/$defs/LightBodyDataVO"
         },
@@ -1566,6 +1699,9 @@
         "layerName" : {
           "type" : "string",
           "default" : ""
+        },
+        "layout" : {
+          "$ref" : "#/$defs/LayoutConstraintVO"
         },
         "light" : {
           "$ref" : "#/$defs/LightBodyDataVO"
@@ -1685,6 +1821,9 @@
           "type" : "string",
           "default" : ""
         },
+        "layout" : {
+          "$ref" : "#/$defs/LayoutConstraintVO"
+        },
         "light" : {
           "$ref" : "#/$defs/LightBodyDataVO"
         },
@@ -1797,9 +1936,21 @@
       },
       "additionalProperties" : false
     },
+    "TalosAnchorConstraintVO" : {
+      "type" : "object",
+      "properties" : {
+        "bindings" : {
+          "$ref" : "#/$defs/AnchorBindingVOArray"
+        }
+      },
+      "additionalProperties" : false
+    },
     "TalosVO" : {
       "type" : "object",
       "properties" : {
+        "anchorConstraints" : {
+          "$ref" : "#/$defs/TalosAnchorConstraintVO"
+        },
         "autoStart" : {
           "type" : "boolean",
           "default" : true
@@ -1829,6 +1980,9 @@
         "layerName" : {
           "type" : "string",
           "default" : ""
+        },
+        "layout" : {
+          "$ref" : "#/$defs/LayoutConstraintVO"
         },
         "light" : {
           "$ref" : "#/$defs/LightBodyDataVO"
@@ -1910,9 +2064,81 @@
       },
       "additionalProperties" : false
     },
+    "TenPatchVO" : {
+      "type" : "object",
+      "properties" : {
+        "color1" : {
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "color2" : {
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "color3" : {
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "color4" : {
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "crushMode" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "horizontalStretchAreas" : {
+          "default" : [ ],
+          "type" : "array",
+          "items" : {
+            "type" : "integer"
+          }
+        },
+        "offsetX" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "offsetXspeed" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "offsetY" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "offsetYspeed" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "tiling" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "verticalStretchAreas" : {
+          "default" : [ ],
+          "type" : "array",
+          "items" : {
+            "type" : "integer"
+          }
+        }
+      },
+      "additionalProperties" : false
+    },
     "TexturePackVO" : {
       "type" : "object",
       "properties" : {
+        "editorOnly" : {
+          "type" : "boolean",
+          "default" : false
+        },
         "name" : {
           "type" : "string"
         },
@@ -1957,6 +2183,9 @@
         "layerName" : {
           "type" : "string",
           "default" : ""
+        },
+        "layout" : {
+          "$ref" : "#/$defs/LayoutConstraintVO"
         },
         "light" : {
           "$ref" : "#/$defs/LightBodyDataVO"
@@ -2098,6 +2327,9 @@
       "items" : {
         "$ref" : "#/$defs/SceneVO"
       }
+    },
+    "tenPatches" : {
+      "$ref" : "#/$defs/MapOfStringToTenPatchVO"
     }
   },
   "additionalProperties" : false

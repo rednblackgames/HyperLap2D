@@ -7,11 +7,13 @@ group 'games.rednblack'
 repositories {
     mavenCentral()
     maven { url "https://central.sonatype.com/repository/maven-snapshots/" }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
     implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
+    implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
 
     implementation 'net.mountainblade:modular:1.0'
 

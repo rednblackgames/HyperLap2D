@@ -18,35 +18,98 @@
 
 package games.rednblack.editor.utils;
 
+import com.badlogic.gdx.utils.IntArray;
+import games.rednblack.editor.renderer.data.TenPatchVO;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
 
 /**
+ * Reads and writes the 1px border of Android style {@code .9.png} files. Unlike libGDX's
+ * {@code TexturePacker}, every black segment of the top and left border is kept, so a file can
+ * describe multiple stretch areas per axis (the TenPatch format).
+ *
  * Created by sargis on 8/29/14.
  */
 public class NinePatchUtils {
 
-    public static Integer[] findPatches(BufferedImage image) {
+    private static final int BLACK = 0xFF000000;
+
+    /**
+     * Stretch segments of a {@code .9.png}, in pixels of the content (border stripped).
+     * Every array holds pairs of inclusive indexes in ascending order.
+     */
+    public static class Patches {
+        /** Pairs from the left of the graphic. */
+        public int[] horizontal;
+        /** Pairs from the top of the graphic, image coordinates. */
+        public int[] vertical;
+
+        public Patches(int[] horizontal, int[] vertical) {
+            this.horizontal = horizontal;
+            this.vertical = vertical;
+        }
+    }
+
+    /**
+     * Reads the stretch segments from the top row and left column of a {@code .9.png} image.
+     * A border without any black pixel means the whole axis stretches.
+     */
+    public static Patches findPatches(BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
-        int[] row = new int[width];
-        int[] column = new int[height];
-        row = getPixels(image, 0, 0, width, 1, row);
-        column = getPixels(image, 0, 0, 1, height, column);
+        int[] row = getPixels(image, 0, 0, width, 1, new int[width]);
+        int[] column = getPixels(image, 0, 0, 1, height, new int[height]);
 
-        boolean[] result = new boolean[1];
-        //row = getPixels(image, 0, height - 1, width, 1, row);
-        //column = getPixels(image, width - 1, 0, 1, height, column);
+        return new Patches(getSegments(row), getSegments(column));
+    }
 
-        Pair<java.util.List<Pair<Integer>>> top = getPatches(row, result);
-        Pair<java.util.List<Pair<Integer>>> left = getPatches(column, result);
+    /** Converts border segments to a {@link TenPatchVO}, flipping the vertical axis to be bottom based. */
+    public static TenPatchVO toTenPatchVO(Patches patches, int contentHeight) {
+        int[] vertical = new int[patches.vertical.length];
+        for (int i = 0; i + 1 < patches.vertical.length; i += 2) {
+            int start = patches.vertical[i];
+            int end = patches.vertical[i + 1];
+            // last pair in image coordinates becomes first pair in bottom based coordinates
+            int target = patches.vertical.length - 2 - i;
+            vertical[target] = contentHeight - 1 - end;
+            vertical[target + 1] = contentHeight - 1 - start;
+        }
+        return new TenPatchVO(patches.horizontal.clone(), vertical);
+    }
 
-        Pair<Integer> topPadding = getPadding(top.first);
-        Pair<Integer> leftPadding = getPadding(left.first);
+    /** Converts a {@link TenPatchVO} (bottom based vertical areas) to border segments (top based). */
+    public static Patches fromTenPatchVO(TenPatchVO vo, int contentHeight) {
+        int[] source = vo.verticalStretchAreas == null ? new int[0] : vo.verticalStretchAreas;
+        int[] vertical = new int[source.length];
+        for (int i = 0; i + 1 < source.length; i += 2) {
+            int start = source[i];
+            int end = source[i + 1];
+            int target = source.length - 2 - i;
+            vertical[target] = contentHeight - 1 - end;
+            vertical[target + 1] = contentHeight - 1 - start;
+        }
+        int[] horizontal = vo.horizontalStretchAreas == null ? new int[0] : vo.horizontalStretchAreas.clone();
+        return new Patches(horizontal, vertical);
+    }
 
-        return new Integer[]{topPadding.first, topPadding.second, leftPadding.first, leftPadding.second};
+    /**
+     * Reads a {@code .9.png} file and returns its stretch areas as a {@link TenPatchVO}.
+     *
+     * @return null when the file cannot be read
+     */
+    public static TenPatchVO readTenPatchVO(File ninePatchFile) {
+        try {
+            BufferedImage image = ImageIO.read(ninePatchFile);
+            if (image == null || image.getWidth() < 3 || image.getHeight() < 3) return null;
+            return toTenPatchVO(findPatches(image), image.getHeight() - 2);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     public static BufferedImage removePatches(BufferedImage image) {
@@ -59,13 +122,70 @@ public class NinePatchUtils {
         return buffer;
     }
 
-    public static BufferedImage convertTo9Patch(BufferedImage image, Integer[] patches, float ratio) {
+    /**
+     * Wraps content in a 1px border and draws the given segments scaled by {@code ratio}.
+     * Top and left borders carry the stretch areas, bottom and right borders the padding, which spans
+     * from the first to the last stretch area.
+     */
+    public static BufferedImage convertTo9Patch(BufferedImage image, Patches patches, float ratio) {
         BufferedImage buffer = createTranslucentCompatibleImage(image.getWidth() + 2, image.getHeight() + 2);
         Graphics2D g2 = buffer.createGraphics();
         g2.drawImage(image, 1, 1, null);
         g2.dispose();
         draw9Patch(buffer, patches, ratio);
         return buffer;
+    }
+
+    /** Draws the 9-patch border on {@code image} (which already includes the 1px border). */
+    public static void draw9Patch(BufferedImage image, Patches patches, float ratio) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        int[] horizontal = scaleSegments(patches.horizontal, ratio, width - 2);
+        int[] vertical = scaleSegments(patches.vertical, ratio, height - 2);
+
+        for (int i = 0; i + 1 < horizontal.length; i += 2) {
+            for (int x = horizontal[i]; x <= horizontal[i + 1]; x++) {
+                image.setRGB(x + 1, 0, BLACK);
+            }
+        }
+        if (horizontal.length >= 2) {
+            for (int x = horizontal[0]; x <= horizontal[horizontal.length - 1]; x++) {
+                image.setRGB(x + 1, height - 1, BLACK);
+            }
+        }
+
+        for (int i = 0; i + 1 < vertical.length; i += 2) {
+            for (int y = vertical[i]; y <= vertical[i + 1]; y++) {
+                image.setRGB(0, y + 1, BLACK);
+            }
+        }
+        if (vertical.length >= 2) {
+            for (int y = vertical[0]; y <= vertical[vertical.length - 1]; y++) {
+                image.setRGB(width - 1, y + 1, BLACK);
+            }
+        }
+    }
+
+    /**
+     * Scales segment pairs keeping them inside {@code [0, size - 1]}, ordered and non overlapping.
+     * Segments collapsed by the scaling are dropped.
+     */
+    public static int[] scaleSegments(int[] segments, float ratio, int size) {
+        if (segments == null) return new int[0];
+        IntArray result = new IntArray(segments.length);
+        int previousEnd = -1;
+        for (int i = 0; i + 1 < segments.length; i += 2) {
+            int start = Math.round(segments[i] * ratio);
+            int end = Math.round((segments[i + 1] + 1) * ratio) - 1;
+            start = Math.max(start, previousEnd + 1);
+            end = Math.min(Math.max(end, start), size - 1);
+            if (start > size - 1 || start > end) continue;
+            result.add(start);
+            result.add(end);
+            previousEnd = end;
+        }
+        return result.toArray();
     }
 
     private static GraphicsConfiguration getGraphicsConfiguration() {
@@ -76,22 +196,6 @@ public class NinePatchUtils {
     private static BufferedImage createTranslucentCompatibleImage(int width, int height) {
         return getGraphicsConfiguration().createCompatibleImage(width, height,
                 Transparency.TRANSLUCENT);
-    }
-
-    private static Pair<Integer> getPadding(java.util.List<Pair<Integer>> pairs) {
-        if (pairs.size() == 0) {
-            return new Pair<>(0, 0);
-        } else if (pairs.size() == 1) {
-            if (pairs.get(0).first == 1) {
-                return new Pair<>(pairs.get(0).second - pairs.get(0).first, 0);
-            } else {
-                return new Pair<>(0, pairs.get(0).second - pairs.get(0).first);
-            }
-        } else {
-            int index = pairs.size() - 1;
-            return new Pair<>(pairs.get(0).second - pairs.get(0).first,
-                    pairs.get(index).second - pairs.get(index).first);
-        }
     }
 
     private static int[] getPixels(BufferedImage img, int x, int y, int w, int h, int[] pixels) {
@@ -115,74 +219,32 @@ public class NinePatchUtils {
         return img.getRGB(x, y, w, h, pixels, 0, w);
     }
 
-    private static Pair<java.util.List<Pair<Integer>>> getPatches(int[] pixels, boolean[] startWithPatch) {
-        int lastIndex = 1;
-        int lastPixel = pixels[1];
-        boolean first = true;
-
-        java.util.List<Pair<Integer>> fixed = new ArrayList<>();
-        java.util.List<Pair<Integer>> patches = new ArrayList<>();
-
+    /**
+     * Runs of black pixels along a border line (corners excluded), converted to content coordinates.
+     * When the line has no black pixel at all, the whole content stretches.
+     */
+    private static int[] getSegments(int[] pixels) {
+        IntArray segments = new IntArray();
+        int start = -1;
         for (int i = 1; i < pixels.length - 1; i++) {
-            int pixel = pixels[i];
-            if (pixel != lastPixel) {
-                if (lastPixel == 0xFF000000) {
-                    if (first) startWithPatch[0] = true;
-                    patches.add(new Pair<Integer>(lastIndex, i));
-                } else {
-                    fixed.add(new Pair<Integer>(lastIndex, i));
-                }
-                first = false;
-
-                lastIndex = i;
-                lastPixel = pixel;
+            boolean black = pixels[i] == BLACK;
+            if (black && start < 0) {
+                start = i;
+            } else if (!black && start >= 0) {
+                segments.add(start - 1);
+                segments.add(i - 2);
+                start = -1;
             }
         }
-        if (lastPixel == 0xFF000000) {
-            if (first) startWithPatch[0] = true;
-            patches.add(new Pair<>(lastIndex, pixels.length - 1));
-        } else {
-            fixed.add(new Pair<>(lastIndex, pixels.length - 1));
+        if (start >= 0) {
+            segments.add(start - 1);
+            segments.add(pixels.length - 3);
         }
 
-        if (patches.size() == 0) {
-            patches.add(new Pair<>(1, pixels.length - 1));
-            startWithPatch[0] = true;
-            fixed.clear();
+        if (segments.size == 0 && pixels.length > 2) {
+            segments.add(0);
+            segments.add(pixels.length - 3);
         }
-
-        return new Pair<>(fixed, patches);
-    }
-
-    private static void draw9Patch(BufferedImage image, Integer[] patches, float ratio) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-        int wStart = (int) (patches[0] * ratio) + 1; // this number should be rounded UP
-        int wEnd = (int) (width - patches[1] * ratio) - 1;
-        int hStart = (int) (patches[2] * ratio) + 1; // this number should be rounded UP
-        int hEnd = (int) (height - patches[3] * ratio) - 1;
-        for (int i = wStart; i < wEnd; i++) {
-            image.setRGB(i, 0, 0xFF000000);
-            image.setRGB(i, height - 1, 0xFF000000);
-        }
-        for (int i = hStart; i < hEnd; i++) {
-            image.setRGB(0, i, 0xFF000000);
-            image.setRGB(width - 1, i, 0xFF000000);
-        }
-    }
-
-    static class Pair<E> {
-        E first;
-        E second;
-
-        Pair(E first, E second) {
-            this.first = first;
-            this.second = second;
-        }
-
-        @Override
-        public String toString() {
-            return "Pair[" + first + ", " + second + "]";
-        }
+        return segments.toArray();
     }
 }

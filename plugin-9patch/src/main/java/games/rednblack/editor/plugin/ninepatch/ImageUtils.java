@@ -1,155 +1,31 @@
 package games.rednblack.editor.plugin.ninepatch;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import games.rednblack.editor.renderer.data.TenPatchVO;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
+ * Extracts a region from an atlas page and writes it back as an Android style {@code .9.png}, with one
+ * black segment per stretch area on the top and left border and the padding on the bottom and right border.
+ *
  * Created by various artists on 8/18/2015.
  */
 public class ImageUtils {
     private static final int NINEPATCH_PADDING = 1;
     private static final String OUTPUT_TYPE = "png";
 
-
-    /** Returns the pads, or null if the image had no pads or the pads match the splits. Pads are an int[4] that has left, right,
-     * top, bottom. */
-    public int[] getPads (BufferedImage image, String name, int[] splits) {
-        WritableRaster raster = image.getRaster();
-
-        int bottom = raster.getHeight() - 1;
-        int right = raster.getWidth() - 1;
-
-        int startX = getSplitPoint(raster, name, 1, bottom, true, true);
-        int startY = getSplitPoint(raster, name, right, 1, true, false);
-
-        // No need to hunt for the end if a start was never found.
-        int endX = 0;
-        int endY = 0;
-        if (startX != 0) endX = getSplitPoint(raster, name, startX + 1, bottom, false, true);
-        if (startY != 0) endY = getSplitPoint(raster, name, right, startY + 1, false, false);
-
-        // Ensure pixels after the end are not invalid.
-        getSplitPoint(raster, name, endX + 1, bottom, true, true);
-        getSplitPoint(raster, name, right, endY + 1, true, false);
-
-        // No pads.
-        if (startX == 0 && endX == 0 && startY == 0 && endY == 0) {
-            return null;
-        }
-
-        // -2 here is because the coordinates were computed before the 1px border was stripped.
-        if (startX == 0 && endX == 0) {
-            startX = -1;
-            endX = -1;
-        } else {
-            if (startX > 0) {
-                startX--;
-                endX = raster.getWidth() - 2 - (endX - 1);
-            } else {
-                // If no start point was ever found, we assume full stretch.
-                endX = raster.getWidth() - 2;
-            }
-        }
-        if (startY == 0 && endY == 0) {
-            startY = -1;
-            endY = -1;
-        } else {
-            if (startY > 0) {
-                startY--;
-                endY = raster.getHeight() - 2 - (endY - 1);
-            } else {
-                // If no start point was ever found, we assume full stretch.
-                endY = raster.getHeight() - 2;
-            }
-        }
-
-        int[] pads = new int[] {startX, endX, startY, endY};
-
-        if (splits != null && Arrays.equals(pads, splits)) {
-            return null;
-        }
-
-        return pads;
-    }
-
-    /** Returns the splits, or null if the image had no splits or the splits were only a single region. Splits are an int[4] that
-     * has left, right, top, bottom. */
-    public int[] getSplits (BufferedImage image, String name) {
-        WritableRaster raster = image.getRaster();
-
-        int startX = getSplitPoint(raster, name, 1, 0, true, true);
-        int endX = getSplitPoint(raster, name, startX, 0, false, true);
-        int startY = getSplitPoint(raster, name, 0, 1, true, false);
-        int endY = getSplitPoint(raster, name, 0, startY, false, false);
-
-        // Ensure pixels after the end are not invalid.
-        getSplitPoint(raster, name, endX + 1, 0, true, true);
-        getSplitPoint(raster, name, 0, endY + 1, true, false);
-
-        // No splits, or all splits.
-        if (startX == 0 && endX == 0 && startY == 0 && endY == 0) return null;
-
-        // Subtraction here is because the coordinates were computed before the 1px border was stripped.
-        if (startX != 0) {
-            startX--;
-            endX = raster.getWidth() - 2 - (endX - 1);
-        } else {
-            // If no start point was ever found, we assume full stretch.
-            endX = raster.getWidth() - 2;
-        }
-        if (startY != 0) {
-            startY--;
-            endY = raster.getHeight() - 2 - (endY - 1);
-        } else {
-            // If no start point was ever found, we assume full stretch.
-            endY = raster.getHeight() - 2;
-        }
-
-        return new int[] {startX, endX, startY, endY};
-    }
-
-    /** Hunts for the start or end of a sequence of split pixels. Begins searching at (startX, startY) then follows along the x or y
-     * axis (depending on value of xAxis) for the first non-transparent pixel if startPoint is true, or the first transparent pixel
-     * if startPoint is false. Returns 0 if none found, as 0 is considered an invalid split point being in the outer border which
-     * will be stripped. */
-    static private int getSplitPoint (WritableRaster raster, String name, int startX, int startY, boolean startPoint, boolean xAxis) {
-        int[] rgba = new int[4];
-
-        int next = xAxis ? startX : startY;
-        int end = xAxis ? raster.getWidth() : raster.getHeight();
-        int breakA = startPoint ? 255 : 0;
-
-        int x = startX;
-        int y = startY;
-        while (next != end) {
-            if (xAxis)
-                x = next;
-            else
-                y = next;
-
-            raster.getPixel(x, y, rgba);
-            if (rgba[3] == breakA) return next;
-
-            if (!startPoint && (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255)) {
-                // error
-            }
-
-            next++;
-        }
-
-        return 0;
-    }
-
-    public BufferedImage extractImage(TextureAtlas.TextureAtlasData atlas, String regionName, int[] splits) {
+    /**
+     * @param vo stretch areas in pixels of the region, horizontal from the left and vertical from the bottom
+     * @return the region wrapped in a 9-patch border, or null when the region is not in the atlas
+     */
+    public BufferedImage extractImage(TextureAtlas.TextureAtlasData atlas, String regionName, TenPatchVO vo) {
         for (TextureAtlas.TextureAtlasData.Region region : atlas.getRegions()) {
             if(region.name.equals(regionName)) {
                 TextureAtlas.TextureAtlasData.Page page = region.page;
@@ -157,12 +33,10 @@ public class ImageUtils {
                 try {
                     img = ImageIO.read(page.textureFile.file());
                 } catch (IOException e) {
-
+                    e.printStackTrace();
                 }
-                int[] pad = splits.clone();
-                region.names = new String[] {"split", "pad"};
-                region.values = new int[][] {splits, pad};
-                return extractNinePatch(img, region);
+                if (img == null) return null;
+                return extractNinePatch(img, region, vo);
             }
         }
         return null;
@@ -198,33 +72,46 @@ public class ImageUtils {
         }
     }
 
-
-    private BufferedImage extractNinePatch (BufferedImage page, TextureAtlas.TextureAtlasData.Region region) {
+    private BufferedImage extractNinePatch (BufferedImage page, TextureAtlas.TextureAtlasData.Region region, TenPatchVO vo) {
         BufferedImage splitImage = extractImage(page, region, NINEPATCH_PADDING);
-        Graphics2D g2 = splitImage.createGraphics();
-        g2.setColor(Color.BLACK);
+        int width = splitImage.getWidth();
+        int height = splitImage.getHeight();
 
-        int[] splits = region.findValue("split");
-        int[] pads = region.findValue("pad");
+        int[] horizontal = vo.horizontalStretchAreas == null ? new int[0] : vo.horizontalStretchAreas;
+        int[] vertical = vo.verticalStretchAreas == null ? new int[0] : vo.verticalStretchAreas;
 
-        // Draw the four lines to save the ninepatch's padding and splits
-        int startX = splits[0] + NINEPATCH_PADDING;
-        int endX = region.width - splits[1] + NINEPATCH_PADDING - 1;
-        int startY = splits[2] + NINEPATCH_PADDING;
-        int endY = region.height - splits[3] + NINEPATCH_PADDING - 1;
-        if (endX >= startX) g2.drawLine(startX, 0, endX, 0);
-        if (endY >= startY) g2.drawLine(0, startY, 0, endY);
-        if (pads != null) {
-            int padStartX = pads[0] + NINEPATCH_PADDING;
-            int padEndX = region.width - pads[1] + NINEPATCH_PADDING - 1;
-            int padStartY = pads[2] + NINEPATCH_PADDING;
-            int padEndY = region.height - pads[3] + NINEPATCH_PADDING - 1;
-            g2.drawLine(padStartX, splitImage.getHeight() - 1, padEndX, splitImage.getHeight() - 1);
-            g2.drawLine(splitImage.getWidth() - 1, padStartY, splitImage.getWidth() - 1, padEndY);
+        // top border: horizontal stretch areas, bottom border: horizontal padding
+        for (int i = 0; i + 1 < horizontal.length; i += 2) {
+            for (int x = horizontal[i]; x <= horizontal[i + 1]; x++) {
+                setBlack(splitImage, x + NINEPATCH_PADDING, 0);
+            }
         }
-        g2.dispose();
+        if (horizontal.length >= 2) {
+            for (int x = horizontal[0]; x <= horizontal[horizontal.length - 1]; x++) {
+                setBlack(splitImage, x + NINEPATCH_PADDING, height - 1);
+            }
+        }
+
+        // left border: vertical stretch areas, right border: vertical padding.
+        // Areas are counted from the bottom, image rows from the top.
+        int contentHeight = region.height;
+        for (int i = 0; i + 1 < vertical.length; i += 2) {
+            for (int row = vertical[i]; row <= vertical[i + 1]; row++) {
+                setBlack(splitImage, 0, contentHeight - 1 - row + NINEPATCH_PADDING);
+            }
+        }
+        if (vertical.length >= 2) {
+            for (int row = vertical[0]; row <= vertical[vertical.length - 1]; row++) {
+                setBlack(splitImage, width - 1, contentHeight - 1 - row + NINEPATCH_PADDING);
+            }
+        }
 
         return splitImage;
+    }
+
+    private static void setBlack(BufferedImage image, int x, int y) {
+        if (x < 0 || y < 0 || x >= image.getWidth() || y >= image.getHeight()) return;
+        image.setRGB(x, y, 0xFF000000);
     }
 
     public void saveImage(BufferedImage image, String path) {

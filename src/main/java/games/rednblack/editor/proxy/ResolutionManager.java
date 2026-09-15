@@ -88,7 +88,7 @@ public class ResolutionManager extends Proxy {
             int newWidth = Math.max(3, Math.round(sourceBufferedImage.getWidth() * ratio));
             int newHeight = Math.max(3, Math.round(sourceBufferedImage.getHeight() * ratio));
             String name = file.getName();
-            Integer[] patches = null;
+            NinePatchUtils.Patches patches = null;
             if (name.endsWith(EXTENSION_9PATCH)) {
                 patches = NinePatchUtils.findPatches(sourceBufferedImage);
                 sourceBufferedImage = NinePatchUtils.removePatches(sourceBufferedImage);

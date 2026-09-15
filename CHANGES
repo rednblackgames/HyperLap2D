@@ -7,6 +7,10 @@
 - Incremental atlas updates with repacks only when necessary
 - Asynchronous editor project loading
 - Z Ordering with drag and drop in Items Tree
+- 9-Patch images are now rendered with TenPatch: multiple stretch areas per axis, tiling with scrolling tiles, crush modes and corner gradients
+- New 9-Patch editor: rulers, zoom and pan, pixel grid, drag to create areas, live preview with tiling, crush and gradient settings
+- `.9.png` files with multiple stretch segments (Android format) are imported as ten patches
+- [BREAK CHANGE] Fork TenPatch into runtime codebase, `NinePatchComponent#ninePatch` replaced by `NinePatchComponent#tenPatch`
 - [BREAK CHANGE] Fork Artemis-ODB into runtime codebase
 - [BREAK CHANGE] Any reference to Artemis' World was changed to `Engine`
 - [BREAK CHANGE] Replaced Artemis Reflection with libGDX Reflection

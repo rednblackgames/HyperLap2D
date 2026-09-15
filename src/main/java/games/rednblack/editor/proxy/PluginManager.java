@@ -136,9 +136,9 @@ public class PluginManager extends Proxy implements PluginAPI {
 
     @Override
     public void saveProject() {
-        SceneDataManager sceneDataManager = facade.retrieveProxy(SceneDataManager.NAME);
+        ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         SceneVO vo = bridge.sceneVoFromItems();
-        sceneDataManager.saveScene(vo);
+        projectManager.saveCurrentProject(vo);
     }
 
     @Override

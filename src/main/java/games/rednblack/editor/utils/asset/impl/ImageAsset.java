@@ -99,6 +99,8 @@ public class ImageAsset extends Asset {
         }
 
         if (deleteSingleImage("orig", name)) {
+            if (projectManager.getCurrentProjectInfoVO().tenPatches != null)
+                projectManager.getCurrentProjectInfoVO().tenPatches.remove(name);
             postDeleteImage(root, name);
             return true;
         }

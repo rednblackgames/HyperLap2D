@@ -2,12 +2,16 @@ package games.rednblack.editor.plugin.ninepatch;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NinePatchComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
+import games.rednblack.editor.renderer.data.ProjectInfoVO;
+import games.rednblack.editor.renderer.data.ResolutionEntryVO;
+import games.rednblack.editor.renderer.data.TenPatchVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
+import games.rednblack.editor.renderer.tenpatch.TenPatchDrawable;
+import games.rednblack.editor.renderer.tenpatch.TenPatchUtils;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.puremvc.Mediator;
 import games.rednblack.puremvc.interfaces.INotification;
@@ -18,6 +22,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Created by azakhary on 8/18/2015.
@@ -55,7 +60,9 @@ public class MainPanelMediator extends Mediator<MainPanel> {
             case MainPanel.SAVE_CLICKED:
                 int entity = plugin.currEditingEntity;
                 NinePatchComponent ninePatchComponent = ComponentRetriever.get(entity, NinePatchComponent.class, plugin.getAPI().getEngine());
-                applyNewSplits(ninePatchComponent.textureRegionName, viewComponent.getSplits());
+                TextureAtlas.AtlasRegion region = plugin.getAPI().getProjectTextureRegion(ninePatchComponent.textureRegionName);
+                TenPatchVO vo = toOriginalResolution(viewComponent.getTenPatchVO(), region);
+                applyNewTenPatch(ninePatchComponent.textureRegionName, vo);
                 viewComponent.hide();
                 break;
         }
@@ -74,7 +81,8 @@ public class MainPanelMediator extends Mediator<MainPanel> {
         int[] pad = {0, 0, 0, 0};
         newRegion.names = new String[] {"split", "pad"};
         newRegion.values = new int[][] {splits, pad};
-        ninePatchComponent.ninePatch = new NinePatch(textureRegionComponent.region, 0, 0, 0, 0);
+        TenPatchVO vo = TenPatchUtils.fromSplits(splits, newRegion.originalWidth, newRegion.originalHeight);
+        ninePatchComponent.tenPatch = new TenPatchDrawable(vo.horizontalStretchAreas, vo.verticalStretchAreas, false, newRegion);
 
         //remove original image
         File originalImg = new File(plugin.getAPI().getProjectPath() + "/assets/orig/images/"+regionName+".png");
@@ -85,7 +93,7 @@ public class MainPanelMediator extends Mediator<MainPanel> {
 
         //save split data
         addSplitsToImageInAtlas(regionName, splits);
-        applyNewSplits(regionName, splits);
+        applyNewTenPatch(regionName, toOriginalResolution(vo, newRegion));
     }
 
     private void loadNinePatch() {
@@ -93,6 +101,33 @@ public class MainPanelMediator extends Mediator<MainPanel> {
         NinePatchComponent ninePatchComponent = ComponentRetriever.get(entity, NinePatchComponent.class, plugin.getAPI().getEngine());
         loadRegion(ninePatchComponent.textureRegionName);
         viewComponent.show(plugin.getAPI().getUIStage());
+    }
+
+    /**
+     * Ratio between the pixels of the resolution loaded in the editor and the original resolution. Stretch
+     * areas are stored in original resolution pixels while the plugin edits the loaded region.
+     */
+    private float loadedResolutionRatio() {
+        ProjectInfoVO projectInfo = plugin.getAPI().getCurrentProjectInfoVO();
+        String resolutionName = plugin.getAPI().getCurrentProjectVO().lastOpenResolution;
+        if (resolutionName == null || resolutionName.isEmpty() || resolutionName.equals("orig")) return 1f;
+        ResolutionEntryVO resolution = projectInfo.getResolution(resolutionName);
+        if (resolution == null) return 1f;
+        float multiplier = resolution.getMultiplier(projectInfo.originalResolution);
+        return multiplier == 0 ? 1f : 1f / multiplier;
+    }
+
+    /** Configuration of a region in pixels of the loaded resolution. */
+    private TenPatchVO toLoadedResolution(TenPatchVO vo, TextureAtlas.AtlasRegion region) {
+        return TenPatchUtils.scale(vo, loadedResolutionRatio(), region.originalWidth, region.originalHeight);
+    }
+
+    /** Configuration of a region in pixels of the original resolution. */
+    private TenPatchVO toOriginalResolution(TenPatchVO vo, TextureAtlas.AtlasRegion region) {
+        float ratio = loadedResolutionRatio();
+        int width = Math.round(region.originalWidth / ratio);
+        int height = Math.round(region.originalHeight / ratio);
+        return TenPatchUtils.scale(vo, 1f / ratio, width, height);
     }
 
     private void addSplitsToImageInAtlas(String textureRegionName, int[] splits) {
@@ -116,16 +151,24 @@ public class MainPanelMediator extends Mediator<MainPanel> {
         }
     }
 
-    private void applyNewSplits(String textureRegionName, int[] splits) {
+    /**
+     * Saves a configuration expressed in original resolution pixels: rewrites the {@code .9.png} of the
+     * original resolution, updates the atlas {@code split} entry with the outer stretch areas, stores the
+     * configuration in the project and reloads it.
+     */
+    private void applyNewTenPatch(String textureRegionName, TenPatchVO vo) {
         String atlasName = plugin.getAPI().getPackNameFromRegion(textureRegionName) + ".atlas";
         // first need to modify original image
         FileHandle packAtlas = Gdx.files.internal(plugin.getAPI().getProjectPath() + "/assets/orig/pack/" + atlasName);
         FileHandle imagesDir = Gdx.files.internal(plugin.getAPI().getProjectPath() + "/assets/orig/pack/");
         TextureAtlas.TextureAtlasData atlas = new TextureAtlas.TextureAtlasData(packAtlas, imagesDir, false);
-        BufferedImage finalImage = imageUtils.extractImage(atlas, textureRegionName, splits);
-        imageUtils.saveImage(finalImage, plugin.getAPI().getProjectPath() + "/assets/orig/images/"+textureRegionName+".9.png");
+        BufferedImage finalImage = imageUtils.extractImage(atlas, textureRegionName, vo);
+        if (finalImage != null) {
+            imageUtils.saveImage(finalImage, plugin.getAPI().getProjectPath() + "/assets/orig/images/" + textureRegionName + ".9.png");
+        }
 
         // now need to modify the pack
+        int[] splits = TenPatchUtils.toSplits(vo, finalImage == null ? 0 : finalImage.getWidth() - 2, finalImage == null ? 0 : finalImage.getHeight() - 2);
         String content = packAtlas.readString();
         int regionIndex = content.indexOf(textureRegionName);
         int splitStart = content.indexOf("split: ", regionIndex) + "split: ".length();
@@ -145,6 +188,12 @@ public class MainPanelMediator extends Mediator<MainPanel> {
             File test = new File(plugin.getAPI().getProjectPath() + "/assets/orig/pack/" + atlasName);
             writeFile(newContent, test);
         }
+
+        // store the ten patch configuration in the project, it has to be on disk before reloading
+        ProjectInfoVO projectInfo = plugin.getAPI().getCurrentProjectInfoVO();
+        if (projectInfo.tenPatches == null) projectInfo.tenPatches = new HashMap<>();
+        projectInfo.tenPatches.put(textureRegionName, new TenPatchVO(vo));
+        plugin.getAPI().saveProject();
 
         // reload
         plugin.getAPI().reLoadProject();
@@ -169,7 +218,12 @@ public class MainPanelMediator extends Mediator<MainPanel> {
     private void loadRegion(String name) {
         TextureAtlas.AtlasRegion region = plugin.getAPI().getProjectTextureRegion(name);
         validateNinePatchTextureRegion(region);
-        viewComponent.setTexture(region);
+        TenPatchVO vo = TenPatchUtils.getConfiguration(plugin.getAPI().getCurrentProjectInfoVO(), region);
+        if (plugin.getAPI().getCurrentProjectInfoVO().tenPatches != null
+                && plugin.getAPI().getCurrentProjectInfoVO().tenPatches.containsKey(name)) {
+            vo = toLoadedResolution(vo, region);
+        }
+        viewComponent.setTexture(region, vo);
     }
 
     private void validateNinePatchTextureRegion(TextureAtlas.AtlasRegion texture) {

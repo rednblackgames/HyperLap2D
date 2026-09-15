@@ -35,8 +35,8 @@ public class NinePatchStrategy extends AbstractTransformStrategy {
         float localDeltaW = visualDeltaW / sX;
         float localDeltaH = visualDeltaH / sY;
 
-        float minWidth = ninePatchComponent.ninePatch.getTotalWidth();
-        float minHeight = ninePatchComponent.ninePatch.getTotalHeight();
+        float minWidth = ninePatchComponent.tenPatch.getTotalWidth();
+        float minHeight = ninePatchComponent.tenPatch.getTotalHeight();
 
         float currentWidth = dimensionsComponent.width;
         float currentHeight = dimensionsComponent.height;

@@ -223,6 +223,7 @@ public class ProjectManager extends Proxy {
                 FileHandle projectInfoFile = Gdx.files.internal(prjInfoFilePath);
                 String projectInfoContents = FileUtils.readFileToString(projectInfoFile.file(), "utf-8");
                 currentProjectInfoVO = json.fromJson(ProjectInfoVO.class, projectInfoContents);
+                syncTenPatchesFromImages(projectPath);
                 projectExportSettings.setSettings(vo);
                 facade.sendNotification(SettingsDialog.ADD_SETTINGS, projectExportSettings);
                 livePreviewSettings.setSettings(vo);
@@ -397,8 +398,53 @@ public class ProjectManager extends Proxy {
         executor.shutdown();
     }
 
+    /**
+     * Keeps {@link ProjectInfoVO#tenPatches} in sync with the {@code .9.png} files of the original resolution,
+     * which are the source of truth for stretch areas: entries are (re)read for new files and for files modified
+     * after the last project save, and dropped when their file no longer exists. Tiling and crush mode are not
+     * part of the image and are preserved.
+     */
+    private void syncTenPatchesFromImages(String projectPath) {
+        File imagesDir = new File(projectPath + File.separator + IMAGE_DIR_PATH);
+        if (!imagesDir.isDirectory()) return;
+        File[] files = imagesDir.listFiles((dir, name) -> name.endsWith(".9.png"));
+        if (files == null) return;
+
+        if (currentProjectInfoVO.tenPatches == null) currentProjectInfoVO.tenPatches = new HashMap<>();
+        long lastSave = new File(projectPath + "/project.dt").lastModified();
+
+        java.util.HashSet<String> existing = new java.util.HashSet<>();
+        for (File file : files) {
+            String regionName = file.getName().substring(0, file.getName().length() - ".9.png".length());
+            existing.add(regionName);
+            if (currentProjectInfoVO.tenPatches.containsKey(regionName) && file.lastModified() <= lastSave) continue;
+            registerTenPatch(regionName, file);
+        }
+        currentProjectInfoVO.tenPatches.keySet().retainAll(existing);
+    }
+
+    /**
+     * Reads the stretch areas of a {@code .9.png} file into {@link ProjectInfoVO#tenPatches}. Everything an
+     * existing entry defines beyond the areas (tiling, offsets, crush mode, gradient) is kept.
+     */
+    public void registerTenPatch(String regionName, File ninePatchFile) {
+        TenPatchVO fromFile = games.rednblack.editor.utils.NinePatchUtils.readTenPatchVO(ninePatchFile);
+        if (fromFile == null) return;
+        if (currentProjectInfoVO.tenPatches == null) currentProjectInfoVO.tenPatches = new HashMap<>();
+        TenPatchVO current = currentProjectInfoVO.tenPatches.get(regionName);
+        TenPatchVO vo = current == null ? fromFile : new TenPatchVO(current);
+        vo.horizontalStretchAreas = fromFile.horizontalStretchAreas;
+        vo.verticalStretchAreas = fromFile.verticalStretchAreas;
+        currentProjectInfoVO.tenPatches.put(regionName, vo);
+    }
+
     public void copyImageFilesForAllResolutionsIntoProject(Array<FileHandle> files, Boolean performResize, ProgressHandler handler) {
         copyImageFilesIntoProject(files, currentProjectInfoVO.originalResolution, performResize, handler);
+        for (FileHandle handle : files) {
+            if (handle.name().endsWith(".9.png")) {
+                registerTenPatch(handle.nameWithoutExtension().replace(".9", ""), handle.file());
+            }
+        }
         int totalWarnings = 0;
         for (int i = 0; i < currentProjectInfoVO.resolutions.size; i++) {
             ResolutionEntryVO resolutionEntryVO = currentProjectInfoVO.resolutions.get(i);

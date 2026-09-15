@@ -152,6 +152,7 @@ dependencies {
 }
 
 task generateJsonSchema(type: JavaExec) {
+    dependsOn ':hyperlap2d-runtime-libgdx:dist', ':h2d-libgdx-spine-extension:dist'
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'games.rednblack.editor.tools.SchemaGeneratorTool'
 }

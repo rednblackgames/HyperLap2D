@@ -79,6 +79,7 @@ public class AboutDialog extends H2DDialog {
         contentTable.add(new LinkLabel("- TextraTypist [https://github.com/tommyettinger/textratypist]", "https://github.com/tommyettinger/textratypist")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Shape Drawer [https://github.com/earlygrey/shapedrawer]", "https://github.com/earlygrey/shapedrawer")).padLeft(6).left().row();
         contentTable.add(new LinkLabel("- Talos VFX [https://github.com/rockbite/talos]", "https://github.com/rockbite/talos")).padLeft(6).left().row();
+        contentTable.add(new LinkLabel("- TenPatch [https://github.com/raeleus/TenPatch]", "https://github.com/raeleus/TenPatch")).padLeft(6).left().row();
         contentTable.add("\n").row();
         VisTable legalTable = new VisTable();
         legalTable.add(new LinkLabel("See Contributors list", "https://github.com/rednblackgames/HyperLap2D/blob/master/AUTHORS"));

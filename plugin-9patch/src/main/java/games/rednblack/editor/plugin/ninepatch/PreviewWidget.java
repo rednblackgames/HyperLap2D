@@ -1,79 +1,125 @@
 package games.rednblack.editor.plugin.ninepatch;
 
-import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import games.rednblack.editor.renderer.data.TenPatchVO;
+import games.rednblack.editor.renderer.tenpatch.TenPatchDrawable;
+import games.rednblack.editor.renderer.tenpatch.TenPatchUtils;
+import space.earlygrey.shapedrawer.ShapeDrawer;
 
 /**
+ * Shows the ten patch at three sizes over a checkerboard: a wide bar, a tall bar and a free box whose
+ * size the user controls, to see stretching, tiling, crush modes and gradients at work. Tiles scroll
+ * when a speed is set, exactly like at runtime.
+ *
  * Created by azakhary on 8/19/2015.
  */
 public class PreviewWidget extends Group {
 
+    private static final float BAR = 44f;
+    private static final float GAP = 6f;
+    private static final Color OUTLINE = new Color(1f, 1f, 1f, 0.18f);
+
+    private ShapeDrawer sd;
+    private final Color tmp = new Color();
+
     private TextureAtlas.AtlasRegion region;
+    private TenPatchVO vo;
+    private float customWidthFactor = 1f;
+    private float customHeightFactor = 1f;
 
-    float horizontalHeight, horizontalWidth;
-    float verticalHeight, verticalWidth;
-    float squareWidth, squareHeight;
-
-    private Image horizontal, vertical, square;
+    private final Image wide = new Image();
+    private final Image tall = new Image();
+    private final Image custom = new Image();
 
     public PreviewWidget() {
-        horizontalWidth = 200f;
-        horizontalHeight = 50f;
-
-        verticalWidth = 50f;
-        verticalHeight = 150f;
-
-        squareWidth = 145f;
-        squareHeight = 150f;
+        setTransform(false);
+        addActor(wide);
+        addActor(tall);
+        addActor(custom);
     }
 
-    public void update(TextureAtlas.AtlasRegion region, int[] splits) {
+    /**
+     * @param region graphic to preview
+     * @param vo     configuration in pixels of {@code region}
+     */
+    public void update(TextureAtlas.AtlasRegion region, TenPatchVO vo) {
         this.region = region;
-        clear();
-        NinePatch horizontalPatch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
-        NinePatch verticalPatch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
-        NinePatch squarePatch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
-
-        float minSclH = getMinScale(horizontalPatch, horizontalWidth, horizontalHeight);
-        float minSclV = getMinScale(verticalPatch, verticalWidth, verticalHeight);
-        float minSclS = getMinScale(squarePatch, squareWidth, squareHeight);
-
-        float minScl = Math.min(minSclH, minSclV);
-        minScl = Math.min(minScl, minSclS);
-
-        horizontal = fitNinePatch(horizontalPatch, horizontalWidth, horizontalHeight, minScl);
-        addActor(horizontal);
-
-        vertical = fitNinePatch(verticalPatch, verticalWidth, verticalHeight, minScl);
-        addActor(vertical);
-
-        square = fitNinePatch(squarePatch, squareWidth, squareHeight, minScl);
-        addActor(square);
-
-        horizontal.setY(getHeight() - horizontalHeight);
-        vertical.setY(horizontal.getY() - verticalHeight - 5);
-        square.setX(verticalWidth + 5);
-        square.setY(vertical.getY());
+        this.vo = vo;
+        rebuild();
     }
 
-    private float getMinScale(NinePatch horizontalPatch, float width, float height) {
-        float scaleX = width/horizontalPatch.getTotalWidth();
-        float scaleY = height/horizontalPatch.getTotalHeight();
-        float scl = Math.min(scaleX, scaleY);
-        if(scl > 1f) scl = 1f;
-
-        return scl;
+    /** Size of the free box as a fraction of the room it has, 0..1 on both axes. */
+    public void setCustomSize(float widthFactor, float heightFactor) {
+        customWidthFactor = widthFactor;
+        customHeightFactor = heightFactor;
+        rebuild();
     }
 
-    private Image fitNinePatch(NinePatch horizontalPatch, float width, float height, float scl) {
-        horizontalPatch.scale(scl, scl);
+    @Override
+    protected void sizeChanged() {
+        super.sizeChanged();
+        rebuild();
+    }
 
-        Image img = new Image(horizontalPatch);
-        img.setScaleX(width / horizontalPatch.getTotalWidth());
-        img.setScaleY(height / horizontalPatch.getTotalHeight());
+    private void rebuild() {
+        if (region == null || vo == null || getWidth() <= 0 || getHeight() <= 0) return;
 
-        return img;
+        float slotWidth = getWidth() - BAR - GAP;
+        float slotHeight = getHeight() - BAR - GAP;
+
+        // the graphic is shown at one scale everywhere: the one that lets the free box hold it whole
+        float scale = Math.min(1f, Math.min(slotWidth / region.originalWidth, slotHeight / region.originalHeight));
+
+        wide.setDrawable(createDrawable(scale));
+        wide.setBounds(0, getHeight() - BAR, getWidth(), BAR);
+
+        tall.setDrawable(createDrawable(scale));
+        tall.setBounds(0, 0, BAR, slotHeight);
+
+        float customWidth = Math.max(1f, slotWidth * customWidthFactor);
+        float customHeight = Math.max(1f, slotHeight * customHeightFactor);
+        custom.setDrawable(createDrawable(scale));
+        custom.setBounds(BAR + GAP + (slotWidth - customWidth) / 2f, (slotHeight - customHeight) / 2f, customWidth, customHeight);
+    }
+
+    private Drawable createDrawable(float scale) {
+        TenPatchDrawable drawable = TenPatchUtils.createDrawable(region, vo);
+        TenPatchUtils.scaleDrawable(drawable, scale, scale);
+        return drawable;
+    }
+
+    @Override
+    protected void setStage(Stage stage) {
+        super.setStage(stage);
+        if (stage != null) {
+            sd = new ShapeDrawer(stage.getBatch(), EditingZone.whiteRegion());
+        }
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        if (sd != null && region != null) {
+            sd.update();
+            float alpha = parentAlpha * getColor().a;
+            drawBackdrop(wide, alpha);
+            drawBackdrop(tall, alpha);
+            drawBackdrop(custom, alpha);
+        }
+        super.draw(batch, parentAlpha);
+    }
+
+    private void drawBackdrop(Image image, float alpha) {
+        float x = getX() + image.getX(), y = getY() + image.getY();
+        EditingZone.drawCheckerboard(sd, x, y, image.getWidth(), image.getHeight(), alpha);
+        tmp.set(OUTLINE);
+        tmp.a *= alpha;
+        sd.setColor(tmp);
+        sd.rectangle(x, y, image.getWidth(), image.getHeight(), 1f);
     }
 }

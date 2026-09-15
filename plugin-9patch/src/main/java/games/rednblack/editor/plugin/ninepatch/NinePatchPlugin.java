@@ -11,9 +11,10 @@ import java.util.Set;
 
 /**
  * Created by azakhary on 8/18/2015.
- * Plugin to edit Nine Patch data on imported texture region
+ * Plugin to edit Nine Patch data on imported texture region: stretch areas (multiple per axis, TenPatch style),
+ * tiling with tile offset and scroll speed, crush mode and corner gradient.
  */
-@Implementation(authors = "azakhary", version = "0.0.1")
+@Implementation(authors = "azakhary", version = "0.1.0")
 public class NinePatchPlugin extends H2DPluginAdapter {
     public static final String CLASS_NAME = "games.rednblack.editor.plugin.ninepatch.NinePatchPlugin";
 
