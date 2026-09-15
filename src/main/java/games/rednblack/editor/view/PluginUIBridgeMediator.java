@@ -2,6 +2,7 @@ package games.rednblack.editor.view;
 import games.rednblack.editor.proxy.SelectionProxy;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import games.rednblack.editor.proxy.PluginUIBridge;
@@ -84,9 +85,22 @@ public class PluginUIBridgeMediator extends Mediator<Object> implements PluginUI
     }
 
     @Override
+    public void setDropDownItemName(String action, String name, Drawable icon) {
+        UIDropDownMenuMediator dropDownMenuMediator = facade.retrieveMediator(UIDropDownMenuMediator.NAME);
+        UIDropDownMenu dropDownMenu = dropDownMenuMediator.getViewComponent();
+        dropDownMenu.setActionName(action, name);
+        dropDownMenu.setActionIcon(action, icon);
+    }
+
+    @Override
     public void addMenuItem(String menu, String subMenuName, String notificationName) {
+        addMenuItem(menu, subMenuName, notificationName, null);
+    }
+
+    @Override
+    public void addMenuItem(String menu, String subMenuName, String notificationName, Drawable icon) {
         HyperLap2DMenuBarMediator hyperlap2DMenuBarMediator = facade.retrieveMediator(HyperLap2DMenuBarMediator.NAME);
-        hyperlap2DMenuBarMediator.addMenuItem(menu, subMenuName, notificationName);
+        hyperlap2DMenuBarMediator.addMenuItem(menu, subMenuName, notificationName, icon);
     }
 
     @Override

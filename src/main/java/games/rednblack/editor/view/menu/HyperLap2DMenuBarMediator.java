@@ -19,6 +19,7 @@
 package games.rednblack.editor.view.menu;
 import games.rednblack.editor.proxy.PluginUIBridge;
 
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import games.rednblack.editor.HyperLap2DApp;
@@ -222,7 +223,7 @@ public class HyperLap2DMenuBarMediator extends Mediator<HyperLap2DMenuBar> {
         viewComponent.reInitRecent(prefs.getRecentHistory());
     }
 
-    public void addMenuItem(String menu, String subMenuName, String notificationName) {
-        viewComponent.addMenuItem(menu, subMenuName, notificationName);
+    public void addMenuItem(String menu, String subMenuName, String notificationName, Drawable icon) {
+        viewComponent.addMenuItem(menu, subMenuName, notificationName, icon);
     }
 }

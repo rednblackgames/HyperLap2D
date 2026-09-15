@@ -76,7 +76,9 @@ public class AtlasAsset extends Asset {
 
                 for (FileHandle image : images) {
                     String regionName = image.nameWithoutExtension().replace(".9", "");
-                    if (sequences.containsKey(sequenceName(regionName))) continue;
+                    // ObjectMap rejects null keys, and most regions have no sequence suffix at all
+                    String sequence = sequenceName(regionName);
+                    if (sequence != null && sequences.containsKey(sequence)) continue;
                     texturePackVO.regions.add(regionName);
                 }
             }
@@ -84,7 +86,9 @@ public class AtlasAsset extends Asset {
             resolutionManager.rePackProjectImagesForAllResolutionsSync(false);
 
             Gdx.app.postRunnable(() -> facade.sendNotification(MsgAPI.UPDATE_ATLAS_PACK_LIST));
-        } catch (IOException e) {
+        } catch (Exception e) {
+            // Any failure here leaves the project half imported (files copied, packs not rebuilt):
+            // it must reach the console and the import dialog instead of silently killing the worker.
             e.printStackTrace();
             progressHandler.progressFailed();
         }

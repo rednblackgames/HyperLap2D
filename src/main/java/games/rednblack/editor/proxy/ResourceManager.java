@@ -627,8 +627,13 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                     if (regions.size > 0)
                         break;
                 }
-                if (regions != null)
+                if (regions != null && regions.size > 0) {
                     loaded.put(animName, regions);
+                } else {
+                    // A folder left behind by an interrupted import has no frames in any pack: listing it
+                    // would crash the animations tab (Animation with zero key frames divides by zero).
+                    System.err.println("Sprite animation '" + animName + "' has no frames in any project atlas, skipping it");
+                }
             }
         }
         return loaded;

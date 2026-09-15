@@ -4,6 +4,10 @@ plugins {
 
 group 'games.rednblack'
 
+ext {
+    pack = ["assets/textures", "assets/pack/", "ninepatch"]
+}
+
 repositories {
     mavenCentral()
     maven { url "https://central.sonatype.com/repository/maven-snapshots/" }
@@ -25,6 +29,23 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.tools.texturepacker.TexturePacker
+
+task packTextures {
+    TexturePacker.Settings settings = new TexturePacker.Settings()
+    settings.legacyOutput = false
+    settings.filterMin = Texture.TextureFilter.Linear
+    settings.filterMag = Texture.TextureFilter.Linear
+    settings.duplicatePadding = true
+    if (project.ext.has('pack')) {
+        logger.info "Calling TexturePacker: " + pack
+        TexturePacker.processIfModified(settings, file(pack[0]).absolutePath, file(pack[1]).absolutePath, pack[2] as String)
+    }
+}
+
+project.ext.assetsDir = new File("assets/pack");
+
 compileJava {
     dependsOn ':hyperlap2d-runtime-libgdx:dist'
 }
@@ -33,6 +54,7 @@ task dist(type: Jar) {
     dependsOn classes
     from files(sourceSets.main.output.classesDirs)
     from files(sourceSets.main.output.resourcesDir)
+    from files(project.assetsDir)
 
     destinationDirectory = file("../distBuild/lib/plugins")
 

@@ -23,6 +23,8 @@ public class UIDropDownMenu extends H2DPopupMenu {
     private final HashMap<String, String> actionNames = new HashMap<>();
     /** action constant -> skin region used as its context-menu icon (shared with the top menu bar). */
     private final HashMap<String, String> actionIcons = new HashMap<>();
+    /** action constant -> drawable supplied directly (plugins shipping their own atlas); wins over {@link #actionIcons}. */
+    private final HashMap<String, Drawable> actionDrawables = new HashMap<>();
 
     public UIDropDownMenu() {
         actionNames.put(MsgAPI.ACTION_GROUP_ITEMS, "Wrap into composite");
@@ -104,6 +106,11 @@ public class UIDropDownMenu extends H2DPopupMenu {
         actionNames.put(action, name);
     }
 
+    public void setActionIcon(String action, Drawable icon) {
+        if (icon == null) actionDrawables.remove(action);
+        else actionDrawables.put(action, icon);
+    }
+
     public void setActionList(Array<String> actions) {
         currentActionList.clear();
         currentActionList.addAll(actions);
@@ -122,7 +129,8 @@ public class UIDropDownMenu extends H2DPopupMenu {
         for (int i = 0; i < currentActionList.size; i++) {
             String action = currentActionList.get(i);
             String itemName = actionNames.get(action);
-            Drawable itemIcon = icon(actionIcons.get(action));
+            Drawable itemIcon = actionDrawables.get(action);
+            if (itemIcon == null) itemIcon = icon(actionIcons.get(action));
             MenuItem menuItem = itemIcon != null
                     ? new MenuItem(itemName, itemIcon, new MenuItemListener(ITEM_CLICKED, action))
                     : new MenuItem(itemName, new MenuItemListener(ITEM_CLICKED, action));

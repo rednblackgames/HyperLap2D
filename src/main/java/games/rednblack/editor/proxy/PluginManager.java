@@ -21,6 +21,7 @@ package games.rednblack.editor.proxy;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import games.rednblack.editor.controller.commands.PluginItemCommand;
@@ -108,6 +109,11 @@ public class PluginManager extends Proxy implements PluginAPI {
     }
 
     @Override
+    public void setDropDownItemName(String action, String name, Drawable icon) {
+        bridge.setDropDownItemName(action, name, icon);
+    }
+
+    @Override
     public String getProjectPath() {
         ProjectManager projectManager = facade.retrieveProxy(ProjectManager.NAME);
         return projectManager.getCurrentProjectPath();
@@ -154,6 +160,11 @@ public class PluginManager extends Proxy implements PluginAPI {
 
     public void addMenuItem(String menu, String subMenuName, String notificationName) {
         bridge.addMenuItem(menu, subMenuName, notificationName);
+    }
+
+    @Override
+    public void addMenuItem(String menu, String subMenuName, String notificationName, Drawable icon) {
+        bridge.addMenuItem(menu, subMenuName, notificationName, icon);
     }
 
     @Override

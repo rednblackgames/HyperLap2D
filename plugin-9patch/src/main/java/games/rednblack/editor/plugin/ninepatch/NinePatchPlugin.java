@@ -1,5 +1,9 @@
 package games.rednblack.editor.plugin.ninepatch;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
@@ -7,6 +11,11 @@ import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.h2d.common.plugins.H2DPluginAdapter;
 import net.mountainblade.modular.annotations.Implementation;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Set;
 
 /**
@@ -21,7 +30,11 @@ public class NinePatchPlugin extends H2DPluginAdapter {
     public static final String EDIT_NINE_PATCH = CLASS_NAME + ".EDIT_NINE_PATCH";
     public static final String CONVERT_TO_NINE_PATCH = CLASS_NAME + ".CONVERT_TO_NINE_PATCH";
 
+    /** Base name of the atlas packed from {@code assets/textures} and bundled in the plugin jar. */
+    private static final String ATLAS_NAME = "ninepatch";
+
     private MainPanelMediator performancePanelMediator;
+    private TextureAtlas pluginAtlas;
 
     public int currEditingEntity;
 
@@ -33,8 +46,41 @@ public class NinePatchPlugin extends H2DPluginAdapter {
     public void initPlugin() {
         performancePanelMediator = new MainPanelMediator(this);
         facade.registerMediator(performancePanelMediator);
-        pluginAPI.setDropDownItemName(EDIT_NINE_PATCH, "Edit NinePatch");
-        pluginAPI.setDropDownItemName(CONVERT_TO_NINE_PATCH, "Convert to NinePatch");
+        loadPluginAtlas();
+        pluginAPI.setDropDownItemName(EDIT_NINE_PATCH, "Edit NinePatch", icon("icon-menu-ninepatch"));
+        pluginAPI.setDropDownItemName(CONVERT_TO_NINE_PATCH, "Convert to NinePatch", icon("icon-menu-ninepatch-convert"));
+    }
+
+    /**
+     * The plugin jar is loaded by its own class loader, so libGDX cannot open the atlas as a classpath file:
+     * copy atlas + page to the editor cache dir first (same approach as the Tiled plugin).
+     */
+    private void loadPluginAtlas() {
+        try {
+            FileHandle atlasFile = extractResource(ATLAS_NAME + ".atlas");
+            extractResource(ATLAS_NAME + ".png");
+            pluginAtlas = new TextureAtlas(atlasFile);
+        } catch (IOException | RuntimeException e) {
+            e.printStackTrace();
+            pluginAtlas = null;
+        }
+    }
+
+    private FileHandle extractResource(String fileName) throws IOException {
+        File target = new File(pluginAPI.getCacheDir(), fileName);
+        try (InputStream in = getClass().getResourceAsStream("/" + fileName)) {
+            if (in == null) throw new IOException("Missing plugin resource: " + fileName);
+            Files.copy(in, target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        target.deleteOnExit();
+        return new FileHandle(target);
+    }
+
+    /** @return drawable for a region of the plugin atlas, or null (text-only menu item) when unavailable */
+    private Drawable icon(String region) {
+        if (pluginAtlas == null) return null;
+        TextureAtlas.AtlasRegion atlasRegion = pluginAtlas.findRegion(region);
+        return atlasRegion == null ? null : new TextureRegionDrawable(atlasRegion);
     }
 
     @Override

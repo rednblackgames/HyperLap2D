@@ -1,0 +1,7 @@
+ninepatch.png
+	size: 64, 32
+	filter: Linear, Linear
+icon-menu-ninepatch
+	bounds: 1, 1, 22, 22
+icon-menu-ninepatch-convert
+	bounds: 25, 1, 22, 22

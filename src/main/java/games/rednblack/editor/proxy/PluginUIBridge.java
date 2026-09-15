@@ -1,6 +1,7 @@
 package games.rednblack.editor.proxy;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.data.SceneVO;
@@ -43,7 +44,11 @@ public interface PluginUIBridge {
 
     void setDropDownItemName(String action, String name);
 
+    void setDropDownItemName(String action, String name, Drawable icon);
+
     void addMenuItem(String menu, String subMenuName, String notificationName);
+
+    void addMenuItem(String menu, String subMenuName, String notificationName, Drawable icon);
 
     void addTool(String toolName, VisImageButton.VisImageButtonStyle style, boolean addSeparator, Tool tool);
 

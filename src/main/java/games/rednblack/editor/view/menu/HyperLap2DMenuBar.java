@@ -18,6 +18,7 @@
 
 package games.rednblack.editor.view.menu;
 
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import games.rednblack.editor.event.MenuItemListener;
@@ -66,26 +67,20 @@ public class HyperLap2DMenuBar extends CustomMenuBar {
         }
     }
 
-    public void addMenuItem(String menu, String subMenuName, String notificationName) {
-        if(menu.equals(MenuAPI.FILE_MENU)) {
-            fileMenu.addSeparator();
-            fileMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
-        }
-        if(menu.equals(MenuAPI.EDIT_MENU)) {
-            editMenu.addSeparator();
-            editMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
-        }
-        if(menu.equals(MenuAPI.RESOURCE_MENU)) {
-            resourcesMenu.addSeparator();
-            resourcesMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
-        }
-        if(menu.equals(MenuAPI.WINDOW_MENU)) {
-            windowMenu.addSeparator();
-            windowMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
-        }
-        if(menu.equals(MenuAPI.HELP_MENU)) {
-            helpMenu.addSeparator();
-            helpMenu.addItem(new MenuItem(subMenuName, new MenuItemListener(notificationName, null, menu)));
-        }
+    public void addMenuItem(String menu, String subMenuName, String notificationName, Drawable icon) {
+        H2DMenu target = null;
+        if (menu.equals(MenuAPI.FILE_MENU)) target = fileMenu;
+        if (menu.equals(MenuAPI.EDIT_MENU)) target = editMenu;
+        if (menu.equals(MenuAPI.RESOURCE_MENU)) target = resourcesMenu;
+        if (menu.equals(MenuAPI.WINDOW_MENU)) target = windowMenu;
+        if (menu.equals(MenuAPI.HELP_MENU)) target = helpMenu;
+        if (target == null) return;
+
+        MenuItemListener listener = new MenuItemListener(notificationName, null, menu);
+        MenuItem item = icon != null
+                ? new MenuItem(subMenuName, icon, listener)
+                : new MenuItem(subMenuName, listener);
+        target.addSeparator();
+        target.addItem(item);
     }
 }
