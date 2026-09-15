@@ -65,7 +65,7 @@ public class UIActionsTab extends UIResourcesTab {
     @Override
     protected VisScrollPane crateScrollPane() {
         list = new VisTable();
-        return StandardWidgetsFactory.createScrollPane(list);
+        return createListScrollPane(list);
     }
 
     @Override
@@ -87,9 +87,10 @@ public class UIActionsTab extends UIResourcesTab {
     public void setItems(Array<DraggableResource> items, boolean filtered) {
         list.clear();
         if (items.size == 0) {
-            showEmptyHint(list, filtered);
+            showEmptyHint(filtered);
             return;
         }
+        showItemsTable();
         for (DraggableResource box : items) {
             list.add((Actor) box.getViewComponent()).expandX().fillX();
             list.row();

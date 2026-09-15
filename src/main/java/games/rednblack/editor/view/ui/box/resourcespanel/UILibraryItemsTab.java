@@ -23,7 +23,6 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by azakhary on 4/17/2015.
@@ -45,7 +44,7 @@ public class UILibraryItemsTab extends UIResourcesTab {
     @Override
     protected VisScrollPane crateScrollPane() {
         list = new VisTable();
-        return StandardWidgetsFactory.createScrollPane(list);
+        return createListScrollPane(list);
     }
 
     @Override
@@ -67,9 +66,10 @@ public class UILibraryItemsTab extends UIResourcesTab {
     public void setItems(Array<DraggableResource> items, boolean filtered) {
         list.clear();
         if (items.size == 0) {
-            showEmptyHint(list, filtered);
+            showEmptyHint(filtered);
             return;
         }
+        showItemsTable();
         for (DraggableResource box : items) {
             list.add((Actor) box.getViewComponent()).expandX().fillX();
             list.row();

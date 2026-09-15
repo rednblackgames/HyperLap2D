@@ -26,6 +26,16 @@ public abstract class UIResourcesTab extends ImageTab {
 
     protected final VisTable contentTable;
 
+    /**
+     * Content of the scroll pane: shows either the items table or the empty placeholder, never
+     * both. Keeping the placeholder out of the items table matters because
+     * {@link games.rednblack.editor.view.ui.BoxItemResourceSelectionUIMediator} treats every cell
+     * of the tables registered for selection management as a resource box.
+     */
+    private final VisTable listRoot = new VisTable();
+
+    private VisTable itemsTable;
+
     public String searchString = "";
 
     public UIResourcesTab() {
@@ -86,13 +96,32 @@ public abstract class UIResourcesTab extends ImageTab {
     protected abstract String getEmptyHint();
 
     /**
-     * Fills the list table with a placeholder instead of thumbnails.
+     * Builds the scroll pane every tab shows, wrapping the table that holds the resource boxes so
+     * that the empty placeholder can take its place without ever becoming one of its cells.
+     */
+    protected VisScrollPane createListScrollPane(VisTable itemsTable) {
+        this.itemsTable = itemsTable;
+        listRoot.left().top();
+        listRoot.add(itemsTable).growX();
+        return StandardWidgetsFactory.createScrollPane(listRoot);
+    }
+
+    /**
+     * Shows a placeholder in place of the items table.
      * @param filtered true when assets exist but the search text or active filters hide them all
      */
-    protected void showEmptyHint(VisTable target, boolean filtered) {
+    protected void showEmptyHint(boolean filtered) {
         EmptyResourcesHint hint = filtered
                 ? new EmptyResourcesHint("icon-empty-search", "Nothing matches", "Change the search text or the active filters")
                 : new EmptyResourcesHint(getEmptyIconRegion(), getEmptyTitle(), getEmptyHint());
-        target.add(hint).growX();
+        listRoot.clearChildren();
+        listRoot.add(hint).growX();
+    }
+
+    /** Brings the items table back, dropping any placeholder currently shown. */
+    protected void showItemsTable() {
+        if (itemsTable.getParent() == listRoot) return;
+        listRoot.clearChildren();
+        listRoot.add(itemsTable).growX();
     }
 }

@@ -24,7 +24,6 @@ import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.view.ui.box.UIResourcesBoxMediator;
 import games.rednblack.editor.view.ui.box.resourcespanel.draggable.DraggableResource;
-import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
 
 /**
@@ -43,7 +42,7 @@ public class UIImagesTab extends UIResourcesTab {
         imagesTable = new VisTable();
         imagesTable.left();
         Facade.getInstance().sendNotification(UIResourcesBoxMediator.ADD_RESOURCES_BOX_TABLE_SELECTION_MANAGEMENT, imagesTable);
-        return StandardWidgetsFactory.createScrollPane(imagesTable);
+        return createListScrollPane(imagesTable);
     }
 
     @Override
@@ -75,9 +74,10 @@ public class UIImagesTab extends UIResourcesTab {
     public void setThumbnailBoxes(Array<DraggableResource> draggableResources, boolean filtered) {
         imagesTable.clearChildren();
         if (draggableResources.size == 0) {
-            showEmptyHint(imagesTable, filtered);
+            showEmptyHint(filtered);
             return;
         }
+        showItemsTable();
         for (int i = 0; i < draggableResources.size; i++) {
             DraggableResource draggableResource = draggableResources.get(i);
 
