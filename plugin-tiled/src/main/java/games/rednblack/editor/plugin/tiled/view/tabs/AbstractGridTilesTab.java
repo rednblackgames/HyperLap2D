@@ -1,13 +1,11 @@
 package games.rednblack.editor.plugin.tiled.view.tabs;
 
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisImageButton;
-import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 
@@ -18,6 +16,7 @@ import games.rednblack.editor.plugin.tiled.manager.ResourcesManager;
 import games.rednblack.editor.plugin.tiled.view.SpineDrawable;
 import games.rednblack.editor.plugin.tiled.view.tabs.listener.GridTabInputListener;
 import games.rednblack.editor.renderer.factory.EntityFactory;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.extension.spine.SpineItemType;
 
@@ -61,7 +60,7 @@ public abstract class AbstractGridTilesTab<T extends TextureRegionVO> extends De
                     .padBottom(6)
                     .padTop(10)
                     .row();
-            content.add(new VisLabel("Drop an image from resources box"))
+            content.add(PropertyGrid.text("Drop an image from the resources box"))
                     .expandX()
                     .center()
                     .padBottom(5);
@@ -146,15 +145,17 @@ public abstract class AbstractGridTilesTab<T extends TextureRegionVO> extends De
             tilesCount = tileIndex + 1;
         }
 
+        NinePatchDrawable inactive = new NinePatchDrawable(resourcesManager.getPluginNinePatch("tile-box-inactive"));
+        NinePatchDrawable over = new NinePatchDrawable(resourcesManager.getPluginNinePatch("tile-box-over"));
+        NinePatchDrawable active = new NinePatchDrawable(resourcesManager.getPluginNinePatch("tile-box-active"));
         for (int i = 0; i < tilesCount + 1; i++) {
             VisImageButton ct;
             VisImageButton.VisImageButtonStyle imageBoxStyle = new VisImageButton.VisImageButtonStyle();
-            NinePatchDrawable inactive = new NinePatchDrawable(new NinePatch(resourcesManager.getPluginNinePatch("image-Box-inactive")));
-            NinePatchDrawable active = new NinePatchDrawable(new NinePatch(resourcesManager.getPluginNinePatch("image-Box-active")));
             imageBoxStyle.up = inactive;
             imageBoxStyle.down = active;
             imageBoxStyle.checked = active;
-            imageBoxStyle.over = active;
+            imageBoxStyle.over = over;
+            imageBoxStyle.checkedOver = active;
             Drawable tileDrawable = null;
             if (i < savedTiles.size) {
                 int t =  savedTiles.get(i).getEntityType();

@@ -4,22 +4,34 @@ tiled.png
 icon-menu-tile-alternatives
 	bounds: 1, 1, 22, 22
 icon-menu-tile-grid-size
-	bounds: 435, 101, 22, 22
+	bounds: 479, 101, 22, 22
 icon-menu-tile-offset
 	bounds: 25, 1, 22, 22
 icon-menu-tileset-import
-	bounds: 435, 77, 22, 22
-image-Box-active
-	bounds: 435, 71, 4, 4
-	split: 1, 1, 1, 1
-image-Box-inactive
-	bounds: 459, 95, 4, 4
-	split: 1, 1, 1, 1
+	bounds: 49, 1, 22, 22
+tile-box-active
+	bounds: 435, 49, 14, 14
+	split: 3, 3, 3, 3
+	pad: 2, 2, 2, 2
+tile-box-inactive
+	bounds: 457, 79, 14, 14
+	split: 3, 3, 3, 3
+	pad: 2, 2, 2, 2
+tile-box-over
+	bounds: 121, 9, 14, 14
+	split: 3, 3, 3, 3
+	pad: 2, 2, 2, 2
+tiled-tab-auto
+	bounds: 435, 95, 20, 28
+tiled-tab-settings
+	bounds: 435, 65, 20, 28
+tiled-tab-tiles
+	bounds: 457, 95, 20, 28
 tiles-drop-here-normal
 	bounds: 1, 25, 215, 98
 tiles-drop-here-over
 	bounds: 218, 25, 215, 98
 tool-tilebrush
-	bounds: 459, 101, 22, 22
+	bounds: 73, 1, 22, 22
 tool-tileeraser
-	bounds: 49, 1, 22, 22
+	bounds: 97, 1, 22, 22

@@ -18,6 +18,11 @@ public class GridTilesTab extends AbstractGridTilesTab<TileVO> {
     }
 
     @Override
+    public String getTabIconStyle() {
+        return TiledPlugin.TAB_STYLE_TILES;
+    }
+
+    @Override
 	protected Array<TileVO> initSavedTiles() {
     	return tiledPlugin.dataToSave.getTiles();
     }

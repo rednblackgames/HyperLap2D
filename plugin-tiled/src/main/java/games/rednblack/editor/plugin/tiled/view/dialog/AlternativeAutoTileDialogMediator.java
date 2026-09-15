@@ -40,14 +40,10 @@ public class AlternativeAutoTileDialogMediator extends Mediator<AlternativeAutoT
                 viewComponent.show(tiledPlugin.getAPI().getUIStage());
             	break;
             case TiledPlugin.ACTION_SAVE_ALTERNATIVES_AUTO_TILE:
+				// the tile itself first, then the chosen alternatives, weights as typed: normalised below
 				viewComponent.openingAutoTileVO.alternativeAutoTileList.clear();
-				
-				AlternativeAutoTileVO alternativeAutoTileVO = new AlternativeAutoTileVO(viewComponent.openingAutoTileVO.regionName, viewComponent.alternativePercentTextFieldArray[0].getText());
-				viewComponent.openingAutoTileVO.alternativeAutoTileList.add(alternativeAutoTileVO);
-				for (int i = 0; i < viewComponent.alternativeSelectBoxArray.length; i++) {
-					String region = viewComponent.alternativeSelectBoxArray[i].getSelected();
-					Float percent = Float.valueOf(viewComponent.alternativePercentTextFieldArray[i + 1].getText());
-					viewComponent.openingAutoTileVO.alternativeAutoTileList.add(new AlternativeAutoTileVO(region, percent));
+				for (AlternativeAutoTileVO alternative : viewComponent.collectAlternatives()) {
+					viewComponent.openingAutoTileVO.alternativeAutoTileList.add(alternative);
 				}
 
 				tiledPlugin.facade.sendNotification(TiledPlugin.ACTION_RECALC_PERCENT_ALTERNATIVES_AUTO_TILE, viewComponent.openingAutoTileVO.regionName);

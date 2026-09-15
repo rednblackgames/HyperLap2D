@@ -20,6 +20,11 @@ public class AutoGridTilesTab extends AbstractGridTilesTab<AutoTileVO> {
 	}
 
     @Override
+    public String getTabIconStyle() {
+        return TiledPlugin.TAB_STYLE_AUTO;
+    }
+
+    @Override
 	protected Array<AutoTileVO> initSavedTiles() {
     	return tiledPlugin.dataToSave.getAutoTiles();
     }

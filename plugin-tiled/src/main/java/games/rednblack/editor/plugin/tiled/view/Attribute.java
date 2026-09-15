@@ -1,29 +1,30 @@
 package games.rednblack.editor.plugin.tiled.view;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.kotcrab.vis.ui.util.FloatDigitsOnlyFilter;
-import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import games.rednblack.editor.plugin.tiled.data.AttributeVO;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
+ * Number field bound to an {@link AttributeVO}: every edit writes the value back to the VO.
+ *
  * Created by mariam on 2/5/16.
  */
-public class Attribute extends Table {
+public final class Attribute {
 
-    public Attribute(AttributeVO attributeVO) {
-        add(new VisLabel(attributeVO.title));
-        VisTextField visTextField = new VisTextField();
-        visTextField.setTextFieldFilter(new FloatDigitsOnlyFilter(attributeVO.acceptNegativeValues));
-        visTextField.setMaxLength(5);
-        visTextField.setText(attributeVO.value+"");
-        visTextField.setTextFieldListener((VisTextField textField, char c) -> {
+    private Attribute() {
+    }
+
+    public static VisTextField createField(AttributeVO attributeVO) {
+        VisTextField field = StandardWidgetsFactory.createTextField();
+        field.setTextFieldFilter(new FloatDigitsOnlyFilter(attributeVO.acceptNegativeValues));
+        field.setMaxLength(5);
+        field.setText(attributeVO.value + "");
+        field.setTextFieldListener((VisTextField textField, char c) -> {
             if (!textField.getText().equals("")) {
                 attributeVO.value = Float.parseFloat(textField.getText());
             }
         });
-        add(visTextField)
-                .width(50)
-                .padLeft(5);
+        return field;
     }
 }

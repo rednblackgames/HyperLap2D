@@ -72,6 +72,9 @@ public class TiledPlugin extends H2DPluginAdapter {
     public static final String ACTION_DELETE_TILE             = CLASS_NAME + ".ACTION_DELETE_TILE";
     public static final String ACTION_DELETE_AUTO_TILE        = CLASS_NAME + ".ACTION_DELETE_AUTO_TILE";
     public static final String ACTION_DELETE_TILE_ALL         = CLASS_NAME + ".ACTION_DELETE_TILE_ALL";
+    /** Context-menu deletes: ask first, then fire the plain delete action. Resource deletion skips the prompt. */
+    public static final String ACTION_DELETE_TILE_CONFIRM     = CLASS_NAME + ".ACTION_DELETE_TILE_CONFIRM";
+    public static final String ACTION_DELETE_AUTO_TILE_CONFIRM = CLASS_NAME + ".ACTION_DELETE_AUTO_TILE_CONFIRM";
     public static final String ACTION_SET_OFFSET              = CLASS_NAME + ".ACTION_SET_OFFSET";
     public static final String ACTION_OPEN_OFFSET_PANEL       = CLASS_NAME + ".ACTION_OPEN_OFFSET_PANEL";
     public static final String TILE_GRID_OFFSET_ADDED         = CLASS_NAME + ".TILE_GRID_OFFSET_ADDED";
@@ -112,6 +115,11 @@ public class TiledPlugin extends H2DPluginAdapter {
 
     private boolean isAutoGridTabSelected;
 
+    /** VisImageButton styles the panel tabs use, registered in the VisUI skin from the plugin atlas. */
+    public static final String TAB_STYLE_TILES = CLASS_NAME + ".tab-tiles";
+    public static final String TAB_STYLE_SETTINGS = CLASS_NAME + ".tab-settings";
+    public static final String TAB_STYLE_AUTO = CLASS_NAME + ".tab-auto";
+
     public TiledPlugin() {
         super(CLASS_NAME);
         selectedTileVO = new TileVO();
@@ -126,6 +134,9 @@ public class TiledPlugin extends H2DPluginAdapter {
         facade.registerMediator(new AlternativeAutoTileDialogMediator(this));
 
         pluginRM = new ResourcesManager(this);
+        registerTabIconStyle(TAB_STYLE_TILES, "tiled-tab-tiles");
+        registerTabIconStyle(TAB_STYLE_SETTINGS, "tiled-tab-settings");
+        registerTabIconStyle(TAB_STYLE_AUTO, "tiled-tab-auto");
         offsetPanel = new OffsetPanel(this);
 
         facade.registerMediator(new OffsetPanelMediator(this));
@@ -154,6 +165,18 @@ public class TiledPlugin extends H2DPluginAdapter {
         pluginAPI.addMenuItem(MenuAPI.RESOURCE_MENU, "Import Tile Set...", IMPORT_TILESET_PANEL_OPEN, pluginIcon("icon-menu-tileset-import"));
 
         facade.sendNotification(MsgAPI.ADD_RESOURCES_BOX_FILTER, new TilesResourceFilter(this));
+    }
+
+    /**
+     * The tabbed pane resolves tab icons by style name from the VisUI skin, so the plugin's own
+     * icons are registered there. Skipped when the region is missing, which leaves a text tab.
+     */
+    private void registerTabIconStyle(String styleName, String region) {
+        TextureRegion textureRegion = pluginRM.getTextureRegion(region, -1);
+        if (textureRegion == null) return;
+        VisImageButton.VisImageButtonStyle style = new VisImageButton.VisImageButtonStyle();
+        style.imageUp = new TextureRegionDrawable(textureRegion);
+        VisUI.getSkin().add(styleName, style);
     }
 
     /** @return a menu icon from the plugin atlas, or null (text-only item) when the region is missing */

@@ -19,7 +19,6 @@
 package games.rednblack.editor.plugin.tiled;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 
 import games.rednblack.editor.plugin.tiled.data.AutoTileVO;
@@ -32,6 +31,7 @@ import games.rednblack.editor.plugin.tiled.view.tabs.SettingsTab;
 import games.rednblack.editor.renderer.ecs.Engine;
 import games.rednblack.h2d.common.UIDraggablePanel;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPane;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTabbedPaneListener;
 import games.rednblack.puremvc.Facade;
@@ -217,12 +217,10 @@ public class TiledPanel extends UIDraggablePanel {
         autoGridTilesTab.initView();
         tabbedPane.insert(autoGridTilesTab.getTabIndex(), autoGridTilesTab);
 
-        // reinit the currently visible tab
-        if (isAutoGridTabSelected) {
-        	reInitTabTable(autoGridTilesTab);
-        } else {
-        	reInitTabTable(tilesTab);
-        }
+        // The pane is rebuilt on every scene load and its button group checks the first button on its
+        // own, without making it the active tab. Switching explicitly keeps header and content in step
+        // with the tab remembered from before the reload.
+        tabbedPane.switchTab(isAutoGridTabSelected ? autoGridTilesTab : tilesTab);
     }
 
     public void reInitTabTable(AbstractGridTilesTab<?> tab) {
@@ -242,7 +240,7 @@ public class TiledPanel extends UIDraggablePanel {
     public void initLockView() {
         mainTable.clear();
 
-        mainTable.add(new VisLabel("no scenes open")).right();
+        mainTable.add(PropertyGrid.text("Open a scene to edit tiles")).pad(PropertyGrid.PANEL_PAD * 2);
     }
 
     public void setEngine(Engine engine) {

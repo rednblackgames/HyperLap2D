@@ -5,10 +5,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import games.rednblack.editor.plugin.tiled.TiledPanel;
+import games.rednblack.editor.plugin.tiled.TiledPlugin;
 import games.rednblack.editor.plugin.tiled.data.AttributeVO;
 import games.rednblack.editor.plugin.tiled.data.CategoryVO;
 import games.rednblack.editor.plugin.tiled.data.ParameterVO;
 import games.rednblack.editor.plugin.tiled.view.Category;
+import games.rednblack.h2d.common.view.ui.PropertyGrid;
+import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
 /**
  * Created by mariam on 2/4/16.
@@ -28,29 +31,33 @@ public class SettingsTab extends DefaultTab {
     }
 
     @Override
+    public String getTabIconStyle() {
+        return TiledPlugin.TAB_STYLE_SETTINGS;
+    }
+
+    @Override
     public void initView() {
+        content.clear();
+        content.top();
+
         Array<AttributeVO> gridAttributes = new Array<>();
         gridAttributes.add(new AttributeVO("Width", currentParameters.gridWidth));
         gridAttributes.add(new AttributeVO("Height", currentParameters.gridHeight));
-        CategoryVO gridVO = new CategoryVO("Grid size: ", gridAttributes);
+        CategoryVO gridVO = new CategoryVO("Grid size", gridAttributes);
         grid = new Category(gridVO);
         content.add(grid)
-                .expandX()
-                .colspan(2)
-                .padTop(10)
-                .left()
+                .growX()
+                .pad(PropertyGrid.PANEL_PAD)
                 .top()
                 .row();
         panel.tiledPlugin.dataToSave.setParameterVO(currentParameters);
 
-        VisTextButton okBtn = new VisTextButton("Save");
+        VisTextButton okBtn = StandardWidgetsFactory.createTextButton("Save", "accent");
         content.add(okBtn)
-                .width(70)
-                .pad(20)
-                .colspan(2)
-                .expandX()
-                .center()
+                .expand()
+                .right()
                 .bottom()
+                .pad(PropertyGrid.PANEL_PAD)
                 .row();
 
         okBtn.addListener(new ClickListener() {

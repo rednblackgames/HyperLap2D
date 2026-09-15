@@ -1,7 +1,6 @@
 package games.rednblack.editor.plugin.tiled.view.tabs;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.kotcrab.vis.ui.widget.VisLabel;
 import games.rednblack.editor.plugin.tiled.TiledPanel;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
 
@@ -23,7 +22,6 @@ public class DefaultTab extends ImageTab {
     }
 
     public void initView() {
-        content.add(new VisLabel(tabTitle+" example"));
     }
 
     @Override
@@ -31,6 +29,7 @@ public class DefaultTab extends ImageTab {
         return tabTitle;
     }
 
+    /** Button style registered in the VisUI skin by the plugin; null falls back to a text tab. */
     @Override
     public String getTabIconStyle() {
         return null;

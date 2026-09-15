@@ -85,6 +85,8 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 TiledPlugin.TILE_ADDED,
                 TiledPlugin.TILE_SELECTED,
                 TiledPlugin.ACTION_DELETE_TILE);
+        interests.add(TiledPlugin.ACTION_DELETE_TILE_CONFIRM,
+                TiledPlugin.ACTION_DELETE_AUTO_TILE_CONFIRM);
         interests.add(TiledPlugin.ACTION_DELETE_TILE_ALL,
                 TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST,
                 TiledPlugin.ACTION_SET_OFFSET,
@@ -168,7 +170,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 tileName = notification.getBody();
                 HashMap<String, String> actionsSet = new HashMap<>();
                 actionsSet.put(TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST, "Set grid size");
-                actionsSet.put(TiledPlugin.ACTION_DELETE_TILE, "Delete");
+                actionsSet.put(TiledPlugin.ACTION_DELETE_TILE_CONFIRM, "Delete...");
                 actionsSet.put(TiledPlugin.ACTION_DELETE_TILE_ALL, "Delete all...");
                 actionsSet.put(TiledPlugin.ACTION_OPEN_OFFSET_PANEL, "Set offset");
                 tiledPlugin.facade.sendNotification(TiledPlugin.TILE_SELECTED, tiledPlugin.dataToSave.getTile(tileName));
@@ -178,7 +180,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 tileName = notification.getBody();
                 HashMap<String, String> autoActionsSet = new HashMap<>();
                 autoActionsSet.put(TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST, "Set grid size");
-                autoActionsSet.put(TiledPlugin.ACTION_DELETE_AUTO_TILE, "Delete");
+                autoActionsSet.put(TiledPlugin.ACTION_DELETE_AUTO_TILE_CONFIRM, "Delete...");
 //                autoActionsSet.put(TiledPlugin.ACTION_OPEN_OFFSET_PANEL, "Set offset");
                 autoActionsSet.put(TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE, "Setup alternatives");
                 tiledPlugin.facade.sendNotification(TiledPlugin.AUTO_TILE_SELECTED, tiledPlugin.dataToSave.getAutoTile(tileName));
@@ -211,6 +213,12 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 }
                 tiledPlugin.dataToSave.setGrid(width / tiledPlugin.getPixelToWorld(), height / tiledPlugin.getPixelToWorld());
                 tiledPlugin.facade.sendNotification(TiledPlugin.GRID_CHANGED);
+                break;
+            case TiledPlugin.ACTION_DELETE_TILE_CONFIRM:
+                confirmDelete(notification.getBody(), "Delete tile", TiledPlugin.ACTION_DELETE_TILE);
+                break;
+            case TiledPlugin.ACTION_DELETE_AUTO_TILE_CONFIRM:
+                confirmDelete(notification.getBody(), "Delete auto-tile", TiledPlugin.ACTION_DELETE_AUTO_TILE);
                 break;
             case TiledPlugin.ACTION_DELETE_TILE:
                 String tn = notification.getBody();
@@ -420,9 +428,21 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
         icons.put(TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST, tiledPlugin.pluginIcon("icon-menu-tile-grid-size"));
         icons.put(TiledPlugin.ACTION_OPEN_OFFSET_PANEL, tiledPlugin.pluginIcon("icon-menu-tile-offset"));
         icons.put(TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE, tiledPlugin.pluginIcon("icon-menu-tile-alternatives"));
-        icons.put(TiledPlugin.ACTION_DELETE_TILE, TiledPlugin.editorIcon("icon-menu-delete"));
-        icons.put(TiledPlugin.ACTION_DELETE_AUTO_TILE, TiledPlugin.editorIcon("icon-menu-delete"));
+        icons.put(TiledPlugin.ACTION_DELETE_TILE_CONFIRM, TiledPlugin.editorIcon("icon-menu-delete"));
+        icons.put(TiledPlugin.ACTION_DELETE_AUTO_TILE_CONFIRM, TiledPlugin.editorIcon("icon-menu-delete"));
         icons.put(TiledPlugin.ACTION_DELETE_TILE_ALL, TiledPlugin.editorIcon("icon-menu-delete-all"));
         return icons;
+    }
+
+    /** Asks before removing a tile from the panel; the tile's image stays in the project resources. */
+    private void confirmDelete(String tileName, String title, String deleteAction) {
+        H2DDialogs.showOptionDialog(tiledPlugin.getAPI().getUIStage(), title,
+                "Remove '" + tileName + "' from the tiles panel?\nThe image stays in the project resources.",
+                H2DDialogs.OptionDialogType.YES_NO, new OptionDialogAdapter() {
+                    @Override
+                    public void yes() {
+                        facade.sendNotification(deleteAction, tileName);
+                    }
+                });
     }
 }
