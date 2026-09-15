@@ -82,6 +82,6 @@ public class UILibraryItemsTabMediator extends UIResourcesTabMediator<UILibraryI
             itemArray.add(draggableResource);
         }
         itemArray.sort();
-        viewComponent.setItems(itemArray);
+        viewComponent.setItems(itemArray, isFiltering(searchText));
     }
 }

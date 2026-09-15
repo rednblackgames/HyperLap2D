@@ -76,4 +76,23 @@ public abstract class UIResourcesTab extends ImageTab {
 
     protected abstract VisScrollPane crateScrollPane();
 
+    /** Skin region of the icon shown when this tab has no assets at all. */
+    protected abstract String getEmptyIconRegion();
+
+    /** Title shown when this tab has no assets at all, e.g. "No images yet". */
+    protected abstract String getEmptyTitle();
+
+    /** One line telling the user how content gets into this tab. */
+    protected abstract String getEmptyHint();
+
+    /**
+     * Fills the list table with a placeholder instead of thumbnails.
+     * @param filtered true when assets exist but the search text or active filters hide them all
+     */
+    protected void showEmptyHint(VisTable target, boolean filtered) {
+        EmptyResourcesHint hint = filtered
+                ? new EmptyResourcesHint("icon-empty-search", "Nothing matches", "Change the search text or the active filters")
+                : new EmptyResourcesHint(getEmptyIconRegion(), getEmptyTitle(), getEmptyHint());
+        target.add(hint).growX();
+    }
 }

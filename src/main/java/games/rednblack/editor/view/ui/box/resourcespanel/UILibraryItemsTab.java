@@ -48,8 +48,28 @@ public class UILibraryItemsTab extends UIResourcesTab {
         return StandardWidgetsFactory.createScrollPane(list);
     }
 
-    public void setItems(Array<DraggableResource> items) {
+    @Override
+    protected String getEmptyIconRegion() {
+        return "icon-empty-library";
+    }
+
+    @Override
+    protected String getEmptyTitle() {
+        return "Library is empty";
+    }
+
+    @Override
+    protected String getEmptyHint() {
+        return "Right click a composite on stage and choose Add to library";
+    }
+
+    /** @param filtered true when the search text or active filters hid every library item */
+    public void setItems(Array<DraggableResource> items, boolean filtered) {
         list.clear();
+        if (items.size == 0) {
+            showEmptyHint(list, filtered);
+            return;
+        }
         for (DraggableResource box : items) {
             list.add((Actor) box.getViewComponent()).expandX().fillX();
             list.row();

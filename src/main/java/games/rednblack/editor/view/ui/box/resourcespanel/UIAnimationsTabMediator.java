@@ -80,7 +80,7 @@ public class UIAnimationsTabMediator extends UIResourcesTabMediator<UIAnimations
         createAnimationResources(resourceManager.getProjectSpineAnimationsList().keySet(), SpineResource.class, ItemFactory.get()::createSpineAnimation, searchText);
         createAnimationResources(resourceManager.getProjectSpriteAnimationsList().keySet(), SpriteResource.class, ItemFactory.get()::createSpriteAnimation, searchText);
         animationBoxes.sort();
-        viewComponent.setThumbnailBoxes(animationBoxes);
+        viewComponent.setThumbnailBoxes(animationBoxes, isFiltering(searchText));
     }
 
     private void createAnimationResources(Set<String> strings, Class<? extends BoxItemResource> resourceClass, BiFunction<String, Vector2, Boolean> factoryFunction, String searchText) {

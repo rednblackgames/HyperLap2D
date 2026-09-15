@@ -82,7 +82,7 @@ public class UIParticleEffectsTabMediator extends UIResourcesTabMediator<UIParti
         createParticleResources(resourceManager.getProjectParticleList().keySet(), ParticleEffectResource.class, ItemFactory.get()::tryCreateParticleItem, searchText);
 
         particlesList.sort();
-        viewComponent.setItems(particlesList);
+        viewComponent.setItems(particlesList, isFiltering(searchText));
     }
 
 

@@ -96,6 +96,15 @@ public abstract class UIResourcesTabMediator<T extends UIResourcesTab> extends M
 
     protected abstract void initList(String searchText);
 
+    /** True when the user narrowed the list, by search text or by an active filter. */
+    protected boolean isFiltering(String searchText) {
+        if (searchText != null && !searchText.isEmpty()) return true;
+        for (IAbstractResourceFilter filter : filters.values()) {
+            if (filter.isActive()) return true;
+        }
+        return false;
+    }
+
     protected boolean filterResource(String resName, int resType) {
         for (IAbstractResourceFilter filter : filters.values()) {
             if (filter.isActive() && filter.filterResource(resName, resType))

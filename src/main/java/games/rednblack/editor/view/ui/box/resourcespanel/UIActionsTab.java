@@ -68,8 +68,28 @@ public class UIActionsTab extends UIResourcesTab {
         return StandardWidgetsFactory.createScrollPane(list);
     }
 
-    public void setItems(Array<DraggableResource> items) {
+    @Override
+    protected String getEmptyIconRegion() {
+        return "icon-empty-actions";
+    }
+
+    @Override
+    protected String getEmptyTitle() {
+        return "No actions yet";
+    }
+
+    @Override
+    protected String getEmptyHint() {
+        return "Create one with the + button below";
+    }
+
+    /** @param filtered true when the search text hid every action */
+    public void setItems(Array<DraggableResource> items, boolean filtered) {
         list.clear();
+        if (items.size == 0) {
+            showEmptyHint(list, filtered);
+            return;
+        }
         for (DraggableResource box : items) {
             list.add((Actor) box.getViewComponent()).expandX().fillX();
             list.row();

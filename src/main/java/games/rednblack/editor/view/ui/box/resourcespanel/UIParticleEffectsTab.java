@@ -48,8 +48,28 @@ public class UIParticleEffectsTab extends UIResourcesTab {
         return "particle-button";
     }
 
-    public void setItems(Array<DraggableResource> items) {
+    @Override
+    protected String getEmptyIconRegion() {
+        return "icon-empty-particles";
+    }
+
+    @Override
+    protected String getEmptyTitle() {
+        return "No particle effects yet";
+    }
+
+    @Override
+    protected String getEmptyHint() {
+        return "Import from Resources > Import Resources";
+    }
+
+    /** @param filtered true when the search text or active filters hid every effect */
+    public void setItems(Array<DraggableResource> items, boolean filtered) {
         list.clearChildren();
+        if (items.size == 0) {
+            showEmptyHint(list, filtered);
+            return;
+        }
         for (DraggableResource box : items) {
             box.initDragDrop();
             list.add((Actor) box.getViewComponent()).expandX().fillX();

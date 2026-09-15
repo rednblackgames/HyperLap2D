@@ -110,7 +110,7 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
 
         TextureAtlas atlas = resourceManager.getTextureAtlas(currentAtlas);
         if (atlas == null) {
-            viewComponent.setThumbnailBoxes(thumbnailBoxes);
+            viewComponent.setThumbnailBoxes(thumbnailBoxes, isFiltering(searchText));
             return;
         }
         Array<TextureAtlas.AtlasRegion> atlasRegions = atlas.getRegions();
@@ -148,6 +148,6 @@ public class UIImagesTabMediator extends UIResourcesTabMediator<UIImagesTab> {
         }
 
         thumbnailBoxes.sort();
-        viewComponent.setThumbnailBoxes(thumbnailBoxes);
+        viewComponent.setThumbnailBoxes(thumbnailBoxes, isFiltering(searchText));
     }
 }

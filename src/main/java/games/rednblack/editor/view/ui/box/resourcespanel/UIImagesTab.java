@@ -56,8 +56,28 @@ public class UIImagesTab extends UIResourcesTab {
         return "image-button";
     }
 
-    public void setThumbnailBoxes(Array<DraggableResource> draggableResources) {
+    @Override
+    protected String getEmptyIconRegion() {
+        return "icon-empty-images";
+    }
+
+    @Override
+    protected String getEmptyTitle() {
+        return "No images yet";
+    }
+
+    @Override
+    protected String getEmptyHint() {
+        return "Import from Resources > Import Resources";
+    }
+
+    /** @param filtered true when the search text or active filters hid every image */
+    public void setThumbnailBoxes(Array<DraggableResource> draggableResources, boolean filtered) {
         imagesTable.clearChildren();
+        if (draggableResources.size == 0) {
+            showEmptyHint(imagesTable, filtered);
+            return;
+        }
         for (int i = 0; i < draggableResources.size; i++) {
             DraggableResource draggableResource = draggableResources.get(i);
 

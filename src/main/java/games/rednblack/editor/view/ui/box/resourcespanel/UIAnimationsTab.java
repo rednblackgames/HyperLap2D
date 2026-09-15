@@ -43,8 +43,28 @@ public class UIAnimationsTab extends UIResourcesTab {
         return "animation-button";
     }
 
-    public void setThumbnailBoxes(Array<DraggableResource> draggableResources) {
+    @Override
+    protected String getEmptyIconRegion() {
+        return "icon-empty-animations";
+    }
+
+    @Override
+    protected String getEmptyTitle() {
+        return "No animations yet";
+    }
+
+    @Override
+    protected String getEmptyHint() {
+        return "Import from Resources > Import Resources";
+    }
+
+    /** @param filtered true when the search text or active filters hid every animation */
+    public void setThumbnailBoxes(Array<DraggableResource> draggableResources, boolean filtered) {
         animationsTable.clearChildren();
+        if (draggableResources.size == 0) {
+            showEmptyHint(animationsTable, filtered);
+            return;
+        }
         for (int i = 0; i < draggableResources.size; i++) {
             DraggableResource draggableResource = draggableResources.get(i);
             animationsTable.add((Actor) draggableResource.getViewComponent()).pad(4);

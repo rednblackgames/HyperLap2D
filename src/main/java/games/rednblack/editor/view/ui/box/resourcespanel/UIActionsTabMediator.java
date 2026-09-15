@@ -56,6 +56,6 @@ public class UIActionsTabMediator extends UIResourcesTabMediator<UIActionsTab> {
             itemArray.add(draggableResource);
         }
         itemArray.sort();
-        viewComponent.setItems(itemArray);
+        viewComponent.setItems(itemArray, isFiltering(searchText));
     }
 }
