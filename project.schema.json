@@ -507,6 +507,9 @@
         "circle" : {
           "$ref" : "#/$defs/Circle"
         },
+        "currentAnimation" : {
+          "type" : "string"
+        },
         "customVariables" : {
           "$ref" : "#/$defs/MapOfStringToString"
         },
@@ -517,6 +520,16 @@
         "flipY" : {
           "type" : "boolean",
           "default" : false
+        },
+        "fps" : {
+          "type" : "integer",
+          "default" : 24
+        },
+        "frameRangeMap" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/$defs/FrameRange"
+          }
         },
         "height" : {
           "type" : "number",
@@ -552,6 +565,10 @@
         },
         "physics" : {
           "$ref" : "#/$defs/PhysicsBodyDataVO"
+        },
+        "playMode" : {
+          "type" : "integer",
+          "default" : 2
         },
         "renderingLayer" : {
           "$ref" : "#/$defs/RenderingLayer",

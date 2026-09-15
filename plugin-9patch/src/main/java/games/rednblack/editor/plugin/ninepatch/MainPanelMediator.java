@@ -3,16 +3,21 @@ package games.rednblack.editor.plugin.ninepatch;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NinePatchComponent;
 import games.rednblack.editor.renderer.components.TextureRegionComponent;
+import games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent;
+import games.rednblack.editor.renderer.data.FrameRange;
 import games.rednblack.editor.renderer.data.ProjectInfoVO;
 import games.rednblack.editor.renderer.data.ResolutionEntryVO;
 import games.rednblack.editor.renderer.data.TenPatchVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
+import games.rednblack.editor.renderer.resources.IResourceRetriever;
 import games.rednblack.editor.renderer.tenpatch.TenPatchDrawable;
 import games.rednblack.editor.renderer.tenpatch.TenPatchUtils;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
+import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.puremvc.Mediator;
 import games.rednblack.puremvc.interfaces.INotification;
 import games.rednblack.puremvc.util.Interests;
@@ -25,6 +30,10 @@ import java.io.IOException;
 import java.util.HashMap;
 
 /**
+ * Drives the 9-patch dialog. Still 9-patches come from a {@code .9.png} whose border is rewritten on save;
+ * animated ones come from a sprite animation, whose frames carry no border, so their stretch areas live
+ * only in the project file.
+ *
  * Created by azakhary on 8/18/2015.
  */
 public class MainPanelMediator extends Mediator<MainPanel> {
@@ -55,21 +64,46 @@ public class MainPanelMediator extends Mediator<MainPanel> {
                 loadNinePatch();
                 break;
             case NinePatchPlugin.CONVERT_TO_NINE_PATCH:
-                convertImageToNinePatch();
+                convertToNinePatch();
                 break;
             case MainPanel.SAVE_CLICKED:
                 int entity = plugin.currEditingEntity;
                 NinePatchComponent ninePatchComponent = ComponentRetriever.get(entity, NinePatchComponent.class, plugin.getAPI().getEngine());
-                TextureAtlas.AtlasRegion region = plugin.getAPI().getProjectTextureRegion(ninePatchComponent.textureRegionName);
+                String name = ninePatchComponent.textureRegionName;
+                TextureAtlas.AtlasRegion region = TenPatchUtils.resolveRegion(rm(), name);
                 TenPatchVO vo = toOriginalResolution(viewComponent.getTenPatchVO(), region);
-                applyNewTenPatch(ninePatchComponent.textureRegionName, vo);
+                if (TenPatchUtils.isAnimation(rm(), name)) {
+                    storeAndReload(name, vo);
+                } else {
+                    applyNewTenPatch(name, vo);
+                }
                 viewComponent.hide();
                 break;
         }
     }
 
-    private void convertImageToNinePatch() {
+    private IResourceRetriever rm() {
+        return plugin.getAPI().getSceneLoader().getRm();
+    }
+
+    private void convertToNinePatch() {
         int entity = plugin.currEditingEntity;
+        MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class, plugin.getAPI().getEngine());
+        if (mainItemComponent.entityType == EntityFactory.SPRITE_TYPE) {
+            convertSpriteAnimationToNinePatch(entity);
+        } else {
+            convertImageToNinePatch(entity);
+        }
+    }
+
+    /** Scale mapping the loaded resolution pixels of a drawable to world units, as the runtime factory does. */
+    private float worldScale() {
+        ProjectInfoVO projectInfo = rm().getProjectVO();
+        float multiplier = rm().getLoadedResolution().getMultiplier(projectInfo.originalResolution);
+        return multiplier / projectInfo.pixelToWorld;
+    }
+
+    private void convertImageToNinePatch(int entity) {
         MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class, plugin.getAPI().getEngine());
         mainItemComponent.entityType = EntityFactory.NINE_PATCH;
         TextureRegionComponent textureRegionComponent = ComponentRetriever.get(entity, TextureRegionComponent.class, plugin.getAPI().getEngine());
@@ -82,7 +116,8 @@ public class MainPanelMediator extends Mediator<MainPanel> {
         newRegion.names = new String[] {"split", "pad"};
         newRegion.values = new int[][] {splits, pad};
         TenPatchVO vo = TenPatchUtils.fromSplits(splits, newRegion.originalWidth, newRegion.originalHeight);
-        ninePatchComponent.tenPatch = new TenPatchDrawable(vo.horizontalStretchAreas, vo.verticalStretchAreas, false, newRegion);
+        ninePatchComponent.tenPatch = TenPatchUtils.createDrawable(newRegion, vo);
+        TenPatchUtils.scaleDrawable(ninePatchComponent.tenPatch, worldScale(), worldScale());
 
         //remove original image
         File originalImg = new File(plugin.getAPI().getProjectPath() + "/assets/orig/images/"+regionName+".png");
@@ -96,11 +131,79 @@ public class MainPanelMediator extends Mediator<MainPanel> {
         applyNewTenPatch(regionName, toOriginalResolution(vo, newRegion));
     }
 
+    /**
+     * A sprite animation entity becomes an animated 9-patch: it keeps its animation components, so
+     * ranges, fps and play mode carry over, and gets a 9-patch component stretching the whole frame
+     * until the user edits it.
+     */
+    private void convertSpriteAnimationToNinePatch(int entity) {
+        SpriteAnimationComponent spriteAnimationComponent = ComponentRetriever.get(entity, SpriteAnimationComponent.class, plugin.getAPI().getEngine());
+        String name = spriteAnimationComponent.animationName;
+        Array<TextureAtlas.AtlasRegion> frames = TenPatchUtils.getAnimationFrames(rm(), name);
+        if (frames == null || !framesShareSize(frames)) {
+            H2DDialogs.showErrorDialog(plugin.getAPI().getUIStage(),
+                    "Every frame of an animated 9-patch must have the same size.\nAnimation '" + name + "' cannot be converted.").padBottom(20).pack();
+            return;
+        }
+
+        MainItemComponent mainItemComponent = ComponentRetriever.get(entity, MainItemComponent.class, plugin.getAPI().getEngine());
+        mainItemComponent.entityType = EntityFactory.NINE_PATCH;
+        NinePatchComponent ninePatchComponent = plugin.getAPI().getEngine().edit(entity).create(NinePatchComponent.class);
+        ninePatchComponent.textureRegionName = name;
+
+        TextureAtlas.AtlasRegion first = frames.first();
+        ProjectInfoVO projectInfo = plugin.getAPI().getCurrentProjectInfoVO();
+        if (projectInfo.tenPatches == null) projectInfo.tenPatches = new HashMap<>();
+        if (!projectInfo.tenPatches.containsKey(name)) {
+            TenPatchVO vo = TenPatchUtils.fromSplits(null, first.originalWidth, first.originalHeight);
+            projectInfo.tenPatches.put(name, toOriginalResolution(vo, first));
+        }
+
+        ninePatchComponent.tenPatch = TenPatchUtils.createDrawable(rm(), name);
+        TenPatchUtils.scaleDrawable(ninePatchComponent.tenPatch, worldScale(), worldScale());
+
+        plugin.getAPI().saveProject();
+        plugin.getAPI().reLoadProject();
+    }
+
+    private static boolean framesShareSize(Array<TextureAtlas.AtlasRegion> frames) {
+        TextureAtlas.AtlasRegion first = frames.first();
+        for (TextureAtlas.AtlasRegion frame : frames) {
+            if (frame.originalWidth != first.originalWidth || frame.originalHeight != first.originalHeight) return false;
+        }
+        return true;
+    }
+
     private void loadNinePatch() {
         int entity = plugin.currEditingEntity;
         NinePatchComponent ninePatchComponent = ComponentRetriever.get(entity, NinePatchComponent.class, plugin.getAPI().getEngine());
-        loadRegion(ninePatchComponent.textureRegionName);
+        String name = ninePatchComponent.textureRegionName;
+
+        Array<TextureAtlas.AtlasRegion> frames = TenPatchUtils.getAnimationFrames(rm(), name);
+        if (frames != null) {
+            SpriteAnimationComponent spriteAnimationComponent = ComponentRetriever.get(entity, SpriteAnimationComponent.class, plugin.getAPI().getEngine());
+            TextureAtlas.AtlasRegion region = frames.first();
+            TenPatchVO vo = TenPatchUtils.getConfiguration(plugin.getAPI().getCurrentProjectInfoVO(), region);
+            if (hasProjectEntry(name)) vo = toLoadedResolution(vo, region);
+
+            FrameRange range = null;
+            int fps = 24;
+            int playMode = TenPatchDrawable.PlayMode.LOOP;
+            if (spriteAnimationComponent != null) {
+                range = spriteAnimationComponent.frameRangeMap.get(spriteAnimationComponent.currentAnimation);
+                fps = spriteAnimationComponent.fps;
+                playMode = TenPatchUtils.playModeToInt(spriteAnimationComponent.playMode);
+            }
+            viewComponent.setTexture(region, vo, frames, range, fps, playMode);
+        } else {
+            loadRegion(name);
+        }
         viewComponent.show(plugin.getAPI().getUIStage());
+    }
+
+    private boolean hasProjectEntry(String name) {
+        ProjectInfoVO projectInfo = plugin.getAPI().getCurrentProjectInfoVO();
+        return projectInfo.tenPatches != null && projectInfo.tenPatches.containsKey(name);
     }
 
     /**
@@ -189,13 +292,16 @@ public class MainPanelMediator extends Mediator<MainPanel> {
             writeFile(newContent, test);
         }
 
-        // store the ten patch configuration in the project, it has to be on disk before reloading
+        storeAndReload(textureRegionName, vo);
+    }
+
+    /** Stores a configuration in the project (it has to be on disk before reloading) and reloads it. */
+    private void storeAndReload(String name, TenPatchVO vo) {
         ProjectInfoVO projectInfo = plugin.getAPI().getCurrentProjectInfoVO();
         if (projectInfo.tenPatches == null) projectInfo.tenPatches = new HashMap<>();
-        projectInfo.tenPatches.put(textureRegionName, new TenPatchVO(vo));
+        projectInfo.tenPatches.put(name, new TenPatchVO(vo));
         plugin.getAPI().saveProject();
 
-        // reload
         plugin.getAPI().reLoadProject();
     }
 
@@ -219,8 +325,7 @@ public class MainPanelMediator extends Mediator<MainPanel> {
         TextureAtlas.AtlasRegion region = plugin.getAPI().getProjectTextureRegion(name);
         validateNinePatchTextureRegion(region);
         TenPatchVO vo = TenPatchUtils.getConfiguration(plugin.getAPI().getCurrentProjectInfoVO(), region);
-        if (plugin.getAPI().getCurrentProjectInfoVO().tenPatches != null
-                && plugin.getAPI().getCurrentProjectInfoVO().tenPatches.containsKey(name)) {
+        if (hasProjectEntry(name)) {
             vo = toLoadedResolution(vo, region);
         }
         viewComponent.setTexture(region, vo);

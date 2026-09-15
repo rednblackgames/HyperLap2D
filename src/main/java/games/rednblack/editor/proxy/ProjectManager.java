@@ -420,6 +420,10 @@ public class ProjectManager extends Proxy {
             if (currentProjectInfoVO.tenPatches.containsKey(regionName) && file.lastModified() <= lastSave) continue;
             registerTenPatch(regionName, file);
         }
+        // animated 9-patches are keyed by a sprite animation and have no .9.png, keep their entries
+        for (TexturePackVO pack : currentProjectInfoVO.animationsPacks.values()) {
+            if (pack != null && pack.regions != null) existing.addAll(pack.regions);
+        }
         currentProjectInfoVO.tenPatches.keySet().retainAll(existing);
     }
 

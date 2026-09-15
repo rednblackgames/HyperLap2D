@@ -182,7 +182,8 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         if (entityType == EntityFactory.LABEL_TYPE) {
             mediatorNames.add(UILabelItemPropertiesMediator.NAME);
         }
-        if (entityType == EntityFactory.SPRITE_TYPE) {
+        if (entityType == EntityFactory.SPRITE_TYPE
+                || (entityType == EntityFactory.NINE_PATCH && EntityDataProxy.get().get(entity, games.rednblack.editor.renderer.components.sprite.SpriteAnimationComponent.class) != null)) {
             mediatorNames.add(UISpriteAnimationItemPropertiesMediator.NAME);
         }
         if (entityType == SpineItemType.SPINE_TYPE) {

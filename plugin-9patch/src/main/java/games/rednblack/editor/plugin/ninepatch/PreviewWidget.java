@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.renderer.data.FrameRange;
 import games.rednblack.editor.renderer.data.TenPatchVO;
 import games.rednblack.editor.renderer.tenpatch.TenPatchDrawable;
 import games.rednblack.editor.renderer.tenpatch.TenPatchUtils;
@@ -30,6 +32,10 @@ public class PreviewWidget extends Group {
 
     private TextureAtlas.AtlasRegion region;
     private TenPatchVO vo;
+    private Array<TextureAtlas.AtlasRegion> frames;
+    private FrameRange frameRange;
+    private int fps;
+    private int playMode;
     private float customWidthFactor = 1f;
     private float customHeightFactor = 1f;
 
@@ -49,8 +55,20 @@ public class PreviewWidget extends Group {
      * @param vo     configuration in pixels of {@code region}
      */
     public void update(TextureAtlas.AtlasRegion region, TenPatchVO vo) {
+        update(region, vo, null, null, 24, TenPatchDrawable.PlayMode.LOOP);
+    }
+
+    /**
+     * @param frames every frame of an animated 9-patch in order, null for a still one
+     * @param range  frames to play, null for all of them
+     */
+    public void update(TextureAtlas.AtlasRegion region, TenPatchVO vo, Array<TextureAtlas.AtlasRegion> frames, FrameRange range, int fps, int playMode) {
         this.region = region;
         this.vo = vo;
+        this.frames = frames;
+        this.frameRange = range;
+        this.fps = fps;
+        this.playMode = playMode;
         rebuild();
     }
 
@@ -90,6 +108,7 @@ public class PreviewWidget extends Group {
 
     private Drawable createDrawable(float scale) {
         TenPatchDrawable drawable = TenPatchUtils.createDrawable(region, vo);
+        if (frames != null) TenPatchUtils.setAnimation(drawable, frames, frameRange, fps, playMode);
         TenPatchUtils.scaleDrawable(drawable, scale, scale);
         return drawable;
     }

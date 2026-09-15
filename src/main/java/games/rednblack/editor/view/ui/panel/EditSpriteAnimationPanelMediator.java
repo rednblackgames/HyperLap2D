@@ -81,7 +81,8 @@ public class EditSpriteAnimationPanelMediator extends Mediator<EditSpriteAnimati
                 Set<Integer> selection = notification.getBody();
                 if(selection.size() == 1) {
                     int entity = selection.iterator().next();
-                    if(EntityDataProxy.get().metadata().getType(entity) == EntityFactory.SPRITE_TYPE) {
+                    // sprite animations and animated 9-patches share the same component and ranges
+                    if(EntityDataProxy.get().get(entity, SpriteAnimationComponent.class) != null) {
                         setObservable(entity);
                     } else {
                         observable = -1;

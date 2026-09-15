@@ -162,6 +162,18 @@ public class SpriteAnimationAtlasAsset extends Asset {
 
             spriteAnimations.removeAll(tmpImageList, true);
         }
+
+        // animated 9-patches built from this animation
+        tmpImageList.clear();
+        if (compositeItemVO != null && compositeItemVO.getElementsArray(games.rednblack.editor.renderer.data.Image9patchVO.class).size != 0) {
+            Array<games.rednblack.editor.renderer.data.Image9patchVO> patches = compositeItemVO.getElementsArray(games.rednblack.editor.renderer.data.Image9patchVO.class);
+
+            for (games.rednblack.editor.renderer.data.Image9patchVO patchVO : patches)
+                if (patchVO.getResourceName().equals(spriteAnimationName))
+                    tmpImageList.add(patchVO);
+
+            patches.removeAll(tmpImageList, true);
+        }
     }
 
     private void deleteEntitiesWithSpriteAnimation(int rootEntity, String spriteAnimationName) {

@@ -48,8 +48,9 @@ public class NinePatchPlugin extends H2DPluginAdapter {
                 currEditingEntity = entity;
                 actionsSet.add(EDIT_NINE_PATCH);
             }
-            if(mainItemComponent.entityType == EntityFactory.IMAGE_TYPE) {
-                // it's our guy
+            if(mainItemComponent.entityType == EntityFactory.IMAGE_TYPE
+                    || mainItemComponent.entityType == EntityFactory.SPRITE_TYPE) {
+                // images become still 9-patches, sprite animations become animated ones
                 currEditingEntity = entity;
                 actionsSet.add(CONVERT_TO_NINE_PATCH);
             }

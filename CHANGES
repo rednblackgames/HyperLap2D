@@ -10,6 +10,7 @@
 - 9-Patch images are now rendered with TenPatch: multiple stretch areas per axis, tiling with scrolling tiles, crush modes and corner gradients
 - New 9-Patch editor: rulers, zoom and pan, pixel grid, drag to create areas, live preview with tiling, crush and gradient settings
 - `.9.png` files with multiple stretch segments (Android format) are imported as ten patches
+- Animated 9-Patches: convert a sprite animation to a 9-patch and it keeps its fps, play mode and frame ranges
 - [BREAK CHANGE] Fork TenPatch into runtime codebase, `NinePatchComponent#ninePatch` replaced by `NinePatchComponent#tenPatch`
 - [BREAK CHANGE] Fork Artemis-ODB into runtime codebase
 - [BREAK CHANGE] Any reference to Artemis' World was changed to `Engine`

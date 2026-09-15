@@ -1324,7 +1324,10 @@ public class RemoteOpsMediator extends Mediator<Object> {
                 for (TexturePackVO pack : pi.imagesPacks.values()) {
                     if (pack != null && pack.regions != null && pack.regions.contains(name)) return null;
                 }
-                return "image region '" + name + "' not found; check list_assets 'imageRegion'/'ninePatchRegion'";
+                // a 9-patch may also be built from a sprite animation, it then plays its frames
+                if (type.equals("9patch") && rm.getProjectSpriteAnimationsList().containsKey(name)) return null;
+                return "image region '" + name + "' not found; check list_assets 'imageRegion'/'ninePatchRegion'"
+                        + (type.equals("9patch") ? " (or 'spriteAnimation' for an animated 9-patch)" : "");
             case "spriteAnimation":
                 return rm.getProjectSpriteAnimationsList().containsKey(name) ? null
                         : "sprite animation '" + name + "' not found; check list_assets 'spriteAnimation'";

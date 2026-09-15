@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
+import games.rednblack.editor.renderer.data.FrameRange;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
@@ -70,6 +72,13 @@ public class MainPanel extends H2DDialog {
 
     private TextureRegion texture;
     private boolean lockUpdates;
+
+    /** Frames and playback of an animated 9-patch, frames null for a still one. */
+    private Array<TextureAtlas.AtlasRegion> frames;
+    private FrameRange frameRange;
+    private int fps;
+    private int playMode;
+    private final VisLabel animationInfo;
 
     private final EditingZone editingZone;
     private final PreviewWidget previewWidget;
@@ -239,6 +248,9 @@ public class MainPanel extends H2DDialog {
         grid.rowCompact("Bottom", cornerPair(cornerButtons[LOWER_LEFT], cornerButtons[LOWER_RIGHT]));
 
         grid.section("Preview");
+        animationInfo = PropertyGrid.value("Still image");
+        grid.rowCompact("Frames", animationInfo);
+        grid.tooltipLastRow("Animated 9-patches play a sprite animation: fps, play mode and ranges are edited in the item's properties.");
         grid.wideFill(previewWidget, PREVIEW_HEIGHT);
         previewWidthSlider = StandardWidgetsFactory.createSlider(5, 100, 1);
         previewHeightSlider = StandardWidgetsFactory.createSlider(5, 100, 1);
@@ -425,7 +437,7 @@ public class MainPanel extends H2DDialog {
 
     private void updatePreview() {
         if (lockUpdates || texture == null) return;
-        previewWidget.update((TextureAtlas.AtlasRegion) texture, getTenPatchVO());
+        previewWidget.update((TextureAtlas.AtlasRegion) texture, getTenPatchVO(), frames, frameRange, fps, playMode);
     }
 
     private static int crushModeIndex(int crushMode) {
@@ -440,8 +452,29 @@ public class MainPanel extends H2DDialog {
      * @param vo      configuration to start from, stretch areas and offsets in pixels of {@code texture}
      */
     public void setTexture(TextureRegion texture, TenPatchVO vo) {
+        setTexture(texture, vo, null, null, 24, TenPatchDrawable.PlayMode.LOOP);
+    }
+
+    /**
+     * @param texture region to edit, the first frame for an animated 9-patch
+     * @param vo      configuration to start from, stretch areas and offsets in pixels of {@code texture}
+     * @param frames  every frame of the animation in order, null for a still 9-patch
+     * @param range   frames the preview plays, null for all of them
+     */
+    public void setTexture(TextureRegion texture, TenPatchVO vo, Array<TextureAtlas.AtlasRegion> frames, FrameRange range, int fps, int playMode) {
         this.texture = texture;
+        this.frames = frames;
+        this.frameRange = range;
+        this.fps = fps;
+        this.playMode = playMode;
         lockUpdates = true;
+
+        if (frames == null) {
+            animationInfo.setText("Still image");
+        } else {
+            String rangeText = range == null ? "all" : range.name + " (" + range.startFrame + "-" + range.endFrame + ")";
+            animationInfo.setText(frames.size + " frames, " + fps + " fps, range " + rangeText);
+        }
 
         editingZone.setTexture(texture, vo);
         zoomLabel.setText(Math.round(editingZone.getZoom() * 100f) + "%");
