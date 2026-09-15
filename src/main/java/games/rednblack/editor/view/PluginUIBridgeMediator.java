@@ -61,8 +61,15 @@ public class PluginUIBridgeMediator extends Mediator<Object> implements PluginUI
 
     @Override
     public void showPopup(HashMap<String, String> actionsSet, Object observable) {
+        showPopup(actionsSet, null, observable);
+    }
+
+    @Override
+    public void showPopup(HashMap<String, String> actionsSet, HashMap<String, Drawable> actionIcons, Object observable) {
         UIDropDownMenu uiDropDownMenu = new UIDropDownMenu();
         actionsSet.entrySet().forEach(entry -> uiDropDownMenu.setActionName(entry.getKey(), entry.getValue()));
+        if (actionIcons != null)
+            actionIcons.entrySet().forEach(entry -> uiDropDownMenu.setActionIcon(entry.getKey(), entry.getValue()));
 
         Array<String> actions = new Array<>();
         actionsSet.keySet().forEach(actions::add);

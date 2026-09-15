@@ -45,7 +45,7 @@ public class SetSelectionCommand extends RevertibleCommand {
         HashSet<Integer> previousSelection = new HashSet<>(SelectionProxy.get(facade).getSelectedItems());
         previousSelectionIds = EntityUtils.getEntityId(previousSelection);
 
-        SelectionPayload payload = getNotification().getBody();
+        SelectionPayload payload = toPayload(getNotification().getBody());
         switch (payload) {
             case SelectionPayload.Single s -> sandbox.getSelector().setSelection(s.entity(), true);
             case SelectionPayload.Multiple m -> {
@@ -78,5 +78,17 @@ public class SetSelectionCommand extends RevertibleCommand {
     public void undoAction() {
         SelectionProxy.get(facade).setSelections(EntityUtils.getByUniqueId(previousSelectionIds), true);
         facade.sendNotification(DONE);
+    }
+
+    /**
+     * {@link SelectionPayload} is editor-internal, so plugins (which only see the common API) still
+     * send the raw selection: a set of entities, a single entity id, or nothing.
+     */
+    @SuppressWarnings("unchecked")
+    private static SelectionPayload toPayload(Object body) {
+        if (body instanceof SelectionPayload payload) return payload;
+        if (body instanceof Set<?> entities) return SelectionPayload.multiple((Set<Integer>) entities);
+        if (body instanceof Integer entity) return SelectionPayload.single(entity);
+        return SelectionPayload.empty();
     }
 }

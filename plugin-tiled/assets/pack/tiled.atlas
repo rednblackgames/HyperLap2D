@@ -1,17 +1,25 @@
 tiled.png
 	size: 512, 128
 	filter: Linear, Linear
+icon-menu-tile-alternatives
+	bounds: 1, 1, 22, 22
+icon-menu-tile-grid-size
+	bounds: 435, 101, 22, 22
+icon-menu-tile-offset
+	bounds: 25, 1, 22, 22
+icon-menu-tileset-import
+	bounds: 435, 77, 22, 22
 image-Box-active
-	bounds: 25, 19, 4, 4
+	bounds: 435, 71, 4, 4
 	split: 1, 1, 1, 1
 image-Box-inactive
-	bounds: 435, 95, 4, 4
+	bounds: 459, 95, 4, 4
 	split: 1, 1, 1, 1
 tiles-drop-here-normal
 	bounds: 1, 25, 215, 98
 tiles-drop-here-over
 	bounds: 218, 25, 215, 98
 tool-tilebrush
-	bounds: 1, 1, 22, 22
+	bounds: 459, 101, 22, 22
 tool-tileeraser
-	bounds: 435, 101, 22, 22
+	bounds: 49, 1, 22, 22

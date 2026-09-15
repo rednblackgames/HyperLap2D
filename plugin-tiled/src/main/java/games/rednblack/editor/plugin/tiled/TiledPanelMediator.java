@@ -33,6 +33,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 
@@ -171,7 +172,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
                 actionsSet.put(TiledPlugin.ACTION_DELETE_TILE_ALL, "Delete all...");
                 actionsSet.put(TiledPlugin.ACTION_OPEN_OFFSET_PANEL, "Set offset");
                 tiledPlugin.facade.sendNotification(TiledPlugin.TILE_SELECTED, tiledPlugin.dataToSave.getTile(tileName));
-                tiledPlugin.getAPI().showPopup(actionsSet, tileName);
+                tiledPlugin.getAPI().showPopup(actionsSet, tilePopupIcons(), tileName);
                 break;
             case TiledPlugin.AUTO_OPEN_DROP_DOWN:
                 tileName = notification.getBody();
@@ -181,7 +182,7 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
 //                autoActionsSet.put(TiledPlugin.ACTION_OPEN_OFFSET_PANEL, "Set offset");
                 autoActionsSet.put(TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE, "Setup alternatives");
                 tiledPlugin.facade.sendNotification(TiledPlugin.AUTO_TILE_SELECTED, tiledPlugin.dataToSave.getAutoTile(tileName));
-                tiledPlugin.getAPI().showPopup(autoActionsSet, tileName);
+                tiledPlugin.getAPI().showPopup(autoActionsSet, tilePopupIcons(), tileName);
             	break;
             case MsgAPI.ACTION_DELETE_IMAGE_RESOURCE:
                 tileName = notification.getBody();
@@ -408,5 +409,20 @@ public class TiledPanelMediator extends Mediator<TiledPanel> {
             return SpineItemType.SPINE_TYPE;
 
         return EntityFactory.UNKNOWN_TYPE;
+    }
+
+    /**
+     * Icons for every action the tile popups can show; entries for actions a popup does not list are
+     * simply unused. Delete actions reuse the editor's own icons so they match the other context menus.
+     */
+    private HashMap<String, Drawable> tilePopupIcons() {
+        HashMap<String, Drawable> icons = new HashMap<>();
+        icons.put(TiledPlugin.ACTION_SET_GRID_SIZE_FROM_LIST, tiledPlugin.pluginIcon("icon-menu-tile-grid-size"));
+        icons.put(TiledPlugin.ACTION_OPEN_OFFSET_PANEL, tiledPlugin.pluginIcon("icon-menu-tile-offset"));
+        icons.put(TiledPlugin.ACTION_SETUP_ALTERNATIVES_AUTO_TILE, tiledPlugin.pluginIcon("icon-menu-tile-alternatives"));
+        icons.put(TiledPlugin.ACTION_DELETE_TILE, TiledPlugin.editorIcon("icon-menu-delete"));
+        icons.put(TiledPlugin.ACTION_DELETE_AUTO_TILE, TiledPlugin.editorIcon("icon-menu-delete"));
+        icons.put(TiledPlugin.ACTION_DELETE_TILE_ALL, TiledPlugin.editorIcon("icon-menu-delete-all"));
+        return icons;
     }
 }

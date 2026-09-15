@@ -261,6 +261,11 @@ public class PluginManager extends Proxy implements PluginAPI {
     }
 
     @Override
+    public void showPopup(HashMap<String, String> actionsSet, HashMap<String, Drawable> actionIcons, Object observable) {
+        bridge.showPopup(actionsSet, actionIcons, observable);
+    }
+
+    @Override
     public void setCursor(CursorData cursorData, TextureRegion region) {
         CursorManager cursorManager = facade.retrieveProxy(CursorManager.NAME);
         cursorManager.setCursor(cursorData, region);

@@ -24,6 +24,8 @@ import java.util.Set;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -147,11 +149,23 @@ public class TiledPlugin extends H2DPluginAdapter {
         tileDeleteButtonStyle.imageUp = new TextureRegionDrawable(pluginRM.getTextureRegion("tool-tileeraser", -1));
         pluginAPI.addTool(DeleteTileTool.NAME, tileDeleteButtonStyle, false, deleteTileTool);
 
-        pluginAPI.setDropDownItemName(ACTION_SET_GRID_SIZE_FROM_ITEM, "Set tile grid size");
+        pluginAPI.setDropDownItemName(ACTION_SET_GRID_SIZE_FROM_ITEM, "Set tile grid size", pluginIcon("icon-menu-tile-grid-size"));
 
-        pluginAPI.addMenuItem(MenuAPI.RESOURCE_MENU, "Import Tile Set...", IMPORT_TILESET_PANEL_OPEN);
+        pluginAPI.addMenuItem(MenuAPI.RESOURCE_MENU, "Import Tile Set...", IMPORT_TILESET_PANEL_OPEN, pluginIcon("icon-menu-tileset-import"));
 
         facade.sendNotification(MsgAPI.ADD_RESOURCES_BOX_FILTER, new TilesResourceFilter(this));
+    }
+
+    /** @return a menu icon from the plugin atlas, or null (text-only item) when the region is missing */
+    public Drawable pluginIcon(String region) {
+        TextureRegion textureRegion = pluginRM.getTextureRegion(region, -1);
+        return textureRegion == null ? null : new TextureRegionDrawable(textureRegion);
+    }
+
+    /** @return a menu icon from the editor skin (shared {@code icon-menu-*} regions), or null when missing */
+    public static Drawable editorIcon(String region) {
+        Skin skin = VisUI.getSkin();
+        return skin.getAtlas().findRegion(region) == null ? null : skin.getDrawable(region);
     }
 
     @Override

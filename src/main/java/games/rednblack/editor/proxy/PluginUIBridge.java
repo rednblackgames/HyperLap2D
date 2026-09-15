@@ -42,6 +42,8 @@ public interface PluginUIBridge {
 
     void showPopup(HashMap<String, String> actionsSet, Object observable);
 
+    void showPopup(HashMap<String, String> actionsSet, HashMap<String, Drawable> actionIcons, Object observable);
+
     void setDropDownItemName(String action, String name);
 
     void setDropDownItemName(String action, String name, Drawable icon);

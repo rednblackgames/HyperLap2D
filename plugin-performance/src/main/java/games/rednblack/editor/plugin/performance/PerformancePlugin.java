@@ -1,5 +1,6 @@
 package games.rednblack.editor.plugin.performance;
 
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import games.rednblack.h2d.common.MenuAPI;
 import games.rednblack.h2d.common.plugins.H2DPluginAdapter;
 import net.mountainblade.modular.annotations.Implementation;
@@ -9,6 +10,9 @@ public class PerformancePlugin extends H2DPluginAdapter {
     public static final String CLASS_NAME = "games.rednblack.editor.plugin.performance";
 
     public static final String PANEL_OPEN = CLASS_NAME + ".PANEL_OPEN";
+
+    /** Base name of the atlas packed from {@code assets/textures} and bundled in the plugin jar. */
+    private static final String ATLAS_NAME = "performance";
 
     private final PerformancePanelMediator performancePanelMediator;
 
@@ -20,6 +24,7 @@ public class PerformancePlugin extends H2DPluginAdapter {
     @Override
     public void initPlugin() {
         facade.registerMediator(performancePanelMediator);
-        pluginAPI.addMenuItem(MenuAPI.WINDOW_MENU, "Performance", PANEL_OPEN);
+        TextureAtlas pluginAtlas = loadPluginAtlas(ATLAS_NAME);
+        pluginAPI.addMenuItem(MenuAPI.WINDOW_MENU, "Performance", PANEL_OPEN, atlasDrawable(pluginAtlas, "icon-menu-performance"));
     }
 }
