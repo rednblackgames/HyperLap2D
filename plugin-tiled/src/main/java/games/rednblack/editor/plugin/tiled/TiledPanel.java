@@ -48,6 +48,11 @@ public class TiledPanel extends UIDraggablePanel {
     public static final float SETTINGS_WIDTH = 240f;
     public static final float SETTINGS_HEIGHT = 150f;
 
+    /** Left tool bar width, bottom menu bar height and the gutter the editor keeps around its panels. */
+    private static final float TOOL_BAR_WIDTH = 40f;
+    private static final float BOTTOM_BAR_HEIGHT = 38f;
+    private static final float PANEL_MARGIN = 16f;
+
     public TiledPlugin tiledPlugin;
     private Facade facade;
 
@@ -154,8 +159,9 @@ public class TiledPanel extends UIDraggablePanel {
     	return isAutoGridTabSelected;
     }
 
+    /** Default spot for the panel: bottom left corner, clear of the tool bar and of the bottom menu. */
     public void setFixedPosition() {
-        setPosition(56f, 765f - getPrefHeight());
+        setPosition(TOOL_BAR_WIDTH + PANEL_MARGIN, BOTTOM_BAR_HEIGHT + PANEL_MARGIN);
     }
 
     public Table getDropTable() {

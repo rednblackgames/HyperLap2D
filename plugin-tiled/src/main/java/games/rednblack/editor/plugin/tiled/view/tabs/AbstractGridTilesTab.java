@@ -22,6 +22,14 @@ import games.rednblack.h2d.extension.spine.SpineItemType;
 
 public abstract class AbstractGridTilesTab<T extends TextureRegionVO> extends DefaultTab {
 
+    /**
+     * The tile boxes are laid out so that a full row spans the whole width of the panel:
+     * {@link #TILE_COLUMNS} boxes plus their padding add up to {@link TiledPanel#GRID_WIDTH}.
+     */
+    private static final int TILE_COLUMNS = 4;
+    private static final float TILE_PAD = 3f;
+    private static final float TILE_SIZE = TiledPanel.GRID_WIDTH / TILE_COLUMNS - TILE_PAD * 2;
+
     public boolean isDrop;
 
     private int tilesCount = 19;
@@ -185,10 +193,9 @@ public abstract class AbstractGridTilesTab<T extends TextureRegionVO> extends De
             int index = i;
             ct.addListener(getGridTabInputListener(index));
             listTable.add(ct)
-                    .width(40)
-                    .height(40)
-                    .pad(3);
-            if((i+1) % 4 == 0) {
+                    .size(TILE_SIZE)
+                    .pad(TILE_PAD);
+            if((i+1) % TILE_COLUMNS == 0) {
                 listTable.row();
             }
             tiles.add(ct);
