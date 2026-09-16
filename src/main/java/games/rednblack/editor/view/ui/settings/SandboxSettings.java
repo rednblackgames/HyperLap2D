@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 
 public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
 
-    private final VisCheckBox disableAmbientComposite, showBoundBoxes;
+    private final VisCheckBox disableAmbientComposite, showBoundBoxes, clickableTypingLabels;
     private final TintButton tintButton;
     private final VisSlider scrollVelocity, timeScale;
 
@@ -32,6 +32,7 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
 
         disableAmbientComposite = StandardWidgetsFactory.createSwitch();
         showBoundBoxes = StandardWidgetsFactory.createSwitch();
+        clickableTypingLabels = StandardWidgetsFactory.createSwitch();
         scrollVelocity = StandardWidgetsFactory.createSlider(30, 400, 1);
         timeScale = StandardWidgetsFactory.createSlider(0.1f, 2f, 0.1f);
         tintButton = StandardWidgetsFactory.createTintButton();
@@ -89,6 +90,7 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
 
         grid.section("Behavior");
         grid.toggleWide("Disable ambient light when viewing composites", disableAmbientComposite);
+        grid.toggleWide("Clickable links in typing labels", clickableTypingLabels);
         grid.sliderRow("Scroll velocity", scrollVelocity,
                 sliderValue(grid, scrollVelocity, () -> String.valueOf(getScrollVelocity())));
 
@@ -124,6 +126,7 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
     public void translateSettingsToView() {
         disableAmbientComposite.setChecked(getSettings().disableAmbientComposite);
         showBoundBoxes.setChecked(getSettings().showBoundingBoxes);
+        clickableTypingLabels.setChecked(getSettings().clickableTypingLabels);
         tintButton.setColorValue(getSettings().backgroundColor);
         scrollVelocity.setValue(getSettings().scrollVelocity);
         timeScale.setValue(1);
@@ -133,6 +136,7 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
     public void translateViewToSettings() {
         getSettings().disableAmbientComposite = disableAmbientComposite.isChecked();
         getSettings().showBoundingBoxes = showBoundBoxes.isChecked();
+        getSettings().clickableTypingLabels = clickableTypingLabels.isChecked();
         getSettings().scrollVelocity = getScrollVelocity();
         facade.sendNotification(MsgAPI.SAVE_EDITOR_CONFIG);
     }

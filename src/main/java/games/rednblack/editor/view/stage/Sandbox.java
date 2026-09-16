@@ -67,6 +67,7 @@ import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.talos.TalosSystem;
 import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelItemType;
+import games.rednblack.h2d.extension.typinglabel.TypingLabelSystem;
 import games.rednblack.puremvc.Facade;
 
 import java.util.HashMap;
@@ -108,6 +109,7 @@ public class Sandbox {
     private CameraService cameraService;
 
     private CullingSystem cullingSystem;
+    private TypingLabelSystem typingLabelSystem;
 
     private Sandbox() {
         init();
@@ -169,6 +171,7 @@ public class Sandbox {
 
         sceneLoader = new SceneLoader(config);
         cullingSystem = sceneLoader.getEngine().getSystem(CullingSystem.class);
+        typingLabelSystem = sceneLoader.getEngine().getSystem(TypingLabelSystem.class);
 
         manager.setSerializer(new JsonArtemisSerializer(sceneLoader.getEngine()));
 
@@ -250,6 +253,7 @@ public class Sandbox {
     public void render(float deltaTime) {
         cameraService.update(deltaTime);
         cullingSystem.setDebug(settingsManager.editorConfigVO.showBoundingBoxes);
+        typingLabelSystem.setClickable(settingsManager.editorConfigVO.clickableTypingLabels);
     }
 
     public void adjustCameraInComposites() {
