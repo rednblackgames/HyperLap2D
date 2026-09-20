@@ -3,6 +3,8 @@ package games.rednblack.editor.view.ui;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.MenuItem;
+import com.kotcrab.vis.ui.widget.PopupMenu;
+import games.rednblack.editor.renderer.widget.WidgetTypes;
 import games.rednblack.editor.event.MenuItemListener;
 import games.rednblack.editor.utils.MenuIcons;
 import games.rednblack.h2d.common.MsgAPI;
@@ -29,7 +31,7 @@ public class UIDropDownMenu extends H2DPopupMenu {
     public UIDropDownMenu() {
         actionNames.put(MsgAPI.ACTION_GROUP_ITEMS, "Wrap into composite");
         actionNames.put(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, "Edit composite");
-        actionNames.put(MsgAPI.ACTION_CONVERT_TO_BUTTON, "Convert to button");
+        actionNames.put(MsgAPI.ACTION_CONVERT_TO_WIDGET, "Convert to widget");
         actionNames.put(MsgAPI.ACTION_CUT, "Cut");
         actionNames.put(MsgAPI.ACTION_COPY, "Copy");
         actionNames.put(MsgAPI.ACTION_PASTE, "Paste");
@@ -64,7 +66,7 @@ public class UIDropDownMenu extends H2DPopupMenu {
 
         actionIcons.put(MsgAPI.ACTION_GROUP_ITEMS, "icon-menu-composite");
         actionIcons.put(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, "icon-menu-edit-composite");
-        actionIcons.put(MsgAPI.ACTION_CONVERT_TO_BUTTON, "icon-menu-button");
+        actionIcons.put(MsgAPI.ACTION_CONVERT_TO_WIDGET, "icon-menu-button");
         actionIcons.put(MsgAPI.ACTION_CUT, "icon-menu-cut");
         actionIcons.put(MsgAPI.ACTION_COPY, "icon-menu-copy");
         actionIcons.put(MsgAPI.ACTION_PASTE, "icon-menu-paste");
@@ -96,6 +98,19 @@ public class UIDropDownMenu extends H2DPopupMenu {
 
         actionIcons.put(MsgAPI.ACTION_DUPLICATE_LIBRARY_ACTION, "icon-menu-duplicate");
         actionIcons.put(MsgAPI.ACTION_DELETE_LIBRARY_ACTION, "icon-menu-delete");
+    }
+
+    /**
+     * One entry per registered widget type. They fire the action on their own, carrying the type:
+     * the parent item only opens this menu.
+     */
+    private PopupMenu createWidgetTypesMenu() {
+        PopupMenu typesMenu = new H2DPopupMenu();
+        for (String type : WidgetTypes.names()) {
+            String label = type.substring(0, 1).toUpperCase() + type.substring(1);
+            typesMenu.addItem(new MenuItem(label, new MenuItemListener(MsgAPI.ACTION_CONVERT_TO_WIDGET, type)));
+        }
+        return typesMenu;
     }
 
     private static Drawable icon(String region) {
@@ -131,9 +146,16 @@ public class UIDropDownMenu extends H2DPopupMenu {
             String itemName = actionNames.get(action);
             Drawable itemIcon = actionDrawables.get(action);
             if (itemIcon == null) itemIcon = icon(actionIcons.get(action));
-            MenuItem menuItem = itemIcon != null
-                    ? new MenuItem(itemName, itemIcon, new MenuItemListener(ITEM_CLICKED, action))
-                    : new MenuItem(itemName, new MenuItemListener(ITEM_CLICKED, action));
+            MenuItem menuItem;
+            if (MsgAPI.ACTION_CONVERT_TO_WIDGET.equals(action)) {
+                // only opens the list of widget types, whose entries fire the action themselves
+                menuItem = itemIcon != null ? new MenuItem(itemName, itemIcon) : new MenuItem(itemName);
+                menuItem.setSubMenu(createWidgetTypesMenu());
+            } else {
+                menuItem = itemIcon != null
+                        ? new MenuItem(itemName, itemIcon, new MenuItemListener(ITEM_CLICKED, action))
+                        : new MenuItem(itemName, new MenuItemListener(ITEM_CLICKED, action));
+            }
             menuItem.getImageCell().pad(5);
             addItem(menuItem);
         }

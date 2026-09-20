@@ -20,6 +20,7 @@ package games.rednblack.editor.controller.commands;
 
 import games.rednblack.editor.controller.SandboxCommand;
 import games.rednblack.editor.proxy.CommandManager;
+import games.rednblack.editor.proxy.WidgetEditingProxy;
 import games.rednblack.puremvc.Notification;
 import games.rednblack.puremvc.interfaces.INotification;
 
@@ -45,10 +46,22 @@ public abstract class RevertibleCommand extends SandboxCommand {
 
     public void callDoAction() {
         doAction();
+        recordWidgetStateEdits();
     }
 
     public void callUndoAction() {
        undoAction();
+       recordWidgetStateEdits();
+    }
+
+    /**
+     * Whatever the command changed on the parts of a widget showing one of its states belongs to
+     * that state. Done right here so that anything reading the entities afterwards (library
+     * sync, auto save) already finds the overrides in place.
+     */
+    private void recordWidgetStateEdits() {
+        WidgetEditingProxy widgetEditing = facade.retrieveProxy(WidgetEditingProxy.NAME);
+        if (widgetEditing != null) widgetEditing.recordEdits();
     }
 
     public INotification getNotification() {

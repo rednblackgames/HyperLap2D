@@ -49,6 +49,7 @@ public class BootstrapViewCommand extends SimpleCommand {
         facade.registerMediator(new UIWindowActionMediator());
 
         facade.registerMediator(new UICompositeHierarchyMediator());
+        facade.registerMediator(new UIWidgetStateStripMediator());
 		facade.registerMediator(new UISceneBoxMediator());
         facade.registerMediator(new UIGridBoxMediator());
         facade.registerMediator(new UIResolutionBoxMediator());

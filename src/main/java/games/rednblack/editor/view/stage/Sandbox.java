@@ -42,14 +42,17 @@ import games.rednblack.editor.renderer.components.ViewPortComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
+import games.rednblack.editor.renderer.systems.ButtonSystem;
 import games.rednblack.editor.renderer.systems.CullingSystem;
 import games.rednblack.editor.renderer.systems.LightSystem;
 import games.rednblack.editor.renderer.systems.ParticleSystem;
 import games.rednblack.editor.renderer.systems.PhysicsSystem;
+import games.rednblack.editor.renderer.systems.WidgetStateSystem;
 import games.rednblack.h2d.extension.talos.TalosAnchorConstraintSystem;
 import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.renderer.utils.TextureArrayCpuPolygonSpriteBatch;
 import games.rednblack.editor.system.HyperLap2dRendererMiniMap;
+import games.rednblack.editor.system.EditorButtonSystem;
 import games.rednblack.editor.system.ParticleContinuousSystem;
 import games.rednblack.editor.system.PhysicsAdjustSystem;
 import games.rednblack.editor.system.TalosContinuousSystem;
@@ -158,6 +161,12 @@ public class Sandbox {
         config.addSystem(physicsAdjustSystem);
         LightSystem lightSystem = new LightSystem();
         config.addSystem(lightSystem);
+
+        //Widget states are chosen in the editor, the button logic must not fight them
+        config.removeSystem(ButtonSystem.class);
+        config.addSystem(new EditorButtonSystem());
+        //Re-added to keep it right after the button logic: a new state is drawn the same frame
+        config.addSystem(new WidgetStateSystem());
 
         //Remove particle system and use a continuous system for preview purpose
         config.removeSystem(ParticleSystem.class);

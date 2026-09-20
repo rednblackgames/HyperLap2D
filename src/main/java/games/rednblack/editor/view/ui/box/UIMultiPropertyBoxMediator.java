@@ -27,6 +27,8 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
 import games.rednblack.editor.renderer.components.LayoutComponent;
+import games.rednblack.editor.renderer.components.widget.WidgetComponent;
+import games.rednblack.editor.proxy.WidgetEditingProxy;
 import games.rednblack.editor.renderer.components.shape.CircleShapeComponent;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.components.ShaderComponent;
@@ -150,22 +152,32 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         clearPropertyBoxes();
 
         for (int i = 0; i < mediatorNames.size; i++) {
-            String mediatorName = mediatorNames.get(i);
-            try {
-                IMediator mediator = mediatorMap.get(mediatorName);
-                if (mediator == null) {
-                    mediator = (IMediator) ClassReflection.newInstance(ClassReflection.forName(mediatorName));
-                    mediatorMap.put(mediatorName, mediator);
-                }
-                facade.registerMediator(mediator);
+            addPropertyBox(mediatorNames.get(i), observable);
+        }
 
-                UIAbstractPropertiesMediator<Object, UIAbstractProperties> propertyBoxMediator = facade.retrieveMediator(mediatorName);
-                currentRegisteredPropertyBoxes.add(propertyBoxMediator);
-                propertyBoxMediator.setItem(observable);
-                viewComponent.addPropertyBox(propertyBoxMediator.getViewComponent());
-            } catch (ReflectionException e) {
-                e.printStackTrace();
+        // With nothing selected inside a widget, the widget being edited is what there is to look at
+        if (observable instanceof SceneVO) {
+            Sandbox sandbox = PluginUIBridge.get().getSandbox();
+            int editedWidget = WidgetEditingProxy.findWidget(sandbox.getCurrentViewingEntity());
+            if (editedWidget != -1) addPropertyBox(UIWidgetPropertiesMediator.NAME, editedWidget);
+        }
+    }
+
+    private void addPropertyBox(String mediatorName, Object observable) {
+        try {
+            IMediator mediator = mediatorMap.get(mediatorName);
+            if (mediator == null) {
+                mediator = (IMediator) ClassReflection.newInstance(ClassReflection.forName(mediatorName));
+                mediatorMap.put(mediatorName, mediator);
             }
+            facade.registerMediator(mediator);
+
+            UIAbstractPropertiesMediator<Object, UIAbstractProperties> propertyBoxMediator = facade.retrieveMediator(mediatorName);
+            currentRegisteredPropertyBoxes.add(propertyBoxMediator);
+            propertyBoxMediator.setItem(observable);
+            viewComponent.addPropertyBox(propertyBoxMediator.getViewComponent());
+        } catch (ReflectionException e) {
+            e.printStackTrace();
         }
     }
 
@@ -228,6 +240,14 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         }
         if (circleShapeComponent != null) {
             mediatorNames.add(UICircleShapePropertiesMediator.NAME);
+        }
+
+        // widget editing: what the item is as a widget, and how it takes part in the widget around it
+        if (EntityDataProxy.get().get(entity, WidgetComponent.class) != null) {
+            mediatorNames.add(UIWidgetPropertiesMediator.NAME);
+        }
+        if (UIWidgetPartPropertiesMediator.findOwnerWidget(entity) != -1) {
+            mediatorNames.add(UIWidgetPartPropertiesMediator.NAME);
         }
 
         LayoutComponent layoutComponent = EntityDataProxy.get().get(entity, LayoutComponent.class);

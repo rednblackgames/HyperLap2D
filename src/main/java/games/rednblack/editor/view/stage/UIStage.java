@@ -26,6 +26,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.utils.TextureArrayCpuPolygonSpriteBatch;
 import games.rednblack.editor.view.ui.*;
+import games.rednblack.editor.view.ui.box.UIWidgetStateStripMediator;
 import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.puremvc.Facade;
 
@@ -102,6 +103,11 @@ public class UIStage extends Stage {
         uiMainTable = new UIMainTable();
 
         addActor(uiMainTable);
+
+        //Floating bar with the states of the widget being edited, over the scene and the panels
+        UIWidgetStateStripMediator widgetStateStripMediator = facade.retrieveMediator(UIWidgetStateStripMediator.NAME);
+        addActor(widgetStateStripMediator.getViewComponent());
+
         addActor(contextMenuContainer);
 
 		VisTable mainBottomTable = new VisTable();

@@ -74,7 +74,8 @@ public class BootstrapCommand extends SimpleCommand {
         facade.registerCommand(MsgAPI.ACTION_ADD_TO_LIBRARY, AddToLibraryCommand.class);
         facade.registerCommand(MsgAPI.ACTION_ADD_TO_LIBRARY_ACTION, AddToLibraryActionCommand.class);
         facade.registerCommand(MsgAPI.ACTION_CHANGE_LIBRARY_ACTION, ChangeLibraryActionCommand.class);
-        facade.registerCommand(MsgAPI.ACTION_CONVERT_TO_BUTTON, ConvertToButtonCommand.class);
+        facade.registerCommand(MsgAPI.ACTION_CONVERT_TO_WIDGET, ConvertToWidgetCommand.class);
+        facade.registerCommand(MsgAPI.ACTION_CHANGE_WIDGET_STATE, ChangeWidgetStateCommand.class);
         facade.registerCommand(MsgAPI.ACTION_GROUP_ITEMS, ConvertToCompositeCommand.class);
 
         facade.registerCommand(MsgAPI.ACTION_SET_SELECTION, SetSelectionCommand.class);
@@ -101,6 +102,8 @@ public class BootstrapCommand extends SimpleCommand {
         facade.registerCommand(MsgAPI.ACTION_UPDATE_SENSOR_DATA, UpdateSensorDataCommand.class);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_SHADER_DATA, UpdateShaderDataCommand.class);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_LAYOUT_DATA, UpdateLayoutDataCommand.class);
+        facade.registerCommand(MsgAPI.ACTION_UPDATE_WIDGET_DATA, UpdateWidgetDataCommand.class);
+        facade.registerCommand(MsgAPI.ACTION_UPDATE_WIDGET_PART_DATA, UpdateWidgetPartDataCommand.class);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_TALOS_ANCHOR_CONSTRAINT_DATA, UpdateTalosAnchorConstraintCommand.class);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_IMAGE_ITEM_DATA, UpdateImageItemDataCommand.class);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_SPRITE_ANIMATION_DATA, UpdateSpriteAnimationDataCommand.class);
