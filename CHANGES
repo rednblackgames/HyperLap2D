@@ -2,6 +2,7 @@
 - New Logo and Branding
 - Full UI re-design
 - Auto Constraint Layouts
+- Graphical Widget Designer, with state management and tween value animation
 - Remote control with built-in MCP server
 - Update libGDX to 1.14.2, Spine to 4.2.12, Talos Legacy to 1.6.0, TextraTypist 2.5.0
 - Incremental atlas updates with repacks only when necessary
@@ -11,6 +12,12 @@
 - New 9-Patch editor: rulers, zoom and pan, pixel grid, drag to create areas, live preview with tiling, crush and gradient settings
 - `.9.png` files with multiple stretch segments (Android format) are imported as ten patches
 - Animated 9-Patches: convert a sprite animation to a 9-patch and it keeps its fps, play mode and frame ranges
+- [BREAK CHANGE] Update Project version to `1.1.0`
+
+**Runtime**
+- Support for GUI Widgets
+- [BREAK CHANGE] Removed CompositeActor
+- [BREAK CHANGE] Removed old "button" TAG and legacy button system (migrated to widgets)
 - [BREAK CHANGE] Fork TenPatch into runtime codebase, `NinePatchComponent#ninePatch` replaced by `NinePatchComponent#tenPatch`
 - [BREAK CHANGE] Fork Artemis-ODB into runtime codebase
 - [BREAK CHANGE] Any reference to Artemis' World was changed to `Engine`
