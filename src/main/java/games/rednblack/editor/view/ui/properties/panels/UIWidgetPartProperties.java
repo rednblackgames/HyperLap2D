@@ -41,7 +41,7 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
     private static final int PROPERTY_PAD_BOTTOM = 10;
 
     private VisSelectBox<String> roleBox;
-    private VisCheckBox visibleSwitch;
+    private final OrderedMap<String, VisCheckBox> toggleSwitches = new OrderedMap<>();
     private final OrderedMap<String, TransitionFields> transitionFields = new OrderedMap<>();
     private final OrderedMap<String, SequenceFields> sequenceFields = new OrderedMap<>();
     /** Overridden properties as they are listed: alphabetical, visibility left out. */
@@ -59,7 +59,8 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
         public String role = "";
         public String state = "";
         public boolean defaultState;
-        public boolean visible = true;
+        /** property key -> whether it is on, for the properties that are simply on or off */
+        public OrderedMap<String, Boolean> toggles = new OrderedMap<>();
         /** property key -> value overridden by the state being shown */
         public ObjectMap<String, String> overrides = new ObjectMap<>();
         /** property key -> how it gets to that value, for the animated ones */
@@ -80,15 +81,14 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
         Array<String> roles = data.roles;
         String role = data.role;
         String state = data.state;
-        boolean visible = data.visible;
         ObjectMap<String, String> overrides = data.overrides;
         ObjectMap<String, WidgetOverrideTransitionVO> transitions = data.transitions;
         // A map keeps no order of its own, so the blocks would sit in a different place every time
         // they are built. Sorted, a property is always where it was left.
         listedKeys.clear();
         for (String key : overrides.keys()) {
-            // visibility has its own switch under the heading
-            if (!CoreStateOverrides.VISIBLE.equals(key)) listedKeys.add(key);
+            // a property that is simply on or off has a switch under the heading instead
+            if (!data.toggles.containsKey(key)) listedKeys.add(key);
         }
         listedKeys.sort();
 
@@ -97,7 +97,8 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
         Array<String> animated = transitions.keys().toArray();
         animated.sort();
 
-        StringBuilder shape = new StringBuilder(roles.toString(",")).append('|').append(state);
+        StringBuilder shape = new StringBuilder(roles.toString(",")).append('|').append(state)
+                .append('|').append(data.toggles.orderedKeys());
         for (String key : listedKeys) shape.append('|').append(key).append('=').append(overrides.get(key));
         String newStructure = shape.append('|').append(animated.toString(",")).toString();
 
@@ -107,7 +108,9 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
         }
 
         if (roleBox != null) roleBox.setSelected(role == null || role.isEmpty() ? NO_ROLE : role);
-        visibleSwitch.setChecked(visible);
+        for (ObjectMap.Entry<String, VisCheckBox> toggle : toggleSwitches) {
+            toggle.value.setChecked(data.toggles.get(toggle.key, true));
+        }
 
         for (ObjectMap.Entry<String, TransitionFields> fields : transitionFields) {
             WidgetOverrideTransitionVO transition = transitions.get(fields.key);
@@ -153,11 +156,15 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
 
         grid.section("Overrides in \"" + state + "\"");
 
-        // Visibility is an override like the others, but it is a yes or no with nothing to reset, so
-        // it gets a switch under the heading instead of a block of its own further down.
-        visibleSwitch = StandardWidgetsFactory.createSwitch();
-        visibleSwitch.addListener(new CheckBoxChangeListener(getUpdateEventName()));
-        grid.toggle("Visible", visibleSwitch);
+        // A property that is simply on or off is a yes or no with nothing to reset, so it gets a
+        // switch under the heading rather than a block of its own further down.
+        toggleSwitches.clear();
+        for (String key : data.toggles.orderedKeys()) {
+            VisCheckBox toggle = StandardWidgetsFactory.createSwitch();
+            toggle.addListener(new CheckBoxChangeListener(getUpdateEventName()));
+            toggleSwitches.put(key, toggle);
+            grid.toggle(label(key), toggle);
+        }
 
         if (listedKeys.size == 0) {
             String hint = data.defaultState ? "The default state is the base look" : "Edit the item to override it";
@@ -274,7 +281,10 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
                 label.append(Character.toUpperCase(c));
                 continue;
             }
-            if (Character.isUpperCase(c) && !Character.isUpperCase(key.charAt(i - 1))) label.append(' ');
+            char previous = key.charAt(i - 1);
+            boolean word = Character.isUpperCase(c) && !Character.isUpperCase(previous);
+            boolean number = Character.isDigit(c) && !Character.isDigit(previous);
+            if (word || number) label.append(' ');
             label.append(c);
         }
         return label.toString();
@@ -317,8 +327,13 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
         return selected == null || NO_ROLE.equals(selected) ? "" : selected;
     }
 
-    public boolean isVisibleInState() {
-        return visibleSwitch.isChecked();
+    /** @return property key -> whether its switch is on */
+    public ObjectMap<String, Boolean> getToggles() {
+        ObjectMap<String, Boolean> values = new ObjectMap<>();
+        for (ObjectMap.Entry<String, VisCheckBox> toggle : toggleSwitches) {
+            values.put(toggle.key, toggle.value.isChecked());
+        }
+        return values;
     }
 
     @Override

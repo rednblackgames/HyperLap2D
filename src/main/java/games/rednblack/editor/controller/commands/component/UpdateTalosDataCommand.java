@@ -27,6 +27,7 @@ public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
         talosComponent.transform = vo.transform;
         talosComponent.autoStart = vo.autoStart;
         talosComponent.effect.setPosition(0, 0);
+        applyScopeValues(talosComponent, vo);
 
         Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }
@@ -39,8 +40,18 @@ public class UpdateTalosDataCommand extends EntityModifyRevertibleCommand {
         talosComponent.effect.setPosition(0, 0);
         talosComponent.transform = backup.transform;
         talosComponent.autoStart = backup.autoStart;
+        applyScopeValues(talosComponent, backup);
 
         Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
+    }
+
+    /** The slots are what the effect reads, so the values go both on the item and into the effect. */
+    private static void applyScopeValues(TalosComponent component, TalosVO vo) {
+        component.scopeValues.clear();
+        for (TalosVO.ScopeValueVO value : vo.scopeValues) {
+            component.scopeValues.add(new TalosComponent.ScopeValue(value.key, value.value));
+        }
+        component.applyScopeValues();
     }
 
     public static Object payload(int entity, TalosVO vo) {

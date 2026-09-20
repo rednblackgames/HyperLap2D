@@ -17,6 +17,7 @@ import games.rednblack.editor.renderer.data.WidgetOverrideSequenceVO;
 import games.rednblack.editor.renderer.widget.ChoiceOverrideHandler;
 import games.rednblack.editor.renderer.widget.InterpolableOverrideHandler;
 import games.rednblack.editor.renderer.widget.SequencedOverrideHandler;
+import games.rednblack.editor.renderer.widget.ToggleOverrideHandler;
 import games.rednblack.editor.renderer.widget.StateOverrideHandler;
 import games.rednblack.editor.renderer.widget.WidgetType;
 import games.rednblack.editor.renderer.widget.WidgetTypes;
@@ -97,13 +98,10 @@ public class UIWidgetPartPropertiesMediator extends UIItemPropertiesMediator<UIW
         ObjectMap<String, String> overrides = part == null ? null : part.getOverrides(state);
         if (overrides == null) overrides = NO_OVERRIDES;
 
-        boolean visible = !"false".equals(overrides.get(CoreStateOverrides.VISIBLE));
-
         partData.roles = roles;
         partData.role = part == null ? "" : part.role;
         partData.state = state;
         partData.defaultState = state.equals(widget.defaultState);
-        partData.visible = visible;
         partData.overrides = overrides;
         partData.functions = interpolationFunctions();
         partData.interpolableKeys = interpolableKeys();
@@ -112,8 +110,17 @@ public class UIWidgetPartPropertiesMediator extends UIItemPropertiesMediator<UIW
         partData.sequences.clear();
         partData.sequencedKeys.clear();
         partData.choices.clear();
+        partData.toggles.clear();
 
         WidgetStateSystem stateSystem = sandbox.getEngine().getSystem(WidgetStateSystem.class);
+
+        // Every on/off property the item has gets a switch, whether the state says anything about it
+        // or not, since its base is always on and a state can only turn it off.
+        for (String key : stateSystem.getHandlerKeys()) {
+            StateOverrideHandler toggle = stateSystem.getHandler(key);
+            if (!(toggle instanceof ToggleOverrideHandler) || !toggle.supports(entity)) continue;
+            partData.toggles.put(key, !"false".equals(overrides.get(key)));
+        }
         for (String key : overrides.keys()) {
             if (part != null) {
                 WidgetPartComponent.Transition transition = part.getTransition(state, key);
@@ -172,9 +179,11 @@ public class UIWidgetPartPropertiesMediator extends UIItemPropertiesMediator<UIW
         String role = viewComponent.getRole();
         if (role != null) newVo.role = role;
 
-        // Hidden is the only thing a state can say about visibility: items are visible by default,
-        // which is also why this is an explicit override and not something recorded from an edit.
-        newVo.setOverride(widget.getState(), CoreStateOverrides.VISIBLE, viewComponent.isVisibleInState() ? null : "false");
+        // Off is the only thing a state can say about these: they are on by default, which is also
+        // why they are set by hand here instead of being recorded from an edit.
+        for (ObjectMap.Entry<String, Boolean> toggle : viewComponent.getToggles()) {
+            newVo.setOverride(widget.getState(), toggle.key, toggle.value ? null : "false");
+        }
 
         // transitions of the state being shown, as switched on and filled in the panel
         String state = widget.getState();
