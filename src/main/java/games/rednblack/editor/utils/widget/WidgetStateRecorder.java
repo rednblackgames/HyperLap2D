@@ -152,8 +152,10 @@ public class WidgetStateRecorder {
                     if (patch.remove(key) != null) overridesChanged = true;
                     if (patch.size == 0) part.overrides.remove(state);
                 }
-                // how to get to a value that is no longer overridden is of no use
+                // how a value that is no longer overridden is reached, and what plays around it,
+                // are both of no use any more
                 part.removeTransition(state, key);
+                part.removeSequence(state, key);
                 part.baseSnapshot.remove(key);
             }
         }

@@ -14,6 +14,7 @@ import com.kotcrab.vis.ui.widget.VisTextField;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
+import games.rednblack.editor.renderer.data.WidgetOverrideSequenceVO;
 import games.rednblack.editor.renderer.data.WidgetOverrideTransitionVO;
 import games.rednblack.editor.renderer.widget.handlers.CoreStateOverrides;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
@@ -33,6 +34,8 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
     public static final String RESET_OVERRIDE_CLICKED = PREFIX + ".RESET_OVERRIDE_CLICKED";
 
     public static final String NO_ROLE = "none";
+    /** Shown in a dropdown for "nothing chosen", since an empty entry is impossible to click. */
+    public static final String NONE = "none";
 
     private static final int PROPERTY_PAD_TOP = 16;
     private static final int PROPERTY_PAD_BOTTOM = 10;
@@ -40,6 +43,7 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
     private VisSelectBox<String> roleBox;
     private VisCheckBox visibleSwitch;
     private final OrderedMap<String, TransitionFields> transitionFields = new OrderedMap<>();
+    private final OrderedMap<String, SequenceFields> sequenceFields = new OrderedMap<>();
     /** Overridden properties as they are listed: alphabetical, visibility left out. */
     private final Array<String> listedKeys = new Array<>();
     private String structure = null;
@@ -48,16 +52,37 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
         super("Widget Part");
     }
 
-    /**
-     * @param roles            roles the widget type declares, empty when it has none
-     * @param overrides        property key -> value overridden by the state being shown
-     * @param transitions      property key -> how it gets to that value, for the animated ones
-     * @param interpolableKeys the properties that can be animated at all: numbers and colors
-     * @param functions        names of the interpolation functions to choose from
-     */
-    public void setPart(Array<String> roles, String role, String state, boolean defaultState, boolean visible,
-                        ObjectMap<String, String> overrides, ObjectMap<String, WidgetOverrideTransitionVO> transitions,
-                        ObjectSet<String> interpolableKeys, Array<String> functions) {
+    /** Everything the panel shows about a part, gathered by the mediator. */
+    public static class PartData {
+        /** roles the widget type declares, empty when it has none */
+        public Array<String> roles = new Array<>();
+        public String role = "";
+        public String state = "";
+        public boolean defaultState;
+        public boolean visible = true;
+        /** property key -> value overridden by the state being shown */
+        public ObjectMap<String, String> overrides = new ObjectMap<>();
+        /** property key -> how it gets to that value, for the animated ones */
+        public ObjectMap<String, WidgetOverrideTransitionVO> transitions = new ObjectMap<>();
+        /** property key -> what plays around that value, for the ones that play */
+        public ObjectMap<String, WidgetOverrideSequenceVO> sequences = new ObjectMap<>();
+        /** the properties that can be animated at all: numbers and colors */
+        public ObjectSet<String> interpolableKeys = new ObjectSet<>();
+        /** the properties that can open and close on another animation */
+        public ObjectSet<String> sequencedKeys = new ObjectSet<>();
+        /** property key -> the values it may take on this item, for the ones that are a known list */
+        public ObjectMap<String, Array<String>> choices = new ObjectMap<>();
+        /** names of the interpolation functions to choose from */
+        public Array<String> functions = new Array<>();
+    }
+
+    public void setPart(PartData data) {
+        Array<String> roles = data.roles;
+        String role = data.role;
+        String state = data.state;
+        boolean visible = data.visible;
+        ObjectMap<String, String> overrides = data.overrides;
+        ObjectMap<String, WidgetOverrideTransitionVO> transitions = data.transitions;
         // A map keeps no order of its own, so the blocks would sit in a different place every time
         // they are built. Sorted, a property is always where it was left.
         listedKeys.clear();
@@ -78,7 +103,7 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
 
         if (!newStructure.equals(structure)) {
             structure = newStructure;
-            rebuild(roles, state, defaultState, overrides, transitions, interpolableKeys, functions);
+            rebuild(data);
         }
 
         if (roleBox != null) roleBox.setSelected(role == null || role.isEmpty() ? NO_ROLE : role);
@@ -93,13 +118,25 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
             if (!duration.equals(fields.value.duration.getText())) fields.value.duration.setText(duration);
             fields.value.function.setSelected(transition.interpolation);
         }
+
+        for (ObjectMap.Entry<String, SequenceFields> fields : sequenceFields) {
+            WidgetOverrideSequenceVO sequence = data.sequences.get(fields.key);
+            fields.value.enter.setSelected(sequence == null || sequence.enter.isEmpty() ? NONE : sequence.enter);
+            fields.value.exit.setSelected(sequence == null || sequence.exit.isEmpty() ? NONE : sequence.exit);
+        }
     }
 
-    private void rebuild(Array<String> roles, String state, boolean defaultState, ObjectMap<String, String> overrides,
-                         ObjectMap<String, WidgetOverrideTransitionVO> transitions, ObjectSet<String> interpolableKeys,
-                         Array<String> functions) {
+    private void rebuild(PartData data) {
+        Array<String> roles = data.roles;
+        String state = data.state;
+        ObjectMap<String, String> overrides = data.overrides;
+        ObjectMap<String, WidgetOverrideTransitionVO> transitions = data.transitions;
+        ObjectSet<String> interpolableKeys = data.interpolableKeys;
+        Array<String> functions = data.functions;
+
         mainTable.clearChildren();
         transitionFields.clear();
+        sequenceFields.clear();
         // every overridden property is a block of its own here, not a heading inside one panel, so
         // its title gets more room above it and more room before the rows it belongs to
         PropertyGrid grid = PropertyGrid.on(mainTable).sectionPad(PROPERTY_PAD_TOP, PROPERTY_PAD_BOTTOM);
@@ -123,7 +160,7 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
         grid.toggle("Visible", visibleSwitch);
 
         if (listedKeys.size == 0) {
-            String hint = defaultState ? "The default state is the base look" : "Edit the item to override it";
+            String hint = data.defaultState ? "The default state is the base look" : "Edit the item to override it";
             grid.wide(PropertyGrid.text(hint));
             return;
         }
@@ -162,7 +199,23 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
             VisTable value = new VisTable();
             PropertyGrid.elastic(value.add(PropertyGrid.valueEllipsized(overrides.get(key)))).left();
             value.add(reset).height(PropertyGrid.FIELD_HEIGHT).padLeft(PropertyGrid.BUTTON_GAP);
-            grid.row("Value", value);
+
+            // An animation can open and close on another one: the state starts on its entry, keeps
+            // playing the value, and goes out on its exit while the next state is already coming in.
+            Array<String> choices = data.choices.get(key);
+            boolean chained = data.sequencedKeys.contains(key) && choices != null && choices.size > 0;
+            if (!chained) {
+                grid.row("Value", value);
+            } else {
+                SequenceFields sequence = new SequenceFields();
+                sequence.enter = createChoiceBox(choices);
+                sequence.exit = createChoiceBox(choices);
+                sequenceFields.put(key, sequence);
+
+                grid.row("Enter", sequence.enter);
+                grid.row("Loop", value);
+                grid.row("Exit", sequence.exit);
+            }
 
             if (fields == null || !transitions.containsKey(key)) continue;
 
@@ -225,6 +278,36 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
             label.append(c);
         }
         return label.toString();
+    }
+
+    private VisSelectBox<String> createChoiceBox(Array<String> choices) {
+        VisSelectBox<String> box = StandardWidgetsFactory.createSelectBox(String.class);
+        Array<String> items = new Array<>(choices);
+        items.insert(0, NONE);
+        box.setItems(items);
+        box.addListener(new SelectBoxChangeListener(getUpdateEventName()));
+        return box;
+    }
+
+    /** @return property key -> what plays around its value, only for the keys that have something */
+    public ObjectMap<String, WidgetOverrideSequenceVO> getSequences() {
+        ObjectMap<String, WidgetOverrideSequenceVO> sequences = new ObjectMap<>();
+        for (ObjectMap.Entry<String, SequenceFields> fields : sequenceFields) {
+            WidgetOverrideSequenceVO sequence = new WidgetOverrideSequenceVO(
+                    chosen(fields.value.enter), chosen(fields.value.exit));
+            if (!sequence.isEmpty()) sequences.put(fields.key, sequence);
+        }
+        return sequences;
+    }
+
+    private static String chosen(VisSelectBox<String> box) {
+        String selected = box.getSelected();
+        return selected == null || NONE.equals(selected) ? "" : selected;
+    }
+
+    private static class SequenceFields {
+        VisSelectBox<String> enter;
+        VisSelectBox<String> exit;
     }
 
     /** @return the chosen role, empty for none or when the widget type declares no role */

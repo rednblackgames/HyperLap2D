@@ -13,7 +13,11 @@ import games.rednblack.editor.renderer.data.WidgetPartVO;
 import games.rednblack.editor.renderer.data.WidgetStateOverridesVO;
 import games.rednblack.editor.renderer.systems.WidgetStateSystem;
 import games.rednblack.editor.renderer.utils.InterpolationMap;
+import games.rednblack.editor.renderer.data.WidgetOverrideSequenceVO;
+import games.rednblack.editor.renderer.widget.ChoiceOverrideHandler;
 import games.rednblack.editor.renderer.widget.InterpolableOverrideHandler;
+import games.rednblack.editor.renderer.widget.SequencedOverrideHandler;
+import games.rednblack.editor.renderer.widget.StateOverrideHandler;
 import games.rednblack.editor.renderer.widget.WidgetType;
 import games.rednblack.editor.renderer.widget.WidgetTypes;
 import games.rednblack.editor.renderer.widget.handlers.CoreStateOverrides;
@@ -30,7 +34,7 @@ public class UIWidgetPartPropertiesMediator extends UIItemPropertiesMediator<UIW
     private static final ObjectMap<String, String> NO_OVERRIDES = new ObjectMap<>(0);
 
     private final Array<String> roles = new Array<>();
-    private final ObjectMap<String, WidgetOverrideTransitionVO> transitions = new ObjectMap<>();
+    private final UIWidgetPartProperties.PartData partData = new UIWidgetPartProperties.PartData();
     private final ObjectSet<String> interpolableKeys = new ObjectSet<>();
     private final Array<String> interpolationFunctions = new Array<>();
 
@@ -95,18 +99,43 @@ public class UIWidgetPartPropertiesMediator extends UIItemPropertiesMediator<UIW
 
         boolean visible = !"false".equals(overrides.get(CoreStateOverrides.VISIBLE));
 
-        transitions.clear();
-        if (part != null) {
-            for (String key : overrides.keys()) {
+        partData.roles = roles;
+        partData.role = part == null ? "" : part.role;
+        partData.state = state;
+        partData.defaultState = state.equals(widget.defaultState);
+        partData.visible = visible;
+        partData.overrides = overrides;
+        partData.functions = interpolationFunctions();
+        partData.interpolableKeys = interpolableKeys();
+
+        partData.transitions.clear();
+        partData.sequences.clear();
+        partData.sequencedKeys.clear();
+        partData.choices.clear();
+
+        WidgetStateSystem stateSystem = sandbox.getEngine().getSystem(WidgetStateSystem.class);
+        for (String key : overrides.keys()) {
+            if (part != null) {
                 WidgetPartComponent.Transition transition = part.getTransition(state, key);
                 if (transition != null) {
-                    transitions.put(key, new WidgetOverrideTransitionVO(transition.duration, transition.interpolation));
+                    partData.transitions.put(key, new WidgetOverrideTransitionVO(transition.duration, transition.interpolation));
                 }
+                WidgetPartComponent.Sequence sequence = part.getSequence(state, key);
+                if (sequence != null) {
+                    partData.sequences.put(key, new WidgetOverrideSequenceVO(sequence.enter, sequence.exit));
+                }
+            }
+
+            // what the property can do, and what it may be set to, is the handler's business
+            StateOverrideHandler handler = stateSystem.getHandler(key);
+            if (handler == null || !handler.supports(entity)) continue;
+            if (handler instanceof SequencedOverrideHandler) partData.sequencedKeys.add(key);
+            if (handler instanceof ChoiceOverrideHandler) {
+                partData.choices.put(key, ((ChoiceOverrideHandler) handler).getChoices(entity));
             }
         }
 
-        viewComponent.setPart(roles, part == null ? "" : part.role, state, state.equals(widget.defaultState),
-                visible, overrides, transitions, interpolableKeys(), interpolationFunctions());
+        viewComponent.setPart(partData);
     }
 
     /** The properties made of numbers, which can travel to a value: asked to the state system itself. */
@@ -150,11 +179,12 @@ public class UIWidgetPartPropertiesMediator extends UIItemPropertiesMediator<UIW
         // transitions of the state being shown, as switched on and filled in the panel
         String state = widget.getState();
         ObjectMap<String, WidgetOverrideTransitionVO> entered = viewComponent.getTransitions();
+        ObjectMap<String, WidgetOverrideSequenceVO> chains = viewComponent.getSequences();
         WidgetStateOverridesVO stateOverrides = newVo.overrides.get(state);
         if (stateOverrides != null) {
             for (String key : stateOverrides.values.keys().toArray()) {
-                if (!interpolableKeys().contains(key)) continue;
-                newVo.setTransition(state, key, entered.get(key));
+                if (interpolableKeys().contains(key)) newVo.setTransition(state, key, entered.get(key));
+                if (partData.sequencedKeys.contains(key)) newVo.setSequence(state, key, chains.get(key));
             }
         }
 
