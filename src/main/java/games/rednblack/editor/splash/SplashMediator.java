@@ -65,10 +65,10 @@ public class SplashMediator extends Mediator<Object> {
                         }
 
                         if (latestVer.compareTo(currVer) > 0) {
-                            boolean result = TinyFileDialogs.tinyfd_messageBox("New update found!",
+                            int result = TinyFileDialogs.tinyfd_messageBox("New update found!",
                                     "A new version of HyperLap2D has been found " + latestVer.get() + " (current: " + currVer.get() + "), would you like to download it?",
-                                    "yesno", "info", true);
-                            if (result) {
+                                    "yesno", "info", 1);
+                            if (result == 1) {
                                 Gdx.net.openURI("https://hyperlap2d.rednblack.games/download");
                             }
                         }

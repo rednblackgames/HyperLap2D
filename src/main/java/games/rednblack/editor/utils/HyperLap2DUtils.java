@@ -246,7 +246,7 @@ public class HyperLap2DUtils {
 
                         if (rect == null)
                             rect = RECT.calloc(stack);
-                        User32.GetWindowRect(hwnd, rect);
+                        User32.GetWindowRect(null, hwnd, rect);
 
                         if (y < rect.top() + 16 && x < rect.left() + 16) {
                             return User32.HTTOPLEFT;
@@ -303,7 +303,7 @@ public class HyperLap2DUtils {
                     if (wParam == 1) {
                         try (MemoryStack stack = MemoryStack.stackPush()) {
                             WINDOWPLACEMENT windowplacement = WINDOWPLACEMENT.calloc(stack);
-                            User32.GetWindowPlacement(hwnd, windowplacement);
+                            User32.GetWindowPlacement(null, hwnd, windowplacement);
                             // ...but instead we're gonna just pretend it's just a RECT struct
                             // the NCCALCSIZE_PARAMS struct conveniently has what we need
                             // at the very start, so we can quietly say it's a RECT struct lol
@@ -330,7 +330,7 @@ public class HyperLap2DUtils {
             }
         };
         System.out.println("procaddr: " + proc.address());
-        System.out.println("setptr: " + User32.SetWindowLongPtr(hwnd, User32.GWL_WNDPROC, proc.address()));
-        System.out.println("setwinptr: " + User32.SetWindowPos(hwnd, 0, 0, 0, 0, 0, User32.SWP_NOMOVE | User32.SWP_NOSIZE | User32.SWP_NOZORDER | User32.SWP_FRAMECHANGED));
+        System.out.println("setptr: " + User32.SetWindowLongPtr(null, hwnd, User32.GWL_WNDPROC, proc.address()));
+        System.out.println("setwinptr: " + User32.SetWindowPos(null, hwnd, 0, 0, 0, 0, 0, User32.SWP_NOMOVE | User32.SWP_NOSIZE | User32.SWP_NOZORDER | User32.SWP_FRAMECHANGED));
     }
 }

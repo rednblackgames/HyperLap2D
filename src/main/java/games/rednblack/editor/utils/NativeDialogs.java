@@ -10,7 +10,7 @@ public class NativeDialogs {
     public static void showError(String message) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> TinyFileDialogs.tinyfd_messageBox("Oops! Something went wrong", message,
-                "ok", "error", true));
+                "ok", "error", 1));
         executor.shutdown();
     }
 }

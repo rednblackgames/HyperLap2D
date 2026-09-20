@@ -53,7 +53,7 @@ public class CustomExceptionHandler implements UncaughtExceptionHandler {
                 "HyperLap2D just crashed, stacktrace saved in: " + localPath.getAbsolutePath()
                         + "\n\n System: " + SystemUtils.OS_NAME + " " + SystemUtils.OS_VERSION + " (HyperLap2D v" + AppConfig.getInstance().versionString + ")"
                         + "\n\n" + stacktrace,
-                "ok", "error", true);
+                "ok", "error", 1);
         if (t != null)
             System.exit(-1);
     }

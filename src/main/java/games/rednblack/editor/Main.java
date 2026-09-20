@@ -10,6 +10,7 @@ import games.rednblack.h2d.common.HyperLog;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
 import org.apache.commons.lang3.SystemUtils;
+import org.lwjgl.glfw.GLFW;
 
 import java.io.*;
 import java.lang.management.ManagementFactory;
