@@ -1,6 +1,8 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -16,10 +18,10 @@ import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.renderer.data.WidgetOverrideSequenceVO;
 import games.rednblack.editor.renderer.data.WidgetOverrideTransitionVO;
-import games.rednblack.editor.renderer.widget.handlers.CoreStateOverrides;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.widget.TintButton;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
@@ -75,6 +77,8 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
         public ObjectMap<String, Array<String>> choices = new ObjectMap<>();
         /** names of the interpolation functions to choose from */
         public Array<String> functions = new Array<>();
+        /** property key -> the colour its value is, for the ones that are colours on this item */
+        public ObjectMap<String, Color> colors = new ObjectMap<>();
     }
 
     public void setPart(PartData data) {
@@ -204,7 +208,18 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
             });
 
             VisTable value = new VisTable();
-            PropertyGrid.elastic(value.add(PropertyGrid.valueEllipsized(overrides.get(key)))).left();
+            Color color = data.colors.get(key);
+            if (color != null) {
+                // a colour reads better as itself than as the numbers it is stored as
+                TintButton swatch = StandardWidgetsFactory.createTintButton();
+                swatch.setColorValue(color);
+                swatch.setTouchable(Touchable.disabled);
+                // its size is set here, not taken from the swatch, or a stretched one would keep
+                // asking for the width it was last given
+                value.add(swatch).growX().minWidth(0).prefWidth(0).height(PropertyGrid.FIELD_HEIGHT);
+            } else {
+                PropertyGrid.elastic(value.add(PropertyGrid.valueEllipsized(overrides.get(key)))).left();
+            }
             value.add(reset).height(PropertyGrid.FIELD_HEIGHT).padLeft(PropertyGrid.BUTTON_GAP);
 
             // An animation can open and close on another one: the state starts on its entry, keeps

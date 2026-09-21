@@ -1,6 +1,13 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
+import com.kotcrab.vis.ui.widget.color.ColorPicker;
+import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
+import games.rednblack.editor.proxy.PluginUIBridge;
+import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
+import games.rednblack.puremvc.interfaces.INotification;
+import games.rednblack.puremvc.util.Interests;
 import com.badlogic.gdx.utils.ObjectMap;
 import games.rednblack.editor.controller.commands.component.UpdateTalosDataCommand;
 import games.rednblack.h2d.extension.talos.TalosAnchorConstraintComponent;
@@ -19,6 +26,52 @@ public class UITalosPropertiesMediator extends UIItemPropertiesMediator<UITalosP
     }
 
     @Override
+    public void listNotificationInterests(Interests interests) {
+        super.listNotificationInterests(interests);
+        interests.add(UITalosProperties.SCOPE_COLOR_CLICKED);
+    }
+
+    @Override
+    public void handleNotification(INotification notification) {
+        super.handleNotification(notification);
+        if (!validReference()) return;
+
+        if (UITalosProperties.SCOPE_COLOR_CLICKED.equals(notification.getName())) {
+            pickScopeColor(notification.getBody());
+        }
+    }
+
+    /**
+     * The effect shows the colour live while it is being picked, straight from the slot, and only
+     * picking it for good goes through a command, like the tint of an item does.
+     */
+    private void pickScopeColor(final int key) {
+        final TalosComponent talosComponent = entityData.get(observableReference, TalosComponent.class);
+        final float[] before = viewComponent.getScopeValue(key);
+
+        ColorPicker picker = new HyperLapColorPicker(new ColorPickerAdapter() {
+            @Override
+            public void changed(Color color) {
+                talosComponent.pushScopeValue(key, new float[]{color.r, color.g, color.b, color.a});
+            }
+
+            @Override
+            public void canceled(Color oldColor) {
+                talosComponent.pushScopeValue(key, before);
+            }
+
+            @Override
+            public void finished(Color color) {
+                talosComponent.pushScopeValue(key, before);
+                viewComponent.setScopeColor(key, color);
+                facade.sendNotification(viewComponent.getUpdateEventName());
+            }
+        });
+        picker.setColor(new Color(before[0], before[1], before[2], before[3]));
+        PluginUIBridge.get().getSandbox().getUIStage().addActor(picker.fadeIn());
+    }
+
+    @Override
     protected void translateObservableDataToView(int item) {
         TalosComponent talosComponent = entityData.get(item, TalosComponent.class);
         viewComponent.setMatrixTransformEnabled(talosComponent.transform);
@@ -32,13 +85,15 @@ public class UITalosPropertiesMediator extends UIItemPropertiesMediator<UITalosP
         }
 
         ObjectMap<Integer, float[]> values = new ObjectMap<>();
+        ObjectMap<Integer, TalosComponent.ScopeKind> kinds = new ObjectMap<>();
         for (int key : keys) {
             float[] value = new float[TalosComponent.ScopeValue.CHANNELS];
             talosComponent.getScopeValue(key, value);
             values.put(key, value);
+            kinds.put(key, talosComponent.getScopeKind(key));
         }
 
-        viewComponent.setScopeSlots(keys, values);
+        viewComponent.setScopeSlots(keys, kinds, values);
     }
 
     private static boolean isAnchored(TalosAnchorConstraintComponent anchor, int key) {

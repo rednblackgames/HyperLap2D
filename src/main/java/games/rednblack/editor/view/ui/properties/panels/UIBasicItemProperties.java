@@ -142,7 +142,7 @@ public class UIBasicItemProperties extends UIItemProperties implements RemoteEdi
         grid.row("Rotation", rotationValue);
 
         grid.section("Appearance");
-        grid.rowCompact("Tint", tintColorComponent);
+        grid.row("Tint", tintColorComponent);
         grid.togglePair("Flip", "X", flipX, "Y", flipY);
 
         grid.section("Metadata");

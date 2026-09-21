@@ -79,7 +79,7 @@ public class UILightBodyProperties extends UIRemovableProperties implements Remo
 
         PropertyGrid grid = PropertyGrid.on(mainTable);
         grid.row("Direction", directionBox);
-        grid.rowCompact("Color", lightColor);
+        grid.row("Color", lightColor);
         grid.row("Ray count", raysTextSelector);
         grid.row("Distance", distanceTextField);
         grid.row("Height", heightField);

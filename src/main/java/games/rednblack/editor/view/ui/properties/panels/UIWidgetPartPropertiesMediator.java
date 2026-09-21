@@ -14,7 +14,9 @@ import games.rednblack.editor.renderer.data.WidgetStateOverridesVO;
 import games.rednblack.editor.renderer.systems.WidgetStateSystem;
 import games.rednblack.editor.renderer.utils.InterpolationMap;
 import games.rednblack.editor.renderer.data.WidgetOverrideSequenceVO;
+import com.badlogic.gdx.graphics.Color;
 import games.rednblack.editor.renderer.widget.ChoiceOverrideHandler;
+import games.rednblack.editor.renderer.widget.ColorPreviewHandler;
 import games.rednblack.editor.renderer.widget.InterpolableOverrideHandler;
 import games.rednblack.editor.renderer.widget.SequencedOverrideHandler;
 import games.rednblack.editor.renderer.widget.ToggleOverrideHandler;
@@ -111,6 +113,7 @@ public class UIWidgetPartPropertiesMediator extends UIItemPropertiesMediator<UIW
         partData.sequencedKeys.clear();
         partData.choices.clear();
         partData.toggles.clear();
+        partData.colors.clear();
 
         WidgetStateSystem stateSystem = sandbox.getEngine().getSystem(WidgetStateSystem.class);
 
@@ -139,6 +142,10 @@ public class UIWidgetPartPropertiesMediator extends UIItemPropertiesMediator<UIW
             if (handler instanceof SequencedOverrideHandler) partData.sequencedKeys.add(key);
             if (handler instanceof ChoiceOverrideHandler) {
                 partData.choices.put(key, ((ChoiceOverrideHandler) handler).getChoices(entity));
+            }
+            if (handler instanceof ColorPreviewHandler) {
+                Color color = new Color();
+                if (((ColorPreviewHandler) handler).toColor(entity, overrides.get(key), color)) partData.colors.put(key, color);
             }
         }
 

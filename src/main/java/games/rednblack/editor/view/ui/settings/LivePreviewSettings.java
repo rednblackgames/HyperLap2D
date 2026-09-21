@@ -19,6 +19,10 @@ import games.rednblack.puremvc.Facade;
 
 public class LivePreviewSettings extends SettingsNodeValue<ProjectVO> {
 
+    /** Three times the default swatch, and fixed: a settings page has room, but nothing to fill. */
+    private static final int SWATCH_WIDTH = 29 * 3;
+    private static final int SWATCH_HEIGHT = 21;
+
     private final TintButton tintButton;
     private final VisCheckBox box2dDebug;
 
@@ -26,7 +30,7 @@ public class LivePreviewSettings extends SettingsNodeValue<ProjectVO> {
         super("Live Preview", facade);
 
         box2dDebug = StandardWidgetsFactory.createSwitch();
-        tintButton = StandardWidgetsFactory.createTintButton();
+        tintButton = StandardWidgetsFactory.createTintButton(SWATCH_WIDTH, SWATCH_HEIGHT);
 
         tintButton.addListener(new ClickListener() {
             @Override

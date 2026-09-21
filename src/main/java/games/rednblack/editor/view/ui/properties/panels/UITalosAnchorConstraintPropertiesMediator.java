@@ -84,6 +84,16 @@ public class UITalosAnchorConstraintPropertiesMediator extends UIRemovableCompon
             }
         }
 
+        // An anchor places a point, so only slots that could be one are offered: the ones the effect
+        // reads as a vector, and the ones whose use cannot be told, since those might be positions.
+        for (int i = scopeKeys.size - 1; i >= 0; i--) {
+            TalosComponent.ScopeKind kind = talosComp.getScopeKind(scopeKeys.get(i));
+            if (kind != TalosComponent.ScopeKind.VECTOR && kind != TalosComponent.ScopeKind.UNKNOWN) {
+                // a slot already bound keeps its row, or the binding could not be undone from here
+                if (findBinding(anchorComp, scopeKeys.get(i)) == null) scopeKeys.removeIndex(i);
+            }
+        }
+
         scopeKeys.sort();
         viewComponent.rebuildRows(scopeKeys);
 

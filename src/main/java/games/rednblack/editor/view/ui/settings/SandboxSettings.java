@@ -23,6 +23,10 @@ import java.util.function.Supplier;
 
 public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
 
+    /** Three times the default swatch, and fixed: a settings page has room, but nothing to fill. */
+    private static final int SWATCH_WIDTH = 29 * 3;
+    private static final int SWATCH_HEIGHT = 21;
+
     private final VisCheckBox disableAmbientComposite, showBoundBoxes, clickableTypingLabels;
     private final TintButton tintButton;
     private final VisSlider scrollVelocity, timeScale;
@@ -35,7 +39,7 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
         clickableTypingLabels = StandardWidgetsFactory.createSwitch();
         scrollVelocity = StandardWidgetsFactory.createSlider(30, 400, 1);
         timeScale = StandardWidgetsFactory.createSlider(0.1f, 2f, 0.1f);
-        tintButton = StandardWidgetsFactory.createTintButton();
+        tintButton = StandardWidgetsFactory.createTintButton(SWATCH_WIDTH, SWATCH_HEIGHT);
 
         timeScale.addListener(new ChangeListener() {
             @Override

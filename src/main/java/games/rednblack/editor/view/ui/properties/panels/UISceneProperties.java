@@ -88,7 +88,7 @@ public class UISceneProperties extends UIAbstractProperties implements RemoteEdi
         grid.row("Sleep velocity", sleepVelocityTextField);
 
         grid.section("Lights", enableLightsCheckBox);
-        grid.rowCompact("Ambient color", ambientColorComponent);
+        grid.row("Ambient color", ambientColorComponent);
         grid.row("Light type", lightTypeBox);
         grid.row("Shadows blur", blurNumTextField);
         grid.row("Scale quality", lightMapScaleTextField);
@@ -96,7 +96,7 @@ public class UISceneProperties extends UIAbstractProperties implements RemoteEdi
 
         PropertyGrid directional = PropertyGrid.on(directionalTable, grid);
         directional.section("Directional light");
-        directional.rowCompact("Color", directionalLightColor);
+        directional.row("Color", directionalLightColor);
         directional.rowCompact("Rays", directionalRays);
         directional.row("Degree", directionalDegreeTextField);
         directional.row("Height", directionalHeightTextField);
