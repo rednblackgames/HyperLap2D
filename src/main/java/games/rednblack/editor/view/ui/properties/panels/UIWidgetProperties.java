@@ -25,6 +25,8 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties {
     public static final String PREFIX = "games.rednblack.editor.view.ui.properties.panels.UIWidgetProperties";
 
     private static final float CHIP_GAP = 4;
+    private static final String CHIP_BACKGROUND = "toolbar-over";
+    private static final String CHIP_BACKGROUND_LIT = "toolbar-down";
 
     private final OrderedMap<String, Actor> settingFields = new OrderedMap<>();
     private final OrderedMap<String, VisTable> stateChips = new OrderedMap<>();
@@ -70,7 +72,8 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties {
         grid.row("Type", PropertyGrid.valueEllipsized(typeName == null || typeName.isEmpty() ? "custom" : typeName));
 
         grid.section("States");
-        grid.wide(createStateChips(states));
+        // a row that fills the width it is given and asks for none, so it can never widen the panel
+        grid.wideFill(createStateChips(states));
 
         if (type == null) return;
 
@@ -115,6 +118,10 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties {
 
         for (String state : states) {
             VisTable chip = new VisTable();
+            // Measured with a background on: a background adds its borders to the width of the chip,
+            // and one set only later would make every chip wider than the line it was fitted into.
+            // The lit one differs only in colour, so swapping them later keeps the width.
+            chip.setBackground(VisUI.getSkin().getDrawable(CHIP_BACKGROUND));
             chip.add(PropertyGrid.text(state)).pad(2, 7, 3, 7);
             chip.pack();
             stateChips.put(state, chip);
@@ -149,7 +156,7 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties {
 
         Skin skin = VisUI.getSkin();
         for (ObjectMap.Entry<String, VisTable> chip : stateChips) {
-            chip.value.setBackground(skin.getDrawable(chip.key.equals(state) ? "toolbar-down" : "toolbar-over"));
+            chip.value.setBackground(skin.getDrawable(chip.key.equals(state) ? CHIP_BACKGROUND_LIT : CHIP_BACKGROUND));
         }
     }
 
