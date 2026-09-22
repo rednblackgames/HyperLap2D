@@ -10,6 +10,8 @@ import games.rednblack.editor.renderer.ecs.ComponentMapper;
 import games.rednblack.editor.renderer.ecs.Engine;
 import games.rednblack.editor.renderer.systems.WidgetStateSystem;
 import games.rednblack.editor.renderer.widget.StateOverrideHandler;
+import games.rednblack.editor.renderer.widget.WidgetType;
+import games.rednblack.editor.renderer.widget.WidgetTypes;
 import games.rednblack.editor.renderer.widget.handlers.CoreStateOverrides;
 
 import java.util.Objects;
@@ -42,6 +44,7 @@ public class WidgetStateRecorder {
      */
     private final ObjectMap<String, ObjectMap<String, String>> knownBase = new ObjectMap<>();
     private boolean overridesChanged;
+    private static final int MAX_INHERITANCE = 8;
 
     public WidgetStateRecorder(Engine engine) {
         this.engine = engine;
@@ -82,7 +85,7 @@ public class WidgetStateRecorder {
 
         boolean recording = !widget.getState().equals(widget.defaultState);
         overridesChanged = false;
-        visitParts(widgetEntity, widget.getState(), recording);
+        visitParts(widgetEntity, widget, widget.getState(), recording);
         return overridesChanged;
     }
 
@@ -90,7 +93,7 @@ public class WidgetStateRecorder {
         knownBase.clear();
     }
 
-    private void visitParts(int parent, String state, boolean recording) {
+    private void visitParts(int parent, WidgetComponent widget, String state, boolean recording) {
         NodeComponent node = nodeCM.get(parent);
         if (node == null) return;
 
@@ -98,14 +101,14 @@ public class WidgetStateRecorder {
             int child = node.children.get(i);
 
             stateSystem.applyNow(child);
-            if (recording) recordEntity(child, state);
+            if (recording) recordEntity(child, widget, state);
 
             // parts of a nested widget follow that widget, not this one
-            if (!widgetCM.has(child)) visitParts(child, state, recording);
+            if (!widgetCM.has(child)) visitParts(child, widget, state, recording);
         }
     }
 
-    private void recordEntity(int entity, String state) {
+    private void recordEntity(int entity, WidgetComponent widget, String state) {
         MainItemComponent mainItem = mainItemCM.get(entity);
         if (mainItem == null || mainItem.uniqueId == null) return;
 
@@ -119,7 +122,7 @@ public class WidgetStateRecorder {
 
         for (String key : stateSystem.getHandlerKeys()) {
             StateOverrideHandler handler = stateSystem.getHandler(key);
-            if (!handler.supports(entity) || !isRecordable(entity, key)) continue;
+            if (!handler.supports(entity) || !isRecordable(entity, widget, key)) continue;
 
             String live = handler.capture(entity);
 
@@ -134,7 +137,11 @@ public class WidgetStateRecorder {
             }
             entityBase.put(key, base);
 
-            if (!Objects.equals(live, base)) {
+            // What the state would show without an override of its own: the value a state it builds
+            // on gives the property, or else the base one. Only a difference from that is its own.
+            String reference = inheritedValue(part, widget, state, key, base);
+
+            if (!Objects.equals(live, reference)) {
                 if (part == null) {
                     part = partCM.create(entity);
                     part.appliedState = state;
@@ -156,16 +163,37 @@ public class WidgetStateRecorder {
                 // are both of no use any more
                 part.removeTransition(state, key);
                 part.removeSequence(state, key);
-                part.baseSnapshot.remove(key);
+                // still off its base while an inherited value holds it, which restoring needs to know
+                if (Objects.equals(reference, base)) part.baseSnapshot.remove(key);
             }
         }
     }
 
+    /** @return the value the nearest state this one builds on gives the property, else the base one */
+    private String inheritedValue(WidgetPartComponent part, WidgetComponent widget, String state, String key, String base) {
+        if (part == null) return base;
+
+        int depth = 0;
+        for (String link = widget.parentOf(state); link != null && depth++ < MAX_INHERITANCE; link = widget.parentOf(link)) {
+            ObjectMap<String, String> overrides = part.overrides.get(link);
+            if (overrides != null && overrides.containsKey(key)) return overrides.get(key);
+        }
+        return base;
+    }
+
     /**
-     * A position driven by layout constraints moves on its own whenever a sibling changes, which is
-     * not an edit of the state.
+     * A position driven by layout constraints moves on its own whenever a sibling changes, and a part
+     * the widget drives, such as the knob of a progress bar, is moved by the widget: neither is an
+     * edit of the state.
      */
-    private boolean isRecordable(int entity, String key) {
+    private boolean isRecordable(int entity, WidgetComponent widget, String key) {
+        WidgetPartComponent part = partCM.get(entity);
+        WidgetType type = WidgetTypes.get(widget.widgetType);
+        if (part != null && type != null && part.role != null && !part.role.isEmpty()) {
+            WidgetType.Part role = type.getPart(part.role);
+            if (role != null && role.drivenKeys.contains(key, false)) return false;
+        }
+
         LayoutComponent layout = layoutCM.get(entity);
         if (layout == null) return true;
 

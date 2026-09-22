@@ -7,10 +7,14 @@ import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
+import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
+import games.rednblack.editor.event.SelectBoxChangeListener;
+import games.rednblack.editor.renderer.utils.InterpolationMap;
+import games.rednblack.editor.view.ui.box.UIWidgetStateStrip;
 import games.rednblack.editor.renderer.widget.WidgetType;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.h2d.common.view.ui.PropertyGrid;
@@ -56,10 +60,24 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties {
             String value = settings.get(field.key);
             if (field.value instanceof VisCheckBox) {
                 ((VisCheckBox) field.value).setChecked(Boolean.parseBoolean(value));
+            } else if (field.value instanceof VisSelectBox) {
+                ((VisSelectBox<String>) field.value).setSelected(value);
             } else {
-                ((VisTextField) field.value).setText(value == null ? "" : value);
+                // only when it differs, so the field being typed in keeps its cursor
+                VisTextField text = (VisTextField) field.value;
+                String shown = value == null ? "" : value;
+                if (!shown.equals(text.getText())) text.setText(shown);
             }
         }
+    }
+
+    /** The same list the action editor's interpolation node offers, sorted, the default one first. */
+    private static Array<String> interpolationFunctions() {
+        Array<String> names = new Array<>();
+        for (String name : InterpolationMap.map.keySet()) names.add(name);
+        names.sort();
+        if (names.removeValue("linear", false)) names.insert(0, "linear");
+        return names;
     }
 
     private void rebuild(WidgetType type, String typeName, Array<String> states, ObjectMap<String, String> assignedParts) {
@@ -80,16 +98,23 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties {
         if (type.properties.size > 0) {
             grid.section("Settings");
             for (WidgetType.Property property : type.properties) {
+                String label = UIWidgetPartProperties.label(property.key);
                 if (property.kind == WidgetType.PropertyKind.BOOLEAN) {
                     VisCheckBox toggle = StandardWidgetsFactory.createSwitch();
                     toggle.addListener(new CheckBoxChangeListener(getUpdateEventName()));
                     settingFields.put(property.key, toggle);
-                    grid.toggle(property.key, toggle);
+                    grid.toggle(label, toggle);
+                } else if (property.kind == WidgetType.PropertyKind.INTERPOLATION) {
+                    VisSelectBox<String> functions = StandardWidgetsFactory.createSelectBox(String.class);
+                    functions.setItems(interpolationFunctions());
+                    functions.addListener(new SelectBoxChangeListener(getUpdateEventName()));
+                    settingFields.put(property.key, functions);
+                    grid.row(label, functions);
                 } else {
                     VisTextField field = StandardWidgetsFactory.createTextField();
                     field.addListener(new KeyboardListener(getUpdateEventName()));
                     settingFields.put(property.key, field);
-                    grid.row(property.key, field);
+                    grid.row(label, field);
                 }
             }
         }
@@ -122,7 +147,7 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties {
             // and one set only later would make every chip wider than the line it was fitted into.
             // The lit one differs only in colour, so swapping them later keeps the width.
             chip.setBackground(VisUI.getSkin().getDrawable(CHIP_BACKGROUND));
-            chip.add(PropertyGrid.text(state)).pad(2, 7, 3, 7);
+            chip.add(PropertyGrid.text(UIWidgetStateStrip.stateLabel(state))).pad(2, 7, 3, 7);
             chip.pack();
             stateChips.put(state, chip);
 
@@ -171,6 +196,8 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties {
         for (ObjectMap.Entry<String, Actor> field : settingFields) {
             if (field.value instanceof VisCheckBox) {
                 values.put(field.key, Boolean.toString(((VisCheckBox) field.value).isChecked()));
+            } else if (field.value instanceof VisSelectBox) {
+                values.put(field.key, String.valueOf(((VisSelectBox<?>) field.value).getSelected()));
             } else {
                 values.put(field.key, ((VisTextField) field.value).getText());
             }

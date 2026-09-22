@@ -18,6 +18,7 @@ import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.renderer.data.WidgetOverrideSequenceVO;
 import games.rednblack.editor.renderer.data.WidgetOverrideTransitionVO;
+import games.rednblack.editor.view.ui.box.UIWidgetStateStrip;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
@@ -158,7 +159,7 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
             grid.row("Role", roleBox);
         }
 
-        grid.section("Overrides in \"" + state + "\"");
+        grid.section("Overrides in \"" + UIWidgetStateStrip.stateLabel(state) + "\"");
 
         // A property that is simply on or off is a yes or no with nothing to reset, so it gets a
         // switch under the heading rather than a block of its own further down.
@@ -288,7 +289,7 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
      * Turns a property key into something to read: {@code scaleY} becomes {@code Scale Y} and
      * {@code y} becomes {@code Y}. Keys are field names, headings are words.
      */
-    private static String label(String key) {
+    public static String label(String key) {
         StringBuilder label = new StringBuilder(key.length() + 4);
         for (int i = 0; i < key.length(); i++) {
             char c = key.charAt(i);

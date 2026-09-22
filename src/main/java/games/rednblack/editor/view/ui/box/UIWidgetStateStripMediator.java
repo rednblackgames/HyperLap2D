@@ -96,11 +96,12 @@ public class UIWidgetStateStripMediator extends Mediator<UIWidgetStateStrip> {
         WidgetComponent widgetComponent = widget == -1 ? null : SandboxComponentRetriever.get(widget, WidgetComponent.class);
         if (widgetComponent == null) {
             shownWidgetId = null;
-            viewComponent.setStates(null, null, null);
+            viewComponent.setStates(null, null, null, null);
             return;
         }
 
         shownWidgetId = EntityUtils.getEntityId(widget);
-        viewComponent.setStates(widgetComponent.widgetType, widgetComponent.states, widgetComponent.getState());
+        viewComponent.setStates(widgetComponent.widgetType, widgetComponent.states, widgetComponent.parents,
+                widgetComponent.getState());
     }
 }
