@@ -2,6 +2,7 @@ package games.rednblack.editor.live;
 import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -77,7 +78,11 @@ public class LivePreviewScreen extends ScreenAdapter implements GestureDetector.
 
         bgColor = projectManager.currentProjectVO.backgroundColor;
 
-        Gdx.input.setInputProcessor(new GestureDetector(this));
+        //the scene comes first, the way a game wires it: what a widget takes is not a camera gesture
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        if (sceneLoader.getUIInput() != null) multiplexer.addProcessor(sceneLoader.getUIInput());
+        multiplexer.addProcessor(new GestureDetector(this));
+        Gdx.input.setInputProcessor(multiplexer);
 
         cameraTargetPos.set(mCamera.position);
     }

@@ -15,6 +15,7 @@ import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ViewPortComponent;
 import games.rednblack.editor.renderer.data.LayerItemVO;
+import games.rednblack.editor.renderer.systems.UIInputSystem;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.renderer.utils.TransformMathUtils;
 import games.rednblack.editor.utils.EntityBounds;
@@ -77,10 +78,10 @@ public class SandboxInputAdapter implements InputProcessor {
 			return false;
 		}
 
-		Viewport viewPort = EntityDataProxy.get().get(rootEntity, ViewPortComponent.class).viewPort;
-		if (screenX < viewPort.getScreenX() || screenX >= viewPort.getScreenX() + viewPort.getScreenWidth()) return false;
-		if (Gdx.graphics.getHeight() - screenY < viewPort.getScreenY()
-			|| Gdx.graphics.getHeight() - screenY >= viewPort.getScreenY() + viewPort.getScreenHeight()) return false;
+		if (!insideSandbox(screenX, screenY)) return false;
+
+		UIInputSystem uiInput = uiInput();
+		if (uiInput != null) uiInput.touchDown(screenX, screenY, pointer, button);
 
 		hitTargetLocalCoordinates.set(screenX, screenY);
 		screenToSceneCoordinates(rootEntity, hitTargetLocalCoordinates);
@@ -125,6 +126,9 @@ public class SandboxInputAdapter implements InputProcessor {
 			return false;
 		}
 
+		UIInputSystem uiInput = uiInput();
+		if (uiInput != null) uiInput.touchUp(screenX, screenY, pointer, button);
+
 		if(target == -1){
 			hitTargetLocalCoordinates.set(screenX, screenY);
 			screenToSceneCoordinates(rootEntity, hitTargetLocalCoordinates);
@@ -160,6 +164,9 @@ public class SandboxInputAdapter implements InputProcessor {
 			return false;
 		}
 
+		UIInputSystem uiInput = uiInput();
+		if (uiInput != null) uiInput.touchDragged(screenX, screenY, pointer);
+
 		if(target == -1){
 			hitTargetLocalCoordinates.set(screenX, screenY);
 			screenToSceneCoordinates(rootEntity, hitTargetLocalCoordinates);
@@ -183,7 +190,36 @@ public class SandboxInputAdapter implements InputProcessor {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+		UIInputSystem uiInput = uiInput();
+		if (uiInput == null) return false;
+
+		//outside the sandbox the pointer belongs to the editor, nothing in the scene is hovered
+		if (insideSandbox(screenX, screenY)) uiInput.mouseMoved(screenX, screenY);
+		else uiInput.clearHover();
+
 		return false;
+	}
+
+	/**
+	 * The input of the scene being edited, so widgets can be tried out on the spot: a button lights
+	 * up and clicks, a slider follows the pointer. What it does with an event is never taken into
+	 * account, so selecting, dragging and entering composites keep working over a live widget.
+	 */
+	private UIInputSystem uiInput() {
+		return sandbox.getEngine() == null ? null : sandbox.getEngine().getSystem(UIInputSystem.class);
+	}
+
+	private boolean insideSandbox(int screenX, int screenY) {
+		rootEntity = sandbox.getCurrentViewingEntity();
+		if (rootEntity == -1) return false;
+
+		ViewPortComponent viewPortComponent = EntityDataProxy.get().get(rootEntity, ViewPortComponent.class);
+		if (viewPortComponent == null || viewPortComponent.viewPort == null) return false;
+
+		Viewport viewPort = viewPortComponent.viewPort;
+		if (screenX < viewPort.getScreenX() || screenX >= viewPort.getScreenX() + viewPort.getScreenWidth()) return false;
+		return Gdx.graphics.getHeight() - screenY >= viewPort.getScreenY()
+				&& Gdx.graphics.getHeight() - screenY < viewPort.getScreenY() + viewPort.getScreenHeight();
 	}
 
 	@Override

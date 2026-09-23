@@ -19,8 +19,10 @@
 
 **Runtime**
 - Support for GUI Widgets
+- New UI input system: `UIInputSystem` ECS equivalent to Scene2D input management with: hover, drag, scroll, keyboard focus and capture listeners for modal panels. An entity takes part in input only when `InputTargetComponent` is attached
+- [BREAK CHANGE] Buttons no longer poll the mouse: add `sceneLoader.getUIInput()` to the game's input multiplexer
 - [BREAK CHANGE] Removed CompositeActor
-- [BREAK CHANGE] Removed old "button" TAG and legacy button system (migrated to widgets)
+- [BREAK CHANGE] Removed old "button" TAG and legacy button system, including the `normal`/`pressed` layer swap (migrated to widgets). A `ButtonComponent` without a widget is input alone: listeners, pressed and checked flags
 - [BREAK CHANGE] Fork TenPatch into runtime codebase, `NinePatchComponent#ninePatch` replaced by `NinePatchComponent#tenPatch`
 - [BREAK CHANGE] Fork Artemis-ODB into runtime codebase
 - [BREAK CHANGE] Any reference to Artemis' World was changed to `Engine`

@@ -526,7 +526,7 @@ public class ResolutionManager extends Proxy {
 
         Gdx.app.postRunnable(() -> {
             facade.sendNotification(MsgAPI.SHOW_LOADING_DIALOG);
-            facade.sendNotification(LoadingBarDialog.SET_PHASES, phases.toArray(String.class));
+            facade.sendNotification(LoadingBarDialog.SET_PHASES, phases.toArray(String[]::new));
             facade.sendNotification(LoadingBarDialog.SET_PHASE, PHASE_PACKING);
             facade.sendNotification(LoadingBarDialog.SET_PROGRESS, 0f);
         });
