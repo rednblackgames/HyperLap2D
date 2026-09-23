@@ -23,10 +23,12 @@ import games.rednblack.editor.controller.commands.component.UpdateCompositeDataC
 import games.rednblack.editor.renderer.components.CompositeTransformComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.systems.CompositeSystem;
-import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.puremvc.Facade;
+
+import games.rednblack.editor.renderer.components.widget.WidgetComponent;
+import games.rednblack.editor.renderer.widget.WidgetType;
+import games.rednblack.editor.renderer.widget.WidgetTypes;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -49,6 +51,10 @@ public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<
         viewComponent.setAutomaticResize(transformComponent.automaticResize);
         viewComponent.setScissorsEnabled(transformComponent.scissorsEnabled);
         viewComponent.setRenderToFBOEnabled(transformComponent.renderToFBO);
+
+        WidgetComponent widget = entityData.get(item, WidgetComponent.class);
+        WidgetType widgetType = widget == null ? null : WidgetTypes.get(widget.widgetType);
+        viewComponent.setOwnedByWidget(widgetType != null && widgetType.clipsContent);
     }
 
     @Override

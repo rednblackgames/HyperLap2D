@@ -7,6 +7,7 @@
     - CheckBox
     - ProgressBar
     - Slider
+    - ScrollPane
 - Remote control with built-in MCP server
 - Update libGDX to 1.14.3-SNAPSHOT (WIP), LWJGL to 3.4.3, Spine to 4.2.12, Talos Legacy to 1.6.0, TextraTypist 2.5.0
 - Incremental atlas updates with repacks only when necessary
@@ -20,6 +21,7 @@
 
 **Runtime**
 - Support for GUI Widgets
+- Composite Scissors are now correct at any depth
 - New UI input system: `UIInputSystem` ECS equivalent to Scene2D input management with: hover, drag, scroll, keyboard focus and capture listeners for modal panels. An entity takes part in input only when `InputTargetComponent` is attached
 - [BREAK CHANGE] Buttons no longer poll the mouse: add `sceneLoader.getUIInput()` to the game's input multiplexer
 - [BREAK CHANGE] Removed CompositeActor

@@ -39,10 +39,10 @@ import games.rednblack.editor.renderer.ExternalTypesConfiguration;
 import games.rednblack.editor.renderer.SceneConfiguration;
 import games.rednblack.editor.renderer.SceneLoader;
 import games.rednblack.editor.renderer.components.ViewPortComponent;
-import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
 import games.rednblack.editor.renderer.systems.ButtonSystem;
+import games.rednblack.editor.renderer.systems.ScrollPaneSystem;
 import games.rednblack.editor.renderer.systems.SliderSystem;
 import games.rednblack.editor.renderer.systems.CullingSystem;
 import games.rednblack.editor.renderer.systems.LightSystem;
@@ -54,6 +54,7 @@ import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.renderer.utils.TextureArrayCpuPolygonSpriteBatch;
 import games.rednblack.editor.system.HyperLap2dRendererMiniMap;
 import games.rednblack.editor.system.EditorButtonSystem;
+import games.rednblack.editor.system.EditorScrollPaneSystem;
 import games.rednblack.editor.system.EditorSliderSystem;
 import games.rednblack.editor.system.ParticleContinuousSystem;
 import games.rednblack.editor.system.PhysicsAdjustSystem;
@@ -62,10 +63,7 @@ import games.rednblack.editor.utils.NativeDialogs;
 import games.rednblack.editor.view.ItemControlMediator;
 import games.rednblack.editor.view.SceneControlMediator;
 import games.rednblack.editor.view.stage.input.InputListener;
-import games.rednblack.editor.view.stage.tools.PanTool;
 import games.rednblack.editor.view.ui.widget.actors.basic.PixelRect;
-import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.h2d.common.vo.ProjectVO;
 import games.rednblack.h2d.common.vo.SceneConfigVO;
 import games.rednblack.h2d.extension.bvb.BVBItemType;
 import games.rednblack.h2d.extension.talos.TalosItemType;
@@ -74,8 +72,6 @@ import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelItemType;
 import games.rednblack.h2d.extension.typinglabel.TypingLabelSystem;
 import games.rednblack.puremvc.Facade;
-
-import java.util.HashMap;
 
 /**
  * Sandbox is a complex hierarchy of managing classes that is supposed to be a main hub for the "commands" the part of editor where
@@ -169,6 +165,8 @@ public class Sandbox {
         config.addSystem(new EditorButtonSystem());
         config.removeSystem(SliderSystem.class);
         config.addSystem(new EditorSliderSystem());
+        config.removeSystem(ScrollPaneSystem.class);
+        config.addSystem(new EditorScrollPaneSystem());
         //Re-added to keep it right after the button logic: a new state is drawn the same frame
         config.addSystem(new WidgetStateSystem());
 

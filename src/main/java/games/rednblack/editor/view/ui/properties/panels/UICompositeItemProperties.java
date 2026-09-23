@@ -78,6 +78,15 @@ public class UICompositeItemProperties extends UIItemCollapsibleProperties imple
         scissorsEnabledCheckBox.setDisabled(renderToFBO);
     }
 
+    /**
+     * A widget such as a scroll pane keeps its own rectangle and clips what it holds: both switches
+     * belong to it, so they are shown as they are and cannot be changed by hand.
+     */
+    public void setOwnedByWidget(boolean owned) {
+        scissorsEnabledCheckBox.setDisabled(owned);
+        automaticResizeCheckBox.setDisabled(owned);
+    }
+
     public boolean isAutomaticResizeIsEnabled(){
         return automaticResizeCheckBox.isChecked();
     }
