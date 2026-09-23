@@ -1,13 +1,11 @@
 package games.rednblack.editor.system;
 
-import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.WidgetEditingProxy;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.additional.ButtonComponent;
 import games.rednblack.editor.renderer.components.widget.WidgetComponent;
 import games.rednblack.editor.renderer.ecs.annotations.All;
 import games.rednblack.editor.renderer.systems.ButtonSystem;
-import games.rednblack.editor.view.stage.Sandbox;
 
 /**
  * Button logic for the editor. Buttons react to the mouse in the sandbox like they do in a game, so
@@ -27,16 +25,6 @@ public class EditorButtonSystem extends ButtonSystem {
     }
 
     private boolean isBeingEdited(int entity) {
-        Sandbox sandbox = PluginUIBridge.get().getSandbox();
-        if (sandbox == null) return true;
-
-        // edited from the inside, however deep the view is
-        if (WidgetEditingProxy.findWidget(sandbox.getCurrentViewingEntity()) == entity) return true;
-
-        // or still showing a state picked in the bar (undo can bring one back from outside the widget)
-        String editedWidgetId = WidgetEditingProxy.get().getEditedWidgetId();
-        if (editedWidgetId == null) return false;
-        MainItemComponent mainItem = mainItemComponentMapper.get(entity);
-        return mainItem != null && editedWidgetId.equals(mainItem.uniqueId);
+        return WidgetEditingProxy.isBeingEdited(entity, mainItemComponentMapper.get(entity));
     }
 }

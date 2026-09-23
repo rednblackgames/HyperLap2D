@@ -43,6 +43,7 @@ import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
 import games.rednblack.editor.renderer.systems.ButtonSystem;
+import games.rednblack.editor.renderer.systems.SliderSystem;
 import games.rednblack.editor.renderer.systems.CullingSystem;
 import games.rednblack.editor.renderer.systems.LightSystem;
 import games.rednblack.editor.renderer.systems.ParticleSystem;
@@ -53,6 +54,7 @@ import games.rednblack.editor.renderer.utils.HyperJson;
 import games.rednblack.editor.renderer.utils.TextureArrayCpuPolygonSpriteBatch;
 import games.rednblack.editor.system.HyperLap2dRendererMiniMap;
 import games.rednblack.editor.system.EditorButtonSystem;
+import games.rednblack.editor.system.EditorSliderSystem;
 import games.rednblack.editor.system.ParticleContinuousSystem;
 import games.rednblack.editor.system.PhysicsAdjustSystem;
 import games.rednblack.editor.system.TalosContinuousSystem;
@@ -165,6 +167,8 @@ public class Sandbox {
         //Widget states are chosen in the editor, the button logic must not fight them
         config.removeSystem(ButtonSystem.class);
         config.addSystem(new EditorButtonSystem());
+        config.removeSystem(SliderSystem.class);
+        config.addSystem(new EditorSliderSystem());
         //Re-added to keep it right after the button logic: a new state is drawn the same frame
         config.addSystem(new WidgetStateSystem());
 

@@ -14,6 +14,7 @@ import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
 import games.rednblack.editor.renderer.components.ViewPortComponent;
+import games.rednblack.editor.renderer.components.additional.InputTargetComponent;
 import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.renderer.systems.UIInputSystem;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
@@ -32,6 +33,8 @@ public class SandboxInputAdapter implements InputProcessor {
 	private Vector2 hitTargetLocalCoordinates = new Vector2();
 	private Sandbox sandbox;
 	private final EntityBounds tempEntityBounds = new EntityBounds();
+	/** The scene took this press on a handle of its own, such as a slider knob: the item stays put. */
+	private boolean draggingHandle = false;
 
 	public SandboxInputAdapter() {
 		facade = Facade.getInstance();
@@ -81,7 +84,11 @@ public class SandboxInputAdapter implements InputProcessor {
 		if (!insideSandbox(screenX, screenY)) return false;
 
 		UIInputSystem uiInput = uiInput();
-		if (uiInput != null) uiInput.touchDown(screenX, screenY, pointer, button);
+		if (uiInput != null) {
+			//a press on a handle drags the widget's own value, so the item must not follow the pointer
+			draggingHandle = isDragHandle(uiInput.hit(screenX, screenY));
+			uiInput.touchDown(screenX, screenY, pointer, button);
+		}
 
 		hitTargetLocalCoordinates.set(screenX, screenY);
 		screenToSceneCoordinates(rootEntity, hitTargetLocalCoordinates);
@@ -128,6 +135,7 @@ public class SandboxInputAdapter implements InputProcessor {
 
 		UIInputSystem uiInput = uiInput();
 		if (uiInput != null) uiInput.touchUp(screenX, screenY, pointer, button);
+		draggingHandle = false;
 
 		if(target == -1){
 			hitTargetLocalCoordinates.set(screenX, screenY);
@@ -166,6 +174,9 @@ public class SandboxInputAdapter implements InputProcessor {
 
 		UIInputSystem uiInput = uiInput();
 		if (uiInput != null) uiInput.touchDragged(screenX, screenY, pointer);
+
+		//the widget is being dragged, not the item: it was selected on the press and stays where it is
+		if (draggingHandle) return true;
 
 		if(target == -1){
 			hitTargetLocalCoordinates.set(screenX, screenY);
@@ -207,6 +218,14 @@ public class SandboxInputAdapter implements InputProcessor {
 	 */
 	private UIInputSystem uiInput() {
 		return sandbox.getEngine() == null ? null : sandbox.getEngine().getSystem(UIInputSystem.class);
+	}
+
+	/** Whether the entity is a handle the scene drags by itself, such as the knob of a slider. */
+	private boolean isDragHandle(int entity) {
+		if (entity == -1) return false;
+
+		InputTargetComponent inputTarget = EntityDataProxy.get().get(entity, InputTargetComponent.class);
+		return inputTarget != null && inputTarget.dragHandle;
 	}
 
 	private boolean insideSandbox(int screenX, int screenY) {

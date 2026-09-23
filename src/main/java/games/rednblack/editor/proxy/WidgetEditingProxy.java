@@ -1,5 +1,6 @@
 package games.rednblack.editor.proxy;
 
+import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.widget.WidgetComponent;
 import games.rednblack.editor.renderer.ecs.Engine;
@@ -106,6 +107,25 @@ public class WidgetEditingProxy extends Proxy {
 
     public String getEditedWidgetId() {
         return editedWidgetId;
+    }
+
+    /**
+     * Whether the widget's look belongs to the state bar rather than to the mouse: it is the one
+     * being edited, either because the sandbox is showing it from the inside or because a state of
+     * it was picked in the bar.
+     *
+     * @param mainItem the widget's own main item, holding the id the bar remembers
+     */
+    public static boolean isBeingEdited(int entity, MainItemComponent mainItem) {
+        Sandbox sandbox = PluginUIBridge.get().getSandbox();
+        if (sandbox == null) return true;
+
+        // edited from the inside, however deep the view is
+        if (findWidget(sandbox.getCurrentViewingEntity()) == entity) return true;
+
+        // or still showing a state picked in the bar (undo can bring one back from outside the widget)
+        String editedWidgetId = get().getEditedWidgetId();
+        return editedWidgetId != null && mainItem != null && editedWidgetId.equals(mainItem.uniqueId);
     }
 
     /** @return the entity itself if it is a widget, else its nearest widget ancestor, -1 if none */

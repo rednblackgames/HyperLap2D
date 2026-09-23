@@ -6,6 +6,7 @@
     - Button
     - CheckBox
     - ProgressBar
+    - Slider
 - Remote control with built-in MCP server
 - Update libGDX to 1.14.3-SNAPSHOT (WIP), LWJGL to 3.4.3, Spine to 4.2.12, Talos Legacy to 1.6.0, TextraTypist 2.5.0
 - Incremental atlas updates with repacks only when necessary
