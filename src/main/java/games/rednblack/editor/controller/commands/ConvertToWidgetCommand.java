@@ -1,6 +1,8 @@
 package games.rednblack.editor.controller.commands;
 
 import com.badlogic.gdx.math.Vector2;
+import games.rednblack.editor.renderer.components.TintComponent;
+import games.rednblack.editor.renderer.components.ZIndexComponent;
 import games.rednblack.editor.factory.ItemFactory;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
@@ -16,7 +18,9 @@ import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.h2d.common.MsgAPI;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -32,6 +36,8 @@ public class ConvertToWidgetCommand extends ConvertToCompositeCommand {
     private boolean wrapped;
     /** The part the widget's contents were put into, null when the type asks for none. */
     private String contentId;
+    /** The parts the editor drew along with the widget, so undo can take them away again. */
+    private final List<String> defaultPartIds = new ArrayList<>();
 
     @Override
     public void doAction() {
@@ -67,6 +73,7 @@ public class ConvertToWidgetCommand extends ConvertToCompositeCommand {
         sandbox.getSceneControl().sceneLoader.getEntityFactory().attachWidgetBehaviour(entity);
 
         if (widgetType.wrapRole != null) contentId = EntityUtils.getEntityId(wrapContent(entity, widgetType.wrapRole));
+        createDefaultParts(entity, widgetType);
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
         facade.sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, entity);
@@ -107,6 +114,72 @@ public class ConvertToWidgetCommand extends ConvertToCompositeCommand {
         return content;
     }
 
+    /**
+     * Draws the parts the type asks for out of an image every project has: a caret, a selection
+     * band, the shapes nobody wants to make by hand. They are ordinary items from here on.
+     */
+    private void createDefaultParts(int widget, WidgetType widgetType) {
+        defaultPartIds.clear();
+        if (widgetType.defaultParts.size == 0) return;
+
+        for (WidgetType.DefaultPart wanted : widgetType.defaultParts) {
+            if (findPart(widget, wanted.role) != -1) continue;
+            if (!ItemFactory.get().createSimpleImage(wanted.region, new Vector2())) continue;
+
+            int part = ItemFactory.get().getCreatedEntity();
+            HashSet<Integer> moved = new HashSet<>();
+            moved.add(part);
+            EntityUtils.changeParent(moved, widget);
+
+            sandbox.getEngine().edit(part).create(WidgetPartComponent.class).role = wanted.role;
+
+            MainItemComponent mainItem = SandboxComponentRetriever.get(part, MainItemComponent.class);
+            if (mainItem != null) mainItem.itemIdentifier = wanted.role;
+
+            DimensionsComponent dimensions = SandboxComponentRetriever.get(part, DimensionsComponent.class);
+            if (dimensions != null) {
+                dimensions.width = wanted.width;
+                dimensions.height = wanted.height;
+                if (dimensions.boundBox != null) dimensions.boundBox.set(0, 0, wanted.width, wanted.height);
+            }
+
+            if (wanted.tint != null) {
+                TintComponent tint = SandboxComponentRetriever.get(part, TintComponent.class);
+                if (tint != null) tint.color.set(wanted.tint);
+            }
+
+            ZIndexComponent zIndex = SandboxComponentRetriever.get(part, ZIndexComponent.class);
+            if (zIndex != null) zIndex.setZIndex(wanted.zIndex);
+
+            defaultPartIds.add(EntityUtils.getEntityId(part));
+        }
+        sandbox.getEngine().process();
+    }
+
+    /** Takes away the parts the editor drew, leaving anything the author made. */
+    private void removeDefaultParts() {
+        for (String id : defaultPartIds) {
+            int part = EntityUtils.getByUniqueId(id);
+            if (part == -1) continue;
+
+            facade.sendNotification(MsgAPI.FOLLOWER_REMOVED, part);
+            sandbox.getEngine().delete(part);
+        }
+        defaultPartIds.clear();
+        sandbox.getEngine().process();
+    }
+
+    private int findPart(int widget, String role) {
+        HashSet<Integer> children = EntityUtils.getChildren(widget);
+        if (children == null) return -1;
+
+        for (int child : children) {
+            WidgetPartComponent part = SandboxComponentRetriever.get(child, WidgetPartComponent.class);
+            if (part != null && role.equals(part.role)) return child;
+        }
+        return -1;
+    }
+
     /** Takes the contents back out of the part they were put into, and drops it. */
     private void unwrapContent(int widget) {
         if (contentId == null) return;
@@ -143,6 +216,7 @@ public class ConvertToWidgetCommand extends ConvertToCompositeCommand {
             }
         }
         sandbox.getEngine().edit(entity).remove(WidgetComponent.class);
+        removeDefaultParts();
         unwrapContent(entity);
 
         if (wrapped) {

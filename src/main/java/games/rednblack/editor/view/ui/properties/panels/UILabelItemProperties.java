@@ -107,6 +107,11 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
         return monoCheckBox.isChecked();
     }
 
+    /** The widget holding this label writes its words, so there is nothing here to type. */
+    public void setTextOwnedByWidget(boolean owned) {
+        textArea.setDisabled(owned);
+    }
+
     public String getText() {
         return textArea.getText();
     }

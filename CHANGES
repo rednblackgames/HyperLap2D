@@ -8,6 +8,8 @@
     - ProgressBar
     - Slider
     - ScrollPane
+    - TextField
+    - TextArea
 - Widget preview mode: `F12` now hides the GUI **and** hands the sandbox input to the scene, so widgets answer the mouse, the wheel and the keyboard exactly as they will in a game (press `F12` again or `Esc` to come back, middle mouse still pans)
 - Remote control with built-in MCP server
 - Update libGDX to 1.14.3-SNAPSHOT (WIP), LWJGL to 3.4.3, Spine to 4.2.12, Talos Legacy to 1.6.0, TextraTypist 2.5.0

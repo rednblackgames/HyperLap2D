@@ -110,6 +110,12 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties {
                     functions.addListener(new SelectBoxChangeListener(getUpdateEventName()));
                     settingFields.put(property.key, functions);
                     grid.row(label, functions);
+                } else if (property.kind == WidgetType.PropertyKind.CHOICE) {
+                    VisSelectBox<String> choices = StandardWidgetsFactory.createSelectBox(String.class);
+                    choices.setItems(property.choices.toArray(String[]::new));
+                    choices.addListener(new SelectBoxChangeListener(getUpdateEventName()));
+                    settingFields.put(property.key, choices);
+                    grid.row(label, choices);
                 } else {
                     VisTextField field = StandardWidgetsFactory.createTextField();
                     field.addListener(new KeyboardListener(getUpdateEventName()));

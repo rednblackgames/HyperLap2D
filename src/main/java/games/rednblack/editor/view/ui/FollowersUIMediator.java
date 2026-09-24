@@ -162,10 +162,10 @@ public class FollowersUIMediator extends Mediator<FollowersUI> {
     }
 
     private void hideAllFollowers(Set<Integer> items) {
-        if (followers != null) {
-            for (int item : items) {
-                followers.get(item).hide();
-            }
+        for (int item : items) {
+            //a selected item does not always have a follower: it may not be in the view drawn
+            BasicFollower follower = followers.get(item);
+            if (follower != null) follower.hide();
         }
     }
 

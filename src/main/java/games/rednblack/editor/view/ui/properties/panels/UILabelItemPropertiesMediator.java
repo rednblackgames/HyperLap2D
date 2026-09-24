@@ -3,7 +3,9 @@ import games.rednblack.editor.controller.commands.component.LabelDataPayload;
 
 import games.rednblack.editor.proxy.FontManager;
 import games.rednblack.editor.proxy.ResourceManager;
+import games.rednblack.editor.proxy.WidgetEditingProxy;
 import games.rednblack.editor.renderer.components.label.LabelComponent;
+import games.rednblack.editor.renderer.widget.WidgetTypes;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.interfaces.INotification;
@@ -71,6 +73,8 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
         viewComponent.setWrap(labelComponent.wrap);
         viewComponent.setMono(labelComponent.mono);
         viewComponent.setBitmapFontFamily(labelComponent.bitmapFont != null ? labelComponent.bitmapFont : UILabelItemProperties.NONE_BITMAP_FONT);
+
+        viewComponent.setTextOwnedByWidget(WidgetEditingProxy.isDriven(item, WidgetTypes.DRIVEN_TEXT));
 
         if(prevText == null) this.prevText = viewComponent.getText();
     }

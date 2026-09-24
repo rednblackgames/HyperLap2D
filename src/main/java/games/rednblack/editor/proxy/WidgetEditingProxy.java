@@ -3,6 +3,9 @@ package games.rednblack.editor.proxy;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.widget.WidgetComponent;
+import games.rednblack.editor.renderer.components.widget.WidgetPartComponent;
+import games.rednblack.editor.renderer.widget.WidgetType;
+import games.rednblack.editor.renderer.widget.WidgetTypes;
 import games.rednblack.editor.renderer.ecs.Engine;
 import games.rednblack.editor.renderer.systems.UIInputSystem;
 import games.rednblack.editor.utils.runtime.EntityUtils;
@@ -168,6 +171,27 @@ public class WidgetEditingProxy extends Proxy {
         // or still showing a state picked in the bar (undo can bring one back from outside the widget)
         String editedWidgetId = get().getEditedWidgetId();
         return editedWidgetId != null && mainItem != null && editedWidgetId.equals(mainItem.uniqueId);
+    }
+
+    /**
+     * Whether the widget an entity is a part of writes that property itself, in which case the
+     * editor must not offer it: the words of a text field's label are what is being typed, not
+     * something to author.
+     *
+     * @param key one of the driven keys the part was declared with
+     */
+    public static boolean isDriven(int entity, String key) {
+        WidgetPartComponent part = SandboxComponentRetriever.get(entity, WidgetPartComponent.class);
+        if (part == null || part.role == null) return false;
+
+        ParentNodeComponent parentNode = SandboxComponentRetriever.get(entity, ParentNodeComponent.class);
+        int widget = parentNode == null ? -1 : findWidget(parentNode.parentEntity);
+        if (widget == -1) return false;
+
+        WidgetComponent widgetComponent = SandboxComponentRetriever.get(widget, WidgetComponent.class);
+        WidgetType type = widgetComponent == null ? null : WidgetTypes.get(widgetComponent.widgetType);
+        WidgetType.Part declared = type == null ? null : type.getPart(part.role);
+        return declared != null && declared.drivenKeys.contains(key, false);
     }
 
     /** @return the entity itself if it is a widget, else its nearest widget ancestor, -1 if none */
