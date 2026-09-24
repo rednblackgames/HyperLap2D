@@ -32,6 +32,7 @@ import com.badlogic.gdx.utils.Align;
 import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
+import games.rednblack.editor.proxy.WidgetEditingProxy;
 import games.rednblack.editor.renderer.ecs.Engine;
 import games.rednblack.editor.utils.FullscreenUtils;
 import games.rednblack.editor.utils.KeyBindingsLayout;
@@ -47,6 +48,9 @@ import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.vo.SceneConfigVO;
 import games.rednblack.puremvc.Facade;
 
+import java.util.Collections;
+import java.util.Set;
+
 public class HyperLap2DScreen extends InputAdapter implements Screen {
     private static final String TAG = HyperLap2DScreen.class.getCanonicalName();
 
@@ -58,6 +62,9 @@ public class HyperLap2DScreen extends InputAdapter implements Screen {
 
     private Sandbox sandbox;
     private SandboxBackUI sandboxBackUI;
+
+    /** True while the editor is out of the way and the scene has the input. */
+    private boolean previewing = false;
 
     private final Color defaultBackgroundColor;
     private final Color backgroundColor;
@@ -202,6 +209,8 @@ public class HyperLap2DScreen extends InputAdapter implements Screen {
 
     @Override
     public boolean keyDown(int keycode) {
+        if (previewing) return previewKeyDown(keycode);
+
         switch (KeyBindingsLayout.mapAction(keycode)) {
             case KeyBindingsLayout.NEW_PROJECT:
                 facade.sendNotification(FileMenu.NEW_PROJECT, null, MenuAPI.FILE_MENU);
@@ -231,7 +240,7 @@ public class HyperLap2DScreen extends InputAdapter implements Screen {
                 HyperLap2DApp.getInstance().hyperlap2D.closeRequested();
                 break;
             case KeyBindingsLayout.HIDE_GUI:
-                uiStage.addAction(Actions.parallel(Actions.fadeOut(0.1f), Actions.touchable(Touchable.disabled)));
+                togglePreview();
                 break;
             case KeyBindingsLayout.TOGGLE_FULL_SCREEN:
                 boolean fullScreen = FullscreenUtils.isFullscreen();
@@ -247,12 +256,62 @@ public class HyperLap2DScreen extends InputAdapter implements Screen {
         return false;
     }
 
-    @Override
-    public boolean keyUp(int keycode) {
+    /**
+     * While the scene has the input the editor keeps two keys only: the one that gives it back and
+     * the full screen switch. Everything else is a character or a shortcut the scene may want, so it
+     * falls through to the widgets.
+     */
+    private boolean previewKeyDown(int keycode) {
+        if (keycode == Input.Keys.ESCAPE) {
+            togglePreview();
+            return true;
+        }
+
         switch (KeyBindingsLayout.mapAction(keycode)) {
             case KeyBindingsLayout.HIDE_GUI:
-                uiStage.addAction(Actions.parallel(Actions.touchable(Touchable.enabled), Actions.fadeIn(0.1f)));
-                break;
+                togglePreview();
+                return true;
+            case KeyBindingsLayout.TOGGLE_FULL_SCREEN:
+                FullscreenUtils.setFullscreen(!FullscreenUtils.isFullscreen());
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Puts the editor away and hands the sandbox to the scene, or brings it back. What is left is the
+     * scene as a game would show it - no panels, no selection gizmos - and its widgets answer the
+     * mouse, the wheel and the keyboard. The middle button still pans, so it can be looked around.
+     */
+    private void togglePreview() {
+        previewing = !previewing;
+
+        if (previewing) {
+            //a panel still holding the keys would eat what the scene is meant to read
+            uiStage.setKeyboardFocus(null);
+            uiStage.setScrollFocus(null);
+            uiStage.addAction(Actions.parallel(Actions.fadeOut(0.1f), Actions.touchable(Touchable.disabled)));
+            facade.sendNotification(MsgAPI.HIDE_SELECTIONS, selection());
+            WidgetEditingProxy.get().setInputForwarded(true);
+        } else {
+            //first the scene lets go of its gestures, then the editor draws itself again
+            WidgetEditingProxy.get().setInputForwarded(false);
+            uiStage.addAction(Actions.parallel(Actions.touchable(Touchable.enabled), Actions.fadeIn(0.1f)));
+            facade.sendNotification(MsgAPI.SHOW_SELECTIONS, selection());
+        }
+    }
+
+    private Set<Integer> selection() {
+        return sandbox == null || sandbox.getSelector() == null
+                ? Collections.emptySet()
+                : sandbox.getSelector().getCurrentSelection();
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        if (previewing) return false;
+
+        switch (KeyBindingsLayout.mapAction(keycode)) {
             case KeyBindingsLayout.SHOW_MINI_MAP:
                 facade.sendNotification(MsgAPI.HIDE_MINI_MAP);
                 break;

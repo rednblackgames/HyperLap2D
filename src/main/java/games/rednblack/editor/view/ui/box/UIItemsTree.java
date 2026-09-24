@@ -55,6 +55,9 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> {
     private static final float GHOST_ALPHA = 0.95f;
 
     private ShapeDrawer shapeDrawer;
+    /** The alpha coming down from above for this frame: the drawn parts have to follow the panel fading. */
+    private float drawAlpha = 1f;
+    private final Color shapeColor = new Color();
 
     private DropListener dropListener;
     private UIItemsTreeNode draggingNode;
@@ -92,7 +95,9 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> {
         if (shapeDrawer == null)
             shapeDrawer = new ShapeDrawer(batch, WhitePixel.sharedInstance.textureRegion);
 
-        float prevColor = shapeDrawer.setColor(LINE_COLOR);
+        drawAlpha = parentAlpha * getColor().a;
+
+        float prevColor = setShapeColor(LINE_COLOR);
         float prevThickness = shapeDrawer.getDefaultLineWidth();
         shapeDrawer.setDefaultLineWidth(LINE_THICKNESS);
         drawConnectorLines(getRootNodes(), PADDING_LEFT, plusMinusWidth());
@@ -103,13 +108,24 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> {
 
         if (draggingNode != null && dropValid) {
             float ay = getY() + dropIndicatorY;
-            prevColor = shapeDrawer.setColor(DROP_COLOR);
+            prevColor = setShapeColor(DROP_COLOR);
             prevThickness = shapeDrawer.getDefaultLineWidth();
             shapeDrawer.setDefaultLineWidth(DROP_THICKNESS);
             shapeDrawer.line(getX() + 2f, ay, getX() + getWidth() - 2f, ay);
             shapeDrawer.setDefaultLineWidth(prevThickness);
             shapeDrawer.setColor(prevColor);
         }
+    }
+
+    /**
+     * Takes the colour the way it has to be drawn right now. A drawable or a label is handed the
+     * alpha of everything above it; a shape is drawn straight onto the batch, so it is applied here
+     * or the tree stays behind when the panel fades away.
+     */
+    private float setShapeColor(Color color) {
+        shapeColor.set(color);
+        shapeColor.a *= drawAlpha;
+        return shapeDrawer.setColor(shapeColor);
     }
 
     /** Draws the elbow guide lines from every expanded parent to each of its children. */
@@ -157,7 +173,7 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> {
         float cx = x + expandIcon.getMinWidth() / 2f;
         float cy = y + expandIcon.getMinHeight() / 2f;
 
-        float prevColor = shapeDrawer.setColor(CHEVRON_COLOR);
+        float prevColor = setShapeColor(CHEVRON_COLOR);
         float prevThickness = shapeDrawer.getDefaultLineWidth();
         shapeDrawer.setDefaultLineWidth(CHEVRON_THICKNESS);
 

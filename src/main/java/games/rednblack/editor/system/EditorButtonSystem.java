@@ -13,6 +13,8 @@ import games.rednblack.editor.renderer.systems.ButtonSystem;
  * state chosen in the state bar, whatever the mouse does over it.
  *
  * Trying a state out never touches the scene data: value objects always describe the base look.
+ *
+ * The exception is lifted while the input is forwarded to the scene: there every button reacts.
  */
 @All(ButtonComponent.class)
 public class EditorButtonSystem extends ButtonSystem {

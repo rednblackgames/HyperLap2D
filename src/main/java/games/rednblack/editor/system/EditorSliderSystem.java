@@ -15,6 +15,8 @@ import games.rednblack.editor.renderer.systems.SliderSystem;
  * state chosen in the state bar, whatever the pointer does over it.
  *
  * The value is never scene data, so trying it out changes nothing that is saved.
+ *
+ * The exception is lifted while the input is forwarded to the scene: there every slider reacts.
  */
 @All({SliderComponent.class, ProgressBarComponent.class, WidgetComponent.class})
 public class EditorSliderSystem extends SliderSystem {

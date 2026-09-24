@@ -1,9 +1,11 @@
 package games.rednblack.editor.view.stage.input;
 import games.rednblack.editor.proxy.EntityDataProxy;
+import games.rednblack.editor.proxy.WidgetEditingProxy;
 
 import games.rednblack.editor.renderer.ecs.BaseComponentMapper;
 import games.rednblack.editor.renderer.ecs.ComponentMapper;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
@@ -35,6 +37,8 @@ public class SandboxInputAdapter implements InputProcessor {
 	private final EntityBounds tempEntityBounds = new EntityBounds();
 	/** The scene took this press on a handle of its own, such as a slider knob: the item stays put. */
 	private boolean draggingHandle = false;
+	/** The pointer panning the camera, the one gesture the editor keeps while the scene has the input. */
+	private int panPointer = -1;
 
 	public SandboxInputAdapter() {
 		facade = Facade.getInstance();
@@ -44,6 +48,12 @@ public class SandboxInputAdapter implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
+		if (forwarding()) {
+			UIInputSystem scene = uiInput();
+			if (scene != null) scene.keyDown(keycode);
+			return true;
+		}
+
 		Array<InputListener> sandboxListeners = sandbox.getAllListeners();
 		for (int i = 0, s = sandboxListeners.size; i < s; i++) {
 			sandboxListeners.get(i).keyDown(-1, keycode);
@@ -54,6 +64,12 @@ public class SandboxInputAdapter implements InputProcessor {
 
 	@Override
 	public boolean keyUp(int keycode) {
+		if (forwarding()) {
+			UIInputSystem scene = uiInput();
+			if (scene != null) scene.keyUp(keycode);
+			return true;
+		}
+
 		Array<InputListener> sandboxListeners = sandbox.getAllListeners();
 		for (int i = 0, s = sandboxListeners.size; i < s; i++) {
 			sandboxListeners.get(i).keyUp(-1, keycode);
@@ -63,6 +79,12 @@ public class SandboxInputAdapter implements InputProcessor {
 
 	@Override
 	public boolean keyTyped(char character) {
+		if (forwarding()) {
+			UIInputSystem scene = uiInput();
+			if (scene != null) scene.keyTyped(character);
+			return true;
+		}
+
 		Array<InputListener> sandboxListeners = sandbox.getAllListeners();
 		for (int i = 0, s = sandboxListeners.size; i < s; i++) {
 			sandboxListeners.get(i).keyTyped(-1, character);
@@ -82,6 +104,17 @@ public class SandboxInputAdapter implements InputProcessor {
 		}
 
 		if (!insideSandbox(screenX, screenY)) return false;
+
+		if (forwarding()) {
+			//the middle button still pans, so the scene can be looked around while it is being tried out
+			if (button == Input.Buttons.MIDDLE) {
+				panPointer = pointer;
+			} else {
+				UIInputSystem scene = uiInput();
+				if (scene != null) scene.touchDown(screenX, screenY, pointer, button);
+				return true;
+			}
+		}
 
 		UIInputSystem uiInput = uiInput();
 		if (uiInput != null) {
@@ -133,6 +166,13 @@ public class SandboxInputAdapter implements InputProcessor {
 			return false;
 		}
 
+		if (forwarding() && pointer != panPointer) {
+			UIInputSystem scene = uiInput();
+			if (scene != null) scene.touchUp(screenX, screenY, pointer, button);
+			return true;
+		}
+		if (pointer == panPointer) panPointer = -1;
+
 		UIInputSystem uiInput = uiInput();
 		if (uiInput != null) uiInput.touchUp(screenX, screenY, pointer, button);
 		draggingHandle = false;
@@ -172,6 +212,12 @@ public class SandboxInputAdapter implements InputProcessor {
 			return false;
 		}
 
+		if (forwarding() && pointer != panPointer) {
+			UIInputSystem scene = uiInput();
+			if (scene != null) scene.touchDragged(screenX, screenY, pointer);
+			return true;
+		}
+
 		UIInputSystem uiInput = uiInput();
 		if (uiInput != null) uiInput.touchDragged(screenX, screenY, pointer);
 
@@ -208,7 +254,7 @@ public class SandboxInputAdapter implements InputProcessor {
 		if (insideSandbox(screenX, screenY)) uiInput.mouseMoved(screenX, screenY);
 		else uiInput.clearHover();
 
-		return false;
+		return forwarding();
 	}
 
 	/**
@@ -218,6 +264,15 @@ public class SandboxInputAdapter implements InputProcessor {
 	 */
 	private UIInputSystem uiInput() {
 		return sandbox.getEngine() == null ? null : sandbox.getEngine().getSystem(UIInputSystem.class);
+	}
+
+	/**
+	 * Whether the sandbox is giving its input to the scene rather than keeping it. Nothing of the
+	 * editor's own answers then - no selecting, no dragging, no tools, no shortcuts - so a widget
+	 * can be used the way a player would use it, wheel and keyboard included.
+	 */
+	private boolean forwarding() {
+		return WidgetEditingProxy.isInputForwarded();
 	}
 
 	/** Whether the entity is a handle the scene drags by itself, such as the knob of a slider. */
@@ -247,6 +302,12 @@ public class SandboxInputAdapter implements InputProcessor {
 
 		if(rootEntity == -1){
 			return false;
+		}
+
+		if (forwarding()) {
+			UIInputSystem scene = uiInput();
+			if (scene != null) scene.scrolled(amountX, amountY);
+			return true;
 		}
 
 		Array<InputListener> sandboxListeners = sandbox.getAllListeners();

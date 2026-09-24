@@ -4,6 +4,7 @@ import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.widget.WidgetComponent;
 import games.rednblack.editor.renderer.ecs.Engine;
+import games.rednblack.editor.renderer.systems.UIInputSystem;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.utils.widget.WidgetStateRecorder;
@@ -30,8 +31,38 @@ public class WidgetEditingProxy extends Proxy {
     /** uniqueId of the widget showing a non default state, null when every widget shows its default one */
     private String editedWidgetId = null;
 
+    /**
+     * True while the sandbox hands its input to the scene instead of the editor: the GUI is hidden
+     * and the widgets are being tried out as they would be in a game. Static because the systems
+     * driving them ask for it every frame, from wherever they were built.
+     */
+    private static boolean inputForwarded = false;
+
     public WidgetEditingProxy() {
         super(NAME, null);
+    }
+
+    /** Whether the sandbox is giving its input to the scene rather than to the editor. */
+    public static boolean isInputForwarded() {
+        return inputForwarded;
+    }
+
+    /**
+     * Hands the sandbox input to the scene, or takes it back. Taking it back tells the scene the
+     * gestures it was following are cancelled, so nothing is left pressed, hovered or focused, and
+     * refreshes the panels: the widgets are about to look like themselves again.
+     */
+    public void setInputForwarded(boolean forwarded) {
+        if (inputForwarded == forwarded) return;
+        inputForwarded = forwarded;
+        if (forwarded) return;
+
+        Sandbox sandbox = sandbox();
+        if (sandbox != null && sandbox.getEngine() != null) {
+            UIInputSystem uiInput = sandbox.getEngine().getSystem(UIInputSystem.class);
+            if (uiInput != null) uiInput.clearFocus();
+        }
+        refreshSelectionPanels();
     }
 
     public static WidgetEditingProxy get() {
@@ -91,7 +122,7 @@ public class WidgetEditingProxy extends Proxy {
     }
 
     private void refreshSelectionPanels() {
-        Sandbox sandbox = PluginUIBridge.get().getSandbox();
+        Sandbox sandbox = sandbox();
         if (sandbox == null || sandbox.getSelector() == null) return;
 
         for (int entity : sandbox.getSelector().getCurrentSelection()) {
@@ -99,9 +130,16 @@ public class WidgetEditingProxy extends Proxy {
         }
     }
 
+    /** The sandbox, or null where there is none: tests and the moments before the editor is up. */
+    private static Sandbox sandbox() {
+        PluginUIBridge bridge = PluginUIBridge.get();
+        return bridge == null ? null : bridge.getSandbox();
+    }
+
     /** Forgets everything, the scene has been replaced. */
     public void reset() {
         editedWidgetId = null;
+        inputForwarded = false;
         if (recorder != null) recorder.reset();
     }
 
@@ -112,11 +150,15 @@ public class WidgetEditingProxy extends Proxy {
     /**
      * Whether the widget's look belongs to the state bar rather than to the mouse: it is the one
      * being edited, either because the sandbox is showing it from the inside or because a state of
-     * it was picked in the bar.
+     * it was picked in the bar. Never while the input is forwarded to the scene, where the point is
+     * to see the widget react.
      *
      * @param mainItem the widget's own main item, holding the id the bar remembers
      */
     public static boolean isBeingEdited(int entity, MainItemComponent mainItem) {
+        // while the scene is being tried out every widget answers to the pointer, this one included
+        if (inputForwarded) return false;
+
         Sandbox sandbox = PluginUIBridge.get().getSandbox();
         if (sandbox == null) return true;
 
