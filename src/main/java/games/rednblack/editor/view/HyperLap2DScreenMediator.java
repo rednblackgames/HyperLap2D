@@ -22,9 +22,9 @@ import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.renderer.ecs.Engine;
-import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.SandboxMediator;
 import games.rednblack.editor.view.ui.widget.actors.basic.SandboxBackUI;
+import games.rednblack.editor.view.menu.WindowMenu;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Mediator;
 import games.rednblack.puremvc.interfaces.INotification;
@@ -53,6 +53,7 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
                 MsgAPI.SAVE_EDITOR_CONFIG);
         interests.add(MsgAPI.SHOW_BLACK_OVERLAY,
                 MsgAPI.HIDE_BLACK_OVERLAY);
+        interests.add(WindowMenu.WIDGET_PREVIEW_MODE);
     }
 
     @Override
@@ -102,6 +103,9 @@ public class HyperLap2DScreenMediator extends Mediator<HyperLap2DScreen> {
                 break;
             case MsgAPI.HIDE_BLACK_OVERLAY:
                 viewComponent.hideBlackOverlay();
+                break;
+            case WindowMenu.WIDGET_PREVIEW_MODE:
+                viewComponent.togglePreview();
                 break;
         }
     }

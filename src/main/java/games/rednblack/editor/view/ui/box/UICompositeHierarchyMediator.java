@@ -5,9 +5,9 @@ import games.rednblack.editor.proxy.EntityDataProxy;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
+import games.rednblack.editor.renderer.components.widget.WidgetComponent;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
-import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.Mediator;
 import games.rednblack.puremvc.interfaces.INotification;
 import games.rednblack.puremvc.util.Interests;
@@ -64,7 +64,7 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
         int currEntity = entity;
 
         do {
-            CompositeHierarchyItem item = new CompositeHierarchyItem(EntityDataProxy.get().metadata().getName(currEntity), EntityDataProxy.get().metadata().getUniqueId(currEntity));
+            CompositeHierarchyItem item = new CompositeHierarchyItem(nameOf(currEntity), EntityDataProxy.get().metadata().getUniqueId(currEntity));
 
             parentNodeComponent = EntityDataProxy.get().get(currEntity, ParentNodeComponent.class);
             if (parentNodeComponent != null) {
@@ -82,6 +82,14 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
         for (CompositeHierarchyItem item : items) {
             viewComponent.addItem(item.name, item.entityId, item.isRoot);
         }
+    }
+
+    /** A widget says so beside its name: what is inside it belongs to the widget, not to the scene. */
+    private String nameOf(int entity) {
+        String name = EntityDataProxy.get().metadata().getName(entity);
+        if (EntityDataProxy.get().get(entity, WidgetComponent.class) == null) return name;
+
+        return name + " (Widget)";
     }
 
     private void changeComposite(String entityId) {

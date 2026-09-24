@@ -27,7 +27,9 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import games.rednblack.editor.HyperLap2DApp;
 import games.rednblack.editor.proxy.ProjectManager;
@@ -36,6 +38,7 @@ import games.rednblack.editor.proxy.WidgetEditingProxy;
 import games.rednblack.editor.renderer.ecs.Engine;
 import games.rednblack.editor.utils.FullscreenUtils;
 import games.rednblack.editor.utils.KeyBindingsLayout;
+import games.rednblack.editor.utils.MenuIcons;
 import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.editor.view.menu.ResourcesMenu;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -65,6 +68,11 @@ public class HyperLap2DScreen extends InputAdapter implements Screen {
 
     /** True while the editor is out of the way and the scene has the input. */
     private boolean previewing = false;
+    /** What is left on screen to say why nothing answers the way it usually does. */
+    private Image previewWatermark;
+    private static final float WATERMARK_MARGIN = 32f;
+    /** Left there rather than laid over the scene: it says something, it does not take over. */
+    private static final float WATERMARK_ALPHA = 0.7f;
 
     private final Color defaultBackgroundColor;
     private final Color backgroundColor;
@@ -168,6 +176,7 @@ public class HyperLap2DScreen extends InputAdapter implements Screen {
 
         uiStage.resize(width, height);
         screenSize.set(width, height);
+        placeWatermark();
 
         updateCameraPosition();
 
@@ -283,7 +292,7 @@ public class HyperLap2DScreen extends InputAdapter implements Screen {
      * scene as a game would show it - no panels, no selection gizmos - and its widgets answer the
      * mouse, the wheel and the keyboard. The middle button still pans, so it can be looked around.
      */
-    private void togglePreview() {
+    public void togglePreview() {
         previewing = !previewing;
 
         if (previewing) {
@@ -293,11 +302,60 @@ public class HyperLap2DScreen extends InputAdapter implements Screen {
             uiStage.addAction(Actions.parallel(Actions.fadeOut(0.1f), Actions.touchable(Touchable.disabled)));
             facade.sendNotification(MsgAPI.HIDE_SELECTIONS, selection());
             WidgetEditingProxy.get().setInputForwarded(true);
+            showWatermark(true);
         } else {
+            showWatermark(false);
             //first the scene lets go of its gestures, then the editor draws itself again
             WidgetEditingProxy.get().setInputForwarded(false);
             uiStage.addAction(Actions.parallel(Actions.touchable(Touchable.enabled), Actions.fadeIn(0.1f)));
             facade.sendNotification(MsgAPI.SHOW_SELECTIONS, selection());
+        }
+    }
+
+    /**
+     * Brings the badge in, or takes it away. It lives on the same stage as everything else and is
+     * simply the one thing that does not fade with it.
+     */
+    private void showWatermark(boolean show) {
+        if (previewWatermark == null) {
+            Drawable drawable = MenuIcons.get("widget-preview-watermark");
+            if (drawable == null) return;
+
+            previewWatermark = new PreviewWatermark(drawable);
+        }
+
+        if (!show) {
+            previewWatermark.clearActions();
+            previewWatermark.addAction(Actions.sequence(Actions.fadeOut(0.15f), Actions.removeActor()));
+            return;
+        }
+
+        placeWatermark();
+        previewWatermark.clearActions();
+        previewWatermark.getColor().a = 0;
+        uiStage.getRoot().addActor(previewWatermark);
+        previewWatermark.addAction(Actions.alpha(WATERMARK_ALPHA, 0.15f));
+    }
+
+    /** Top left, out of the way of whatever the scene is doing in the middle. */
+    private void placeWatermark() {
+        if (previewWatermark == null) return;
+
+        previewWatermark.setPosition(WATERMARK_MARGIN,
+                uiStage.getHeight() - previewWatermark.getHeight() - WATERMARK_MARGIN);
+    }
+
+    /** The badge the fading does not reach: everything above it has gone, and that is the point. */
+    private static class PreviewWatermark extends Image {
+
+        PreviewWatermark(Drawable drawable) {
+            super(drawable);
+            setTouchable(Touchable.disabled);
+        }
+
+        @Override
+        public void draw(Batch batch, float parentAlpha) {
+            super.draw(batch, 1f);
         }
     }
 
