@@ -4,18 +4,19 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.Main;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.H2DDialogs;
-import games.rednblack.editor.view.ui.widget.SettingsTree;
+import games.rednblack.editor.view.ui.widget.SettingsSidebar;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 
@@ -32,11 +33,16 @@ public class SettingsDialog extends H2DDialog {
         SETTINGS_ICONS.put("Plugins", "icon-settings-plugins");
         SETTINGS_ICONS.put("Live Preview", "icon-settings-live-preview");
         SETTINGS_ICONS.put("Project Export", "icon-settings-export");
+        SETTINGS_ICONS.put("Keymap", "icon-settings-keymap");
     }
 
-    private final SettingsTree settingsTree;
+    private final SettingsSidebar settingsSidebar;
 
     private static final float TRANSITION_TIME = 0.1f;
+
+    /** Air inside the panel, between its rounded edge and what is written in it. */
+    private static final float PANEL_PAD = 8f;
+    private static final float BODY_GAP = 8f;
 
     SettingsDialog() {
         super("Settings");
@@ -47,19 +53,22 @@ public class SettingsDialog extends H2DDialog {
 
         VisTable containerTable = new VisTable();
         VisScrollPane containerScrollPane = StandardWidgetsFactory.createScrollPane(containerTable);
-        settingsTree = new SettingsTree();
-        VisScrollPane treeScrollPane = StandardWidgetsFactory.createScrollPane(settingsTree);
+        settingsSidebar = new SettingsSidebar();
+        VisScrollPane sidebarScrollPane = StandardWidgetsFactory.createScrollPane(settingsSidebar);
 
-        VisSplitPane splitPane = new VisSplitPane(treeScrollPane, containerScrollPane, false);
-        splitPane.setMinSplitAmount(0.28f);
-        splitPane.setMaxSplitAmount(0.35f);
-        splitPane.setSplitAmount(0.3f);
+        //the panel is a surface of its own, the same one the rows beside it are cut from
+        VisTable panel = new VisTable();
+        panel.setBackground(new NinePatchDrawable(VisUI.getSkin().getPatch("settings-panel")).tint(SettingsSidebar.SURFACE));
+        panel.add(containerScrollPane).grow().pad(PANEL_PAD);
 
-        settingsTree.addListener(new ChangeListener() {
+        VisTable body = new VisTable();
+        body.add(sidebarScrollPane).width(SettingsSidebar.WIDTH).growY().padRight(BODY_GAP);
+        body.add(panel).grow();
+
+        settingsSidebar.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                settingsTree.getSelectedNode().setExpanded(true);
-                settingsTree.getSelectedValue().translateSettingsToView();
+                settingsSidebar.getSelectedValue().translateSettingsToView();
 
                 if (containerTable.getChildren().size > 0) {
                     Actor oldContent = containerTable.getChild(0);
@@ -68,7 +77,7 @@ public class SettingsDialog extends H2DDialog {
                             Actions.alpha(0, TRANSITION_TIME),
                             Actions.run(() -> {
                                 containerTable.clear();
-                                Actor newContent = settingsTree.getSelectedValue().getContentTable();
+                                Actor newContent = settingsSidebar.getSelectedValue().getContentTable();
                                 newContent.clearActions();
                                 newContent.getColor().a = 0;
                                 newContent.addAction(Actions.alpha(1, TRANSITION_TIME));
@@ -76,7 +85,7 @@ public class SettingsDialog extends H2DDialog {
                             })
                     ));
                 } else {
-                    Actor newContent = settingsTree.getSelectedValue().getContentTable();
+                    Actor newContent = settingsSidebar.getSelectedValue().getContentTable();
                     newContent.clearActions();
                     newContent.getColor().a = 0;
                     newContent.addAction(Actions.alpha(1, TRANSITION_TIME));
@@ -85,7 +94,7 @@ public class SettingsDialog extends H2DDialog {
             }
         });
 
-        getContentTable().add(splitPane).expand().fill().padTop(5);
+        getContentTable().add(body).expand().fill().padTop(5);
 
         VisTextButton okButton = StandardWidgetsFactory.createTextButton("OK");
         okButton.addListener(new ClickListener() {
@@ -121,7 +130,7 @@ public class SettingsDialog extends H2DDialog {
 
     private void applyAllSettings() {
         boolean askToRestart = false;
-        for (SettingsNode node : settingsTree.getRootNodes()) {
+        for (SettingsNode node : settingsSidebar.getRootNodes()) {
             if (node.getValue().validateSettings()) {
                 if (node.getValue().requireRestart()) askToRestart = true;
                 node.getValue().translateViewToSettings();
@@ -148,35 +157,33 @@ public class SettingsDialog extends H2DDialog {
     @Override
     public VisDialog show(Stage stage) {
         super.show(stage);
-        if (settingsTree.getSelection().size() == 0 && settingsTree.getRootNodes().size > 0) {
-            settingsTree.getSelection().add(settingsTree.getRootNodes().first());
-        }
-
-        if (settingsTree.getSelection().size() > 0) {
-            settingsTree.getSelectedValue().translateSettingsToView();
+        if (!settingsSidebar.hasSelection() && settingsSidebar.getRootNodes().size > 0) {
+            settingsSidebar.select(settingsSidebar.getRootNodes().first());
+        } else if (settingsSidebar.hasSelection()) {
+            settingsSidebar.getSelectedValue().translateSettingsToView();
         }
         return this;
     }
 
     @Override
     public float getPrefWidth() {
-        return 700;
+        return 760;
     }
 
     @Override
     public float getPrefHeight() {
-        return 500;
+        return 560;
     }
 
     public SettingsNode addSettingsNode(SettingsNodeValue<?> nodeValue) {
         SettingsNode node = new SettingsNode(nodeValue.getName());
-        int existingIndex = settingsTree.getRootNodes().indexOf(node, false);
+        int existingIndex = settingsSidebar.getRootNodes().indexOf(node, false);
         if (existingIndex == -1) {
             node.setValue(nodeValue);
             applyNodeIcon(node, nodeValue.getName());
-            settingsTree.add(node);
+            settingsSidebar.addNode(node);
         } else {
-            settingsTree.getRootNodes().get(existingIndex).setValue(nodeValue);
+            settingsSidebar.getRootNodes().get(existingIndex).setValue(nodeValue);
         }
         return node;
     }
@@ -187,7 +194,7 @@ public class SettingsDialog extends H2DDialog {
         if (existingIndex == -1) {
             node.setValue(nodeValue);
             applyNodeIcon(node, nodeValue.getName());
-            parent.add(node);
+            settingsSidebar.addChildNode(parent, node);
         } else {
             parent.getChildren().get(existingIndex).setValue(nodeValue);
         }
@@ -206,11 +213,43 @@ public class SettingsDialog extends H2DDialog {
         node.setIcon(skin.getDrawable(region));
     }
 
-    public static class SettingsNode extends Tree.Node<SettingsNode, SettingsNodeValue<?>, VisLabel> {
+    /** A settings category: its name, the panel behind it and whatever panels hang under it. */
+    public static class SettingsNode {
         private final String name;
+        private final Array<SettingsNode> children = new Array<>();
+        private SettingsNodeValue<?> value;
+        private Drawable icon;
+
         public SettingsNode(String name) {
-            super(new VisLabel(name));
             this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public SettingsNodeValue<?> getValue() {
+            return value;
+        }
+
+        public void setValue(SettingsNodeValue<?> value) {
+            this.value = value;
+        }
+
+        public Drawable getIcon() {
+            return icon;
+        }
+
+        public void setIcon(Drawable icon) {
+            this.icon = icon;
+        }
+
+        public Array<SettingsNode> getChildren() {
+            return children;
+        }
+
+        public void add(SettingsNode child) {
+            children.add(child);
         }
 
         @Override
@@ -219,6 +258,11 @@ public class SettingsDialog extends H2DDialog {
                 return false;
             }
             return name.equals(((SettingsNode) o).name);
+        }
+
+        @Override
+        public int hashCode() {
+            return name.hashCode();
         }
     }
 }

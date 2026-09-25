@@ -49,7 +49,7 @@ public class ProjectExportSettings extends SettingsNodeValue<ProjectVO> {
         filterMagSelectBox.setItems(filters);
         filterMinSelectBox.setItems(filters);
 
-        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale();
+        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale().sectionPad(SECTION_PAD_TOP, SECTION_PAD_BOTTOM);
 
         grid.section("Export");
         grid.row("Export folder", exportSettingsInputFileWidget);

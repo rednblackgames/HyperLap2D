@@ -13,10 +13,12 @@ public class PluginsSettings extends SettingsNodeValue<String> {
         super("Plugins", facade);
 
         SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
-        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale();
+        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale().sectionPad(SECTION_PAD_TOP, SECTION_PAD_BOTTOM);
 
         grid.wideCentered(grid.valueLabel("Choose a plugin to change its settings"));
 
+        //where the plugins are read from is a footnote to the panel, so it sits at its foot
+        grid.spring();
         grid.section("Directories");
         boolean first = true;
         for (File pluginDir : settingsManager.pluginDirs) {

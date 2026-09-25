@@ -112,6 +112,140 @@ public class KeyBindingsLayout {
         json.setOutputType(JsonWriter.OutputType.minimal);
     }
 
+    /** What the settings panel calls an action, and the group it is shown under. */
+    public static class Binding {
+        public final int action;
+        public final String group;
+        public final String name;
+
+        Binding(int action, String group, String name) {
+            this.action = action;
+            this.group = group;
+            this.name = name;
+        }
+    }
+
+    /**
+     * Every action worth showing, in the order the keymap panel reads them. Actions are bare
+     * numbers everywhere else, so this is the one place that says what they are called.
+     */
+    private static final Array<Binding> bindings = new Array<>();
+    static {
+        bindings.add(new Binding(NEW_PROJECT, "File", "New project"));
+        bindings.add(new Binding(OPEN_PROJECT, "File", "Open project"));
+        bindings.add(new Binding(SAVE_PROJECT, "File", "Save project"));
+        bindings.add(new Binding(SAVE_PROJECT_AS, "File", "Save project as"));
+        bindings.add(new Binding(EXPORT_PROJECT, "File", "Export project"));
+        bindings.add(new Binding(IMPORT_TO_LIBRARY, "File", "Import to library"));
+        bindings.add(new Binding(EXIT_APP, "File", "Exit"));
+
+        bindings.add(new Binding(UNDO, "Edit", "Undo"));
+        bindings.add(new Binding(REDO, "Edit", "Redo"));
+        bindings.add(new Binding(SELECT_ALL, "Edit", "Select all"));
+        bindings.add(new Binding(COPY, "Edit", "Copy"));
+        bindings.add(new Binding(CUT, "Edit", "Cut"));
+        bindings.add(new Binding(PASTE, "Edit", "Paste"));
+        bindings.add(new Binding(DELETE, "Edit", "Delete"));
+
+        bindings.add(new Binding(SELECTION_TOOL, "Tools", "Selection tool"));
+        bindings.add(new Binding(TRANSFORM_TOOL, "Tools", "Transform tool"));
+        bindings.add(new Binding(PAN_TOOL, "Tools", "Pan tool"));
+
+        bindings.add(new Binding(Z_INDEX_UP, "Arrange", "Move up one layer"));
+        bindings.add(new Binding(Z_INDEX_DOWN, "Arrange", "Move down one layer"));
+        bindings.add(new Binding(ALIGN_LEFT, "Arrange", "Align left"));
+        bindings.add(new Binding(ALIGN_TOP, "Arrange", "Align top"));
+        bindings.add(new Binding(ALIGN_RIGHT, "Arrange", "Align right"));
+        bindings.add(new Binding(ALIGN_BOTTOM, "Arrange", "Align bottom"));
+
+        bindings.add(new Binding(ZOOM_PLUS, "View", "Zoom in"));
+        bindings.add(new Binding(ZOOM_MINUS, "View", "Zoom out"));
+        bindings.add(new Binding(RESET_CAMERA, "View", "Reset camera"));
+        bindings.add(new Binding(SHOW_MINI_MAP, "View", "Mini map"));
+        bindings.add(new Binding(TOGGLE_FULL_SCREEN, "View", "Full screen"));
+
+        bindings.add(new Binding(OPEN_SETTINGS, "Window", "Settings"));
+        bindings.add(new Binding(OPEN_CONSOLE, "Window", "Console"));
+        bindings.add(new Binding(HIDE_GUI, "Window", "Widget preview mode"));
+    }
+
+    /** Every action the keymap panel lists, grouped and named, in reading order. */
+    public static Array<Binding> getBindings() {
+        return bindings;
+    }
+
+    /**
+     * The combination an action answers to, split into the keys a keyboard has: one array per way of
+     * saying it, each holding the modifiers and then the key, so a panel can draw them one chip each.
+     */
+    public static Array<String[]> getShortcutVariants(int action) {
+        Array<String[]> variants = new Array<>();
+        KeyMapper keyMapper = mapperOf(action);
+        if (keyMapper == null) return variants;
+
+        for (int keyCode : keyMapper.keyCodes) {
+            Array<String> keys = new Array<>();
+            if (keyMapper.isControl) keys.add(getControlLabel());
+            if (keyMapper.isAlt) keys.add("Alt");
+            if (keyMapper.isShift) keys.add("Shift");
+            keys.add(keyLabel(keyCode));
+            variants.add(keys.toArray(String.class));
+        }
+        return variants;
+    }
+
+    /** The same combination as one line, for a menu entry or for searching through the list. */
+    public static String getShortcutText(int action) {
+        StringBuilder text = new StringBuilder();
+        for (String[] variant : new Array.ArrayIterator<>(getShortcutVariants(action))) {
+            if (text.length() > 0) text.append(" or ");
+            for (int i = 0; i < variant.length; i++) {
+                if (i > 0) text.append(" ");
+                text.append(variant[i]);
+            }
+        }
+        return text.toString();
+    }
+
+    /** The name of the modifier {@link #mapAction} looks for: the command key on a Mac. */
+    public static String getControlLabel() {
+        return SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX ? "Cmd" : "Ctrl";
+    }
+
+    /**
+     * What is written on the key. libGDX spells the punctuation out and calls backspace a delete, so
+     * the ones a keyboard shows as a symbol are said here and the rest are left to it.
+     */
+    private static String keyLabel(int keyCode) {
+        switch (keyCode) {
+            case Input.Keys.PLUS: return "+";
+            case Input.Keys.MINUS: return "-";
+            case Input.Keys.EQUALS: return "=";
+            case Input.Keys.STAR: return "*";
+            case Input.Keys.SLASH: return "/";
+            case Input.Keys.BACKSLASH: return "\\";
+            case Input.Keys.LEFT_BRACKET: return "[";
+            case Input.Keys.RIGHT_BRACKET: return "]";
+            case Input.Keys.SEMICOLON: return ";";
+            case Input.Keys.APOSTROPHE: return "'";
+            case Input.Keys.COMMA: return ",";
+            case Input.Keys.PERIOD: return ".";
+            case Input.Keys.GRAVE: return "`";
+            //libGDX shares one code between backspace and delete, and it is backspace on a desktop
+            case Input.Keys.DEL: return "Backspace";
+            case Input.Keys.FORWARD_DEL: return "Delete";
+            default: return Input.Keys.toString(keyCode);
+        }
+    }
+
+    /** The bindings as they are now, falling back to the defaults before {@link #init()} has run. */
+    private static KeyMapper mapperOf(int action) {
+        for (KeyMapper keyMapper : new Array.ArrayIterator<>(mapping)) {
+            if (keyMapper.action == action) return keyMapper;
+        }
+        return defaultMapper.get(action);
+    }
+
     private static final Array<KeyMapper> mapping = new Array<>();
 
     public static void init() {

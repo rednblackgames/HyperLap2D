@@ -3,7 +3,6 @@ package games.rednblack.editor.view.ui.settings;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kotcrab.vis.ui.widget.*;
-import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.utils.RoundUtils;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.view.SettingsNodeValue;
@@ -18,32 +17,25 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
 
     private final VisCheckBox autoSaving, useANGLEGLES2, failSafeException;
     private final VisCheckBox enablePlugins;
-    private final VisSelectBox<String> filterKeyMapping;
     private final VisSlider uiScaleDensity, msaaSamples, fpsLimit;
 
     public GeneralSettings(Facade facade) {
         super("General", facade);
-
-        SettingsManager settingsManager = facade.retrieveProxy(SettingsManager.NAME);
 
         autoSaving = StandardWidgetsFactory.createSwitch();
         failSafeException = StandardWidgetsFactory.createSwitch();
         enablePlugins = StandardWidgetsFactory.createSwitch();
         useANGLEGLES2 = StandardWidgetsFactory.createSwitch();
 
-        filterKeyMapping = StandardWidgetsFactory.createSelectBox(String.class);
-        filterKeyMapping.setItems(settingsManager.getKeyMappingFiles());
-
         uiScaleDensity = StandardWidgetsFactory.createSlider(0.5f, 1.5f, 0.1f);
         msaaSamples = StandardWidgetsFactory.createSlider(0, 16, 1);
         fpsLimit = StandardWidgetsFactory.createSlider(0, 240, 10);
 
-        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale();
+        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale().sectionPad(SECTION_PAD_TOP, SECTION_PAD_BOTTOM);
 
         grid.section("Editor");
         grid.toggleWide("Save changes automatically [EXPERIMENTAL]", autoSaving);
         grid.toggleWide("Keep alive on exceptions [EXPERIMENTAL]", failSafeException);
-        grid.row("Key mapping", filterKeyMapping);
         grid.sliderRow("UI scale density", uiScaleDensity,
                 sliderValue(grid, uiScaleDensity, () -> getUIScaleDensity() + "x"));
 
@@ -88,7 +80,6 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         useANGLEGLES2.setChecked(getSettings().useANGLEGLES2);
         failSafeException.setChecked(getSettings().failSafeException);
         enablePlugins.setChecked(getSettings().enablePlugins);
-        filterKeyMapping.setSelected(getSettings().keyBindingLayout);
         uiScaleDensity.setValue(getSettings().uiScaleDensity);
         msaaSamples.setValue(getSettings().msaaSamples);
         fpsLimit.setValue(getSettings().fpsLimit);
@@ -100,7 +91,6 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         getSettings().useANGLEGLES2 = useANGLEGLES2.isChecked();
         getSettings().failSafeException = failSafeException.isChecked();
         getSettings().enablePlugins = enablePlugins.isChecked();
-        getSettings().keyBindingLayout = filterKeyMapping.getSelected();
         getSettings().uiScaleDensity = getUIScaleDensity();
         getSettings().msaaSamples = getMsaaSamples();
         getSettings().fpsLimit = getFPSLimit();
@@ -113,7 +103,6 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
                 || getSettings().useANGLEGLES2 != useANGLEGLES2.isChecked()
                 || getSettings().failSafeException != failSafeException.isChecked()
                 || getSettings().enablePlugins != enablePlugins.isChecked()
-                || !getSettings().keyBindingLayout.equals(filterKeyMapping.getSelected())
                 || getSettings().uiScaleDensity != getUIScaleDensity()
                 || getSettings().msaaSamples != getMsaaSamples()
                 || getSettings().fpsLimit != getFPSLimit();
@@ -124,7 +113,6 @@ public class GeneralSettings extends SettingsNodeValue<EditorConfigVO> {
         return getSettings().useANGLEGLES2 != useANGLEGLES2.isChecked()
                 || getSettings().failSafeException != failSafeException.isChecked()
                 || getSettings().enablePlugins != enablePlugins.isChecked()
-                || !getSettings().keyBindingLayout.equals(filterKeyMapping.getSelected())
                 || getSettings().msaaSamples != getMsaaSamples()
                 || getSettings().fpsLimit != getFPSLimit();
     }

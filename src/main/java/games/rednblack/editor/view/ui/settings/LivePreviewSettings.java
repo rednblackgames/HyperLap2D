@@ -74,7 +74,7 @@ public class LivePreviewSettings extends SettingsNodeValue<ProjectVO> {
         colorTable.add(tintButton).left();
         colorTable.add(resetButton).height(PropertyGrid.FIELD_HEIGHT).padLeft(PropertyGrid.BUTTON_GAP);
 
-        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale();
+        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale().sectionPad(SECTION_PAD_TOP, SECTION_PAD_BOTTOM);
 
         grid.section("Render");
         grid.toggleWide("Box2D debug render", box2dDebug);

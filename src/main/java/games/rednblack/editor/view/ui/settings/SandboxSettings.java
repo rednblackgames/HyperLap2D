@@ -90,7 +90,7 @@ public class SandboxSettings extends SettingsNodeValue<EditorConfigVO> {
         colorTable.add(tintButton).left();
         colorTable.add(resetButton).height(PropertyGrid.FIELD_HEIGHT).padLeft(PropertyGrid.BUTTON_GAP);
 
-        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale();
+        PropertyGrid grid = PropertyGrid.on(getContentTable()).dialogScale().sectionPad(SECTION_PAD_TOP, SECTION_PAD_BOTTOM);
 
         grid.section("Behavior");
         grid.toggleWide("Disable ambient light when viewing composites", disableAmbientComposite);

@@ -6,6 +6,7 @@ import games.rednblack.editor.view.menu.FileMenu;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.stage.UIStage;
 import games.rednblack.editor.view.ui.settings.GeneralSettings;
+import games.rednblack.editor.view.ui.settings.KeymapSettings;
 import games.rednblack.editor.view.ui.settings.PluginsSettings;
 import games.rednblack.editor.view.ui.settings.SandboxSettings;
 import games.rednblack.h2d.common.MsgAPI;
@@ -45,6 +46,10 @@ public class SettingsDialogMediator extends Mediator<SettingsDialog> {
         SandboxSettings sandboxSettings = new SandboxSettings(facade);
         sandboxSettings.setSettings(settingsManager.editorConfigVO);
         viewComponent.addSettingsNode(sandboxSettings);
+
+        KeymapSettings keymapSettings = new KeymapSettings(facade);
+        keymapSettings.setSettings(settingsManager.editorConfigVO);
+        viewComponent.addSettingsNode(keymapSettings);
 
         if (settingsManager.editorConfigVO.enablePlugins) {
             PluginsSettings pluginsSettings = new PluginsSettings(facade);
