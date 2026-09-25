@@ -1,5 +1,13 @@
 performance.png
-	size: 32, 32
+	size: 128, 32
 	filter: Linear, Linear
 icon-menu-performance
 	bounds: 1, 1, 22, 22
+icon-perf-pause
+	bounds: 25, 1, 22, 22
+icon-perf-play
+	bounds: 49, 1, 22, 22
+icon-perf-reset
+	bounds: 73, 1, 22, 22
+white-pixel
+	bounds: 97, 15, 8, 8

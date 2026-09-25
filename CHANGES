@@ -13,6 +13,7 @@
 - Widget preview mode: `F12` now hides the GUI **and** hands the sandbox input to the scene, so widgets answer the mouse, the wheel and the keyboard exactly as they will in a game (press `F12` again or `Esc` to come back, middle mouse still pans)
 - Remote control with built-in MCP server
 - Update libGDX to 1.14.3-SNAPSHOT (WIP), LWJGL to 3.4.3, Spine to 4.2.12, Talos Legacy to 1.6.0, TextraTypist 2.5.0
+- Real time performance profiler, with charts, metrics and performance tips
 - Incremental atlas updates with repacks only when necessary
 - Asynchronous editor project loading
 - Z Ordering with drag and drop in Items Tree
@@ -26,6 +27,7 @@
 - Support for GUI Widgets
 - Composite Scissors are now correct at any depth
 - New UI input system: `UIInputSystem` ECS equivalent to Scene2D input management with: hover, drag, scroll, keyboard focus and capture listeners for modal panels. An entity takes part in input only when `InputTargetComponent` is attached
+- Allow to inject profiler with per-system analysis
 - [BREAK CHANGE] Buttons no longer poll the mouse: add `sceneLoader.getUIInput()` to the game's input multiplexer
 - [BREAK CHANGE] Removed CompositeActor
 - [BREAK CHANGE] Removed old "button" TAG and legacy button system, including the `normal`/`pressed` layer swap (migrated to widgets). A `ButtonComponent` without a widget is input alone: listeners, pressed and checked flags

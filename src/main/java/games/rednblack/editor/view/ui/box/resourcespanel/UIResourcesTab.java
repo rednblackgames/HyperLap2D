@@ -11,6 +11,7 @@ import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import games.rednblack.h2d.common.MsgAPI;
+import games.rednblack.editor.view.ui.widget.CullingTable;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.imagetabbedpane.ImageTab;
 import games.rednblack.puremvc.Facade;
@@ -32,7 +33,7 @@ public abstract class UIResourcesTab extends ImageTab {
      * {@link games.rednblack.editor.view.ui.BoxItemResourceSelectionUIMediator} treats every cell
      * of the tables registered for selection management as a resource box.
      */
-    private final VisTable listRoot = new VisTable();
+    private final CullingTable listRoot = new CullingTable();
 
     private VisTable itemsTable;
 
@@ -103,6 +104,8 @@ public abstract class UIResourcesTab extends ImageTab {
         this.itemsTable = itemsTable;
         listRoot.left().top();
         listRoot.add(itemsTable).growX();
+        //a pack with hundreds of assets draws every one of them otherwise, scrolled out of sight or not
+        listRoot.setCullingTarget(itemsTable);
         return StandardWidgetsFactory.createScrollPane(listRoot);
     }
 

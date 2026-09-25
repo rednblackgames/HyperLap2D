@@ -72,6 +72,9 @@ public class HyperLap2DApp extends ApplicationAdapter {
 
             mainWindow = app.newWindow(hyperlap2D, config);
             mainWindow.setWindowListener(hyperlap2D);
+            //everything posted from here on is the editor's work and must run against the editor's window,
+            //whatever else is open at the time
+            app.setRunnableWindow(mainWindow);
             if (SystemUtils.IS_OS_WINDOWS) {
                 Gdx.app.postRunnable(() -> HyperLap2DUtils.overwriteWindowProc2(mainWindow.getWindowHandle()));
             }

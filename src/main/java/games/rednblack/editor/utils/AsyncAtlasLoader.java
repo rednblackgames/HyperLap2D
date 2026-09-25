@@ -30,6 +30,12 @@ import java.util.concurrent.atomic.AtomicLong;
  * {@code AssetManager}, and it works because {@link TextureAtlas#load(TextureAtlasData)} reuses a
  * page's {@link Page#texture} when it is already set instead of reading the file again.
  * <p>
+ * Parsing the descriptors is the one part that stays on the render thread. Not because it is quick:
+ * {@link TextureAtlasData} sorts its regions through libGDX's shared {@code Sort} singleton, and the
+ * renderer's z-sorting goes through that same instance every frame. Two threads inside it at once
+ * leave each other's sort in pieces - which surfaces as an atlas that comes back empty, or as a
+ * comparator from the other sort appearing in this one's stack trace.
+ * <p>
  * Construct, then {@link #start()} from the render thread; every {@link Listener} callback comes
  * back on the render thread.
  */
@@ -92,15 +98,14 @@ public class AsyncAtlasLoader {
     public void start() {
         startedAt = System.nanoTime();
 
-        Thread parser = new Thread(this::parseAndDecode, "AtlasLoader");
-        parser.setDaemon(true);
-        parser.start();
+        //on this thread on purpose: see the note on the class about the shared Sort instance
+        parseAndDispatch();
 
         Gdx.app.postRunnable(this::pump);
     }
 
-    /** Worker side: parse every descriptor, then hand each page to the decoder pool. */
-    private void parseAndDecode() {
+    /** Parses every descriptor, then hands each page to the decoder pool. */
+    private void parseAndDispatch() {
         try {
             long parseStartedAt = System.nanoTime();
             Array<Pack> parsed = new Array<>();

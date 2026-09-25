@@ -18,6 +18,12 @@
 
 package games.rednblack.editor.proxy;
 
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationGLESFix;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
+import com.badlogic.gdx.backends.lwjgl3.PluginWindow;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -36,6 +42,7 @@ import games.rednblack.h2d.common.IItemCommand;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.factory.IFactory;
 import games.rednblack.h2d.common.plugins.H2DPlugin;
+import games.rednblack.h2d.common.plugins.H2DWindow;
 import games.rednblack.h2d.common.plugins.PluginAPI;
 import games.rednblack.h2d.common.proxy.CursorManager;
 import games.rednblack.h2d.common.view.tools.Tool;
@@ -218,6 +225,28 @@ public class PluginManager extends Proxy implements PluginAPI {
     @Override
     public String getCacheDir() {
         return cacheDir;
+    }
+
+    @Override
+    public H2DWindow newWindow(ApplicationListener listener, String title, int width, int height, boolean resizable, Runnable onClose) {
+        if (!(Gdx.app instanceof Lwjgl3ApplicationGLESFix)) return null;
+
+        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+        config.setWindowedMode(width, height);
+        config.setTitle(title);
+        config.setResizable(resizable);
+        config.setWindowIcon("hyperlap_icon_96.png");
+        //no vsync: a second window waiting for its own refresh holds up the loop the editor draws in
+        config.useVsync(false);
+
+        Lwjgl3Window window = ((Lwjgl3ApplicationGLESFix) Gdx.app).newWindow(listener, config);
+        return new PluginWindow(window, () -> {
+            //a cursor made while that window was current died with it, and using it again would take the
+            //process down with an X error
+            CursorManager cursorManager = facade.retrieveProxy(CursorManager.NAME);
+            if (cursorManager != null) cursorManager.invalidateCache();
+            if (onClose != null) onClose.run();
+        });
     }
 
     @Override

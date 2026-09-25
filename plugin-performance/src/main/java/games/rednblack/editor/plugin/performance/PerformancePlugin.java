@@ -14,17 +14,16 @@ public class PerformancePlugin extends H2DPluginAdapter {
     /** Base name of the atlas packed from {@code assets/textures} and bundled in the plugin jar. */
     private static final String ATLAS_NAME = "performance";
 
-    private final PerformancePanelMediator performancePanelMediator;
-
     public PerformancePlugin() {
         super(CLASS_NAME);
-        performancePanelMediator = new PerformancePanelMediator(this);
     }
 
     @Override
     public void initPlugin() {
-        facade.registerMediator(performancePanelMediator);
+        //the window draws from the atlas, so it cannot be built before the API can extract it
         TextureAtlas pluginAtlas = loadPluginAtlas(ATLAS_NAME);
+
+        facade.registerMediator(new PerformanceWindowMediator(this, pluginAtlas));
         pluginAPI.addMenuItem(MenuAPI.WINDOW_MENU, "Performance", PANEL_OPEN, atlasDrawable(pluginAtlas, "icon-menu-performance"));
     }
 }

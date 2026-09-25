@@ -50,13 +50,15 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import games.rednblack.editor.renderer.utils.profiling.FrameProfiler;
 import com.badlogic.gdx.backends.lwjgl3.audio.mock.MockAudio;
-import org.lwjgl.system.Configuration;
 
 public class Lwjgl3ApplicationGLESFix implements Lwjgl3ApplicationBase {
     private final Lwjgl3ApplicationConfiguration config;
     final Array<Lwjgl3Window> windows = new Array<Lwjgl3Window>();
     private volatile Lwjgl3Window currentWindow;
+    /** The window deferred work belongs to. See {@link #setRunnableWindow(Lwjgl3Window)}. */
+    private volatile Lwjgl3Window runnableWindow;
     private Lwjgl3Audio audio;
     private final Files files;
     private final Net net;
@@ -156,11 +158,38 @@ public class Lwjgl3ApplicationGLESFix implements Lwjgl3ApplicationBase {
         }
     }
 
+    /**
+     * Says which window posted work belongs to, which is the editor's own.
+     * <p>
+     * {@code Gdx.graphics}, {@code Gdx.input} and {@code Gdx.gl} all mean "the window being rendered right
+     * now", and runnables are drained after the window loop - so without this they run against whichever
+     * window happened to be rendered last. With a second window open that is the wrong one, and everything
+     * deferred reads it: a window title lands on the profiler, a viewport is sized to it, and a frame buffer
+     * made for the scene is created in a context the editor cannot use it from.
+     */
+    public void setRunnableWindow (Lwjgl3Window window) {
+        this.runnableWindow = window;
+    }
+
+    private void makeRunnableWindowCurrent () {
+        Lwjgl3Window target = runnableWindow;
+        if (target == null || !windows.contains(target, true)) target = windows.size > 0 ? windows.first() : null;
+        if (target == null || currentWindow == target) return;
+
+        target.makeCurrent();
+        currentWindow = target;
+    }
+
     protected void loop () {
         Array<Lwjgl3Window> closedWindows = new Array<Lwjgl3Window>();
         while (running && windows.size > 0) {
             // FIXME put it on a separate thread
             audio.update();
+
+            //the loop is measured phase by phase: a frame that is slow while every render is fast has spent
+            //its time between the renders, and there is nowhere else to see that
+            FrameProfiler.beginLoop();
+            long mark = FrameProfiler.now();
 
             boolean haveWindowsRendered = false;
             closedWindows.clear();
@@ -169,16 +198,19 @@ public class Lwjgl3ApplicationGLESFix implements Lwjgl3ApplicationBase {
                 if (currentWindow != window) {
                     window.makeCurrent();
                     currentWindow = window;
+                    mark = FrameProfiler.mark(FrameProfiler.LOOP_CONTEXT, mark);
                 }
                 if (targetFramerate == -2) targetFramerate = window.getConfig().foregroundFPS;
                 synchronized (lifecycleListeners) {
                     haveWindowsRendered |= window.update();
                 }
+                mark = FrameProfiler.mark(window == runnableWindow ? FrameProfiler.LOOP_MAIN : FrameProfiler.LOOP_WINDOWS, mark);
                 if (window.shouldClose()) {
                     closedWindows.add(window);
                 }
             }
             GLFW.glfwPollEvents();
+            mark = FrameProfiler.mark(FrameProfiler.LOOP_EVENTS, mark);
 
             boolean shouldRequestRendering;
             synchronized (runnables) {
@@ -187,9 +219,16 @@ public class Lwjgl3ApplicationGLESFix implements Lwjgl3ApplicationBase {
                 executedRunnables.addAll(runnables);
                 runnables.clear();
             }
-            for (Runnable runnable : executedRunnables) {
-                runnable.run();
+            if (executedRunnables.size > 0) {
+                //only now, and only if there is something to run: making a context current is not free
+                makeRunnableWindowCurrent();
+                mark = FrameProfiler.mark(FrameProfiler.LOOP_CONTEXT, mark);
+
+                for (Runnable runnable : executedRunnables) {
+                    runnable.run();
+                }
             }
+            mark = FrameProfiler.mark(FrameProfiler.LOOP_RUNNABLES, mark);
             if (shouldRequestRendering) {
                 // Must follow Runnables execution so changes done by Runnables are reflected
                 // in the following render.
@@ -210,7 +249,13 @@ public class Lwjgl3ApplicationGLESFix implements Lwjgl3ApplicationBase {
                     }
                     lifecycleListeners.clear();
                 }
+                //a window disposes what it made, so it has to be the one current while it does
+                if (currentWindow != closedWindow) {
+                    closedWindow.makeCurrent();
+                    currentWindow = closedWindow;
+                }
                 closedWindow.dispose();
+                currentWindow = null;
 
                 windows.removeValue(closedWindow, false);
             }
@@ -226,6 +271,7 @@ public class Lwjgl3ApplicationGLESFix implements Lwjgl3ApplicationBase {
             } else if (targetFramerate > 0) {
                 sync.sync(targetFramerate); // sleep as needed to meet the target framerate
             }
+            FrameProfiler.mark(FrameProfiler.LOOP_WAIT, mark);
         }
     }
 

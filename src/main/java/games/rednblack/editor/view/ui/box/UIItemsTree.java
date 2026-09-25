@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
@@ -21,8 +23,13 @@ import space.earlygrey.shapedrawer.ShapeDrawer;
  * {@link ShapeDrawer} instead. It also supports drag &amp; drop to reorder z-index: because z-index is
  * confined per layer, while dragging every node outside the dragged node's layer is dimmed and only
  * same-layer siblings are valid drop targets.
+ * <p>
+ * It declares itself {@link Cullable} so the scroll pane around it hands it the part that is on screen.
+ * {@code Tree} already skips the rows outside that area and so does the group drawing their labels; only
+ * the connector lines are drawn here, and they are skipped the same way. Without it a scene of a thousand
+ * items draws every row of it, every frame, however little of the panel is showing.
  */
-public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> {
+public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> implements Cullable {
 
     /** Notified when a drag ends on a valid drop; carries same-layer entity ids in z-ascending order. */
     public interface DropListener {
@@ -131,6 +138,12 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> {
     /** Draws the elbow guide lines from every expanded parent to each of its children. */
     private void drawConnectorLines(Array<UIItemsTreeNode> nodes, float indent, float pmw) {
         final float treeX = getX(), treeY = getY();
+
+        //the area the scroll pane is showing, in the same coordinates the lines are drawn in
+        Rectangle culling = getCullingArea();
+        final float cullBottom = culling == null ? Float.NEGATIVE_INFINITY : treeY + culling.y;
+        final float cullTop = culling == null ? Float.POSITIVE_INFINITY : cullBottom + culling.height;
+
         for (UIItemsTreeNode node : nodes) {
             Array<UIItemsTreeNode> children = node.getChildren();
             if (!node.isExpanded() || children.size == 0) continue;
@@ -143,6 +156,13 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> {
 
             UIItemsTreeNode last = children.get(children.size - 1);
             float lastChildCenterY = treeY + last.getActor().getY() + last.getHeight() / 2f;
+
+            //nothing of this family is on screen: its children may still be, so keep walking
+            if (lastChildCenterY > cullTop || parentCenterY < cullBottom) {
+                drawConnectorLines(children, indent + INDENT_SPACING, pmw);
+                continue;
+            }
+
             // start the vertical just below the parent chevron so the line never cuts through it
             shapeDrawer.line(verticalX, parentCenterY - CHEVRON_ARM, verticalX, lastChildCenterY);
 

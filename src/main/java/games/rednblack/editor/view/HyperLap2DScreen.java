@@ -36,6 +36,7 @@ import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SettingsManager;
 import games.rednblack.editor.proxy.WidgetEditingProxy;
 import games.rednblack.editor.renderer.ecs.Engine;
+import games.rednblack.editor.renderer.utils.profiling.FrameProfiler;
 import games.rednblack.editor.utils.FullscreenUtils;
 import games.rednblack.editor.utils.KeyBindingsLayout;
 import games.rednblack.editor.utils.MenuIcons;
@@ -56,6 +57,11 @@ import java.util.Set;
 
 public class HyperLap2DScreen extends InputAdapter implements Screen {
     private static final String TAG = HyperLap2DScreen.class.getCanonicalName();
+
+    /** What the editor draws around the scene: the grid behind it, the camera and the gizmos. */
+    public static final int PROFILER_SLOT_EDITOR_SCENE = 1;
+    /** Panels, menus, dialogs - the part of the frame a game would never pay for. */
+    public static final int PROFILER_SLOT_EDITOR_UI = 2;
 
     public UIStage uiStage;
 
@@ -94,10 +100,16 @@ public class HyperLap2DScreen extends InputAdapter implements Screen {
         screenSize = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         blackOverlay = new Image(WhitePixel.sharedInstance.texture);
         blackOverlay.setSize(screenSize.x, screenSize.y);
+
+        //named once, whether or not anyone is profiling: slot 0 is the scene, the rest is us
+        FrameProfiler.defineSlot(PROFILER_SLOT_EDITOR_SCENE, "Editor scene");
+        FrameProfiler.defineSlot(PROFILER_SLOT_EDITOR_UI, "Editor UI");
     }
 
     @Override
     public void render(float deltaTime) {
+        FrameProfiler.beginFrame();
+
         if (isDrawingBgLogo) {
             Gdx.gl.glClearColor(defaultBackgroundColor.r, defaultBackgroundColor.g, defaultBackgroundColor.b, defaultBackgroundColor.a);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -105,14 +117,23 @@ public class HyperLap2DScreen extends InputAdapter implements Screen {
             Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+            FrameProfiler.begin(PROFILER_SLOT_EDITOR_SCENE);
             if (sandboxBackUI != null) sandboxBackUI.render(deltaTime);
             sandbox.render(deltaTime);
+            FrameProfiler.end(PROFILER_SLOT_EDITOR_SCENE);
+
+            FrameProfiler.begin(FrameProfiler.SLOT_SCENE);
             engine.process();
+            FrameProfiler.end(FrameProfiler.SLOT_SCENE);
         }
 
+        FrameProfiler.begin(PROFILER_SLOT_EDITOR_UI);
         uiStage.getViewport().apply();
         uiStage.act(deltaTime);
         uiStage.draw();
+        FrameProfiler.end(PROFILER_SLOT_EDITOR_UI);
+
+        FrameProfiler.endFrame();
     }
 
     public void disableDrawingBgLogo() {
