@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -21,6 +22,8 @@ import com.kotcrab.vis.ui.util.dialog.OptionDialogAdapter;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.utils.ResourceGridAdapter;
 import games.rednblack.editor.utils.ResourceListAdapter;
+import games.rednblack.editor.utils.ScrollPaneUtils;
+import games.rednblack.editor.view.ui.widget.CullingTable;
 import games.rednblack.h2d.common.H2DDialog;
 import games.rednblack.h2d.common.H2DDialogs;
 import games.rednblack.h2d.common.view.ui.PropertyGrid;
@@ -43,6 +46,9 @@ public class AtlasesPackDialog extends H2DDialog {
     private static final int LIST_PAD = 3;
     private static final int HEADER_HEIGHT = 26;
     private static final int MOVE_BUTTON_SIZE = 38;
+    /** Held arrow keys: the wait before the first repeat, then the time between two. */
+    private static final float REPEAT_DELAY = 0.4f;
+    private static final float REPEAT_INTERVAL = 0.05f;
 
     private final ImageTabbedPane tabbedPane;
     private final String addNewNotification;
@@ -62,6 +68,10 @@ public class AtlasesPackDialog extends H2DDialog {
 
     private final ListView<String> mainPackList;
     private final ListView<String> currentPackList;
+
+    /** The arrow key being held, -1 for none, and the time left before it moves the selection again. */
+    private int repeatKey = -1;
+    private float repeatIn;
 
     public AtlasesPackDialog(String title, String add, String move, String updateList, String removeNotification,
                              String applyNotification, String editorOnlyNotification) {
@@ -151,6 +161,9 @@ public class AtlasesPackDialog extends H2DDialog {
         // takes its preferred width and the growX cells never expand to fill the column
         currentPackList.getScrollPane().setScrollingDisabled(true, false);
         currentPackList.getScrollPane().setFadeScrollBars(false);
+        //a pack with hundreds of regions draws every thumbnail of it otherwise, scrolled out of sight or not
+        enableCulling(mainPackList);
+        enableCulling(currentPackList);
 
         mainPackList.setItemClickListener(this::selectMainItem);
         currentPackList.setItemClickListener(this::selectCurrentItem);
@@ -273,93 +286,87 @@ public class AtlasesPackDialog extends H2DDialog {
         addListener(new InputListener(){
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.DOWN) {
-                    if (mainPackAdapter.getSelection().size > 0) {
-                        int lastSelected = mainPackAdapter.indexOf(mainPackAdapter.getSelection().get(mainPackAdapter.getSelection().size - 1));
-                        if (lastSelected + 1 < mainPackAdapter.size()) {
-                            String currentItem = mainPackAdapter.get(lastSelected);
-                            String nextItem = mainPackAdapter.get(lastSelected + 1);
+                if (stepFor(keycode) == 0) return false;
+                //the desktop backend sends one keyDown however long the key is held, so the repeat is ours
+                moveSelection(keycode);
+                repeatKey = keycode;
+                repeatIn = REPEAT_DELAY;
+                return true;
+            }
 
-                            if (!isGroupMultiSelectKeyPressed(mainPackAdapter))
-                                mainPackAdapter.getSelectionManager().deselectAll();
-
-                            if (mainPackAdapter.getSelectionManager().getSelection().contains(nextItem, false)) {
-                                mainPackAdapter.getSelectionManager().deselect(currentItem);
-                            } else {
-                                mainPackAdapter.getSelectionManager().select(nextItem);
-                            }
-
-                            Actor item = mainPackAdapter.getView(nextItem);
-                            mainPackList.getScrollPane().scrollTo(0, item.getY(), item.getWidth(), item.getHeight());
-                        }
-                    } else if (currentPackAdapter.getSelection().size > 0) {
-                        int lastSelected = currentPackAdapter.indexOf(currentPackAdapter.getSelection().get(currentPackAdapter.getSelection().size - 1));
-                        // grid: DOWN moves a whole row, not a single cell
-                        if (lastSelected + ResourceGridAdapter.COLUMNS < currentPackAdapter.size()) {
-                            String currentItem = currentPackAdapter.get(lastSelected);
-                            String nextItem = currentPackAdapter.get(lastSelected + ResourceGridAdapter.COLUMNS);
-
-                            if (!isGroupMultiSelectKeyPressed(currentPackAdapter))
-                                currentPackAdapter.getSelectionManager().deselectAll();
-
-                            if (currentPackAdapter.getSelectionManager().getSelection().contains(nextItem, false)) {
-                                currentPackAdapter.getSelectionManager().deselect(currentItem);
-                            } else {
-                                currentPackAdapter.getSelectionManager().select(nextItem);
-                            }
-
-                            Actor item = currentPackAdapter.getView(nextItem);
-                            currentPackList.getScrollPane().scrollTo(0, item.getY(), item.getWidth(), item.getHeight());
-                        }
-                    }
-                    return true;
-                }
-
-                if (keycode == Input.Keys.UP) {
-                    if (mainPackAdapter.getSelection().size > 0) {
-                        int lastSelected = mainPackAdapter.indexOf(mainPackAdapter.getSelection().get(mainPackAdapter.getSelection().size - 1));
-                        if (lastSelected - 1 >= 0) {
-                            String currentItem = mainPackAdapter.get(lastSelected);
-                            String nextItem = mainPackAdapter.get(lastSelected - 1);
-
-                            if (!isGroupMultiSelectKeyPressed(mainPackAdapter))
-                                mainPackAdapter.getSelectionManager().deselectAll();
-
-                            if (mainPackAdapter.getSelectionManager().getSelection().contains(nextItem, false)) {
-                                mainPackAdapter.getSelectionManager().deselect(currentItem);
-                            } else {
-                                mainPackAdapter.getSelectionManager().select(nextItem);
-                            }
-
-                            Actor item = mainPackAdapter.getView(nextItem);
-                            mainPackList.getScrollPane().scrollTo(0, item.getY(), item.getWidth(), item.getHeight());
-                        }
-                    } else if (currentPackAdapter.getSelection().size > 0) {
-                        int lastSelected = currentPackAdapter.indexOf(currentPackAdapter.getSelection().get(currentPackAdapter.getSelection().size - 1));
-                        // grid: UP moves a whole row, not a single cell
-                        if (lastSelected - ResourceGridAdapter.COLUMNS >= 0) {
-                            String currentItem = currentPackAdapter.get(lastSelected);
-                            String nextItem = currentPackAdapter.get(lastSelected - ResourceGridAdapter.COLUMNS);
-
-                            if (!isGroupMultiSelectKeyPressed(currentPackAdapter))
-                                currentPackAdapter.getSelectionManager().deselectAll();
-
-                            if (currentPackAdapter.getSelectionManager().getSelection().contains(nextItem, false)) {
-                                currentPackAdapter.getSelectionManager().deselect(currentItem);
-                            } else {
-                                currentPackAdapter.getSelectionManager().select(nextItem);
-                            }
-
-                            Actor item = currentPackAdapter.getView(nextItem);
-                            currentPackList.getScrollPane().scrollTo(0, item.getY(), item.getWidth(), item.getHeight());
-                        }
-                    }
-                    return true;
-                }
-
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                if (keycode == repeatKey) repeatKey = -1;
                 return false;
             }
         });
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        if (repeatKey == -1) return;
+        //a keyUp can go missing when the focus moves on while the key is held
+        if (!Gdx.input.isKeyPressed(repeatKey) || !focusIsInside()) {
+            repeatKey = -1;
+            return;
+        }
+        repeatIn -= delta;
+        while (repeatIn <= 0) {
+            moveSelection(repeatKey);
+            repeatIn += REPEAT_INTERVAL;
+        }
+    }
+
+    private boolean focusIsInside() {
+        Actor focus = getStage() == null ? null : getStage().getKeyboardFocus();
+        return focus != null && (focus == this || focus.isDescendantOf(this));
+    }
+
+    /**
+     * How far an arrow moves the selection in the list that holds it: one row in the main list, and in
+     * the grid one card sideways or a whole row up and down. 0 for a key that does not move it there.
+     */
+    private int stepFor(int keycode) {
+        boolean grid = mainPackAdapter.getSelection().size == 0 && currentPackAdapter.getSelection().size > 0;
+        switch (keycode) {
+            case Input.Keys.UP: return grid ? -ResourceGridAdapter.COLUMNS : -1;
+            case Input.Keys.DOWN: return grid ? ResourceGridAdapter.COLUMNS : 1;
+            case Input.Keys.LEFT: return grid ? -1 : 0;
+            case Input.Keys.RIGHT: return grid ? 1 : 0;
+            default: return 0;
+        }
+    }
+
+    private void moveSelection(int keycode) {
+        int step = stepFor(keycode);
+        if (step == 0) return;
+        if (mainPackAdapter.getSelection().size > 0)
+            moveSelection(mainPackAdapter, mainPackList, step);
+        else if (currentPackAdapter.getSelection().size > 0)
+            moveSelection(currentPackAdapter, currentPackList, step);
+    }
+
+    /** Moves from the last selected item by {@code step}, stopping at either end of the list. */
+    private void moveSelection(SimpleListAdapter<String> adapter, ListView<String> list, int step) {
+        Array<String> selection = adapter.getSelection();
+        int lastSelected = adapter.indexOf(selection.get(selection.size - 1));
+        int next = lastSelected + step;
+        if (next < 0 || next >= adapter.size()) return;
+
+        String currentItem = adapter.get(lastSelected);
+        String nextItem = adapter.get(next);
+
+        if (!isGroupMultiSelectKeyPressed(adapter))
+            adapter.getSelectionManager().deselectAll();
+
+        if (adapter.getSelectionManager().getSelection().contains(nextItem, false)) {
+            adapter.getSelectionManager().deselect(currentItem);
+        } else {
+            adapter.getSelectionManager().select(nextItem);
+        }
+
+        ScrollPaneUtils.scrollIntoView(list.getScrollPane(), adapter.getView(nextItem));
     }
 
     private void selectCurrentItem(String item) {
@@ -447,6 +454,22 @@ public class AtlasesPackDialog extends H2DDialog {
         if (tabbedPane.getActiveTab() == null)
             return null;
         return ((PackTab) tabbedPane.getActiveTab()).getName();
+    }
+
+    /**
+     * Lets the scroll pane of a list skip the rows it is not showing. The list keeps its items in a
+     * table inside a table of its own, neither of them cullable, so its own table goes into a
+     * {@link CullingTable} that hands the area down to the items table. The list rebuilds by clearing
+     * and refilling those same two tables, so the target never goes stale.
+     */
+    private static void enableCulling(ListView<String> list) {
+        VisScrollPane scrollPane = list.getScrollPane();
+        Group scrollTable = (Group) scrollPane.getActor();
+        CullingTable root = new CullingTable();
+        root.top().left();
+        root.add(scrollTable).grow();
+        root.setCullingTarget((Group) scrollTable.getChildren().first());
+        scrollPane.setActor(root);
     }
 
     /** Header band of a pack column, drawn with the table header asset. */
