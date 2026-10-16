@@ -43,6 +43,7 @@ import games.rednblack.editor.renderer.data.SceneVO;
 import games.rednblack.editor.renderer.physics.PhysicsBodyLoader;
 import games.rednblack.editor.renderer.systems.ButtonSystem;
 import games.rednblack.editor.renderer.systems.ScrollPaneSystem;
+import games.rednblack.editor.renderer.systems.SelectBoxSystem;
 import games.rednblack.editor.renderer.systems.TextFieldSystem;
 import games.rednblack.editor.renderer.systems.SliderSystem;
 import games.rednblack.editor.renderer.systems.CullingSystem;
@@ -56,6 +57,7 @@ import games.rednblack.editor.renderer.utils.TextureArrayCpuPolygonSpriteBatch;
 import games.rednblack.editor.system.HyperLap2dRendererMiniMap;
 import games.rednblack.editor.system.EditorButtonSystem;
 import games.rednblack.editor.system.EditorScrollPaneSystem;
+import games.rednblack.editor.system.EditorSelectBoxSystem;
 import games.rednblack.editor.system.EditorSliderSystem;
 import games.rednblack.editor.system.EditorTextFieldSystem;
 import games.rednblack.editor.system.ParticleContinuousSystem;
@@ -171,6 +173,8 @@ public class Sandbox {
         config.addSystem(new EditorScrollPaneSystem());
         config.removeSystem(TextFieldSystem.class);
         config.addSystem(new EditorTextFieldSystem());
+        config.removeSystem(SelectBoxSystem.class);
+        config.addSystem(new EditorSelectBoxSystem());
         //Re-added to keep it right after the button logic: a new state is drawn the same frame
         config.addSystem(new WidgetStateSystem());
 

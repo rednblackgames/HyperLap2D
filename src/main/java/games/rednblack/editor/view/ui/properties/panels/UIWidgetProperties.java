@@ -9,6 +9,7 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextArea;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import games.rednblack.editor.event.CheckBoxChangeListener;
 import games.rednblack.editor.event.KeyboardListener;
@@ -31,6 +32,8 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties {
     private static final float CHIP_GAP = 4;
     private static final String CHIP_BACKGROUND = "toolbar-over";
     private static final String CHIP_BACKGROUND_LIT = "toolbar-down";
+    /** Lines a list setting shows before its box scrolls. */
+    private static final int LIST_ROWS = 5;
 
     private final OrderedMap<String, Actor> settingFields = new OrderedMap<>();
     private final OrderedMap<String, VisTable> stateChips = new OrderedMap<>();
@@ -116,6 +119,14 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties {
                     choices.addListener(new SelectBoxChangeListener(getUpdateEventName()));
                     settingFields.put(property.key, choices);
                     grid.row(label, choices);
+                } else if (property.kind == WidgetType.PropertyKind.LIST) {
+                    // one value per line: Enter starts the next one and commits what is there so far
+                    VisTextArea lines = StandardWidgetsFactory.createTextArea();
+                    lines.setPrefRows(LIST_ROWS);
+                    lines.addListener(new KeyboardListener(getUpdateEventName()));
+                    settingFields.put(property.key, lines);
+                    grid.wide(PropertyGrid.label(label));
+                    grid.wideFill(lines);
                 } else {
                     VisTextField field = StandardWidgetsFactory.createTextField();
                     field.addListener(new KeyboardListener(getUpdateEventName()));
