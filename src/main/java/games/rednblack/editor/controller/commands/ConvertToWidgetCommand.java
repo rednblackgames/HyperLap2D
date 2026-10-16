@@ -45,6 +45,9 @@ public class ConvertToWidgetCommand extends ConvertToCompositeCommand {
     private boolean wrapped;
     /** The part the widget's contents were put into, null when the type asks for none. */
     private String contentId;
+    /** The item the widget was made from, when it alone was, and what it was given to play its role. */
+    private String convertedItemId;
+    private boolean convertedItemGotPart, convertedItemGotLayout;
     /** The parts the editor drew along with the widget, so undo can take them away again. */
     private final List<String> defaultPartIds = new ArrayList<>();
 
@@ -82,6 +85,7 @@ public class ConvertToWidgetCommand extends ConvertToCompositeCommand {
         sandbox.getSceneControl().sceneLoader.getEntityFactory().attachWidgetBehaviour(entity);
 
         if (widgetType.wrapRole != null) contentId = EntityUtils.getEntityId(wrapContent(entity, widgetType.wrapRole));
+        if (wrapped && widgetType.convertedItemRole != null) giveRole(entity, widgetType.convertedItemRole);
         createDefaultParts(entity, widgetType);
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
@@ -121,6 +125,40 @@ public class ConvertToWidgetCommand extends ConvertToCompositeCommand {
 
         sandbox.getEngine().process();
         return content;
+    }
+
+    /**
+     * When one item alone was made into the widget, it plays the given role and is stretched to the
+     * widget with constraints, so it follows when the widget is resized. An item that already plays a
+     * role, or already has constraints, keeps them.
+     */
+    private void giveRole(int widget, String role) {
+        convertedItemId = null;
+        HashSet<Integer> children = EntityUtils.getChildren(widget);
+        if (children == null || children.size() != 1) return;
+
+        int item = children.iterator().next();
+        convertedItemId = EntityUtils.getEntityId(item);
+
+        convertedItemGotPart = SandboxComponentRetriever.get(item, WidgetPartComponent.class) == null;
+        if (convertedItemGotPart) sandbox.getEngine().edit(item).create(WidgetPartComponent.class).role = role;
+
+        convertedItemGotLayout = SandboxComponentRetriever.get(item, LayoutComponent.class) == null;
+        if (convertedItemGotLayout) {
+            WidgetType.DefaultPart stretched = WidgetType.DefaultPart.composite(role, 0, 0).matchWidth(0).matchHeight(0);
+            constrainToParent(item, stretched);
+        }
+    }
+
+    /** Takes back what {@link #giveRole} gave, leaving the item as it was before. */
+    private void takeRoleBack() {
+        if (convertedItemId == null) return;
+        int item = EntityUtils.getByUniqueId(convertedItemId);
+        convertedItemId = null;
+        if (item == -1) return;
+
+        if (convertedItemGotPart) sandbox.getEngine().edit(item).remove(WidgetPartComponent.class);
+        if (convertedItemGotLayout) sandbox.getEngine().edit(item).remove(LayoutComponent.class);
     }
 
     /**
@@ -188,7 +226,7 @@ public class ConvertToWidgetCommand extends ConvertToCompositeCommand {
         ZIndexComponent zIndex = SandboxComponentRetriever.get(item, ZIndexComponent.class);
         if (zIndex != null) zIndex.setZIndex(wanted.zIndex);
 
-        if (wanted.matchWidth || wanted.matchHeight) constrainToParent(item, wanted);
+        if (wanted.matchWidth || wanted.matchHeight || wanted.pinTop || wanted.pinRight) constrainToParent(item, wanted);
 
         if (wanted.kind == WidgetType.DefaultPart.Kind.LABEL) {
             LabelComponent label = SandboxComponentRetriever.get(item, LabelComponent.class);
@@ -221,7 +259,7 @@ public class ConvertToWidgetCommand extends ConvertToCompositeCommand {
         return item;
     }
 
-    /** Constrains the item to the edges of what holds it, so it is resized along with it. */
+    /** Constrains the item to the edges of what holds it, so it is resized, or moved, along with it. */
     private void constrainToParent(int item, WidgetType.DefaultPart wanted) {
         LayoutComponent layout = sandbox.getEngine().edit(item).create(LayoutComponent.class);
         if (wanted.matchWidth) {
@@ -234,6 +272,8 @@ public class ConvertToWidgetCommand extends ConvertToCompositeCommand {
             layout.top = parentEdge(LayoutComponent.ConstraintSide.TOP, wanted.marginY);
             layout.matchConstraintHeight = true;
         }
+        if (wanted.pinTop && !wanted.matchHeight) layout.top = parentEdge(LayoutComponent.ConstraintSide.TOP, wanted.marginTop);
+        if (wanted.pinRight && !wanted.matchWidth) layout.right = parentEdge(LayoutComponent.ConstraintSide.RIGHT, wanted.marginRight);
     }
 
     private static LayoutComponent.ConstraintData parentEdge(LayoutComponent.ConstraintSide side, float margin) {
@@ -344,6 +384,7 @@ public class ConvertToWidgetCommand extends ConvertToCompositeCommand {
         }
         sandbox.getEngine().edit(entity).remove(WidgetComponent.class);
         removeDefaultParts();
+        takeRoleBack();
         unwrapContent(entity);
 
         if (wrapped) {
