@@ -36,6 +36,7 @@ import games.rednblack.editor.renderer.components.shape.CircleShapeComponent;
 import games.rednblack.editor.renderer.components.shape.PolygonShapeComponent;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.utils.runtime.AddableComponents;
+import games.rednblack.editor.utils.runtime.AutoLayoutEditing;
 import games.rednblack.editor.utils.runtime.ComponentCloner;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
@@ -167,6 +168,7 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
 
         viewComponent.setItemType(entityData.metadata().getType(entity), mainItemComponent.uniqueId);
         viewComponent.setIdBoxValue(mainItemComponent.itemIdentifier);
+        viewComponent.setPositionDisabled(AutoLayoutEditing.layingOut(entity) != -1);
         viewComponent.setXValue(String.format(Locale.ENGLISH, "%.2f", transformComponent.x));
         viewComponent.setYValue(String.format(Locale.ENGLISH, "%.2f", transformComponent.y));
 

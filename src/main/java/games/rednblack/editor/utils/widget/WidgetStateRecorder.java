@@ -1,9 +1,12 @@
 package games.rednblack.editor.utils.widget;
 
 import com.badlogic.gdx.utils.ObjectMap;
+import games.rednblack.editor.renderer.components.AutoLayoutComponent;
+import games.rednblack.editor.renderer.components.AutoLayoutItemComponent;
 import games.rednblack.editor.renderer.components.LayoutComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
+import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.widget.WidgetComponent;
 import games.rednblack.editor.renderer.components.widget.WidgetPartComponent;
 import games.rednblack.editor.renderer.ecs.ComponentMapper;
@@ -36,6 +39,9 @@ public class WidgetStateRecorder {
     private final ComponentMapper<NodeComponent> nodeCM;
     private final ComponentMapper<MainItemComponent> mainItemCM;
     private final ComponentMapper<LayoutComponent> layoutCM;
+    private final ComponentMapper<AutoLayoutComponent> autoLayoutCM;
+    private final ComponentMapper<AutoLayoutItemComponent> autoLayoutItemCM;
+    private final ComponentMapper<ParentNodeComponent> parentCM;
 
     /**
      * uniqueId -> (property key -> base value), for the properties the shown state does not
@@ -54,6 +60,9 @@ public class WidgetStateRecorder {
         nodeCM = engine.getMapper(NodeComponent.class);
         mainItemCM = engine.getMapper(MainItemComponent.class);
         layoutCM = engine.getMapper(LayoutComponent.class);
+        autoLayoutCM = engine.getMapper(AutoLayoutComponent.class);
+        autoLayoutItemCM = engine.getMapper(AutoLayoutItemComponent.class);
+        parentCM = engine.getMapper(ParentNodeComponent.class);
     }
 
     /**
@@ -186,6 +195,13 @@ public class WidgetStateRecorder {
      * the widget drives, such as the knob of a progress bar, is moved by the widget: neither is an
      * edit of the state.
      */
+    private boolean isLaidOut(int entity) {
+        ParentNodeComponent parent = parentCM.get(entity);
+        if (parent == null || parent.parentEntity == -1 || !autoLayoutCM.has(parent.parentEntity)) return false;
+        AutoLayoutItemComponent item = autoLayoutItemCM.get(entity);
+        return item == null || !item.ignore;
+    }
+
     private boolean isRecordable(int entity, WidgetComponent widget, String key) {
         WidgetPartComponent part = partCM.get(entity);
         WidgetType type = WidgetTypes.get(widget.widgetType);
@@ -193,6 +209,9 @@ public class WidgetStateRecorder {
             WidgetType.Part role = type.getPart(part.role);
             if (role != null && role.drivenKeys.contains(key, false)) return false;
         }
+
+        // a child an auto layout places is moved by the layout
+        if ((CoreStateOverrides.X.equals(key) || CoreStateOverrides.Y.equals(key)) && isLaidOut(entity)) return false;
 
         LayoutComponent layout = layoutCM.get(entity);
         if (layout == null) return true;

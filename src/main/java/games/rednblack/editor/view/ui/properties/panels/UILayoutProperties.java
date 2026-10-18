@@ -111,6 +111,9 @@ public class UILayoutProperties extends UIRemovableProperties implements RemoteE
 
     private ConstraintPreviewWidget previewWidget;
 
+    private PropertyGrid.CollapsibleRow autoLayoutNote;
+    private boolean placedByAutoLayout;
+
     public UILayoutProperties() {
         super("Layout");
         initView();
@@ -172,7 +175,13 @@ public class UILayoutProperties extends UIRemovableProperties implements RemoteE
         sides.constraintRow(bottomEnabled, bottomTarget, bottomSide, bottomMargin);
         sides.constraintRow(topEnabled, topTarget, topSide, topMargin);
 
+        VisLabel note = PropertyGrid.text("Placed by the parent's auto layout: these constraints have no effect.");
+        note.setWrap(true);
+        VisTable noteTable = new VisTable();
+        noteTable.add(note).growX().padLeft(PropertyGrid.CONTENT_PAD).padRight(PropertyGrid.CONTENT_PAD);
+
         PropertyGrid grid = PropertyGrid.on(mainTable);
+        autoLayoutNote = grid.collapsibleSubGrid(noteTable);
         grid.wideFill(previewWidget, PREVIEW_HEIGHT);
         grid.wideFill(constraints);
         grid.row("H bias", horizontalBiasField);
@@ -180,6 +189,22 @@ public class UILayoutProperties extends UIRemovableProperties implements RemoteE
         grid.toggle("Match width", matchWidthCheckBox);
         grid.toggle("Match height", matchHeightCheckBox);
 
+        updateConstraintFieldsEnabled();
+        autoLayoutNote.setContentVisible(false);
+    }
+
+    /** A child its parent's auto layout places ignores its constraints: they are shown, but locked. */
+    public void setPlacedByAutoLayout(boolean placed) {
+        placedByAutoLayout = placed;
+        autoLayoutNote.setContentVisible(placed);
+        leftEnabled.setDisabled(placed);
+        rightEnabled.setDisabled(placed);
+        bottomEnabled.setDisabled(placed);
+        topEnabled.setDisabled(placed);
+        horizontalBiasField.setDisabled(placed);
+        verticalBiasField.setDisabled(placed);
+        matchWidthCheckBox.setDisabled(placed);
+        matchHeightCheckBox.setDisabled(placed);
         updateConstraintFieldsEnabled();
     }
 
@@ -221,22 +246,22 @@ public class UILayoutProperties extends UIRemovableProperties implements RemoteE
     }
 
     private void updateConstraintFieldsEnabled() {
-        boolean leftOn = leftEnabled.isChecked();
+        boolean leftOn = leftEnabled.isChecked() && !placedByAutoLayout;
         leftTarget.setDisabled(!leftOn);
         leftSide.setDisabled(!leftOn);
         leftMargin.setDisabled(!leftOn);
 
-        boolean rightOn = rightEnabled.isChecked();
+        boolean rightOn = rightEnabled.isChecked() && !placedByAutoLayout;
         rightTarget.setDisabled(!rightOn);
         rightSide.setDisabled(!rightOn);
         rightMargin.setDisabled(!rightOn);
 
-        boolean bottomOn = bottomEnabled.isChecked();
+        boolean bottomOn = bottomEnabled.isChecked() && !placedByAutoLayout;
         bottomTarget.setDisabled(!bottomOn);
         bottomSide.setDisabled(!bottomOn);
         bottomMargin.setDisabled(!bottomOn);
 
-        boolean topOn = topEnabled.isChecked();
+        boolean topOn = topEnabled.isChecked() && !placedByAutoLayout;
         topTarget.setDisabled(!topOn);
         topSide.setDisabled(!topOn);
         topMargin.setDisabled(!topOn);

@@ -20,6 +20,7 @@ package games.rednblack.editor.view.ui.properties.panels;
 import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.controller.commands.component.UpdateCompositeDataCommand;
+import games.rednblack.editor.renderer.components.AutoLayoutComponent;
 import games.rednblack.editor.renderer.components.CompositeTransformComponent;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.systems.CompositeSystem;
@@ -48,7 +49,9 @@ public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<
     @Override
     protected void translateObservableDataToView(int item) {
         CompositeTransformComponent transformComponent = entityData.get(item, CompositeTransformComponent.class);
-        viewComponent.setAutomaticResize(transformComponent.automaticResize);
+        boolean sizedByAutoLayout = entityData.get(item, AutoLayoutComponent.class) != null;
+        viewComponent.setSizedByAutoLayout(sizedByAutoLayout);
+        viewComponent.setAutomaticResize(transformComponent.automaticResize && !sizedByAutoLayout);
         viewComponent.setScissorsEnabled(transformComponent.scissorsEnabled);
         viewComponent.setRenderToFBOEnabled(transformComponent.renderToFBO);
 
@@ -62,7 +65,10 @@ public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<
         CompositeItemVO payloadVo = new CompositeItemVO();
         payloadVo.loadFromEntity(observableReference, sandbox.getEngine(), sandbox.getSceneControl().sceneLoader.getEntityFactory());
 
-        payloadVo.automaticResize = viewComponent.isAutomaticResizeIsEnabled();
+        // locked while an auto layout sizes the composite: what the switch shows is not its setting
+        if (entityData.get(observableReference, AutoLayoutComponent.class) == null) {
+            payloadVo.automaticResize = viewComponent.isAutomaticResizeIsEnabled();
+        }
         payloadVo.scissorsEnabled = viewComponent.isScissorsEnabled();
         payloadVo.renderToFBO = viewComponent.isRenderToFBOEnabled();
 

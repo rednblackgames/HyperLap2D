@@ -57,6 +57,8 @@ public abstract class BasicFollower extends Group {
 
     private float lastEntityX = Float.NaN;
     private float lastEntityY = Float.NaN;
+    private float lastEntityWidth = Float.NaN;
+    private float lastEntityHeight = Float.NaN;
 
     private final Array<SubFollower> subFollowers = new Array<>();
 
@@ -137,6 +139,8 @@ public abstract class BasicFollower extends Group {
 
         lastEntityX = transformComponent.x;
         lastEntityY = transformComponent.y;
+        lastEntityWidth = dimensionsComponent.width;
+        lastEntityHeight = dimensionsComponent.height;
 
         for (SubFollower follower : subFollowers) {
             follower.update();
@@ -150,9 +154,11 @@ public abstract class BasicFollower extends Group {
         // (engine.process() runs before uiStage.act()).  If a system like
         // LayoutSystem corrected the position that a drag temporarily set,
         // refresh the follower so it shows the effective position, not the
-        // intermediate dragged one.
+        // intermediate dragged one. An auto layout resizes, too: a composite fitting its content
+        // or a child it stretches.
         if (transformComponent != null
-                && (transformComponent.x != lastEntityX || transformComponent.y != lastEntityY)) {
+                && (transformComponent.x != lastEntityX || transformComponent.y != lastEntityY
+                || (dimensionsComponent != null && (dimensionsComponent.width != lastEntityWidth || dimensionsComponent.height != lastEntityHeight)))) {
             update();
         }
     }

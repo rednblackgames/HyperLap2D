@@ -9,6 +9,7 @@ import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.data.LayoutConstraintVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
+import games.rednblack.editor.utils.runtime.AutoLayoutEditing;
 import games.rednblack.editor.view.ui.properties.UIRemovableComponentPropertiesMediator;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.Facade;
@@ -115,6 +116,8 @@ public class UILayoutPropertiesMediator extends UIRemovableComponentPropertiesMe
         viewComponent.setMatchConstraintVisible(supportsMatchConstraint);
         viewComponent.setMatchConstraintWidth(layoutComponent.matchConstraintWidth);
         viewComponent.setMatchConstraintHeight(layoutComponent.matchConstraintHeight);
+
+        viewComponent.setPlacedByAutoLayout(AutoLayoutEditing.layingOut(entity) != -1);
     }
 
     private String resolveTargetLabel(LayoutComponent.ConstraintData data, int entity) {

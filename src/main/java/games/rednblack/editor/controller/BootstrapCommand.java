@@ -102,6 +102,8 @@ public class BootstrapCommand extends SimpleCommand {
         facade.registerCommand(MsgAPI.ACTION_UPDATE_SENSOR_DATA, UpdateSensorDataCommand.class);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_SHADER_DATA, UpdateShaderDataCommand.class);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_LAYOUT_DATA, UpdateLayoutDataCommand.class);
+        facade.registerCommand(MsgAPI.ACTION_UPDATE_AUTO_LAYOUT_DATA, UpdateAutoLayoutDataCommand.class);
+        facade.registerCommand(MsgAPI.ACTION_UPDATE_AUTO_LAYOUT_ITEM_DATA, UpdateAutoLayoutItemDataCommand.class);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_WIDGET_DATA, UpdateWidgetDataCommand.class);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_WIDGET_PART_DATA, UpdateWidgetPartDataCommand.class);
         facade.registerCommand(MsgAPI.ACTION_UPDATE_TALOS_ANCHOR_CONSTRAINT_DATA, UpdateTalosAnchorConstraintCommand.class);

@@ -25,6 +25,7 @@ import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.widget.H2DTextTooltip;
 
 /**
  * Created by azakhary on 4/16/2015.
@@ -46,6 +47,9 @@ public class UICompositeItemProperties extends UIItemCollapsibleProperties imple
     public java.util.List<String> validateFieldValues() { return new java.util.ArrayList<>(); }
 
     private final VisCheckBox scissorsEnabledCheckBox, automaticResizeCheckBox, renderToFBOCheckBox;
+    private boolean ownedByWidget, sizedByAutoLayout;
+    /** Says why automatic resize is locked, while an auto layout sizes the composite. */
+    private H2DTextTooltip autoLayoutTooltip;
 
     public UICompositeItemProperties() {
         super("Composite");
@@ -83,8 +87,25 @@ public class UICompositeItemProperties extends UIItemCollapsibleProperties imple
      * belong to it, so they are shown as they are and cannot be changed by hand.
      */
     public void setOwnedByWidget(boolean owned) {
+        ownedByWidget = owned;
         scissorsEnabledCheckBox.setDisabled(owned);
-        automaticResizeCheckBox.setDisabled(owned);
+        automaticResizeCheckBox.setDisabled(owned || sizedByAutoLayout);
+    }
+
+    /**
+     * An auto layout decides the composite's size, so automatic resize is shown off and locked. Only
+     * the panel says so: the composite keeps its setting for when the layout is taken away.
+     */
+    public void setSizedByAutoLayout(boolean sized) {
+        if (sized == sizedByAutoLayout) return;
+        sizedByAutoLayout = sized;
+        automaticResizeCheckBox.setDisabled(ownedByWidget || sized);
+        if (sized) {
+            if (autoLayoutTooltip == null) autoLayoutTooltip = StandardWidgetsFactory.addTooltip(automaticResizeCheckBox, "The auto layout decides this composite's size");
+            else automaticResizeCheckBox.addListener(autoLayoutTooltip);
+        } else if (autoLayoutTooltip != null) {
+            automaticResizeCheckBox.removeListener(autoLayoutTooltip);
+        }
     }
 
     public boolean isAutomaticResizeIsEnabled(){

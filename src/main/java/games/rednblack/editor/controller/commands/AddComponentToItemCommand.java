@@ -1,7 +1,9 @@
 package games.rednblack.editor.controller.commands;
 import games.rednblack.editor.proxy.PluginUIBridge;
 
+import games.rednblack.editor.renderer.components.AutoLayoutComponent;
 import games.rednblack.editor.renderer.ecs.Component;
+import games.rednblack.editor.utils.runtime.AutoLayoutEditing;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.common.MsgAPI;
@@ -17,6 +19,8 @@ public class AddComponentToItemCommand extends EntityModifyRevertibleCommand {
 
     private String entityId;
     private Class<? extends Component> component;
+    /** An auto layout moves the children as soon as it is added: where they were, to put them back. */
+    private AutoLayoutEditing.ChildrenSnapshot children;
 
     private void collectData() {
         Object[] payload = getNotification().getBody();
@@ -29,6 +33,7 @@ public class AddComponentToItemCommand extends EntityModifyRevertibleCommand {
         collectData();
 
         int entity = EntityUtils.getByUniqueId(entityId);
+        children = component == AutoLayoutComponent.class ? new AutoLayoutEditing.ChildrenSnapshot(entity) : null;
         Component newComponent = PluginUIBridge.get().getSandbox().getEngine().edit(entity).create(component);
         sandbox.getEngine().inject(newComponent);
 
@@ -42,6 +47,7 @@ public class AddComponentToItemCommand extends EntityModifyRevertibleCommand {
 
         PluginUIBridge.get().getSandbox().getEngine().edit(entity).remove(component);
         PluginUIBridge.get().getSandbox().getEngine().process();
+        if (children != null) children.restore();
 
         Facade.getInstance().sendNotification(DONE, entity);
         Facade.getInstance().sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);

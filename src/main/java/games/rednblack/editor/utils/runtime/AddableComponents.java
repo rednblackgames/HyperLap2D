@@ -1,5 +1,6 @@
 package games.rednblack.editor.utils.runtime;
 
+import games.rednblack.editor.renderer.components.AutoLayoutComponent;
 import games.rednblack.editor.renderer.components.LayoutComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.ShaderComponent;
@@ -23,9 +24,9 @@ import java.util.Map;
  * restrictions, extracted from {@code UIBasicItemPropertiesMediator} so both the live UI
  * and the MCP RemoteOps path share one source of truth (no validation bypass).
  *
- * 7 of the 8 component classes live in {@code hyperlap2d-runtime-libgdx}; only
+ * 8 of the 9 component classes live in {@code hyperlap2d-runtime-libgdx}; only
  * {@link TypingLabelComponent} is in the typinglabel extension (which the editor, but not
- * the sandboxed plugin, depends on). This helper is editor-core, so all 8 are reachable.
+ * the sandboxed plugin, depends on). This helper is editor-core, so all 9 are reachable.
  */
 public final class AddableComponents {
     private AddableComponents() {}
@@ -38,6 +39,7 @@ public final class AddableComponents {
     public static final String LIGHT_COMPONENT_KEY = "Light";
     public static final String TYPING_LABEL_COMPONENT_KEY = "Typing Label";
     public static final String LAYOUT_COMPONENT_KEY = "Layout";
+    public static final String AUTO_LAYOUT_COMPONENT_KEY = "Auto Layout";
 
     /** All addable component keys -> component classes (immutable). */
     public static final Map<String, Class<? extends Component>> COMPONENT_CLASS_MAP;
@@ -51,6 +53,7 @@ public final class AddableComponents {
         m.put(LIGHT_COMPONENT_KEY, LightBodyComponent.class);
         m.put(TYPING_LABEL_COMPONENT_KEY, TypingLabelComponent.class);
         m.put(LAYOUT_COMPONENT_KEY, LayoutComponent.class);
+        m.put(AUTO_LAYOUT_COMPONENT_KEY, AutoLayoutComponent.class);
         COMPONENT_CLASS_MAP = Collections.unmodifiableMap(m);
     }
 
@@ -67,6 +70,9 @@ public final class AddableComponents {
         }
         if (entityType != EntityFactory.LABEL_TYPE) {
             addable.remove(TYPING_LABEL_COMPONENT_KEY);
+        }
+        if (entityType != EntityFactory.COMPOSITE_TYPE) {
+            addable.remove(AUTO_LAYOUT_COMPONENT_KEY);
         }
         return addable;
     }

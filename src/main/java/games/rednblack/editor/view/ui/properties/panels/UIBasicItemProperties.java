@@ -218,6 +218,12 @@ public class UIBasicItemProperties extends UIItemProperties implements RemoteEdi
         this.widthValue.setText(widthValue);
     }
 
+    /** For a child its parent's auto layout places: the layout would put it back at once. */
+    public void setPositionDisabled(boolean disabled) {
+        this.xValue.setDisabled(disabled);
+        this.yValue.setDisabled(disabled);
+    }
+
     public void setWidthHeightDisabled(boolean disabled) {
         this.widthValue.setDisabled(disabled);
         this.heightValue.setDisabled(disabled);

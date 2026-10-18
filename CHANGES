@@ -2,6 +2,7 @@
 - New Logo and Branding
 - Full UI re-design
 - Auto Constraint Layouts
+- Auto Layouts: any composite can place its children itself in a row, a column or a grid of equal cells, with padding, gaps, alignment, growing children and fit-to-content sizing, shown live in the properties box
 - Graphical Widget Designer, with state management and tween value animation. Supported Widgets:
     - Button
     - CheckBox

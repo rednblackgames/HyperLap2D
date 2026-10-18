@@ -26,7 +26,9 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import games.rednblack.editor.controller.commands.AddComponentToItemCommand;
 import games.rednblack.editor.controller.commands.RemoveComponentFromItemCommand;
+import games.rednblack.editor.renderer.components.AutoLayoutComponent;
 import games.rednblack.editor.renderer.components.LayoutComponent;
+import games.rednblack.editor.utils.runtime.AutoLayoutEditing;
 import games.rednblack.editor.renderer.components.widget.WidgetComponent;
 import games.rednblack.editor.proxy.WidgetEditingProxy;
 import games.rednblack.editor.renderer.components.shape.CircleShapeComponent;
@@ -253,6 +255,13 @@ public class UIMultiPropertyBoxMediator extends PanelMediator<UIMultiPropertyBox
         LayoutComponent layoutComponent = EntityDataProxy.get().get(entity, LayoutComponent.class);
         if (layoutComponent != null) {
             mediatorNames.add(UILayoutPropertiesMediator.NAME);
+        }
+
+        if (EntityDataProxy.get().get(entity, AutoLayoutComponent.class) != null) {
+            mediatorNames.add(UIAutoLayoutPropertiesMediator.NAME);
+        }
+        if (AutoLayoutEditing.layoutParent(entity) != -1) {
+            mediatorNames.add(UIAutoLayoutItemPropertiesMediator.NAME);
         }
 
         TalosAnchorConstraintComponent anchorComp = EntityDataProxy.get().get(entity, TalosAnchorConstraintComponent.class);
