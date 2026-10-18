@@ -1,6 +1,10 @@
 {
   "$schema" : "https://json-schema.org/draft/2019-09/schema",
   "$defs" : {
+    "Align" : {
+      "type" : "string",
+      "enum" : [ "START", "CENTER", "END", "STRETCH" ]
+    },
     "AnchorBindingVO" : {
       "type" : "object",
       "properties" : {
@@ -37,6 +41,105 @@
         "$ref" : "#/$defs/AnchorBindingVO"
       }
     },
+    "AutoLayoutItemVO" : {
+      "type" : "object",
+      "properties" : {
+        "alignSelf" : {
+          "$ref" : "#/$defs/Align"
+        },
+        "grow" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "ignore" : {
+          "type" : "boolean",
+          "default" : false
+        }
+      },
+      "additionalProperties" : false
+    },
+    "AutoLayoutVO" : {
+      "type" : "object",
+      "properties" : {
+        "align" : {
+          "$ref" : "#/$defs/Align",
+          "default" : "START"
+        },
+        "cellAlignX" : {
+          "$ref" : "#/$defs/Align",
+          "default" : "START"
+        },
+        "cellAlignY" : {
+          "$ref" : "#/$defs/Align",
+          "default" : "START"
+        },
+        "cellHeight" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "cellWidth" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "columnMajor" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "columns" : {
+          "type" : "integer",
+          "default" : 2
+        },
+        "fitHeight" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "fitWidth" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "gap" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "justify" : {
+          "$ref" : "#/$defs/Justify",
+          "default" : "START"
+        },
+        "mode" : {
+          "$ref" : "#/$defs/Mode",
+          "default" : "ROW"
+        },
+        "padBottom" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "padLeft" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "padRight" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "padTop" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "reverse" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "rowGap" : {
+          "type" : "number",
+          "default" : 0.0
+        },
+        "skipInvisible" : {
+          "type" : "boolean",
+          "default" : true
+        }
+      },
+      "additionalProperties" : false
+    },
     "Circle" : {
       "type" : "object",
       "properties" : {
@@ -58,6 +161,12 @@
     "ColorPrimitiveVO" : {
       "type" : "object",
       "properties" : {
+        "autoLayout" : {
+          "$ref" : "#/$defs/AutoLayoutVO"
+        },
+        "autoLayoutItem" : {
+          "$ref" : "#/$defs/AutoLayoutItemVO"
+        },
         "circle" : {
           "$ref" : "#/$defs/Circle"
         },
@@ -140,6 +249,12 @@
         "uniqueId" : {
           "type" : "string"
         },
+        "widget" : {
+          "$ref" : "#/$defs/WidgetVO"
+        },
+        "widgetPart" : {
+          "$ref" : "#/$defs/WidgetPartVO"
+        },
         "x" : {
           "type" : "number",
           "default" : 0.0
@@ -162,6 +277,12 @@
     "CompositeItemVO" : {
       "type" : "object",
       "properties" : {
+        "autoLayout" : {
+          "$ref" : "#/$defs/AutoLayoutVO"
+        },
+        "autoLayoutItem" : {
+          "$ref" : "#/$defs/AutoLayoutItemVO"
+        },
         "automaticResize" : {
           "type" : "boolean",
           "default" : true
@@ -338,6 +459,12 @@
         "uniqueId" : {
           "type" : "string"
         },
+        "widget" : {
+          "$ref" : "#/$defs/WidgetVO"
+        },
+        "widgetPart" : {
+          "$ref" : "#/$defs/WidgetPartVO"
+        },
         "width" : {
           "type" : "number",
           "default" : 0.0
@@ -504,6 +631,12 @@
     "Image9patchVO" : {
       "type" : "object",
       "properties" : {
+        "autoLayout" : {
+          "$ref" : "#/$defs/AutoLayoutVO"
+        },
+        "autoLayoutItem" : {
+          "$ref" : "#/$defs/AutoLayoutItemVO"
+        },
         "circle" : {
           "$ref" : "#/$defs/Circle"
         },
@@ -611,6 +744,12 @@
         "uniqueId" : {
           "type" : "string"
         },
+        "widget" : {
+          "$ref" : "#/$defs/WidgetVO"
+        },
+        "widgetPart" : {
+          "$ref" : "#/$defs/WidgetPartVO"
+        },
         "width" : {
           "type" : "number",
           "default" : 0.0
@@ -634,12 +773,22 @@
       },
       "additionalProperties" : false
     },
+    "Justify" : {
+      "type" : "string",
+      "enum" : [ "START", "CENTER", "END", "SPACE_BETWEEN" ]
+    },
     "LabelVO" : {
       "type" : "object",
       "properties" : {
         "align" : {
           "type" : "integer",
           "default" : 0
+        },
+        "autoLayout" : {
+          "$ref" : "#/$defs/AutoLayoutVO"
+        },
+        "autoLayoutItem" : {
+          "$ref" : "#/$defs/AutoLayoutItemVO"
         },
         "bitmapFont" : {
           "type" : "string"
@@ -749,6 +898,12 @@
         },
         "uniqueId" : {
           "type" : "string"
+        },
+        "widget" : {
+          "$ref" : "#/$defs/WidgetVO"
+        },
+        "widgetPart" : {
+          "$ref" : "#/$defs/WidgetPartVO"
         },
         "width" : {
           "type" : "number",
@@ -903,6 +1058,12 @@
     "LightVO" : {
       "type" : "object",
       "properties" : {
+        "autoLayout" : {
+          "$ref" : "#/$defs/AutoLayoutVO"
+        },
+        "autoLayoutItem" : {
+          "$ref" : "#/$defs/AutoLayoutItemVO"
+        },
         "circle" : {
           "$ref" : "#/$defs/Circle"
         },
@@ -1040,6 +1201,12 @@
         "uniqueId" : {
           "type" : "string"
         },
+        "widget" : {
+          "$ref" : "#/$defs/WidgetVO"
+        },
+        "widgetPart" : {
+          "$ref" : "#/$defs/WidgetPartVO"
+        },
         "x" : {
           "type" : "number",
           "default" : 0.0
@@ -1153,9 +1320,37 @@
         "$ref" : "#/$defs/TexturePackVO"
       }
     },
+    "MapOfStringToWidgetOverrideSequenceVO" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "$ref" : "#/$defs/WidgetOverrideSequenceVO"
+      }
+    },
+    "MapOfStringToWidgetOverrideTransitionVO" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "$ref" : "#/$defs/WidgetOverrideTransitionVO"
+      }
+    },
+    "MapOfStringToWidgetStateOverridesVO" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "$ref" : "#/$defs/WidgetStateOverridesVO"
+      }
+    },
+    "Mode" : {
+      "type" : "string",
+      "enum" : [ "ROW", "COLUMN", "GRID" ]
+    },
     "ParticleEffectVO" : {
       "type" : "object",
       "properties" : {
+        "autoLayout" : {
+          "$ref" : "#/$defs/AutoLayoutVO"
+        },
+        "autoLayoutItem" : {
+          "$ref" : "#/$defs/AutoLayoutItemVO"
+        },
         "autoStart" : {
           "type" : "boolean",
           "default" : true
@@ -1249,6 +1444,12 @@
         },
         "uniqueId" : {
           "type" : "string"
+        },
+        "widget" : {
+          "$ref" : "#/$defs/WidgetVO"
+        },
+        "widgetPart" : {
+          "$ref" : "#/$defs/WidgetPartVO"
         },
         "x" : {
           "type" : "number",
@@ -1460,6 +1661,29 @@
       },
       "additionalProperties" : false
     },
+    "ScopeValueVO" : {
+      "type" : "object",
+      "properties" : {
+        "key" : {
+          "type" : "integer",
+          "default" : 0
+        },
+        "value" : {
+          "default" : [ 0.0, 0.0, 0.0, 0.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        }
+      },
+      "additionalProperties" : false
+    },
+    "ScopeValueVOArray" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/$defs/ScopeValueVO"
+      }
+    },
     "SensorDataVO" : {
       "type" : "object",
       "properties" : {
@@ -1563,6 +1787,12 @@
     "SimpleImageVO" : {
       "type" : "object",
       "properties" : {
+        "autoLayout" : {
+          "$ref" : "#/$defs/AutoLayoutVO"
+        },
+        "autoLayoutItem" : {
+          "$ref" : "#/$defs/AutoLayoutItemVO"
+        },
         "circle" : {
           "$ref" : "#/$defs/Circle"
         },
@@ -1657,6 +1887,12 @@
         "uniqueId" : {
           "type" : "string"
         },
+        "widget" : {
+          "$ref" : "#/$defs/WidgetVO"
+        },
+        "widgetPart" : {
+          "$ref" : "#/$defs/WidgetPartVO"
+        },
         "x" : {
           "type" : "number",
           "default" : 0.0
@@ -1682,6 +1918,12 @@
         "animationName" : {
           "type" : "string",
           "default" : ""
+        },
+        "autoLayout" : {
+          "$ref" : "#/$defs/AutoLayoutVO"
+        },
+        "autoLayoutItem" : {
+          "$ref" : "#/$defs/AutoLayoutItemVO"
         },
         "circle" : {
           "$ref" : "#/$defs/Circle"
@@ -1773,6 +2015,12 @@
         "uniqueId" : {
           "type" : "string"
         },
+        "widget" : {
+          "$ref" : "#/$defs/WidgetVO"
+        },
+        "widgetPart" : {
+          "$ref" : "#/$defs/WidgetPartVO"
+        },
         "x" : {
           "type" : "number",
           "default" : 0.0
@@ -1798,6 +2046,12 @@
         "animationName" : {
           "type" : "string",
           "default" : ""
+        },
+        "autoLayout" : {
+          "$ref" : "#/$defs/AutoLayoutVO"
+        },
+        "autoLayoutItem" : {
+          "$ref" : "#/$defs/AutoLayoutItemVO"
         },
         "circle" : {
           "$ref" : "#/$defs/Circle"
@@ -1898,6 +2152,12 @@
         "uniqueId" : {
           "type" : "string"
         },
+        "widget" : {
+          "$ref" : "#/$defs/WidgetVO"
+        },
+        "widgetPart" : {
+          "$ref" : "#/$defs/WidgetPartVO"
+        },
         "x" : {
           "type" : "number",
           "default" : 0.0
@@ -1953,6 +2213,12 @@
       },
       "additionalProperties" : false
     },
+    "StringArray" : {
+      "type" : "array",
+      "items" : {
+        "type" : "string"
+      }
+    },
     "TalosAnchorConstraintVO" : {
       "type" : "object",
       "properties" : {
@@ -1967,6 +2233,12 @@
       "properties" : {
         "anchorConstraints" : {
           "$ref" : "#/$defs/TalosAnchorConstraintVO"
+        },
+        "autoLayout" : {
+          "$ref" : "#/$defs/AutoLayoutVO"
+        },
+        "autoLayoutItem" : {
+          "$ref" : "#/$defs/AutoLayoutItemVO"
         },
         "autoStart" : {
           "type" : "boolean",
@@ -2033,6 +2305,9 @@
           "type" : "number",
           "default" : 1.0
         },
+        "scopeValues" : {
+          "$ref" : "#/$defs/ScopeValueVOArray"
+        },
         "sensor" : {
           "$ref" : "#/$defs/SensorDataVO"
         },
@@ -2061,6 +2336,12 @@
         },
         "uniqueId" : {
           "type" : "string"
+        },
+        "widget" : {
+          "$ref" : "#/$defs/WidgetVO"
+        },
+        "widgetPart" : {
+          "$ref" : "#/$defs/WidgetPartVO"
         },
         "x" : {
           "type" : "number",
@@ -2171,6 +2452,12 @@
     "TinyVGVO" : {
       "type" : "object",
       "properties" : {
+        "autoLayout" : {
+          "$ref" : "#/$defs/AutoLayoutVO"
+        },
+        "autoLayoutItem" : {
+          "$ref" : "#/$defs/AutoLayoutItemVO"
+        },
         "circle" : {
           "$ref" : "#/$defs/Circle"
         },
@@ -2257,6 +2544,12 @@
         "uniqueId" : {
           "type" : "string"
         },
+        "widget" : {
+          "$ref" : "#/$defs/WidgetVO"
+        },
+        "widgetPart" : {
+          "$ref" : "#/$defs/WidgetPartVO"
+        },
         "x" : {
           "type" : "number",
           "default" : 0.0
@@ -2310,6 +2603,85 @@
         "z" : {
           "type" : "number",
           "default" : 0.0
+        }
+      },
+      "additionalProperties" : false
+    },
+    "WidgetOverrideSequenceVO" : {
+      "type" : "object",
+      "properties" : {
+        "enter" : {
+          "type" : "string",
+          "default" : ""
+        },
+        "exit" : {
+          "type" : "string",
+          "default" : ""
+        }
+      },
+      "additionalProperties" : false
+    },
+    "WidgetOverrideTransitionVO" : {
+      "type" : "object",
+      "properties" : {
+        "duration" : {
+          "type" : "number",
+          "default" : 0.15
+        },
+        "interpolation" : {
+          "type" : "string",
+          "default" : "linear"
+        }
+      },
+      "additionalProperties" : false
+    },
+    "WidgetPartVO" : {
+      "type" : "object",
+      "properties" : {
+        "overrides" : {
+          "$ref" : "#/$defs/MapOfStringToWidgetStateOverridesVO"
+        },
+        "role" : {
+          "type" : "string",
+          "default" : ""
+        }
+      },
+      "additionalProperties" : false
+    },
+    "WidgetStateOverridesVO" : {
+      "type" : "object",
+      "properties" : {
+        "sequences" : {
+          "$ref" : "#/$defs/MapOfStringToWidgetOverrideSequenceVO"
+        },
+        "transitions" : {
+          "$ref" : "#/$defs/MapOfStringToWidgetOverrideTransitionVO"
+        },
+        "values" : {
+          "$ref" : "#/$defs/MapOfStringToString"
+        }
+      },
+      "additionalProperties" : false
+    },
+    "WidgetVO" : {
+      "type" : "object",
+      "properties" : {
+        "defaultState" : {
+          "type" : "string",
+          "default" : "normal"
+        },
+        "parents" : {
+          "$ref" : "#/$defs/MapOfStringToString"
+        },
+        "properties" : {
+          "$ref" : "#/$defs/MapOfStringToString"
+        },
+        "states" : {
+          "$ref" : "#/$defs/StringArray"
+        },
+        "widgetType" : {
+          "type" : "string",
+          "default" : ""
         }
       },
       "additionalProperties" : false
