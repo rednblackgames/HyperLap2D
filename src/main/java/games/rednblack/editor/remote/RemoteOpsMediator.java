@@ -22,7 +22,9 @@ import games.rednblack.editor.proxy.EntityMetadata;
 import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.ResourceManager;
+import games.rednblack.editor.renderer.components.AutoLayoutComponent;
 import games.rednblack.editor.renderer.components.LayoutComponent;
+import games.rednblack.editor.renderer.components.widget.WidgetComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
@@ -51,6 +53,7 @@ import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.renderer.utils.ComponentRetriever;
 import games.rednblack.editor.system.HyperLap2dRendererMiniMap;
 import games.rednblack.editor.utils.runtime.AddableComponents;
+import games.rednblack.editor.utils.runtime.AutoLayoutEditing;
 import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.editor.utils.runtime.SandboxComponentRetriever;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -68,6 +71,10 @@ import games.rednblack.editor.view.ui.properties.panels.UICircleShapePropertiesM
 import games.rednblack.editor.view.ui.properties.panels.UICompositeItemPropertiesMediator;
 import games.rednblack.editor.view.ui.properties.panels.UIImageItemPropertiesMediator;
 import games.rednblack.editor.view.ui.properties.panels.UILayoutPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UIAutoLayoutPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UIAutoLayoutItemPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UIWidgetPropertiesMediator;
+import games.rednblack.editor.view.ui.properties.panels.UIWidgetPartPropertiesMediator;
 import games.rednblack.editor.view.ui.properties.panels.UILightItemPropertiesMediator;
 import games.rednblack.editor.view.ui.properties.panels.UIPolygonComponentPropertiesMediator;
 import games.rednblack.editor.view.ui.properties.panels.UISensorPropertiesMediator;
@@ -87,6 +94,7 @@ import games.rednblack.h2d.common.remote.RemoteDeleteRequest;
 import games.rednblack.h2d.common.remote.RemoteEditableComponentsRequest;
 import games.rednblack.h2d.common.remote.RemoteEditableComponentsResult;
 import games.rednblack.h2d.common.remote.RemoteEditRequest;
+import games.rednblack.h2d.common.remote.RemoteWidgetRequest;
 import games.rednblack.h2d.common.remote.RemoteEditResult;
 import games.rednblack.h2d.common.remote.RemoteHandle;
 import games.rednblack.h2d.common.remote.RemoteOpenSceneRequest;
@@ -147,6 +155,7 @@ public class RemoteOpsMediator extends Mediator<Object> {
         interests.add(MsgAPI.ACTION_REMOTE_ASSET_DIMENSIONS);
         interests.add(MsgAPI.ACTION_REMOTE_SET_Z_INDEX);
         interests.add(MsgAPI.ACTION_REMOTE_LAYERS);
+        interests.add(MsgAPI.ACTION_REMOTE_WIDGET);
     }
 
     @Override
@@ -222,6 +231,12 @@ public class RemoteOpsMediator extends Mediator<Object> {
                 RemoteZIndexRequest req = (RemoteZIndexRequest) notification.getBody();
                 if (req == null || req.handle == null) return;
                 Gdx.app.postRunnable(() -> setZIndex(req));
+                break;
+            }
+            case MsgAPI.ACTION_REMOTE_WIDGET: {
+                RemoteWidgetRequest req = (RemoteWidgetRequest) notification.getBody();
+                if (req == null || req.handle == null) return;
+                Gdx.app.postRunnable(() -> RemoteWidgetOps.handle(req));
                 break;
             }
             case MsgAPI.ACTION_REMOTE_LAYERS: {
@@ -688,11 +703,16 @@ public class RemoteOpsMediator extends Mediator<Object> {
             case "polygon": mediator = new UIPolygonComponentPropertiesMediator(); break;
             case "sensor": mediator = new UISensorPropertiesMediator(); break;
             case "layout": mediator = new UILayoutPropertiesMediator(); break;
+            case "autoLayout": mediator = new UIAutoLayoutPropertiesMediator(); break;
+            case "autoLayoutItem": mediator = new UIAutoLayoutItemPropertiesMediator(); break;
+            case "widget": mediator = new UIWidgetPropertiesMediator(); break;
+            case "widgetPart": mediator = new UIWidgetPartPropertiesMediator(); break;
             default:
                 result.ok = false;
                 result.error = "unsupported component key for SET_FIELDS: " + componentKey
                         + " (supported: basic/transform, label, particle, image, composite, sprite, spine, talos, "
-                        + "lightItem, shader, physics, light, circle, polygon, sensor, layout)";
+                        + "lightItem, shader, physics, light, circle, polygon, sensor, layout, autoLayout, autoLayoutItem, "
+                        + "widget, widgetPart)";
                 return;
         }
 
@@ -879,6 +899,10 @@ public class RemoteOpsMediator extends Mediator<Object> {
             case "polygon": return ComponentRetriever.get(entity, PolygonShapeComponent.class, engine) != null ? null : "entity has no Polygon Shape component; add it first (add_component 'Polygon Shape')";
             case "sensor": return ComponentRetriever.get(entity, SensorComponent.class, engine) != null ? null : "entity has no Sensor component; add it first (add_component 'Physics Sensors')";
             case "layout": return ComponentRetriever.get(entity, LayoutComponent.class, engine) != null ? null : "entity has no Layout component; add it first (add_component Layout)";
+            case "autoLayout": return ComponentRetriever.get(entity, AutoLayoutComponent.class, engine) != null ? null : "entity has no Auto Layout component; add it first (add_component 'Auto Layout', composites only)";
+            case "autoLayoutItem": return AutoLayoutEditing.layoutParent(entity) != -1 ? null : "the entity's parent has no Auto Layout";
+            case "widget": return ComponentRetriever.get(entity, WidgetComponent.class, engine) != null ? null : "entity is not a widget; make one with convert_to_widget";
+            case "widgetPart": return UIWidgetPartPropertiesMediator.findOwnerWidget(entity) != -1 ? null : "entity is not inside a widget";
             case "customVars": return null;   // every entity carries the map, empty or not
             case "tags": return null;         // and the tag set, likewise
             default: return "unsupported component key: " + key;
@@ -887,7 +911,8 @@ public class RemoteOpsMediator extends Mediator<Object> {
 
     private static final String[] ALL_PANEL_KEYS = {
             "basic", "label", "particle", "image", "composite", "sprite", "spine", "talos", "lightItem",
-            "shader", "physics", "light", "circle", "polygon", "sensor", "layout", "customVars", "tags"
+            "shader", "physics", "light", "circle", "polygon", "sensor", "layout", "autoLayout", "autoLayoutItem",
+            "widget", "widgetPart", "customVars", "tags"
     };
 
     /** Discovery: which componentKeys are editable on the entity + which components can be added. */

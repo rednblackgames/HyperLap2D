@@ -34,7 +34,7 @@ public final class ComponentTools {
     /** Addable component keys (the editor's "Add Component" dropdown vocabulary). */
     static final String[] ADDABLE_KEYS = {
             "Polygon Shape", "Circle Shape", "Physics", "Physics Sensors",
-            "Shader", "Light", "Typing Label", "Layout"
+            "Shader", "Light", "Typing Label", "Layout", "Auto Layout"
     };
 
     static McpToolResult format(RemoteEditResult r) {
@@ -75,7 +75,8 @@ public final class ComponentTools {
         @Override public String description() {
             return "Add a component to an entity. componentKey must be allowed for the entity's type "
                     + "(validated editor-side): Light/Shader cannot be added to light entities; Typing Label "
-                    + "only to label entities; already-present components are rejected.";
+                    + "only to label entities; Auto Layout only to composites (it then places their children at "
+                    + "once, set it up with update_component autoLayout); already-present components are rejected.";
         }
         @Override
         public void writeInputSchema(JsonWriter w) throws IOException {
@@ -98,7 +99,7 @@ public final class ComponentTools {
         @Override public String name() { return "remove_component"; }
         @Override public String description() {
             return "Remove a component from an entity (only removable components: Polygon Shape, Circle Shape, "
-                    + "Physics, Physics Sensors, Shader, Light, Typing Label, Layout). Validated editor-side.";
+                    + "Physics, Physics Sensors, Shader, Light, Typing Label, Layout, Auto Layout). Validated editor-side.";
         }
         @Override
         public void writeInputSchema(JsonWriter w) throws IOException {
@@ -362,7 +363,18 @@ public final class ComponentTools {
                     + "spanPercentTop/Bottom/Left/Right, heightPercentTop/Bottom, widthPercentLeft/Right), "
                     + "layout (leftMargin/rightMargin/bottomMargin/topMargin, horizontalBias/verticalBias, "
                     + "leftEnabled/rightEnabled/bottomEnabled/topEnabled, leftTarget/rightTarget/bottomTarget/topTarget, "
-                    + "leftSide/rightSide/bottomSide/topSide, matchWidth/matchHeight). "
+                    + "leftSide/rightSide/bottomSide/topSide, matchWidth/matchHeight; ignored on a child its parent's auto layout places), "
+                    + "autoLayout (on a composite with the Auto Layout component: mode ROW/COLUMN/GRID, justify "
+                    + "START/CENTER/END/SPACE_BETWEEN, align START/CENTER/END/STRETCH (across a row or column; START is "
+                    + "left or top), gap, reverse, columns, cellWidth/cellHeight (0 = as large as the largest child), "
+                    + "cellAlignX/cellAlignY START/CENTER/END/STRETCH, rowGap, columnMajor, padLeft/padRight/padTop/padBottom, "
+                    + "fitWidth/fitHeight (the composite takes the size of its children plus padding), skipInvisible), "
+                    + "autoLayoutItem (on a child of such a composite: grow (share of the room left, 0 keeps its own "
+                    + "length), alignSelf AUTO/START/CENTER/END/STRETCH, ignore (left out of the layout)), "
+                    + "widget (on a widget: its type's settings by key, see list_widget_types; a choice takes one of its "
+                    + "choices, a list setting takes an array or one item per line), "
+                    + "widgetPart (on an item inside a widget: role, one of its widget type's roles or '' for none; "
+                    + "state overrides are set with set_widget_override). "
                     + "customVars (free-form: every field name is a variable name, every entity accepts them, "
                     + "and a null value removes one), "
                     + "tags (free-form set: every field name is a tag, a null value removes it; a runtime maps "
@@ -397,6 +409,10 @@ public final class ComponentTools {
             w.value("polygon");
             w.value("sensor");
             w.value("layout");
+            w.value("autoLayout");
+            w.value("autoLayoutItem");
+            w.value("widget");
+            w.value("widgetPart");
             w.value("customVars");
             w.value("tags");
             w.pop();

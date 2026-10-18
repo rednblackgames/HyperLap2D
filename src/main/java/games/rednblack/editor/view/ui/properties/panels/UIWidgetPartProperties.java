@@ -19,6 +19,8 @@ import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.renderer.data.WidgetOverrideSequenceVO;
 import games.rednblack.editor.renderer.data.WidgetOverrideTransitionVO;
 import games.rednblack.editor.view.ui.box.UIWidgetStateStrip;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
@@ -30,7 +32,7 @@ import org.apache.commons.lang3.math.NumberUtils;
  * overrides on it. Overrides are made by editing the item while that state is shown; here they are
  * listed and can be dropped one by one.
  */
-public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
+public class UIWidgetPartProperties extends UIItemCollapsibleProperties implements RemoteEditablePanel {
 
     public static final String PREFIX = "games.rednblack.editor.view.ui.properties.panels.UIWidgetPartProperties";
     /** body: key of the override to drop from the state being shown */
@@ -334,6 +336,28 @@ public class UIWidgetPartProperties extends UIItemCollapsibleProperties {
     private static class SequenceFields {
         VisSelectBox<String> enter;
         VisSelectBox<String> exit;
+    }
+
+    /**
+     * Only the role is set this way: overrides are made by editing the item in a state, which is not
+     * a field, and remotely they have a tool of their own.
+     */
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (!"role".equals(key)) {
+            throw new IllegalArgumentException("Unknown field: " + key + " (supported: role; overrides are set with set_widget_override)");
+        }
+        if (roleBox == null) throw new IllegalArgumentException("the widget type of this part declares no roles");
+        String role = value == null || value.toString().trim().isEmpty() ? NO_ROLE : value.toString().trim();
+        if (!RemoteEditableSupport.contains(roleBox, role)) {
+            throw new IllegalArgumentException("'" + role + "' is not one of " + roleBox.getItems().toString(", "));
+        }
+        roleBox.setSelected(role);
+    }
+
+    @Override
+    public java.util.List<String> validateFieldValues() {
+        return new java.util.ArrayList<>();
     }
 
     /** @return the chosen role, empty for none or when the widget type declares no role */

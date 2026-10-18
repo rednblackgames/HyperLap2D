@@ -11,6 +11,8 @@ import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.renderer.components.AutoLayoutComponent;
 import games.rednblack.editor.renderer.data.AutoLayoutItemVO;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
@@ -20,7 +22,7 @@ import org.apache.commons.lang3.math.NumberUtils;
  * How a child takes part in the auto layout of its parent, under a picture of that layout with the
  * child pointed out. In a grid the cells decide size and alignment, so only leaving out applies.
  */
-public class UIAutoLayoutItemProperties extends UIItemCollapsibleProperties {
+public class UIAutoLayoutItemProperties extends UIItemCollapsibleProperties implements RemoteEditablePanel {
 
     private static final int PREVIEW_HEIGHT = 100;
     private static final String AUTO = "As the layout";
@@ -96,6 +98,28 @@ public class UIAutoLayoutItemProperties extends UIItemCollapsibleProperties {
         vo.alignSelf = align <= 0 ? null : AutoLayoutComponent.Align.values()[align - 1];
         vo.ignore = ignoreSwitch.isChecked();
         return vo;
+    }
+
+    @Override
+    public void setFieldValue(String key, Object value) {
+        if (value == null) throw new IllegalArgumentException("null value for field: " + key);
+        switch (key) {
+            case "grow": growField.setText(RemoteEditableSupport.numberToString(value)); break;
+            case "alignSelf":
+                alignBox.setSelectedIndex("AUTO".equalsIgnoreCase(value.toString().trim()) ? 0
+                        : UIAutoLayoutProperties.enumIndex(AutoLayoutComponent.Align.values(), value) + 1);
+                break;
+            case "ignore": ignoreSwitch.setChecked(RemoteEditableSupport.toBool(value)); break;
+            default: throw new IllegalArgumentException("Unknown field: " + key + " (supported: grow, alignSelf AUTO/START/CENTER/END/STRETCH, ignore)");
+        }
+    }
+
+    @Override
+    public java.util.List<String> validateFieldValues() {
+        java.util.List<String> errors = new java.util.ArrayList<>();
+        RemoteEditableSupport.checkValid("grow", growField, errors);
+        if (errors.isEmpty() && NumberUtils.toFloat(growField.getText(), 0) < 0) errors.add("grow: must not be negative");
+        return errors;
     }
 
     public AutoLayoutPreviewData getPreviewData() {

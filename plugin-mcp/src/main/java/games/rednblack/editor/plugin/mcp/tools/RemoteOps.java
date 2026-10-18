@@ -1,5 +1,7 @@
 package games.rednblack.editor.plugin.mcp.tools;
 
+import games.rednblack.h2d.common.remote.RemoteWidgetRequest;
+import games.rednblack.h2d.common.remote.RemoteWidgetResult;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.remote.RemoteAssetsRequest;
 import games.rednblack.h2d.common.remote.RemoteAssetsResult;
@@ -79,6 +81,19 @@ public class RemoteOps {
             RemoteTypeNamesResult err = new RemoteTypeNamesResult();
             err.ok = false;
             err.error = "type names request failed: " + e.getMessage();
+            return err;
+        }
+    }
+
+    public RemoteWidgetResult widget(RemoteWidgetRequest req, long timeoutMs) {
+        req.handle = new RemoteHandle<>();
+        ctx.facade().sendNotification(MsgAPI.ACTION_REMOTE_WIDGET, req);
+        try {
+            return req.handle.await(timeoutMs);
+        } catch (Exception e) {
+            RemoteWidgetResult err = new RemoteWidgetResult();
+            err.ok = false;
+            err.error = "widget request failed: " + e.getMessage();
             return err;
         }
     }

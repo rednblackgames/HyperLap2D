@@ -11,7 +11,11 @@ import games.rednblack.editor.plugin.mcp.tools.McpToolResult;
 import games.rednblack.editor.plugin.mcp.tools.RemoteOps;
 import games.rednblack.editor.plugin.mcp.tools.Tool;
 import com.badlogic.gdx.graphics.Color;
+import games.rednblack.editor.renderer.components.AutoLayoutComponent;
+import games.rednblack.editor.renderer.components.AutoLayoutItemComponent;
 import games.rednblack.editor.renderer.components.DimensionsComponent;
+import games.rednblack.editor.renderer.components.widget.WidgetComponent;
+import games.rednblack.editor.renderer.components.widget.WidgetPartComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.TintComponent;
@@ -46,7 +50,10 @@ public class ListEntitiesTool implements Tool {
                 + "+ layer (the per-layer z-index used by set_z_index; lower draws behind, higher in front), "
                 + "and a transform block (x, y, width, height, scaleX, scaleY, rotation, originX, originY, "
                 + "flipX/flipY when set) — coordinates are the item's own, local to the parent composite for "
-                + "a child. customVars, tags and tint are included when they are not empty/white.";
+                + "a child. customVars, tags and tint are included when they are not empty/white. "
+                + "widgetType marks a widget (see get_widget), widgetRole a part playing a role in one, autoLayout "
+                + "(ROW/COLUMN/GRID) a composite placing its children itself, and autoLayoutItem what a child asks of it "
+                + "(grow, alignSelf, ignore) when it asks for anything.";
     }
 
     @Override
@@ -143,6 +150,21 @@ public class ListEntitiesTool implements Tool {
         if (main != null && main.tags != null && main.tags.size > 0) {
             w.array("tags");
             for (String tag : main.tags) w.value(tag);
+            w.pop();
+        }
+        // Widgets and their parts, and auto layouts, so they can be found without asking each entity
+        WidgetComponent widget = ComponentRetriever.get(entity, WidgetComponent.class, ctx.api().getEngine());
+        if (widget != null) w.set("widgetType", widget.widgetType);
+        WidgetPartComponent part = ComponentRetriever.get(entity, WidgetPartComponent.class, ctx.api().getEngine());
+        if (part != null && part.role != null && !part.role.isEmpty()) w.set("widgetRole", part.role);
+        AutoLayoutComponent autoLayout = ComponentRetriever.get(entity, AutoLayoutComponent.class, ctx.api().getEngine());
+        if (autoLayout != null) w.set("autoLayout", autoLayout.mode.name());
+        AutoLayoutItemComponent layoutItem = ComponentRetriever.get(entity, AutoLayoutItemComponent.class, ctx.api().getEngine());
+        if (layoutItem != null && !layoutItem.isDefault()) {
+            w.object("autoLayoutItem");
+            if (layoutItem.grow != 0) w.set("grow", layoutItem.grow);
+            if (layoutItem.alignSelf != null) w.set("alignSelf", layoutItem.alignSelf.name());
+            if (layoutItem.ignore) w.set("ignore", true);
             w.pop();
         }
         w.pop();

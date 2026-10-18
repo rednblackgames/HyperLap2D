@@ -17,6 +17,8 @@ import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.renderer.utils.InterpolationMap;
 import games.rednblack.editor.view.ui.box.UIWidgetStateStrip;
 import games.rednblack.editor.renderer.widget.WidgetType;
+import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
@@ -25,7 +27,7 @@ import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
  * What a widget is: its type, the settings that type declares and which of its parts are in place.
  * Built out of the {@link WidgetType} descriptor, so a new widget type needs no panel of its own.
  */
-public class UIWidgetProperties extends UIItemCollapsibleProperties {
+public class UIWidgetProperties extends UIItemCollapsibleProperties implements RemoteEditablePanel {
 
     public static final String PREFIX = "games.rednblack.editor.view.ui.properties.panels.UIWidgetProperties";
 
@@ -40,6 +42,8 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties {
     private CurrentStateProvider currentStateProvider;
     private String shownState = null;
     private String structure = null;
+    /** The type whose settings are shown, null for a plain state holder. */
+    private WidgetType shownType;
 
     public UIWidgetProperties() {
         super("Widget");
@@ -53,6 +57,7 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties {
                           ObjectMap<String, String> settings, ObjectMap<String, String> assignedParts) {
         // Rebuilt only when what is shown changes shape, so typing in a field is never interrupted
         // by an unrelated update.
+        shownType = type;
         String newStructure = typeName + "|" + states.toString(",") + "|" + assignedParts.toString();
         if (!newStructure.equals(structure)) {
             structure = newStructure;
@@ -220,6 +225,66 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties {
             }
         }
         return values;
+    }
+
+    /**
+     * Sets a setting of the widget type by its key. A choice must be one of its choices, and a list
+     * may be given as an array, one item per entry.
+     */
+    @Override
+    public void setFieldValue(String key, Object value) {
+        Actor field = settingFields.get(key);
+        if (field == null) {
+            throw new IllegalArgumentException("Unknown setting: " + key + " (this widget type has: " + settingFields.orderedKeys().toString(", ") + ")");
+        }
+        if (value == null) throw new IllegalArgumentException("null value for setting: " + key);
+
+        if (field instanceof VisCheckBox) {
+            ((VisCheckBox) field).setChecked(RemoteEditableSupport.toBool(value));
+        } else if (field instanceof VisSelectBox) {
+            VisSelectBox<String> box = (VisSelectBox<String>) field;
+            String choice = value.toString();
+            if (!RemoteEditableSupport.contains(box, choice)) {
+                throw new IllegalArgumentException("'" + choice + "' is not one of " + box.getItems().toString(", "));
+            }
+            box.setSelected(choice);
+        } else if (value instanceof java.util.List) {
+            StringBuilder lines = new StringBuilder();
+            for (Object item : (java.util.List<?>) value) lines.append(lines.length() == 0 ? "" : "\n").append(item);
+            ((VisTextField) field).setText(lines.toString());
+        } else {
+            WidgetType.Property property = property(key);
+            boolean integer = property != null && property.kind == WidgetType.PropertyKind.INT;
+            ((VisTextField) field).setText(value instanceof Number
+                    ? (integer ? RemoteEditableSupport.intToString(value) : RemoteEditableSupport.numberToString(value))
+                    : value.toString());
+        }
+    }
+
+    /** Numbers have to read as numbers; the rest is taken as typed, like in the panel. */
+    @Override
+    public java.util.List<String> validateFieldValues() {
+        java.util.List<String> errors = new java.util.ArrayList<>();
+        for (ObjectMap.Entry<String, Actor> field : settingFields) {
+            WidgetType.Property property = property(field.key);
+            if (property == null || !(field.value instanceof VisTextField)) continue;
+            String text = ((VisTextField) field.value).getText().trim();
+            try {
+                if (property.kind == WidgetType.PropertyKind.INT) Integer.parseInt(text);
+                else if (property.kind == WidgetType.PropertyKind.FLOAT) Float.parseFloat(text);
+            } catch (NumberFormatException e) {
+                errors.add(field.key + ": '" + text + "' is not " + (property.kind == WidgetType.PropertyKind.INT ? "a whole number" : "a number"));
+            }
+        }
+        return errors;
+    }
+
+    private WidgetType.Property property(String key) {
+        if (shownType == null) return null;
+        for (WidgetType.Property property : shownType.properties) {
+            if (property.key.equals(key)) return property;
+        }
+        return null;
     }
 
     @Override

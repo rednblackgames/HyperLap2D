@@ -1,5 +1,6 @@
 package games.rednblack.editor.plugin.mcp.tools;
 
+import games.rednblack.editor.plugin.mcp.tools.widget.WidgetTools;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
 import games.rednblack.editor.plugin.mcp.tools.asset.ListAssetsTool;
@@ -48,6 +49,7 @@ public class ToolRegistry {
         register(new ComponentTools.CreateShaderTool(ctx));
         register(new ComponentTools.GetAssetDimensionsTool(ctx));
         register(new ComponentTools.GetAssetPreviewTool(ctx));
+        for (Tool tool : WidgetTools.all(ctx)) register(tool);
     }
 
     public void register(Tool tool) {
