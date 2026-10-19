@@ -32,6 +32,8 @@
 - New UI input system: `UIInputSystem` ECS equivalent to Scene2D input management with: hover, drag, scroll, keyboard focus and capture listeners for modal panels. An entity takes part in input only when `InputTargetComponent` is attached
 - Overlays: `UIInputSystem#openOverlay` draws an entity in front of the whole scene and outside the clipping of its composites (it stays in its parent)
 - Allow to inject profiler with per-system analysis
+- `SceneConfiguration#setPhysicsEnabled` and `SceneConfiguration#setLightsEnabled`: a scene without Box2D world and `RayHandler`, such as a GUI living beside the game scene (lights need physics)
+- `SceneLoader#dispose` drops the engine from `ComponentRetriever`
 - [BREAK CHANGE] Buttons no longer poll the mouse: add `sceneLoader.getUIInput()` to the game's input multiplexer
 - [BREAK CHANGE] Removed CompositeActor
 - [BREAK CHANGE] Removed old "button" TAG and legacy button system, including the `normal`/`pressed` layer swap (migrated to widgets). A `ButtonComponent` without a widget is input alone: listeners, pressed and checked flags
