@@ -108,7 +108,9 @@ public class UIDropDownMenu extends H2DPopupMenu {
         PopupMenu typesMenu = new H2DPopupMenu();
         for (String type : WidgetTypes.names()) {
             String label = type.substring(0, 1).toUpperCase() + type.substring(1);
-            typesMenu.addItem(new MenuItem(label, new MenuItemListener(MsgAPI.ACTION_CONVERT_TO_WIDGET, type)));
+            MenuItem item = new MenuItem(label, icon("icon-widget-" + type), new MenuItemListener(MsgAPI.ACTION_CONVERT_TO_WIDGET, type));
+            item.getImageCell().pad(5);
+            typesMenu.addItem(item);
         }
         return typesMenu;
     }

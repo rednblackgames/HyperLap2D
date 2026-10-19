@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImageTextButton;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
@@ -32,11 +33,17 @@ public class UICompositeHierarchy extends UIBaseBox {
         row();
     }
 
-    public void addItem(String name, String id, boolean isRoot) {
+    /** {@code icon}, when given, replaces the style's composite icon (a widget shows its own). */
+    public void addItem(String name, String id, boolean isRoot, Drawable icon) {
         String classType = "hierarchy-item";
         if(isRoot) classType+="-root";
 
         VisImageTextButton button = StandardWidgetsFactory.createImageTextButton(name, classType);
+        if (icon != null) {
+            VisImageTextButton.VisImageTextButtonStyle style = new VisImageTextButton.VisImageTextButtonStyle(button.getStyle());
+            style.imageUp = style.imageDown = style.imageOver = icon;
+            button.setStyle(style);
+        }
         button.getLabelCell().padLeft(3);
 
 

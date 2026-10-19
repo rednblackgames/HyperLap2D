@@ -2,6 +2,7 @@ package games.rednblack.editor.view.ui.box;
 import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import games.rednblack.editor.controller.commands.CompositeCameraChangeCommand;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
@@ -65,6 +66,7 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
 
         do {
             CompositeHierarchyItem item = new CompositeHierarchyItem(nameOf(currEntity), EntityDataProxy.get().metadata().getUniqueId(currEntity));
+            item.icon = EntityDataProxy.get().metadata().getWidgetIcon(currEntity, true);
 
             parentNodeComponent = EntityDataProxy.get().get(currEntity, ParentNodeComponent.class);
             if (parentNodeComponent != null) {
@@ -80,7 +82,7 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
         items.reverse();
 
         for (CompositeHierarchyItem item : items) {
-            viewComponent.addItem(item.name, item.entityId, item.isRoot);
+            viewComponent.addItem(item.name, item.entityId, item.isRoot, item.icon);
         }
     }
 
@@ -100,6 +102,7 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
         String name;
         String entityId;
         boolean isRoot = false;
+        Drawable icon;
 
         public CompositeHierarchyItem(String name, String entityId) {
             this.entityId = entityId;

@@ -7,8 +7,10 @@ import games.rednblack.editor.renderer.components.LayerMapComponent;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
+import games.rednblack.editor.renderer.components.widget.WidgetComponent;
 import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
+import games.rednblack.editor.utils.MenuIcons;
 import games.rednblack.h2d.extension.spine.SpineItemType;
 import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
@@ -132,6 +134,16 @@ public class EntityMetadata {
     public Drawable getIcon(int entityType) {
         String icon = itemTypeIconMap.get(entityType);
         return VisUI.getSkin().getDrawable(icon);
+    }
+
+    /**
+     * The icon of the widget the entity is, {@code icon-widget-<type>} (14px with {@code small}), or null when it is
+     * not a widget or its type has no icon yet, so the caller keeps the composite one.
+     */
+    public Drawable getWidgetIcon(int entity, boolean small) {
+        WidgetComponent widget = entityData.get(entity, WidgetComponent.class);
+        if (widget == null) return null;
+        return MenuIcons.get("icon-widget-" + widget.widgetType + (small ? "-small" : ""));
     }
 
     public String getTypeName(int entityType) {

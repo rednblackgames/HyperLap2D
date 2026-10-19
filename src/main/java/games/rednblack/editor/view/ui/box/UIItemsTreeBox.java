@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FlushablePool;
@@ -109,7 +110,8 @@ public class UIItemsTreeBox extends UICollapsibleBox {
                 facade.sendNotification(MsgAPI.ACTION_REORDER_Z_INDEX, ordered));
         scroller = StandardWidgetsFactory.createScrollPane(tree);
         scroller.setFlickScroll(false);
-        treeTable.add(scroller).growX().padTop(5).maxHeight(550).colspan(2);
+        // No preferred width of its own: long names scroll sideways instead of widening the box.
+        treeTable.add(scroller).prefWidth(0).growX().padTop(5).maxHeight(550).colspan(2);
         //
         rootTreeNode = addTreeRoot(rootScene, null);
         rootTreeNode.setExpanded(true);
@@ -209,7 +211,8 @@ public class UIItemsTreeBox extends UICollapsibleBox {
             node.setPad(4, 3, 4, 0);
 
         if (parentNode != null) {
-            node.setIcon(EntityDataProxy.get().metadata().getIcon(mainItemComponent.entityType));
+            Drawable widgetIcon = EntityDataProxy.get().metadata().getWidgetIcon(item, false);
+            node.setIcon(widgetIcon != null ? widgetIcon : EntityDataProxy.get().metadata().getIcon(mainItemComponent.entityType));
             parentNode.add(node);
         } else {
             node.setIcon(VisUI.getSkin().getDrawable("icon-root"));
