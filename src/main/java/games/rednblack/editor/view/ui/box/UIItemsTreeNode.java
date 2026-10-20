@@ -10,9 +10,16 @@ import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.h2d.common.view.ui.widget.H2DTextTooltip;
 
 public class UIItemsTreeNode extends Tree.Node<UIItemsTreeNode, UIItemsTreeValue, VisTable> implements Pool.Poolable {
+    /** How much of a hidden item still shows: it stays readable, but clearly out of the picture. */
+    static final float HIDDEN_ALPHA = 0.4f;
+
     VisLabel label;
     Cell<VisLabel> lblCell;
     H2DTextTooltip tooltip;
+    /** The tint of the icon, which is drawn white: it tells the kind of item. */
+    final Color iconColor = new Color(Color.WHITE);
+    private final Color labelColor = new Color(Color.WHITE);
+    private boolean hidden;
 
     public UIItemsTreeNode() {
         super(new VisTable());
@@ -32,11 +39,39 @@ public class UIItemsTreeNode extends Tree.Node<UIItemsTreeNode, UIItemsTreeValue
     }
 
     public void setColor(Color color) {
-        label.setColor(color);
+        labelColor.set(color);
+        applyLabelColor();
     }
 
     public void setColor(float r, float g, float b, float a) {
-        label.setColor(r, g, b, a);
+        labelColor.set(r, g, b, a);
+        applyLabelColor();
+    }
+
+    /** A hidden item, or one inside something hidden, is dimmed, name and icon both. */
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+        applyLabelColor();
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    private void applyLabelColor() {
+        label.setColor(labelColor.r, labelColor.g, labelColor.b, labelColor.a * (hidden ? HIDDEN_ALPHA : 1f));
+    }
+
+    /** Closed by a click, the tree first folds the children away and then calls {@link #collapseNow()}. */
+    @Override
+    public void setExpanded(boolean expanded) {
+        if (!expanded && isExpanded() && getTree() instanceof UIItemsTree tree && tree.foldInstead(this)) return;
+        super.setExpanded(expanded);
+    }
+
+    /** Closes for real, once the children have folded away. */
+    void collapseNow() {
+        super.setExpanded(false);
     }
 
     public void setName(String name, String layer) {
@@ -54,6 +89,8 @@ public class UIItemsTreeNode extends Tree.Node<UIItemsTreeNode, UIItemsTreeValue
 
         setExpanded(false);
         setIcon(null);
+        iconColor.set(Color.WHITE);
+        setHidden(false);
         clearChildren();
         remove();
     }

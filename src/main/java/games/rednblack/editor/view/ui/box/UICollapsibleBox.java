@@ -36,6 +36,8 @@ import com.kotcrab.vis.ui.widget.VisWindow;
  */
 public class UICollapsibleBox extends VisWindow {
     protected static final int BOX_DEFAULT_WIDTH = 270;
+    /** The boxes stacked in the left column (Align, Items Tree) share one width, so their edges line up. */
+    protected static final int LEFT_COLUMN_WIDTH = 230;
 
     private final VisImageButton collapsibleButton;
     private final VisTable mainTable;

@@ -62,7 +62,7 @@ public class UIAlignBox extends UICollapsibleBox {
     private final Facade facade;
 
     public UIAlignBox() {
-        super("Align", 166);
+        super("Align", LEFT_COLUMN_WIDTH);
         setMovable(false);
         facade = Facade.getInstance();
         VisTable alignButtonsTable = new VisTable();

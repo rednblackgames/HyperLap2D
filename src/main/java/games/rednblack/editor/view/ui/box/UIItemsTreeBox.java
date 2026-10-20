@@ -12,12 +12,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FlushablePool;
-import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.ZIndexComponent;
+import games.rednblack.editor.renderer.components.widget.WidgetComponent;
+import games.rednblack.editor.renderer.data.LayerItemVO;
 import games.rednblack.editor.renderer.factory.EntityFactory;
 import games.rednblack.editor.proxy.EntityDataProxy;
 import games.rednblack.editor.view.stage.Sandbox;
@@ -61,7 +62,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
     public String searchString = "";
 
     public UIItemsTreeBox() {
-        super("Items Tree", 190);
+        super("Items Tree", LEFT_COLUMN_WIDTH);
         setMovable(false);
         facade = Facade.getInstance();
         treeTable = new VisTable();
@@ -205,17 +206,26 @@ public class UIItemsTreeBox extends UICollapsibleBox {
 
         node.setNodeValue(mainItemComponent.uniqueId, zIndexComponent.getGlobalZIndex());
         node.getValue().setLayerName(zIndexComponent.getLayerName());
-        if (mainItemComponent.entityType != EntityFactory.COMPOSITE_TYPE)
-            node.setPad(0, 0, 4, 0);
-        else
-            node.setPad(4, 3, 4, 0);
+        // every icon is the same size, so one padding lines all the names up
+        node.setPad(0, 0, 4, 0);
 
         if (parentNode != null) {
-            Drawable widgetIcon = EntityDataProxy.get().metadata().getWidgetIcon(item, false);
-            node.setIcon(widgetIcon != null ? widgetIcon : EntityDataProxy.get().metadata().getIcon(mainItemComponent.entityType));
+            WidgetComponent widget = EntityDataProxy.get().get(item, WidgetComponent.class);
+            Drawable widgetIcon = widget != null ? ItemsTreeIcons.forWidget(widget.widgetType) : null;
+            if (widgetIcon != null) {
+                node.setIcon(widgetIcon);
+                node.iconColor.set(ItemsTreeIcons.WIDGET_COLOR);
+            } else {
+                node.setIcon(ItemsTreeIcons.forType(mainItemComponent.entityType));
+                node.iconColor.set(ItemsTreeIcons.colorOf(mainItemComponent.entityType));
+            }
+            LayerItemVO layer = EntityDataProxy.get().metadata().getLayer(item);
+            node.setHidden(parentNode.isHidden() || !mainItemComponent.visible || (layer != null && !layer.isVisible));
             parentNode.add(node);
         } else {
-            node.setIcon(VisUI.getSkin().getDrawable("icon-root"));
+            node.setIcon(ItemsTreeIcons.root());
+            node.iconColor.set(ItemsTreeIcons.ROOT_COLOR);
+            node.setHidden(false);
             tree.add(node);
         }
         return node;

@@ -18,6 +18,7 @@
 
 package games.rednblack.editor.controller.commands;
 
+import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
 import games.rednblack.editor.renderer.components.TransformComponent;
@@ -64,31 +65,7 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
 
         sandbox.getSelector().clearSelections();
 
-        TransformComponent transformComponent = SandboxComponentRetriever.get(entity, TransformComponent.class);
-        transformComponent.disableTransform();
-        ParentNodeComponent parentNodeComponent = SandboxComponentRetriever.get(entity, ParentNodeComponent.class);
-
-        if (parentNodeComponent == null) {
-            //root entity loop from oldEntity to root
-            ParentNodeComponent previousParentNodeComponent = SandboxComponentRetriever.get(oldEntity, ParentNodeComponent.class);
-            while (previousParentNodeComponent != null) {
-                TransformComponent previousTransformComponent = SandboxComponentRetriever.get(oldEntity, TransformComponent.class);
-                previousTransformComponent.enableTransform();
-                oldEntity = previousParentNodeComponent.parentEntity;
-                previousParentNodeComponent = SandboxComponentRetriever.get(oldEntity, ParentNodeComponent.class);
-            }
-        } else {
-            //Restore only if going outside
-            if (oldEntity != parentNodeComponent.parentEntity) {
-                //loop restore until reach the current entity
-                while (oldEntity != entity) {
-                    parentNodeComponent = SandboxComponentRetriever.get(oldEntity, ParentNodeComponent.class);
-                    TransformComponent previousTransformComponent = SandboxComponentRetriever.get(oldEntity, TransformComponent.class);
-                    previousTransformComponent.enableTransform();
-                    oldEntity = parentNodeComponent.parentEntity;
-                }
-            }
-        }
+        switchTransforms(oldEntity, entity);
 
         facade.sendNotification(DONE, enteringInto);
         facade.sendNotification(MsgAPI.EMPTY_SPACE_CLICKED);
@@ -114,15 +91,39 @@ public class CompositeCameraChangeCommand extends RevertibleCommand {
 
         facade.sendNotification(DONE, previousViewEntityId);
 
-        TransformComponent transformComponent = SandboxComponentRetriever.get(currEntity, TransformComponent.class);
-        TransformComponent previousTransformComponent = SandboxComponentRetriever.get(oldEntity, TransformComponent.class);
-        previousTransformComponent.disableTransform();
-        transformComponent.enableTransform();
+        switchTransforms(currEntity, oldEntity);
 
         if(wasPrevSelected) {
             sandbox.getSelector().setSelection(EntityUtils.getByUniqueId(enteringInto), true);
         }
 
         sandbox.overrideAmbientLightInComposite();
+    }
+
+    /**
+     * The composite being viewed, and every one above it, has its transform disabled. Going from one to another
+     * gives the transforms back on the way up from {@code from} to the composite both share, and takes them from
+     * there down to {@code to}: any jump works, in or out and of any depth, the Items Tree offering composites
+     * nested deeper than one level.
+     */
+    private static void switchTransforms(int from, int to) {
+        IntSet toAndAbove = new IntSet();
+        for (int e = to; e != -1; e = parentOf(e)) toAndAbove.add(e);
+
+        int shared = from;
+        while (shared != -1 && !toAndAbove.contains(shared)) {
+            SandboxComponentRetriever.get(shared, TransformComponent.class).enableTransform();
+            shared = parentOf(shared);
+        }
+
+        for (int e = to; e != -1 && e != shared; e = parentOf(e))
+            SandboxComponentRetriever.get(e, TransformComponent.class).disableTransform();
+        //going out, the target is the shared one and already disabled; this keeps it so either way
+        SandboxComponentRetriever.get(to, TransformComponent.class).disableTransform();
+    }
+
+    private static int parentOf(int entity) {
+        ParentNodeComponent parentNodeComponent = SandboxComponentRetriever.get(entity, ParentNodeComponent.class);
+        return parentNodeComponent == null ? -1 : parentNodeComponent.parentEntity;
     }
 }

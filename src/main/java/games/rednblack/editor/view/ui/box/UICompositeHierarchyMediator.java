@@ -66,7 +66,7 @@ public class UICompositeHierarchyMediator extends Mediator<UICompositeHierarchy>
 
         do {
             CompositeHierarchyItem item = new CompositeHierarchyItem(nameOf(currEntity), EntityDataProxy.get().metadata().getUniqueId(currEntity));
-            item.icon = EntityDataProxy.get().metadata().getWidgetIcon(currEntity, true);
+            item.icon = EntityDataProxy.get().metadata().getWidgetIcon(currEntity);
 
             parentNodeComponent = EntityDataProxy.get().get(currEntity, ParentNodeComponent.class);
             if (parentNodeComponent != null) {

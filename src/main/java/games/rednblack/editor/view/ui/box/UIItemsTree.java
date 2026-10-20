@@ -4,23 +4,30 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.kotcrab.vis.ui.widget.VisTree;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 /**
- * Items tree with roomier rows and a hand-drawn look: the {@code tree-plus}/{@code tree-minus} atlas
- * regions are no longer painted — a chevron and light parent→child connector lines are drawn with
- * {@link ShapeDrawer} instead. It also supports drag &amp; drop to reorder z-index: because z-index is
+ * Items tree with roomier rows and a hand-drawn look in the manner of Spine's tree: the {@code tree-plus}/
+ * {@code tree-minus} atlas regions are no longer painted. Thin parent→child connector lines are drawn with
+ * {@link ShapeDrawer} instead, ending in a small triangle inside a ring that sits on the line as the expander, and
+ * the lines leading from the root down to the selection are drawn in the theme blue. Lines and expanders go over
+ * the rows' hover and selection, so a highlighted row never cuts the tree. Icons are drawn white and tinted by kind
+ * ({@link UIItemsTreeNode#iconColor}); hidden items are dimmed. Opening or closing a node by hand unfolds or
+ * folds its children instead of making them appear or vanish at once. It also supports drag &amp; drop to reorder z-index: because z-index is
  * confined per layer, while dragging every node outside the dragged node's layer is dimmed and only
  * same-layer siblings are valid drop targets.
  * <p>
@@ -40,17 +47,23 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> impl
     private static final float PADDING_RIGHT = 6f;
     private static final float Y_SPACING = 9f;      // roomier rows
     private static final float INDENT_SPACING = 16f;
-    private static final float ICON_SPACING_LEFT = 2f;
+    private static final float ICON_SPACING_LEFT = 6f;     // room between the expander's ring and the icon
     private static final float ICON_SPACING_RIGHT = 6f;
 
-    /** Chevron arm length from its vertex. */
-    private static final float CHEVRON_ARM = 3.2f;
-    private static final float CHEVRON_THICKNESS = 1.6f;
-    private static final Color CHEVRON_COLOR = new Color(0.78f, 0.79f, 0.80f, 1f);
+    /** The expander: a ring the lines stop at, and inside it a triangle, from its centre to the tip and to the base. */
+    private static final float RING_RADIUS = 5.5f;
+    private static final float TRIANGLE_TIP = 2.6f;
+    private static final float TRIANGLE_BASE = 1.9f;
+    private static final Color EXPANDER_COLOR = new Color(0.62f, 0.63f, 0.64f, 1f);
 
-    /** Light guide lines from a parent down to its children. */
-    private static final Color LINE_COLOR = new Color(1f, 1f, 1f, 0.13f);
-    private static final float LINE_THICKNESS = 2f;
+    /** How long the children take to unfold or fold. */
+    private static final float EXPAND_DURATION = 0.18f;
+
+    /** Thin guide lines from a parent down to its children. */
+    private static final Color LINE_COLOR = new Color(1f, 1f, 1f, 0.22f);
+    private static final float LINE_THICKNESS = 1f;
+    /** The lines and triangles on the way from the root to the selected items. */
+    private static final Color PATH_COLOR = new Color(0.105f, 0.631f, 0.886f, 1f); // theme blue #1BA1E2
 
     private static final float DIMMED_ALPHA = 0.3f;
     private static final float PLACEHOLDER_ALPHA = 0.35f;   // in-place row of the picked-up node
@@ -62,6 +75,15 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> impl
     private static final float GHOST_ALPHA = 0.95f;
 
     private ShapeDrawer shapeDrawer;
+    /** The selected nodes and everything above them, gathered once a frame. */
+    private final ObjectSet<UIItemsTreeNode> onPath = new ObjectSet<>();
+    /** The node unfolding or folding its children, and how far along it is; null when none is. */
+    private UIItemsTreeNode expandingNode;
+    private boolean folding;
+    private float expandTime;
+    /** The node under a press, from touch down until the click is handled: only a click is animated. */
+    private UIItemsTreeNode pressedNode;
+    private final Array<UIItemsTreeNode> unfolding = new Array<>();
     /** The alpha coming down from above for this frame: the drawn parts have to follow the panel fading. */
     private float drawAlpha = 1f;
     private final Color shapeColor = new Color();
@@ -84,6 +106,7 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> impl
         setIndentSpacing(INDENT_SPACING);
         setIconSpacing(ICON_SPACING_LEFT, ICON_SPACING_RIGHT);
         addDragSupport();
+        addExpandAnimation();
     }
 
     public void setDropListener(DropListener dropListener) {
@@ -103,15 +126,18 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> impl
             shapeDrawer = new ShapeDrawer(batch, WhitePixel.sharedInstance.textureRegion);
 
         drawAlpha = parentAlpha * getColor().a;
+        collectPath();
 
-        float prevColor = setShapeColor(LINE_COLOR);
+        // rows first, hover and selection included; the tree goes over them so they never cut it
+        super.draw(batch, parentAlpha);
+
+        float prevColor = shapeDrawer.getPackedColor();
         float prevThickness = shapeDrawer.getDefaultLineWidth();
         shapeDrawer.setDefaultLineWidth(LINE_THICKNESS);
         drawConnectorLines(getRootNodes(), PADDING_LEFT, plusMinusWidth());
+        drawExpanders(getRootNodes(), PADDING_LEFT, plusMinusWidth());
         shapeDrawer.setDefaultLineWidth(prevThickness);
         shapeDrawer.setColor(prevColor);
-
-        super.draw(batch, parentAlpha);
 
         if (draggingNode != null && dropValid) {
             float ay = getY() + dropIndicatorY;
@@ -135,7 +161,23 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> impl
         return shapeDrawer.setColor(shapeColor);
     }
 
-    /** Draws the elbow guide lines from every expanded parent to each of its children. */
+    private void collectPath() {
+        onPath.clear();
+        for (UIItemsTreeNode node : getSelection()) {
+            for (UIItemsTreeNode n = node; n != null && onPath.add(n); n = n.getParent()) {
+            }
+        }
+    }
+
+    /** The middle of the pixel the coordinate falls in, so a one pixel line stays sharp. */
+    private static float snap(float v) {
+        return (float) Math.floor(v) + 0.5f;
+    }
+
+    /**
+     * Draws the elbow guide lines from every expanded parent to each of its children, then the part of them
+     * leading to the selection over them in the path colour.
+     */
     private void drawConnectorLines(Array<UIItemsTreeNode> nodes, float indent, float pmw) {
         final float treeX = getX(), treeY = getY();
 
@@ -148,14 +190,14 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> impl
             Array<UIItemsTreeNode> children = node.getChildren();
             if (!node.isExpanded() || children.size == 0) continue;
 
-            float verticalX = treeX + indent + pmw / 2f;
+            float verticalX = snap(treeX + indent + pmw / 2f);
             float parentCenterY = treeY + node.getActor().getY() + node.getHeight() / 2f;
             float childIndentX = treeX + indent + INDENT_SPACING;        // left edge of the children's expand column
-            float childChevronCenterX = childIndentX + pmw / 2f;
+            float childExpanderCenterX = childIndentX + pmw / 2f;
             float childIconLeftX = childIndentX + pmw + ICON_SPACING_LEFT;
 
             UIItemsTreeNode last = children.get(children.size - 1);
-            float lastChildCenterY = treeY + last.getActor().getY() + last.getHeight() / 2f;
+            float lastChildCenterY = snap(treeY + last.getActor().getY() + last.getHeight() / 2f);
 
             //nothing of this family is on screen: its children may still be, so keep walking
             if (lastChildCenterY > cullTop || parentCenterY < cullBottom) {
@@ -163,19 +205,58 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> impl
                 continue;
             }
 
-            // start the vertical just below the parent chevron so the line never cuts through it
-            shapeDrawer.line(verticalX, parentCenterY - CHEVRON_ARM, verticalX, lastChildCenterY);
-
+            // the vertical leaves from the bottom of the parent's ring
+            parentCenterY = snap(parentCenterY) - RING_RADIUS;
+            setShapeColor(LINE_COLOR);
+            shapeDrawer.line(verticalX, parentCenterY, verticalX, lastChildCenterY);
+            UIItemsTreeNode lastOnPath = null;
             for (UIItemsTreeNode child : children) {
-                float childCenterY = treeY + child.getActor().getY() + child.getHeight() / 2f;
-                // stop just before an expandable child's chevron; reach the icon for leaf nodes
-                float endX = child.getChildren().size > 0
-                        ? childChevronCenterX - CHEVRON_ARM
-                        : childIconLeftX - 1f;
-                shapeDrawer.line(verticalX, childCenterY, endX, childCenterY);
+                drawStub(child, verticalX, childExpanderCenterX, childIconLeftX);
+                if (onPath.contains(child)) lastOnPath = child;
+            }
+
+            if (lastOnPath != null) {
+                setShapeColor(PATH_COLOR);
+                float pathEndY = snap(treeY + lastOnPath.getActor().getY() + lastOnPath.getHeight() / 2f);
+                shapeDrawer.line(verticalX, parentCenterY, verticalX, pathEndY);
+                for (UIItemsTreeNode child : children) {
+                    if (onPath.contains(child)) drawStub(child, verticalX, childExpanderCenterX, childIconLeftX);
+                }
             }
 
             drawConnectorLines(children, indent + INDENT_SPACING, pmw);
+        }
+    }
+
+    /** The short line from the parent's vertical to a child: up to its ring, or up to its icon. */
+    private void drawStub(UIItemsTreeNode child, float verticalX, float expanderCenterX, float iconLeftX) {
+        float y = snap(getY() + child.getActor().getY() + child.getHeight() / 2f);
+        float endX = child.getChildren().size > 0 ? snap(expanderCenterX) - RING_RADIUS : iconLeftX - 2f;
+        shapeDrawer.line(verticalX, y, endX, y);
+    }
+
+    /** The expanders of every node with children that is showing, over the lines that reach them. */
+    private void drawExpanders(Array<UIItemsTreeNode> nodes, float indent, float pmw) {
+        Rectangle culling = getCullingArea();
+        for (UIItemsTreeNode node : nodes) {
+            if (node.getChildren().size == 0) continue;
+            float rowY = node.getActor().getY();
+            if (culling == null || (rowY + node.getHeight() >= culling.y && rowY <= culling.y + culling.height))
+                drawExpander(node, snap(getX() + indent + pmw / 2f), snap(getY() + rowY + node.getHeight() / 2f));
+            if (node.isExpanded()) drawExpanders(node.getChildren(), indent + INDENT_SPACING, pmw);
+        }
+    }
+
+    private void drawExpander(UIItemsTreeNode node, float cx, float cy) {
+        setShapeColor(onPath.contains(node) ? PATH_COLOR : EXPANDER_COLOR);
+        shapeDrawer.circle(cx, cy, RING_RADIUS - LINE_THICKNESS / 2f, LINE_THICKNESS);
+
+        // each triangle shifted so its centroid, not its bounding box, sits in the middle of the ring
+        float tip = TRIANGLE_TIP, base = TRIANGLE_BASE, shift = (2f * base - tip) / 3f;
+        if (node.isExpanded()) {
+            shapeDrawer.filledTriangle(cx - base - 0.4f, cy + base - shift, cx + base + 0.4f, cy + base - shift, cx, cy - tip - shift);
+        } else {
+            shapeDrawer.filledTriangle(cx - base + shift, cy + base + 0.4f, cx - base + shift, cy - base - 0.4f, cx + tip + shift, cy);
         }
     }
 
@@ -188,28 +269,185 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> impl
 
     @Override
     protected void drawExpandIcon(UIItemsTreeNode node, Drawable expandIcon, Batch batch, float x, float y) {
-        // deliberately not calling super: the atlas plus/minus is replaced by the drawn chevron,
-        // sized and centred inside the space the drawable reserved.
-        float cx = x + expandIcon.getMinWidth() / 2f;
-        float cy = y + expandIcon.getMinHeight() / 2f;
+        // deliberately empty: the atlas plus/minus is replaced by the expanders drawn after the lines
+    }
 
-        float prevColor = setShapeColor(CHEVRON_COLOR);
-        float prevThickness = shapeDrawer.getDefaultLineWidth();
-        shapeDrawer.setDefaultLineWidth(CHEVRON_THICKNESS);
+    @Override
+    protected void drawIcon(UIItemsTreeNode node, Drawable icon, Batch batch, float x, float y) {
+        // the batch carries the row's colour (dimmed while dragging): the kind's tint goes on top of it
+        Color row = batch.getColor();
+        float r = row.r, g = row.g, b = row.b, a = row.a;
+        Color tint = node.iconColor;
+        batch.setColor(r * tint.r, g * tint.g, b * tint.b, a * tint.a * (node.isHidden() ? UIItemsTreeNode.HIDDEN_ALPHA : 1f));
+        super.drawIcon(node, icon, batch, x, y);
+        batch.setColor(r, g, b, a);
+    }
 
-        float a = CHEVRON_ARM;
-        if (node.isExpanded()) {
-            // v : vertex below centre, arms rising outwards
-            shapeDrawer.line(cx - a, cy + a / 2f, cx, cy - a / 2f);
-            shapeDrawer.line(cx, cy - a / 2f, cx + a, cy + a / 2f);
-        } else {
-            // > : vertex right of centre, arms opening to the left
-            shapeDrawer.line(cx - a / 2f, cy + a, cx + a / 2f, cy);
-            shapeDrawer.line(cx + a / 2f, cy, cx - a / 2f, cy - a);
+    // ---------------------------------------------------------------------------------------------
+    // Expand animation
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Watches the clicks the tree itself expands and collapses on: only a node opened or closed by hand is
+     * animated, not the ones the panel opens while it builds itself again.
+     */
+    private void addExpandAnimation() {
+        addListener(new ClickListener() {
+            private boolean wasExpanded;
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                pressedNode = getNodeAt(y);
+                wasExpanded = pressedNode != null && pressedNode.isExpanded();
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // the tree's own listener came first and has opened the node already
+                UIItemsTreeNode node = pressedNode;
+                if (node != null && !wasExpanded && node.isExpanded() && node.getChildren().size > 0)
+                    startAnimation(node, false, 0f);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+                pressedNode = null;
+            }
+        });
+    }
+
+    /**
+     * Asked by a node the tree is about to close: when it is the one clicked, its children fold away first and
+     * it closes at the end ({@link UIItemsTreeNode#collapseNow()}). Clicked again while still unfolding or
+     * folding, it turns back from where it is.
+     */
+    boolean foldInstead(UIItemsTreeNode node) {
+        if (node != pressedNode || node.getChildren().size == 0) return false;
+        if (node == expandingNode && folding) {
+            // closing, clicked to open again: unfold from how far it is still open
+            startAnimation(node, false, openTimeFor(unfolded()));
+            return true;
         }
+        float open = node == expandingNode ? unfolded() : 1f;
+        startAnimation(node, true, openTimeFor(1f - open));
+        return true;
+    }
 
-        shapeDrawer.setDefaultLineWidth(prevThickness);
-        shapeDrawer.setColor(prevColor);
+    /** The time at which the eased curve reaches the given amount, to turn back without a jump. */
+    private static float openTimeFor(float amount) {
+        // pow2Out(t) = 1 - (1 - t)^2
+        return (1f - (float) Math.sqrt(1f - Math.min(1f, Math.max(0f, amount)))) * EXPAND_DURATION;
+    }
+
+    private void startAnimation(UIItemsTreeNode node, boolean fold, float time) {
+        if (node != expandingNode) finishExpanding();
+        expandingNode = node;
+        folding = fold;
+        expandTime = time;
+        invalidateHierarchy();
+    }
+
+    private void finishExpanding() {
+        if (expandingNode == null) return;
+        if (draggingNode == null) {
+            for (UIItemsTreeNode n : unfolding) {
+                Color c = n.getActor().getColor();
+                n.getActor().setColor(c.r, c.g, c.b, 1f);
+            }
+        }
+        unfolding.clear();
+        UIItemsTreeNode node = expandingNode;
+        expandingNode = null;
+        if (folding) node.collapseNow();
+        folding = false;
+        invalidateHierarchy();
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        if (expandingNode == null) return;
+        // the panel built itself again, or the node was closed meanwhile
+        if (expandingNode.getTree() != this || !expandingNode.isExpanded()) {
+            finishExpanding();
+            return;
+        }
+        expandTime += delta;
+        if (expandTime >= EXPAND_DURATION) finishExpanding();
+        else invalidateHierarchy();
+    }
+
+    /** How open the animated node's children are, from 0 (folded under it) to 1. */
+    private float unfolded() {
+        float eased = Interpolation.pow2Out.apply(Math.min(1f, expandTime / EXPAND_DURATION));
+        return folding ? 1f - eased : eased;
+    }
+
+    /** The height the unfolding children will take once open, which is not given yet. */
+    private float stillFolded() {
+        if (expandingNode == null) return 0f;
+        return subtreeHeight(expandingNode.getChildren()) * (1f - unfolded());
+    }
+
+    private static float subtreeHeight(Array<UIItemsTreeNode> nodes) {
+        float height = 0f;
+        for (UIItemsTreeNode node : nodes) {
+            height += node.getHeight() + Y_SPACING;
+            if (node.isExpanded()) height += subtreeHeight(node.getChildren());
+        }
+        return height;
+    }
+
+    @Override
+    public float getPrefHeight() {
+        float height = super.getPrefHeight();
+        return height - stillFolded();
+    }
+
+    /**
+     * Lays the rows out as if all were open, then folds the unfolding children up under their parent: their
+     * distances from it shrink with what is still folded, and the rows below them come up by as much.
+     */
+    @Override
+    public void layout() {
+        super.layout();
+        if (expandingNode == null) return;
+
+        float folded = stillFolded(), open = unfolded();
+        float parentY = expandingNode.getActor().getY();
+        unfolding.clear();
+        collectShowing(expandingNode.getChildren(), unfolding);
+        for (UIItemsTreeNode n : unfolding) {
+            float y = n.getActor().getY();
+            n.getActor().setY(parentY - (parentY - y) * open);
+            if (draggingNode == null) {
+                Color c = n.getActor().getColor();
+                n.getActor().setColor(c.r, c.g, c.b, open);
+            }
+        }
+        shiftRowsBelow(getRootNodes(), folded, false);
+    }
+
+    private static void collectShowing(Array<UIItemsTreeNode> nodes, Array<UIItemsTreeNode> out) {
+        for (UIItemsTreeNode node : nodes) {
+            out.add(node);
+            if (node.isExpanded()) collectShowing(node.getChildren(), out);
+        }
+    }
+
+    /** Moves up every row after the unfolding children. Returns whether they were passed already. */
+    private boolean shiftRowsBelow(Array<UIItemsTreeNode> nodes, float by, boolean past) {
+        for (UIItemsTreeNode node : nodes) {
+            if (past) node.getActor().moveBy(0f, by);
+            if (node == expandingNode) {
+                past = true;   // its children are the unfolding ones, placed already
+                continue;
+            }
+            if (node.isExpanded()) past = shiftRowsBelow(node.getChildren(), by, past);
+        }
+        return past;
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -299,7 +537,8 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> impl
             sd.setColor(prev);
 
             if (icon != null) {
-                batch.setColor(1f, 1f, 1f, GHOST_ALPHA);
+                Color tint = node.iconColor;
+                batch.setColor(tint.r, tint.g, tint.b, GHOST_ALPHA);
                 icon.draw(batch, gx, cy - iconH / 2f, iconW, iconH);
             }
 

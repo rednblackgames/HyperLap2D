@@ -1,4 +1,6 @@
 package games.rednblack.editor.view.ui.box;
+
+import com.badlogic.gdx.Gdx;
 import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.proxy.EntityDataProxy;
 import games.rednblack.editor.controller.commands.SelectionPayload;
@@ -45,6 +47,7 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
                 MsgAPI.ITEM_DATA_UPDATED,
                 LayerJumpCommand.DONE);
         interests.add(LayerSwapCommand.DONE, MsgAPI.UPDATE_TREE_ITEMS_FILTER);
+        interests.add(UILayerBox.HIDE_LAYER, UILayerBox.UNHIDE_LAYER);
     }
 
     @Override
@@ -71,6 +74,11 @@ public class UIItemsTreeBoxMediator extends PanelMediator<UIItemsTreeBox> {
                 rootEntity = sandbox.getCurrentViewingEntity();
                 if (notification.getType() == null || !notification.getType().equals(ItemsMoveCommand.TAG))
                     viewComponent.update(rootEntity);
+                break;
+            case UILayerBox.HIDE_LAYER:
+            case UILayerBox.UNHIDE_LAYER:
+                // the layer box flips the layer on this same notification: rebuild once it has, to dim or undim
+                Gdx.app.postRunnable(() -> viewComponent.update(PluginUIBridge.get().getSandbox().getCurrentViewingEntity()));
                 break;
             case UIItemsTreeBox.ITEMS_SELECTED:
                 Selection<UIItemsTreeNode> selection = notification.getBody();

@@ -137,13 +137,13 @@ public class EntityMetadata {
     }
 
     /**
-     * The icon of the widget the entity is, {@code icon-widget-<type>} (14px with {@code small}), or null when it is
-     * not a widget or its type has no icon yet, so the caller keeps the composite one.
+     * The small icon of the widget the entity is, {@code icon-widget-<type>-small}, for the breadcrumb bar; null when
+     * it is not a widget or its type has no icon yet, so the caller keeps the composite one.
      */
-    public Drawable getWidgetIcon(int entity, boolean small) {
+    public Drawable getWidgetIcon(int entity) {
         WidgetComponent widget = entityData.get(entity, WidgetComponent.class);
         if (widget == null) return null;
-        return MenuIcons.get("icon-widget-" + widget.widgetType + (small ? "-small" : ""));
+        return MenuIcons.get("icon-widget-" + widget.widgetType + "-small");
     }
 
     public String getTypeName(int entityType) {
