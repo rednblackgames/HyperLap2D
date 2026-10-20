@@ -594,65 +594,55 @@
       checked: toolbar-down,
       imageUp: tool-mesh
     },
-    align-center-horisontal: {
-      down: toolbar-down,
-      up: toolbar-normal,
-      over: toolbar-over,
-      imageUp: align-center-horisontal
+    align-left: {
+      down: align-button-down,
+      over: align-button-over,
+      imageUp: icon-align-left
     },
-    align-center-vertical: {
-      down: toolbar-down,
-      up: toolbar-normal,
-      over: toolbar-over,
-      imageUp: align-center-vertical
+    align-center: {
+      down: align-button-down,
+      over: align-button-over,
+      imageUp: icon-align-center
     },
-    align-simple-down: {
-      down: toolbar-down,
-      up: toolbar-normal,
-      over: toolbar-over,
-      imageUp: align-simple-down
+    align-right: {
+      down: align-button-down,
+      over: align-button-over,
+      imageUp: icon-align-right
     },
-    align-simple-up: {
-      down: toolbar-down,
-      up: toolbar-normal,
-      over: toolbar-over,
-      imageUp: align-simple-up
+    align-top: {
+      down: align-button-down,
+      over: align-button-over,
+      imageUp: icon-align-top
     },
-    align-simple-left: {
-      down: toolbar-down,
-      up: toolbar-normal,
-      over: toolbar-over,
-      imageUp: align-simple-left
+    align-middle: {
+      down: align-button-down,
+      over: align-button-over,
+      imageUp: icon-align-middle
     },
-    align-simple-right: {
-      down: toolbar-down,
-      up: toolbar-normal,
-      over: toolbar-over,
-      imageUp: align-simple-right
+    align-bottom: {
+      down: align-button-down,
+      over: align-button-over,
+      imageUp: icon-align-bottom
     },
-    align-edge-down: {
-      down: toolbar-down,
-      up: toolbar-normal,
-      over: toolbar-over,
-      imageUp: align-edge-down
+    align-next-left: {
+      down: align-button-down,
+      over: align-button-over,
+      imageUp: icon-align-next-left
     },
-    align-edge-right: {
-      down: toolbar-down,
-      up: toolbar-normal,
-      over: toolbar-over,
-      imageUp: align-edge-right
+    align-next-right: {
+      down: align-button-down,
+      over: align-button-over,
+      imageUp: icon-align-next-right
     },
-    align-edge-up: {
-      down: toolbar-down,
-      up: toolbar-normal,
-      over: toolbar-over,
-      imageUp: align-edge-up
+    align-next-up: {
+      down: align-button-down,
+      over: align-button-over,
+      imageUp: icon-align-next-up
     },
-    align-edge-left: {
-      down: toolbar-down,
-      up: toolbar-normal,
-      over: toolbar-over,
-      imageUp: align-edge-left
+    align-next-down: {
+      down: align-button-down,
+      over: align-button-over,
+      imageUp: icon-align-next-down
     },
     expandable-properties-button: {
       imageUp: expandable-properties-collapse-on,

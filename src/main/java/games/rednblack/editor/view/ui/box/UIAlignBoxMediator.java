@@ -22,11 +22,13 @@ import games.rednblack.editor.proxy.PluginUIBridge;
 import com.badlogic.gdx.utils.Align;
 import games.rednblack.editor.view.stage.ItemSelector;
 import games.rednblack.editor.view.stage.Sandbox;
+import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.puremvc.interfaces.INotification;
 import games.rednblack.puremvc.util.Interests;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -53,6 +55,7 @@ public class UIAlignBoxMediator extends PanelMediator<UIAlignBox> {
                 UIAlignBox.ALIGN_AT_EDGE_LEFT_BTN_CLICKED);
         interests.add(UIAlignBox.ALIGN_AT_EDGE_BOTTOM_BTN_CLICKED,
                 UIAlignBox.ALIGN_AT_EDGE_RIGHT_BTN_CLICKED);
+        interests.add(MsgAPI.ITEM_SELECTION_CHANGED, MsgAPI.SCENE_LOADED);
     }
 
     @Override
@@ -61,6 +64,13 @@ public class UIAlignBoxMediator extends PanelMediator<UIAlignBox> {
         String alignFunctionName = "";
         int align = -1;
         switch (notification.getName()) {
+            case MsgAPI.ITEM_SELECTION_CHANGED:
+                Set<Integer> selection = notification.getBody();
+                viewComponent.setAlignEnabled(selection != null && selection.size() >= 2);
+                return;
+            case MsgAPI.SCENE_LOADED:
+                viewComponent.setAlignEnabled(false);
+                return;
             case UIAlignBox.ALIGN_TOP_BTN_CLICKED:
                 align = Align.top;
                 alignFunctionName = "alignSelections";
