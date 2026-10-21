@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.widget.VisTree;
 import games.rednblack.editor.view.ui.widget.actors.basic.WhitePixel;
 import space.earlygrey.shapedrawer.ShapeDrawer;
@@ -62,8 +62,13 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> impl
     /** Thin guide lines from a parent down to its children. */
     private static final Color LINE_COLOR = new Color(1f, 1f, 1f, 0.22f);
     private static final float LINE_THICKNESS = 1f;
-    /** The lines and triangles on the way from the root to the selected items. */
+    /**
+     * The lines and expanders on the way from the root to a selected item take the colour of its icon; this one,
+     * the theme blue, when the icon has none to speak of (a label, the scene).
+     */
     private static final Color PATH_COLOR = new Color(0.105f, 0.631f, 0.886f, 1f); // theme blue #1BA1E2
+    /** Below this spread between its channels an icon's colour counts as grey. */
+    private static final float GREY_SPREAD = 0.15f;
 
     private static final float DIMMED_ALPHA = 0.3f;
     private static final float PLACEHOLDER_ALPHA = 0.35f;   // in-place row of the picked-up node
@@ -75,8 +80,8 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> impl
     private static final float GHOST_ALPHA = 0.95f;
 
     private ShapeDrawer shapeDrawer;
-    /** The selected nodes and everything above them, gathered once a frame. */
-    private final ObjectSet<UIItemsTreeNode> onPath = new ObjectSet<>();
+    /** The selected nodes and everything above them, with the colour of the path through them, gathered once a frame. */
+    private final ObjectMap<UIItemsTreeNode, Color> onPath = new ObjectMap<>();
     /** The node unfolding or folding its children, and how far along it is; null when none is. */
     private UIItemsTreeNode expandingNode;
     private boolean folding;
@@ -164,9 +169,16 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> impl
     private void collectPath() {
         onPath.clear();
         for (UIItemsTreeNode node : getSelection()) {
-            for (UIItemsTreeNode n = node; n != null && onPath.add(n); n = n.getParent()) {
-            }
+            Color color = pathColorOf(node);
+            // where paths meet, the one selected last colours the shared part
+            for (UIItemsTreeNode n = node; n != null; n = n.getParent()) onPath.put(n, color);
         }
+    }
+
+    private static Color pathColorOf(UIItemsTreeNode node) {
+        Color c = node.iconColor;
+        float spread = Math.max(c.r, Math.max(c.g, c.b)) - Math.min(c.r, Math.min(c.g, c.b));
+        return spread < GREY_SPREAD ? PATH_COLOR : c;
     }
 
     /** The middle of the pixel the coordinate falls in, so a one pixel line stays sharp. */
@@ -209,19 +221,17 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> impl
             parentCenterY = snap(parentCenterY) - RING_RADIUS;
             setShapeColor(LINE_COLOR);
             shapeDrawer.line(verticalX, parentCenterY, verticalX, lastChildCenterY);
-            UIItemsTreeNode lastOnPath = null;
-            for (UIItemsTreeNode child : children) {
-                drawStub(child, verticalX, childExpanderCenterX, childIconLeftX);
-                if (onPath.contains(child)) lastOnPath = child;
-            }
+            for (UIItemsTreeNode child : children) drawStub(child, verticalX, childExpanderCenterX, childIconLeftX);
 
-            if (lastOnPath != null) {
-                setShapeColor(PATH_COLOR);
-                float pathEndY = snap(treeY + lastOnPath.getActor().getY() + lastOnPath.getHeight() / 2f);
+            // bottom up, so each path keeps its own colour from its child up to the next path above
+            for (int i = children.size - 1; i >= 0; i--) {
+                UIItemsTreeNode child = children.get(i);
+                Color color = onPath.get(child);
+                if (color == null) continue;
+                setShapeColor(color);
+                float pathEndY = snap(treeY + child.getActor().getY() + child.getHeight() / 2f);
                 shapeDrawer.line(verticalX, parentCenterY, verticalX, pathEndY);
-                for (UIItemsTreeNode child : children) {
-                    if (onPath.contains(child)) drawStub(child, verticalX, childExpanderCenterX, childIconLeftX);
-                }
+                drawStub(child, verticalX, childExpanderCenterX, childIconLeftX);
             }
 
             drawConnectorLines(children, indent + INDENT_SPACING, pmw);
@@ -248,7 +258,8 @@ public class UIItemsTree extends VisTree<UIItemsTreeNode, UIItemsTreeValue> impl
     }
 
     private void drawExpander(UIItemsTreeNode node, float cx, float cy) {
-        setShapeColor(onPath.contains(node) ? PATH_COLOR : EXPANDER_COLOR);
+        Color pathColor = onPath.get(node);
+        setShapeColor(pathColor != null ? pathColor : EXPANDER_COLOR);
         shapeDrawer.circle(cx, cy, RING_RADIUS - LINE_THICKNESS / 2f, LINE_THICKNESS);
 
         // each triangle shifted so its centroid, not its bounding box, sits in the middle of the ring

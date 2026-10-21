@@ -33,7 +33,7 @@ public class UICompositeHierarchy extends UIBaseBox {
         row();
     }
 
-    /** {@code icon}, when given, replaces the style's composite icon (a widget shows its own). */
+    /** {@code icon}, when given, replaces the style's icon: the one the items tree shows for the item. */
     public void addItem(String name, String id, boolean isRoot, Drawable icon) {
         String classType = "hierarchy-item";
         if(isRoot) classType+="-root";

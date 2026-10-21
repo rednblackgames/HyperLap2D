@@ -18,6 +18,8 @@
 
 package games.rednblack.editor.view.ui.properties.panels;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -26,7 +28,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
-import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.*;
 import games.rednblack.editor.event.ButtonToNotificationListener;
@@ -54,9 +55,14 @@ public class UIBasicItemProperties extends UIItemProperties implements RemoteEdi
 
     /** Item type icon and library link icon, matching the editor's 22px icon set. */
     private static final int ICON_SIZE = 22;
+    /** The item's own icon in the title, the items tree's at twice its size, beside the two lines of text. */
+    private static final int TITLE_ICON_SIZE = 28;
 
     private Image itemTypeIcon;
     private VisLabel itemType;
+    private VisLabel itemUniqueId;
+    private VisLabel itemResource;
+    private Cell<VisLabel> itemResourceCell;
 
     private VisImageButton linkImage, linkScaleButton;
     private VisLabel libraryLinkLabel;
@@ -93,9 +99,19 @@ public class UIBasicItemProperties extends UIItemProperties implements RemoteEdi
         libraryLinkLabel = PropertyGrid.valueEllipsized("");
         linkImage = StandardWidgetsFactory.createImageButton("library-link-button");
 
+        itemUniqueId = PropertyGrid.text("");
+        itemResource = PropertyGrid.text("");
+        itemResource.setEllipsis(true);
+
+        // the kind and id on top, the asset it shows under them
+        VisTable titleTexts = new VisTable();
+        PropertyGrid.elastic(titleTexts.add(itemType)).left();
+        titleTexts.add(itemUniqueId).right().padLeft(PropertyGrid.LABEL_GAP).row();
+        itemResourceCell = PropertyGrid.elastic(titleTexts.add(itemResource)).colspan(2).left();
+
         VisTable titleContainer = new VisTable();
-        titleContainer.add(itemTypeIcon).size(ICON_SIZE).padRight(PropertyGrid.LABEL_GAP);
-        PropertyGrid.elastic(titleContainer.add(itemType)).height(PropertyGrid.FIELD_HEIGHT);
+        titleContainer.add(itemTypeIcon).size(TITLE_ICON_SIZE).padRight(PropertyGrid.LABEL_GAP);
+        PropertyGrid.elastic(titleContainer.add(titleTexts));
 
         linkageContainer = new VisTable();
         linkageContainer.add(linkImage).size(ICON_SIZE).padRight(PropertyGrid.SUB_LABEL_GAP);
@@ -172,10 +188,20 @@ public class UIBasicItemProperties extends UIItemProperties implements RemoteEdi
         linkageRow.setContentVisible(false);
     }
 
-    public void setItemType(int type, String itemUniqueId) {
-        itemType.setText(EntityMetadata.itemTypeNameMap.get(type) + " ("+itemUniqueId+")");
-        itemTypeIcon.setDrawable(VisUI.getSkin().getDrawable(EntityMetadata.itemTypeIconMap.get(type)));
-        itemTypeIcon.setScaling(Scaling.fit);
+    /**
+     * {@code icon} is the one the items tree shows for the item, at the title's size. {@code resource} names the
+     * asset it shows, its font or its kind of widget; null or empty leaves the second line out.
+     */
+    public void setItemType(int type, String uniqueId, Drawable icon, String resource) {
+        itemType.setText(EntityMetadata.itemTypeNameMap.get(type));
+        itemUniqueId.setText(uniqueId);
+        itemTypeIcon.setDrawable(icon);
+        itemTypeIcon.setScaling(Scaling.none);
+
+        boolean hasResource = resource != null && !resource.isEmpty();
+        itemResource.setText(hasResource ? resource : "");
+        itemResourceCell.setActor(hasResource ? itemResource : null);
+        itemResourceCell.getTable().invalidateHierarchy();
     }
 
     public String getIdBoxValue() {

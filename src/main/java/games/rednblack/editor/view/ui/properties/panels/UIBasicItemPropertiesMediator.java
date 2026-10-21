@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.view.ui.properties.panels;
+import games.rednblack.editor.view.ui.box.ItemsTreeIcons;
 import games.rednblack.editor.proxy.PluginUIBridge;
 import games.rednblack.editor.controller.commands.EntityComponentsPayload;
 
@@ -166,7 +167,8 @@ public class UIBasicItemPropertiesMediator extends UIItemPropertiesMediator<UIBa
         // from the shared AddableComponents helper used by both the UI and the MCP RemoteOps path.
         Map<String, Class<? extends Component>> addable = AddableComponents.addableForEntity(entity, sandbox.getEngine());
 
-        viewComponent.setItemType(entityData.metadata().getType(entity), mainItemComponent.uniqueId);
+        viewComponent.setItemType(entityData.metadata().getType(entity), mainItemComponent.uniqueId,
+                ItemsTreeIcons.forEntity(entity, true), ItemResourceName.of(entity));
         viewComponent.setIdBoxValue(mainItemComponent.itemIdentifier);
         viewComponent.setPositionDisabled(AutoLayoutEditing.layingOut(entity) != -1);
         viewComponent.setXValue(String.format(Locale.ENGLISH, "%.2f", transformComponent.x));
