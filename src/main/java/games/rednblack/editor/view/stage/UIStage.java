@@ -113,8 +113,10 @@ public class UIStage extends Stage {
 		VisTable mainBottomTable = new VisTable();
 		mainBottomTable.setFillParent(true);
 		mainBottomTable.bottom();
-		UIBottomMenuBar bottomMenuBar = new UIBottomMenuBar();
-		mainBottomTable.add(bottomMenuBar).fillX().expandX().height(38);
+		UIBottomMenuBarMediator bottomMenuBarMediator = facade.retrieveMediator(UIBottomMenuBarMediator.NAME);
+		UIBottomMenuBar bottomMenuBar = bottomMenuBarMediator.getViewComponent();
+		mainBottomTable.add(bottomMenuBar).height(UIBottomMenuBar.HEIGHT).minWidth(UIBottomMenuBar.MIN_WIDTH)
+				.pad(0, UIBottomMenuBar.MARGIN, UIBottomMenuBar.MARGIN, UIBottomMenuBar.MARGIN);
 		addActor(mainBottomTable);
 
         setListeners();
