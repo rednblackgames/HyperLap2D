@@ -21,6 +21,12 @@ import games.rednblack.talos.runtime.bvb.BVB;
 import games.rednblack.talos.runtime.utils.ShaderDescriptor;
 import games.rednblack.talos.runtime.utils.VectorField;
 import dev.lyze.gdxtinyvg.TinyVG;
+import games.rednblack.editor.renderer.SceneLoader;
+import games.rednblack.editor.renderer.components.label.LabelComponent;
+import games.rednblack.editor.renderer.ecs.Aspect;
+import games.rednblack.editor.renderer.ecs.ComponentMapper;
+import games.rednblack.editor.renderer.ecs.Engine;
+import games.rednblack.editor.renderer.ecs.utils.IntBag;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.resources.FontSizePair;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
@@ -791,6 +797,8 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     public void flushAllUnusedFonts() {
         //List of fonts that are required to be in memory
         ArrayList<FontSizePair> requiredFonts = getProjectRequiredFontsList();
+        // the saved files miss what the open scene changed since its last save, and those labels still need their fonts
+        requiredFonts.addAll(getOpenSceneFontsList());
         ArrayList<FontSizePair> fontsInMemory = new ArrayList<>(fonts.keySet());
 
         for (FontSizePair font : fontsInMemory) {
@@ -798,6 +806,23 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 fonts.remove(font);
             }
         }
+    }
+
+    /** Fonts of the labels in the open scene, as they are now rather than as they were last saved. */
+    private ArrayList<FontSizePair> getOpenSceneFontsList() {
+        ArrayList<FontSizePair> result = new ArrayList<>();
+        SceneLoader sceneLoader = PluginUIBridge.get(facade).getSceneLoader();
+        if (sceneLoader == null || sceneLoader.getEngine() == null) return result;
+
+        Engine engine = sceneLoader.getEngine();
+        ComponentMapper<LabelComponent> labelMapper = engine.getMapper(LabelComponent.class);
+        IntBag labels = engine.getAspectSubscriptionManager().get(Aspect.all(LabelComponent.class)).getEntities();
+        for (int i = 0; i < labels.size(); i++) {
+            LabelComponent label = labelMapper.get(labels.get(i));
+            if (label.bitmapFont != null) continue;
+            result.add(new FontSizePair(label.fontName, label.fontSize == 0 ? LABEL_DEFAULT_SIZE : label.fontSize, label.mono));
+        }
+        return result;
     }
 
     public boolean isFontLoaded(String shortName, int fontSize, boolean mono) {

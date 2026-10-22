@@ -74,7 +74,10 @@ public class SceneControlMediator {
 		float upp = 1f / resourceManager.getProjectVO().pixelToWorld * sandboxUpp;
 		viewport.setUnitsPerPixel(upp);
 
-		currentSceneVo = sceneLoader.loadScene(sceneName, viewport);
+		SceneVO sceneVO = resourceManager.getSceneVO(sceneName);
+		// A font can be missing from memory even though the saved scene uses it, and a label without one breaks the load
+		if (sceneVO.composite != null) resourceManager.prepareEmbeddingFonts(sceneVO.composite);
+		currentSceneVo = sceneLoader.loadScene(sceneVO, viewport, false);
 
 		rootSceneVO = new CompositeItemVO(currentSceneVo.composite);
 		PluginUIBridge.get().getSandbox().getEngine().process();
