@@ -261,10 +261,12 @@ public class Sandbox {
     }
 
     public void loadCurrentProject() {
+        cameraService.forgetCompositePositions();
         sceneLoadService.loadCurrentProject();
     }
 
     public void loadScene(String sceneName) {
+        cameraService.forgetCompositePositions();
         sceneLoadService.loadScene(sceneName);
     }
 

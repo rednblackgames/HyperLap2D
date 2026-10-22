@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.utils.ObjectMap;
+import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.ViewPortComponent;
 import games.rednblack.editor.view.stage.tools.PanTool;
 import games.rednblack.h2d.common.MsgAPI;
@@ -37,6 +39,12 @@ public class CameraService {
     private float timeToCameraPosTarget;
     private final Vector2 cameraPosTarget = new Vector2();
     private final Vector2 cameraPosOrigin = new Vector2();
+
+    /**
+     * Where the camera was last left inside each composite, by its unique id. The root's position is kept in the
+     * scene's settings and saved with it; these last the session only, the ids being made anew at every load.
+     */
+    private final ObjectMap<String, Vector2> compositeCameraPositions = new ObjectMap<>();
 
     public CameraService(Sandbox sandbox, Facade facade) {
         this.sandbox = sandbox;
@@ -78,19 +86,46 @@ public class CameraService {
         }
     }
 
+    /**
+     * Pans to where the camera was left the last time in the composite now viewed. Entered for the first time, a
+     * composite is shown centred.
+     */
     public void adjustCameraInComposites() {
-        if (!sandbox.isViewingRootEntity()) {
-            panSceneTo(0, 0);
-        } else {
+        if (sandbox.isViewingRootEntity()) {
             panSceneTo(sandbox.sceneConfigVO.cameraPosition[0], sandbox.sceneConfigVO.cameraPosition[1]);
+            return;
         }
+
+        int composite = sandbox.getCurrentViewingEntity();
+        Vector2 left = compositeCameraPositions.get(EntityDataProxy.get().metadata().getUniqueId(composite));
+        if (left != null) {
+            panSceneTo(left.x, left.y);
+            return;
+        }
+        // the composite's transform is disabled while it is viewed, so its middle is half its size from the origin
+        DimensionsComponent dimensions = EntityDataProxy.get().get(composite, DimensionsComponent.class);
+        if (dimensions != null) panSceneTo(dimensions.width / 2f, dimensions.height / 2f);
+        else panSceneTo(0, 0);
     }
 
     public void scenePanned() {
-        if (sandbox.isViewingRootEntity() && timeToCameraPosTarget <= 0) {
+        if (timeToCameraPosTarget > 0) return;
+        if (sandbox.isViewingRootEntity()) {
             sandbox.sceneConfigVO.cameraPosition[0] = getCamera().position.x;
             sandbox.sceneConfigVO.cameraPosition[1] = getCamera().position.y;
+            return;
         }
+
+        String composite = EntityDataProxy.get().metadata().getUniqueId(sandbox.getCurrentViewingEntity());
+        if (composite == null) return;
+        Vector2 left = compositeCameraPositions.get(composite);
+        if (left == null) compositeCameraPositions.put(composite, left = new Vector2());
+        left.set(getCamera().position.x, getCamera().position.y);
+    }
+
+    /** A scene loaded anew has new ids: the positions kept for the composites of the old one go. */
+    public void forgetCompositePositions() {
+        compositeCameraPositions.clear();
     }
 
     public void panSceneTo(float x, float y) {
