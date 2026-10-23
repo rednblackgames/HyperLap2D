@@ -21,6 +21,7 @@ import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import games.rednblack.editor.controller.commands.EntityModifyRevertibleCommand;
+import games.rednblack.editor.renderer.components.DimensionsComponent;
 import games.rednblack.editor.renderer.components.label.LabelComponent;
 import games.rednblack.editor.renderer.factory.component.LabelComponentFactory;
 import games.rednblack.editor.renderer.resources.IResourceRetriever;
@@ -45,6 +46,9 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
     Label.LabelStyle prevStyle;
     boolean prevWrap;
     boolean prevMono;
+    boolean prevFitWidth;
+    /** The width it had before: fitting the text changes it, and undoing gives it back. */
+    float prevWidth;
     String prevBitmapFont;
 
     @Override
@@ -63,6 +67,8 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
         this.prevText = payload.prevText();
         this.prevWrap = labelComponent.wrap;
         this.prevMono = labelComponent.mono;
+        this.prevFitWidth = labelComponent.fitWidth;
+        this.prevWidth = SandboxComponentRetriever.get(entity, DimensionsComponent.class).width;
         this.prevBitmapFont = labelComponent.bitmapFont;
 
         labelComponent.fontName = payload.fontName();
@@ -71,6 +77,7 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
         labelComponent.setText(payload.text());
         labelComponent.setWrap(payload.wrap());
         labelComponent.mono = payload.mono();
+        labelComponent.fitWidth = payload.fitWidth();
         labelComponent.bitmapFont = payload.bitmapFont();
 
         if (labelComponent.bitmapFont != null) {
@@ -111,6 +118,8 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
         labelComponent.setStyle(prevStyle);
         labelComponent.setWrap(prevWrap);
         labelComponent.mono = prevMono;
+        labelComponent.fitWidth = prevFitWidth;
+        SandboxComponentRetriever.get(entity, DimensionsComponent.class).width = prevWidth;
         labelComponent.bitmapFont = prevBitmapFont;
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);

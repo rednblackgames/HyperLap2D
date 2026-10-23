@@ -6,5 +6,5 @@ package games.rednblack.editor.controller.commands.component;
  */
 public record LabelDataPayload(int entity, String fontName, int fontSize, int align,
                                String text, String prevText, boolean wrap, boolean mono,
-                               String bitmapFont) {
+                               String bitmapFont, boolean fitWidth) {
 }
