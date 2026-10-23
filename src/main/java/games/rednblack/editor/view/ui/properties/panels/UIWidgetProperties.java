@@ -103,42 +103,19 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties implements R
 
         if (type == null) return;
 
-        if (type.properties.size > 0) {
-            grid.section("Settings");
-            for (WidgetType.Property property : type.properties) {
-                String label = UIWidgetPartProperties.label(property.key);
-                if (property.kind == WidgetType.PropertyKind.BOOLEAN) {
-                    VisCheckBox toggle = StandardWidgetsFactory.createSwitch();
-                    toggle.addListener(new CheckBoxChangeListener(getUpdateEventName()));
-                    settingFields.put(property.key, toggle);
-                    grid.toggle(label, toggle);
-                } else if (property.kind == WidgetType.PropertyKind.INTERPOLATION) {
-                    VisSelectBox<String> functions = StandardWidgetsFactory.createSelectBox(String.class);
-                    functions.setItems(interpolationFunctions());
-                    functions.addListener(new SelectBoxChangeListener(getUpdateEventName()));
-                    settingFields.put(property.key, functions);
-                    grid.row(label, functions);
-                } else if (property.kind == WidgetType.PropertyKind.CHOICE) {
-                    VisSelectBox<String> choices = StandardWidgetsFactory.createSelectBox(String.class);
-                    choices.setItems(property.choices.toArray(String[]::new));
-                    choices.addListener(new SelectBoxChangeListener(getUpdateEventName()));
-                    settingFields.put(property.key, choices);
-                    grid.row(label, choices);
-                } else if (property.kind == WidgetType.PropertyKind.LIST) {
-                    // one value per line: Enter starts the next one and commits what is there so far
-                    VisTextArea lines = StandardWidgetsFactory.createTextArea();
-                    lines.setPrefRows(LIST_ROWS);
-                    lines.addListener(new KeyboardListener(getUpdateEventName()));
-                    settingFields.put(property.key, lines);
-                    grid.wide(PropertyGrid.label(label));
-                    grid.wideFill(lines);
-                } else {
-                    VisTextField field = StandardWidgetsFactory.createTextField();
-                    field.addListener(new KeyboardListener(getUpdateEventName()));
-                    settingFields.put(property.key, field);
-                    grid.row(label, field);
-                }
-            }
+        // grouped by section, each in the order its first setting is declared: the plain ones come first
+        OrderedMap<String, Array<WidgetType.Property>> sections = new OrderedMap<>();
+        sections.put(WidgetPropertyLabels.SETTINGS, new Array<>());
+        for (WidgetType.Property property : type.properties) {
+            String section = WidgetPropertyLabels.section(property.key);
+            if (!sections.containsKey(section)) sections.put(section, new Array<>());
+            sections.get(section).add(property);
+        }
+        for (ObjectMap.Entry<String, Array<WidgetType.Property>> section : sections) {
+            if (section.value.isEmpty()) continue;
+            grid.section(section.key);
+            for (WidgetType.Property property : section.value)
+                addSettingRow(grid, property);
         }
 
         if (type.parts.size > 0) {
@@ -148,6 +125,41 @@ public class UIWidgetProperties extends UIItemCollapsibleProperties implements R
                 String status = assigned != null ? assigned : part.required ? "missing" : "not set";
                 grid.row(part.role, PropertyGrid.valueEllipsized(status));
             }
+        }
+    }
+
+    private void addSettingRow(PropertyGrid grid, WidgetType.Property property) {
+        String label = WidgetPropertyLabels.label(property.key);
+        if (property.kind == WidgetType.PropertyKind.BOOLEAN) {
+            VisCheckBox toggle = StandardWidgetsFactory.createSwitch();
+            toggle.addListener(new CheckBoxChangeListener(getUpdateEventName()));
+            settingFields.put(property.key, toggle);
+            grid.toggle(label, toggle);
+        } else if (property.kind == WidgetType.PropertyKind.INTERPOLATION) {
+            VisSelectBox<String> functions = StandardWidgetsFactory.createSelectBox(String.class);
+            functions.setItems(interpolationFunctions());
+            functions.addListener(new SelectBoxChangeListener(getUpdateEventName()));
+            settingFields.put(property.key, functions);
+            grid.row(label, functions);
+        } else if (property.kind == WidgetType.PropertyKind.CHOICE) {
+            VisSelectBox<String> choices = StandardWidgetsFactory.createSelectBox(String.class);
+            choices.setItems(property.choices.toArray(String[]::new));
+            choices.addListener(new SelectBoxChangeListener(getUpdateEventName()));
+            settingFields.put(property.key, choices);
+            grid.row(label, choices);
+        } else if (property.kind == WidgetType.PropertyKind.LIST) {
+            // one value per line: Enter starts the next one and commits what is there so far
+            VisTextArea lines = StandardWidgetsFactory.createTextArea();
+            lines.setPrefRows(LIST_ROWS);
+            lines.addListener(new KeyboardListener(getUpdateEventName()));
+            settingFields.put(property.key, lines);
+            grid.wide(PropertyGrid.label(label));
+            grid.wideFill(lines);
+        } else {
+            VisTextField field = StandardWidgetsFactory.createTextField();
+            field.addListener(new KeyboardListener(getUpdateEventName()));
+            settingFields.put(property.key, field);
+            grid.row(label, field);
         }
     }
 
