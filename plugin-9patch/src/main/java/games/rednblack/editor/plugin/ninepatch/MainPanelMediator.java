@@ -238,14 +238,14 @@ public class MainPanelMediator extends Mediator<MainPanel> {
         FileHandle packAtlas = Gdx.files.internal(plugin.getAPI().getProjectPath() + "/assets/orig/pack/" + atlasName);
         String content = packAtlas.readString();
         if (plugin.getAPI().getCurrentProjectVO().texturePackerVO.legacy) {
-            int regionIndex = content.indexOf(textureRegionName);
+            int regionIndex = regionIndex(content, textureRegionName);
             int splitEnd = content.indexOf("orig: ", regionIndex);
             String splitStr = "split: "+splits[0]+", "+splits[1]+", "+splits[2]+", "+splits[3]+"\n  ";
             String newContent = content.substring(0, splitEnd) + splitStr + content.substring(splitEnd);
             File test = new File(plugin.getAPI().getProjectPath() + "/assets/orig/pack/" + atlasName);
             writeFile(newContent, test);
         } else {
-            int regionIndex = content.indexOf(textureRegionName);
+            int regionIndex = regionIndex(content, textureRegionName);
             String splitStr = "split: " + splits[0] + ", " + splits[1] + ", " + splits[2] + ", " + splits[3] + "\n\t";
             int splitEnd = content.indexOf("bounds: ", regionIndex);
             String newContent = content.substring(0, splitEnd) + splitStr + content.substring(splitEnd);
@@ -273,7 +273,7 @@ public class MainPanelMediator extends Mediator<MainPanel> {
         // now need to modify the pack
         int[] splits = TenPatchUtils.toSplits(vo, finalImage == null ? 0 : finalImage.getWidth() - 2, finalImage == null ? 0 : finalImage.getHeight() - 2);
         String content = packAtlas.readString();
-        int regionIndex = content.indexOf(textureRegionName);
+        int regionIndex = regionIndex(content, textureRegionName);
         int splitStart = content.indexOf("split: ", regionIndex) + "split: ".length();
 
         if (plugin.getAPI().getCurrentProjectVO().texturePackerVO.legacy) {
@@ -303,6 +303,16 @@ public class MainPanelMediator extends Mediator<MainPanel> {
         plugin.getAPI().saveProject();
 
         plugin.getAPI().reLoadProject();
+    }
+
+    /**
+     * Where a region's entry starts in the text of an atlas: the line that is its name, not the first
+     * place the name turns up, which may be inside a longer one ("confirm-window" in "base-confirm-window").
+     */
+    static int regionIndex(String content, String name) {
+        if (content.startsWith(name + "\n")) return 0;
+        int index = content.indexOf("\n" + name + "\n");
+        return index == -1 ? -1 : index + 1;
     }
 
     private void writeFile(String content, File file) {
