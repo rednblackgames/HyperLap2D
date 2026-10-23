@@ -2,6 +2,7 @@ package games.rednblack.editor.view.ui.box;
 import games.rednblack.editor.proxy.PluginUIBridge;
 
 import games.rednblack.editor.renderer.ecs.ComponentMapper;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FlushablePool;
 import com.kotcrab.vis.ui.widget.*;
+import games.rednblack.editor.controller.commands.SelectionPayload;
 import games.rednblack.editor.renderer.components.MainItemComponent;
 import games.rednblack.editor.renderer.components.NodeComponent;
 import games.rednblack.editor.renderer.components.ParentNodeComponent;
@@ -27,6 +29,7 @@ import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
 import games.rednblack.puremvc.Facade;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Set;
 
 public class UIItemsTreeBox extends UICollapsibleBox {
@@ -117,6 +120,7 @@ public class UIItemsTreeBox extends UICollapsibleBox {
         rootTreeNode = addTreeRoot(rootScene, null);
         rootTreeNode.setExpanded(true);
         tree.addListener(new TreeChangeListener());
+        tree.addListener(new TreeContextMenuListener());
 
         sortTree();
 
@@ -302,6 +306,36 @@ public class UIItemsTreeBox extends UICollapsibleBox {
                     facade.sendNotification(MsgAPI.ACTION_CAMERA_CHANGE_COMPOSITE, item);
                 }
             }
+        }
+    }
+
+    /**
+     * Right click opens the same menu as on the scene, and picks the same way: an item already selected keeps
+     * the selection as it is, any other one becomes the only selected item.
+     */
+    private class TreeContextMenuListener extends ClickListener {
+        TreeContextMenuListener() {
+            setButton(Input.Buttons.RIGHT);
+        }
+
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            UIItemsTreeNode clickedNode = tree.getNodeAt(y);
+            if (clickedNode == null || clickedNode == rootNode) return;
+
+            int item = EntityDataProxy.get().metadata().getByUniqueId(clickedNode.getValue().entityId);
+            if (item == -1) return;
+            // the scene never selects these either
+            LayerItemVO layerItemVO = EntityDataProxy.get().metadata().getLayer(item);
+            if (layerItemVO != null && layerItemVO.isLocked) return;
+
+            Sandbox sandbox = PluginUIBridge.get().getSandbox();
+            if (!sandbox.getSelector().getCurrentSelection().contains(item)) {
+                Set<Integer> items = new HashSet<>();
+                items.add(item);
+                facade.sendNotification(MsgAPI.ACTION_SET_SELECTION, SelectionPayload.multiple(items));
+            }
+            facade.sendNotification(MsgAPI.ITEM_RIGHT_CLICK);
         }
     }
 
