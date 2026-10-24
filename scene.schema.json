@@ -712,6 +712,10 @@
         "customVariables" : {
           "$ref" : "#/$defs/MapOfStringToString"
         },
+        "fitHeight" : {
+          "type" : "boolean",
+          "default" : false
+        },
         "fitWidth" : {
           "type" : "boolean",
           "default" : false

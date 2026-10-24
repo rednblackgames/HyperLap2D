@@ -73,6 +73,7 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
         viewComponent.setWrap(labelComponent.wrap);
         viewComponent.setMono(labelComponent.mono);
         viewComponent.setFitWidth(labelComponent.fitWidth);
+        viewComponent.setFitHeight(labelComponent.fitHeight);
         viewComponent.setBitmapFontFamily(labelComponent.bitmapFont != null ? labelComponent.bitmapFont : UILabelItemProperties.NONE_BITMAP_FONT);
 
         viewComponent.setTextOwnedByWidget(WidgetEditingProxy.isDriven(item, WidgetTypes.DRIVEN_TEXT));
@@ -94,7 +95,8 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
                 viewComponent.isWrap(),
                 viewComponent.isMono(),
                 viewComponent.getBitmapFont().equals(UILabelItemProperties.NONE_BITMAP_FONT) ? null : viewComponent.getBitmapFont(),
-                viewComponent.isFitWidth()));
+                viewComponent.isFitWidth(),
+                viewComponent.isFitHeight()));
 
         this.prevText = newText;
     }

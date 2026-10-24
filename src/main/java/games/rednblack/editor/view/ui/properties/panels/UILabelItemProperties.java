@@ -45,6 +45,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
     private VisCheckBox wrapCheckBox;
     private VisCheckBox monoCheckBox;
     private VisCheckBox fitWidthCheckBox;
+    private VisCheckBox fitHeightCheckBox;
     private VisCheckBox italicCheckBox;
     private Spinner fontSizeField;
     private VisTextArea textArea;
@@ -60,6 +61,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
         wrapCheckBox = StandardWidgetsFactory.createSwitch();
         monoCheckBox = StandardWidgetsFactory.createSwitch();
         fitWidthCheckBox = StandardWidgetsFactory.createSwitch();
+        fitHeightCheckBox = StandardWidgetsFactory.createSwitch();
         fontSizeField = StandardWidgetsFactory.createNumberSelector(12, 1, 500);
 
         fontFamilySelectBox.setMaxListCount(10);
@@ -79,6 +81,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
         grid.toggle("Wrap", wrapCheckBox);
         grid.toggle("Mono space", monoCheckBox);
         grid.toggle("Fit text width", fitWidthCheckBox);
+        grid.toggle("Fit text height", fitHeightCheckBox);
 
         PropertyGrid.elastic(textEditTable.add(textAreaTable));
 
@@ -138,6 +141,15 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
 
     public void setFitWidth(boolean fitWidth) {
         fitWidthCheckBox.setChecked(fitWidth);
+    }
+
+    /** As tall as its text, wrapped in the width it has: the label sizes itself. */
+    public boolean isFitHeight() {
+        return fitHeightCheckBox.isChecked();
+    }
+
+    public void setFitHeight(boolean fitHeight) {
+        fitHeightCheckBox.setChecked(fitHeight);
     }
 
     public void setAlignList() {
@@ -249,9 +261,10 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
             case "wrap": setWrap(toBool(value)); break;
             case "mono": setMono(toBool(value)); break;
             case "fitWidth": setFitWidth(toBool(value)); break;
+            case "fitHeight": setFitHeight(toBool(value)); break;
             default:
                 throw new IllegalArgumentException("Unknown or unsupported field: " + key
-                        + " (supported: text, fontFamily, bitmapFont, fontSize, align, wrap, mono, fitWidth)");
+                        + " (supported: text, fontFamily, bitmapFont, fontSize, align, wrap, mono, fitWidth, fitHeight)");
         }
     }
 
@@ -294,6 +307,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
         wrapCheckBox.addListener(new CheckBoxChangeListener(eventName));
         monoCheckBox.addListener(new CheckBoxChangeListener(eventName));
         fitWidthCheckBox.addListener(new CheckBoxChangeListener(eventName));
+        fitHeightCheckBox.addListener(new CheckBoxChangeListener(eventName));
         fontSizeField.addListener(new NumberSelectorOverlapListener(eventName));
         textArea.addListener(new KeyboardListener(eventName));
     }

@@ -47,8 +47,9 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
     boolean prevWrap;
     boolean prevMono;
     boolean prevFitWidth;
-    /** The width it had before: fitting the text changes it, and undoing gives it back. */
-    float prevWidth;
+    boolean prevFitHeight;
+    /** The size it had before: fitting the text changes it, and undoing gives it back. */
+    float prevWidth, prevHeight;
     String prevBitmapFont;
 
     @Override
@@ -68,7 +69,9 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
         this.prevWrap = labelComponent.wrap;
         this.prevMono = labelComponent.mono;
         this.prevFitWidth = labelComponent.fitWidth;
+        this.prevFitHeight = labelComponent.fitHeight;
         this.prevWidth = SandboxComponentRetriever.get(entity, DimensionsComponent.class).width;
+        this.prevHeight = SandboxComponentRetriever.get(entity, DimensionsComponent.class).height;
         this.prevBitmapFont = labelComponent.bitmapFont;
 
         labelComponent.fontName = payload.fontName();
@@ -78,6 +81,7 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
         labelComponent.setWrap(payload.wrap());
         labelComponent.mono = payload.mono();
         labelComponent.fitWidth = payload.fitWidth();
+        labelComponent.fitHeight = payload.fitHeight();
         labelComponent.bitmapFont = payload.bitmapFont();
 
         if (labelComponent.bitmapFont != null) {
@@ -119,7 +123,9 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
         labelComponent.setWrap(prevWrap);
         labelComponent.mono = prevMono;
         labelComponent.fitWidth = prevFitWidth;
+        labelComponent.fitHeight = prevFitHeight;
         SandboxComponentRetriever.get(entity, DimensionsComponent.class).width = prevWidth;
+        SandboxComponentRetriever.get(entity, DimensionsComponent.class).height = prevHeight;
         labelComponent.bitmapFont = prevBitmapFont;
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
