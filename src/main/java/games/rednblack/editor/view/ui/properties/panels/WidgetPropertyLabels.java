@@ -54,6 +54,7 @@ final class WidgetPropertyLabels {
         put(PROPERTY_KEEP_WITHIN_VIEWPORT, null, "Keep In View");
         put(PROPERTY_CLOSE_ON_BACKDROP_TAP, null, "Backdrop Closes");
         put(PROPERTY_CLOSE_ON_ESCAPE, null, "Escape Closes");
+        put(PROPERTY_CLOSE_ON_TOUCH_OUTSIDE, null, "Outside Closes");
         put(PROPERTY_MAX_LIST_COUNT, null, "Visible Items");
     }
 
