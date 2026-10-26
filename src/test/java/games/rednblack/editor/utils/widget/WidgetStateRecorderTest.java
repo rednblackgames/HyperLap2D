@@ -302,4 +302,44 @@ public class WidgetStateRecorderTest {
         assertFalse(part(part).overrides.get(PRESSED).containsKey(CoreStateOverrides.X));
         assertEquals("99.0", part(part).overrides.get(PRESSED).get(CoreStateOverrides.Y));
     }
+
+    /** What reading the entities into VOs does, e.g. an auto save right after a command. */
+    private void readVOs() {
+        WidgetStateSystem stateSystem = engine.getSystem(WidgetStateSystem.class);
+        stateSystem.restoreBase(part);
+        stateSystem.applyAllNow();
+    }
+
+    @Test
+    public void anEditRightAfterAReadStaysInTheShownState() {
+        recorder.switchState(widget, PRESSED);
+        edit(() -> transform(part).x = 25);
+        readVOs();
+
+        // no frame in between: the panels write every field back, x included, and change y
+        transform(part).x = 25;
+        transform(part).y = 7;
+        recorder.record(widget);
+
+        assertEquals("25.0", part(part).overrides.get(PRESSED).get(CoreStateOverrides.X));
+        assertEquals("7.0", part(part).overrides.get(PRESSED).get(CoreStateOverrides.Y));
+
+        recorder.switchState(widget, NORMAL);
+        assertEquals(10, transform(part).x, 0);
+        assertEquals(0, transform(part).y, 0);
+    }
+
+    @Test
+    public void anOverrideEditedRightAfterAReadIsKept() {
+        recorder.switchState(widget, PRESSED);
+        edit(() -> transform(part).x = 25);
+        readVOs();
+
+        transform(part).x = 30;
+        recorder.record(widget);
+
+        assertEquals("30.0", part(part).overrides.get(PRESSED).get(CoreStateOverrides.X));
+        recorder.switchState(widget, NORMAL);
+        assertEquals(10, transform(part).x, 0);
+    }
 }

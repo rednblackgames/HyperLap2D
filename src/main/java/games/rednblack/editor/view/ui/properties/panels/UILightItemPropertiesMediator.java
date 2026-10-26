@@ -22,6 +22,7 @@ import games.rednblack.editor.controller.commands.component.UpdateLightDataComma
 import games.rednblack.editor.renderer.components.light.LightObjectComponent;
 import games.rednblack.editor.renderer.data.LightVO;
 import games.rednblack.editor.view.ui.properties.UIItemPropertiesMediator;
+import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.h2d.common.MsgAPI;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -64,6 +65,7 @@ public class UILightItemPropertiesMediator extends UIItemPropertiesMediator<UILi
 
         LightVO payloadVo = new LightVO();
         payloadVo.loadFromEntity(observableReference, sandbox.getEngine(), sandbox.getSceneControl().sceneLoader.getEntityFactory());
+        EntityUtils.reapplyWidgetStates(sandbox.getEngine());
 
         payloadVo.rays = viewComponent.getRayCount();
         payloadVo.isStatic = viewComponent.isStatic();

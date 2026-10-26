@@ -30,6 +30,7 @@ import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.editor.renderer.components.widget.WidgetComponent;
 import games.rednblack.editor.renderer.widget.WidgetType;
 import games.rednblack.editor.renderer.widget.WidgetTypes;
+import games.rednblack.editor.utils.runtime.EntityUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -64,6 +65,7 @@ public class UICompositeItemPropertiesMediator extends UIItemPropertiesMediator<
     protected void translateViewToItemData() {
         CompositeItemVO payloadVo = new CompositeItemVO();
         payloadVo.loadFromEntity(observableReference, sandbox.getEngine(), sandbox.getSceneControl().sceneLoader.getEntityFactory());
+        EntityUtils.reapplyWidgetStates(sandbox.getEngine());
 
         // locked while an auto layout sizes the composite: what the switch shows is not its setting
         if (entityData.get(observableReference, AutoLayoutComponent.class) == null) {

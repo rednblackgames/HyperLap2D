@@ -5,6 +5,7 @@ import games.rednblack.editor.proxy.ProjectManager;
 import games.rednblack.editor.proxy.SceneDataManager;
 import games.rednblack.editor.renderer.data.CompositeItemVO;
 import games.rednblack.editor.renderer.data.SceneVO;
+import games.rednblack.editor.utils.runtime.EntityUtils;
 import games.rednblack.h2d.common.MsgAPI;
 import games.rednblack.h2d.common.vo.ProjectVO;
 import games.rednblack.puremvc.Facade;
@@ -73,6 +74,7 @@ public class SceneLoadService {
     public SceneVO sceneVoFromItems() {
         CompositeItemVO newVo = new CompositeItemVO();
         newVo.loadFromEntity(sandbox.getRootEntity(), sandbox.getEngine(), sandbox.getSceneControl().sceneLoader.getEntityFactory());
+        EntityUtils.reapplyWidgetStates(sandbox.getEngine());
         newVo.sStickyNotes.putAll(sandbox.getSceneControl().getCurrentSceneVO().composite.sStickyNotes);
         sandbox.getSceneControl().getCurrentSceneVO().composite = newVo;
 

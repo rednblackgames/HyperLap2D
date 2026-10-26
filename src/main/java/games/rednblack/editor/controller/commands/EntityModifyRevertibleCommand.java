@@ -60,6 +60,7 @@ public abstract class EntityModifyRevertibleCommand extends HistoricRevertibleCo
             if (libraryItems.containsKey(mainItemComponent.libraryLink)) {
                 CompositeItemVO itemVO = new CompositeItemVO();
                 itemVO.loadFromEntity(entity, sandbox.getEngine(), sandbox.getSceneControl().sceneLoader.getEntityFactory());
+                EntityUtils.reapplyWidgetStates(sandbox.getEngine());
                 itemVO.cleanIds();
                 libraryItems.put(mainItemComponent.libraryLink, itemVO);
             }

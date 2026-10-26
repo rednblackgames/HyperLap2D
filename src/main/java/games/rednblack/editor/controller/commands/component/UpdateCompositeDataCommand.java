@@ -22,6 +22,7 @@ public class UpdateCompositeDataCommand extends EntityModifyRevertibleCommand {
 
         backup = new CompositeItemVO();
         backup.loadFromEntity(entity, sandbox.getEngine(), sandbox.getSceneControl().sceneLoader.getEntityFactory());
+        EntityUtils.reapplyWidgetStates(sandbox.getEngine());
 
         CompositeTransformComponent transformComponent = SandboxComponentRetriever.get(entity, CompositeTransformComponent.class);
         transformComponent.automaticResize = vo.automaticResize;

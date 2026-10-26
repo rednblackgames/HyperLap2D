@@ -36,8 +36,8 @@ import games.rednblack.editor.renderer.commons.RefreshableComponent;
 import games.rednblack.editor.renderer.components.*;
 import games.rednblack.editor.renderer.data.*;
 import games.rednblack.editor.renderer.factory.EntityFactory;
+import games.rednblack.editor.renderer.systems.WidgetStateSystem;
 import games.rednblack.editor.renderer.utils.HyperJson;
-import games.rednblack.editor.view.stage.Sandbox;
 import games.rednblack.h2d.extension.spine.SpineItemType;
 import games.rednblack.h2d.extension.talos.TalosItemType;
 import games.rednblack.h2d.extension.tinyvg.TinyVGItemType;
@@ -343,6 +343,16 @@ public class EntityUtils {
         return factory.createEntity(parent, factory.instantiateVOFromJson(jsonString, entityType));
     }
 
+    /**
+     * Reading an entity into a VO takes the look of the widget state it shows off, so that only its
+     * base look is read. To be called as soon as the reading is done: until the state is back on,
+     * any change to the entity would be taken for a change of its base look.
+     */
+    public static void reapplyWidgetStates(Engine engine) {
+        WidgetStateSystem widgetStateSystem = engine.getSystem(WidgetStateSystem.class);
+        if (widgetStateSystem != null) widgetStateSystem.applyAllNow();
+    }
+
     public static String getJsonStringFromEntity(int entity) {
         Json json = HyperJson.getJson();
         Engine engine = EntityDataProxy.get().getEngine();
@@ -351,6 +361,7 @@ public class EntityUtils {
         try {
             MainItemVO entityVO = entityFactory.instantiateEmptyVO(entityType);
             entityVO.loadFromEntity(entity, engine, entityFactory);
+            reapplyWidgetStates(engine);
             return json.toJson(entityVO);
         } catch (ReflectionException e) {
             e.printStackTrace();
@@ -372,6 +383,7 @@ public class EntityUtils {
                 e.printStackTrace();
             }
         }
+        reapplyWidgetStates(engine);
 
         Json json = HyperJson.getJson();
 

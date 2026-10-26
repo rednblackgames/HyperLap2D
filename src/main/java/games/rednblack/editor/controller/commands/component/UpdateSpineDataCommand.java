@@ -22,6 +22,7 @@ public class UpdateSpineDataCommand extends EntityModifyRevertibleCommand {
 
         backup = new SpineVO();
         backup.loadFromEntity(entity, sandbox.getEngine(), sandbox.getSceneControl().sceneLoader.getEntityFactory());
+        EntityUtils.reapplyWidgetStates(sandbox.getEngine());
 
         SpineComponent spineComponent = SandboxComponentRetriever.get(entity, SpineComponent.class);
 

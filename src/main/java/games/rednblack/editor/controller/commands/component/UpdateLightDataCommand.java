@@ -40,6 +40,7 @@ public class UpdateLightDataCommand extends EntityModifyRevertibleCommand {
 
         backup = new LightVO();
         backup.loadFromEntity(entity, sandbox.getEngine(), sandbox.getSceneControl().sceneLoader.getEntityFactory());
+        EntityUtils.reapplyWidgetStates(sandbox.getEngine());
 
         LightObjectComponent lightObjectComponent = SandboxComponentRetriever.get(entity, LightObjectComponent.class);
 

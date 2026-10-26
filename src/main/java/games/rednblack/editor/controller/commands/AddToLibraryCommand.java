@@ -59,6 +59,7 @@ public class AddToLibraryCommand extends HistoricRevertibleCommand {
 
             CompositeItemVO newVO = new CompositeItemVO();
             newVO.loadFromEntity(item, sandbox.getEngine(), sandbox.getSceneControl().sceneLoader.getEntityFactory());
+            EntityUtils.reapplyWidgetStates(sandbox.getEngine());
             newVO.cleanIds();
             libraryItems.put(createdLibraryItemName, newVO);
 
