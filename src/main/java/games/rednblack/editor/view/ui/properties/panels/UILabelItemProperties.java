@@ -1,14 +1,19 @@
 package games.rednblack.editor.view.ui.properties.panels;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.kotcrab.vis.ui.util.Validators;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextArea;
+import com.kotcrab.vis.ui.widget.VisValidatableTextField;
 import com.kotcrab.vis.ui.widget.spinner.IntSpinnerModel;
 import com.kotcrab.vis.ui.widget.spinner.Spinner;
 import games.rednblack.editor.code.syntax.TypingLabelSyntax;
@@ -17,10 +22,13 @@ import games.rednblack.editor.event.KeyboardListener;
 import games.rednblack.editor.event.NumberSelectorOverlapListener;
 import games.rednblack.editor.event.SelectBoxChangeListener;
 import games.rednblack.editor.view.ui.properties.RemoteEditablePanel;
+import games.rednblack.editor.view.ui.properties.RemoteEditableSupport;
 import games.rednblack.editor.view.ui.properties.UIItemCollapsibleProperties;
 import games.rednblack.editor.view.ui.widget.actors.ExpandableTextArea;
 import games.rednblack.h2d.common.view.ui.PropertyGrid;
 import games.rednblack.h2d.common.view.ui.StandardWidgetsFactory;
+import games.rednblack.h2d.common.view.ui.widget.TintButton;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +42,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
 
     public static final String LABEL_TEXT_CHAR_TYPED = prefix + ".LABEL_TEXT_CHANGED";
     public static final String LABEL_TEXT_EXPAND_SAVED = prefix + ".LABEL_TEXT_EXPAND_SAVED";
+    public static final String BORDER_COLOR_BUTTON_CLICKED = prefix + ".BORDER_COLOR_BUTTON_CLICKED";
     public static final String NONE_BITMAP_FONT = "<None>";
 
     private HashMap<Integer, String> alignMap = new HashMap<>();
@@ -48,6 +57,8 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
     private VisCheckBox fitHeightCheckBox;
     private VisCheckBox italicCheckBox;
     private Spinner fontSizeField;
+    private VisValidatableTextField borderWidthField;
+    private TintButton borderColorButton;
     private VisTextArea textArea;
 
     public UILabelItemProperties() {
@@ -63,6 +74,8 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
         fitWidthCheckBox = StandardWidgetsFactory.createSwitch();
         fitHeightCheckBox = StandardWidgetsFactory.createSwitch();
         fontSizeField = StandardWidgetsFactory.createNumberSelector(12, 1, 500);
+        borderWidthField = StandardWidgetsFactory.createValidableTextField(new Validators.FloatValidator());
+        borderColorButton = StandardWidgetsFactory.createTintButton();
 
         fontFamilySelectBox.setMaxListCount(10);
         alignSelectBox.setMaxListCount(10);
@@ -76,6 +89,8 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
         grid.row("Bitmap font", bitmapFontSelectBox);
         grid.row("Font name", fontFamilySelectBox);
         grid.row("Font size", fontSizeField);
+        grid.row("Outline", borderWidthField);
+        grid.row("Outline color", borderColorButton);
         grid.row("Align", alignSelectBox);
         grid.wideFill(textEditTable);
         grid.toggle("Wrap", wrapCheckBox);
@@ -227,6 +242,23 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
         ((IntSpinnerModel)fontSizeField.getModel()).setValue(fontSize);
     }
 
+    /** The outline FreeType draws around the glyphs, in pixels at the font's size: 0 for none. */
+    public float getBorderWidth() {
+        return Math.max(0, NumberUtils.toFloat(borderWidthField.getText()));
+    }
+
+    public void setBorderWidth(float borderWidth) {
+        borderWidthField.setText(borderWidth + "");
+    }
+
+    public Color getBorderColor() {
+        return borderColorButton.getColorValue();
+    }
+
+    public void setBorderColor(Color color) {
+        borderColorButton.setColorValue(color);
+    }
+
     // ---- RemoteEditablePanel ----
 
     @Override
@@ -262,15 +294,20 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
             case "mono": setMono(toBool(value)); break;
             case "fitWidth": setFitWidth(toBool(value)); break;
             case "fitHeight": setFitHeight(toBool(value)); break;
+            case "borderWidth": setBorderWidth(Math.max(0, RemoteEditableSupport.toFloat(value))); break;
+            case "borderColor": setBorderColor(RemoteEditableSupport.toColor(value)); break;
             default:
                 throw new IllegalArgumentException("Unknown or unsupported field: " + key
-                        + " (supported: text, fontFamily, bitmapFont, fontSize, align, wrap, mono, fitWidth, fitHeight)");
+                        + " (supported: text, fontFamily, bitmapFont, fontSize, align, wrap, mono, fitWidth, fitHeight, "
+                        + "borderWidth, borderColor)");
         }
     }
 
     @Override
     public java.util.List<String> validateFieldValues() {
-        return new java.util.ArrayList<>(); // allowed-values enforced in setFieldValue; fontSize clamped by spinner (1-500)
+        java.util.List<String> errors = new java.util.ArrayList<>(); // allowed-values enforced in setFieldValue; fontSize clamped by spinner (1-500)
+        RemoteEditableSupport.checkValid("borderWidth", borderWidthField, errors);
+        return errors;
     }
 
     private static boolean contains(VisSelectBox<String> box, String v) {
@@ -298,6 +335,7 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
             public void changed(ChangeEvent event, Actor actor) {
                 fontFamilySelectBox.setDisabled(bitmapFontSelectBox.getSelectedIndex() != 0);
                 fontSizeField.setDisabled(bitmapFontSelectBox.getSelectedIndex() != 0);
+                borderWidthField.setDisabled(bitmapFontSelectBox.getSelectedIndex() != 0);
             }
         });
         fontFamilySelectBox.addListener(new SelectBoxChangeListener(eventName));
@@ -309,6 +347,14 @@ public class UILabelItemProperties extends UIItemCollapsibleProperties implement
         fitWidthCheckBox.addListener(new CheckBoxChangeListener(eventName));
         fitHeightCheckBox.addListener(new CheckBoxChangeListener(eventName));
         fontSizeField.addListener(new NumberSelectorOverlapListener(eventName));
+        borderWidthField.addListener(new KeyboardListener(eventName));
+        borderColorButton.addListener(new ClickListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+                facade.sendNotification(BORDER_COLOR_BUTTON_CLICKED, borderColorButton.getColorValue(), null);
+            }
+        });
         textArea.addListener(new KeyboardListener(eventName));
     }
 }

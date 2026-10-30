@@ -335,7 +335,7 @@ public final class ComponentTools {
      * panel and which fields are accepted:
      * <ul>
      *   <li><b>basic</b>: x, y, width, height, scaleX, scaleY, rotation, flipX, flipY, id (all entities)</li>
-     *   <li><b>label</b>: text, fontFamily, bitmapFont, fontSize, align, wrap, mono, fitWidth, fitHeight (label entities)</li>
+     *   <li><b>label</b>: text, fontFamily, bitmapFont, fontSize, align, wrap, mono, fitWidth, fitHeight, borderWidth, borderColor (label entities)</li>
      *   <li><b>shader</b>: shaderName, renderingLayer (entities with a Shader component)</li>
      * </ul>
      */
@@ -348,7 +348,8 @@ public final class ComponentTools {
                     + "the panel: basic (x/y/width/height/scaleX/scaleY/rotation/originX/originY/flipX/flipY/id/tint; "
                     + "originX/originY are the pivot and are applied before everything else, so set them before scaling "
                     + "or the item moves as it grows), "
-                    + "label (text/fontFamily/bitmapFont/fontSize/align/wrap/mono/fitWidth/fitHeight), "
+                    + "label (text/fontFamily/bitmapFont/fontSize/align/wrap/mono/fitWidth/fitHeight/borderWidth/borderColor; "
+                    + "borderWidth is an outline in pixels at the font size, 0 for none, coloured by borderColor and the label's tint), "
                     + "particle (matrixTransform/autoStart), image (renderMode/spriteType), "
                     + "composite (scissorsEnabled/renderToFBO/automaticResize), sprite (fps/animation/playMode), "
                     + "spine (animation/skin), talos (matrixTransform/autoStart), "

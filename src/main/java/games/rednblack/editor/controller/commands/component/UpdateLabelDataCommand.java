@@ -17,6 +17,7 @@
  */
 
 package games.rednblack.editor.controller.commands.component;
+import com.badlogic.gdx.graphics.Color;
 import games.rednblack.editor.proxy.PluginUIBridge;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -51,6 +52,8 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
     /** The size it had before: fitting the text changes it, and undoing gives it back. */
     float prevWidth, prevHeight;
     String prevBitmapFont;
+    float prevBorderWidth;
+    final Color prevBorderColor = new Color();
 
     @Override
     public void doAction() {
@@ -73,6 +76,8 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
         this.prevWidth = SandboxComponentRetriever.get(entity, DimensionsComponent.class).width;
         this.prevHeight = SandboxComponentRetriever.get(entity, DimensionsComponent.class).height;
         this.prevBitmapFont = labelComponent.bitmapFont;
+        this.prevBorderWidth = labelComponent.borderWidth;
+        this.prevBorderColor.set(labelComponent.borderColor);
 
         labelComponent.fontName = payload.fontName();
         labelComponent.fontSize = payload.fontSize();
@@ -83,11 +88,13 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
         labelComponent.fitWidth = payload.fitWidth();
         labelComponent.fitHeight = payload.fitHeight();
         labelComponent.bitmapFont = payload.bitmapFont();
+        labelComponent.borderWidth = payload.borderWidth();
+        labelComponent.borderColor.set(payload.borderColor());
 
         if (labelComponent.bitmapFont != null) {
             labelComponent.setStyle(getNewStyle(labelComponent.bitmapFont));
         } else {
-            labelComponent.setStyle(getNewStyle(labelComponent.fontName, labelComponent.fontSize, labelComponent.mono));
+            labelComponent.setStyle(getNewStyle(labelComponent));
         }
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
@@ -98,16 +105,17 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
         return LabelComponentFactory.generateStyle(rm, fontName);
     }
 
-    private Label.LabelStyle getNewStyle(String fontName, int fontSize, boolean mono) {
+    private Label.LabelStyle getNewStyle(LabelComponent label) {
 
         IResourceRetriever rm = PluginUIBridge.get().getSandbox().getSceneControl().sceneLoader.getRm();
-        final boolean hasBitmapFont = rm.getFont(fontName, fontSize, mono) != null;
+        int borderColor = Color.rgba8888(label.borderColor);
+        final boolean hasBitmapFont = rm.getFont(label.fontName, label.fontSize, label.mono, label.borderWidth, borderColor) != null;
 
         if(!hasBitmapFont) {
             games.rednblack.editor.proxy.ResourceManager resourceManager = facade.retrieveProxy(games.rednblack.editor.proxy.ResourceManager.NAME);
-            resourceManager.prepareEmbeddingFont(fontName, fontSize, mono);
+            resourceManager.prepareEmbeddingFont(label.fontName, label.fontSize, label.mono, label.borderWidth, borderColor);
         }
-        return LabelComponentFactory.generateStyle(rm, fontName, fontSize, mono);
+        return LabelComponentFactory.generateStyle(rm, label);
     }
 
     @Override
@@ -127,6 +135,8 @@ public class UpdateLabelDataCommand extends EntityModifyRevertibleCommand {
         SandboxComponentRetriever.get(entity, DimensionsComponent.class).width = prevWidth;
         SandboxComponentRetriever.get(entity, DimensionsComponent.class).height = prevHeight;
         labelComponent.bitmapFont = prevBitmapFont;
+        labelComponent.borderWidth = prevBorderWidth;
+        labelComponent.borderColor.set(prevBorderColor);
 
         facade.sendNotification(MsgAPI.ITEM_DATA_UPDATED, entity);
     }

@@ -1,4 +1,9 @@
 package games.rednblack.editor.view.ui.properties.panels;
+import games.rednblack.h2d.common.view.ui.widget.HyperLapColorPicker;
+import games.rednblack.editor.proxy.PluginUIBridge;
+import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
+import com.kotcrab.vis.ui.widget.color.ColorPicker;
+import com.badlogic.gdx.graphics.Color;
 import games.rednblack.editor.controller.commands.component.LabelDataPayload;
 
 import games.rednblack.editor.proxy.FontManager;
@@ -40,7 +45,8 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
     public void listNotificationInterests(Interests interests) {
         super.listNotificationInterests(interests);
         interests.add(UILabelItemProperties.LABEL_TEXT_CHAR_TYPED,
-                UILabelItemProperties.LABEL_TEXT_EXPAND_SAVED);
+                UILabelItemProperties.LABEL_TEXT_EXPAND_SAVED,
+                UILabelItemProperties.BORDER_COLOR_BUTTON_CLICKED);
     }
 
     @Override
@@ -54,6 +60,18 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
             case UILabelItemProperties.LABEL_TEXT_EXPAND_SAVED:
                 viewComponent.setText(notification.getBody());
                 facade.sendNotification(viewComponent.getUpdateEventName());
+                break;
+            case UILabelItemProperties.BORDER_COLOR_BUTTON_CLICKED:
+                // applied when the picker closes: every colour is a font of its own, too dear to make while dragging
+                ColorPicker picker = new HyperLapColorPicker(new ColorPickerAdapter() {
+                    @Override
+                    public void finished(Color newColor) {
+                        viewComponent.setBorderColor(newColor);
+                        facade.sendNotification(viewComponent.getUpdateEventName());
+                    }
+                });
+                picker.setColor(viewComponent.getBorderColor());
+                PluginUIBridge.get().getSandbox().getUIStage().addActor(picker.fadeIn());
                 break;
         }
     }
@@ -74,6 +92,8 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
         viewComponent.setMono(labelComponent.mono);
         viewComponent.setFitWidth(labelComponent.fitWidth);
         viewComponent.setFitHeight(labelComponent.fitHeight);
+        viewComponent.setBorderWidth(labelComponent.borderWidth);
+        viewComponent.setBorderColor(labelComponent.borderColor);
         viewComponent.setBitmapFontFamily(labelComponent.bitmapFont != null ? labelComponent.bitmapFont : UILabelItemProperties.NONE_BITMAP_FONT);
 
         viewComponent.setTextOwnedByWidget(WidgetEditingProxy.isDriven(item, WidgetTypes.DRIVEN_TEXT));
@@ -96,7 +116,9 @@ public class UILabelItemPropertiesMediator extends UIItemPropertiesMediator<UILa
                 viewComponent.isMono(),
                 viewComponent.getBitmapFont().equals(UILabelItemProperties.NONE_BITMAP_FONT) ? null : viewComponent.getBitmapFont(),
                 viewComponent.isFitWidth(),
-                viewComponent.isFitHeight()));
+                viewComponent.isFitHeight(),
+                viewComponent.getBorderWidth(),
+                viewComponent.getBorderColor().cpy()));
 
         this.prevText = newText;
     }

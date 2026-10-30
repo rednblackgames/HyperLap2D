@@ -260,6 +260,11 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     }
 
     @Override
+    public BitmapFont getFont(String fontName, int fontSize, boolean mono, float borderWidth, int borderColor) {
+        return fonts.get(new FontSizePair(fontName, fontSize, mono, borderWidth, borderColor));
+    }
+
+    @Override
     public BitmapFont getBitmapFont(String fontName) {
         return bitmapFonts.get(fontName);
     }
@@ -688,6 +693,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
                 parameter.size = Math.round(pair.fontSize * scaleMul);
                 parameter.packer = fontPacker;
+                outline(parameter, pair.borderWidth * scaleMul, pair.borderColor);
 
                 FreeTypeFontGenerator.FreeTypeBitmapFontData data = new FreeTypeFontGenerator.FreeTypeBitmapFontData();
                 data.regions = new Array<>();
@@ -820,18 +826,27 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         for (int i = 0; i < labels.size(); i++) {
             LabelComponent label = labelMapper.get(labels.get(i));
             if (label.bitmapFont != null) continue;
-            result.add(new FontSizePair(label.fontName, label.fontSize == 0 ? LABEL_DEFAULT_SIZE : label.fontSize, label.mono));
+            result.add(new FontSizePair(label.fontName, label.fontSize == 0 ? LABEL_DEFAULT_SIZE : label.fontSize, label.mono,
+                    label.borderWidth, Color.rgba8888(label.borderColor)));
         }
         return result;
     }
 
     public boolean isFontLoaded(String shortName, int fontSize, boolean mono) {
-        return fonts.containsKey(new FontSizePair(shortName, fontSize, mono));
+        return isFontLoaded(shortName, fontSize, mono, 0, 0);
+    }
+
+    public boolean isFontLoaded(String shortName, int fontSize, boolean mono, float borderWidth, int borderColor) {
+        return fonts.containsKey(new FontSizePair(shortName, fontSize, mono, borderWidth, borderColor));
     }
 
     public void prepareEmbeddingFont(String fontfamily, int fontSize, boolean mono) {
+        prepareEmbeddingFont(fontfamily, fontSize, mono, 0, 0);
+    }
+
+    public void prepareEmbeddingFont(String fontfamily, int fontSize, boolean mono, float borderWidth, int borderColor) {
         flushAllUnusedFonts();
-        embedFont(fontfamily, fontSize, mono);
+        embedFont(fontfamily, fontSize, mono, borderWidth, borderColor);
     }
 
     /**
@@ -851,12 +866,13 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
             // Bitmap fonts come from the project's font folder, they are not rasterized here.
             if (label.bitmapFont != null || label.style == null || label.style.isEmpty()) continue;
             // Same fallback the label factories apply when they ask for the font.
-            embedFont(label.style, label.size == 0 ? LABEL_DEFAULT_SIZE : label.size, label.monoSpace);
+            embedFont(label.style, label.size == 0 ? LABEL_DEFAULT_SIZE : label.size, label.monoSpace,
+                    label.borderWidth, FontSizePair.rgba8888(label.borderColor));
         }
     }
 
-    private void embedFont(String fontfamily, int fontSize, boolean mono) {
-        if (isFontLoaded(fontfamily, fontSize, mono)) {
+    private void embedFont(String fontfamily, int fontSize, boolean mono, float borderWidth, int borderColor) {
+        if (isFontLoaded(fontfamily, fontSize, mono, borderWidth, borderColor)) {
             return;
         }
 
@@ -872,14 +888,22 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         parameter.size = fontSize;
         parameter.packer = fontPacker;
         parameter.mono = mono;
+        outline(parameter, borderWidth, borderColor);
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
         BitmapFont font = generator.generateFont(parameter);
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setUseIntegerPositions(false);
         if (mono)
             font.setFixedWidthGlyphs(FreeTypeFontGenerator.DEFAULT_CHARS);
-        fonts.put(new FontSizePair(fontfamily, parameter.size, mono), font);
+        fonts.put(new FontSizePair(fontfamily, parameter.size, mono, borderWidth, borderColor), font);
         generator.dispose();
+    }
+
+    /** A label's outline, drawn by FreeType into the glyphs: none at width 0. */
+    private static void outline(FreeTypeFontGenerator.FreeTypeFontParameter parameter, float borderWidth, int borderColor) {
+        if (borderWidth <= 0) return;
+        parameter.borderWidth = borderWidth;
+        parameter.borderColor = new Color(borderColor);
     }
 
     public HashMap<String, BVBDataObject> getProjectSpineAnimationsList() {

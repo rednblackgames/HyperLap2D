@@ -706,6 +706,17 @@
         "bitmapFont" : {
           "type" : "string"
         },
+        "borderColor" : {
+          "default" : [ 0.0, 0.0, 0.0, 1.0 ],
+          "type" : "array",
+          "items" : {
+            "type" : "number"
+          }
+        },
+        "borderWidth" : {
+          "type" : "number",
+          "default" : 0.0
+        },
         "circle" : {
           "$ref" : "#/$defs/Circle"
         },
