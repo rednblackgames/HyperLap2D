@@ -260,8 +260,8 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
     }
 
     @Override
-    public BitmapFont getFont(String fontName, int fontSize, boolean mono, float borderWidth, int borderColor) {
-        return fonts.get(new FontSizePair(fontName, fontSize, mono, borderWidth, borderColor));
+    public BitmapFont getFont(String fontName, int fontSize, boolean mono, float borderWidth, boolean outline) {
+        return fonts.get(new FontSizePair(fontName, fontSize, mono, borderWidth, outline));
     }
 
     @Override
@@ -693,7 +693,7 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
                 FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
                 parameter.size = Math.round(pair.fontSize * scaleMul);
                 parameter.packer = fontPacker;
-                outline(parameter, pair.borderWidth * scaleMul, pair.borderColor);
+                games.rednblack.editor.renderer.resources.ResourceManager.outline(parameter, pair.borderWidth * scaleMul, pair.outline);
 
                 FreeTypeFontGenerator.FreeTypeBitmapFontData data = new FreeTypeFontGenerator.FreeTypeBitmapFontData();
                 data.regions = new Array<>();
@@ -826,27 +826,30 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         for (int i = 0; i < labels.size(); i++) {
             LabelComponent label = labelMapper.get(labels.get(i));
             if (label.bitmapFont != null) continue;
-            result.add(new FontSizePair(label.fontName, label.fontSize == 0 ? LABEL_DEFAULT_SIZE : label.fontSize, label.mono,
-                    label.borderWidth, Color.rgba8888(label.borderColor)));
+            int size = label.fontSize == 0 ? LABEL_DEFAULT_SIZE : label.fontSize;
+            result.add(new FontSizePair(label.fontName, size, label.mono, label.borderWidth, false));
+            if (label.borderWidth > 0) result.add(new FontSizePair(label.fontName, size, label.mono, label.borderWidth, true));
         }
         return result;
     }
 
     public boolean isFontLoaded(String shortName, int fontSize, boolean mono) {
-        return isFontLoaded(shortName, fontSize, mono, 0, 0);
+        return isFontLoaded(shortName, fontSize, mono, 0, false);
     }
 
-    public boolean isFontLoaded(String shortName, int fontSize, boolean mono, float borderWidth, int borderColor) {
-        return fonts.containsKey(new FontSizePair(shortName, fontSize, mono, borderWidth, borderColor));
+    public boolean isFontLoaded(String shortName, int fontSize, boolean mono, float borderWidth, boolean outline) {
+        return fonts.containsKey(new FontSizePair(shortName, fontSize, mono, borderWidth, outline));
     }
 
     public void prepareEmbeddingFont(String fontfamily, int fontSize, boolean mono) {
-        prepareEmbeddingFont(fontfamily, fontSize, mono, 0, 0);
+        prepareEmbeddingFont(fontfamily, fontSize, mono, 0);
     }
 
-    public void prepareEmbeddingFont(String fontfamily, int fontSize, boolean mono, float borderWidth, int borderColor) {
+    /** The font, and with an outline both its layers: see {@link FontSizePair}. */
+    public void prepareEmbeddingFont(String fontfamily, int fontSize, boolean mono, float borderWidth) {
         flushAllUnusedFonts();
-        embedFont(fontfamily, fontSize, mono, borderWidth, borderColor);
+        embedFont(fontfamily, fontSize, mono, borderWidth, false);
+        if (borderWidth > 0) embedFont(fontfamily, fontSize, mono, borderWidth, true);
     }
 
     /**
@@ -866,13 +869,14 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
             // Bitmap fonts come from the project's font folder, they are not rasterized here.
             if (label.bitmapFont != null || label.style == null || label.style.isEmpty()) continue;
             // Same fallback the label factories apply when they ask for the font.
-            embedFont(label.style, label.size == 0 ? LABEL_DEFAULT_SIZE : label.size, label.monoSpace,
-                    label.borderWidth, FontSizePair.rgba8888(label.borderColor));
+            int size = label.size == 0 ? LABEL_DEFAULT_SIZE : label.size;
+            embedFont(label.style, size, label.monoSpace, label.borderWidth, false);
+            if (label.borderWidth > 0) embedFont(label.style, size, label.monoSpace, label.borderWidth, true);
         }
     }
 
-    private void embedFont(String fontfamily, int fontSize, boolean mono, float borderWidth, int borderColor) {
-        if (isFontLoaded(fontfamily, fontSize, mono, borderWidth, borderColor)) {
+    private void embedFont(String fontfamily, int fontSize, boolean mono, float borderWidth, boolean outline) {
+        if (isFontLoaded(fontfamily, fontSize, mono, borderWidth, outline)) {
             return;
         }
 
@@ -888,22 +892,15 @@ public class ResourceManager extends Proxy implements IResourceRetriever {
         parameter.size = fontSize;
         parameter.packer = fontPacker;
         parameter.mono = mono;
-        outline(parameter, borderWidth, borderColor);
+        games.rednblack.editor.renderer.resources.ResourceManager.outline(parameter, borderWidth, outline);
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
         BitmapFont font = generator.generateFont(parameter);
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setUseIntegerPositions(false);
         if (mono)
             font.setFixedWidthGlyphs(FreeTypeFontGenerator.DEFAULT_CHARS);
-        fonts.put(new FontSizePair(fontfamily, parameter.size, mono, borderWidth, borderColor), font);
+        fonts.put(new FontSizePair(fontfamily, parameter.size, mono, borderWidth, outline), font);
         generator.dispose();
-    }
-
-    /** A label's outline, drawn by FreeType into the glyphs: none at width 0. */
-    private static void outline(FreeTypeFontGenerator.FreeTypeFontParameter parameter, float borderWidth, int borderColor) {
-        if (borderWidth <= 0) return;
-        parameter.borderWidth = borderWidth;
-        parameter.borderColor = new Color(borderColor);
     }
 
     public HashMap<String, BVBDataObject> getProjectSpineAnimationsList() {

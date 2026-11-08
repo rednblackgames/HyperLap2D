@@ -349,7 +349,7 @@ public final class ComponentTools {
                     + "originX/originY are the pivot and are applied before everything else, so set them before scaling "
                     + "or the item moves as it grows), "
                     + "label (text/fontFamily/bitmapFont/fontSize/align/wrap/mono/fitWidth/fitHeight/borderWidth/borderColor; "
-                    + "borderWidth is an outline in pixels at the font size, 0 for none, coloured by borderColor and the label's tint), "
+                    + "borderWidth is an outline in pixels at the font size, 0 for none, drawn under the text in borderColor; the tint colours the text only), "
                     + "particle (matrixTransform/autoStart), image (renderMode/spriteType), "
                     + "composite (scissorsEnabled/renderToFBO/automaticResize), sprite (fps/animation/playMode), "
                     + "spine (animation/skin), talos (matrixTransform/autoStart), "
